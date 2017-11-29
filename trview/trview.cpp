@@ -5,6 +5,8 @@
 #include "trview.h"
 
 #include "Viewer.h"
+#include <memory>
+#include <commdlg.h>
 
 #define MAX_LOADSTRING 100
 
@@ -18,6 +20,8 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int, HWND& window);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+std::unique_ptr<trview::Viewer> viewer;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -46,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    trview::Viewer viewer(window);
+    viewer = std::make_unique<trview::Viewer>(window);
 
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
@@ -57,7 +61,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
 
-        viewer.render();
+        viewer->render();
     }
 
     return (int) msg.wParam;
@@ -142,6 +146,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+            case ID_FILE_OPEN:
+            {
+                wchar_t cd[MAX_PATH];
+                GetCurrentDirectoryW(MAX_PATH, cd);
+
+                OPENFILENAME ofn;
+                memset(&ofn, 0, sizeof(ofn));
+
+                wchar_t path[MAX_PATH];
+                memset(&path, 0, sizeof(path));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.lpstrFile = path;
+                ofn.nMaxFile = MAX_PATH;
+                ofn.lpstrTitle = L"Open level";
+                ofn.lpstrFilter = L"TR2 Files\0*.tr2\0";
+                // ofn.hwndOwner = WindowFromDC(wglGetCurrentDC());
+                ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+                ofn.nFilterIndex = -1;
+
+                if (GetOpenFileName(&ofn))
+                {
+                    SetCurrentDirectory(cd);
+                    viewer->open(ofn.lpstrFile);
+                }
+                break;
+            }
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;

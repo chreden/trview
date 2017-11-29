@@ -171,6 +171,11 @@
     <Image Include="small.ico" />
     <Image Include="trview.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\trlevel\trlevel.vcxproj">
+      <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

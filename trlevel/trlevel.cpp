@@ -19,11 +19,11 @@ namespace trlevel
         uint8_t Blue;
     };
 
-    void load_level()
+    void load_level(const std::wstring& filename)
     {
         // Load the level from the file.
         std::ifstream file;
-        file.open("C:\\GOG Games\\Tomb Raider 1+2+3\\Tomb Raider 3\\data\\jungle.TR2", std::ios::binary);
+        file.open(filename.c_str(), std::ios::binary);
 
         uint32_t version = read<uint32_t>(file);
 

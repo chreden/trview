@@ -1,9 +1,17 @@
 #include "stdafx.h"
 #include "Viewer.h"
+#include "..\trlevel\trlevel.h"
 
 namespace trview
 {
     Viewer::Viewer(HWND window)
+    {
+        initialise_d3d(window);
+
+
+    }
+
+    void Viewer::initialise_d3d(HWND window)
     {
         RECT window_rectangle;
         GetClientRect(window, &window_rectangle);
@@ -50,6 +58,11 @@ namespace trview
         viewport.TopLeftX = 0;
         viewport.TopLeftY = 0;
         _context->RSSetViewports(1, &viewport);
+    }
+
+    void Viewer::open(const std::wstring filename)
+    {
+        trlevel::load_level(filename);
     }
 
     void Viewer::render()
