@@ -19,6 +19,22 @@ namespace trlevel
         uint8_t Blue;
     };
 
+    struct tr_textile8
+    {
+        uint8_t Tile[256 * 256];
+    };
+
+    struct tr_textile16
+    {
+        uint16_t Tile[256 * 256];
+    };
+
+    struct tr_textile32
+    {
+        uint32_t Tile[256 * 256];
+    };
+
+
     void load_level(const std::wstring& filename)
     {
         // Load the level from the file.
