@@ -3,7 +3,11 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <atlbase.h>
+
 #include <string>
+#include <memory>
+
+#include "..\trlevel\ILevel.h"
 
 namespace trview
 {
@@ -22,5 +26,7 @@ namespace trview
         CComPtr<ID3D11Device>           _device;
         CComPtr<ID3D11DeviceContext>    _context;
         CComPtr<ID3D11RenderTargetView> _render_target_view;
+
+        std::unique_ptr<trlevel::ILevel> _current_level;
     };
 }

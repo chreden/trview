@@ -47,16 +47,16 @@ namespace trlevel
 
     uint32_t Level::num_textiles() const
     {
-        return uint32_t();
+        return _num_textiles;
     }
 
     tr_textile8 Level::get_textile8(uint32_t index) const
     {
-        return tr_textile8();
+        return _textile8[index];
     }
 
     tr_textile16 Level::get_textile16(uint32_t index) const
     {
-        return tr_textile16();
+        return _textile16[index];
     }
 }

@@ -2,6 +2,8 @@
 #include "Viewer.h"
 #include "..\trlevel\trlevel.h"
 
+#include <vector>
+
 namespace trview
 {
     Viewer::Viewer(HWND window)
@@ -62,7 +64,46 @@ namespace trview
 
     void Viewer::open(const std::wstring filename)
     {
-        auto level = trlevel::load_level(filename);
+        _current_level = trlevel::load_level(filename);
+
+        // Load the textures from the level and then allow to cycle through them?
+        for (uint32_t i = 0; i < _current_level->num_textiles(); ++i)
+        {
+            auto t16 = _current_level->get_textile16(i);
+
+            std::vector<uint32_t> data;
+            data.resize(256 * 256, 0);
+
+            uint32_t index = 0;
+            for (auto t : t16.Tile)
+            {
+                data[index++] =
+                    // ((t & 0x8000) >> 15) << 24
+                    0xff << 24 |
+                    ((t & 0x7c00) >> 10) << 16 |
+                    ((t & 0x03e0) >> 5) << 8 |
+                    ((t & 0x001f));
+            }
+
+            D3D11_SUBRESOURCE_DATA srd;
+            memset(&srd, 0, sizeof(srd));
+            srd.pSysMem = &data[0];
+            srd.SysMemPitch = sizeof(uint32_t) * 256;
+
+            D3D11_TEXTURE2D_DESC desc;
+            desc.Width = 256;
+            desc.Height = 256;
+            desc.MipLevels = desc.ArraySize = 1;
+            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+            desc.SampleDesc.Count = 1;
+            desc.Usage = D3D11_USAGE_DYNAMIC;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            desc.MiscFlags = 0;
+
+            CComPtr<ID3D11Texture2D> texture;
+            _device->CreateTexture2D(&desc, &srd, &texture);
+        }
     }
 
     void Viewer::render()
