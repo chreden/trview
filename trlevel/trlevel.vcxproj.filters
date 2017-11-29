@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClInclude Include="ILevel.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="trlevel.h" />
+    <ClInclude Include="trtypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ILevel.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="trlevel.cpp" />
   </ItemGroup>
 </Project>

@@ -147,9 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ILevel.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="trlevel.h" />
+    <ClInclude Include="trtypes.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ILevel.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="trlevel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

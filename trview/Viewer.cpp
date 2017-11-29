@@ -62,7 +62,7 @@ namespace trview
 
     void Viewer::open(const std::wstring filename)
     {
-        trlevel::load_level(filename);
+        auto level = trlevel::load_level(filename);
     }
 
     void Viewer::render()
