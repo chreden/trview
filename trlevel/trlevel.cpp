@@ -37,7 +37,5 @@ namespace trlevel
 
         uint32_t unused = read<uint32_t>(file);
         uint16_t num_rooms = read<uint16_t>(file);
-
-
     }
 }
