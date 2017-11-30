@@ -3,6 +3,8 @@
 #include "..\trlevel\trlevel.h"
 
 #include <vector>
+#include <sstream>
+#include <string>
 
 #include "..\DirectXTex\DirectXTex-master\DirectXTex\DirectXTex.h"
 #include <wincodec.h>
@@ -84,11 +86,15 @@ namespace trview
                 uint16_t g = (t & 0x03e0) >> 5;
                 uint16_t b = (t & 0x7c00) >> 10;
 
-                r = static_cast<uint16_t>(static_cast<double>(r) / 0x1f * 0xff);
-                g = static_cast<uint16_t>(static_cast<double>(g) / 0x1f * 0xff);
-                b = static_cast<uint16_t>(static_cast<double>(b) / 0x1f * 0xff);
+                r <<= 3;
+                g <<= 3;
+                b <<= 3;
 
-                data[index++] = 0xff << 24 | b | g << 8 | r << 16;
+                r += 3;
+                g += 3;
+                b += 3;
+
+                data[index++] = 0xff << 24 | r << 16 | g << 8 | b;
             }
 
             D3D11_SUBRESOURCE_DATA srd;
@@ -114,7 +120,10 @@ namespace trview
             DirectX::ScratchImage image;
             DirectX::CaptureTexture(_device, _context, texture, image);
             auto im = image.GetImage(0, 0, 0);
-            HRESULT hr = DirectX::SaveToWICFile(im, 1, 0, GUID_ContainerFormatPng, L"new_image.png");
+
+            std::wstringstream stream;
+            stream << L"texture" << i << L".png";
+            HRESULT hr = DirectX::SaveToWICFile(im, 1, 0, GUID_ContainerFormatPng, stream.str().c_str());
         }
     }
 
