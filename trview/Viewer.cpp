@@ -4,6 +4,9 @@
 
 #include <vector>
 
+#include "..\DirectXTex\DirectXTex-master\DirectXTex\DirectXTex.h"
+#include <wincodec.h>
+
 namespace trview
 {
     Viewer::Viewer(HWND window)
@@ -77,12 +80,15 @@ namespace trview
             uint32_t index = 0;
             for (auto t : t16.Tile)
             {
-                data[index++] =
-                    // ((t & 0x8000) >> 15) << 24
-                    0xff << 24 |
-                    ((t & 0x7c00) >> 10) << 16 |
-                    ((t & 0x03e0) >> 5) << 8 |
-                    ((t & 0x001f));
+                uint16_t r = t & 0x001f;
+                uint16_t g = (t & 0x03e0) >> 5;
+                uint16_t b = (t & 0x7c00) >> 10;
+
+                r = static_cast<uint16_t>(static_cast<double>(r) / 0x1f * 0xff);
+                g = static_cast<uint16_t>(static_cast<double>(g) / 0x1f * 0xff);
+                b = static_cast<uint16_t>(static_cast<double>(b) / 0x1f * 0xff);
+
+                data[index++] = 0xff << 24 | b | g << 8 | r << 16;
             }
 
             D3D11_SUBRESOURCE_DATA srd;
@@ -91,6 +97,7 @@ namespace trview
             srd.SysMemPitch = sizeof(uint32_t) * 256;
 
             D3D11_TEXTURE2D_DESC desc;
+            memset(&desc, 0, sizeof(desc));
             desc.Width = 256;
             desc.Height = 256;
             desc.MipLevels = desc.ArraySize = 1;
@@ -103,6 +110,11 @@ namespace trview
 
             CComPtr<ID3D11Texture2D> texture;
             _device->CreateTexture2D(&desc, &srd, &texture);
+
+            DirectX::ScratchImage image;
+            DirectX::CaptureTexture(_device, _context, texture, image);
+            auto im = image.GetImage(0, 0, 0);
+            HRESULT hr = DirectX::SaveToWICFile(im, 1, 0, GUID_ContainerFormatPng, L"new_image.png");
         }
     }
 
