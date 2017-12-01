@@ -5,17 +5,95 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <fstream>
 
 #include "..\DirectXTex\DirectXTex-master\DirectXTex\DirectXTex.h"
 #include <wincodec.h>
+#include <DirectXMath.h>
+#include <d3dcompiler.h>
 
 namespace trview
 {
+    namespace
+    {
+        struct Vertex
+        {
+            DirectX::XMFLOAT3 pos;
+        };
+    }
+
     Viewer::Viewer(HWND window)
     {
         initialise_d3d(window);
 
+        using namespace DirectX;
 
+        Vertex vertices[] =
+        {
+            XMFLOAT3(0.0f, 0.0f, 0.0f),
+            XMFLOAT3(0.5f, 0.0f, 0.0f),
+            XMFLOAT3(0.0f, -0.5f, 0.0f),
+            XMFLOAT3(0.5f, -0.5f, 0.0f),
+        };
+
+        D3D11_BUFFER_DESC vertex_desc;
+        memset(&vertex_desc, 0, sizeof(vertex_desc));
+        vertex_desc.Usage = D3D11_USAGE_DEFAULT;
+        vertex_desc.ByteWidth = sizeof(Vertex) * 4;
+        vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA vertex_data;
+        memset(&vertex_data, 0, sizeof(vertex_data));
+        vertex_data.pSysMem = vertices;
+
+        HRESULT hr = _device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+
+        uint32_t indices[] = { 0, 1, 2, 3 };
+
+        D3D11_BUFFER_DESC index_desc;
+        memset(&index_desc, 0, sizeof(index_desc));
+        index_desc.Usage = D3D11_USAGE_DEFAULT;
+        index_desc.ByteWidth = sizeof(uint32_t) * 4;
+        index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA index_data;
+        memset(&index_data, 0, sizeof(index_data));
+        index_data.pSysMem = indices;
+
+        hr = _device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+
+        std::ifstream shaderfile;
+        shaderfile.open(L"VertexShader.cso", std::ios::binary);
+        shaderfile.seekg(0, std::ios::end);
+        std::size_t length = shaderfile.tellg();
+        std::vector<char> data(length, 0);
+        shaderfile.seekg(0, std::ios::beg);
+        shaderfile.read(&data[0], length);
+        shaderfile.close();
+
+        D3D11_INPUT_ELEMENT_DESC input_desc;
+        memset(&input_desc, 0, sizeof(input_desc));
+        input_desc.SemanticName = "Position";
+        input_desc.SemanticIndex = 0;
+        input_desc.InstanceDataStepRate = 0;
+        input_desc.InputSlot = 0;
+        input_desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+        input_desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+
+        hr = _device->CreateInputLayout(&input_desc, 1, &data[0], data.size(), &_input_layout);
+
+        hr = _device->CreateVertexShader(&data[0], data.size(), nullptr, &_vertex_shader);
+
+        std::ifstream pshaderfile;
+        pshaderfile.open(L"PixelShader.cso", std::ios::binary);
+        pshaderfile.seekg(0, std::ios::end);
+        std::size_t plength = pshaderfile.tellg();
+        std::vector<char> pdata(plength, 0);
+        pshaderfile.seekg(0, std::ios::beg);
+        pshaderfile.read(&pdata[0], plength);
+        pshaderfile.close();
+
+        hr = _device->CreatePixelShader(&pdata[0], pdata.size(), nullptr, &_pixel_shader);
     }
 
     void Viewer::initialise_d3d(HWND window)
@@ -131,8 +209,19 @@ namespace trview
     {
         _context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
 
-        float colours[4] = { 1.f, 0.f, 0.f, 1.f };
+        float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };
         _context->ClearRenderTargetView(_render_target_view, colours);
+
+        // select which vertex buffer to display
+        UINT stride = sizeof(DirectX::XMFLOAT3);
+        UINT offset = 0;
+        _context->IASetInputLayout(_input_layout);
+        _context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
+        _context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+        _context->VSSetShader(_vertex_shader, nullptr, 0);
+        _context->PSSetShader(_pixel_shader, nullptr, 0);
+        _context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+        _context->DrawIndexed(4, 0, 0);
 
         _swap_chain->Present(1, 0);
     }

@@ -27,6 +27,12 @@ namespace trview
         CComPtr<ID3D11DeviceContext>    _context;
         CComPtr<ID3D11RenderTargetView> _render_target_view;
 
+        CComPtr<ID3D11InputLayout> _input_layout;
+        CComPtr<ID3D11Buffer> _vertex_buffer;
+        CComPtr<ID3D11Buffer> _index_buffer;
+        CComPtr<ID3D11VertexShader> _vertex_shader;
+        CComPtr<ID3D11PixelShader> _pixel_shader;
+
         std::unique_ptr<trlevel::ILevel> _current_level;
     };
 }
