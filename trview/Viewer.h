@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <atlbase.h>
 
+#include <vector>
 #include <string>
 #include <memory>
 
@@ -32,6 +33,8 @@ namespace trview
         CComPtr<ID3D11Buffer> _index_buffer;
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader> _pixel_shader;
+
+        std::vector<CComPtr<ID3D11Texture2D>> _level_textures;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
     };

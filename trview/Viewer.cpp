@@ -7,7 +7,6 @@
 #include <string>
 #include <fstream>
 
-#include "..\DirectXTex\DirectXTex-master\DirectXTex\DirectXTex.h"
 #include <wincodec.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
@@ -19,6 +18,7 @@ namespace trview
         struct Vertex
         {
             DirectX::XMFLOAT3 pos;
+            DirectX::XMFLOAT2 uv;
         };
     }
 
@@ -30,10 +30,10 @@ namespace trview
 
         Vertex vertices[] =
         {
-            XMFLOAT3(0.0f, 0.0f, 0.0f),
-            XMFLOAT3(0.5f, 0.0f, 0.0f),
-            XMFLOAT3(0.0f, -0.5f, 0.0f),
-            XMFLOAT3(0.5f, -0.5f, 0.0f),
+            { XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0,0) },
+            { XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT2(1,0) },
+            { XMFLOAT3(0.0f, -0.5f, 0.0f), XMFLOAT2(0,1) },
+            { XMFLOAT3(0.5f, -0.5f, 0.0f), XMFLOAT2(1,1) }
         };
 
         D3D11_BUFFER_DESC vertex_desc;
@@ -71,16 +71,24 @@ namespace trview
         shaderfile.read(&data[0], length);
         shaderfile.close();
 
-        D3D11_INPUT_ELEMENT_DESC input_desc;
+        D3D11_INPUT_ELEMENT_DESC input_desc[2];
         memset(&input_desc, 0, sizeof(input_desc));
-        input_desc.SemanticName = "Position";
-        input_desc.SemanticIndex = 0;
-        input_desc.InstanceDataStepRate = 0;
-        input_desc.InputSlot = 0;
-        input_desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-        input_desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        input_desc[0].SemanticName = "Position";
+        input_desc[0].SemanticIndex = 0;
+        input_desc[0].InstanceDataStepRate = 0;
+        input_desc[0].InputSlot = 0;
+        input_desc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+        input_desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 
-        hr = _device->CreateInputLayout(&input_desc, 1, &data[0], data.size(), &_input_layout);
+        input_desc[1].SemanticName = "Texcoord";
+        input_desc[1].SemanticIndex = 0;
+        input_desc[1].InstanceDataStepRate = 0;
+        input_desc[1].InputSlot = 0;
+        input_desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+        input_desc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+        input_desc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+
+        hr = _device->CreateInputLayout(input_desc, 2, &data[0], data.size(), &_input_layout);
 
         hr = _device->CreateVertexShader(&data[0], data.size(), nullptr, &_vertex_shader);
 
@@ -147,6 +155,7 @@ namespace trview
 
     void Viewer::open(const std::wstring filename)
     {
+        _level_textures.clear();
         _current_level = trlevel::load_level(filename);
 
         // Load the textures from the level and then allow to cycle through them?
@@ -194,14 +203,7 @@ namespace trview
 
             CComPtr<ID3D11Texture2D> texture;
             _device->CreateTexture2D(&desc, &srd, &texture);
-
-            DirectX::ScratchImage image;
-            DirectX::CaptureTexture(_device, _context, texture, image);
-            auto im = image.GetImage(0, 0, 0);
-
-            std::wstringstream stream;
-            stream << L"texture" << i << L".png";
-            HRESULT hr = DirectX::SaveToWICFile(im, 1, 0, GUID_ContainerFormatPng, stream.str().c_str());
+            _level_textures.push_back(texture);
         }
     }
 
@@ -212,16 +214,39 @@ namespace trview
         float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };
         _context->ClearRenderTargetView(_render_target_view, colours);
 
-        // select which vertex buffer to display
-        UINT stride = sizeof(DirectX::XMFLOAT3);
-        UINT offset = 0;
-        _context->IASetInputLayout(_input_layout);
-        _context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
-        _context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-        _context->VSSetShader(_vertex_shader, nullptr, 0);
-        _context->PSSetShader(_pixel_shader, nullptr, 0);
-        _context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-        _context->DrawIndexed(4, 0, 0);
+        if (!_level_textures.empty())
+        {
+            // Create a texture sampler state description.
+            D3D11_SAMPLER_DESC desc;
+            memset(&desc, 0, sizeof(desc));
+            desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+            desc.MaxAnisotropy = 1;
+            desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+            desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+            // Create the texture sampler state.
+            CComPtr<ID3D11SamplerState> samplerState;
+            _device->CreateSamplerState(&desc, &samplerState);
+
+            CComPtr<ID3D11ShaderResourceView> view;
+            _device->CreateShaderResourceView(_level_textures[0], nullptr, &view);
+            _context->PSSetShaderResources(0, 1, &view.p);
+            _context->PSSetSamplers(0, 1, &samplerState.p);
+
+            // select which vertex buffer to display
+            UINT stride = sizeof(Vertex);
+            UINT offset = 0;
+            _context->IASetInputLayout(_input_layout);
+            _context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
+            _context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+            _context->VSSetShader(_vertex_shader, nullptr, 0);
+            _context->PSSetShader(_pixel_shader, nullptr, 0);
+            _context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+            _context->DrawIndexed(4, 0, 0);
+        }
 
         _swap_chain->Present(1, 0);
     }

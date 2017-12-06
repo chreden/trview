@@ -1,4 +1,13 @@
-float4 main() : SV_TARGET
+struct PixelInput
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 position : SV_POSITION;
+    float2 uv : TEXCOORD0;
+};
+
+Texture2D tex;
+SamplerState samplerState;
+
+float4 main(PixelInput input) : SV_TARGET
+{
+    return tex.Sample(samplerState, input.uv);
 }
