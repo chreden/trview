@@ -30,10 +30,10 @@ namespace trview
 
         Vertex vertices[] =
         {
-            { XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT2(0,0) },
-            { XMFLOAT3(0.5f, 0.0f, 0.0f), XMFLOAT2(1,0) },
-            { XMFLOAT3(0.0f, -0.5f, 0.0f), XMFLOAT2(0,1) },
-            { XMFLOAT3(0.5f, -0.5f, 0.0f), XMFLOAT2(1,1) }
+            { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0,0) },
+            { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1,0) },
+            { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0,1) },
+            { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1,1) }
         };
 
         D3D11_BUFFER_DESC vertex_desc;
@@ -102,6 +102,20 @@ namespace trview
         pshaderfile.close();
 
         hr = _device->CreatePixelShader(&pdata[0], pdata.size(), nullptr, &_pixel_shader);
+
+        // Create a texture sampler state description.
+        D3D11_SAMPLER_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+        desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        desc.MaxAnisotropy = 1;
+        desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+        desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+        // Create the texture sampler state.
+        _device->CreateSamplerState(&desc, &_sampler_state);
     }
 
     void Viewer::initialise_d3d(HWND window)
@@ -157,6 +171,7 @@ namespace trview
     {
         _level_textures.clear();
         _current_level = trlevel::load_level(filename);
+        _texture_index = 0u;
 
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < _current_level->num_textiles(); ++i)
@@ -201,9 +216,10 @@ namespace trview
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             desc.MiscFlags = 0;
 
-            CComPtr<ID3D11Texture2D> texture;
-            _device->CreateTexture2D(&desc, &srd, &texture);
-            _level_textures.push_back(texture);
+            Texture tex;
+            _device->CreateTexture2D(&desc, &srd, &tex.texture);
+            _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
+            _level_textures.push_back(tex);
         }
     }
 
@@ -216,25 +232,9 @@ namespace trview
 
         if (!_level_textures.empty())
         {
-            // Create a texture sampler state description.
-            D3D11_SAMPLER_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-            desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-            desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-            desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-            desc.MaxAnisotropy = 1;
-            desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-            desc.MaxLOD = D3D11_FLOAT32_MAX;
-
-            // Create the texture sampler state.
-            CComPtr<ID3D11SamplerState> samplerState;
-            _device->CreateSamplerState(&desc, &samplerState);
-
-            CComPtr<ID3D11ShaderResourceView> view;
-            _device->CreateShaderResourceView(_level_textures[0], nullptr, &view);
-            _context->PSSetShaderResources(0, 1, &view.p);
-            _context->PSSetSamplers(0, 1, &samplerState.p);
+            auto& t = _level_textures[_texture_index];
+            _context->PSSetShaderResources(0, 1, &t.view.p);
+            _context->PSSetSamplers(0, 1, &_sampler_state.p);
 
             // select which vertex buffer to display
             UINT stride = sizeof(Vertex);
@@ -249,5 +249,14 @@ namespace trview
         }
 
         _swap_chain->Present(1, 0);
+    }
+
+    void Viewer::cycle()
+    {
+        ++_texture_index;
+        if (_texture_index >= _level_textures.size())
+        {
+            _texture_index = 0;
+        }
     }
 }

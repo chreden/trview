@@ -61,6 +61,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
 
+        if (msg.message == WM_KEYUP)
+        {
+            viewer->cycle();
+        }
+
         viewer->render();
     }
 

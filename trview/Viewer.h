@@ -20,6 +20,8 @@ namespace trview
         void render();
 
         void open(const std::wstring filename);
+
+        void cycle();
     private:
         void initialise_d3d(HWND window);
 
@@ -34,8 +36,18 @@ namespace trview
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader> _pixel_shader;
 
-        std::vector<CComPtr<ID3D11Texture2D>> _level_textures;
+        CComPtr<ID3D11SamplerState> _sampler_state;
+
+        struct Texture
+        {
+            CComPtr<ID3D11Texture2D>          texture;
+            CComPtr<ID3D11ShaderResourceView> view;
+        };
+
+        std::vector<Texture> _level_textures;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
+
+        uint32_t _texture_index{ 0u };
     };
 }
