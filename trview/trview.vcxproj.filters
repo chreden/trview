@@ -16,6 +16,9 @@
     <Filter Include="Program">
       <UniqueIdentifier>{ccc85673-5a75-47e9-a108-5f6c027fb645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other">
+      <UniqueIdentifier>{9526015d-5f8e-4460-8e98-92e744747a79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +39,9 @@
     <ClInclude Include="Viewer.h">
       <Filter>Program</Filter>
     </ClInclude>
+    <ClInclude Include="FileLoader.h">
+      <Filter>Other</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -46,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,8 @@
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
 
+#include "FileLoader.h"
+
 namespace trview
 {
     namespace
@@ -62,14 +64,7 @@ namespace trview
 
         hr = _device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
-        std::ifstream shaderfile;
-        shaderfile.open(L"VertexShader.cso", std::ios::binary);
-        shaderfile.seekg(0, std::ios::end);
-        std::size_t length = shaderfile.tellg();
-        std::vector<char> data(length, 0);
-        shaderfile.seekg(0, std::ios::beg);
-        shaderfile.read(&data[0], length);
-        shaderfile.close();
+        std::vector<char> vs_data = load_file(L"VertexShader.cso");
 
         D3D11_INPUT_ELEMENT_DESC input_desc[2];
         memset(&input_desc, 0, sizeof(input_desc));
@@ -88,20 +83,12 @@ namespace trview
         input_desc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
         input_desc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 
-        hr = _device->CreateInputLayout(input_desc, 2, &data[0], data.size(), &_input_layout);
+        hr = _device->CreateInputLayout(input_desc, 2, &vs_data[0], vs_data.size(), &_input_layout);
 
-        hr = _device->CreateVertexShader(&data[0], data.size(), nullptr, &_vertex_shader);
+        hr = _device->CreateVertexShader(&vs_data[0], vs_data.size(), nullptr, &_vertex_shader);
 
-        std::ifstream pshaderfile;
-        pshaderfile.open(L"PixelShader.cso", std::ios::binary);
-        pshaderfile.seekg(0, std::ios::end);
-        std::size_t plength = pshaderfile.tellg();
-        std::vector<char> pdata(plength, 0);
-        pshaderfile.seekg(0, std::ios::beg);
-        pshaderfile.read(&pdata[0], plength);
-        pshaderfile.close();
-
-        hr = _device->CreatePixelShader(&pdata[0], pdata.size(), nullptr, &_pixel_shader);
+        std::vector<char> ps_data = load_file(L"PixelShader.cso");
+        hr = _device->CreatePixelShader(&ps_data[0], ps_data.size(), nullptr, &_pixel_shader);
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC desc;
