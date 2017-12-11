@@ -42,6 +42,9 @@
     <ClInclude Include="FileLoader.h">
       <Filter>Other</Filter>
     </ClInclude>
+    <ClInclude Include="TextureWindow.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="FileLoader.cpp">
       <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureWindow.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

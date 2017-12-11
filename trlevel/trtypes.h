@@ -25,4 +25,6 @@ namespace trlevel
     {
         uint32_t Tile[256 * 256];
     };
+
+    uint32_t convert_textile16(uint16_t t);
 }
