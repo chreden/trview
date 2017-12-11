@@ -13,7 +13,6 @@ namespace trleveltests
 
         TEST_METHOD(TestMethod1)
         {
-            trlevel::load_level();
         }
 
     };
