@@ -15,7 +15,8 @@ namespace trview
         };
     }
 
-    TextureWindow::TextureWindow(CComPtr<ID3D11Device> device)
+    TextureWindow::TextureWindow(CComPtr<ID3D11Device> device, uint32_t host_width, uint32_t host_height)
+        : _device(device), _host_width(host_width), _host_height(host_height)
     {
         using namespace DirectX;
 
@@ -102,6 +103,37 @@ namespace trview
 
     void TextureWindow::render(CComPtr<ID3D11DeviceContext> context)
     {
+        // Need to scale the quad so that it is a certain size. Will need to know the 
+        // size of the host window as well as the size that we want the texture window
+        // to be. Then create a scaling matrix and throw it in to the shader.
+        const uint32_t target_width = 300;
+        const uint32_t target_height = 300;
+        
+        auto scaling = DirectX::XMMatrixScaling(static_cast<float>(target_width) / _host_width,
+                                                static_cast<float>(target_height) / _host_height, 1);
+
+        D3D11_BUFFER_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+
+        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        desc.ByteWidth = sizeof(DirectX::XMMATRIX);
+        desc.Usage = D3D11_USAGE_IMMUTABLE;
+
+        D3D11_SUBRESOURCE_DATA data;
+        memset(&data, 0, sizeof(data));
+        
+        data.pSysMem = &scaling;
+        data.SysMemPitch = sizeof(scaling);
+
+        CComPtr<ID3D11Buffer> buffer;
+        _device->CreateBuffer(&desc, &data, &buffer);
+
+        context->VSSetConstantBuffers(0, 1, &buffer.p);
+
+        // Will also need a translation matrix as well so it can be placed somewhere on
+        // the screen.
+
+
         if (!_level_textures.empty())
         {
             context->PSSetShaderResources(0, 1, &_level_textures[_texture_index].p);
@@ -127,5 +159,11 @@ namespace trview
         {
             _texture_index = 0;
         }
+    }
+
+    void TextureWindow::set_host_size(uint32_t width, uint32_t height)
+    {
+        _host_width = width;
+        _host_height = height;
     }
 }

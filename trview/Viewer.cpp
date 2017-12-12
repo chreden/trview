@@ -15,7 +15,10 @@ namespace trview
     Viewer::Viewer(HWND window)
     {
         initialise_d3d(window);
-        _texture_window = std::make_unique<TextureWindow>(_device);
+
+        RECT client_window;
+        GetClientRect(window, &client_window);
+        _texture_window = std::make_unique<TextureWindow>(_device, client_window.right - client_window.left, client_window.bottom - client_window.top);
     }
 
     void Viewer::initialise_d3d(HWND window)

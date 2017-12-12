@@ -1,3 +1,8 @@
+cbuffer cb : register (b0)
+{
+    matrix scale : packoffset (c0);
+}
+
 struct VertexInput
 {
     float4 position : POSITION;
@@ -13,7 +18,7 @@ struct VertexOutput
 VertexOutput main( VertexInput input )
 {
     VertexOutput output;
-    output.position = input.position;
+    output.position = mul(scale, input.position);
     output.uv = input.uv;
     return output;
 }
