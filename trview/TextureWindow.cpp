@@ -173,8 +173,5 @@ namespace trview
         data.SysMemPitch = sizeof(scaling);
 
         _device->CreateBuffer(&desc, &data, &_matrix_buffer);
-
-        // Will also need a translation matrix as well so it can be placed somewhere on the screen.
     }
-
 }

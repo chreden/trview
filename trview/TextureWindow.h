@@ -14,7 +14,9 @@ namespace trview
         explicit TextureWindow(CComPtr<ID3D11Device> device, uint32_t host_width, uint32_t host_height);
         void     set_textures(std::vector<CComPtr<ID3D11ShaderResourceView>> textures);
         void     render(CComPtr<ID3D11DeviceContext> context);
-        void     cycle();
+
+        // Cycle through the textures in the level.
+        void cycle();
 
         // Set the size of the host window. This allows the texture window
         // to apply the correct scaling.
