@@ -20,6 +20,8 @@ namespace trview
         // to apply the correct scaling.
         void set_host_size(uint32_t width, uint32_t height);
     private:
+        void create_scaling_matrix();
+
         CComPtr<ID3D11Device> _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader> _pixel_shader;
@@ -27,6 +29,7 @@ namespace trview
         CComPtr<ID3D11Buffer> _vertex_buffer;
         CComPtr<ID3D11Buffer> _index_buffer;
         CComPtr<ID3D11SamplerState> _sampler_state;
+        CComPtr<ID3D11Buffer> _matrix_buffer;
 
         std::vector<CComPtr<ID3D11ShaderResourceView>> _level_textures;
         uint32_t _texture_index{ 0u };
