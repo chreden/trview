@@ -45,7 +45,7 @@ namespace trview
             nullptr,
             D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
-            0,
+            D3D11_CREATE_DEVICE_BGRA_SUPPORT,
             nullptr,
             0,
             D3D11_SDK_VERSION,
@@ -68,6 +68,18 @@ namespace trview
         viewport.TopLeftX = 0;
         viewport.TopLeftY = 0;
         _context->RSSetViewports(1, &viewport);
+
+        D3D11_BLEND_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+        desc.RenderTarget[0].BlendEnable = true;
+        desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+        desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        _device->CreateBlendState(&desc, &_blend_state);
     }
 
     void Viewer::open(const std::wstring filename)
@@ -124,6 +136,7 @@ namespace trview
     void Viewer::render()
     {
         _context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
+        _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
 
         float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };
         _context->ClearRenderTargetView(_render_target_view, colours);

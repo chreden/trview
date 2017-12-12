@@ -6,6 +6,10 @@
 #include <cstdint>
 #include <vector>
 
+// Direct write and d2d
+#include <dwrite.h>
+#include <d2d1.h>
+
 namespace trview
 {
     class TextureWindow
@@ -24,6 +28,8 @@ namespace trview
     private:
         void create_scaling_matrix();
 
+        void initialise_d2d();
+
         CComPtr<ID3D11Device> _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader> _pixel_shader;
@@ -38,5 +44,13 @@ namespace trview
 
         uint32_t _host_width;
         uint32_t _host_height;
+
+        // Text rendering:
+        CComPtr<IDWriteFactory> _dwrite_factory;
+        CComPtr<IDWriteTextFormat> _text_format;
+        CComPtr<ID2D1Factory> _d2d_factory;
+        CComPtr<ID2D1RenderTarget> _d2d_rt;
+        CComPtr<ID2D1SolidColorBrush> _d2d_brush;
+        CComPtr<ID3D11Texture2D> _text_texture;
     };
 }

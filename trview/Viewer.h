@@ -41,5 +41,7 @@ namespace trview
         std::vector<Texture> _level_textures;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<TextureWindow> _texture_window;
+
+        CComPtr<ID3D11BlendState> _blend_state;
     };
 }

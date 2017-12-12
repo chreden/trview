@@ -95,6 +95,60 @@ namespace trview
 
         // Create the texture sampler state.
         device->CreateSamplerState(&desc, &_sampler_state);
+
+        initialise_d2d();
+    }
+
+    void TextureWindow::initialise_d2d()
+    {
+        // Texture to render text to.
+        D3D11_TEXTURE2D_DESC desc;
+        desc.ArraySize = 1;
+        desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = 0;
+        desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        desc.Height = 512;
+        desc.Width = 512;
+        desc.MipLevels = 1;
+        desc.MiscFlags = 0;
+        desc.SampleDesc.Count = 1;
+        desc.SampleDesc.Quality = 0;
+        desc.Usage = D3D11_USAGE_DEFAULT;
+        _device->CreateTexture2D(&desc, nullptr, &_text_texture);
+
+        D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_d2d_factory);
+        
+        DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, 
+            __uuidof(IDWriteFactory), 
+            reinterpret_cast<IUnknown**>(&_dwrite_factory));
+
+        _dwrite_factory->CreateTextFormat(
+            L"Arial",
+            nullptr,
+            DWRITE_FONT_WEIGHT_REGULAR,
+            DWRITE_FONT_STYLE_NORMAL,
+            DWRITE_FONT_STRETCH_NORMAL,
+            32.0f,
+            L"en-us",
+            &_text_format);
+
+        _text_format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+        _text_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+        CComPtr<IDXGISurface> surface;
+        _text_texture->QueryInterface(&surface);
+
+        D2D1_RENDER_TARGET_PROPERTIES props =
+            D2D1::RenderTargetProperties(
+                D2D1_RENDER_TARGET_TYPE_DEFAULT,
+                D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
+                96,
+                96
+            );
+
+        HRESULT hr = _d2d_factory->CreateDxgiSurfaceRenderTarget(surface, &props, &_d2d_rt);
+
+        _d2d_rt->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &_d2d_brush);
     }
 
     void TextureWindow::set_textures(std::vector<CComPtr<ID3D11ShaderResourceView>> textures)
@@ -120,6 +174,28 @@ namespace trview
             context->PSSetShader(_pixel_shader, nullptr, 0);
             context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+            context->DrawIndexed(4, 0, 0);
+
+            // draw some text?
+            std::wstring message = L"Please kill me";
+            D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 100, 100);
+
+            _d2d_rt->BeginDraw();
+            _d2d_rt->SetTransform(D2D1::IdentityMatrix());
+            _d2d_rt->Clear(D2D1::ColorF(D2D1::ColorF(0, 0, 0, 0)));
+            _d2d_rt->DrawText(
+                message.c_str(),        // The string to render.
+                message.size(),    // The string's length.
+                _text_format,    // The text format.
+                layoutRect,       // The region of the window where the text will be rendered.
+                _d2d_brush     // The brush used to draw the text.
+            );
+            _d2d_rt->EndDraw();
+
+            CComPtr<ID3D11ShaderResourceView> srv;
+            _device->CreateShaderResourceView(_text_texture, nullptr, &srv);
+
+            context->PSSetShaderResources(0, 1, &srv.p);
             context->DrawIndexed(4, 0, 0);
         }
     }
