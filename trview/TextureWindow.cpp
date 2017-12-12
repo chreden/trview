@@ -151,6 +151,14 @@ namespace trview
         auto scaling = DirectX::XMMatrixScaling(static_cast<float>(target_width) / _host_width,
             static_cast<float>(target_height) / _host_height, 1);
 
+        // Try to make the appropriate translation matrix to move it to the top left of the screen.
+        auto translation = DirectX::XMMatrixTranslation(
+            -1.f + static_cast<float>(target_width) / _host_width,
+            1.f - static_cast<float>(target_height) / _host_height, 
+            0);
+
+        scaling *= translation;
+
         D3D11_BUFFER_DESC desc;
         memset(&desc, 0, sizeof(desc));
 
