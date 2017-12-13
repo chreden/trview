@@ -106,9 +106,9 @@ namespace trview
         _host_height = height;
     }
 
-    void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture)
+    void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height)
     {
-        update_matrix(context);
+        update_matrix(context, x, y, width, height);
 
         context->PSSetShaderResources(0, 1, &texture.p);
         context->PSSetSamplers(0, 1, &_sampler_state.p);
@@ -139,22 +139,15 @@ namespace trview
         _device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
     }
 
-    void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context)
+    void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height)
     {
         // Need to scale the quad so that it is a certain size. Will need to know the 
         // size of the host window as well as the size that we want the texture window
         // to be. Then create a scaling matrix and throw it in to the shader.
-        const uint32_t target_width = 300;
-        const uint32_t target_height = 300;
-
-        auto scaling = DirectX::XMMatrixScaling(static_cast<float>(target_width) / _host_width,
-            static_cast<float>(target_height) / _host_height, 1);
+        auto scaling = DirectX::XMMatrixScaling(width / _host_width, height / _host_height, 1);
 
         // Try to make the appropriate translation matrix to move it to the top left of the screen.
-        auto translation = DirectX::XMMatrixTranslation(
-            -1.f + static_cast<float>(target_width) / _host_width,
-            1.f - static_cast<float>(target_height) / _host_height,
-            0);
+        auto translation = DirectX::XMMatrixTranslation(-1.f + width / _host_width + (x * 2) / _host_width, 1.f - height / _host_height - (y * 2) / _host_height, 0);
 
         scaling *= translation;
 

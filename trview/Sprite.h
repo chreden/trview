@@ -11,13 +11,13 @@ namespace trview
     public:
         Sprite(CComPtr<ID3D11Device> device, uint32_t width, uint32_t height);
 
-        void render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture);
+        void render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height);
 
         void set_host_size(uint32_t width, uint32_t height);
     private:
         void create_matrix();
 
-        void update_matrix(CComPtr<ID3D11DeviceContext> context);
+        void update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height);
 
         CComPtr<ID3D11Device>       _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;

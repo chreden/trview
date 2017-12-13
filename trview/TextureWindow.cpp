@@ -77,8 +77,8 @@ namespace trview
     {
         if (!_level_textures.empty())
         {
-            _sprite->render(context, _level_textures[_texture_index]);
-            _sprite->render(context, _text_resource);
+            _sprite->render(context, _level_textures[_texture_index], 0, 0, 256, 256);
+            _sprite->render(context, _text_resource, 0, 256, 256, 256);
         }
     }
 
