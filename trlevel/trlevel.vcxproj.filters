@@ -10,5 +10,6 @@
     <ClCompile Include="ILevel.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="trlevel.cpp" />
+    <ClCompile Include="trtypes.cpp" />
   </ItemGroup>
 </Project>

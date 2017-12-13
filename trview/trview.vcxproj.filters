@@ -19,6 +19,9 @@
     <Filter Include="Other">
       <UniqueIdentifier>{9526015d-5f8e-4460-8e98-92e744747a79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{94ba7176-10d8-4cf9-b2f2-e6a6d554e70a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -42,6 +45,12 @@
     <ClInclude Include="FileLoader.h">
       <Filter>Other</Filter>
     </ClInclude>
+    <ClInclude Include="TextureWindow.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +64,12 @@
     </ClCompile>
     <ClCompile Include="FileLoader.cpp">
       <Filter>Other</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureWindow.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

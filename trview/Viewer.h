@@ -10,6 +10,8 @@
 
 #include "..\trlevel\ILevel.h"
 
+#include "TextureWindow.h"
+
 namespace trview
 {
     class Viewer
@@ -30,14 +32,6 @@ namespace trview
         CComPtr<ID3D11DeviceContext>    _context;
         CComPtr<ID3D11RenderTargetView> _render_target_view;
 
-        CComPtr<ID3D11InputLayout> _input_layout;
-        CComPtr<ID3D11Buffer> _vertex_buffer;
-        CComPtr<ID3D11Buffer> _index_buffer;
-        CComPtr<ID3D11VertexShader> _vertex_shader;
-        CComPtr<ID3D11PixelShader> _pixel_shader;
-
-        CComPtr<ID3D11SamplerState> _sampler_state;
-
         struct Texture
         {
             CComPtr<ID3D11Texture2D>          texture;
@@ -45,9 +39,9 @@ namespace trview
         };
 
         std::vector<Texture> _level_textures;
-
         std::unique_ptr<trlevel::ILevel> _current_level;
+        std::unique_ptr<TextureWindow> _texture_window;
 
-        uint32_t _texture_index{ 0u };
+        CComPtr<ID3D11BlendState> _blend_state;
     };
 }
