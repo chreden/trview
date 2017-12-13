@@ -106,9 +106,9 @@ namespace trview
         _host_height = height;
     }
 
-    void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height)
+    void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::XMFLOAT4 colour)
     {
-        update_matrix(context, x, y, width, height);
+        update_matrix(context, x, y, width, height, colour);
 
         context->PSSetShaderResources(0, 1, &texture.p);
         context->PSSetSamplers(0, 1, &_sampler_state.p);
@@ -132,14 +132,14 @@ namespace trview
         memset(&desc, 0, sizeof(desc));
 
         desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        desc.ByteWidth = sizeof(DirectX::XMMATRIX);
+        desc.ByteWidth = sizeof(DirectX::XMMATRIX) + sizeof(DirectX::XMFLOAT4);
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
         _device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
     }
 
-    void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height)
+    void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, DirectX::XMFLOAT4 colour)
     {
         // Need to scale the quad so that it is a certain size. Will need to know the 
         // size of the host window as well as the size that we want the texture window
@@ -154,8 +154,16 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
+        struct Data
+        {
+            DirectX::XMMATRIX matrix;
+            DirectX::XMFLOAT4 colour;
+        };
+
+        Data data { scaling, colour };
+
         context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
-        memcpy(mapped_resource.pData, &scaling, sizeof(scaling));
+        memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer, 0);
     }
 }

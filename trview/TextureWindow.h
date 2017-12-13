@@ -29,6 +29,8 @@ namespace trview
         // to apply the correct scaling.
         void set_host_size(uint32_t width, uint32_t height);
     private:
+
+        void create_bg_texture();
         void initialise_d2d();
 
         void render_text();
@@ -47,5 +49,13 @@ namespace trview
         CComPtr<ID2D1SolidColorBrush> _d2d_brush;
         CComPtr<ID3D11Texture2D> _text_texture;
         CComPtr<ID3D11ShaderResourceView> _text_resource;
+
+        // Background
+        CComPtr<ID3D11Texture2D> _bg_texture;
+        CComPtr<ID3D11ShaderResourceView> _bg_resource;
+
+        // Positioning.
+        uint32_t _x { 10u };
+        uint32_t _y { 10u };
     };
 }

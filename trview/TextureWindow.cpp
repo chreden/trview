@@ -12,6 +12,31 @@ namespace trview
         : _device(device), _sprite(std::make_unique<Sprite>(device, host_width, host_height))
     {
         initialise_d2d();
+        create_bg_texture();
+    }
+
+    void TextureWindow::create_bg_texture()
+    {
+        uint32_t pixel = 0xffffffff;
+        D3D11_SUBRESOURCE_DATA srd;
+        memset(&srd, 0, sizeof(srd));
+        srd.pSysMem = &pixel;
+        srd.SysMemPitch = sizeof(uint32_t);
+
+        D3D11_TEXTURE2D_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+        desc.Width = 1;
+        desc.Height = 1;
+        desc.MipLevels = desc.ArraySize = 1;
+        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        desc.SampleDesc.Count = 1;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.MiscFlags = 0;
+
+        _device->CreateTexture2D(&desc, &srd, &_bg_texture);
+        _device->CreateShaderResourceView(_bg_texture, nullptr, &_bg_resource);
     }
 
     void TextureWindow::initialise_d2d()
@@ -47,7 +72,7 @@ namespace trview
             L"en-us",
             &_text_format);
 
-        _text_format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+        _text_format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
         _text_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
         CComPtr<IDXGISurface> surface;
@@ -77,8 +102,9 @@ namespace trview
     {
         if (!_level_textures.empty())
         {
-            _sprite->render(context, _level_textures[_texture_index], 0, 0, 256, 256);
-            _sprite->render(context, _text_resource, 0, 256, 256, 256);
+            _sprite->render(context, _bg_resource, _x, _y, 260, 300, DirectX::XMFLOAT4(0,0,0,1));
+            _sprite->render(context, _level_textures[_texture_index], _x + 2, _y + 2, 256, 256);
+            _sprite->render(context, _text_resource, _x + 2, _y + 258, 256, 256);
         }
     }
 
@@ -96,9 +122,9 @@ namespace trview
     {
         // draw some text?
         std::wstringstream stream;
-        stream << _texture_index + 1 << L"/" << _level_textures.size();
+        stream << L"Texture " << _texture_index + 1 << L"/" << _level_textures.size();
         std::wstring message = stream.str();
-        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 100, 100);
+        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 256, 100);
 
         _d2d_rt->BeginDraw();
         _d2d_rt->SetTransform(D2D1::IdentityMatrix());
