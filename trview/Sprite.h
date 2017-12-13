@@ -15,7 +15,9 @@ namespace trview
 
         void set_host_size(uint32_t width, uint32_t height);
     private:
-        void create_scaling_matrix();
+        void create_matrix();
+
+        void update_matrix(CComPtr<ID3D11DeviceContext> context);
 
         CComPtr<ID3D11Device>       _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;

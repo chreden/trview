@@ -97,18 +97,19 @@ namespace trview
         // Create the texture sampler state.
         device->CreateSamplerState(&desc, &_sampler_state); 
 
-        create_scaling_matrix();
+        create_matrix();
     }
 
     void Sprite::set_host_size(uint32_t width, uint32_t height)
     {
         _host_width = width;
         _host_height = height;
-        create_scaling_matrix();
     }
 
     void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture)
     {
+        update_matrix(context);
+
         context->PSSetShaderResources(0, 1, &texture.p);
         context->PSSetSamplers(0, 1, &_sampler_state.p);
 
@@ -125,7 +126,20 @@ namespace trview
         context->DrawIndexed(4, 0, 0);
     }
 
-    void Sprite::create_scaling_matrix()
+    void Sprite::create_matrix()
+    {
+        D3D11_BUFFER_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+
+        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        desc.ByteWidth = sizeof(DirectX::XMMATRIX);
+        desc.Usage = D3D11_USAGE_DYNAMIC;
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+        _device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
+    }
+
+    void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context)
     {
         // Need to scale the quad so that it is a certain size. Will need to know the 
         // size of the host window as well as the size that we want the texture window
@@ -144,19 +158,11 @@ namespace trview
 
         scaling *= translation;
 
-        D3D11_BUFFER_DESC desc;
-        memset(&desc, 0, sizeof(desc));
+        D3D11_MAPPED_SUBRESOURCE mapped_resource;
+        memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        desc.ByteWidth = sizeof(DirectX::XMMATRIX);
-        desc.Usage = D3D11_USAGE_IMMUTABLE;
-
-        D3D11_SUBRESOURCE_DATA data;
-        memset(&data, 0, sizeof(data));
-
-        data.pSysMem = &scaling;
-        data.SysMemPitch = sizeof(scaling);
-
-        _device->CreateBuffer(&desc, &data, &_matrix_buffer);
+        context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        memcpy(mapped_resource.pData, &scaling, sizeof(scaling));
+        context->Unmap(_matrix_buffer, 0);
     }
 }
