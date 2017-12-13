@@ -4,6 +4,8 @@
 
 #include <DirectXMath.h>
 
+#include <sstream>
+
 namespace trview
 {
     namespace
@@ -155,6 +157,7 @@ namespace trview
     {
         _texture_index = 0u;
         _level_textures = textures;
+        render_text();
     }
 
     void TextureWindow::render(CComPtr<ID3D11DeviceContext> context)
@@ -176,26 +179,7 @@ namespace trview
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
             context->DrawIndexed(4, 0, 0);
 
-            // draw some text?
-            std::wstring message = L"Please kill me";
-            D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 100, 100);
-
-            _d2d_rt->BeginDraw();
-            _d2d_rt->SetTransform(D2D1::IdentityMatrix());
-            _d2d_rt->Clear(D2D1::ColorF(D2D1::ColorF(0, 0, 0, 0)));
-            _d2d_rt->DrawText(
-                message.c_str(),        // The string to render.
-                message.size(),    // The string's length.
-                _text_format,    // The text format.
-                layoutRect,       // The region of the window where the text will be rendered.
-                _d2d_brush     // The brush used to draw the text.
-            );
-            _d2d_rt->EndDraw();
-
-            CComPtr<ID3D11ShaderResourceView> srv;
-            _device->CreateShaderResourceView(_text_texture, nullptr, &srv);
-
-            context->PSSetShaderResources(0, 1, &srv.p);
+            context->PSSetShaderResources(0, 1, &_text_resource.p);
             context->DrawIndexed(4, 0, 0);
         }
     }
@@ -207,6 +191,30 @@ namespace trview
         {
             _texture_index = 0;
         }
+        render_text();
+    }
+
+    void TextureWindow::render_text()
+    {
+        // draw some text?
+        std::wstringstream stream;
+        stream << _texture_index + 1 << L"/" << _level_textures.size();
+        std::wstring message = stream.str();
+        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 100, 100);
+
+        _d2d_rt->BeginDraw();
+        _d2d_rt->SetTransform(D2D1::IdentityMatrix());
+        _d2d_rt->Clear(D2D1::ColorF(D2D1::ColorF(0, 0, 0, 0)));
+        _d2d_rt->DrawText(
+            message.c_str(),        // The string to render.
+            message.size(),    // The string's length.
+            _text_format,    // The text format.
+            layoutRect,       // The region of the window where the text will be rendered.
+            _d2d_brush     // The brush used to draw the text.
+        );
+        _d2d_rt->EndDraw();
+
+        _device->CreateShaderResourceView(_text_texture, nullptr, &_text_resource);
     }
 
     void TextureWindow::set_host_size(uint32_t width, uint32_t height)

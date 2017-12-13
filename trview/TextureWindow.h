@@ -30,6 +30,8 @@ namespace trview
 
         void initialise_d2d();
 
+        void render_text();
+
         CComPtr<ID3D11Device> _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader> _pixel_shader;
@@ -52,5 +54,6 @@ namespace trview
         CComPtr<ID2D1RenderTarget> _d2d_rt;
         CComPtr<ID2D1SolidColorBrush> _d2d_brush;
         CComPtr<ID3D11Texture2D> _text_texture;
+        CComPtr<ID3D11ShaderResourceView> _text_resource;
     };
 }
