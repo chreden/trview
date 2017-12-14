@@ -23,7 +23,7 @@
     <ProjectGuid>{8406D3CD-8C08-45C2-AF2C-844014A687A1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>trview</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -147,20 +147,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="FontFactory.h" />
+    <ClInclude Include="FontTexture.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomInfo.h" />
+    <ClInclude Include="RoomWindow.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureWindow.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="FontFactory.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomWindow.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

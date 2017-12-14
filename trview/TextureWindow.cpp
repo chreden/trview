@@ -8,90 +8,41 @@
 
 namespace trview
 {
-    TextureWindow::TextureWindow(CComPtr<ID3D11Device> device, uint32_t host_width, uint32_t host_height)
-        : _device(device), _sprite(std::make_unique<Sprite>(device, host_width, host_height))
+    TextureWindow::TextureWindow(CComPtr<ID3D11Device> device, FontFactory& font_factory, uint32_t host_width, uint32_t host_height)
+        : _device(device), _sprite(std::make_unique<Sprite>(device, host_width, host_height)),
+        _font(font_factory.create_font(device, L"Arial"))
     {
-        initialise_d2d();
         create_bg_texture();
+        _text_texture = _font->create_texture(_bg_texture);
     }
 
     void TextureWindow::create_bg_texture()
     {
-        uint32_t pixel = 0xffffffff;
+        std::vector<uint32_t> pixels(260 * 300, 0xFF000000);
+
         D3D11_SUBRESOURCE_DATA srd;
         memset(&srd, 0, sizeof(srd));
-        srd.pSysMem = &pixel;
-        srd.SysMemPitch = sizeof(uint32_t);
+        srd.pSysMem = &pixels[0];
+        srd.SysMemPitch = sizeof(uint32_t) * 260;
 
         D3D11_TEXTURE2D_DESC desc;
         memset(&desc, 0, sizeof(desc));
-        desc.Width = 1;
-        desc.Height = 1;
+        desc.Width = 260;
+        desc.Height = 300;
         desc.MipLevels = desc.ArraySize = 1;
         desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         desc.SampleDesc.Count = 1;
-        desc.Usage = D3D11_USAGE_DYNAMIC;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-        desc.MiscFlags = 0;
-
-        _device->CreateTexture2D(&desc, &srd, &_bg_texture);
-        _device->CreateShaderResourceView(_bg_texture, nullptr, &_bg_resource);
-    }
-
-    void TextureWindow::initialise_d2d()
-    {
-        // Texture to render text to.
-        D3D11_TEXTURE2D_DESC desc;
-        desc.ArraySize = 1;
-        desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-        desc.Height = 512;
-        desc.Width = 512;
-        desc.MipLevels = 1;
-        desc.MiscFlags = 0;
-        desc.SampleDesc.Count = 1;
-        desc.SampleDesc.Quality = 0;
         desc.Usage = D3D11_USAGE_DEFAULT;
-        _device->CreateTexture2D(&desc, nullptr, &_text_texture);
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
 
-        D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_d2d_factory);
-        
-        DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, 
-            __uuidof(IDWriteFactory), 
-            reinterpret_cast<IUnknown**>(&_dwrite_factory));
-
-        _dwrite_factory->CreateTextFormat(
-            L"Arial",
-            nullptr,
-            DWRITE_FONT_WEIGHT_REGULAR,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_FONT_STRETCH_NORMAL,
-            32.0f,
-            L"en-us",
-            &_text_format);
-
-        _text_format->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
-        _text_format->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-
-        CComPtr<IDXGISurface> surface;
-        _text_texture->QueryInterface(&surface);
-
-        D2D1_RENDER_TARGET_PROPERTIES props =
-            D2D1::RenderTargetProperties(
-                D2D1_RENDER_TARGET_TYPE_DEFAULT,
-                D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-                96,
-                96
-            );
-
-        HRESULT hr = _d2d_factory->CreateDxgiSurfaceRenderTarget(surface, &props, &_d2d_rt);
-
-        _d2d_rt->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &_d2d_brush);
+        _device->CreateTexture2D(&desc, &srd, &_bg_texture.texture);
+        _device->CreateShaderResourceView(_bg_texture.texture, nullptr, &_bg_texture.view);
+        _device->CreateRenderTargetView(_bg_texture.texture, nullptr, &_render_target_view);
     }
 
-    void TextureWindow::set_textures(std::vector<CComPtr<ID3D11ShaderResourceView>> textures)
+    void TextureWindow::set_textures(std::vector<Texture> textures)
     {
         _texture_index = 0u;
         _level_textures = textures;
@@ -100,45 +51,61 @@ namespace trview
 
     void TextureWindow::render(CComPtr<ID3D11DeviceContext> context)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         if (!_level_textures.empty())
         {
-            _sprite->render(context, _bg_resource, _x, _y, 260, 300, DirectX::XMFLOAT4(0,0,0,1));
-            _sprite->render(context, _level_textures[_texture_index], _x + 2, _y + 2, 256, 256);
-            _sprite->render(context, _text_resource, _x + 2, _y + 258, 256, 256);
+            // Only re-render the background texture if the selected texture has changed
+            // and the text needs to be updated.
+            if (_update_texture)
+            {
+                float colours[4] = { 0.0f, 0.0f, 0.0f, 1.f };
+                context->ClearRenderTargetView(_render_target_view, colours);
+                render_text();
+                _update_texture = false;
+            }
+
+            _sprite->render(context, _bg_texture.view, _x, _y, 260, 300);
+            _sprite->render(context, _level_textures[_texture_index].view, _x + 2, _y + 2, 256, 256);
         }
     }
 
     void TextureWindow::cycle()
     {
-        ++_texture_index;
-        if (_texture_index >= _level_textures.size())
+        if (_visible)
         {
-            _texture_index = 0;
+            ++_texture_index;
+            if (_texture_index >= _level_textures.size())
+            {
+                _texture_index = 0;
+            }
+            _update_texture = true;
         }
-        render_text();
     }
 
     void TextureWindow::render_text()
     {
-        // draw some text?
         std::wstringstream stream;
         stream << L"Texture " << _texture_index + 1 << L"/" << _level_textures.size();
         std::wstring message = stream.str();
-        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 256, 100);
-
-        _d2d_rt->BeginDraw();
-        _d2d_rt->SetTransform(D2D1::IdentityMatrix());
-        _d2d_rt->Clear(D2D1::ColorF(D2D1::ColorF(0, 0, 0, 0)));
-        _d2d_rt->DrawText(message.c_str(), message.size(), _text_format, layoutRect, _d2d_brush);
-        _d2d_rt->EndDraw();
-
-        CComPtr<ID3D11ShaderResourceView> text_resource_view;
-        _device->CreateShaderResourceView(_text_texture, nullptr, &text_resource_view);
-        _text_resource = text_resource_view;
+        _font->render(_text_texture, stream.str(), 0, 260);
     }
 
     void TextureWindow::set_host_size(uint32_t width, uint32_t height)
     {
         _sprite->set_host_size(width, height);
+    }
+
+    void TextureWindow::toggle_visibility()
+    {
+        _visible = !_visible;
+    }
+
+    bool TextureWindow::visible() const
+    {
+        return _visible;
     }
 }

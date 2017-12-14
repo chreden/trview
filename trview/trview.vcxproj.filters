@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Program">
       <UniqueIdentifier>{ccc85673-5a75-47e9-a108-5f6c027fb645}</UniqueIdentifier>
     </Filter>
@@ -22,71 +10,124 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{94ba7176-10d8-4cf9-b2f2-e6a6d554e70a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Program\Windows">
+      <UniqueIdentifier>{d62d90a2-1cf3-46d2-9da2-e816606535dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Text">
+      <UniqueIdentifier>{caeac291-ce1a-458a-b9f6-84ac852cfce1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Win">
+      <UniqueIdentifier>{19537d19-9f7b-4110-a120-984dd4b941de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Win\Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="View">
+      <UniqueIdentifier>{80fe0e35-9ed7-4088-8057-4058bcaf4ed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="View\Room">
+      <UniqueIdentifier>{7ae20e87-1039-4dde-a495-b220a370043d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trview.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Viewer.h">
       <Filter>Program</Filter>
     </ClInclude>
     <ClInclude Include="FileLoader.h">
       <Filter>Other</Filter>
     </ClInclude>
-    <ClInclude Include="TextureWindow.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureWindow.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomWindow.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="FontFactory.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="FontTexture.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Win</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Win</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Win</Filter>
+    </ClInclude>
+    <ClInclude Include="trview.h">
+      <Filter>Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>View\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomInfo.h">
+      <Filter>View\Room</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="trview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="FileLoader.cpp">
       <Filter>Other</Filter>
     </ClCompile>
-    <ClCompile Include="TextureWindow.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureWindow.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomWindow.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Graphics\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="FontFactory.cpp">
+      <Filter>Graphics\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Win</Filter>
+    </ClCompile>
+    <ClCompile Include="trview.cpp">
+      <Filter>Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>View\Room</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>Win\Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Win\Resource Files</Filter>
     </Image>
     <Image Include="trview.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>Win\Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl" />
-    <FxCompile Include="PixelShader.hlsl" />
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Graphics</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

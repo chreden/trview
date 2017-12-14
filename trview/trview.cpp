@@ -48,22 +48,51 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TRVIEW));
 
-    MSG msg;
 
     viewer = std::make_unique<trview::Viewer>(window);
 
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+    MSG msg;
+    memset(&msg, 0, sizeof(msg));
 
-        if (msg.message == WM_KEYUP)
+    while (msg.message != WM_QUIT)
+    {
+        while(PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
         {
-            viewer->cycle();
+            if (msg.message == WM_QUIT)
+            {
+                break;
+            }
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+
+            switch (msg.message)
+            {
+                case WM_KEYUP:
+                {
+                    switch (msg.wParam)
+                    {
+                    case VK_PRIOR:
+                    case VK_NEXT:
+                        viewer->cycle();
+                        break;
+                    case VK_HOME:
+                    case VK_END:
+                        viewer->cycle_room();
+                        break;
+                    case VK_F1:
+                        viewer->toggle_room_window();
+                        break;
+                    case VK_F2:
+                        viewer->toggle_texture_window();
+                        break;
+                    }
+                    break;
+                }
+            }
         }
 
         viewer->render();
