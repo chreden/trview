@@ -16,9 +16,16 @@ namespace trview
     {
         initialise_d3d(window);
 
+        _font_factory = std::make_unique<FontFactory>();
+
         RECT client_window;
         GetClientRect(window, &client_window);
-        _texture_window = std::make_unique<TextureWindow>(_device, client_window.right - client_window.left, client_window.bottom - client_window.top);
+
+        uint32_t width = client_window.right - client_window.left;
+        uint32_t height = client_window.bottom - client_window.top;
+
+        _texture_window = std::make_unique<TextureWindow>(_device, *_font_factory, width, height);
+        _room_window = std::make_unique<RoomWindow>(_device, *_font_factory, width, height);
     }
 
     void Viewer::initialise_d3d(HWND window)
@@ -82,18 +89,16 @@ namespace trview
         _device->CreateBlendState(&desc, &_blend_state);
     }
 
-    void Viewer::open(const std::wstring filename)
+    void Viewer::generate_textures()
     {
         _level_textures.clear();
-        _current_level = trlevel::load_level(filename);
 
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < _current_level->num_textiles(); ++i)
         {
             auto t16 = _current_level->get_textile16(i);
 
-            std::vector<uint32_t> data;
-            data.resize(256 * 256, 0);
+            std::vector<uint32_t> data(256 * 256, 0u);
 
             uint32_t index = 0;
             for (auto t : t16.Tile)
@@ -123,14 +128,36 @@ namespace trview
             _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
             _level_textures.push_back(tex);
         }
+    }
 
-        // Set the textures in the viewer.
-        std::vector<CComPtr<ID3D11ShaderResourceView>> texture_views;
-        for (auto& t : _level_textures)
+    void Viewer::generate_rooms()
+    {
+        const uint16_t num_rooms = _current_level->num_rooms();
+        for (uint16_t i = 0; i < num_rooms; ++i)
         {
-            texture_views.push_back(t.view);
+            auto room = _current_level->get_room(i);
+
+            Room new_room(room.info.x, room.info.z, room.info.yBottom, room.info.yTop);
+
+            // Convert that room into a Room that we can use in the UI.
+            _level_rooms.push_back(new_room);
         }
-        _texture_window->set_textures(texture_views);
+    }
+
+    void Viewer::open(const std::wstring filename)
+    {
+        _level_textures.clear();
+        _level_rooms.clear();
+        _current_level = trlevel::load_level(filename);
+
+        generate_textures();
+
+        generate_rooms();
+
+        // Set up the views.
+        _texture_window->set_textures(_level_textures);
+
+        _room_window->set_rooms(_level_rooms);
     }
 
     void Viewer::render()
@@ -142,6 +169,7 @@ namespace trview
         _context->ClearRenderTargetView(_render_target_view, colours);
 
         _texture_window->render(_context);
+        _room_window->render(_context);
 
         _swap_chain->Present(1, 0);
     }
@@ -149,5 +177,20 @@ namespace trview
     void Viewer::cycle()
     {
         _texture_window->cycle();
+    }
+
+    void Viewer::cycle_room()
+    {
+        _room_window->cycle();
+    }
+
+    void Viewer::toggle_room_window()
+    {
+        _room_window->toggle_visibility();
+    }
+
+    void Viewer::toggle_texture_window()
+    {
+        _texture_window->toggle_visibility();
     }
 }
