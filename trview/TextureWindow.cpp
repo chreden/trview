@@ -86,6 +86,22 @@ namespace trview
         }
     }
 
+    void TextureWindow::cycle_back()
+    {
+        if (_visible)
+        {
+            if (_texture_index == 0)
+            {
+                _texture_index = _level_textures.size() - 1;
+            }
+            else
+            {
+                --_texture_index;
+            }
+            _update_texture = true;
+        }
+    }
+
     void TextureWindow::render_text()
     {
         std::wstringstream stream;

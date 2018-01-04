@@ -10,6 +10,16 @@ namespace trlevel
     {
         virtual ~ILevel() = 0;
 
+        // Get the entry from the 8 bit palette at the given index.
+        // index: The 0-255 index into the palette.
+        // Returns: The palette colour.
+        virtual tr_colour get_palette_entry(uint32_t index) const = 0 ;
+
+        // Get the entry from the 16 bit palette at the given index.
+        // index: The 0-255 index into the palette.
+        // Returns: The palette colour.
+        virtual tr_colour4 get_palette_entry_16(uint32_t index) const = 0;
+
         // Gets the number of textiles in the level.
         // Returns: The number of textiles.
         virtual uint32_t num_textiles() const = 0;
@@ -29,5 +39,14 @@ namespace trlevel
         // Get the room at the specified index.
         // Returns: The room.
         virtual tr3_room get_room(uint16_t index) const = 0;
+
+        // Get the number of object textures in the level.
+        // Returns: The number of object textures.
+        virtual uint32_t num_object_textures() const = 0;
+
+        // Get one of the object texture in the level.
+        // index: The index of the texture to get.
+        // Returns: The object texture.
+        virtual tr_object_texture get_object_texture(uint32_t index) const = 0;
     };
 }

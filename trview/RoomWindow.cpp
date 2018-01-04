@@ -57,7 +57,7 @@ namespace trview
         }
     }
 
-    void RoomWindow::set_rooms(std::vector<Room> rooms)
+    void RoomWindow::set_rooms(std::vector<RoomInfo> rooms)
     {
         _rooms = rooms;
         _room_index = 0u;
@@ -70,26 +70,35 @@ namespace trview
 
         if (!_rooms.empty())
         {
-            auto room = _rooms[_room_index];
-            auto info = room.info();
+            auto info = _rooms[_room_index];
             
             std::wstringstream stream;
-            stream << L"Room " << _room_index << L"/" << _rooms.size() << L": " << info.x / 1024 << L',' << info.z / 1024 << L'\n';
+            stream << L"Room " << _room_index << L"/" << _rooms.size() - 1 << L": " << info.x / 1024 << L',' << info.z / 1024 << L'\n';
             _font->render(_font_texture, stream.str(), 0, 30);
         }
     }
 
     void RoomWindow::cycle()
     {
-        if (_visible)
+        ++_room_index;
+        if (_room_index >= _rooms.size())
         {
-            ++_room_index;
-            if (_room_index >= _rooms.size())
-            {
-                _room_index = 0u;
-            }
-            _update_texture = true;
+            _room_index = 0u;
         }
+        _update_texture = true;
+    }
+
+    void RoomWindow::cycle_back()
+    {
+        if (_room_index == 0)
+        {
+            _room_index = _rooms.size() - 1;
+        }
+        else
+        {
+            --_room_index;
+        }
+        _update_texture = true;
     }
 
     void RoomWindow::toggle_visibility()
@@ -100,5 +109,10 @@ namespace trview
     bool RoomWindow::visible() const
     {
         return _visible;
+    }
+
+    uint32_t RoomWindow::selected_room() const
+    {
+        return _room_index;
     }
 }

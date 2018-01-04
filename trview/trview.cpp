@@ -76,10 +76,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     switch (msg.wParam)
                     {
                     case VK_PRIOR:
+                        viewer->cycle_back();
+                        break;
                     case VK_NEXT:
                         viewer->cycle();
                         break;
                     case VK_HOME:
+                        viewer->cycle_room_back();
+                        break;
                     case VK_END:
                         viewer->cycle_room();
                         break;
@@ -88,6 +92,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                         break;
                     case VK_F2:
                         viewer->toggle_texture_window();
+                        break;
+                    case VK_RETURN:
+                        viewer->toggle_highlight();
                         break;
                     }
                     break;

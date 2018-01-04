@@ -29,6 +29,9 @@
     <Filter Include="View\Room">
       <UniqueIdentifier>{7ae20e87-1039-4dde-a495-b220a370043d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{f6bf7276-a60a-4b23-bd8a-c5fbe83b236c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -76,6 +79,12 @@
     <ClInclude Include="RoomInfo.h">
       <Filter>View\Room</Filter>
     </ClInclude>
+    <ClInclude Include="RoomVertex.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -108,6 +117,9 @@
     <ClCompile Include="Room.cpp">
       <Filter>View\Room</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -123,10 +135,16 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="ui_vertex_shader.hlsl">
       <Filter>Graphics</Filter>
     </FxCompile>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="ui_pixel_shader.hlsl">
+      <Filter>Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="level_pixel_shader.hlsl">
+      <Filter>Graphics</Filter>
+    </FxCompile>
+    <FxCompile Include="level_vertex_shader.hlsl">
       <Filter>Graphics</Filter>
     </FxCompile>
   </ItemGroup>

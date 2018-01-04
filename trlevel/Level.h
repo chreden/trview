@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <array>
 #include <vector>
 
 #include "ILevel.h"
@@ -14,6 +15,16 @@ namespace trlevel
         explicit Level(std::wstring filename);
 
         virtual ~Level();
+
+        // Get the entry from the 8 bit palette at the given index.
+        // index: The 0-255 index into the palette.
+        // Returns: The palette colour.
+        virtual tr_colour get_palette_entry(uint32_t index) const override;
+
+        // Get the entry from the 16 bit palette at the given index.
+        // index: The 0-255 index into the palette.
+        // Returns: The palette colour.
+        virtual tr_colour4 get_palette_entry_16(uint32_t index) const override;
 
         // Gets the number of textiles in the level.
         // Returns: The number of textiles.
@@ -34,12 +45,25 @@ namespace trlevel
         // Get the room at the specified index.
         // Returns: The room.
         virtual tr3_room get_room(uint16_t index) const override;
+
+        // Get the number of object textures in the level.
+        // Returns: The number of object textures.
+        virtual uint32_t num_object_textures() const override;
+
+        // Get one of the object texture in the level.
+        // index: The index of the texture to get.
+        // Returns: The object texture.
+        virtual tr_object_texture get_object_texture(uint32_t index) const override;
     private:
+        std::vector<tr_colour>  _palette;
+        std::vector<tr_colour4> _palette16;
+
         uint32_t                  _num_textiles;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
 
-        uint16_t                  _num_rooms;
-        std::vector<tr3_room>     _rooms;
+        uint16_t                       _num_rooms;
+        std::vector<tr3_room>          _rooms;
+        std::vector<tr_object_texture> _object_textures;
     };
 }
