@@ -26,6 +26,7 @@ namespace trview
 
         // Cycle through the textures in the level.
         void cycle();
+        void cycle_back();
 
         // Set the size of the host window. This allows the texture window
         // to apply the correct scaling.

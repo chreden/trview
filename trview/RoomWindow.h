@@ -22,13 +22,17 @@ namespace trview
 
         void render(CComPtr<ID3D11DeviceContext> context);
 
-        void set_rooms(std::vector<Room> rooms);
+        void set_rooms(std::vector<RoomInfo> rooms);
 
         void toggle_visibility();
 
         void cycle();
 
+        void cycle_back();
+
         bool visible() const;
+
+        uint32_t selected_room() const;
     private:
         void create_bg_texture();
 
@@ -44,7 +48,7 @@ namespace trview
 
         bool                    _visible{ true };
 
-        std::vector<Room>       _rooms;
+        std::vector<RoomInfo>   _rooms;
         uint32_t                _room_index{ 0u };
     };
 }
