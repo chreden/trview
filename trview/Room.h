@@ -10,8 +10,8 @@
 #include "RoomInfo.h"
 #include "Texture.h"
 
-#include "../trlevel/trtypes.h"
-#include "../trlevel/ILevel.h"
+#include <trlevel/trtypes.h>
+#include <trlevel/ILevel.h>
 
 namespace trview
 {
