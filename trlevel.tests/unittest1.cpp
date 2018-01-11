@@ -3,7 +3,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-#include "..\trlevel\trlevel.h"
+#include <trlevel/trlevel.h>
 
 namespace trleveltests
 {

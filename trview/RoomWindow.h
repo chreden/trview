@@ -11,7 +11,7 @@
 #include "FontFactory.h"
 #include "Room.h"
 
-#include "..\trlevel\trtypes.h"
+#include <trlevel/trtypes.h>
 
 namespace trview
 {

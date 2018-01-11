@@ -9,7 +9,7 @@
 #include <string>
 #include <memory>
 
-#include "..\trlevel\ILevel.h"
+#include <trlevel/ILevel.h>
 
 #include "Texture.h"
 #include "Room.h"
