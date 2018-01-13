@@ -85,6 +85,12 @@
     <ClInclude Include="Timer.h">
       <Filter>Timer</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -120,6 +126,12 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Timer</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -147,5 +159,8 @@
     <FxCompile Include="level_vertex_shader.hlsl">
       <Filter>Graphics</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Controls.txt" />
   </ItemGroup>
 </Project>

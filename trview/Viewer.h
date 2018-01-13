@@ -19,18 +19,29 @@
 
 #include "FontFactory.h"
 #include "Timer.h"
+#include "Camera.h"
+#include "Window.h"
+
+#include <trview.input/Keyboard.h>
+#include <trview.input/Mouse.h>
 
 namespace trview
 {
     class Viewer
     {
     public:
-        explicit Viewer(HWND window);
+        explicit Viewer(Window window);
 
         void render();
 
         void open(const std::wstring filename);
 
+        void on_char(uint16_t character);
+        void on_key_down(uint16_t key);
+        void on_key_up(uint16_t key);
+        void on_input(const RAWINPUT& input);
+
+        // Old ways of doing things - will be mapped.
         void toggle_room_window();
         void toggle_texture_window();
 
@@ -40,7 +51,11 @@ namespace trview
         void cycle_room_back();
         void toggle_highlight();
     private:
-        void initialise_d3d(HWND window);
+        void initialise_d3d();
+        void initialise_input();
+        void process_input_key(uint16_t key);
+
+        void update_camera();
 
         // Generate the textures that will be used to render the level based on the
         // textiles loaded in the level.
@@ -50,8 +65,6 @@ namespace trview
         void render_scene();
         // Draw the user interface elements of the scene.
         void render_ui();
-        // Update the size of the window so the renderer can have the correct perspective.
-        void recalculate_size();
 
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
@@ -73,9 +86,7 @@ namespace trview
         std::vector<Texture> _level_textures;
         std::vector<std::unique_ptr<Room>> _level_rooms;
 
-        HWND     _window;
-        uint32_t _width;
-        uint32_t _height;
+        Window _window;
 
         CComPtr<ID3D11VertexShader> _vertex_shader;
         CComPtr<ID3D11PixelShader>  _pixel_shader;
@@ -84,6 +95,14 @@ namespace trview
 
         Timer _timer;
         bool _highlight{ false };
+
+        
+        Camera _camera;
+        input::Keyboard _keyboard;
+        input::Mouse _mouse;
+
+        // Camera rotation variables - eventually to be moved to a camera class.
+        bool _rotating{ false };
     };
 }
 
