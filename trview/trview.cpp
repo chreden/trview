@@ -71,32 +71,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
             switch (msg.message)
             {
+                case WM_KEYDOWN:
+                {
+                    viewer->on_key_down(static_cast<uint16_t>(msg.wParam));
+                    break;
+                }
+                case WM_CHAR:
+                {
+                    viewer->on_char(static_cast<uint16_t>(msg.wParam));
+                    break;
+                }
                 case WM_KEYUP:
                 {
-                    switch (msg.wParam)
-                    {
-                    case VK_PRIOR:
-                        viewer->cycle_back();
-                        break;
-                    case VK_NEXT:
-                        viewer->cycle();
-                        break;
-                    case VK_HOME:
-                        viewer->cycle_room_back();
-                        break;
-                    case VK_END:
-                        viewer->cycle_room();
-                        break;
-                    case VK_F1:
-                        viewer->toggle_room_window();
-                        break;
-                    case VK_F2:
-                        viewer->toggle_texture_window();
-                        break;
-                    case VK_RETURN:
-                        viewer->toggle_highlight();
-                        break;
-                    }
+                    viewer->on_key_up(static_cast<uint16_t>(msg.wParam));
+                    break;
+                }
+                case WM_INPUT:
+                {
+                    HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(msg.lParam);
+
+                    uint32_t size = 0;
+                    GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
+
+                    std::vector<uint8_t> data_buffer(size);
+                    GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
+
+                    RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
+                    
+                    viewer->on_input(data);
                     break;
                 }
             }

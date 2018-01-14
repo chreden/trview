@@ -17,31 +17,30 @@
 
 namespace trview
 {
-    Viewer::Viewer(HWND window)
-        : _window(window)
+    Viewer::Viewer(Window window)
+        : _window(window), _camera(window.width(), window.height())
     {
-        recalculate_size();
-
-        initialise_d3d(window);
+        initialise_d3d();
+        initialise_input();
 
         _font_factory = std::make_unique<FontFactory>();
 
-        _texture_window = std::make_unique<TextureWindow>(_device, *_font_factory, _width, _height);
-        _room_window = std::make_unique<RoomWindow>(_device, *_font_factory, _width, _height);
+        _texture_window = std::make_unique<TextureWindow>(_device, *_font_factory, window.width(), window.height());
+        _room_window = std::make_unique<RoomWindow>(_device, *_font_factory, window.width(), window.height());
     }
 
-    void Viewer::initialise_d3d(HWND window)
+    void Viewer::initialise_d3d()
     {
         // Swap chain description.
         DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
         swap_chain_desc.BufferCount = 1;
         swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        swap_chain_desc.BufferDesc.Height = _height;
-        swap_chain_desc.BufferDesc.Width = _width;
+        swap_chain_desc.BufferDesc.Height = _window.height();
+        swap_chain_desc.BufferDesc.Width = _window.width();
         swap_chain_desc.BufferDesc.RefreshRate.Numerator = 1;
         swap_chain_desc.BufferDesc.RefreshRate.Denominator = 60;
         swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swap_chain_desc.OutputWindow = window;
+        swap_chain_desc.OutputWindow = _window.window();
         swap_chain_desc.Windowed = TRUE;
         swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
         swap_chain_desc.SampleDesc.Count = 1;
@@ -67,8 +66,8 @@ namespace trview
         _device->CreateRenderTargetView(back_buffer, nullptr, &_render_target_view);
 
         D3D11_VIEWPORT viewport;
-        viewport.Width = static_cast<float>(_width);
-        viewport.Height = static_cast<float>(_height);
+        viewport.Width = static_cast<float>(_window.width());
+        viewport.Height = static_cast<float>(_window.height());
         viewport.MaxDepth = 1;
         viewport.MinDepth = 0;
         viewport.TopLeftX = 0;
@@ -92,8 +91,8 @@ namespace trview
         memset(&depthBufferDesc, 0, sizeof(depthBufferDesc));
 
         // Set up the description of the depth buffer.
-        depthBufferDesc.Width = _width;
-        depthBufferDesc.Height = _height;
+        depthBufferDesc.Width = _window.width();
+        depthBufferDesc.Height = _window.height();
         depthBufferDesc.MipLevels = 1;
         depthBufferDesc.ArraySize = 1;
         depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -222,6 +221,82 @@ namespace trview
         _device->CreateSamplerState(&sampler_desc, &_sampler_state);
     }
 
+    void Viewer::initialise_input()
+    {
+        _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
+
+        using namespace input;
+        _mouse.mouse_down += [&](Mouse::Button button)
+        {
+            if (button == Mouse::Button::Right)
+            {
+                _rotating = true;
+            }
+        };
+
+        _mouse.mouse_up += [&](Mouse::Button button)
+        {
+            if (button == Mouse::Button::Right)
+            {
+                _rotating = false;
+            }
+        };
+
+        _mouse.mouse_move += [&](long x, long y)
+        {
+            if (_rotating)
+            {
+                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / 25.0f);
+                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / 25.0f);
+            }
+        };
+
+        _mouse.mouse_wheel += [&](int16_t scroll)
+        {
+            _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
+        };
+    }
+
+    void Viewer::process_input_key(uint16_t key)
+    {
+        switch (key)
+        {
+        case VK_PRIOR:
+            cycle_back();
+            break;
+        case VK_NEXT:
+            cycle();
+            break;
+        case VK_HOME:
+            cycle_room_back();
+            break;
+        case VK_END:
+            cycle_room();
+            break;
+        case VK_F1:
+            toggle_room_window();
+            break;
+        case VK_F2:
+            toggle_texture_window();
+            break;
+        case VK_RETURN:
+            toggle_highlight();
+            break;
+        case VK_INSERT:
+            {
+                // Reset the camera to defaults.
+                _camera.set_rotation_yaw(0.f);
+                _camera.set_rotation_pitch(0.78539f);
+                _camera.set_zoom(8.f);
+                break;
+            }
+        }
+    }
+
+    void Viewer::update_camera()
+    {
+    }
+
     void Viewer::generate_textures()
     {
         _level_textures.clear();
@@ -296,9 +371,31 @@ namespace trview
         _room_window->set_rooms(room_infos);
     }
 
+    void Viewer::on_char(uint16_t character)
+    {
+        _keyboard.on_char(character);
+    }
+
+    void Viewer::on_key_down(uint16_t key)
+    {
+        _keyboard.on_key_down(key);
+    }
+
+    void Viewer::on_key_up(uint16_t key)
+    {
+        _keyboard.on_key_up(key);
+    }
+
+    void Viewer::on_input(const RAWINPUT& input)
+    {
+        _mouse.process_input(input);
+    }
+
     void Viewer::render()
     {
         _timer.update();
+
+        update_camera();
 
         _context->OMSetRenderTargets(1, &_render_target_view.p, _depth_stencil_view);
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
@@ -329,20 +426,10 @@ namespace trview
             (room.info.x / 1024.f) + room.num_x_sectors / 2.f, 
             (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
             (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
-        XMVECTOR eye_position = XMVectorSet(0, 8, -15, 0);
 
-        static float x = 0;
-        x += 1.0f * _timer.elapsed();
+        _camera.set_target(target_position);
 
-        auto rotate = XMMatrixRotationY(x);
-        eye_position = XMVector3TransformCoord(eye_position, rotate) + target_position;
-
-        XMVECTOR up_vector = XMVectorSet(0, 1, 0, 1);
-        auto view = XMMatrixLookAtLH(eye_position, target_position, up_vector);
-
-        float aspect_ratio = static_cast<float>(_width) / static_cast<float>(_height);
-        auto projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 1.0f, 10000.0f);
-        auto view_projection = view * projection;
+        auto view_projection = _camera.view_projection();
 
         _context->PSSetSamplers(0, 1, &_sampler_state.p);
         _context->IASetInputLayout(_input_layout);
@@ -362,14 +449,6 @@ namespace trview
         _context->OMSetDepthStencilState(_ui_depth_stencil_state, 1);
         _texture_window->render(_context);
         _room_window->render(_context);
-    }
-
-    void Viewer::recalculate_size()
-    {
-        RECT rectangle;
-        GetClientRect(_window, &rectangle);
-        _width = rectangle.right - rectangle.left;
-        _height = rectangle.bottom - rectangle.top;
     }
 
     void Viewer::cycle()

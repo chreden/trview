@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
@@ -168,8 +169,10 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="Viewer.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
@@ -186,6 +189,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="trview.cpp" />
     <ClCompile Include="Viewer.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc" />
@@ -197,6 +201,9 @@
   <ItemGroup>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.input\trview.input.vcxproj">
+      <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +231,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Controls.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

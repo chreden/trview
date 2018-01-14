@@ -1,0 +1,13 @@
+F1 = Toggle room window
+F2 = Toggle texture window
+END = Next room
+HOME = Previous room
+PAGE UP = Previous texture
+PAGE DOWN = Next texture
+ENTER = Toggle room highlighting
+INSERT = Reset camera
+
+HOLD Right mouse button + move mouse: Rotate camera
+Mouse Scroll : Zoom in/out
+
+
