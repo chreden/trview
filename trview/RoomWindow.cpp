@@ -115,4 +115,13 @@ namespace trview
     {
         return _room_index;
     }
+    
+    void RoomWindow::select_room(uint32_t room)
+    {
+        if (_room_index < _rooms.size())
+        {
+            _room_index = room;
+            _update_texture = true;
+        }
+    }
 }

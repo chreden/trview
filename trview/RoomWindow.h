@@ -33,6 +33,8 @@ namespace trview
         bool visible() const;
 
         uint32_t selected_room() const;
+
+        void select_room(uint32_t room);
     private:
         void create_bg_texture();
 

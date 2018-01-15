@@ -10,4 +10,7 @@ INSERT = Reset camera
 HOLD Right mouse button + move mouse: Rotate camera
 Mouse Scroll : Zoom in/out
 
+CTRL + R = Show 'go to room' box
 
+==== Go To Room ==== 
+Enter the room number - press enter to go to the room, escape to cancel.

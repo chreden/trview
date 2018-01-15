@@ -16,6 +16,7 @@
 
 #include "TextureWindow.h"
 #include "RoomWindow.h"
+#include "GoToRoom.h"
 
 #include "FontFactory.h"
 #include "Timer.h"
@@ -54,6 +55,7 @@ namespace trview
         void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
+        void process_char(uint16_t character);
 
         void update_camera();
 
@@ -103,6 +105,9 @@ namespace trview
 
         // Camera rotation variables - eventually to be moved to a camera class.
         bool _rotating{ false };
+
+        // Room navigator code.
+        std::unique_ptr<GoToRoom> _go_to_room;
     };
 }
 

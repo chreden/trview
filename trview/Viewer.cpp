@@ -5,15 +5,11 @@
 #include "FileLoader.h"
 
 #include <vector>
-#include <sstream>
 #include <string>
-#include <fstream>
 
-#include <wincodec.h>
 #include <d3dcompiler.h>
 
 #include <directxmath.h>
-#include <array>
 
 namespace trview
 {
@@ -27,6 +23,15 @@ namespace trview
 
         _texture_window = std::make_unique<TextureWindow>(_device, *_font_factory, window.width(), window.height());
         _room_window = std::make_unique<RoomWindow>(_device, *_font_factory, window.width(), window.height());
+        _go_to_room = std::make_unique<GoToRoom>(_device, *_font_factory, window.width(), window.height());
+
+        _go_to_room->room_selected += [&](uint32_t room)
+        {
+            if (_current_level && room < _current_level->num_rooms())
+            {
+                _room_window->select_room(room);
+            }
+        };
     }
 
     void Viewer::initialise_d3d()
@@ -224,6 +229,7 @@ namespace trview
     void Viewer::initialise_input()
     {
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
+        _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
         using namespace input;
         _mouse.mouse_down += [&](Mouse::Button button)
@@ -259,30 +265,49 @@ namespace trview
 
     void Viewer::process_input_key(uint16_t key)
     {
-        switch (key)
+        if (_go_to_room->visible())
         {
-        case VK_PRIOR:
-            cycle_back();
-            break;
-        case VK_NEXT:
-            cycle();
-            break;
-        case VK_HOME:
-            cycle_room_back();
-            break;
-        case VK_END:
-            cycle_room();
-            break;
-        case VK_F1:
-            toggle_room_window();
-            break;
-        case VK_F2:
-            toggle_texture_window();
-            break;
-        case VK_RETURN:
-            toggle_highlight();
-            break;
-        case VK_INSERT:
+            if (key == 'R' && _keyboard.control())
+            {
+                _go_to_room->toggle_visible();
+            }
+            else
+            {
+                _go_to_room->input(key);
+            }
+        }
+        else
+        {
+            switch (key)
+            {
+            case 'R':
+                if (_keyboard.control())
+                {
+                    _go_to_room->toggle_visible();
+                }
+                break;
+            case VK_PRIOR:
+                cycle_back();
+                break;
+            case VK_NEXT:
+                cycle();
+                break;
+            case VK_HOME:
+                cycle_room_back();
+                break;
+            case VK_END:
+                cycle_room();
+                break;
+            case VK_F1:
+                toggle_room_window();
+                break;
+            case VK_F2:
+                toggle_texture_window();
+                break;
+            case VK_RETURN:
+                toggle_highlight();
+                break;
+            case VK_INSERT:
             {
                 // Reset the camera to defaults.
                 _camera.set_rotation_yaw(0.f);
@@ -290,6 +315,15 @@ namespace trview
                 _camera.set_zoom(8.f);
                 break;
             }
+            }
+        }
+    }
+
+    void Viewer::process_char(uint16_t character)
+    {
+        if (_go_to_room->visible())
+        {
+            _go_to_room->character(character);
         }
     }
 
@@ -373,16 +407,19 @@ namespace trview
 
     void Viewer::on_char(uint16_t character)
     {
+        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_char(character);
     }
 
     void Viewer::on_key_down(uint16_t key)
     {
+        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_down(key);
     }
 
     void Viewer::on_key_up(uint16_t key)
     {
+        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_up(key);
     }
 
@@ -449,6 +486,7 @@ namespace trview
         _context->OMSetDepthStencilState(_ui_depth_stencil_state, 1);
         _texture_window->render(_context);
         _room_window->render(_context);
+        _go_to_room->render(_context);
     }
 
     void Viewer::cycle()

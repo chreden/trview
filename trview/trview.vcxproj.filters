@@ -91,6 +91,12 @@
     <ClInclude Include="Window.h">
       <Filter>Program</Filter>
     </ClInclude>
+    <ClInclude Include="RoomNavigator.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToRoom.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -131,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomNavigator.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="GoToRoom.cpp">
+      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
