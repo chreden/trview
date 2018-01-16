@@ -24,7 +24,7 @@ namespace trview
         FontTexture create_texture();
 
         // Render the text to the specified texture.
-        void render(FontTexture& texture, const std::wstring& text, float x, float y);
+        void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);
     private:
         CComPtr<ID3D11Device>      _device;
         CComPtr<ID2D1Factory>      _d2d_factory;

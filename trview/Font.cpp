@@ -67,9 +67,9 @@ namespace trview
         return new_texture;
     }
 
-    void Font::render(FontTexture& texture, const std::wstring& text, float x, float y)
+    void Font::render(FontTexture& texture, const std::wstring& text, float x, float y, float width, float height)
     {
-        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, 256, 256);
+        D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, width, height);
 
         texture.render_target->BeginDraw();
         texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));

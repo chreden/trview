@@ -35,5 +35,15 @@ namespace trview
         {
             _char_listeners.push_back(key);
         }
+
+        bool Keyboard::control() const
+        {
+            return _control;
+        }
+
+        void Keyboard::set_control(bool value)
+        {
+            _control = value;
+        }
     }
 }

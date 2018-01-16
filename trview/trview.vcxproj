@@ -156,9 +156,11 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
     <ClInclude Include="FontTexture.h" />
+    <ClInclude Include="GoToRoom.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
+    <ClInclude Include="RoomNavigator.h" />
     <ClInclude Include="RoomVertex.h" />
     <ClInclude Include="RoomWindow.h" />
     <ClInclude Include="Sprite.h" />
@@ -176,7 +178,9 @@
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
+    <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomNavigator.cpp" />
     <ClCompile Include="RoomWindow.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
