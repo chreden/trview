@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="WindowNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetStore.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="LabelNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="FontFactory.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="FontTexture.h">
+      <Filter>Graphics\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="WindowNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetStore.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="LabelNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Graphics\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="FontFactory.cpp">
+      <Filter>Graphics\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ui_pixel_shader.hlsl" />
+    <FxCompile Include="ui_vertex_shader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Nodes">
+      <UniqueIdentifier>{58873368-7ee2-434d-94c9-81fbc1c828a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{16e85992-daac-4dd6-ae00-c758bc7475d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{a4d98d00-a685-475a-b9de-eef4d7fc33bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Text">
+      <UniqueIdentifier>{58374a2f-5a73-4ed3-a3d0-55d06ac980b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

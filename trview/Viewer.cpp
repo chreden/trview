@@ -2,14 +2,17 @@
 #include "Viewer.h"
 #include <trlevel/trlevel.h>
 
-#include "FileLoader.h"
+#include <trview.common/FileLoader.h>
 
 #include <vector>
 #include <string>
-
+#include <sstream>
 #include <d3dcompiler.h>
-
 #include <directxmath.h>
+
+#include <trview.ui/Window.h>
+#include <trview.ui/Label.h>
+#include <trview.ui/Button.h>
 
 namespace trview
 {
@@ -19,12 +22,55 @@ namespace trview
         initialise_d3d();
         initialise_input();
 
-        _font_factory = std::make_unique<FontFactory>();
+        _font_factory = std::make_unique<ui::render::FontFactory>();
 
-        _texture_window = std::make_unique<TextureWindow>(_device, *_font_factory, window.width(), window.height());
-        _room_window = std::make_unique<RoomWindow>(_device, *_font_factory, window.width(), window.height());
-        _go_to_room = std::make_unique<GoToRoom>(_device, *_font_factory, window.width(), window.height());
+        generate_ui();
+    }
 
+    void Viewer::generate_ui()
+    {
+        // Create the user interface window. At the moment this is going to be a bar on the side, 
+        // but this can change over time. For now make a really boring gray window.
+        _control =
+            std::make_unique<ui::Window>(
+                ui::Point(0, 0),
+                ui::Size(_window.width(), _window.height()),
+                ui::Colour(0.f, 0.f, 0.f, 0.f));
+
+        // This is the main tool window on the side of the screen.
+        auto tool_window = std::make_unique<ui::Window>(
+            ui::Point(0, 0),
+            ui::Size(100.0f, 50.f),
+            ui::Colour(1.f, 0.5f, 0.5f, 0.5f));
+
+        auto room_highlight = std::make_unique<ui::Button>(
+            ui::Point(10, 10),
+            ui::Size(32, 32),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00));
+
+        room_highlight->on_click += [&]() { toggle_highlight(); };
+
+        auto room_neighbours = std::make_unique<ui::Button>(
+            ui::Point(47, 10),
+            ui::Size(32, 32), 
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00));
+
+        room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
+
+        _room_highlight = room_highlight.get();
+
+        // Add a red window as a test of the windowing system.
+        tool_window->add_child(std::move(room_highlight));
+        tool_window->add_child(std::move(room_neighbours));
+
+        _control->add_child(std::move(tool_window));
+
+        _room_window = std::make_unique<RoomWindow>(_control.get());
+        _texture_window = std::make_unique<TextureWindow>(_control.get());
+
+        _go_to_room = std::make_unique<GoToRoom>(_control.get());
         _go_to_room->room_selected += [&](uint32_t room)
         {
             if (_current_level && room < _current_level->num_rooms())
@@ -32,6 +78,37 @@ namespace trview
                 _room_window->select_room(room);
             }
         };
+
+        // Create the renderer for the UI based on the controls created.
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
+        _ui_renderer->load(_control.get());
+    }
+
+    // Temporary function to createa a 50x50 coloured rectangle.
+    Texture Viewer::create_coloured_texture(uint32_t colour)
+    {
+        std::vector<uint32_t> data(50 * 50, colour);
+        D3D11_SUBRESOURCE_DATA srd;
+        memset(&srd, 0, sizeof(srd));
+        srd.pSysMem = &data[0];
+        srd.SysMemPitch = sizeof(uint32_t) * 50;
+
+        D3D11_TEXTURE2D_DESC desc;
+        memset(&desc, 0, sizeof(desc));
+        desc.Width = 50;
+        desc.Height = 50;
+        desc.MipLevels = desc.ArraySize = 1;
+        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        desc.SampleDesc.Count = 1;
+        desc.Usage = D3D11_USAGE_DEFAULT;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
+
+        Texture tex;
+        _device->CreateTexture2D(&desc, &srd, &tex.texture);
+        _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
+        return tex;
     }
 
     void Viewer::initialise_d3d()
@@ -137,33 +214,6 @@ namespace trview
 
         _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
 
-        // Initialize the description of the stencil state.
-        D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
-        memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-
-        // Set up the description of the stencil state.
-        depthStencilDesc.DepthEnable = false;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-
-        depthStencilDesc.StencilEnable = false;
-        depthStencilDesc.StencilReadMask = 0xFF;
-        depthStencilDesc.StencilWriteMask = 0xFF;
-
-        // Stencil operations if pixel is front-facing.
-        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        // Stencil operations if pixel is back-facing.
-        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        _device->CreateDepthStencilState(&ui_depth_stencil_desc, &_ui_depth_stencil_state);
-
         _context->OMSetDepthStencilState(_depth_stencil_state, 1);
 
         D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -261,6 +311,19 @@ namespace trview
         {
             _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
         };
+
+        // Add some extra handlers for the user interface. These will be merged in
+        // to one at some point so that the UI can take priority where appropriate.
+        _mouse.mouse_down += [&](Mouse::Button button)
+        {
+            POINT cursor_pos;
+            GetCursorPos(&cursor_pos);
+            ScreenToClient(_window.window(), &cursor_pos);
+
+            // The client mouse coordinate is already relative to the root windot (at
+            // present).
+            _control->mouse_down(ui::Point(cursor_pos.x, cursor_pos.y));
+        };
     }
 
     void Viewer::process_input_key(uint16_t key)
@@ -306,6 +369,7 @@ namespace trview
                 break;
             case VK_RETURN:
                 toggle_highlight();
+                _room_highlight->set_state(_highlight);
                 break;
             case VK_INSERT:
             {
@@ -474,19 +538,30 @@ namespace trview
         _context->PSSetShader(_pixel_shader, nullptr, 0);
         _context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        for(std::size_t i = 0; i < _level_rooms.size(); ++i)
+        const uint16_t selected_room = _room_window->selected_room();
+
+        if (_room_neighbours)
         {
-            _level_rooms[i]->render(_context, view_projection, _level_textures, _highlight || _room_window->selected_room() == i);
+            auto neighbours = _level_rooms[selected_room]->neighbours();
+            neighbours.insert(selected_room);
+
+            for (uint16_t i : neighbours)
+            {
+                _level_rooms[i]->render(_context, view_projection, _level_textures, i == selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+            }
+        }
+        else
+        {
+            for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+            {
+                _level_rooms[i]->render(_context, view_projection, _level_textures, (_highlight && selected_room == i) ? Room::SelectionMode::Selected : _highlight ? Room::SelectionMode::NotSelected : Room::SelectionMode::Selected);
+            }
         }
     }
 
     void Viewer::render_ui()
     {
-        // Render the user interface:
-        _context->OMSetDepthStencilState(_ui_depth_stencil_state, 1);
-        _texture_window->render(_context);
-        _room_window->render(_context);
-        _go_to_room->render(_context);
+        _ui_renderer->render(_context);
     }
 
     void Viewer::cycle()

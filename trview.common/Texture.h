@@ -1,5 +1,8 @@
 #pragma once
 
+#include <atlbase.h>
+#include <d3d11.h>
+
 namespace trview
 {
     struct Texture

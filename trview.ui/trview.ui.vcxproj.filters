@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Colour.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Size.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Control.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="TextAlignment.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="ParagraphAlignment.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Colour.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Point.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Size.cpp">
+      <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Types">
+      <UniqueIdentifier>{08fe4d84-9417-4a50-9294-44643d751120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls">
+      <UniqueIdentifier>{a78c4281-0488-4328-8bf1-060d8cbdd71d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

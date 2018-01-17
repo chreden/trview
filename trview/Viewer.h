@@ -11,23 +11,32 @@
 
 #include <trlevel/ILevel.h>
 
-#include "Texture.h"
+#include <trview.common/Texture.h>
 #include "Room.h"
 
 #include "TextureWindow.h"
 #include "RoomWindow.h"
 #include "GoToRoom.h"
 
-#include "FontFactory.h"
 #include "Timer.h"
 #include "Camera.h"
 #include "Window.h"
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
+#include <trview.ui/Control.h>
+
+#include <trview.ui.render/Renderer.h>
+#include <trview.ui.render/FontFactory.h>
 
 namespace trview
 {
+    namespace ui
+    {
+        class Label;
+        class Button;
+    }
+
     class Viewer
     {
     public:
@@ -52,6 +61,8 @@ namespace trview
         void cycle_room_back();
         void toggle_highlight();
     private:
+        void generate_ui();
+
         void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
@@ -68,19 +79,20 @@ namespace trview
         // Draw the user interface elements of the scene.
         void render_ui();
 
+        Texture create_coloured_texture(uint32_t colour);
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
         CComPtr<ID3D11RenderTargetView>  _render_target_view;
         CComPtr<ID3D11Texture2D>         _depth_stencil_buffer;
         CComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-        CComPtr<ID3D11DepthStencilState> _ui_depth_stencil_state;
         CComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
         
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<TextureWindow>   _texture_window;
 
-        std::unique_ptr<FontFactory> _font_factory;
+        std::unique_ptr<ui::render::FontFactory> _font_factory;
         std::unique_ptr<RoomWindow> _room_window;
         CComPtr<ID3D11BlendState> _blend_state;
 
@@ -108,6 +120,16 @@ namespace trview
 
         // Room navigator code.
         std::unique_ptr<GoToRoom> _go_to_room;
+
+        // New user interface control structure.
+        std::unique_ptr<ui::Control> _control;
+        std::unique_ptr<ui::render::Renderer> _ui_renderer;
+
+        ui::Button* _room_highlight;
+
+        // Test of buttons
+        bool _room_neighbours{ false };
+
     };
 }
 
