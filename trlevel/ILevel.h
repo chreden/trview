@@ -48,5 +48,10 @@ namespace trlevel
         // index: The index of the texture to get.
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const = 0;
+
+        // Get the floor data at the specified index.
+        // index: The index of the floor data to get.
+        // Returns: The floor data.
+        virtual uint16_t get_floor_data(uint32_t index) const = 0;
     };
 }

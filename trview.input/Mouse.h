@@ -24,11 +24,9 @@ namespace trview
             Event<int16_t> mouse_wheel;
             Event<long, long> mouse_move;
 
+            long x() const;
+            long y() const;
         private:
-            void raise_mouse_down(Button button);
-            void raise_mouse_up(Button button);
-            void raise_mouse_wheel(short delta);
-            void raise_relative_mouse_move(long x, long y);
             void raise_absolute_mouse_move(long x, long y);
 
             bool _any_absolute_previous{ false };

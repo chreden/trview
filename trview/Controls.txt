@@ -14,3 +14,7 @@ CTRL + R = Show 'go to room' box
 
 ==== Go To Room ==== 
 Enter the room number - press enter to go to the room, escape to cancel.
+
+New UI
+The Left button is highlight current room.
+Right button is show neighbours. (No shortcut for that yet, couldn't think of one.)

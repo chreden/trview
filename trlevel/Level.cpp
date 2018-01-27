@@ -79,10 +79,7 @@ namespace trlevel
 
             room.num_z_sectors = read<uint16_t>(file);
             room.num_x_sectors = read<uint16_t>(file);
-            for (int j = 0; j < room.num_z_sectors * room.num_x_sectors; ++j)
-            {
-                auto sector = read<tr_room_sector>(file);
-            }
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
 
             int16_t ambient1 = read<int16_t>(file);
             int16_t ambient2 = read<int16_t>(file);
@@ -100,7 +97,8 @@ namespace trlevel
             _rooms.push_back(room);
         }
 
-        std::vector<uint16_t> floor_data = read_vector<uint32_t, uint16_t>(file);
+        _floor_data = read_vector<uint32_t, uint16_t>(file);
+
         std::vector<uint16_t> mesh_data = read_vector<uint32_t, uint16_t>(file);
         std::vector<uint32_t> mesh_pointers = read_vector < uint32_t, uint32_t>(file);
         std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
@@ -177,5 +175,10 @@ namespace trlevel
     tr_object_texture Level::get_object_texture(uint32_t index) const
     {
         return _object_textures[index];
+    }
+
+    uint16_t Level::get_floor_data(uint32_t index) const
+    {
+        return _floor_data[index];
     }
 }

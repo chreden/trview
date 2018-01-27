@@ -4,17 +4,11 @@
     <Filter Include="Program">
       <UniqueIdentifier>{ccc85673-5a75-47e9-a108-5f6c027fb645}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Other">
-      <UniqueIdentifier>{9526015d-5f8e-4460-8e98-92e744747a79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{94ba7176-10d8-4cf9-b2f2-e6a6d554e70a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Program\Windows">
       <UniqueIdentifier>{d62d90a2-1cf3-46d2-9da2-e816606535dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Text">
-      <UniqueIdentifier>{caeac291-ce1a-458a-b9f6-84ac852cfce1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Win">
       <UniqueIdentifier>{19537d19-9f7b-4110-a120-984dd4b941de}</UniqueIdentifier>
@@ -37,29 +31,11 @@
     <ClInclude Include="Viewer.h">
       <Filter>Program</Filter>
     </ClInclude>
-    <ClInclude Include="FileLoader.h">
-      <Filter>Other</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="TextureWindow.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
     <ClInclude Include="RoomWindow.h">
       <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="FontFactory.h">
-      <Filter>Graphics\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Graphics\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="FontTexture.h">
-      <Filter>Graphics\Text</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Win</Filter>
@@ -102,23 +78,11 @@
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
     </ClCompile>
-    <ClCompile Include="FileLoader.cpp">
-      <Filter>Other</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="TextureWindow.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="RoomWindow.cpp">
       <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Graphics\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="FontFactory.cpp">
-      <Filter>Graphics\Text</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win</Filter>
@@ -159,12 +123,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ui_vertex_shader.hlsl">
-      <Filter>Graphics</Filter>
-    </FxCompile>
-    <FxCompile Include="ui_pixel_shader.hlsl">
-      <Filter>Graphics</Filter>
-    </FxCompile>
     <FxCompile Include="level_pixel_shader.hlsl">
       <Filter>Graphics</Filter>
     </FxCompile>
