@@ -63,6 +63,8 @@ namespace trview
     private:
         void generate_ui();
 
+        void generate_tool_window();
+
         void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);

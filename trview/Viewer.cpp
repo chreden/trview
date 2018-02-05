@@ -13,6 +13,7 @@
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
+#include <trview.ui/Slider.h>
 
 namespace trview
 {
@@ -37,35 +38,7 @@ namespace trview
                 ui::Size(_window.width(), _window.height()),
                 ui::Colour(0.f, 0.f, 0.f, 0.f));
 
-        // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::Window>(
-            ui::Point(0, 0),
-            ui::Size(100.0f, 50.f),
-            ui::Colour(1.f, 0.5f, 0.5f, 0.5f));
-
-        auto room_highlight = std::make_unique<ui::Button>(
-            ui::Point(10, 10),
-            ui::Size(32, 32),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-
-        room_highlight->on_click += [&]() { toggle_highlight(); };
-
-        auto room_neighbours = std::make_unique<ui::Button>(
-            ui::Point(47, 10),
-            ui::Size(32, 32), 
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-
-        room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
-
-        _room_highlight = room_highlight.get();
-
-        // Add a red window as a test of the windowing system.
-        tool_window->add_child(std::move(room_highlight));
-        tool_window->add_child(std::move(room_neighbours));
-
-        _control->add_child(std::move(tool_window));
+        generate_tool_window();
 
         _room_window = std::make_unique<RoomWindow>(_control.get());
         _texture_window = std::make_unique<TextureWindow>(_control.get());
@@ -82,6 +55,43 @@ namespace trview
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
         _ui_renderer->load(_control.get());
+    }
+
+    void Viewer::generate_tool_window()
+    {
+        // This is the main tool window on the side of the screen.
+        auto tool_window = std::make_unique<ui::Window>(
+            ui::Point(0, 0),
+            ui::Size(100.0f, 100.f),
+            ui::Colour(1.f, 0.5f, 0.5f, 0.5f));
+
+        auto room_highlight = std::make_unique<ui::Button>(
+            ui::Point(10, 10),
+            ui::Size(32, 32),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00));
+
+        room_highlight->on_click += [&]() { toggle_highlight(); };
+
+        auto room_neighbours = std::make_unique<ui::Button>(
+            ui::Point(47, 10),
+            ui::Size(32, 32),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00));
+
+        room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
+
+        _room_highlight = room_highlight.get();
+
+        // Camera section for the menu bar.
+        auto camera_sensitivity = std::make_unique<ui::Slider>(
+            ui::Point(10, 47),
+            ui::Size(80, 32));
+
+        tool_window->add_child(std::move(room_highlight));
+        tool_window->add_child(std::move(room_neighbours));
+        tool_window->add_child(std::move(camera_sensitivity));
+        _control->add_child(std::move(tool_window));
     }
 
     // Temporary function to createa a 50x50 coloured rectangle.
@@ -163,7 +173,7 @@ namespace trview
         desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
         desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
         desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-        desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+        desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
         desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
         _device->CreateBlendState(&desc, &_blend_state);
@@ -509,6 +519,8 @@ namespace trview
         {
             render_scene();
         }
+
+        _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
         render_ui();
 
         _swap_chain->Present(1, 0);

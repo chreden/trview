@@ -63,9 +63,9 @@ namespace trview
                     child->render(context, sprite);
                 }
 
-                render_self(context, sprite);
-
                 RenderTargetStore render_target_store(context);
+                render_self(context, sprite);
+                context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
                 for (auto& child : _child_nodes)
                 {
                     if (!child->visible())
@@ -76,7 +76,6 @@ namespace trview
                     // Render the child in the correct position on the render target.
                     auto pos = child->position();
                     auto size = child->size();
-                    context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
                     sprite.render(context, child->node_texture_view(), pos.x, pos.y, size.width, size.height);
                 }
             }
