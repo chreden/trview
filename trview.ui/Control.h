@@ -19,7 +19,12 @@ namespace trview
             virtual ~Control() = 0;
 
             // Get the X and Y position of the control relative to the parent window.
+            // To change the position of the control, call set_position.
             Point position() const;
+
+            // Set the X and Y position of the control relative to the parent window.
+            // To get the position of the control, call position.
+            void set_position(Point position);
 
             // Get the width and height of the control.
             Size size() const;
@@ -53,7 +58,7 @@ namespace trview
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.
-            virtual void clicked();
+            virtual bool clicked(Point position);
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
             Control* _parent;

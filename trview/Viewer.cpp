@@ -86,7 +86,7 @@ namespace trview
         // Camera section for the menu bar.
         auto camera_sensitivity = std::make_unique<ui::Slider>(
             ui::Point(10, 47),
-            ui::Size(80, 32));
+            ui::Size(80, 20));
 
         tool_window->add_child(std::move(room_highlight));
         tool_window->add_child(std::move(room_neighbours));

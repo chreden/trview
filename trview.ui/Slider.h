@@ -15,9 +15,12 @@ namespace trview
 
             Event<float> on_value_changed;
         protected:
-            
+            virtual bool clicked(Point position) override;
         private:
+            void set_blob_position(Point position);
+
             float _value{ 0.5f };
+            ui::Control* _blob;
         };
     }
 }

@@ -20,6 +20,11 @@ namespace trview
             return _position;
         }
 
+        void Control::set_position(Point position)
+        {
+            _position = position;
+        }
+
         Size Control::size() const
         {
             return _size;
@@ -71,16 +76,12 @@ namespace trview
 
             // If none of the child elements have handled this event themselves, call the 
             // clicked function of this control.
-            if (!handled)
-            {
-                clicked();
-            }
-
-            return true;
+            return handled | clicked(position);
         }
 
-        void Control::clicked()
+        bool Control::clicked(Point position)
         {
+            return false;
         }
     }
 }
