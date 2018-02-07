@@ -1,4 +1,5 @@
 #include "Slider.h"
+#include <algorithm>
 
 namespace trview
 {
@@ -14,14 +15,14 @@ namespace trview
         {
             // Create the child windows (and store them for later manipulation).
             auto line = std::make_unique<Window>(
-                Point(BlobWidth / 2.f, size.height / 2.f - 1.f),
-                Size(size.width - BlobWidth, 2.f),
+                Point(BlobWidth, size.height / 2.f - 1.f),
+                Size(size.width - BlobWidth * 2.f, 2.f),
                 Colour(1, 0, 0, 0));
 
             auto blob = std::make_unique<Window>(
                 Point(0, 0),
                 Size(BlobWidth, size.height),
-                Colour(1, 0.2f, 0.2f, 0.2f));
+                Colour(0.5f, 0.2f, 0.2f, 0.2f));
 
             _blob = blob.get();
 
@@ -39,8 +40,14 @@ namespace trview
 
         void Slider::set_blob_position(Point position)
         {
+            const float SliderSize = size().width - BlobWidth * 2;
+            const float percentage = std::min(1.0f, std::max(0.0f, (position.x - BlobWidth) / SliderSize));
+            const float x = BlobWidth + percentage * SliderSize - BlobWidth * 0.5f;
+
             const auto pos = _blob->position();
-            _blob->set_position(Point(position.x - BlobWidth / 2.0f, pos.y));
+            _blob->set_position(Point(x, pos.y));
+
+            on_value_changed.raise(percentage);
         }
     }
 }

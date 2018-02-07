@@ -88,6 +88,11 @@ namespace trview
             ui::Point(10, 47),
             ui::Size(80, 20));
 
+        camera_sensitivity->on_value_changed += [&](float value)
+        {
+            _camera_sensitivity = value;
+        };
+
         tool_window->add_child(std::move(room_highlight));
         tool_window->add_child(std::move(room_neighbours));
         tool_window->add_child(std::move(camera_sensitivity));
@@ -312,8 +317,8 @@ namespace trview
         {
             if (_rotating)
             {
-                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / 25.0f);
-                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / 25.0f);
+                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / (25.0f * (1-_camera_sensitivity)));
+                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / (25.0f * (1 - _camera_sensitivity)));
             }
         };
 

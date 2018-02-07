@@ -116,6 +116,7 @@ namespace trview
         Camera _camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
+        float _camera_sensitivity{ 0.0f };
 
         // Camera rotation variables - eventually to be moved to a camera class.
         bool _rotating{ false };
