@@ -22,7 +22,7 @@ namespace trview
             auto blob = std::make_unique<Window>(
                 Point(0, 0),
                 Size(BlobWidth, size.height),
-                Colour(0.5f, 0.2f, 0.2f, 0.2f));
+                Colour(1.0f, 0.2f, 0.2f, 0.2f));
 
             _blob = blob.get();
 
@@ -36,6 +36,16 @@ namespace trview
         {
             set_blob_position(position);
             return true;
+        }
+
+        bool Slider::move(Point position)
+        {
+            if (focus_control() == this)
+            {
+                set_blob_position(position);
+                return true;
+            }
+            return false;
         }
 
         void Slider::set_blob_position(Point position)

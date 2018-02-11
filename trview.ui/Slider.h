@@ -16,6 +16,7 @@ namespace trview
             Event<float> on_value_changed;
         protected:
             virtual bool clicked(Point position) override;
+            virtual bool move(Point position) override;
         private:
             void set_blob_position(Point position);
 

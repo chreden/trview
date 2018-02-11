@@ -311,6 +311,12 @@ namespace trview
             {
                 _rotating = false;
             }
+            
+            POINT cursor_pos;
+            GetCursorPos(&cursor_pos);
+            ScreenToClient(_window.window(), &cursor_pos);
+
+            _control->mouse_up(ui::Point(cursor_pos.x, cursor_pos.y));
         };
 
         _mouse.mouse_move += [&](long x, long y)
@@ -320,6 +326,12 @@ namespace trview
                 _camera.set_rotation_yaw(_camera.rotation_yaw() + x / (25.0f * (1-_camera_sensitivity)));
                 _camera.set_rotation_pitch(_camera.rotation_pitch() + y / (25.0f * (1 - _camera_sensitivity)));
             }
+
+            POINT cursor_pos;
+            GetCursorPos(&cursor_pos);
+            ScreenToClient(_window.window(), &cursor_pos);
+
+            _control->mouse_move(ui::Point(cursor_pos.x, cursor_pos.y));
         };
 
         _mouse.mouse_wheel += [&](int16_t scroll)

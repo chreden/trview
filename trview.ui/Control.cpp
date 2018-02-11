@@ -76,12 +76,89 @@ namespace trview
 
             // If none of the child elements have handled this event themselves, call the 
             // clicked function of this control.
-            return handled | clicked(position);
+            if (handled)
+            {
+                return true;
+            }
+
+            // Promote controls to focus control, or clear if there are no controls that 
+            // accepted the event.
+            bool handled_by_self = clicked(position);
+            if (handled_by_self)
+            {
+                set_focus_control(this);
+            }
+            else if (!_parent)
+            {
+                set_focus_control(nullptr);
+            }
+            return handled_by_self;
+        }
+
+        bool Control::mouse_move(Point position)
+        {
+            if (_focus_control && _focus_control != this)
+            {
+                bool focus_handled = _focus_control->mouse_move(position);
+                if (focus_handled)
+                {
+                    return true;
+                }
+            }
+
+            // Bounds check - before child elements are checked.
+            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            {
+                return false;
+            }
+
+            bool handled = false;
+            for (auto& child : _child_elements)
+            {
+                // Convert the position into the coordinate space of the child element.
+                handled |= child->mouse_move(position - child->position());
+            }
+
+            // If none of the child elements have handled this event themselves, call the 
+            // move function of this control.
+            return handled | move(position);
+        }
+
+        bool Control::mouse_up(Point position)
+        {
+            set_focus_control(nullptr);
+            return true;
         }
 
         bool Control::clicked(Point position)
         {
             return false;
+        }
+
+        bool Control::move(Point position)
+        {
+            return false;
+        }
+
+        void Control::set_focus_control(Control* control)
+        {
+            if (_parent)
+            {
+                _parent->set_focus_control(control);
+            }
+            else
+            {
+                _focus_control = control;
+            }
+        }
+
+        Control* Control::focus_control() const
+        {
+            if (_parent)
+            {
+                return _parent->focus_control();
+            }
+            return _focus_control;
         }
     }
 }
