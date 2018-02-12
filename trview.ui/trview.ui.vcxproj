@@ -27,6 +27,7 @@
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
+    <ClInclude Include="Slider.h" />
     <ClInclude Include="TextAlignment.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -38,6 +39,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Size.cpp" />
+    <ClCompile Include="Slider.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

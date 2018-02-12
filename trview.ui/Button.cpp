@@ -10,10 +10,11 @@ namespace trview
             set_texture(_up_image);
         }
 
-        void Button::clicked()
+        bool Button::clicked(Point position)
         {
             set_state(!_state);
             on_click.raise();
+            return true;
         }
 
         void Button::set_state(bool state)

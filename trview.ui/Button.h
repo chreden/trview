@@ -20,7 +20,7 @@ namespace trview
 
             void set_state(bool state);
         protected:
-            virtual void clicked() override;
+            virtual bool clicked(Point position) override;
         private:
             Texture _up_image;
             Texture _down_image;

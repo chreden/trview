@@ -63,6 +63,8 @@ namespace trview
     private:
         void generate_ui();
 
+        void generate_tool_window();
+
         void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
@@ -114,6 +116,7 @@ namespace trview
         Camera _camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
+        float _camera_sensitivity{ 0.0f };
 
         // Camera rotation variables - eventually to be moved to a camera class.
         bool _rotating{ false };

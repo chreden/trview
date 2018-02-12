@@ -19,7 +19,12 @@ namespace trview
             virtual ~Control() = 0;
 
             // Get the X and Y position of the control relative to the parent window.
+            // To change the position of the control, call set_position.
             Point position() const;
+
+            // Set the X and Y position of the control relative to the parent window.
+            // To get the position of the control, call position.
+            void set_position(Point position);
 
             // Get the width and height of the control.
             Size size() const;
@@ -48,15 +53,30 @@ namespace trview
             std::vector<Control*> child_elements() const;
 
             // Process a mouse_down event at the position specified.
-            // Returns whether the mouse click was within the bounds of the control element.
+            // Returns whether the mouse click was within the bounds of the control element and was handled.
             bool mouse_down(Point position);
+
+            bool mouse_up(Point position);
+
+            // Process a mouse_move event at the position specified.
+            // Returns whether the mouse move was handled.
+            bool mouse_move(Point position);
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.
-            virtual void clicked();
+            virtual bool clicked(Point position);
+
+            // To be called when the mouse was moved over the element.
+            // This should be overriden by child elements to handle a move.
+            virtual bool move(Point position);
+
+            void set_focus_control(Control* control);
+
+            Control* focus_control() const;
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
             Control* _parent;
+            Control* _focus_control;
             Point    _position;
             Size     _size;
             bool     _visible;
