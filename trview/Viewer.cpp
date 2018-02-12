@@ -323,8 +323,11 @@ namespace trview
         {
             if (_rotating)
             {
-                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / (25.0f * (1-_camera_sensitivity)));
-                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / (25.0f * (1 - _camera_sensitivity)));
+                const float low_sensitivity = 200.0f;
+                const float high_sensitivity = 25.0f;
+                const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
+                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / sensitivity);
+                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / sensitivity);
             }
 
             POINT cursor_pos;
