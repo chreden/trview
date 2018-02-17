@@ -14,6 +14,8 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Slider.h>
+#include <trview.ui/NumericUpDown.h>
+#include <trview.ui/GroupBox.h>
 
 namespace trview
 {
@@ -49,6 +51,7 @@ namespace trview
             if (_current_level && room < _current_level->num_rooms())
             {
                 _room_window->select_room(room);
+                regenerate_neighbours();
             }
         };
 
@@ -59,44 +62,121 @@ namespace trview
 
     void Viewer::generate_tool_window()
     {
+        using namespace ui;
+
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::Window>(
-            ui::Point(0, 0),
-            ui::Size(100.0f, 100.f),
-            ui::Colour(1.f, 0.5f, 0.5f, 0.5f));
+            Point(0, 0),
+            Size(150.0f, 175.0f),
+            Colour(1.f, 0.5f, 0.5f, 0.5f));
 
-        auto room_highlight = std::make_unique<ui::Button>(
-            ui::Point(10, 10),
-            ui::Size(32, 32),
+        tool_window->add_child(generate_room_window(Point(5, 5)));
+        tool_window->add_child(generate_neighbours_window(Point(5,60)));
+        tool_window->add_child(generate_camera_window(Point(5, 120)));
+        _control->add_child(std::move(tool_window));
+    }
+
+    std::unique_ptr<ui::Window> Viewer::generate_neighbours_window(ui::Point point)
+    {
+        using namespace ui;
+
+        auto neighbours_group = std::make_unique<GroupBox>(
+            point,
+            Size(140, 50),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Colour(1.0f, 0.0f, 0.0f, 0.0f),
+            L"Neighbours");
+
+        auto room_neighbours = std::make_unique<Button>(
+            Point(12, 20),
+            Size(16, 16),
             create_coloured_texture(0xff0000ff),
             create_coloured_texture(0xff00ff00));
-
-        room_highlight->on_click += [&]() { toggle_highlight(); };
-
-        auto room_neighbours = std::make_unique<ui::Button>(
-            ui::Point(47, 10),
-            ui::Size(32, 32),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-
         room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
 
+        auto neighbours_depth_label = std::make_unique<Label>(
+            Point(40, 20),
+            Size(40, 20),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            L"Depth",
+            10.f);
+
+        auto neighbours_depth = std::make_unique<NumericUpDown>(
+            Point(90, 16),
+            Size(40, 20),
+            Colour(1.0f, 0.4f, 0.4f, 0.4f),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00),
+            0,
+            10);
+        neighbours_depth->set_value(1);
+
+        neighbours_depth->on_value_changed += [&](int value) 
+        { 
+            _neighbour_depth = value; 
+            regenerate_neighbours();
+        };
+
+        neighbours_group->add_child(std::move(room_neighbours));
+        neighbours_group->add_child(std::move(neighbours_depth_label));
+        neighbours_group->add_child(std::move(neighbours_depth));
+        return neighbours_group;
+    }
+
+    std::unique_ptr<ui::Window> Viewer::generate_room_window(ui::Point point)
+    {
+        using namespace ui;
+
+        auto rooms_groups = std::make_unique<GroupBox>(
+            point,
+            Size(140, 50),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Colour(1.0f, 0.0f, 0.0f, 0.0f),
+            L"Rooms");
+
+        auto room_highlight = std::make_unique<Button>(
+            Point(12, 20),
+            Size(16, 16),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00));
+
+        auto room_highlight_label = std::make_unique<Label>(
+            Point(40, 20),
+            Size(40, 20),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            L"Highlight",
+            10.f);
+
+        room_highlight->on_click += [&]() { toggle_highlight(); };
         _room_highlight = room_highlight.get();
 
-        // Camera section for the menu bar.
-        auto camera_sensitivity = std::make_unique<ui::Slider>(
-            ui::Point(10, 47),
-            ui::Size(80, 20));
+        rooms_groups->add_child(std::move(room_highlight));
+        rooms_groups->add_child(std::move(room_highlight_label));
 
+        return rooms_groups;
+    }
+
+    std::unique_ptr<ui::Window> Viewer::generate_camera_window(ui::Point point)
+    {
+        using namespace ui;
+
+        auto camera_window = std::make_unique<GroupBox>(
+            point,
+            Size(140, 50),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Colour(1.0f, 0.0f, 0.0f, 0.0f),
+            L"Camera");
+
+        // Camera section for the menu bar.
+        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 20), Size(120, 20));
+        
         camera_sensitivity->on_value_changed += [&](float value)
         {
             _camera_sensitivity = value;
         };
 
-        tool_window->add_child(std::move(room_highlight));
-        tool_window->add_child(std::move(room_neighbours));
-        tool_window->add_child(std::move(camera_sensitivity));
-        _control->add_child(std::move(tool_window));
+        camera_window->add_child(std::move(camera_sensitivity));
+        return camera_window;
     }
 
     // Temporary function to createa a 50x50 coloured rectangle.
@@ -497,6 +577,7 @@ namespace trview
             room_infos.push_back(r->info());
         }
         _room_window->set_rooms(room_infos);
+        regenerate_neighbours();
     }
 
     void Viewer::on_char(uint16_t character)
@@ -574,10 +655,7 @@ namespace trview
 
         if (_room_neighbours)
         {
-            auto neighbours = _level_rooms[selected_room]->neighbours();
-            neighbours.insert(selected_room);
-
-            for (uint16_t i : neighbours)
+            for (uint16_t i : _neighbours)
             {
                 _level_rooms[i]->render(_context, view_projection, _level_textures, i == selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
             }
@@ -588,6 +666,31 @@ namespace trview
             {
                 _level_rooms[i]->render(_context, view_projection, _level_textures, (_highlight && selected_room == i) ? Room::SelectionMode::Selected : _highlight ? Room::SelectionMode::NotSelected : Room::SelectionMode::Selected);
             }
+        }
+    }
+
+    void Viewer::regenerate_neighbours()
+    {
+        const uint16_t selected_room = _room_window->selected_room();
+        _neighbours = std::set<uint16_t>{ selected_room };
+        if (_current_level && selected_room < _current_level->num_rooms())
+        {
+            generate_neighbours(_neighbours, selected_room, 1, _neighbour_depth);
+        }
+    }
+
+    void Viewer::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
+    {
+        if (current_depth > max_depth)
+        {
+            return;
+        }
+
+        const auto neighbours = _level_rooms[selected_room]->neighbours();
+        for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
+        {
+            all_rooms.insert(*room);
+            generate_neighbours(all_rooms, *room, current_depth + 1, max_depth);
         }
     }
 

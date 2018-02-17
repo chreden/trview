@@ -34,6 +34,12 @@
     <ClInclude Include="Slider.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="GroupBox.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="NumericUpDown.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">
@@ -61,6 +67,12 @@
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="Slider.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupBox.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="NumericUpDown.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
   </ItemGroup>
