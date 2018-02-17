@@ -65,6 +65,10 @@ namespace trview
 
         void generate_tool_window();
 
+        std::unique_ptr<ui::Window> generate_neighbours_window(ui::Point point);
+        std::unique_ptr<ui::Window> generate_room_window(ui::Point point);
+        std::unique_ptr<ui::Window> generate_camera_window(ui::Point point);
+
         void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
@@ -131,8 +135,8 @@ namespace trview
         ui::Button* _room_highlight;
 
         // Test of buttons
-        bool _room_neighbours{ false };
-
+        bool    _room_neighbours{ false };
+        int32_t _neighbour_depth{ 0 };
     };
 }
 

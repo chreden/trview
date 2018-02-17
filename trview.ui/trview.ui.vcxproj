@@ -22,8 +22,10 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="GroupBox.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Label.h" />
+    <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
@@ -35,8 +37,10 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="Control.cpp" />
+    <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Label.cpp" />
+    <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Slider.cpp" />
