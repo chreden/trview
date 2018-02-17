@@ -136,7 +136,11 @@ namespace trview
 
         // Test of buttons
         bool    _room_neighbours{ false };
-        int32_t _neighbour_depth{ 0 };
+        int32_t _neighbour_depth{ 1 };
+        std::set<uint16_t> _neighbours;
+
+        void regenerate_neighbours();
+        void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
     };
 }
 

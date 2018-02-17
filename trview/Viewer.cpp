@@ -51,6 +51,7 @@ namespace trview
             if (_current_level && room < _current_level->num_rooms())
             {
                 _room_window->select_room(room);
+                regenerate_neighbours();
             }
         };
 
@@ -108,7 +109,11 @@ namespace trview
             create_coloured_texture(0xff00ff00),
             1,
             10);
-        neighbours_depth->on_value_changed += [&](int value) { _neighbour_depth = value; };
+        neighbours_depth->on_value_changed += [&](int value) 
+        { 
+            _neighbour_depth = value; 
+            regenerate_neighbours();
+        };
 
         neighbours_group->add_child(std::move(room_neighbours));
         neighbours_group->add_child(std::move(neighbours_depth_label));
@@ -570,6 +575,7 @@ namespace trview
             room_infos.push_back(r->info());
         }
         _room_window->set_rooms(room_infos);
+        regenerate_neighbours();
     }
 
     void Viewer::on_char(uint16_t character)
@@ -647,10 +653,7 @@ namespace trview
 
         if (_room_neighbours)
         {
-            auto neighbours = _level_rooms[selected_room]->neighbours();
-            neighbours.insert(selected_room);
-
-            for (uint16_t i : neighbours)
+            for (uint16_t i : _neighbours)
             {
                 _level_rooms[i]->render(_context, view_projection, _level_textures, i == selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
             }
@@ -661,6 +664,31 @@ namespace trview
             {
                 _level_rooms[i]->render(_context, view_projection, _level_textures, (_highlight && selected_room == i) ? Room::SelectionMode::Selected : _highlight ? Room::SelectionMode::NotSelected : Room::SelectionMode::Selected);
             }
+        }
+    }
+
+    void Viewer::regenerate_neighbours()
+    {
+        const uint16_t selected_room = _room_window->selected_room();
+        _neighbours = std::set<uint16_t>{ selected_room };
+        if (_current_level && selected_room < _current_level->num_rooms())
+        {
+            generate_neighbours(_neighbours, selected_room, 1, _neighbour_depth);
+        }
+    }
+
+    void Viewer::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
+    {
+        if (current_depth > max_depth)
+        {
+            return;
+        }
+
+        const auto neighbours = _level_rooms[selected_room]->neighbours();
+        for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
+        {
+            all_rooms.insert(*room);
+            generate_neighbours(all_rooms, *room, current_depth + 1, max_depth);
         }
     }
 
