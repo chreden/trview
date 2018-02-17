@@ -70,8 +70,8 @@ namespace trview
             Size(150.0f, 175.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f));
 
-        tool_window->add_child(generate_room_window(Point(5, 60)));
-        tool_window->add_child(generate_neighbours_window(Point(5,5)));
+        tool_window->add_child(generate_room_window(Point(5, 5)));
+        tool_window->add_child(generate_neighbours_window(Point(5,60)));
         tool_window->add_child(generate_camera_window(Point(5, 120)));
         _control->add_child(std::move(tool_window));
     }
@@ -107,8 +107,10 @@ namespace trview
             Colour(1.0f, 0.4f, 0.4f, 0.4f),
             create_coloured_texture(0xff0000ff),
             create_coloured_texture(0xff00ff00),
-            1,
+            0,
             10);
+        neighbours_depth->set_value(1);
+
         neighbours_depth->on_value_changed += [&](int value) 
         { 
             _neighbour_depth = value; 

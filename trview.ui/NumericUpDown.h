@@ -23,9 +23,9 @@ namespace trview
                 int32_t maximum);
 
             Event<int32_t> on_value_changed;
-        private:
-            void set_value(int32_t value);
 
+            void set_value(int32_t value);
+        private:
             int32_t _minimum;
             int32_t _maximum;
             int32_t _value{ 0 };
