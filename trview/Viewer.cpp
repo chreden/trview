@@ -102,7 +102,12 @@ namespace trview
 
         auto neighbours_depth = std::make_unique<NumericUpDown>(
             Point(90, 16),
-            Size(40, 20));
+            Size(40, 20),
+            Colour(1.0f, 0.4f, 0.4f, 0.4f),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00),
+            1,
+            10);
         neighbours_depth->on_value_changed += [&](int value) { _neighbour_depth = value; };
 
         neighbours_group->add_child(std::move(room_neighbours));
