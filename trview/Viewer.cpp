@@ -707,6 +707,7 @@ namespace trview
     void Viewer::cycle_room()
     {
         _room_window->cycle();
+        regenerate_neighbours();
     }
 
     void Viewer::cycle_back()
@@ -717,6 +718,7 @@ namespace trview
     void Viewer::cycle_room_back()
     {
         _room_window->cycle_back();
+        regenerate_neighbours();
     }
 
     void Viewer::toggle_room_window()
