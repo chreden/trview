@@ -5,6 +5,12 @@
 
 namespace trview
 {
+    namespace
+    {
+        const float max_zoom = 100.0f;
+        const float min_zoom = 1.0f;
+    }
+
     Camera::Camera(uint32_t width, uint32_t height)
     {
         // Projection matrix only has to be calculated once, or when the width and height
@@ -66,12 +72,19 @@ namespace trview
 
     void Camera::set_zoom(float zoom)
     {
-        _zoom = std::max(zoom, 1.f);
+        _zoom = std::min(std::max(zoom, min_zoom), max_zoom);
         calculate_view_matrix();
     }
 
     DirectX::XMMATRIX Camera::view_projection() const
     {
         return _view_projection;
+    }
+
+    void Camera::reset()
+    {
+        set_rotation_yaw(default_yaw);
+        set_rotation_pitch(default_pitch);
+        set_zoom(default_zoom);
     }
 }
