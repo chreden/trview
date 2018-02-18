@@ -67,12 +67,12 @@ namespace trview
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::Window>(
             Point(0, 0),
-            Size(150.0f, 175.0f),
+            Size(150.0f, 195.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f));
 
         tool_window->add_child(generate_room_window(Point(5, 5)));
-        tool_window->add_child(generate_neighbours_window(Point(5,60)));
-        tool_window->add_child(generate_camera_window(Point(5, 120)));
+        tool_window->add_child(generate_neighbours_window(Point(5, 60)));
+        tool_window->add_child(generate_camera_window(Point(5, 115)));
         _control->add_child(std::move(tool_window));
     }
 
@@ -145,7 +145,7 @@ namespace trview
             Size(40, 20),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             L"Highlight",
-            10.f);
+            10.0f);
 
         room_highlight->on_click += [&]() { toggle_highlight(); };
         _room_highlight = room_highlight.get();
@@ -162,19 +162,26 @@ namespace trview
 
         auto camera_window = std::make_unique<GroupBox>(
             point,
-            Size(140, 50),
+            Size(140, 80),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Camera");
 
+        auto reset_camera = std::make_unique<ui::Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
+        reset_camera->on_click += [&]() { _camera.reset(); }; 
+
+        auto reset_camera_label = std::make_unique<ui::Label>(Point(40, 20), Size(40, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f);
+
         // Camera section for the menu bar.
-        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 20), Size(120, 20));
+        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 40), Size(120, 20));
         
         camera_sensitivity->on_value_changed += [&](float value)
         {
             _camera_sensitivity = value;
         };
 
+        camera_window->add_child(std::move(reset_camera));
+        camera_window->add_child(std::move(reset_camera_label));
         camera_window->add_child(std::move(camera_sensitivity));
         return camera_window;
     }
@@ -578,6 +585,7 @@ namespace trview
         }
         _room_window->set_rooms(room_infos);
         regenerate_neighbours();
+        _camera.reset();
     }
 
     void Viewer::on_char(uint16_t character)
