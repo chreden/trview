@@ -96,11 +96,13 @@ namespace trview
         room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
 
         auto neighbours_depth_label = std::make_unique<Label>(
-            Point(40, 20),
-            Size(40, 20),
+            Point(32, 20),
+            Size(40, 16),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             L"Depth",
-            10.f);
+            10.f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
 
         auto neighbours_depth = std::make_unique<NumericUpDown>(
             Point(90, 16),
@@ -142,11 +144,13 @@ namespace trview
             create_coloured_texture(0xff00ff00));
 
         auto room_highlight_label = std::make_unique<Label>(
-            Point(40, 20),
-            Size(40, 20),
+            Point(32, 20),
+            Size(40, 16),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             L"Highlight",
-            10.0f);
+            10.0f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
 
         room_highlight->on_click += [&]() { toggle_highlight(); };
         _room_highlight = room_highlight.get();
@@ -171,7 +175,14 @@ namespace trview
         auto reset_camera = std::make_unique<ui::Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
         reset_camera->on_click += [&]() { _camera.reset(); }; 
 
-        auto reset_camera_label = std::make_unique<ui::Label>(Point(40, 20), Size(40, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f);
+        auto reset_camera_label = std::make_unique<ui::Label>(
+            Point(32, 20), 
+            Size(40, 16), 
+            Colour(1.0f, 0.5f, 0.5f, 0.5f), 
+            L"Reset", 
+            10.0f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
 
         // Camera section for the menu bar.
         auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 40), Size(120, 20));
