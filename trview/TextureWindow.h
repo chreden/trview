@@ -25,6 +25,7 @@ namespace trview
         void     cycle_back();
         void     toggle_visibility();
         bool     visible() const;
+        void     set_visible(bool value);
     private:
         void update_texture_status();
 

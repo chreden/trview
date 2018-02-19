@@ -85,4 +85,9 @@ namespace trview
     {
         return _window->visible();
     }
+
+    void TextureWindow::set_visible(bool value)
+    {
+        _window->set_visible(value);
+    }
 }
