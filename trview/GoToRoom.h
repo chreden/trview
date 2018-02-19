@@ -26,6 +26,7 @@ namespace trview
         Event<uint32_t> room_selected;
     private:
         std::wstring _input;
+        ui::Control* _window;
         ui::Label*   _label;
     };
 }
