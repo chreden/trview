@@ -87,4 +87,14 @@ namespace trview
         set_rotation_pitch(default_pitch);
         set_zoom(default_zoom);
     }
+
+    Camera::Mode Camera::mode() const
+    {
+        return _mode;
+    }
+
+    void Camera::set_mode(Mode mode)
+    {
+        _mode = mode;
+    }
 }

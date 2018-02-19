@@ -141,6 +141,10 @@ namespace trview
 
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
+
+        // More buttons - the camera mode buttons this time.
+        ui::Button* _orbit_mode;
+        ui::Button* _free_mode;
     };
 }
 

@@ -177,13 +177,28 @@ namespace trview
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
+        auto update_camera_mode_buttons = [&]()
+        {
+            auto mode = _camera.mode();
+            _orbit_mode->set_state(mode == Camera::Mode::Orbit);
+            _free_mode->set_state(mode == Camera::Mode::Free);
+        };
+
         auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        orbit_camera->on_click += [&]() {};
+        orbit_camera->on_click += [&, update_camera_mode_buttons]()
+        { 
+            _camera.set_mode(Camera::Mode::Orbit);
+            update_camera_mode_buttons();
+        };
 
         auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        free_camera->on_click += [&]() {};
+        free_camera->on_click += [&, update_camera_mode_buttons]()
+        { 
+            _camera.set_mode(Camera::Mode::Free); 
+            update_camera_mode_buttons();
+        };
 
         auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
@@ -196,6 +211,10 @@ namespace trview
         };
         camera_sensitivity_box->add_child(std::move(camera_sensitivity));
 
+        // Take a copy of buttons that need to be tracked.
+        _orbit_mode = orbit_camera.get();
+        _free_mode = free_camera.get();
+
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
         camera_window->add_child(std::move(orbit_camera));
@@ -203,6 +222,10 @@ namespace trview
         camera_window->add_child(std::move(free_camera));
         camera_window->add_child(std::move(free_camera_label));
         camera_window->add_child(std::move(camera_sensitivity_box));
+
+        // Update the initial state of the buttons.
+        update_camera_mode_buttons();
+
         return camera_window;
     }
 
