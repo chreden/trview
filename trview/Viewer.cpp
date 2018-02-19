@@ -44,6 +44,7 @@ namespace trview
 
         _room_window = std::make_unique<RoomWindow>(_control.get());
         _texture_window = std::make_unique<TextureWindow>(_control.get());
+        _texture_window->set_visible(false);
 
         _go_to_room = std::make_unique<GoToRoom>(_control.get());
         _go_to_room->room_selected += [&](uint32_t room)
