@@ -3,42 +3,63 @@
 #include <sstream>
 
 #include <trview.ui/Label.h>
+#include <trview.ui/GroupBox.h>
 
 namespace trview
 {
     namespace
     {
+        const int WindowWidth = 80;
+        const int WindowHeight = 50;
         const int Width = 50;
-        const int Height = 30;
+        const int Height = 20;
     }
 
     GoToRoom::GoToRoom(ui::Control* parent)
     {
+        using namespace ui;
+        
         auto parent_size = parent->size();
 
-        auto label = std::make_unique<ui::Label>(
-            ui::Point(parent_size.width / 2.0f - Width / 2.0f,
-                      parent_size.height / 2.0f - Height / 2.0f),
-            ui::Size(Width, Height),
-            ui::Colour(1.0f, 0.25f, 0.25f, 0.25f),
+        auto window = std::make_unique<Window>(
+            Point(parent_size.width / 2.0f - WindowWidth / 2.0f, parent_size.height / 2.0f - WindowHeight / 2.0f),
+            Size(WindowWidth, WindowHeight),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        window->set_visible(false);
+
+        auto box = std::make_unique<GroupBox>(
+            Point(5, 0),
+            Size(WindowWidth - 10, WindowHeight),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Colour(1.0f, 1.0f, 1.0f, 1.0f),
+            L"Go to Room");
+
+        auto label = std::make_unique<Label>(
+            Point((WindowWidth - 10) / 2.0f - Width / 2.0f,
+                  (WindowHeight) / 2.0f - Height / 2.0f),
+            Size(Width, Height),
+            Colour(1.0f, 0.4f, 0.4f, 0.4f),
             L"",
             15.f,
-            ui::TextAlignment::Centre,
-            ui::ParagraphAlignment::Centre);
+            TextAlignment::Centre,
+            ParagraphAlignment::Centre);
 
-        label->set_visible(false);
         _label = label.get();
-        parent->add_child(std::move(label));
+        _window = window.get();
+
+        box->add_child(std::move(label));
+        window->add_child(std::move(box));
+        parent->add_child(std::move(window));
     }
 
     bool GoToRoom::visible() const
     {
-        return _label->visible();
+        return _window->visible();
     }
 
     void GoToRoom::toggle_visible()
     {
-        _label->set_visible(!visible());
+        _window->set_visible(!visible());
         if (visible())
         {
             _input.clear();
