@@ -426,6 +426,61 @@ namespace trview
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
+
+        _keyboard.register_key_down([&](uint16_t key)
+        {
+            switch (key)
+            {
+                case 'W':
+                {
+                    _free_forward = true;
+                    break;
+                }
+                case 'A':
+                {
+                    _free_left = true;
+                    break;
+                }
+                case 'D':
+                {
+                    _free_right = true;
+                    break;
+                }
+                case 'S':
+                {
+                    _free_backward = true;
+                    break;
+                }
+            }
+        });
+
+        _keyboard.register_key_up([&](uint16_t key)
+        {
+            switch (key)
+            {
+                case 'W':
+                {
+                    _free_forward = false;
+                    break;
+                }
+                case 'A':
+                {
+                    _free_left = false;
+                    break;
+                }
+                case 'D':
+                {
+                    _free_right = false;
+                    break;
+                }
+                case 'S':
+                {
+                    _free_backward = false;
+                    break;
+                }
+            }
+        });
+
         using namespace input;
         _mouse.mouse_down += [&](Mouse::Button button)
         {
@@ -503,42 +558,42 @@ namespace trview
         {
             switch (key)
             {
-            case 'R':
-                if (_keyboard.control())
+                case 'R':
+                    if (_keyboard.control())
+                    {
+                        _go_to_room->toggle_visible();
+                    }
+                    break;
+                case VK_PRIOR:
+                    cycle_back();
+                    break;
+                case VK_NEXT:
+                    cycle();
+                    break;
+                case VK_HOME:
+                    cycle_room_back();
+                    break;
+                case VK_END:
+                    cycle_room();
+                    break;
+                case VK_F1:
+                    toggle_room_window();
+                    break;
+                case VK_F2:
+                    toggle_texture_window();
+                    break;
+                case VK_RETURN:
+                    toggle_highlight();
+                    _room_highlight->set_state(_highlight);
+                    break;
+                case VK_INSERT:
                 {
-                    _go_to_room->toggle_visible();
+                    // Reset the camera to defaults.
+                    _camera.set_rotation_yaw(0.f);
+                    _camera.set_rotation_pitch(0.78539f);
+                    _camera.set_zoom(8.f);
+                    break;
                 }
-                break;
-            case VK_PRIOR:
-                cycle_back();
-                break;
-            case VK_NEXT:
-                cycle();
-                break;
-            case VK_HOME:
-                cycle_room_back();
-                break;
-            case VK_END:
-                cycle_room();
-                break;
-            case VK_F1:
-                toggle_room_window();
-                break;
-            case VK_F2:
-                toggle_texture_window();
-                break;
-            case VK_RETURN:
-                toggle_highlight();
-                _room_highlight->set_state(_highlight);
-                break;
-            case VK_INSERT:
-            {
-                // Reset the camera to defaults.
-                _camera.set_rotation_yaw(0.f);
-                _camera.set_rotation_pitch(0.78539f);
-                _camera.set_zoom(8.f);
-                break;
-            }
             }
         }
     }
@@ -553,6 +608,19 @@ namespace trview
 
     void Viewer::update_camera()
     {
+        if (_camera.mode() == Camera::Mode::Free)
+        {
+            if (_free_left || _free_right || _free_forward || _free_backward)
+            {
+                DirectX::XMVECTOR movement = DirectX::XMVectorSet(
+                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
+                    0,
+                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
+
+                const float Speed = 20;
+                _camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
+            }
+        }
     }
 
     void Viewer::generate_textures()

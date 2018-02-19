@@ -145,6 +145,12 @@ namespace trview
         // More buttons - the camera mode buttons this time.
         ui::Button* _orbit_mode;
         ui::Button* _free_mode;
+
+        // Camera movement.
+        bool _free_forward{ false };
+        bool _free_left{ false };
+        bool _free_right{ false };
+        bool _free_backward{ false };
     };
 }
 
