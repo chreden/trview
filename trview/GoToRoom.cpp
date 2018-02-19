@@ -31,7 +31,7 @@ namespace trview
             Point(5, 0),
             Size(WindowWidth - 10, WindowHeight),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 1.0f, 1.0f, 1.0f),
+            Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Go to Room");
 
         auto label = std::make_unique<Label>(

@@ -68,7 +68,7 @@ namespace trview
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::Window>(
             Point(0, 0),
-            Size(150.0f, 195.0f),
+            Size(150.0f, 230.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f));
 
         tool_window->add_child(generate_room_window(Point(5, 5)));
@@ -167,34 +167,42 @@ namespace trview
 
         auto camera_window = std::make_unique<GroupBox>(
             point,
-            Size(140, 80),
+            Size(140, 115),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Camera");
 
-        auto reset_camera = std::make_unique<ui::Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
+        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
         reset_camera->on_click += [&]() { _camera.reset(); }; 
 
-        auto reset_camera_label = std::make_unique<ui::Label>(
-            Point(32, 20), 
-            Size(40, 16), 
-            Colour(1.0f, 0.5f, 0.5f, 0.5f), 
-            L"Reset", 
-            10.0f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
+        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+
+        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        orbit_camera->on_click += [&]() {};
+
+        auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+
+        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        free_camera->on_click += [&]() {};
+
+        auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         // Camera section for the menu bar.
-        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 40), Size(120, 20));
-        
+        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
+        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
         camera_sensitivity->on_value_changed += [&](float value)
         {
             _camera_sensitivity = value;
         };
+        camera_sensitivity_box->add_child(std::move(camera_sensitivity));
 
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
-        camera_window->add_child(std::move(camera_sensitivity));
+        camera_window->add_child(std::move(orbit_camera));
+        camera_window->add_child(std::move(orbit_camera_label));
+        camera_window->add_child(std::move(free_camera));
+        camera_window->add_child(std::move(free_camera_label));
+        camera_window->add_child(std::move(camera_sensitivity_box));
         return camera_window;
     }
 
