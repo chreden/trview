@@ -7,6 +7,8 @@ namespace trview
     class Camera
     {
     public:
+        
+
                             Camera(uint32_t width, uint32_t height);
         float               rotation_yaw() const;
         float               rotation_pitch() const;
@@ -17,6 +19,7 @@ namespace trview
         void                set_rotation_pitch(float rotation);
         void                set_zoom(float zoom);
         void                reset();
+        DirectX::XMVECTOR   position() const;
     private:
         void calculate_projection_matrix(uint32_t width, uint32_t height);
         void calculate_view_matrix();
@@ -25,7 +28,9 @@ namespace trview
         const float default_yaw = 0.0f;
         const float default_zoom = 8.0f;
 
+        // This is the orbit target.
         DirectX::XMVECTOR _target;
+
         DirectX::XMMATRIX _view;
         DirectX::XMMATRIX _projection;
         DirectX::XMMATRIX _view_projection;

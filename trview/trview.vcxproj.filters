@@ -73,6 +73,9 @@
     <ClInclude Include="GoToRoom.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="FreeCamera.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="GoToRoom.cpp">
       <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCamera.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

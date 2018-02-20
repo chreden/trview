@@ -20,7 +20,7 @@
 namespace trview
 {
     Viewer::Viewer(Window window)
-        : _window(window), _camera(window.width(), window.height())
+        : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
     {
         initialise_d3d();
         initialise_input();
@@ -68,7 +68,7 @@ namespace trview
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::Window>(
             Point(0, 0),
-            Size(150.0f, 195.0f),
+            Size(150.0f, 230.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f));
 
         tool_window->add_child(generate_room_window(Point(5, 5)));
@@ -96,11 +96,13 @@ namespace trview
         room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
 
         auto neighbours_depth_label = std::make_unique<Label>(
-            Point(40, 20),
-            Size(40, 20),
+            Point(32, 20),
+            Size(40, 16),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             L"Depth",
-            10.f);
+            10.f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
 
         auto neighbours_depth = std::make_unique<NumericUpDown>(
             Point(90, 16),
@@ -142,11 +144,13 @@ namespace trview
             create_coloured_texture(0xff00ff00));
 
         auto room_highlight_label = std::make_unique<Label>(
-            Point(40, 20),
-            Size(40, 20),
+            Point(32, 20),
+            Size(40, 16),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             L"Highlight",
-            10.0f);
+            10.0f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
 
         room_highlight->on_click += [&]() { toggle_highlight(); };
         _room_highlight = room_highlight.get();
@@ -163,27 +167,68 @@ namespace trview
 
         auto camera_window = std::make_unique<GroupBox>(
             point,
-            Size(140, 80),
+            Size(140, 115),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Camera");
 
-        auto reset_camera = std::make_unique<ui::Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
+        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
         reset_camera->on_click += [&]() { _camera.reset(); }; 
 
-        auto reset_camera_label = std::make_unique<ui::Label>(Point(40, 20), Size(40, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f);
+        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+
+        auto update_camera_mode_buttons = [&]()
+        {
+            auto mode = _camera_mode;
+            _orbit_mode->set_state(mode == CameraMode::Orbit);
+            _free_mode->set_state(mode == CameraMode::Free);
+        };
+
+        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        orbit_camera->on_click += [&, update_camera_mode_buttons]()
+        { 
+            _camera_mode = CameraMode::Orbit;
+            update_camera_mode_buttons();
+        };
+
+        auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+
+        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        free_camera->on_click += [&, update_camera_mode_buttons]()
+        { 
+            _camera_mode = CameraMode::Free;
+            _free_camera.set_position(_camera.position());
+            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+            update_camera_mode_buttons();
+        };
+
+        auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         // Camera section for the menu bar.
-        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(12, 40), Size(120, 20));
-        
+        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
+        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
         camera_sensitivity->on_value_changed += [&](float value)
         {
             _camera_sensitivity = value;
         };
+        camera_sensitivity_box->add_child(std::move(camera_sensitivity));
+
+        // Take a copy of buttons that need to be tracked.
+        _orbit_mode = orbit_camera.get();
+        _free_mode = free_camera.get();
 
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
-        camera_window->add_child(std::move(camera_sensitivity));
+        camera_window->add_child(std::move(orbit_camera));
+        camera_window->add_child(std::move(orbit_camera_label));
+        camera_window->add_child(std::move(free_camera));
+        camera_window->add_child(std::move(free_camera_label));
+        camera_window->add_child(std::move(camera_sensitivity_box));
+
+        // Update the initial state of the buttons.
+        update_camera_mode_buttons();
+
         return camera_window;
     }
 
@@ -384,6 +429,81 @@ namespace trview
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
+
+        _keyboard.register_key_down([&](uint16_t key)
+        {
+            switch (key)
+            {
+                case 'Q':
+                {
+                    _free_down = true;
+                    break;
+                }
+                case 'E':
+                {
+                    _free_up = true;
+                    break;
+                }
+                case 'W':
+                {
+                    _free_forward = true;
+                    break;
+                }
+                case 'A':
+                {
+                    _free_left = true;
+                    break;
+                }
+                case 'D':
+                {
+                    _free_right = true;
+                    break;
+                }
+                case 'S':
+                {
+                    _free_backward = true;
+                    break;
+                }
+            }
+        });
+
+        _keyboard.register_key_up([&](uint16_t key)
+        {
+            switch (key)
+            {
+                case 'Q':
+                {
+                    _free_down = false;
+                    break;
+                }
+                case 'E':
+                {
+                    _free_up = false;
+                    break;
+                }
+                case 'W':
+                {
+                    _free_forward = false;
+                    break;
+                }
+                case 'A':
+                {
+                    _free_left = false;
+                    break;
+                }
+                case 'D':
+                {
+                    _free_right = false;
+                    break;
+                }
+                case 'S':
+                {
+                    _free_backward = false;
+                    break;
+                }
+            }
+        });
+
         using namespace input;
         _mouse.mouse_down += [&](Mouse::Button button)
         {
@@ -414,8 +534,23 @@ namespace trview
                 const float low_sensitivity = 200.0f;
                 const float high_sensitivity = 25.0f;
                 const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
-                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / sensitivity);
-                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / sensitivity);
+
+                if (_camera_mode == CameraMode::Orbit)
+                {
+                    const float yaw = _camera.rotation_yaw() + x / sensitivity;
+                    const float pitch = _camera.rotation_pitch() + y / sensitivity;
+
+                    _camera.set_rotation_yaw(yaw);
+                    _camera.set_rotation_pitch(pitch);
+                }
+                else
+                {
+                    const float yaw = _free_camera.rotation_yaw() + x / sensitivity;
+                    const float pitch = _free_camera.rotation_pitch() + y / sensitivity;
+
+                    _free_camera.set_rotation_yaw(yaw);
+                    _free_camera.set_rotation_pitch(pitch);
+                }
             }
 
             POINT cursor_pos;
@@ -461,42 +596,42 @@ namespace trview
         {
             switch (key)
             {
-            case 'R':
-                if (_keyboard.control())
+                case 'R':
+                    if (_keyboard.control())
+                    {
+                        _go_to_room->toggle_visible();
+                    }
+                    break;
+                case VK_PRIOR:
+                    cycle_back();
+                    break;
+                case VK_NEXT:
+                    cycle();
+                    break;
+                case VK_HOME:
+                    cycle_room_back();
+                    break;
+                case VK_END:
+                    cycle_room();
+                    break;
+                case VK_F1:
+                    toggle_room_window();
+                    break;
+                case VK_F2:
+                    toggle_texture_window();
+                    break;
+                case VK_RETURN:
+                    toggle_highlight();
+                    _room_highlight->set_state(_highlight);
+                    break;
+                case VK_INSERT:
                 {
-                    _go_to_room->toggle_visible();
+                    // Reset the camera to defaults.
+                    _camera.set_rotation_yaw(0.f);
+                    _camera.set_rotation_pitch(0.78539f);
+                    _camera.set_zoom(8.f);
+                    break;
                 }
-                break;
-            case VK_PRIOR:
-                cycle_back();
-                break;
-            case VK_NEXT:
-                cycle();
-                break;
-            case VK_HOME:
-                cycle_room_back();
-                break;
-            case VK_END:
-                cycle_room();
-                break;
-            case VK_F1:
-                toggle_room_window();
-                break;
-            case VK_F2:
-                toggle_texture_window();
-                break;
-            case VK_RETURN:
-                toggle_highlight();
-                _room_highlight->set_state(_highlight);
-                break;
-            case VK_INSERT:
-            {
-                // Reset the camera to defaults.
-                _camera.set_rotation_yaw(0.f);
-                _camera.set_rotation_pitch(0.78539f);
-                _camera.set_zoom(8.f);
-                break;
-            }
             }
         }
     }
@@ -511,6 +646,19 @@ namespace trview
 
     void Viewer::update_camera()
     {
+        if (_camera_mode == CameraMode::Free)
+        {
+            if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
+            {
+                DirectX::XMVECTOR movement = DirectX::XMVectorSet(
+                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
+                    _free_up ? 1 : 0 + _free_down ? -1 : 0,
+                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
+
+                const float Speed = 20;
+                _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
+            }
+        }
     }
 
     void Viewer::generate_textures()
@@ -652,7 +800,7 @@ namespace trview
 
         _camera.set_target(target_position);
 
-        auto view_projection = _camera.view_projection();
+        auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
 
         _context->PSSetSamplers(0, 1, &_sampler_state.p);
         _context->IASetInputLayout(_input_layout);

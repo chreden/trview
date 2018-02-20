@@ -50,6 +50,7 @@ namespace trview
     void Camera::calculate_view_matrix()
     {
         using namespace DirectX;
+
         XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
@@ -86,5 +87,13 @@ namespace trview
         set_rotation_yaw(default_yaw);
         set_rotation_pitch(default_pitch);
         set_zoom(default_zoom);
+    }
+
+    DirectX::XMVECTOR Camera::position() const
+    {
+        using namespace DirectX;
+        XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        return XMVector3TransformCoord(eye_position, rotate) + _target;
     }
 }
