@@ -42,7 +42,7 @@ namespace trview
         void generate_rooms();
         void generate_entities();
         void regenerate_neighbours();
-        void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
+        void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
         const trlevel::ILevel*             _level;
         std::vector<Texture>               _level_textures;

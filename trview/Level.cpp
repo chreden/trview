@@ -191,11 +191,11 @@ namespace trview
         _neighbours = std::set<uint16_t>{ _selected_room };
         if (_selected_room < _level->num_rooms())
         {
-            generate_neighbours(_neighbours, _selected_room, 1, _neighbour_depth);
+            generate_neighbours(_neighbours, _selected_room, _selected_room, 1, _neighbour_depth);
         }
     }
 
-    void Level::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
+    void Level::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
     {
         if (current_depth > max_depth)
         {
@@ -205,8 +205,11 @@ namespace trview
         const auto neighbours = _level_rooms[selected_room]->neighbours();
         for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
         {
-            all_rooms.insert(*room);
-            generate_neighbours(all_rooms, *room, current_depth + 1, max_depth);
+            if (*room != previous_room)
+            {
+                all_rooms.insert(*room);
+                generate_neighbours(all_rooms, selected_room, *room, current_depth + 1, max_depth);
+            }
         }
     }
 }
