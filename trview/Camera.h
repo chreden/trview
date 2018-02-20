@@ -40,7 +40,6 @@ namespace trview
         // This is the orbit target.
         DirectX::XMVECTOR _target;
         // This is the current free roam target.
-        DirectX::XMVECTOR _free_rotation;
         DirectX::XMVECTOR _free_position;
         DirectX::XMVECTOR _free_up;
         DirectX::XMVECTOR _free_forward;

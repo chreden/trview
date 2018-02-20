@@ -64,8 +64,8 @@ namespace trview
             }
             case Mode::Free:
             {
-                auto rotate = XMMatrixRotationRollPitchYawFromVector(_free_rotation);
-                XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+                auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+                XMVECTOR up_vector = XMVector3TransformCoord(_free_up, rotate);
                 auto target = XMVectorAdd(_free_position, XMVector3TransformCoord(_free_forward, rotate));
                 _view = XMMatrixLookAtLH(_free_position, target, up_vector);
                 break;
@@ -129,7 +129,8 @@ namespace trview
                 eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
 
                 _free_position = eye_position;
-                _free_rotation = XMVectorSet(0, 0, 0, 0);
+                _rotation_yaw = 0;
+                _rotation_pitch = 0;
 
                 _free_forward = XMVector3Normalize(XMVectorSubtract(_target, _free_position));
                 _free_up = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 0), rotate);
@@ -148,10 +149,14 @@ namespace trview
     {
         using namespace DirectX;
 
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        auto free_forward = XMVector3TransformCoord(_free_forward, rotate);
+        auto free_right = XMVector3TransformCoord(_free_right, rotate);
+
         XMFLOAT3 move;
         XMStoreFloat3(&move, movement);
-        auto forward = XMVectorScale(_free_forward, move.z);
-        auto right = XMVectorScale(_free_right, move.x);
+        auto forward = XMVectorScale(free_forward, move.z);
+        auto right = XMVectorScale(free_right, move.x);
         _free_position = XMVectorAdd(_free_position, XMVectorAdd(forward, right));
     }
 }
