@@ -20,7 +20,7 @@
 namespace trview
 {
     Viewer::Viewer(Window window)
-        : _window(window), _camera(window.width(), window.height())
+        : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
     {
         initialise_d3d();
         initialise_input();
@@ -179,15 +179,15 @@ namespace trview
 
         auto update_camera_mode_buttons = [&]()
         {
-            auto mode = _camera.mode();
-            _orbit_mode->set_state(mode == Camera::Mode::Orbit);
-            _free_mode->set_state(mode == Camera::Mode::Free);
+            auto mode = _camera_mode;
+            _orbit_mode->set_state(mode == CameraMode::Orbit);
+            _free_mode->set_state(mode == CameraMode::Free);
         };
 
         auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
         orbit_camera->on_click += [&, update_camera_mode_buttons]()
         { 
-            _camera.set_mode(Camera::Mode::Orbit);
+            _camera_mode = CameraMode::Orbit;
             update_camera_mode_buttons();
         };
 
@@ -196,7 +196,10 @@ namespace trview
         auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
         free_camera->on_click += [&, update_camera_mode_buttons]()
         { 
-            _camera.set_mode(Camera::Mode::Free); 
+            _camera_mode = CameraMode::Free;
+            _free_camera.set_position(_camera.position());
+            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
             update_camera_mode_buttons();
         };
 
@@ -511,8 +514,23 @@ namespace trview
                 const float low_sensitivity = 200.0f;
                 const float high_sensitivity = 25.0f;
                 const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
-                _camera.set_rotation_yaw(_camera.rotation_yaw() + x / sensitivity);
-                _camera.set_rotation_pitch(_camera.rotation_pitch() + y / sensitivity);
+
+                if (_camera_mode == CameraMode::Orbit)
+                {
+                    const float yaw = _camera.rotation_yaw() + x / sensitivity;
+                    const float pitch = _camera.rotation_pitch() + y / sensitivity;
+
+                    _camera.set_rotation_yaw(yaw);
+                    _camera.set_rotation_pitch(pitch);
+                }
+                else
+                {
+                    const float yaw = _free_camera.rotation_yaw() + x / sensitivity;
+                    const float pitch = _free_camera.rotation_pitch() + y / sensitivity;
+
+                    _free_camera.set_rotation_yaw(yaw);
+                    _free_camera.set_rotation_pitch(pitch);
+                }
             }
 
             POINT cursor_pos;
@@ -608,17 +626,17 @@ namespace trview
 
     void Viewer::update_camera()
     {
-        if (_camera.mode() == Camera::Mode::Free)
+        if (_camera_mode == CameraMode::Free)
         {
             if (_free_left || _free_right || _free_forward || _free_backward)
             {
                 DirectX::XMVECTOR movement = DirectX::XMVectorSet(
-                    _free_left ? 1 : 0 + _free_right ? -1 : 0,
+                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
                     0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
 
                 const float Speed = 20;
-                _camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
+                _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
             }
         }
     }
@@ -762,7 +780,7 @@ namespace trview
 
         _camera.set_target(target_position);
 
-        auto view_projection = _camera.view_projection();
+        auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
 
         _context->PSSetSamplers(0, 1, &_sampler_state.p);
         _context->IASetInputLayout(_input_layout);

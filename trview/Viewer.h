@@ -20,6 +20,7 @@
 
 #include "Timer.h"
 #include "Camera.h"
+#include "FreeCamera.h"
 #include "Window.h"
 
 #include <trview.input/Keyboard.h>
@@ -118,6 +119,8 @@ namespace trview
 
         
         Camera _camera;
+        FreeCamera _free_camera;
+
         input::Keyboard _keyboard;
         input::Mouse _mouse;
         float _camera_sensitivity{ 0.0f };
@@ -147,6 +150,17 @@ namespace trview
         ui::Button* _free_mode;
 
         // Camera movement.
+        
+        // Defines the behaviour of the camera.
+        enum class CameraMode
+        {
+            // The camera is orbiting around the centre of a room.
+            Orbit,
+            // The camera is free roaming - the user is in control.
+            Free
+        };
+
+        CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
         bool _free_left{ false };
         bool _free_right{ false };

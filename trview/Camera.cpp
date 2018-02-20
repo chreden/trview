@@ -51,27 +51,11 @@ namespace trview
     {
         using namespace DirectX;
 
-        switch (_mode)
-        {
-            case Mode::Orbit:
-            {
-                XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
-                auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-                eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
-                XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
-                _view = XMMatrixLookAtLH(eye_position, _target, up_vector);
-                break;
-            }
-            case Mode::Free:
-            {
-                auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-                XMVECTOR up_vector = XMVector3TransformCoord(_free_up, rotate);
-                auto target = XMVectorAdd(_free_position, XMVector3TransformCoord(_free_forward, rotate));
-                _view = XMMatrixLookAtLH(_free_position, target, up_vector);
-                break;
-            }
-        }
-
+        XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
+        XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+        _view = XMMatrixLookAtLH(eye_position, _target, up_vector);
         _view_projection = _view * _projection;
     }
 
@@ -105,58 +89,11 @@ namespace trview
         set_zoom(default_zoom);
     }
 
-    Camera::Mode Camera::mode() const
-    {
-        return _mode;
-    }
-
-    void Camera::set_mode(Mode mode)
-    {
-        if (mode == _mode)
-        {
-            return;
-        }
-        _mode = mode;
-
-        switch (mode)
-        {
-            case Mode::Free:
-            {
-                using namespace DirectX;
-
-                XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
-                auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-                eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
-
-                _free_position = eye_position;
-                _rotation_yaw = 0;
-                _rotation_pitch = 0;
-
-                _free_forward = XMVector3Normalize(XMVectorSubtract(_target, _free_position));
-                _free_up = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 0), rotate);
-                _free_right = XMVector3Cross(_free_forward, _free_up);
-                break;
-            }
-            case Mode::Orbit:
-            {
-                reset();
-                break;
-            }
-        }
-    }
-
-    void Camera::move(DirectX::XMVECTOR movement)
+    DirectX::XMVECTOR Camera::position() const
     {
         using namespace DirectX;
-
+        XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-        auto free_forward = XMVector3TransformCoord(_free_forward, rotate);
-        auto free_right = XMVector3TransformCoord(_free_right, rotate);
-
-        XMFLOAT3 move;
-        XMStoreFloat3(&move, movement);
-        auto forward = XMVectorScale(free_forward, move.z);
-        auto right = XMVectorScale(free_right, move.x);
-        _free_position = XMVectorAdd(_free_position, XMVectorAdd(forward, right));
+        return XMVector3TransformCoord(eye_position, rotate) + _target;
     }
 }

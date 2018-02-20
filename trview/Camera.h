@@ -7,14 +7,7 @@ namespace trview
     class Camera
     {
     public:
-        // Defines the behaviour of the camera.
-        enum class Mode
-        {
-            // The camera is orbiting around the centre of a room.
-            Orbit,
-            // The camera is free roaming - the user is in control.
-            Free
-        };
+        
 
                             Camera(uint32_t width, uint32_t height);
         float               rotation_yaw() const;
@@ -26,9 +19,7 @@ namespace trview
         void                set_rotation_pitch(float rotation);
         void                set_zoom(float zoom);
         void                reset();
-        Mode                mode() const;
-        void                set_mode(Mode mode);
-        void                move(DirectX::XMVECTOR movement);
+        DirectX::XMVECTOR   position() const;
     private:
         void calculate_projection_matrix(uint32_t width, uint32_t height);
         void calculate_view_matrix();
@@ -39,11 +30,6 @@ namespace trview
 
         // This is the orbit target.
         DirectX::XMVECTOR _target;
-        // This is the current free roam target.
-        DirectX::XMVECTOR _free_position;
-        DirectX::XMVECTOR _free_up;
-        DirectX::XMVECTOR _free_forward;
-        DirectX::XMVECTOR _free_right;
 
         DirectX::XMMATRIX _view;
         DirectX::XMMATRIX _projection;
@@ -51,6 +37,5 @@ namespace trview
         float             _rotation_yaw{ default_yaw };
         float             _rotation_pitch{ default_pitch };
         float             _zoom{ default_zoom };
-        Mode              _mode{ Mode::Orbit };
     };
 }

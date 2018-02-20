@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
