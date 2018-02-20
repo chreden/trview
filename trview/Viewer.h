@@ -165,6 +165,8 @@ namespace trview
         bool _free_left{ false };
         bool _free_right{ false };
         bool _free_backward{ false };
+        bool _free_up{ false };
+        bool _free_down{ false };
     };
 }
 

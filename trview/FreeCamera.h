@@ -25,10 +25,7 @@ namespace trview
         DirectX::XMMATRIX _projection;
         DirectX::XMMATRIX _view_projection;
 
-        DirectX::XMVECTOR _free_forward;
-        DirectX::XMVECTOR _free_right;
-        DirectX::XMVECTOR _free_up;
-        DirectX::XMVECTOR _free_position;
+        DirectX::XMVECTOR _position;
 
         float _rotation_yaw{ 0.0f };
         float _rotation_pitch{ 0.0f };

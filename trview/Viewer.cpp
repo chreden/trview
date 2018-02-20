@@ -434,6 +434,16 @@ namespace trview
         {
             switch (key)
             {
+                case 'Q':
+                {
+                    _free_down = true;
+                    break;
+                }
+                case 'E':
+                {
+                    _free_up = true;
+                    break;
+                }
                 case 'W':
                 {
                     _free_forward = true;
@@ -461,6 +471,16 @@ namespace trview
         {
             switch (key)
             {
+                case 'Q':
+                {
+                    _free_down = false;
+                    break;
+                }
+                case 'E':
+                {
+                    _free_up = false;
+                    break;
+                }
                 case 'W':
                 {
                     _free_forward = false;
@@ -628,11 +648,11 @@ namespace trview
     {
         if (_camera_mode == CameraMode::Free)
         {
-            if (_free_left || _free_right || _free_forward || _free_backward)
+            if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
                 DirectX::XMVECTOR movement = DirectX::XMVectorSet(
                     _free_left ? -1 : 0 + _free_right ? 1 : 0,
-                    0,
+                    _free_up ? 1 : 0 + _free_down ? -1 : 0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
 
                 const float Speed = 20;
