@@ -119,7 +119,7 @@ namespace trlevel
         std::vector<int16_t> zones = read_vector<int16_t>(file, boxes.size() * 10);
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
         _object_textures = read_vector<uint32_t, tr_object_texture>(file);
-        std::vector<tr2_entity> entities = read_vector<uint32_t, tr2_entity>(file);
+        _entities = read_vector<uint32_t, tr2_entity>(file);
         std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
         std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
         std::vector<uint8_t> demo_data = read_vector<uint16_t, uint8_t>(file);
@@ -180,5 +180,15 @@ namespace trlevel
     uint16_t Level::get_floor_data(uint32_t index) const
     {
         return _floor_data[index];
+    }
+
+    uint32_t Level::num_entities() const
+    {
+        return _entities.size();
+    }
+
+    tr2_entity Level::get_entity(uint32_t index) const 
+    {
+        return _entities[index];
     }
 }

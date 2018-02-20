@@ -81,6 +81,7 @@ namespace trview
         // textiles loaded in the level.
         void generate_textures();
         void generate_rooms();
+        void generate_entities();
         // Draw the 3d elements of the scene.
         void render_scene();
         // Draw the user interface elements of the scene.
@@ -117,7 +118,6 @@ namespace trview
         Timer _timer;
         bool _highlight{ false };
 
-        
         Camera _camera;
         FreeCamera _free_camera;
 

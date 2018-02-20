@@ -53,5 +53,14 @@ namespace trlevel
         // index: The index of the floor data to get.
         // Returns: The floor data.
         virtual uint16_t get_floor_data(uint32_t index) const = 0;
+
+        // Get the number of entities in the level.
+        // Returns: The number of entities.
+        virtual uint32_t num_entities() const = 0;
+
+        // Get the entity at the specified index.
+        // index: The index of the entity to get.
+        // Returns: The entity.
+        virtual tr2_entity get_entity(uint32_t index) const = 0;
     };
 }

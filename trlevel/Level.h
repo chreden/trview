@@ -59,6 +59,15 @@ namespace trlevel
         // index: The index of the floor data to get.
         // Returns: The floor data.
         virtual uint16_t get_floor_data(uint32_t index) const override;
+
+        // Get the number of entities in the level.
+        // Returns: The number of entities.
+        virtual uint32_t num_entities() const override;
+
+        // Get the entity at the specified index.
+        // index: The index of the entity to get.
+        // Returns: The entity.
+        virtual tr2_entity get_entity(uint32_t index) const override;
     private:
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
@@ -71,5 +80,6 @@ namespace trlevel
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
         std::vector<uint16_t>          _floor_data;
+        std::vector<tr2_entity>        _entities;
     };
 }

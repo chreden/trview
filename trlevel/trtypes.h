@@ -343,6 +343,12 @@ namespace trlevel
         uint8_t reverb_info;
         uint8_t filler;
     };
+
+    struct tr_entity
+    {
+
+    };
+
 #pragma pack(pop)
 
     // Convert a 16 bit textile into a 32 bit argb value.

@@ -714,6 +714,15 @@ namespace trview
         }
     }
 
+    void Viewer::generate_entities()
+    {
+        const uint32_t num_entities = _current_level->num_entities();
+        for (uint32_t i = 0; i < num_entities; ++i)
+        {
+            auto entity = _current_level->get_entity(i);
+        }
+    }
+
     void Viewer::open(const std::wstring filename)
     {
         _level_textures.clear();
