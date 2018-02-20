@@ -196,6 +196,8 @@ namespace trview
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             auto entity = _level->get_entity(i);
+
+            
         }
     }
 

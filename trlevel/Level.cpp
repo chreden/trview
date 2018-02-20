@@ -108,7 +108,7 @@ namespace trlevel
         // std::vector<tr_meshtree_node> mesh_trees = read_vector<uint32_t, tr_meshtree_node>(file);
         std::vector<tr2_meshtree> mesh_trees = read_vector<uint32_t, tr2_meshtree>(file);
         std::vector<uint16_t> frames = read_vector<uint32_t, uint16_t>(file);
-        std::vector<tr_model> models = read_vector<uint32_t, tr_model>(file);
+        _models = read_vector<uint32_t, tr_model>(file);
         std::vector<tr_staticmesh> static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
         std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
@@ -190,5 +190,15 @@ namespace trlevel
     tr2_entity Level::get_entity(uint32_t index) const 
     {
         return _entities[index];
+    }
+
+    uint32_t Level::num_models() const
+    {
+        return _models.size();
+    }
+
+    tr_model Level::get_model(uint32_t index) const
+    {
+        return _models[index];
     }
 }

@@ -62,5 +62,14 @@ namespace trlevel
         // index: The index of the entity to get.
         // Returns: The entity.
         virtual tr2_entity get_entity(uint32_t index) const = 0;
+
+        // Get the number of models in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_models() const = 0;
+
+        // Get the model at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_model get_model(uint32_t index) const = 0;
     };
 }
