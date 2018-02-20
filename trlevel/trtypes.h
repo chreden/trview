@@ -139,7 +139,7 @@ namespace trlevel
     {
         uint32_t ID;           // Type Identifier (matched in Entities[])
         uint16_t NumMeshes;    // Number of meshes in this object
-        uint16_t StartingMesh; // Stating mesh (offset into MeshPointers[])
+        uint16_t StartingMesh; // Starting mesh (offset into MeshPointers[])
         uint32_t MeshTree;     // Offset into MeshTree[]
         uint32_t FrameOffset;  // Byte offset into Frames[] (divide by 2 for Frames[i])
         uint16_t Animation;    // Offset into Animations[]

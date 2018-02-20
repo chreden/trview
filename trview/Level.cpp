@@ -58,13 +58,13 @@ namespace trview
 
         generate_textures();
         generate_rooms();
-        regenerate_neighbours();
+        generate_entities();
     }
 
     std::vector<RoomInfo> Level::room_info() const
     {
         std::vector<RoomInfo> room_infos;
-        for (const auto& r : _level_rooms)
+        for (const auto& r : _rooms)
         {
             room_infos.push_back(r->info());
         }
@@ -73,7 +73,7 @@ namespace trview
 
     std::vector<Texture> Level::level_textures() const
     {
-        return _level_textures;
+        return _textures;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -83,7 +83,16 @@ namespace trview
 
     void Level::set_highlight_mode(RoomHighlightMode mode)
     {
+        if (_room_highlight_mode == mode)
+        {
+            return;
+        }
+        
         _room_highlight_mode = mode;
+        if (_room_highlight_mode == RoomHighlightMode::Neighbours)
+        {
+            regenerate_neighbours();
+        }
     }
 
     void Level::set_selected_room(uint16_t index)
@@ -112,17 +121,17 @@ namespace trview
         {
             case RoomHighlightMode::None:
             {
-                for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+                for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _level_rooms[i]->render(context, view_projection, _level_textures, Room::SelectionMode::Selected);
+                    _rooms[i]->render(context, view_projection, _textures, Room::SelectionMode::Selected);
                 }
                 break;
             }
             case RoomHighlightMode::Highlight:
             {
-                for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+                for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _level_rooms[i]->render(context, view_projection, _level_textures, _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    _rooms[i]->render(context, view_projection, _textures, _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
                 }
                 break;
             }
@@ -130,7 +139,7 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    _level_rooms[i]->render(context, view_projection, _level_textures, i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    _rooms[i]->render(context, view_projection, _textures, i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
                 }
                 break;
             }
@@ -139,7 +148,7 @@ namespace trview
 
     void Level::generate_textures()
     {
-        _level_textures.clear();
+        _textures.clear();
 
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < _level->num_textiles(); ++i)
@@ -174,7 +183,7 @@ namespace trview
             Texture tex;
             _device->CreateTexture2D(&desc, &srd, &tex.texture);
             _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
-            _level_textures.push_back(tex);
+            _textures.push_back(tex);
         }
     }
 
@@ -186,7 +195,7 @@ namespace trview
             auto room = _level->get_room(i);
 
             // Convert that room into a Room that we can use in the UI.
-            _level_rooms.push_back(std::make_unique<Room>(_device, *_level, room));
+            _rooms.push_back(std::make_unique<Room>(_device, *_level, room));
         }
     }
 
@@ -196,8 +205,8 @@ namespace trview
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             auto entity = _level->get_entity(i);
-
-            
+            auto model = _level->get_model(entity.TypeID);
+            _entities.push_back(std::make_unique<Entity>());
         }
     }
 
@@ -217,7 +226,7 @@ namespace trview
             return;
         }
 
-        const auto neighbours = _level_rooms[selected_room]->neighbours();
+        const auto neighbours = _rooms[selected_room]->neighbours();
         for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
         {
             if (*room != previous_room)

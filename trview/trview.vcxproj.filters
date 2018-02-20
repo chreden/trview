@@ -82,6 +82,9 @@
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
     </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">

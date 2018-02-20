@@ -9,6 +9,7 @@
 #include <trlevel/ILevel.h>
 
 #include "Room.h"
+#include "Entity.h"
 
 namespace trview
 {
@@ -44,9 +45,10 @@ namespace trview
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
-        const trlevel::ILevel*             _level;
-        std::vector<Texture>               _level_textures;
-        std::vector<std::unique_ptr<Room>> _level_rooms;
+        const trlevel::ILevel*               _level;
+        std::vector<Texture>                 _textures;
+        std::vector<std::unique_ptr<Room>>   _rooms;
+        std::vector<std::unique_ptr<Entity>> _entities;
 
         CComPtr<ID3D11Device>       _device;
         CComPtr<ID3D11VertexShader> _vertex_shader;

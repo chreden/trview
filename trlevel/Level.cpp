@@ -100,7 +100,7 @@ namespace trlevel
         _floor_data = read_vector<uint32_t, uint16_t>(file);
 
         std::vector<uint16_t> mesh_data = read_vector<uint32_t, uint16_t>(file);
-        std::vector<uint32_t> mesh_pointers = read_vector < uint32_t, uint32_t>(file);
+        std::vector<uint32_t> mesh_pointers = read_vector <uint32_t, uint32_t>(file);
         std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
