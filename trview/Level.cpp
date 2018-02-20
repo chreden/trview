@@ -108,18 +108,31 @@ namespace trview
         context->PSSetShader(_pixel_shader, nullptr, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        if (_room_highlight_mode == RoomHighlightMode::Neighbours)
+        switch (_room_highlight_mode)
         {
-            for (uint16_t i : _neighbours)
+            case RoomHighlightMode::None:
             {
-                _level_rooms[i]->render(context, view_projection, _level_textures, i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+                {
+                    _level_rooms[i]->render(context, view_projection, _level_textures, Room::SelectionMode::Selected);
+                }
+                break;
             }
-        }
-        else
-        {
-            for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+            case RoomHighlightMode::Highlight:
             {
-                _level_rooms[i]->render(context, view_projection, _level_textures, (_room_highlight_mode == RoomHighlightMode::Highlight && _selected_room == i) ? Room::SelectionMode::Selected : _room_highlight_mode == RoomHighlightMode::Highlight ? Room::SelectionMode::NotSelected : Room::SelectionMode::Selected);
+                for (std::size_t i = 0; i < _level_rooms.size(); ++i)
+                {
+                    _level_rooms[i]->render(context, view_projection, _level_textures, _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                }
+                break;
+            }
+            case RoomHighlightMode::Neighbours:
+            {
+                for (uint16_t i : _neighbours)
+                {
+                    _level_rooms[i]->render(context, view_projection, _level_textures, i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                }
+                break;
             }
         }
     }
