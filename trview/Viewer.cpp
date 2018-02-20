@@ -613,7 +613,7 @@ namespace trview
             if (_free_left || _free_right || _free_forward || _free_backward)
             {
                 DirectX::XMVECTOR movement = DirectX::XMVectorSet(
-                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
+                    _free_left ? 1 : 0 + _free_right ? -1 : 0,
                     0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
 

@@ -64,7 +64,10 @@ namespace trview
             }
             case Mode::Free:
             {
-                _view = XMMatrixLookAtLH(_free_position, _free_position + _free_direction, _free_up);
+                auto rotate = XMMatrixRotationRollPitchYawFromVector(_free_rotation);
+                XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+                auto target = XMVectorAdd(_free_position, XMVector3TransformCoord(_free_forward, rotate));
+                _view = XMMatrixLookAtLH(_free_position, target, up_vector);
                 break;
             }
         }
@@ -125,10 +128,12 @@ namespace trview
                 auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
                 eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
 
-                
                 _free_position = eye_position;
-                _free_direction = XMVector3Normalize(XMVectorSubtract(_target, _free_position));
+                _free_rotation = XMVectorSet(0, 0, 0, 0);
+
+                _free_forward = XMVector3Normalize(XMVectorSubtract(_target, _free_position));
                 _free_up = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 0), rotate);
+                _free_right = XMVector3Cross(_free_forward, _free_up);
                 break;
             }
             case Mode::Orbit:
@@ -143,13 +148,10 @@ namespace trview
     {
         using namespace DirectX;
 
-        auto forward = XMVectorSet(0, 0, 1, 0);
-        float angle = 0.0f;
-        XMStoreFloat(&angle, XMVector3AngleBetweenVectors(forward, _free_direction));
-
-        auto axis = XMVector3Cross(forward, XMVector3Normalize(_free_direction));
-        auto rotate = XMMatrixRotationAxis(axis, angle);
-        auto move = XMVector3TransformCoord(movement, rotate);
-        _free_position = XMVectorAdd(_free_position, move);
+        XMFLOAT3 move;
+        XMStoreFloat3(&move, movement);
+        auto forward = XMVectorScale(_free_forward, move.z);
+        auto right = XMVectorScale(_free_right, move.x);
+        _free_position = XMVectorAdd(_free_position, XMVectorAdd(forward, right));
     }
 }
