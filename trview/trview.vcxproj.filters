@@ -26,6 +26,9 @@
     <Filter Include="Timer">
       <UniqueIdentifier>{f6bf7276-a60a-4b23-bd8a-c5fbe83b236c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Level">
+      <UniqueIdentifier>{93f99320-fae2-4478-8cf9-1cc514c4b144}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -76,6 +79,9 @@
     <ClInclude Include="FreeCamera.h">
       <Filter>Program</Filter>
     </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>View\Level</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -113,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="FreeCamera.cpp">
       <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>View\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

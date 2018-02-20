@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
     <ClCompile Include="RoomWindow.cpp" />
