@@ -109,7 +109,7 @@ namespace trlevel
         std::vector<tr2_meshtree> mesh_trees = read_vector<uint32_t, tr2_meshtree>(file);
         std::vector<uint16_t> frames = read_vector<uint32_t, uint16_t>(file);
         _models = read_vector<uint32_t, tr_model>(file);
-        std::vector<tr_staticmesh> static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+        _static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
         std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
@@ -126,6 +126,12 @@ namespace trlevel
         std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
+
+        // Generate the meshes?
+
+
+
+
     }
 
     Level::~Level()
@@ -200,5 +206,15 @@ namespace trlevel
     tr_model Level::get_model(uint32_t index) const
     {
         return _models[index];
+    }
+
+    uint32_t Level::num_static_meshes() const
+    {
+        return _static_meshes.size();
+    }
+
+    tr_staticmesh Level::get_static_mesh(uint32_t index) const
+    {
+        return _static_meshes[index];
     }
 }

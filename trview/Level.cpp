@@ -199,13 +199,21 @@ namespace trview
         }
     }
 
+    void Level::generate_static_meshes()
+    {
+        const uint32_t num_static_meshes = _level->num_static_meshes();
+        for (uint32_t i = 0; i < num_static_meshes; ++i)
+        {
+            auto static_mesh = _level->get_static_mesh(i);
+        }
+    }
+
     void Level::generate_entities()
     {
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             auto entity = _level->get_entity(i);
-            auto model = _level->get_model(entity.TypeID);
             _entities.push_back(std::make_unique<Entity>());
         }
     }

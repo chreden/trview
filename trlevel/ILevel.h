@@ -71,5 +71,14 @@ namespace trlevel
         // index: The index of the model to get.
         // Returns: The model.
         virtual tr_model get_model(uint32_t index) const = 0;
+
+        // Get the number of static meshes in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_static_meshes() const = 0;
+
+        // Get the static mesh at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_staticmesh get_static_mesh(uint32_t index) const = 0;
     };
 }

@@ -77,6 +77,15 @@ namespace trlevel
         // index: The index of the model to get.
         // Returns: The model.
         virtual tr_model get_model(uint32_t index) const override;
+
+        // Get the number of static meshes in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_static_meshes() const override;
+
+        // Get the static mesh at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_staticmesh get_static_mesh(uint32_t index) const override;
     private:
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
@@ -91,5 +100,6 @@ namespace trlevel
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;
+        std::vector<tr_staticmesh>     _static_meshes;
     };
 }

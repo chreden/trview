@@ -41,6 +41,7 @@ namespace trview
         // textiles loaded in the level.
         void generate_textures();
         void generate_rooms();
+        void generate_static_meshes();
         void generate_entities();
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
