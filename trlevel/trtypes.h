@@ -349,6 +349,19 @@ namespace trlevel
 
     };
 
+    struct tr_mesh
+    {
+        tr_vertex              centre;
+        int32_t                coll_radius;
+        std::vector<tr_vertex> vertices;
+        std::vector<tr_vertex> normals;
+        std::vector<int16_t>   lights;
+        std::vector<tr_face4>  textured_rectangles;
+        std::vector<tr_face3>  textured_triangles;
+        std::vector<tr_face4>  coloured_rectangles;
+        std::vector<tr_face3>  coloured_triangles;
+    };
+
 #pragma pack(pop)
 
     // Convert a 16 bit textile into a 32 bit argb value.

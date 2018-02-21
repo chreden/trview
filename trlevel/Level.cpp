@@ -1,13 +1,14 @@
 #include "Level.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 namespace trlevel
 {
     namespace
     {
         template <typename T>
-        T read(std::ifstream& file)
+        T read(std::istream& file)
         {
             T value;
             file.read(reinterpret_cast<char*>(&value), sizeof(value));
@@ -15,7 +16,7 @@ namespace trlevel
         }
 
         template < typename DataType, typename SizeType >
-        std::vector<DataType> read_vector(std::ifstream& file, SizeType size)
+        std::vector<DataType> read_vector(std::istream& file, SizeType size)
         {
             std::vector<DataType> data;
             for (SizeType i = 0; i < size; ++i)
@@ -26,7 +27,7 @@ namespace trlevel
         }
 
         template < typename SizeType, typename DataType >
-        std::vector<DataType> read_vector(std::ifstream& file)
+        std::vector<DataType> read_vector(std::istream& file)
         {
             auto size = read<SizeType>(file);
             return read_vector<DataType, SizeType>(file, size);
@@ -127,15 +128,52 @@ namespace trlevel
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
 
-        // Generate the meshes?
-
-
-
-
+        generate_meshes(mesh_data, mesh_pointers);
     }
 
     Level::~Level()
     {
+    }
+
+    void Level::generate_meshes(std::vector<uint16_t> mesh_data, std::vector<uint32_t> mesh_pointers)
+    {
+        // As well as reading the actual mesh data, generate a map of mesh_pointer to 
+        // mesh. It seems that a lot of the pointers point to the same mesh.
+
+        std::string data(reinterpret_cast<char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
+        std::istringstream stream(data, std::ios::binary);
+        for (uint32_t pointer : mesh_pointers)
+        {
+            // Does the map already contain this mesh? If so, don't bother reading it again.
+            auto found = _meshes.find(pointer);
+            if (found != _meshes.end())
+            {
+                continue;
+            }
+
+            stream.seekg(pointer, std::ios::beg);
+
+            tr_mesh mesh;
+            mesh.centre = read<tr_vertex>(stream);
+            mesh.coll_radius = read<int32_t>(stream);
+            mesh.vertices = read_vector<int16_t, tr_vertex>(stream);
+
+            int16_t normals = read<int16_t>(stream);
+            if (normals > 0)
+            {
+                mesh.normals = read_vector<tr_vertex>(stream, normals);
+            }
+            else
+            {
+                mesh.lights = read_vector<int16_t>(stream, abs(normals));
+            }
+            
+            mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
+            mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
+            mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
+            mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
+            _meshes.insert({ pointer, mesh });
+        }
     }
 
     tr_colour Level::get_palette_entry(uint32_t index) const
@@ -216,5 +254,10 @@ namespace trlevel
     tr_staticmesh Level::get_static_mesh(uint32_t index) const
     {
         return _static_meshes[index];
+    }
+
+    tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
+    {
+        return _meshes.find(mesh_pointer)->second;
     }
 }

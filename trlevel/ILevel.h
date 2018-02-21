@@ -80,5 +80,10 @@ namespace trlevel
         // index: The index of the model to get.
         // Returns: The model.
         virtual tr_staticmesh get_static_mesh(uint32_t index) const = 0;
+
+        // Get the mesh referenced by the specified mesh pointer.
+        // mesh_pointer: The mesh pointer index.
+        // Returns: The mesh.
+        virtual tr_mesh get_mesh_by_pointer(uint32_t mesh_pointer) const = 0;
     };
 }
