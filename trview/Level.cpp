@@ -59,6 +59,7 @@ namespace trview
         generate_textures();
         generate_rooms();
         generate_entities();
+        generate_static_meshes();
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -199,12 +200,29 @@ namespace trview
         }
     }
 
+    Mesh* Level::get_mesh(uint32_t mesh_pointer)
+    {
+        auto found = _meshes.find(mesh_pointer);
+        if (found != _meshes.end())
+        {
+            return found->second.get();
+        }
+
+        auto level_mesh = _level->get_mesh_by_pointer(mesh_pointer);
+        auto new_mesh = std::make_unique<Mesh>(level_mesh);
+        Mesh* mesh = new_mesh.get();
+        _meshes.insert({ mesh_pointer, std::move(new_mesh) });
+        return mesh;
+    }
+
     void Level::generate_static_meshes()
     {
         const uint32_t num_static_meshes = _level->num_static_meshes();
         for (uint32_t i = 0; i < num_static_meshes; ++i)
         {
-            auto static_mesh = _level->get_static_mesh(i);
+            auto level_static_mesh = _level->get_static_mesh(i);
+            auto static_mesh = std::make_unique<StaticMesh>(level_static_mesh, get_mesh(level_static_mesh.Mesh));
+            _static_meshes.push_back(std::move(static_mesh));
         }
     }
 

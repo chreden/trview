@@ -84,6 +84,6 @@ namespace trlevel
         // Get the mesh referenced by the specified mesh pointer.
         // mesh_pointer: The mesh pointer index.
         // Returns: The mesh.
-        virtual tr_mesh get_mesh_by_pointer(uint32_t mesh_pointer) const = 0;
+        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const = 0;
     };
 }

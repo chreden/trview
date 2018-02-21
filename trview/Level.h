@@ -4,12 +4,15 @@
 #include <atlbase.h>
 #include <d3d11.h>
 #include <vector>
-#include <trview.common/Texture.h>
+#include <unordered_map>
 
+#include <trview.common/Texture.h>
 #include <trlevel/ILevel.h>
 
 #include "Room.h"
 #include "Entity.h"
+#include "Mesh.h"
+#include "StaticMesh.h"
 
 namespace trview
 {
@@ -61,5 +64,11 @@ namespace trview
         uint16_t           _selected_room{ 0u };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
+
+        // Mesh storage.
+        Mesh* get_mesh(uint32_t mesh_pointer);
+
+        std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;
+        std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
     };
 }

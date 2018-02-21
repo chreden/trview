@@ -91,9 +91,9 @@ namespace trlevel
         // Get the mesh at the specified index.
         // index: The index of the mesh to get.
         // Returns: The mesh.
-        virtual tr_mesh get_mesh_by_pointer(uint32_t mesh_pointer) const override;
+        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
     private:
-        void generate_meshes(std::vector<uint16_t> mesh_data, std::vector<uint32_t> mesh_pointers);
+        void generate_meshes(std::vector<uint16_t> mesh_data);
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
@@ -112,5 +112,6 @@ namespace trlevel
 
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;
+        std::vector<uint32_t>                 _mesh_pointers;
     };
 }

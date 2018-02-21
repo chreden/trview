@@ -101,7 +101,7 @@ namespace trlevel
         _floor_data = read_vector<uint32_t, uint16_t>(file);
 
         std::vector<uint16_t> mesh_data = read_vector<uint32_t, uint16_t>(file);
-        std::vector<uint32_t> mesh_pointers = read_vector <uint32_t, uint32_t>(file);
+        _mesh_pointers = read_vector<uint32_t, uint32_t>(file);
         std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
@@ -128,21 +128,21 @@ namespace trlevel
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
 
-        generate_meshes(mesh_data, mesh_pointers);
+        generate_meshes(mesh_data);
     }
 
     Level::~Level()
     {
     }
 
-    void Level::generate_meshes(std::vector<uint16_t> mesh_data, std::vector<uint32_t> mesh_pointers)
+    void Level::generate_meshes(std::vector<uint16_t> mesh_data)
     {
         // As well as reading the actual mesh data, generate a map of mesh_pointer to 
         // mesh. It seems that a lot of the pointers point to the same mesh.
 
         std::string data(reinterpret_cast<char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
         std::istringstream stream(data, std::ios::binary);
-        for (uint32_t pointer : mesh_pointers)
+        for (auto pointer : _mesh_pointers)
         {
             // Does the map already contain this mesh? If so, don't bother reading it again.
             auto found = _meshes.find(pointer);
@@ -256,8 +256,9 @@ namespace trlevel
         return _static_meshes[index];
     }
 
-    tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
+    tr_mesh Level::get_mesh_by_pointer(uint16_t mesh_pointer) const
     {
-        return _meshes.find(mesh_pointer)->second;
+        auto index = _mesh_pointers[mesh_pointer];
+        return _meshes.find(index)->second;
     }
 }

@@ -85,6 +85,12 @@
     <ClInclude Include="Entity.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticMesh.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -125,6 +131,12 @@
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>View\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticMesh.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
