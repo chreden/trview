@@ -49,6 +49,9 @@ namespace trview
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
+        void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+        void render_static_meshes(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+
         const trlevel::ILevel*               _level;
         std::vector<Texture>                 _textures;
         std::vector<std::unique_ptr<Room>>   _rooms;
@@ -65,7 +68,9 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
-        // Mesh storage.
+        // Get the mesh referenced the mesh pointer index specified.
+        // mesh_pointer: The mesh pointer index.
+        // Returns: The mesh.
         Mesh* get_mesh(uint32_t mesh_pointer);
 
         std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;

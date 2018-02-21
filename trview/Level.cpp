@@ -118,6 +118,12 @@ namespace trview
         context->PSSetShader(_pixel_shader, nullptr, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+        render_rooms(context, view_projection);
+        render_static_meshes(context, view_projection);
+    }
+
+    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    {
         switch (_room_highlight_mode)
         {
             case RoomHighlightMode::None:
@@ -144,6 +150,14 @@ namespace trview
                 }
                 break;
             }
+        }
+    }
+
+    void Level::render_static_meshes(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    {
+        for (auto& mesh : _static_meshes)
+        {
+            
         }
     }
 
