@@ -157,7 +157,7 @@ namespace trview
     {
         for (auto& mesh : _static_meshes)
         {
-            
+            mesh->render(context, view_projection);
         }
     }
 
@@ -223,7 +223,7 @@ namespace trview
         }
 
         auto level_mesh = _level->get_mesh_by_pointer(mesh_pointer);
-        auto new_mesh = std::make_unique<Mesh>(level_mesh);
+        auto new_mesh = std::make_unique<Mesh>(level_mesh, _device);
         Mesh* mesh = new_mesh.get();
         _meshes.insert({ mesh_pointer, std::move(new_mesh) });
         return mesh;
