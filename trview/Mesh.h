@@ -15,5 +15,6 @@ namespace trview
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection);
     private:
+        CComPtr<ID3D11Buffer> _vertex_buffer;
     };
 }
