@@ -29,6 +29,13 @@ namespace trview
         std::vector<mesh_vertex> vertices;
         for(const auto& vert : mesh.vertices)
         {
+            // vertices.push_back(
+            //     {
+            //         // convert the vertex
+            //         vert,
+            //         texture_storage.get_uv(face.texture, 0),
+            //         texture_storage.get_texture(face.texture)
+            //     });
             // pos is vert.position
             // uv is got from the level.
             // texture is got from the level too....
