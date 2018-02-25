@@ -15,10 +15,10 @@ namespace trview
         _position = XMVectorAdd(_visibility_min, XMVectorScale(XMVectorSubtract(_visibility_max, _visibility_min), 0.5f));
     }
 
-    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage)
     {
         using namespace DirectX;
         auto world_view_projection = XMMatrixTranslationFromVector(_position);
-        _mesh->render(context, world_view_projection);
+        _mesh->render(context, world_view_projection, texture_storage);
     }
 }

@@ -9,6 +9,7 @@
 
 namespace trview
 {
+    struct ITextureStorage;
     class Mesh;
 
     class StaticMesh
@@ -16,7 +17,7 @@ namespace trview
     public:
         StaticMesh(const trlevel::tr_staticmesh& static_mesh, Mesh* mesh);
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage);
     private:
         DirectX::XMVECTOR _position;
         DirectX::XMVECTOR _visibility_min;
