@@ -58,7 +58,7 @@ namespace trview
         // Create the texture sampler state.
         _device->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        generate_textures();
+        _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
         generate_rooms();
         generate_entities();
         generate_static_meshes();
@@ -166,11 +166,6 @@ namespace trview
         {
             mesh->render(context, view_projection);
         }
-    }
-
-    void Level::generate_textures()
-    {
-        _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
     }
 
     void Level::generate_rooms()
