@@ -14,6 +14,8 @@
 #include "Mesh.h"
 #include "StaticMesh.h"
 
+#include "ITextureStorage.h"
+
 namespace trview
 {
     class Level
@@ -75,5 +77,7 @@ namespace trview
 
         std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
+
+        std::unique_ptr<ITextureStorage> _texture_storage;
     };
 }

@@ -26,6 +26,8 @@ namespace trview
 
     Mesh::Mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device)
     {
+        return;
+
         std::vector<mesh_vertex> vertices;
         for(const auto& vert : mesh.vertices)
         {

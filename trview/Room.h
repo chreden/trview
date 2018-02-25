@@ -16,6 +16,8 @@
 
 namespace trview
 {
+    struct ITextureStorage;
+
     class Room
     {
     public:
@@ -26,14 +28,17 @@ namespace trview
             Neighbour
         };
 
-        explicit Room(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        explicit Room(CComPtr<ID3D11Device> device, 
+            const trlevel::ILevel& level, 
+            const trlevel::tr3_room& room,
+            const ITextureStorage& texture_storage);
 
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, std::vector<Texture>& level_textures, SelectionMode selected);
     private:
-        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
 
         RoomInfo                           _info;

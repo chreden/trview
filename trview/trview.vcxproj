@@ -155,6 +155,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
+    <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="resource.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="TextureWindow.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="trview.h" />
@@ -176,6 +178,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
+    <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -188,6 +191,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TextureStorage.cpp" />
     <ClCompile Include="TextureWindow.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="trview.cpp" />

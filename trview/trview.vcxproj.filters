@@ -29,6 +29,9 @@
     <Filter Include="View\Level">
       <UniqueIdentifier>{93f99320-fae2-4478-8cf9-1cc514c4b144}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Textures">
+      <UniqueIdentifier>{0ebffe13-9bad-4cf5-ab30-021d6dcc3553}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -91,6 +94,12 @@
     <ClInclude Include="StaticMesh.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="TextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ITextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -137,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="ITextureStorage.cpp">
+      <Filter>View\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

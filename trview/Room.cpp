@@ -2,18 +2,23 @@
 #include "Room.h"
 #include "RoomVertex.h"
 
+#include "ITextureStorage.h"
+
 #include <directxmath.h>
 #include <array>
 
 namespace trview
 {
-    Room::Room(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    Room::Room(CComPtr<ID3D11Device> device, 
+        const trlevel::ILevel& level, 
+        const trlevel::tr3_room& room,
+        const ITextureStorage& texture_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
         using namespace DirectX;
         _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         
-        generate_geometry(level, room);
+        generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
     }
 
@@ -80,7 +85,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage)
     {
         using namespace DirectX;
 
@@ -98,13 +103,6 @@ namespace trview
             return XMFLOAT3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
         };
 
-        auto get_uv = [&](const trlevel::tr_object_texture& texture, std::size_t index)
-        {
-            // Find the the point in the object map.
-            auto vert = texture.Vertices[index];
-            return XMFLOAT2(vert.Xpixel / 255.0f, vert.Ypixel / 255.0f);
-        };
-
         for (const auto& rect : room.data.rectangles)
         {
             // What is selected inside the texture portion?
@@ -117,12 +115,11 @@ namespace trview
             // Select UVs - otherwise they will be 0.
             if (rect.texture < level.num_object_textures())
             {
-                auto texture = level.get_object_texture(rect.texture);
                 for (int i = 0; i < uvs.size(); ++i)
                 {
-                    uvs[i] = get_uv(texture, i);
+                    uvs[i] = texture_storage.uv(rect.texture, i);
                 }
-                tex_indices_ptr = &indices[texture.TileAndFlag & 0x7fff];
+                tex_indices_ptr = &indices[texture_storage.tile(rect.texture)];
             }
             else
             {
@@ -159,12 +156,11 @@ namespace trview
             // Select UVs - otherwise they will be 0.
             if (tri.texture < level.num_object_textures())
             {
-                auto texture = level.get_object_texture(tri.texture);
                 for (int i = 0; i < uvs.size(); ++i)
                 {
-                    uvs[i] = get_uv(texture, i);
+                    uvs[i] = texture_storage.uv(tri.texture, i);
                 }
-                tex_indices_ptr = &indices[texture.TileAndFlag & 0x7fff];
+                tex_indices_ptr = &indices[texture_storage.tile(tri.texture)];
             }
             else
             {

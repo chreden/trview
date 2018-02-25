@@ -3,6 +3,8 @@
 
 #include <trview.common/FileLoader.h>
 
+#include "TextureStorage.h"
+
 namespace trview
 {
     Level::Level(CComPtr<ID3D11Device> device, const trlevel::ILevel* level)
@@ -163,7 +165,7 @@ namespace trview
 
     void Level::generate_textures()
     {
-        _textures.clear();
+        _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
 
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < _level->num_textiles(); ++i)
@@ -210,7 +212,7 @@ namespace trview
             auto room = _level->get_room(i);
 
             // Convert that room into a Room that we can use in the UI.
-            _rooms.push_back(std::make_unique<Room>(_device, *_level, room));
+            _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get()));
         }
     }
 
