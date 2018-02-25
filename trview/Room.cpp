@@ -32,7 +32,7 @@ namespace trview
         return _neighbours;
     }
 
-    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, std::vector<Texture>& level_textures, SelectionMode selected)
+    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -71,7 +71,8 @@ namespace trview
             auto& index_buffer = _index_buffers[i];
             if (index_buffer)
             {
-                context->PSSetShaderResources(0, 1, &level_textures[i].view.p);
+                auto texture = texture_storage.texture(i);
+                context->PSSetShaderResources(0, 1, &texture.view.p);
                 context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
             }

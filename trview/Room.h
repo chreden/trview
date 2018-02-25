@@ -36,7 +36,7 @@ namespace trview
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, std::vector<Texture>& level_textures, SelectionMode selected);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);

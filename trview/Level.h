@@ -55,7 +55,6 @@ namespace trview
         void render_static_meshes(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
 
         const trlevel::ILevel*               _level;
-        std::vector<Texture>                 _textures;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Entity>> _entities;
 

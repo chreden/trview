@@ -63,4 +63,9 @@ namespace trview
     {
         return _object_textures[texture_index].TileAndFlag & 0x7FFF;
     }
+
+    uint32_t TextureStorage::num_tiles() const
+    {
+        return _tiles.size();
+    }
 }

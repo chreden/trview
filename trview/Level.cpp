@@ -76,7 +76,12 @@ namespace trview
 
     std::vector<Texture> Level::level_textures() const
     {
-        return _textures;
+        std::vector<Texture> textures;
+        for (uint32_t i = 0; i < _texture_storage->num_tiles(); ++i)
+        {
+            textures.push_back(_texture_storage->texture(i));
+        }
+        return textures;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -132,7 +137,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, _textures, Room::SelectionMode::Selected);
+                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), Room::SelectionMode::Selected);
                 }
                 break;
             }
@@ -140,7 +145,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, _textures, _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
                 }
                 break;
             }
@@ -148,7 +153,7 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    _rooms[i]->render(context, view_projection, _textures, i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
                 }
                 break;
             }
@@ -166,42 +171,6 @@ namespace trview
     void Level::generate_textures()
     {
         _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
-
-        // Load the textures from the level and then allow to cycle through them?
-        for (uint32_t i = 0; i < _level->num_textiles(); ++i)
-        {
-            auto t16 = _level->get_textile16(i);
-
-            std::vector<uint32_t> data(256 * 256, 0u);
-
-            uint32_t index = 0;
-            for (auto t : t16.Tile)
-            {
-                data[index++] = trlevel::convert_textile16(t);
-            }
-
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &data[0];
-            srd.SysMemPitch = sizeof(uint32_t) * 256;
-
-            D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = 256;
-            desc.Height = 256;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-
-            Texture tex;
-            _device->CreateTexture2D(&desc, &srd, &tex.texture);
-            _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
-            _textures.push_back(tex);
-        }
     }
 
     void Level::generate_rooms()

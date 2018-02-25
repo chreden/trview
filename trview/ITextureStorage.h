@@ -15,5 +15,7 @@ namespace trview
         virtual DirectX::XMFLOAT2 uv(uint32_t texture_index, uint32_t uv_index) const = 0;
 
         virtual uint32_t tile(uint32_t texture_index) const = 0;
+
+        virtual uint32_t num_tiles() const = 0;
     };
 }
