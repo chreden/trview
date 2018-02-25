@@ -3,6 +3,7 @@
 #include "RoomVertex.h"
 
 #include "ITextureStorage.h"
+#include "IMeshStorage.h"
 
 #include <directxmath.h>
 #include <array>
@@ -12,7 +13,8 @@ namespace trview
     Room::Room(CComPtr<ID3D11Device> device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
-        const ITextureStorage& texture_storage)
+        const ITextureStorage& texture_storage,
+        const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
         using namespace DirectX;
@@ -20,6 +22,7 @@ namespace trview
         
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
+        generate_static_meshes(level, room, mesh_storage);
     }
 
     RoomInfo Room::info() const
@@ -83,6 +86,22 @@ namespace trview
             context->PSSetShaderResources(0, 1, &_untextured_texture.view.p);
             context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
+        }
+
+        for (const auto& mesh : _static_meshes)
+        {
+            mesh->render(context, view_projection, texture_storage);
+        }
+    }
+
+    void Room::generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
+    {
+        for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
+        {
+            auto room_mesh = room.static_meshes[i];
+            auto level_static_mesh = level.get_static_mesh(room_mesh.mesh_id);
+            auto static_mesh = std::make_unique<StaticMesh>(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh));
+            _static_meshes.push_back(std::move(static_mesh));
         }
     }
 

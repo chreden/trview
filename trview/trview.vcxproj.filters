@@ -32,6 +32,9 @@
     <Filter Include="View\Textures">
       <UniqueIdentifier>{0ebffe13-9bad-4cf5-ab30-021d6dcc3553}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Mesh">
+      <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -100,6 +103,12 @@
     <ClInclude Include="ITextureStorage.h">
       <Filter>View\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="MeshStorage.h">
+      <Filter>View\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="IMeshStorage.h">
+      <Filter>View\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -152,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshStorage.cpp">
+      <Filter>View\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="IMeshStorage.cpp">
+      <Filter>View\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

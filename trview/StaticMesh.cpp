@@ -4,21 +4,23 @@
 
 namespace trview
 {
-    StaticMesh::StaticMesh(const trlevel::tr_staticmesh& static_mesh, Mesh* mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh)
         : _mesh(mesh),
-        _visibility_min(DirectX::XMVectorSet(static_mesh.VisibilityBox.MinX, static_mesh.VisibilityBox.MinY, static_mesh.VisibilityBox.MinZ, 0)),
-        _visibility_max(DirectX::XMVectorSet(static_mesh.VisibilityBox.MaxX, static_mesh.VisibilityBox.MaxY, static_mesh.VisibilityBox.MaxZ, 0)),
-        _collision_min(DirectX::XMVectorSet(static_mesh.CollisionBox.MinX, static_mesh.CollisionBox.MinY, static_mesh.CollisionBox.MinZ, 0)),
-        _collision_max(DirectX::XMVectorSet(static_mesh.CollisionBox.MaxX, static_mesh.CollisionBox.MaxY, static_mesh.CollisionBox.MaxZ, 0))
+        _visibility_min(DirectX::XMVectorSet(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ, 0)),
+        _visibility_max(DirectX::XMVectorSet(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ, 0)),
+        _collision_min(DirectX::XMVectorSet(level_static_mesh.CollisionBox.MinX, level_static_mesh.CollisionBox.MinY, level_static_mesh.CollisionBox.MinZ, 0)),
+        _collision_max(DirectX::XMVectorSet(level_static_mesh.CollisionBox.MaxX, level_static_mesh.CollisionBox.MaxY, level_static_mesh.CollisionBox.MaxZ, 0))
     {
         using namespace DirectX;
-        _position = XMVectorAdd(_visibility_min, XMVectorScale(XMVectorSubtract(_visibility_max, _visibility_min), 0.5f));
+        _rotation = XMConvertToRadians(static_mesh.rotation / 16384.0f * 90.0f);
+        _position = XMVectorSet(static_mesh.x / 1024.0f, static_mesh.y / -1024.0f, static_mesh.z / 1024.0f, 1);
     }
 
     void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage)
     {
         using namespace DirectX;
-        auto world_view_projection = XMMatrixTranslationFromVector(_position);
+        auto world_view_projection = 
+            XMMatrixMultiply(XMMatrixMultiply(XMMatrixRotationY(_rotation),XMMatrixTranslationFromVector(_position)), view_projection);
         _mesh->render(context, world_view_projection, texture_storage);
     }
 }

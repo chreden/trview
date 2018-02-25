@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <set>
+#include <memory>
 
 #include <d3d11.h>
 #include <atlbase.h>
@@ -14,9 +15,12 @@
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
 
+#include "StaticMesh.h"
+
 namespace trview
 {
     struct ITextureStorage;
+    struct IMeshStorage;
 
     class Room
     {
@@ -31,7 +35,8 @@ namespace trview
         explicit Room(CComPtr<ID3D11Device> device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
-            const ITextureStorage& texture_storage);
+            const ITextureStorage& texture_storage,
+            const IMeshStorage& mesh_storage);
 
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
@@ -40,9 +45,12 @@ namespace trview
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
+
+        std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         // Rendering bits:
         CComPtr<ID3D11Device>              _device;

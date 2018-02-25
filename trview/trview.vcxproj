@@ -155,9 +155,11 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
+    <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
@@ -178,9 +180,11 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
+    <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
     <ClCompile Include="RoomWindow.cpp" />

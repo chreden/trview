@@ -4,6 +4,7 @@
 #include <trview.common/FileLoader.h>
 
 #include "TextureStorage.h"
+#include "MeshStorage.h"
 
 namespace trview
 {
@@ -59,9 +60,9 @@ namespace trview
         _device->CreateSamplerState(&sampler_desc, &_sampler_state);
 
         _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
+        _mesh_storage = std::make_unique<MeshStorage>(_device, *_level, *_texture_storage.get());
         generate_rooms();
         generate_entities();
-        generate_static_meshes();
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -126,7 +127,6 @@ namespace trview
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         render_rooms(context, view_projection);
-        render_static_meshes(context, view_projection);
     }
 
     void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
@@ -160,14 +160,6 @@ namespace trview
         }
     }
 
-    void Level::render_static_meshes(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
-    {
-        for (auto& mesh : _static_meshes)
-        {
-            mesh->render(context, view_projection, *_texture_storage.get());
-        }
-    }
-
     void Level::generate_rooms()
     {
         const uint16_t num_rooms = _level->num_rooms();
@@ -176,33 +168,7 @@ namespace trview
             auto room = _level->get_room(i);
 
             // Convert that room into a Room that we can use in the UI.
-            _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get()));
-        }
-    }
-
-    Mesh* Level::get_mesh(uint32_t mesh_pointer)
-    {
-        auto found = _meshes.find(mesh_pointer);
-        if (found != _meshes.end())
-        {
-            return found->second.get();
-        }
-
-        auto level_mesh = _level->get_mesh_by_pointer(mesh_pointer);
-        auto new_mesh = std::make_unique<Mesh>(level_mesh, _device, *_texture_storage.get());
-        Mesh* mesh = new_mesh.get();
-        _meshes.insert({ mesh_pointer, std::move(new_mesh) });
-        return mesh;
-    }
-
-    void Level::generate_static_meshes()
-    {
-        const uint32_t num_static_meshes = _level->num_static_meshes();
-        for (uint32_t i = 0; i < num_static_meshes; ++i)
-        {
-            auto level_static_mesh = _level->get_static_mesh(i);
-            auto static_mesh = std::make_unique<StaticMesh>(level_static_mesh, get_mesh(level_static_mesh.Mesh));
-            _static_meshes.push_back(std::move(static_mesh));
+            _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
         }
     }
 

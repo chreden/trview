@@ -15,6 +15,7 @@
 #include "StaticMesh.h"
 
 #include "ITextureStorage.h"
+#include "IMeshStorage.h"
 
 namespace trview
 {
@@ -42,17 +43,12 @@ namespace trview
         void set_selected_room(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
     private:
-        // Generate the textures that will be used to render the level based on the
-        // textiles loaded in the level.
-        void generate_textures();
         void generate_rooms();
-        void generate_static_meshes();
         void generate_entities();
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
         void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
-        void render_static_meshes(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
@@ -69,14 +65,7 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
-        // Get the mesh referenced the mesh pointer index specified.
-        // mesh_pointer: The mesh pointer index.
-        // Returns: The mesh.
-        Mesh* get_mesh(uint32_t mesh_pointer);
-
-        std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;
-        std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
-
         std::unique_ptr<ITextureStorage> _texture_storage;
+        std::unique_ptr<IMeshStorage> _mesh_storage;
     };
 }

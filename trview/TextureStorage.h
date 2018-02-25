@@ -15,6 +15,7 @@ namespace trview
     {
     public:
         explicit TextureStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level);
+        virtual ~TextureStorage() = default;
         virtual Texture           texture(uint32_t tile_index) const override;
         virtual DirectX::XMFLOAT2 uv(uint32_t texture_index, uint32_t uv_index) const override;
         virtual uint32_t          tile(uint32_t texture_index) const override;
