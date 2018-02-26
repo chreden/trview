@@ -69,7 +69,7 @@ namespace trview
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::StackPanel>(
             Point(0, 0),
-            Size(150.0f, 230.0f),
+            Size(150.0f, 290.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f),
             Size(5, 5));
 
@@ -155,7 +155,7 @@ namespace trview
 
         auto rooms_groups = std::make_unique<GroupBox>(
             Point(0,0),
-            Size(140, 50),
+            Size(140, 110),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Rooms");
@@ -178,8 +178,34 @@ namespace trview
         room_highlight->on_click += [&]() { toggle_highlight(); };
         _room_highlight = room_highlight.get();
 
+        auto room_box = std::make_unique<GroupBox>(
+            Point(12, 40),
+            Size(120, 60),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Colour(1.0f, 0.0f, 0.0f, 0.0f),
+            L"Room");
+
+        auto room_controls = std::make_unique<StackPanel>(
+            Point(12, 12),
+            Size(96, 36),
+            Colour(1.f, 0.5f, 0.5f, 0.5f),
+            Size(5, 0),
+            StackPanel::Direction::Horizontal);
+
+        auto previous = std::make_unique<Button>(Point(0,0), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        auto room_num = std::make_unique<Label>(Point(0,0), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"0", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
+        auto room_sum = std::make_unique<Label>(Point(0, 0), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"100", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
+        auto next = std::make_unique<Button>(Point(0, 0), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+
+        room_controls->add_child(std::move(previous));
+        room_controls->add_child(std::move(room_num));
+        room_controls->add_child(std::move(room_sum));
+        room_controls->add_child(std::move(next));
+        room_box->add_child(std::move(room_controls));
+
         rooms_groups->add_child(std::move(room_highlight));
         rooms_groups->add_child(std::move(room_highlight_label));
+        rooms_groups->add_child(std::move(room_box));
 
         return rooms_groups;
     }

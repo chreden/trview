@@ -4,8 +4,8 @@ namespace trview
 {
     namespace ui
     {
-        StackPanel::StackPanel(Point position, Size size, Colour colour, Size padding)
-            : Window(position, size, colour), _padding(padding)
+        StackPanel::StackPanel(Point position, Size size, Colour colour, Size padding, Direction direction)
+            : Window(position, size, colour), _padding(padding), _direction(direction)
         {
         }
 
@@ -23,7 +23,9 @@ namespace trview
                 auto last = current_child_elements.back();
                 auto last_position = last->position();
                 auto last_size = last->size();
-                return Point(_padding.width, last_position.y + last_size.height + _padding.height);
+                return _direction == Direction::Vertical ?
+                    Point(_padding.width, last_position.y + last_size.height + _padding.height) :
+                    Point(last_position.x + last_size.width + _padding.width, _padding.height);
             }
             return Point(_padding.width, _padding.height);
         }
