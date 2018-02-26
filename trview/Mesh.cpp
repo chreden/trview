@@ -23,6 +23,7 @@ namespace trview
 
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<mesh_vertex> vertices;
+        std::vector<uint32_t> untextured_indices;
 
         auto get_vertex = [&](std::size_t index, const trlevel::tr_mesh& mesh)
         {
@@ -82,6 +83,35 @@ namespace trview
             tex_indices.push_back(base + 2);
         }
 
+        for (const auto& rect : mesh.coloured_rectangles)
+        {
+            auto base = vertices.size();
+            for (int i = 0; i < 4; ++i)
+            {
+                vertices.push_back({ get_vertex(rect.vertices[i], mesh), XMFLOAT2{ 0,0 }, texture_storage.palette_from_texture(rect.texture)});
+            }
+
+            untextured_indices.push_back(base);
+            untextured_indices.push_back(base + 1);
+            untextured_indices.push_back(base + 2);
+            untextured_indices.push_back(base + 2);
+            untextured_indices.push_back(base + 3);
+            untextured_indices.push_back(base + 0);
+        }
+
+        for (const auto& tri : mesh.coloured_triangles)
+        {
+            auto base = vertices.size();
+            for (int i = 0; i < 3; ++i)
+            {
+                vertices.push_back({ get_vertex(tri.vertices[i], mesh), XMFLOAT2{ 0,0 }, texture_storage.palette_from_texture(tri.texture) });
+            }
+
+            untextured_indices.push_back(base);
+            untextured_indices.push_back(base + 1);
+            untextured_indices.push_back(base + 2);
+        }
+
         if (!vertices.empty())
         {
             D3D11_BUFFER_DESC vertex_desc;
@@ -119,6 +149,23 @@ namespace trview
                 CComPtr<ID3D11Buffer> index_buffer;
                 hr = device->CreateBuffer(&index_desc, &index_data, &index_buffer);
                 _index_buffers.push_back(index_buffer);
+            }
+
+            if (!untextured_indices.empty())
+            {
+                D3D11_BUFFER_DESC index_desc;
+                memset(&index_desc, 0, sizeof(index_desc));
+                index_desc.Usage = D3D11_USAGE_DEFAULT;
+                index_desc.ByteWidth = sizeof(uint32_t) * untextured_indices.size();
+                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+                D3D11_SUBRESOURCE_DATA index_data;
+                memset(&index_data, 0, sizeof(index_data));
+                index_data.pSysMem = &untextured_indices[0];
+
+                CComPtr<ID3D11Buffer> index_buffer;
+                hr = device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
+                _untextured_index_count = untextured_indices.size();
             }
 
             D3D11_BUFFER_DESC matrix_desc;
@@ -175,6 +222,14 @@ namespace trview
                 context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
             }
+        }
+
+        if (_untextured_index_count)
+        {
+            auto texture = texture_storage.untextured();
+            context->PSSetShaderResources(0, 1, &texture.view.p);
+            context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+            context->DrawIndexed(_untextured_index_count, 0, 0);
         }
     }
 }

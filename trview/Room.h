@@ -60,7 +60,6 @@ namespace trview
         CComPtr<ID3D11Buffer>              _untextured_index_buffer;
         uint32_t                           _untextured_index_count;
         CComPtr<ID3D11Buffer>              _matrix_buffer;
-        Texture                            _untextured_texture;
         DirectX::XMMATRIX                  _room_offset;
     };
 }

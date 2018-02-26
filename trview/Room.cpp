@@ -83,7 +83,8 @@ namespace trview
 
         if (_untextured_index_count)
         {
-            context->PSSetShaderResources(0, 1, &_untextured_texture.view.p);
+            auto texture = texture_storage.untextured();
+            context->PSSetShaderResources(0, 1, &texture.view.p);
             context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
         }
@@ -144,9 +145,7 @@ namespace trview
             else
             {
                 tex_indices_ptr = &untextured_indices;
-                auto palette_index = (rect.texture & 0x7FFF) >> 8;
-                auto palette = level.get_palette_entry_16(palette_index);
-                colour = XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+                colour = texture_storage.palette_from_texture(rect.texture);
             }
 
             auto base = vertices.size();
@@ -185,9 +184,7 @@ namespace trview
             else
             {
                 tex_indices_ptr = &untextured_indices;
-                auto palette_index = (tri.texture & 0x7FFF) >> 8;
-                auto palette = level.get_palette_entry_16(palette_index);
-                colour = XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+                colour = texture_storage.palette_from_texture(tri.texture);
             }
 
             auto base = vertices.size();
@@ -267,27 +264,6 @@ namespace trview
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
             _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
-
-            uint32_t pixel = 0xffffffff;
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &pixel;
-            srd.SysMemPitch = sizeof(uint32_t);
-
-            D3D11_TEXTURE2D_DESC tex_desc;
-            memset(&tex_desc, 0, sizeof(tex_desc));
-            tex_desc.Width = 1;
-            tex_desc.Height = 1;
-            tex_desc.MipLevels = tex_desc.ArraySize = 1;
-            tex_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            tex_desc.SampleDesc.Count = 1;
-            tex_desc.Usage = D3D11_USAGE_DEFAULT;
-            tex_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            tex_desc.CPUAccessFlags = 0;
-            tex_desc.MiscFlags = 0;
-
-            _device->CreateTexture2D(&tex_desc, &srd, &_untextured_texture.texture);
-            _device->CreateShaderResourceView(_untextured_texture.texture, nullptr, &_untextured_texture.view);
         }
     }
 

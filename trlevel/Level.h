@@ -84,9 +84,9 @@ namespace trlevel
         virtual uint32_t num_static_meshes() const override;
 
         // Get the static mesh at the specfied index.
-        // index: The index of the model to get.
+        // index: The mesh ID of the model to get.
         // Returns: The model.
-        virtual tr_staticmesh get_static_mesh(uint32_t index) const override;
+        virtual tr_staticmesh get_static_mesh(uint32_t mesh_id) const override;
 
         // Get the mesh at the specified index.
         // index: The index of the mesh to get.
@@ -108,7 +108,7 @@ namespace trlevel
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;
-        std::vector<tr_staticmesh>     _static_meshes;
+        std::unordered_map<uint32_t, tr_staticmesh> _static_meshes;
 
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;

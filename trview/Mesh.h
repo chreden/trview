@@ -21,5 +21,7 @@ namespace trview
         std::vector<uint32_t>              _index_counts;
         std::vector<CComPtr<ID3D11Buffer>> _index_buffers;
         CComPtr<ID3D11Buffer>              _matrix_buffer;
+        CComPtr<ID3D11Buffer>              _untextured_index_buffer;
+        uint32_t                           _untextured_index_count;
     };
 }

@@ -110,7 +110,13 @@ namespace trlevel
         std::vector<tr2_meshtree> mesh_trees = read_vector<uint32_t, tr2_meshtree>(file);
         std::vector<uint16_t> frames = read_vector<uint32_t, uint16_t>(file);
         _models = read_vector<uint32_t, tr_model>(file);
-        _static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+        
+        auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+        for (const auto& mesh : static_meshes)
+        {
+            _static_meshes.insert({ mesh.ID, mesh });
+        }
+
         std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
@@ -251,9 +257,9 @@ namespace trlevel
         return _static_meshes.size();
     }
 
-    tr_staticmesh Level::get_static_mesh(uint32_t index) const
+    tr_staticmesh Level::get_static_mesh(uint32_t mesh_id) const
     {
-        return _static_meshes[index];
+        return _static_meshes.find(mesh_id)->second;
     }
 
     tr_mesh Level::get_mesh_by_pointer(uint16_t mesh_pointer) const
