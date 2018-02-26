@@ -2,19 +2,27 @@
 #include "Room.h"
 #include "RoomVertex.h"
 
+#include "ITextureStorage.h"
+#include "IMeshStorage.h"
+
 #include <directxmath.h>
 #include <array>
 
 namespace trview
 {
-    Room::Room(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    Room::Room(CComPtr<ID3D11Device> device, 
+        const trlevel::ILevel& level, 
+        const trlevel::tr3_room& room,
+        const ITextureStorage& texture_storage,
+        const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
         using namespace DirectX;
         _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         
-        generate_geometry(level, room);
+        generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
+        generate_static_meshes(level, room, mesh_storage);
     }
 
     RoomInfo Room::info() const
@@ -27,7 +35,7 @@ namespace trview
         return _neighbours;
     }
 
-    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, std::vector<Texture>& level_textures, SelectionMode selected)
+    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -66,7 +74,8 @@ namespace trview
             auto& index_buffer = _index_buffers[i];
             if (index_buffer)
             {
-                context->PSSetShaderResources(0, 1, &level_textures[i].view.p);
+                auto texture = texture_storage.texture(i);
+                context->PSSetShaderResources(0, 1, &texture.view.p);
                 context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
             }
@@ -74,13 +83,30 @@ namespace trview
 
         if (_untextured_index_count)
         {
-            context->PSSetShaderResources(0, 1, &_untextured_texture.view.p);
+            auto texture = texture_storage.untextured();
+            context->PSSetShaderResources(0, 1, &texture.view.p);
             context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
         }
+
+        for (const auto& mesh : _static_meshes)
+        {
+            mesh->render(context, view_projection, texture_storage);
+        }
     }
 
-    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    void Room::generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
+    {
+        for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
+        {
+            auto room_mesh = room.static_meshes[i];
+            auto level_static_mesh = level.get_static_mesh(room_mesh.mesh_id);
+            auto static_mesh = std::make_unique<StaticMesh>(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh));
+            _static_meshes.push_back(std::move(static_mesh));
+        }
+    }
+
+    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage)
     {
         using namespace DirectX;
 
@@ -98,13 +124,6 @@ namespace trview
             return XMFLOAT3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
         };
 
-        auto get_uv = [&](const trlevel::tr_object_texture& texture, std::size_t index)
-        {
-            // Find the the point in the object map.
-            auto vert = texture.Vertices[index];
-            return XMFLOAT2(vert.Xpixel / 255.0f, vert.Ypixel / 255.0f);
-        };
-
         for (const auto& rect : room.data.rectangles)
         {
             // What is selected inside the texture portion?
@@ -117,19 +136,16 @@ namespace trview
             // Select UVs - otherwise they will be 0.
             if (rect.texture < level.num_object_textures())
             {
-                auto texture = level.get_object_texture(rect.texture);
                 for (int i = 0; i < uvs.size(); ++i)
                 {
-                    uvs[i] = get_uv(texture, i);
+                    uvs[i] = texture_storage.uv(rect.texture, i);
                 }
-                tex_indices_ptr = &indices[texture.TileAndFlag & 0x7fff];
+                tex_indices_ptr = &indices[texture_storage.tile(rect.texture)];
             }
             else
             {
                 tex_indices_ptr = &untextured_indices;
-                auto palette_index = (rect.texture & 0x7FFF) >> 8;
-                auto palette = level.get_palette_entry_16(palette_index);
-                colour = XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+                colour = texture_storage.palette_from_texture(rect.texture);
             }
 
             auto base = vertices.size();
@@ -159,19 +175,16 @@ namespace trview
             // Select UVs - otherwise they will be 0.
             if (tri.texture < level.num_object_textures())
             {
-                auto texture = level.get_object_texture(tri.texture);
                 for (int i = 0; i < uvs.size(); ++i)
                 {
-                    uvs[i] = get_uv(texture, i);
+                    uvs[i] = texture_storage.uv(tri.texture, i);
                 }
-                tex_indices_ptr = &indices[texture.TileAndFlag & 0x7fff];
+                tex_indices_ptr = &indices[texture_storage.tile(tri.texture)];
             }
             else
             {
                 tex_indices_ptr = &untextured_indices;
-                auto palette_index = (tri.texture & 0x7FFF) >> 8;
-                auto palette = level.get_palette_entry_16(palette_index);
-                colour = XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+                colour = texture_storage.palette_from_texture(tri.texture);
             }
 
             auto base = vertices.size();
@@ -251,27 +264,6 @@ namespace trview
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
             _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
-
-            uint32_t pixel = 0xffffffff;
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &pixel;
-            srd.SysMemPitch = sizeof(uint32_t);
-
-            D3D11_TEXTURE2D_DESC tex_desc;
-            memset(&tex_desc, 0, sizeof(tex_desc));
-            tex_desc.Width = 1;
-            tex_desc.Height = 1;
-            tex_desc.MipLevels = tex_desc.ArraySize = 1;
-            tex_desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            tex_desc.SampleDesc.Count = 1;
-            tex_desc.Usage = D3D11_USAGE_DEFAULT;
-            tex_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            tex_desc.CPUAccessFlags = 0;
-            tex_desc.MiscFlags = 0;
-
-            _device->CreateTexture2D(&tex_desc, &srd, &_untextured_texture.texture);
-            _device->CreateShaderResourceView(_untextured_texture.texture, nullptr, &_untextured_texture.view);
         }
     }
 

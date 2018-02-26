@@ -3,6 +3,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <unordered_map>
 
 #include "ILevel.h"
 #include "trtypes.h"
@@ -59,7 +60,41 @@ namespace trlevel
         // index: The index of the floor data to get.
         // Returns: The floor data.
         virtual uint16_t get_floor_data(uint32_t index) const override;
+
+        // Get the number of entities in the level.
+        // Returns: The number of entities.
+        virtual uint32_t num_entities() const override;
+
+        // Get the entity at the specified index.
+        // index: The index of the entity to get.
+        // Returns: The entity.
+        virtual tr2_entity get_entity(uint32_t index) const override;
+
+        // Get the number of models in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_models() const override;
+
+        // Get the model at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_model get_model(uint32_t index) const override;
+
+        // Get the number of static meshes in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_static_meshes() const override;
+
+        // Get the static mesh at the specfied index.
+        // index: The mesh ID of the model to get.
+        // Returns: The model.
+        virtual tr_staticmesh get_static_mesh(uint32_t mesh_id) const override;
+
+        // Get the mesh at the specified index.
+        // index: The index of the mesh to get.
+        // Returns: The mesh.
+        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
     private:
+        void generate_meshes(std::vector<uint16_t> mesh_data);
+
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;
 
@@ -71,5 +106,12 @@ namespace trlevel
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
         std::vector<uint16_t>          _floor_data;
+        std::vector<tr_model>          _models;
+        std::vector<tr2_entity>        _entities;
+        std::unordered_map<uint32_t, tr_staticmesh> _static_meshes;
+
+        // Mesh management.
+        std::unordered_map<uint32_t, tr_mesh> _meshes;
+        std::vector<uint32_t>                 _mesh_pointers;
     };
 }

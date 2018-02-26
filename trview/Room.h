@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <set>
+#include <memory>
 
 #include <d3d11.h>
 #include <atlbase.h>
@@ -14,8 +15,13 @@
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
 
+#include "StaticMesh.h"
+
 namespace trview
 {
+    struct ITextureStorage;
+    struct IMeshStorage;
+
     class Room
     {
     public:
@@ -26,18 +32,25 @@ namespace trview
             Neighbour
         };
 
-        explicit Room(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        explicit Room(CComPtr<ID3D11Device> device, 
+            const trlevel::ILevel& level, 
+            const trlevel::tr3_room& room,
+            const ITextureStorage& texture_storage,
+            const IMeshStorage& mesh_storage);
 
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, std::vector<Texture>& level_textures, SelectionMode selected);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected);
     private:
-        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
+
+        std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         // Rendering bits:
         CComPtr<ID3D11Device>              _device;
@@ -47,7 +60,6 @@ namespace trview
         CComPtr<ID3D11Buffer>              _untextured_index_buffer;
         uint32_t                           _untextured_index_count;
         CComPtr<ID3D11Buffer>              _matrix_buffer;
-        Texture                            _untextured_texture;
         DirectX::XMMATRIX                  _room_offset;
     };
 }

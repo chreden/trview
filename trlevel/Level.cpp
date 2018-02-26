@@ -1,13 +1,14 @@
 #include "Level.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 namespace trlevel
 {
     namespace
     {
         template <typename T>
-        T read(std::ifstream& file)
+        T read(std::istream& file)
         {
             T value;
             file.read(reinterpret_cast<char*>(&value), sizeof(value));
@@ -15,7 +16,7 @@ namespace trlevel
         }
 
         template < typename DataType, typename SizeType >
-        std::vector<DataType> read_vector(std::ifstream& file, SizeType size)
+        std::vector<DataType> read_vector(std::istream& file, SizeType size)
         {
             std::vector<DataType> data;
             for (SizeType i = 0; i < size; ++i)
@@ -26,7 +27,7 @@ namespace trlevel
         }
 
         template < typename SizeType, typename DataType >
-        std::vector<DataType> read_vector(std::ifstream& file)
+        std::vector<DataType> read_vector(std::istream& file)
         {
             auto size = read<SizeType>(file);
             return read_vector<DataType, SizeType>(file, size);
@@ -100,7 +101,7 @@ namespace trlevel
         _floor_data = read_vector<uint32_t, uint16_t>(file);
 
         std::vector<uint16_t> mesh_data = read_vector<uint32_t, uint16_t>(file);
-        std::vector<uint32_t> mesh_pointers = read_vector < uint32_t, uint32_t>(file);
+        _mesh_pointers = read_vector<uint32_t, uint32_t>(file);
         std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
@@ -108,8 +109,14 @@ namespace trlevel
         // std::vector<tr_meshtree_node> mesh_trees = read_vector<uint32_t, tr_meshtree_node>(file);
         std::vector<tr2_meshtree> mesh_trees = read_vector<uint32_t, tr2_meshtree>(file);
         std::vector<uint16_t> frames = read_vector<uint32_t, uint16_t>(file);
-        std::vector<tr_model> models = read_vector<uint32_t, tr_model>(file);
-        std::vector<tr_staticmesh> static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+        _models = read_vector<uint32_t, tr_model>(file);
+        
+        auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
+        for (const auto& mesh : static_meshes)
+        {
+            _static_meshes.insert({ mesh.ID, mesh });
+        }
+
         std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
@@ -119,17 +126,60 @@ namespace trlevel
         std::vector<int16_t> zones = read_vector<int16_t>(file, boxes.size() * 10);
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
         _object_textures = read_vector<uint32_t, tr_object_texture>(file);
-        std::vector<tr2_entity> entities = read_vector<uint32_t, tr2_entity>(file);
+        _entities = read_vector<uint32_t, tr2_entity>(file);
         std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
         std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
         std::vector<uint8_t> demo_data = read_vector<uint16_t, uint8_t>(file);
         std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
+
+        generate_meshes(mesh_data);
     }
 
     Level::~Level()
     {
+    }
+
+    void Level::generate_meshes(std::vector<uint16_t> mesh_data)
+    {
+        // As well as reading the actual mesh data, generate a map of mesh_pointer to 
+        // mesh. It seems that a lot of the pointers point to the same mesh.
+
+        std::string data(reinterpret_cast<char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
+        std::istringstream stream(data, std::ios::binary);
+        for (auto pointer : _mesh_pointers)
+        {
+            // Does the map already contain this mesh? If so, don't bother reading it again.
+            auto found = _meshes.find(pointer);
+            if (found != _meshes.end())
+            {
+                continue;
+            }
+
+            stream.seekg(pointer, std::ios::beg);
+
+            tr_mesh mesh;
+            mesh.centre = read<tr_vertex>(stream);
+            mesh.coll_radius = read<int32_t>(stream);
+            mesh.vertices = read_vector<int16_t, tr_vertex>(stream);
+
+            int16_t normals = read<int16_t>(stream);
+            if (normals > 0)
+            {
+                mesh.normals = read_vector<tr_vertex>(stream, normals);
+            }
+            else
+            {
+                mesh.lights = read_vector<int16_t>(stream, abs(normals));
+            }
+            
+            mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
+            mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
+            mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
+            mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
+            _meshes.insert({ pointer, mesh });
+        }
     }
 
     tr_colour Level::get_palette_entry(uint32_t index) const
@@ -180,5 +230,41 @@ namespace trlevel
     uint16_t Level::get_floor_data(uint32_t index) const
     {
         return _floor_data[index];
+    }
+
+    uint32_t Level::num_entities() const
+    {
+        return _entities.size();
+    }
+
+    tr2_entity Level::get_entity(uint32_t index) const 
+    {
+        return _entities[index];
+    }
+
+    uint32_t Level::num_models() const
+    {
+        return _models.size();
+    }
+
+    tr_model Level::get_model(uint32_t index) const
+    {
+        return _models[index];
+    }
+
+    uint32_t Level::num_static_meshes() const
+    {
+        return _static_meshes.size();
+    }
+
+    tr_staticmesh Level::get_static_mesh(uint32_t mesh_id) const
+    {
+        return _static_meshes.find(mesh_id)->second;
+    }
+
+    tr_mesh Level::get_mesh_by_pointer(uint16_t mesh_pointer) const
+    {
+        auto index = _mesh_pointers[mesh_pointer];
+        return _meshes.find(index)->second;
     }
 }

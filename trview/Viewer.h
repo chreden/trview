@@ -12,6 +12,7 @@
 #include <trlevel/ILevel.h>
 
 #include <trview.common/Texture.h>
+#include "Level.h"
 #include "Room.h"
 
 #include "TextureWindow.h"
@@ -77,10 +78,6 @@ namespace trview
 
         void update_camera();
 
-        // Generate the textures that will be used to render the level based on the
-        // textiles loaded in the level.
-        void generate_textures();
-        void generate_rooms();
         // Draw the 3d elements of the scene.
         void render_scene();
         // Draw the user interface elements of the scene.
@@ -95,29 +92,20 @@ namespace trview
         CComPtr<ID3D11Texture2D>         _depth_stencil_buffer;
         CComPtr<ID3D11DepthStencilState> _depth_stencil_state;
         CComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
-        
-        std::unique_ptr<trlevel::ILevel> _current_level;
+
         std::unique_ptr<TextureWindow>   _texture_window;
 
         std::unique_ptr<ui::render::FontFactory> _font_factory;
         std::unique_ptr<RoomWindow> _room_window;
         CComPtr<ID3D11BlendState> _blend_state;
 
-        // The 'view' bits, so to speak.
-        std::vector<Texture> _level_textures;
-        std::vector<std::unique_ptr<Room>> _level_rooms;
+        std::unique_ptr<trlevel::ILevel> _current_level;
+        std::unique_ptr<Level> _level;
 
         Window _window;
 
-        CComPtr<ID3D11VertexShader> _vertex_shader;
-        CComPtr<ID3D11PixelShader>  _pixel_shader;
-        CComPtr<ID3D11InputLayout>  _input_layout;
-        CComPtr<ID3D11SamplerState> _sampler_state;
-
         Timer _timer;
-        bool _highlight{ false };
 
-        
         Camera _camera;
         FreeCamera _free_camera;
 
@@ -136,21 +124,13 @@ namespace trview
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
         ui::Button* _room_highlight;
-
-        // Test of buttons
-        bool    _room_neighbours{ false };
-        int32_t _neighbour_depth{ 1 };
-        std::set<uint16_t> _neighbours;
-
-        void regenerate_neighbours();
-        void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
+        ui::Button* _room_neighbours;
 
         // More buttons - the camera mode buttons this time.
         ui::Button* _orbit_mode;
         ui::Button* _free_mode;
 
         // Camera movement.
-        
         // Defines the behaviour of the camera.
         enum class CameraMode
         {

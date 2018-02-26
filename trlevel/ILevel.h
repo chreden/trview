@@ -53,5 +53,37 @@ namespace trlevel
         // index: The index of the floor data to get.
         // Returns: The floor data.
         virtual uint16_t get_floor_data(uint32_t index) const = 0;
+
+        // Get the number of entities in the level.
+        // Returns: The number of entities.
+        virtual uint32_t num_entities() const = 0;
+
+        // Get the entity at the specified index.
+        // index: The index of the entity to get.
+        // Returns: The entity.
+        virtual tr2_entity get_entity(uint32_t index) const = 0;
+
+        // Get the number of models in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_models() const = 0;
+
+        // Get the model at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_model get_model(uint32_t index) const = 0;
+
+        // Get the number of static meshes in the level.
+        // Returns: The number of models.
+        virtual uint32_t num_static_meshes() const = 0;
+
+        // Get the static mesh at the specfied index.
+        // index: The index of the model to get.
+        // Returns: The model.
+        virtual tr_staticmesh get_static_mesh(uint32_t index) const = 0;
+
+        // Get the mesh referenced by the specified mesh pointer.
+        // mesh_pointer: The mesh pointer index.
+        // Returns: The mesh.
+        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const = 0;
     };
 }

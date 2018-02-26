@@ -52,7 +52,7 @@ namespace trview
             if (_current_level && room < _current_level->num_rooms())
             {
                 _room_window->select_room(room);
-                regenerate_neighbours();
+                _level->set_selected_room(room);
             }
         };
 
@@ -93,7 +93,26 @@ namespace trview
             Size(16, 16),
             create_coloured_texture(0xff0000ff),
             create_coloured_texture(0xff00ff00));
-        room_neighbours->on_click += [&]() { _room_neighbours = !_room_neighbours; };
+        room_neighbours->on_click += [&]() 
+        { 
+            if (_level)
+            {
+                if (_level->highlight_mode() == Level::RoomHighlightMode::Neighbours)
+                {
+                    _level->set_highlight_mode(Level::RoomHighlightMode::None);
+                    _room_neighbours->set_state(false);
+                    _room_highlight->set_state(false);
+                }
+                else
+                {
+                    _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours);
+                    _room_neighbours->set_state(true);
+                    _room_highlight->set_state(false);
+                }
+            } 
+        };
+
+        _room_neighbours = room_neighbours.get();
 
         auto neighbours_depth_label = std::make_unique<Label>(
             Point(32, 20),
@@ -116,8 +135,10 @@ namespace trview
 
         neighbours_depth->on_value_changed += [&](int value) 
         { 
-            _neighbour_depth = value; 
-            regenerate_neighbours();
+            if (_level)
+            {
+                _level->set_neighbour_depth(value);
+            }
         };
 
         neighbours_group->add_child(std::move(room_neighbours));
@@ -374,61 +395,12 @@ namespace trview
 
         // Create the depth stencil view.
         _device->CreateDepthStencilView(_depth_stencil_buffer, &depthStencilViewDesc, &_depth_stencil_view);
-
-        std::vector<char> vs_data = load_file(L"level_vertex_shader.cso");
-
-        D3D11_INPUT_ELEMENT_DESC input_desc[3];
-        memset(&input_desc, 0, sizeof(input_desc));
-        input_desc[0].SemanticName = "Position";
-        input_desc[0].SemanticIndex = 0;
-        input_desc[0].InstanceDataStepRate = 0;
-        input_desc[0].InputSlot = 0;
-        input_desc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-        input_desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-        input_desc[1].SemanticName = "Texcoord";
-        input_desc[1].SemanticIndex = 0;
-        input_desc[1].InstanceDataStepRate = 0;
-        input_desc[1].InputSlot = 0;
-        input_desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-        input_desc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-        input_desc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-
-        input_desc[2].SemanticName = "Texcoord";
-        input_desc[2].SemanticIndex = 1;
-        input_desc[2].InstanceDataStepRate = 0;
-        input_desc[2].InputSlot = 0;
-        input_desc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-        input_desc[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-        input_desc[2].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-        hr = _device->CreateInputLayout(input_desc, 3, &vs_data[0], vs_data.size(), &_input_layout);
-
-        hr = _device->CreateVertexShader(&vs_data[0], vs_data.size(), nullptr, &_vertex_shader);
-
-        std::vector<char> ps_data = load_file(L"level_pixel_shader.cso");
-        hr = _device->CreatePixelShader(&ps_data[0], ps_data.size(), nullptr, &_pixel_shader);
-
-        // Create a texture sampler state description.
-        D3D11_SAMPLER_DESC sampler_desc;
-        memset(&desc, 0, sizeof(sampler_desc));
-        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.MaxAnisotropy = 1;
-        sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-        sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
-
-        // Create the texture sampler state.
-        _device->CreateSamplerState(&sampler_desc, &_sampler_state);
     }
 
     void Viewer::initialise_input()
     {
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
-
 
         _keyboard.register_key_down([&](uint16_t key)
         {
@@ -622,7 +594,6 @@ namespace trview
                     break;
                 case VK_RETURN:
                     toggle_highlight();
-                    _room_highlight->set_state(_highlight);
                     break;
                 case VK_INSERT:
                 {
@@ -661,80 +632,19 @@ namespace trview
         }
     }
 
-    void Viewer::generate_textures()
-    {
-        _level_textures.clear();
-
-        // Load the textures from the level and then allow to cycle through them?
-        for (uint32_t i = 0; i < _current_level->num_textiles(); ++i)
-        {
-            auto t16 = _current_level->get_textile16(i);
-
-            std::vector<uint32_t> data(256 * 256, 0u);
-
-            uint32_t index = 0;
-            for (auto t : t16.Tile)
-            {
-                data[index++] = trlevel::convert_textile16(t);
-            }
-
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &data[0];
-            srd.SysMemPitch = sizeof(uint32_t) * 256;
-
-            D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = 256;
-            desc.Height = 256;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-
-            Texture tex;
-            _device->CreateTexture2D(&desc, &srd, &tex.texture);
-            _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
-            _level_textures.push_back(tex);
-        }
-    }
-
-    void Viewer::generate_rooms()
-    {
-        const uint16_t num_rooms = _current_level->num_rooms();
-        for (uint16_t i = 0; i < num_rooms; ++i)
-        {
-            auto room = _current_level->get_room(i);
-
-            // Convert that room into a Room that we can use in the UI.
-            _level_rooms.push_back(std::make_unique<Room>(_device, *_current_level, room));
-        }
-    }
-
     void Viewer::open(const std::wstring filename)
     {
-        _level_textures.clear();
-        _level_rooms.clear();
         _current_level = trlevel::load_level(filename);
-
-        generate_textures();
-
-        generate_rooms();
+        _level = std::make_unique<Level>(_device, _current_level.get());
 
         // Set up the views.
-        _texture_window->set_textures(_level_textures);
-
-        std::vector<RoomInfo> room_infos;
-        for (const auto& r : _level_rooms)
-        {
-            room_infos.push_back(r->info());
-        }
-        _room_window->set_rooms(room_infos);
-        regenerate_neighbours();
+        _texture_window->set_textures(_level->level_textures());
+        _room_window->set_rooms(_level->room_info());
         _camera.reset();
+
+        // Reset UI buttons
+        _room_highlight->set_state(false);
+        _room_neighbours->set_state(false);
     }
 
     void Viewer::on_char(uint16_t character)
@@ -773,10 +683,7 @@ namespace trview
         _context->ClearRenderTargetView(_render_target_view, colours);
         _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-        if (_level_textures.size())
-        {
-            render_scene();
-        }
+        render_scene();
 
         _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
         render_ui();
@@ -787,67 +694,23 @@ namespace trview
     void Viewer::render_scene()
     {
         _context->OMSetDepthStencilState(_depth_stencil_state, 1);
-
-        using namespace DirectX;
-
-        // Update the view matrix based on the room selected in the room window.
-        auto room = _current_level->get_room(_room_window->selected_room());
-
-        XMVECTOR target_position = XMVectorSet(
-            (room.info.x / 1024.f) + room.num_x_sectors / 2.f, 
-            (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
-            (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
-
-        _camera.set_target(target_position);
-
-        auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
-
-        _context->PSSetSamplers(0, 1, &_sampler_state.p);
-        _context->IASetInputLayout(_input_layout);
-        _context->VSSetShader(_vertex_shader, nullptr, 0);
-        _context->PSSetShader(_pixel_shader, nullptr, 0);
-        _context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-        const uint16_t selected_room = _room_window->selected_room();
-
-        if (_room_neighbours)
+        if (_level)
         {
-            for (uint16_t i : _neighbours)
-            {
-                _level_rooms[i]->render(_context, view_projection, _level_textures, i == selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
-            }
-        }
-        else
-        {
-            for (std::size_t i = 0; i < _level_rooms.size(); ++i)
-            {
-                _level_rooms[i]->render(_context, view_projection, _level_textures, (_highlight && selected_room == i) ? Room::SelectionMode::Selected : _highlight ? Room::SelectionMode::NotSelected : Room::SelectionMode::Selected);
-            }
-        }
-    }
+            using namespace DirectX;
 
-    void Viewer::regenerate_neighbours()
-    {
-        const uint16_t selected_room = _room_window->selected_room();
-        _neighbours = std::set<uint16_t>{ selected_room };
-        if (_current_level && selected_room < _current_level->num_rooms())
-        {
-            generate_neighbours(_neighbours, selected_room, 1, _neighbour_depth);
-        }
-    }
+            // Update the view matrix based on the room selected in the room window.
+            auto room = _current_level->get_room(_room_window->selected_room());
 
-    void Viewer::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
-    {
-        if (current_depth > max_depth)
-        {
-            return;
-        }
+            XMVECTOR target_position = XMVectorSet(
+                (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
+                (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
+                (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
 
-        const auto neighbours = _level_rooms[selected_room]->neighbours();
-        for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
-        {
-            all_rooms.insert(*room);
-            generate_neighbours(all_rooms, *room, current_depth + 1, max_depth);
+            _camera.set_target(target_position);
+            
+            auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
+
+            _level->render(_context, view_projection);
         }
     }
 
@@ -864,7 +727,10 @@ namespace trview
     void Viewer::cycle_room()
     {
         _room_window->cycle();
-        regenerate_neighbours();
+        if (_level)
+        {
+            _level->set_selected_room(_room_window->selected_room());
+        }
     }
 
     void Viewer::cycle_back()
@@ -875,7 +741,10 @@ namespace trview
     void Viewer::cycle_room_back()
     {
         _room_window->cycle_back();
-        regenerate_neighbours();
+        if (_level)
+        {
+            _level->set_selected_room(_room_window->selected_room());
+        }
     }
 
     void Viewer::toggle_room_window()
@@ -890,6 +759,20 @@ namespace trview
 
     void Viewer::toggle_highlight()
     {
-        _highlight = !_highlight;
+        if (_level)
+        {
+            if (_level->highlight_mode() == Level::RoomHighlightMode::Highlight)
+            {
+                _level->set_highlight_mode(Level::RoomHighlightMode::None);
+                _room_highlight->set_state(false);
+                _room_neighbours->set_state(false);
+            }
+            else
+            {
+                _level->set_highlight_mode(Level::RoomHighlightMode::Highlight);
+                _room_highlight->set_state(true);
+                _room_neighbours->set_state(false);
+            }
+        }
     }
 }
