@@ -67,9 +67,9 @@ namespace trview
 
         void generate_tool_window();
 
-        std::unique_ptr<ui::Window> generate_neighbours_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_room_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_camera_window(ui::Point point);
+        std::unique_ptr<ui::Window> generate_neighbours_window();
+        std::unique_ptr<ui::Window> generate_room_window();
+        std::unique_ptr<ui::Window> generate_camera_window();
 
         void initialise_d3d();
         void initialise_input();

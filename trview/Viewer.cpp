@@ -10,6 +10,7 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 
+#include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
@@ -66,23 +67,24 @@ namespace trview
         using namespace ui;
 
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::Window>(
+        auto tool_window = std::make_unique<ui::StackPanel>(
             Point(0, 0),
             Size(150.0f, 230.0f),
-            Colour(1.f, 0.5f, 0.5f, 0.5f));
+            Colour(1.f, 0.5f, 0.5f, 0.5f),
+            Size(5, 5));
 
-        tool_window->add_child(generate_room_window(Point(5, 5)));
-        tool_window->add_child(generate_neighbours_window(Point(5, 60)));
-        tool_window->add_child(generate_camera_window(Point(5, 115)));
+        tool_window->add_child(generate_room_window());
+        tool_window->add_child(generate_neighbours_window());
+        tool_window->add_child(generate_camera_window());
         _control->add_child(std::move(tool_window));
     }
 
-    std::unique_ptr<ui::Window> Viewer::generate_neighbours_window(ui::Point point)
+    std::unique_ptr<ui::Window> Viewer::generate_neighbours_window()
     {
         using namespace ui;
 
         auto neighbours_group = std::make_unique<GroupBox>(
-            point,
+            Point(0,0),
             Size(140, 50),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
@@ -147,12 +149,12 @@ namespace trview
         return neighbours_group;
     }
 
-    std::unique_ptr<ui::Window> Viewer::generate_room_window(ui::Point point)
+    std::unique_ptr<ui::Window> Viewer::generate_room_window()
     {
         using namespace ui;
 
         auto rooms_groups = std::make_unique<GroupBox>(
-            point,
+            Point(0,0),
             Size(140, 50),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
@@ -182,12 +184,12 @@ namespace trview
         return rooms_groups;
     }
 
-    std::unique_ptr<ui::Window> Viewer::generate_camera_window(ui::Point point)
+    std::unique_ptr<ui::Window> Viewer::generate_camera_window()
     {
         using namespace ui;
 
         auto camera_window = std::make_unique<GroupBox>(
-            point,
+            Point(0,0),
             Size(140, 115),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
