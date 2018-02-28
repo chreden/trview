@@ -8,14 +8,19 @@ namespace trview
     // Load the contents of a file.
     std::vector<char> load_file(std::wstring filename)
     {
-        std::ifstream shaderfile;
-        shaderfile.open(filename, std::ios::binary);
-        shaderfile.seekg(0, std::ios::end);
-        std::size_t length = shaderfile.tellg();
-        shaderfile.seekg(0, std::ios::beg);
-        std::vector<char> data(length, 0);
-        shaderfile.read(&data[0], length);
-        shaderfile.close();
-        return data;
+        std::ifstream ifs (filename, std::ios::binary | std::ios::ate);
+        std::streampos length = ifs.tellg(); // already at end of file
+
+        if (!ifs || !ifs.good())
+            throw new std::runtime_error("file could not be opened"); 
+        else if (length == (std::streampos)-1)
+            throw new std::runtime_error("-1 returned from tellg(), read error likely");
+
+        std::vector<char> data (length); 
+
+        ifs.seekg(0, std::ios::beg); 
+        ifs.read((char*) &data[0], length);
+
+        return data; 
     }
 }
