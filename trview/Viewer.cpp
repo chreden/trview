@@ -69,7 +69,7 @@ namespace trview
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::StackPanel>(
             Point(0, 0),
-            Size(150.0f, 290.0f),
+            Size(150.0f, 310.0f),
             Colour(1.f, 0.5f, 0.5f, 0.5f),
             Size(5, 5));
 
@@ -155,7 +155,7 @@ namespace trview
 
         auto rooms_groups = std::make_unique<GroupBox>(
             Point(0,0),
-            Size(140, 110),
+            Size(140, 130),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Rooms");
@@ -180,27 +180,87 @@ namespace trview
 
         auto room_box = std::make_unique<GroupBox>(
             Point(12, 40),
-            Size(120, 60),
+            Size(120, 80),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
             Colour(1.0f, 0.0f, 0.0f, 0.0f),
             L"Room");
 
         auto room_controls = std::make_unique<StackPanel>(
             Point(12, 12),
-            Size(96, 36),
+            Size(96, 60),
             Colour(1.f, 0.5f, 0.5f, 0.5f),
-            Size(5, 0),
+            Size(0, 0),
+            StackPanel::Direction::Vertical);
+
+        auto room_number_labels = std::make_unique<StackPanel>(
+            Point(0, 0),
+            Size(96, 30),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            Size(5, 5),
             StackPanel::Direction::Horizontal);
 
-        auto previous = std::make_unique<Button>(Point(0,0), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        auto room_num = std::make_unique<Label>(Point(0,0), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"0", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
-        auto room_sum = std::make_unique<Label>(Point(0, 0), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"100", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
-        auto next = std::make_unique<Button>(Point(0, 0), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
+        auto room_number = std::make_unique<NumericUpDown>(
+            Point(90, 16),
+            Size(40, 20),
+            Colour(1.0f, 0.4f, 0.4f, 0.4f),
+            create_coloured_texture(0xff0000ff),
+            create_coloured_texture(0xff00ff00),
+            0,
+            10);
 
-        room_controls->add_child(std::move(previous));
-        room_controls->add_child(std::move(room_num));
-        room_controls->add_child(std::move(room_sum));
-        room_controls->add_child(std::move(next));
+        auto room_number_label = std::make_unique<Label>(
+            Point(0, 0),
+            Size(8, 16),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            L"/",
+            16.f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
+
+        auto room_max_label = std::make_unique<Label>(
+            Point(0, 0),
+            Size(40, 20),
+            Colour(1.0f, 0.4f, 0.4f, 0.4f),
+            L"200",
+            10.f,
+            TextAlignment::Centre,
+            ParagraphAlignment::Centre);
+
+        room_number_labels->add_child(std::move(room_number));
+        room_number_labels->add_child(std::move(room_number_label));
+        room_number_labels->add_child(std::move(room_max_label));
+
+        auto room_info_labels = std::make_unique<StackPanel>(
+            Point(12, 12),
+            Size(96, 36),
+            Colour(1.f, 0.5f, 0.5f, 0.5f),
+            Size(5, 5),
+            StackPanel::Direction::Horizontal);
+
+        auto room_x_label = std::make_unique<Label>(
+            Point(0, 0),
+            Size(40, 16),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            L"X:",
+            10.f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
+
+        auto room_y_label = std::make_unique<Label>(
+            Point(0, 0),
+            Size(40, 16),
+            Colour(1.0f, 0.5f, 0.5f, 0.5f),
+            L"Y:",
+            10.f,
+            TextAlignment::Left,
+            ParagraphAlignment::Centre);
+
+        room_info_labels->add_child(std::move(room_x_label));
+        room_info_labels->add_child(std::move(room_y_label));
+ 
+        room_controls->add_child(std::move(room_number_labels));
+        room_controls->add_child(std::move(room_info_labels));
+
         room_box->add_child(std::move(room_controls));
 
         rooms_groups->add_child(std::move(room_highlight));
