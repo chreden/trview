@@ -46,5 +46,11 @@ namespace trview
             _label->set_text(stream.str());
             on_value_changed.raise(_value);
         }
+
+        void NumericUpDown::set_maximum(int32_t maximum)
+        {
+            _maximum = maximum;
+            set_value(_value);
+        }
     }
 }

@@ -165,7 +165,6 @@
     <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="RoomNavigator.h" />
     <ClInclude Include="RoomVertex.h" />
-    <ClInclude Include="RoomWindow.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -187,7 +186,6 @@
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
-    <ClCompile Include="RoomWindow.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

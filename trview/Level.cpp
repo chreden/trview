@@ -85,6 +85,11 @@ namespace trview
         return textures;
     }
 
+    uint16_t Level::selected_room() const
+    {
+        return _selected_room;
+    }
+
     Level::RoomHighlightMode Level::highlight_mode() const
     {
         return _room_highlight_mode;

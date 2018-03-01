@@ -43,9 +43,6 @@
     <ClInclude Include="TextureWindow.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="RoomWindow.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Win</Filter>
     </ClInclude>
@@ -115,9 +112,6 @@
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="TextureWindow.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomWindow.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">

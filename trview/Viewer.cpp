@@ -43,18 +43,13 @@ namespace trview
 
         generate_tool_window();
 
-        _room_window = std::make_unique<RoomWindow>(_control.get());
         _texture_window = std::make_unique<TextureWindow>(_control.get());
         _texture_window->set_visible(false);
 
         _go_to_room = std::make_unique<GoToRoom>(_control.get());
         _go_to_room->room_selected += [&](uint32_t room)
         {
-            if (_current_level && room < _current_level->num_rooms())
-            {
-                _room_window->select_room(room);
-                _level->set_selected_room(room);
-            }
+            select_room(room);
         };
 
         // Create the renderer for the UI based on the controls created.
@@ -206,7 +201,7 @@ namespace trview
             create_coloured_texture(0xff0000ff),
             create_coloured_texture(0xff00ff00),
             0,
-            10);
+            0);
 
         auto room_number_label = std::make_unique<Label>(
             Point(0, 0),
@@ -221,10 +216,18 @@ namespace trview
             Point(0, 0),
             Size(40, 20),
             Colour(1.0f, 0.4f, 0.4f, 0.4f),
-            L"200",
+            L"0",
             10.f,
             TextAlignment::Centre,
             ParagraphAlignment::Centre);
+
+        _room_current_room = room_number.get();
+        _room_rooms = room_max_label.get();
+
+        room_number->on_value_changed += [&](int32_t value)
+        {
+            select_room(value);
+        };
 
         room_number_labels->add_child(std::move(room_number));
         room_number_labels->add_child(std::move(room_number_label));
@@ -246,17 +249,20 @@ namespace trview
             TextAlignment::Left,
             ParagraphAlignment::Centre);
 
-        auto room_y_label = std::make_unique<Label>(
+        auto room_z_label = std::make_unique<Label>(
             Point(0, 0),
             Size(40, 16),
             Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Y:",
+            L"Z:",
             10.f,
             TextAlignment::Left,
             ParagraphAlignment::Centre);
 
+        _room_x = room_x_label.get();
+        _room_z = room_z_label.get();
+
         room_info_labels->add_child(std::move(room_x_label));
-        room_info_labels->add_child(std::move(room_y_label));
+        room_info_labels->add_child(std::move(room_z_label));
  
         room_controls->add_child(std::move(room_number_labels));
         room_controls->add_child(std::move(room_info_labels));
@@ -668,15 +674,6 @@ namespace trview
                 case VK_NEXT:
                     cycle();
                     break;
-                case VK_HOME:
-                    cycle_room_back();
-                    break;
-                case VK_END:
-                    cycle_room();
-                    break;
-                case VK_F1:
-                    toggle_room_window();
-                    break;
                 case VK_F2:
                     toggle_texture_window();
                     break;
@@ -726,11 +723,20 @@ namespace trview
         _level = std::make_unique<Level>(_device, _current_level.get());
 
         // Set up the views.
+        auto rooms = _level->room_info();
         _texture_window->set_textures(_level->level_textures());
-        _room_window->set_rooms(_level->room_info());
         _camera.reset();
 
         // Reset UI buttons
+        uint32_t adjusted_size = rooms.size() ? rooms.size() - 1 : 0u;
+        _room_current_room->set_maximum(adjusted_size);
+
+        std::wstringstream stream;
+        stream << adjusted_size;
+        _room_rooms->set_text(stream.str());
+
+        select_room(0);
+
         _room_highlight->set_state(false);
         _room_neighbours->set_state(false);
     }
@@ -787,7 +793,7 @@ namespace trview
             using namespace DirectX;
 
             // Update the view matrix based on the room selected in the room window.
-            auto room = _current_level->get_room(_room_window->selected_room());
+            auto room = _current_level->get_room(_level->selected_room());
 
             XMVECTOR target_position = XMVectorSet(
                 (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
@@ -812,32 +818,9 @@ namespace trview
         _texture_window->cycle();
     }
 
-    void Viewer::cycle_room()
-    {
-        _room_window->cycle();
-        if (_level)
-        {
-            _level->set_selected_room(_room_window->selected_room());
-        }
-    }
-
     void Viewer::cycle_back()
     {
         _texture_window->cycle_back();
-    }
-
-    void Viewer::cycle_room_back()
-    {
-        _room_window->cycle_back();
-        if (_level)
-        {
-            _level->set_selected_room(_room_window->selected_room());
-        }
-    }
-
-    void Viewer::toggle_room_window()
-    {
-        _room_window->toggle_visibility();
     }
 
     void Viewer::toggle_texture_window()
@@ -861,6 +844,27 @@ namespace trview
                 _room_highlight->set_state(true);
                 _room_neighbours->set_state(false);
             }
+        }
+    }
+
+    void Viewer::select_room(uint32_t room)
+    {
+        if (_current_level && room < _current_level->num_rooms())
+        {
+            _level->set_selected_room(room);
+
+            auto info = _level->room_info()[room];
+            std::wstringstream stream;
+            stream << "X: " << info.x / 1024.0f;
+            _room_x->set_text(stream.str());
+
+            stream.clear();
+            stream.str(L"");
+
+            stream << "Z: " << info.z / 1024.0f;
+            _room_z->set_text(stream.str());
+
+            _room_current_room->set_value(room);
         }
     }
 }

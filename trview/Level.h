@@ -36,6 +36,8 @@ namespace trview
         std::vector<RoomInfo> room_info() const;
         std::vector<Texture> level_textures() const;
 
+        uint16_t selected_room() const;
+
         void render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection);
         
         RoomHighlightMode highlight_mode() const;

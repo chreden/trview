@@ -16,7 +16,6 @@
 #include "Room.h"
 
 #include "TextureWindow.h"
-#include "RoomWindow.h"
 #include "GoToRoom.h"
 
 #include "Timer.h"
@@ -37,6 +36,7 @@ namespace trview
     {
         class Label;
         class Button;
+        class NumericUpDown;
     }
 
     class Viewer
@@ -54,13 +54,10 @@ namespace trview
         void on_input(const RAWINPUT& input);
 
         // Old ways of doing things - will be mapped.
-        void toggle_room_window();
         void toggle_texture_window();
 
         void cycle();
-        void cycle_room();
         void cycle_back();
-        void cycle_room_back();
         void toggle_highlight();
     private:
         void generate_ui();
@@ -85,6 +82,8 @@ namespace trview
 
         Texture create_coloured_texture(uint32_t colour);
 
+        void select_room(uint32_t room);
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
@@ -96,7 +95,6 @@ namespace trview
         std::unique_ptr<TextureWindow>   _texture_window;
 
         std::unique_ptr<ui::render::FontFactory> _font_factory;
-        std::unique_ptr<RoomWindow> _room_window;
         CComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
@@ -125,6 +123,11 @@ namespace trview
 
         ui::Button* _room_highlight;
         ui::Button* _room_neighbours;
+
+        ui::Label* _room_x;
+        ui::Label* _room_z;
+        ui::Label* _room_rooms;
+        ui::NumericUpDown* _room_current_room;
 
         // More buttons - the camera mode buttons this time.
         ui::Button* _orbit_mode;
