@@ -9,8 +9,8 @@ namespace trview
     public:
         explicit TextureStorage(CComPtr<ID3D11Device> device);
         virtual ~TextureStorage();
-        virtual Texture untextured() const override;
+        virtual Texture coloured(uint32_t colour) const override;
     private:
-        Texture _untextured;
+        CComPtr<ID3D11Device> _device;
     };
 }

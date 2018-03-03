@@ -9,7 +9,6 @@ namespace trview
     struct ITextureStorage
     {
         virtual ~ITextureStorage() = 0;
-
-        virtual Texture untextured() const = 0;
+        virtual Texture coloured(uint32_t colour) const = 0;
     };
 }

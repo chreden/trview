@@ -4,11 +4,19 @@
 namespace trview
 {
     TextureStorage::TextureStorage(CComPtr<ID3D11Device> device)
+        : _device(device)
     {
-        uint32_t pixel = 0xffffffff;
+    }
+
+    TextureStorage::~TextureStorage()
+    {
+    }
+
+    Texture TextureStorage::coloured(uint32_t colour) const
+    {
         D3D11_SUBRESOURCE_DATA srd;
         memset(&srd, 0, sizeof(srd));
-        srd.pSysMem = &pixel;
+        srd.pSysMem = &colour;
         srd.SysMemPitch = sizeof(uint32_t);
 
         D3D11_TEXTURE2D_DESC tex_desc;
@@ -23,16 +31,9 @@ namespace trview
         tex_desc.CPUAccessFlags = 0;
         tex_desc.MiscFlags = 0;
 
-        device->CreateTexture2D(&tex_desc, &srd, &_untextured.texture);
-        device->CreateShaderResourceView(_untextured.texture, nullptr, &_untextured.view);
-    }
-
-    TextureStorage::~TextureStorage()
-    {
-    }
-
-    Texture TextureStorage::untextured() const
-    {
-        return _untextured;
+        Texture texture;
+        _device->CreateTexture2D(&tex_desc, &srd, &texture.texture);
+        _device->CreateShaderResourceView(texture.texture, nullptr, &texture.view);
+        return texture;
     }
 }

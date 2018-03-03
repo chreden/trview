@@ -4,7 +4,7 @@
 namespace trview
 {
     LevelTextureStorage::LevelTextureStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level)
-        : _level(level)
+        : _device(device), _level(level)
     {
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
@@ -47,11 +47,18 @@ namespace trview
         {
             _object_textures.push_back(level.get_object_texture(i));
         }
+    }
 
-        uint32_t pixel = 0xffffffff;
+    Texture LevelTextureStorage::texture(uint32_t tile_index) const
+    {
+        return _tiles[tile_index];
+    }
+
+    Texture LevelTextureStorage::coloured(uint32_t colour) const
+    {
         D3D11_SUBRESOURCE_DATA srd;
         memset(&srd, 0, sizeof(srd));
-        srd.pSysMem = &pixel;
+        srd.pSysMem = &colour;
         srd.SysMemPitch = sizeof(uint32_t);
 
         D3D11_TEXTURE2D_DESC tex_desc;
@@ -66,17 +73,18 @@ namespace trview
         tex_desc.CPUAccessFlags = 0;
         tex_desc.MiscFlags = 0;
 
-        device->CreateTexture2D(&tex_desc, &srd, &_untextured_texture.texture);
-        device->CreateShaderResourceView(_untextured_texture.texture, nullptr, &_untextured_texture.view);
-    }
-
-    Texture LevelTextureStorage::texture(uint32_t tile_index) const
-    {
-        return _tiles[tile_index];
+        Texture texture;
+        _device->CreateTexture2D(&tex_desc, &srd, &texture.texture);
+        _device->CreateShaderResourceView(texture.texture, nullptr, &texture.view);
+        return texture;
     }
 
     Texture LevelTextureStorage::untextured() const
     {
+        if (!_untextured_texture.texture)
+        {
+            _untextured_texture = coloured(0xffffffff);
+        }
         return _untextured_texture;
     }
 
