@@ -94,7 +94,7 @@ namespace trview
             std::wstringstream stream(_input);
             uint32_t room = 0;
             stream >> room;
-            room_selected.raise(room);
+            room_selected(room);
             toggle_visible();
         }
         else if (key == VK_ESCAPE)
