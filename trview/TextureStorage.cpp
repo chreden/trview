@@ -8,10 +8,6 @@ namespace trview
     {
     }
 
-    TextureStorage::~TextureStorage()
-    {
-    }
-
     Texture TextureStorage::coloured(uint32_t colour) const
     {
         D3D11_SUBRESOURCE_DATA srd;
