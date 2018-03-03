@@ -43,9 +43,6 @@
     <ClInclude Include="TextureWindow.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="RoomWindow.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Win</Filter>
     </ClInclude>
@@ -97,9 +94,6 @@
     <ClInclude Include="StaticMesh.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="TextureStorage.h">
-      <Filter>View\Textures</Filter>
-    </ClInclude>
     <ClInclude Include="ITextureStorage.h">
       <Filter>View\Textures</Filter>
     </ClInclude>
@@ -109,15 +103,21 @@
     <ClInclude Include="IMeshStorage.h">
       <Filter>View\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="ILevelTextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelTextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="TextureWindow.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomWindow.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -156,9 +156,6 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="TextureStorage.cpp">
-      <Filter>View\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>View\Textures</Filter>
     </ClCompile>
@@ -167,6 +164,15 @@
     </ClCompile>
     <ClCompile Include="IMeshStorage.cpp">
       <Filter>View\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ILevelTextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelTextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureStorage.cpp">
+      <Filter>View\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

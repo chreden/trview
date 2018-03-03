@@ -6,6 +6,8 @@ namespace trview
     {
         struct Point
         {
+            Point();
+
             Point(float x, float y);
 
             Point operator -(const Point& other);

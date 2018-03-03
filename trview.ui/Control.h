@@ -46,7 +46,7 @@ namespace trview
 
             // Add the specified control as a child element of this control.
             // Sets the parent element of the child to be this element.
-            void add_child(std::unique_ptr<Control>&& child_element);
+            virtual void add_child(std::unique_ptr<Control>&& child_element);
 
             // Get the elements that are direct children of this element.
             // To add a new child, use add_child.

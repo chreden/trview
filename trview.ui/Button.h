@@ -16,7 +16,7 @@ namespace trview
             virtual ~Button() = default;
 
             // This event is raised when the user clicks on the button.
-            Event<void> on_click;
+            Event<bool> on_click;
 
             void set_state(bool state);
         protected:

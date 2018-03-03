@@ -57,7 +57,7 @@ namespace trview
             const auto pos = _blob->position();
             _blob->set_position(Point(x, pos.y));
 
-            on_value_changed.raise(percentage);
+            on_value_changed(percentage);
         }
     }
 }

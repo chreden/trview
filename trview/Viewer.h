@@ -16,7 +16,6 @@
 #include "Room.h"
 
 #include "TextureWindow.h"
-#include "RoomWindow.h"
 #include "GoToRoom.h"
 
 #include "Timer.h"
@@ -37,12 +36,17 @@ namespace trview
     {
         class Label;
         class Button;
+        class NumericUpDown;
     }
+
+    class RoomNavigator;
+    struct ITextureStorage;
 
     class Viewer
     {
     public:
         explicit Viewer(Window window);
+        ~Viewer();
 
         void render();
 
@@ -54,22 +58,18 @@ namespace trview
         void on_input(const RAWINPUT& input);
 
         // Old ways of doing things - will be mapped.
-        void toggle_room_window();
         void toggle_texture_window();
 
         void cycle();
-        void cycle_room();
         void cycle_back();
-        void cycle_room_back();
         void toggle_highlight();
     private:
         void generate_ui();
 
         void generate_tool_window();
 
-        std::unique_ptr<ui::Window> generate_neighbours_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_room_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_camera_window(ui::Point point);
+        std::unique_ptr<ui::Window> generate_neighbours_window();
+        std::unique_ptr<ui::Window> generate_camera_window();
 
         void initialise_d3d();
         void initialise_input();
@@ -85,6 +85,8 @@ namespace trview
 
         Texture create_coloured_texture(uint32_t colour);
 
+        void select_room(uint32_t room);
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
@@ -96,7 +98,6 @@ namespace trview
         std::unique_ptr<TextureWindow>   _texture_window;
 
         std::unique_ptr<ui::render::FontFactory> _font_factory;
-        std::unique_ptr<RoomWindow> _room_window;
         CComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
@@ -123,7 +124,6 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
-        ui::Button* _room_highlight;
         ui::Button* _room_neighbours;
 
         // More buttons - the camera mode buttons this time.
@@ -147,6 +147,10 @@ namespace trview
         bool _free_backward{ false };
         bool _free_up{ false };
         bool _free_down{ false };
+
+        // Room nav
+        std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<ITextureStorage> _texture_storage;
     };
 }
 
