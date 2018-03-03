@@ -24,7 +24,7 @@ namespace trview
         auto highlight = std::make_unique<Button>(Point(12, 20), Size(16, 16), red, green);
         auto highlight_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Highlight", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        highlight->on_click += [&](bool state) { on_highlight.raise(state); };
+        highlight->on_click += [&](bool state) { on_highlight(state); };
         _highlight = highlight.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
@@ -36,7 +36,7 @@ namespace trview
 
         room_number->on_value_changed += [&](int32_t value)
         {
-            on_room_selected.raise(value);
+            on_room_selected(value);
         };
         _current = room_number.get();
         _max = room_max_label.get();

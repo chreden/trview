@@ -23,6 +23,11 @@ namespace trview
                 func(arguments...);
             } 
         }
+
+        void operator()(Args... arguments)
+        {
+            raise(arguments...);
+        }
     private:
         std::vector<std::function<void(Args...)>> listeners_;
     };
@@ -44,6 +49,11 @@ namespace trview
             {
                 func();
             }
+        }
+
+        void operator()()
+        {
+            raise();
         }
     private:
         std::vector<std::function<void()>> listeners_;
