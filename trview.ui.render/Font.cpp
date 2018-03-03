@@ -1,6 +1,5 @@
 #include "Font.h"
 
-#include <sstream>
 #include <d2d1.h>
 
 namespace trview

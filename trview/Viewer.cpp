@@ -6,7 +6,6 @@
 
 #include <vector>
 #include <string>
-#include <sstream>
 #include <d3dcompiler.h>
 #include <directxmath.h>
 
