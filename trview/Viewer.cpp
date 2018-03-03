@@ -607,8 +607,7 @@ namespace trview
         _camera.reset();
 
         // Reset UI buttons
-        uint32_t adjusted_size = rooms.size() ? rooms.size() - 1 : 0u;
-        _room_navigator->set_max_rooms(adjusted_size);
+        _room_navigator->set_max_rooms(rooms.size());
         _room_navigator->set_highlight(false);
         select_room(0);
 

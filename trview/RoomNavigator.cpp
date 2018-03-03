@@ -79,15 +79,16 @@ namespace trview
 
     void RoomNavigator::set_max_rooms(uint32_t max_rooms)
     {
-        _current->set_maximum(max_rooms);
+        uint32_t adjusted_size = max_rooms ? max_rooms - 1 : 0u;
+        _current->set_maximum(adjusted_size);
         std::wstringstream stream;
-        stream << max_rooms;
+        stream << adjusted_size;
         _max->set_text(stream.str());
     }
 
-    void RoomNavigator::set_highlight(bool highlighted)
+    void RoomNavigator::set_highlight(bool highlight)
     {
-        _highlight->set_state(highlighted);
+        _highlight->set_state(highlight);
     }
 
     void RoomNavigator::set_selected_room(uint32_t selected_room)
