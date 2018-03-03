@@ -101,7 +101,7 @@ namespace trview
             Size(16, 16),
             create_coloured_texture(0xff0000ff),
             create_coloured_texture(0xff00ff00));
-        room_neighbours->on_click += [&]() 
+        room_neighbours->on_click += [&](auto) 
         { 
             if (_level)
             {
@@ -167,7 +167,7 @@ namespace trview
             L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
-        reset_camera->on_click += [&]() { _camera.reset(); }; 
+        reset_camera->on_click += [&](auto) { _camera.reset(); }; 
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
@@ -179,7 +179,7 @@ namespace trview
         };
 
         auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        orbit_camera->on_click += [&, update_camera_mode_buttons]()
+        orbit_camera->on_click += [&, update_camera_mode_buttons](auto)
         { 
             _camera_mode = CameraMode::Orbit;
             update_camera_mode_buttons();
@@ -188,7 +188,7 @@ namespace trview
         auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        free_camera->on_click += [&, update_camera_mode_buttons]()
+        free_camera->on_click += [&, update_camera_mode_buttons](auto)
         { 
             _camera_mode = CameraMode::Free;
             _free_camera.set_position(_camera.position());

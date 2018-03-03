@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RoomNavigator.h"
 #include "ITextureStorage.h"
+#include "RoomInfo.h"
 
 #include <sstream>
 
@@ -20,8 +21,8 @@ namespace trview
         auto highlight = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.untextured(), texture_storage.untextured());
         auto highlight_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Highlight", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        highlight->on_click += [&]() { toggle_highlight(); };
-        _highlight_button = highlight.get();
+        highlight->on_click += [&](bool state) { on_highlight.raise(state); };
+        _highlight = highlight.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(0, 0),StackPanel::Direction::Vertical);
@@ -34,25 +35,25 @@ namespace trview
         {
             on_room_selected.raise(value);
         };
-        _current_room = room_number.get();
-        _max_rooms = room_max_label.get();
+        _current = room_number.get();
+        _max = room_max_label.get();
 
         room_number_labels->add_child(std::move(room_number));
         room_number_labels->add_child(std::move(room_number_label));
         room_number_labels->add_child(std::move(room_max_label));
 
-        auto room_info_labels = std::make_unique<StackPanel>(Point(12, 12),Size(96, 36),Colour(1.f, 0.5f, 0.5f, 0.5f),Size(5, 5),StackPanel::Direction::Horizontal);
-        auto room_x_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"X:", 10.f, TextAlignment::Left, ParagraphAlignment::Centre);
-        auto room_z_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Z:", 10.f, TextAlignment::Left,ParagraphAlignment::Centre);
+        auto info_labels = std::make_unique<StackPanel>(Point(12, 12),Size(96, 36),Colour(1.f, 0.5f, 0.5f, 0.5f),Size(5, 5),StackPanel::Direction::Horizontal);
+        auto x_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"X:", 10.f, TextAlignment::Left, ParagraphAlignment::Centre);
+        auto z_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Z:", 10.f, TextAlignment::Left,ParagraphAlignment::Centre);
 
-        _room_x = room_x_label.get();
-        _room_z = room_z_label.get();
+        _x = x_label.get();
+        _z = z_label.get();
 
-        room_info_labels->add_child(std::move(room_x_label));
-        room_info_labels->add_child(std::move(room_z_label));
+        info_labels->add_child(std::move(x_label));
+        info_labels->add_child(std::move(z_label));
 
         room_controls->add_child(std::move(room_number_labels));
-        room_controls->add_child(std::move(room_info_labels));
+        room_controls->add_child(std::move(info_labels));
 
         room_box->add_child(std::move(room_controls));
 
@@ -67,33 +68,27 @@ namespace trview
     {
         std::wstringstream stream;
         stream << L"X: " << room_info.x / 1024.0f;
-        _room_x->set_text(stream.str());
+        _x->set_text(stream.str());
         stream.str(L"");
         stream << L"Z: " << room_info.z / 1024.0f;
-        _room_z-> set_text(stream.str());
+        _z-> set_text(stream.str());
     }
 
     void RoomNavigator::set_max_rooms(uint32_t max_rooms)
     {
-        _current_room->set_maximum(max_rooms);
+        _current->set_maximum(max_rooms);
         std::wstringstream stream;
         stream << max_rooms;
-        _max_rooms->set_text(stream.str());
+        _max->set_text(stream.str());
     }
 
     void RoomNavigator::set_highlight(bool highlighted)
     {
-        _highlight = highlighted;
+        _highlight->set_state(highlighted);
     }
 
     void RoomNavigator::set_selected_room(uint32_t selected_room)
     {
-        _current_room->set_value(selected_room);
-    }
-
-    void RoomNavigator::toggle_highlight()
-    {
-        _highlight = !_highlight;
-        on_highlight.raise(_highlight);
+        _current->set_value(selected_room);
     }
 }

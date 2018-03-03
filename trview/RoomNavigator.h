@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <trview.common/Event.h>
-#include "RoomInfo.h"
 
 namespace trview
 {
@@ -15,6 +14,7 @@ namespace trview
     }
 
     struct ITextureStorage;
+    class RoomInfo;
 
     // The room navigator control allows the user to select which room to look at.
     class RoomNavigator
@@ -30,13 +30,10 @@ namespace trview
         void set_highlight(bool highlighted);
         void set_selected_room(uint32_t selected_room);
     private:
-        void toggle_highlight();
-
-        ui::Button*        _highlight_button;
-        ui::NumericUpDown* _current_room;
-        ui::Label*         _max_rooms;
-        ui::Label*         _room_x;
-        ui::Label*         _room_z;
-        bool               _highlight;
+        ui::Button*        _highlight;
+        ui::NumericUpDown* _current;
+        ui::Label*         _max;
+        ui::Label*         _x;
+        ui::Label*         _z;
     };
 }

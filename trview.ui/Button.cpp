@@ -13,7 +13,7 @@ namespace trview
         bool Button::clicked(Point position)
         {
             set_state(!_state);
-            on_click.raise();
+            on_click.raise(_state);
             return true;
         }
 
