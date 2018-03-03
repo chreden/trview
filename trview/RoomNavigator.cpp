@@ -3,8 +3,6 @@
 #include "ITextureStorage.h"
 #include "RoomInfo.h"
 
-#include <sstream>
-
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/NumericUpDown.h>

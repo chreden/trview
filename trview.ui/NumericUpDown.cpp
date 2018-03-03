@@ -4,7 +4,6 @@
 #include "Label.h"
 #include "Button.h"
 
-#include <sstream>
 #include <algorithm>
 
 namespace trview
@@ -39,11 +38,7 @@ namespace trview
             }
 
             _value = value;
-
-            std::wstringstream stream;
-            stream << value;
-
-            _label->set_text(stream.str());
+            _label->set_text(std::to_wstring(value));
             on_value_changed.raise(_value);
         }
 
