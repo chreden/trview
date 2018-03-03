@@ -3,6 +3,7 @@
 #include <atlbase.h>
 #include <d3d11.h>
 #include <vector>
+#include <memory>
 
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
@@ -26,8 +27,9 @@ namespace trview
         virtual DirectX::XMFLOAT4 palette(uint32_t index) const override;
     private:
         CComPtr<ID3D11Device> _device;
-        std::vector<Texture> _tiles;
+        std::vector<Texture>  _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
+        std::unique_ptr<ITextureStorage> _texture_storage;
         mutable Texture _untextured_texture;
         const trlevel::ILevel& _level;
     };
