@@ -18,6 +18,9 @@
 #include <trview.ui/NumericUpDown.h>
 #include <trview.ui/GroupBox.h>
 
+#include "RoomNavigator.h"
+#include "TextureStorage.h"
+
 namespace trview
 {
     Viewer::Viewer(Window window)
@@ -26,9 +29,14 @@ namespace trview
         initialise_d3d();
         initialise_input();
 
+        _texture_storage = std::make_unique<TextureStorage>(_device);
         _font_factory = std::make_unique<ui::render::FontFactory>();
 
         generate_ui();
+    }
+
+    Viewer::~Viewer()
+    {
     }
 
     void Viewer::generate_ui()
@@ -68,7 +76,10 @@ namespace trview
             Colour(1.f, 0.5f, 0.5f, 0.5f),
             Size(5, 5));
 
-        tool_window->add_child(generate_room_window());
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
+        _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
+        _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
+
         tool_window->add_child(generate_neighbours_window());
         tool_window->add_child(generate_camera_window());
         _control->add_child(std::move(tool_window));
@@ -98,13 +109,13 @@ namespace trview
                 {
                     _level->set_highlight_mode(Level::RoomHighlightMode::None);
                     _room_neighbours->set_state(false);
-                    _room_highlight->set_state(false);
+                    _room_navigator->set_highlight(false);
                 }
                 else
                 {
                     _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours);
                     _room_neighbours->set_state(true);
-                    _room_highlight->set_state(false);
+                    _room_navigator->set_highlight(false);
                 }
             } 
         };
@@ -142,138 +153,6 @@ namespace trview
         neighbours_group->add_child(std::move(neighbours_depth_label));
         neighbours_group->add_child(std::move(neighbours_depth));
         return neighbours_group;
-    }
-
-    std::unique_ptr<ui::Window> Viewer::generate_room_window()
-    {
-        using namespace ui;
-
-        auto rooms_groups = std::make_unique<GroupBox>(
-            Point(0,0),
-            Size(140, 130),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Rooms");
-
-        auto room_highlight = std::make_unique<Button>(
-            Point(12, 20),
-            Size(16, 16),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-
-        auto room_highlight_label = std::make_unique<Label>(
-            Point(32, 20),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Highlight",
-            10.0f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        room_highlight->on_click += [&]() { toggle_highlight(); };
-        _room_highlight = room_highlight.get();
-
-        auto room_box = std::make_unique<GroupBox>(
-            Point(12, 40),
-            Size(120, 80),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Room");
-
-        auto room_controls = std::make_unique<StackPanel>(
-            Point(12, 12),
-            Size(96, 60),
-            Colour(1.f, 0.5f, 0.5f, 0.5f),
-            Size(0, 0),
-            StackPanel::Direction::Vertical);
-
-        auto room_number_labels = std::make_unique<StackPanel>(
-            Point(0, 0),
-            Size(96, 30),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Size(5, 5),
-            StackPanel::Direction::Horizontal);
-
-        auto room_number = std::make_unique<NumericUpDown>(
-            Point(90, 16),
-            Size(40, 20),
-            Colour(1.0f, 0.4f, 0.4f, 0.4f),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00),
-            0,
-            0);
-
-        auto room_number_label = std::make_unique<Label>(
-            Point(0, 0),
-            Size(8, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"/",
-            16.f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        auto room_max_label = std::make_unique<Label>(
-            Point(0, 0),
-            Size(40, 20),
-            Colour(1.0f, 0.4f, 0.4f, 0.4f),
-            L"0",
-            10.f,
-            TextAlignment::Centre,
-            ParagraphAlignment::Centre);
-
-        _room_current_room = room_number.get();
-        _room_rooms = room_max_label.get();
-
-        room_number->on_value_changed += [&](int32_t value)
-        {
-            select_room(value);
-        };
-
-        room_number_labels->add_child(std::move(room_number));
-        room_number_labels->add_child(std::move(room_number_label));
-        room_number_labels->add_child(std::move(room_max_label));
-
-        auto room_info_labels = std::make_unique<StackPanel>(
-            Point(12, 12),
-            Size(96, 36),
-            Colour(1.f, 0.5f, 0.5f, 0.5f),
-            Size(5, 5),
-            StackPanel::Direction::Horizontal);
-
-        auto room_x_label = std::make_unique<Label>(
-            Point(0, 0),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"X:",
-            10.f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        auto room_z_label = std::make_unique<Label>(
-            Point(0, 0),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Z:",
-            10.f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        _room_x = room_x_label.get();
-        _room_z = room_z_label.get();
-
-        room_info_labels->add_child(std::move(room_x_label));
-        room_info_labels->add_child(std::move(room_z_label));
- 
-        room_controls->add_child(std::move(room_number_labels));
-        room_controls->add_child(std::move(room_info_labels));
-
-        room_box->add_child(std::move(room_controls));
-
-        rooms_groups->add_child(std::move(room_highlight));
-        rooms_groups->add_child(std::move(room_highlight_label));
-        rooms_groups->add_child(std::move(room_box));
-
-        return rooms_groups;
     }
 
     std::unique_ptr<ui::Window> Viewer::generate_camera_window()
@@ -729,15 +608,10 @@ namespace trview
 
         // Reset UI buttons
         uint32_t adjusted_size = rooms.size() ? rooms.size() - 1 : 0u;
-        _room_current_room->set_maximum(adjusted_size);
-
-        std::wstringstream stream;
-        stream << adjusted_size;
-        _room_rooms->set_text(stream.str());
-
+        _room_navigator->set_max_rooms(adjusted_size);
+        _room_navigator->set_highlight(false);
         select_room(0);
 
-        _room_highlight->set_state(false);
         _room_neighbours->set_state(false);
     }
 
@@ -835,13 +709,13 @@ namespace trview
             if (_level->highlight_mode() == Level::RoomHighlightMode::Highlight)
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::None);
-                _room_highlight->set_state(false);
+                _room_navigator->set_highlight(false);
                 _room_neighbours->set_state(false);
             }
             else
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::Highlight);
-                _room_highlight->set_state(true);
+                _room_navigator->set_highlight(true);
                 _room_neighbours->set_state(false);
             }
         }
@@ -853,18 +727,8 @@ namespace trview
         {
             _level->set_selected_room(room);
 
-            auto info = _level->room_info()[room];
-            std::wstringstream stream;
-            stream << "X: " << info.x / 1024.0f;
-            _room_x->set_text(stream.str());
-
-            stream.clear();
-            stream.str(L"");
-
-            stream << "Z: " << info.z / 1024.0f;
-            _room_z->set_text(stream.str());
-
-            _room_current_room->set_value(room);
+            _room_navigator->set_selected_room(room);
+            _room_navigator->set_room_info(_level->room_info(room));
         }
     }
 }

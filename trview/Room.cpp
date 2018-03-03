@@ -2,7 +2,7 @@
 #include "Room.h"
 #include "RoomVertex.h"
 
-#include "ITextureStorage.h"
+#include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
 
 #include <directxmath.h>
@@ -13,7 +13,7 @@ namespace trview
     Room::Room(CComPtr<ID3D11Device> device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
-        const ITextureStorage& texture_storage,
+        const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
@@ -35,7 +35,7 @@ namespace trview
         return _neighbours;
     }
 
-    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -106,7 +106,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage)
+    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         using namespace DirectX;
 

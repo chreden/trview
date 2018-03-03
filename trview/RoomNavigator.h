@@ -9,7 +9,9 @@ namespace trview
     namespace ui
     {
         class Control;
+        class Button;
         class Label;
+        class NumericUpDown;
     }
 
     struct ITextureStorage;
@@ -28,8 +30,13 @@ namespace trview
         void set_highlight(bool highlighted);
         void set_selected_room(uint32_t selected_room);
     private:
-        ui::Label* _max_rooms;
-        ui::Label* _room_x;
-        ui::Label* _room_z;
+        void toggle_highlight();
+
+        ui::Button*        _highlight_button;
+        ui::NumericUpDown* _current_room;
+        ui::Label*         _max_rooms;
+        ui::Label*         _room_x;
+        ui::Label*         _room_z;
+        bool               _highlight;
     };
 }

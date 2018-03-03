@@ -39,10 +39,14 @@ namespace trview
         class NumericUpDown;
     }
 
+    class RoomNavigator;
+    struct ITextureStorage;
+
     class Viewer
     {
     public:
         explicit Viewer(Window window);
+        ~Viewer();
 
         void render();
 
@@ -65,7 +69,6 @@ namespace trview
         void generate_tool_window();
 
         std::unique_ptr<ui::Window> generate_neighbours_window();
-        std::unique_ptr<ui::Window> generate_room_window();
         std::unique_ptr<ui::Window> generate_camera_window();
 
         void initialise_d3d();
@@ -121,13 +124,7 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
-        ui::Button* _room_highlight;
         ui::Button* _room_neighbours;
-
-        ui::Label* _room_x;
-        ui::Label* _room_z;
-        ui::Label* _room_rooms;
-        ui::NumericUpDown* _room_current_room;
 
         // More buttons - the camera mode buttons this time.
         ui::Button* _orbit_mode;
@@ -150,6 +147,10 @@ namespace trview
         bool _free_backward{ false };
         bool _free_up{ false };
         bool _free_down{ false };
+
+        // Room nav
+        std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<ITextureStorage> _texture_storage;
     };
 }
 

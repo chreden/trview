@@ -19,7 +19,7 @@
 
 namespace trview
 {
-    struct ITextureStorage;
+    struct ILevelTextureStorage;
     struct IMeshStorage;
 
     class Room
@@ -35,15 +35,15 @@ namespace trview
         explicit Room(CComPtr<ID3D11Device> device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
-            const ITextureStorage& texture_storage,
+            const ILevelTextureStorage& texture_storage,
             const IMeshStorage& mesh_storage);
 
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ITextureStorage& texture_storage, SelectionMode selected);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
     private:
-        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ITextureStorage& texture_storage);
+        void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
 

@@ -14,15 +14,17 @@
 #include "Mesh.h"
 #include "StaticMesh.h"
 
-#include "ITextureStorage.h"
 #include "IMeshStorage.h"
 
 namespace trview
 {
+    struct ILevelTextureStorage;
+
     class Level
     {
     public:
         Level(CComPtr<ID3D11Device> device, const trlevel::ILevel* level);
+        ~Level();
 
         enum class RoomHighlightMode
         {
@@ -34,6 +36,7 @@ namespace trview
         // Temporary, for the room info and texture window.
 
         std::vector<RoomInfo> room_info() const;
+        RoomInfo room_info(uint32_t room) const;
         std::vector<Texture> level_textures() const;
 
         uint16_t selected_room() const;
@@ -67,7 +70,7 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
-        std::unique_ptr<ITextureStorage> _texture_storage;
+        std::unique_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<IMeshStorage> _mesh_storage;
     };
 }

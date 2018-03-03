@@ -3,7 +3,7 @@
 
 #include <array>
 
-#include "ITextureStorage.h"
+#include "ILevelTextureStorage.h"
 
 namespace trview
 {
@@ -17,7 +17,7 @@ namespace trview
         };
     }
 
-    Mesh::Mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device, const ITextureStorage& texture_storage)
+    Mesh::Mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device, const ILevelTextureStorage& texture_storage)
     {
         using namespace DirectX;
 
@@ -181,7 +181,7 @@ namespace trview
 
     }
 
-    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ITextureStorage& texture_storage)
+    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ILevelTextureStorage& texture_storage)
     {
         // There are no vertices.
         if (!_vertex_buffer)

@@ -3,7 +3,7 @@
 
 #include <trview.common/FileLoader.h>
 
-#include "TextureStorage.h"
+#include "LevelTextureStorage.h"
 #include "MeshStorage.h"
 
 namespace trview
@@ -59,10 +59,14 @@ namespace trview
         // Create the texture sampler state.
         _device->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
+        _texture_storage = std::make_unique<LevelTextureStorage>(_device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(_device, *_level, *_texture_storage.get());
         generate_rooms();
         generate_entities();
+    }
+
+    Level::~Level()
+    {
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -73,6 +77,11 @@ namespace trview
             room_infos.push_back(r->info());
         }
         return room_infos;
+    }
+
+    RoomInfo Level::room_info(uint32_t room) const
+    {
+        return _rooms[room]->info();
     }
 
     std::vector<Texture> Level::level_textures() const
