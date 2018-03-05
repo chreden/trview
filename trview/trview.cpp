@@ -3,12 +3,18 @@
 
 #include "stdafx.h"
 #include "trview.h"
+#include "resource.h"
 
 #include "Viewer.h"
 #include <memory>
 #include <commdlg.h>
 
 #define MAX_LOADSTRING 100
+
+namespace
+{
+    const int ID_RECENT_FILE_BASE = 5000;
+}
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -22,6 +28,31 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 std::unique_ptr<trview::Viewer> viewer;
+HWND window;
+std::vector<std::wstring> recent_files;
+
+void update_menu(std::list<std::wstring> files)
+{
+    // Copy recent files locally
+    recent_files.assign(files.begin(), files.end());
+
+    // Set up the recently used files menu.
+    HMENU menu = GetMenu(window);
+    HMENU popup = CreatePopupMenu();
+
+    for(int i = 0; i < recent_files.size(); ++i)
+    {
+        AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, recent_files[i].c_str());
+    }
+
+    MENUITEMINFO info;
+    memset(&info, 0, sizeof(info));
+    info.cbSize = sizeof(info);
+    info.fMask = MIIM_SUBMENU;
+    info.hSubMenu = popup;
+    SetMenuItemInfo(menu, ID_FILE_OPENRECENT, FALSE, &info);
+    SetMenu(window, menu);
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -38,7 +69,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     LoadStringW(hInstance, IDC_TRVIEW, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
-    HWND window;
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow, window))
@@ -48,8 +78,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TRVIEW));
 
-
     viewer = std::make_unique<trview::Viewer>(window);
+    viewer->on_recent_files_changed += update_menu;
 
     MSG msg;
     memset(&msg, 0, sizeof(msg));
@@ -109,8 +139,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     return (int) msg.wParam;
 }
-
-
 
 //
 //  FUNCTION: MyRegisterClass()
@@ -183,6 +211,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
+
+            // Handle recent files.
+            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + recent_files.size())
+            {
+                int index = wmId - ID_RECENT_FILE_BASE;
+                if (index >= 0 && index < recent_files.size())
+                {
+                    viewer->open(recent_files[index]);
+                }
+                break;
+            }
+
             // Parse the menu selections:
             switch (wmId)
             {
@@ -205,7 +245,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ofn.nMaxFile = MAX_PATH;
                 ofn.lpstrTitle = L"Open level";
                 ofn.lpstrFilter = L"TR2 Files\0*.tr2\0";
-                // ofn.hwndOwner = WindowFromDC(wglGetCurrentDC());
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
                 ofn.nFilterIndex = -1;
 
@@ -215,7 +254,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     viewer->open(ofn.lpstrFile);
                 }
                 break;
-            }
+            } 
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;

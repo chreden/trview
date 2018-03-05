@@ -112,6 +112,9 @@
     <ClInclude Include="TextureStorage.h">
       <Filter>View\Textures</Filter>
     </ClInclude>
+    <ClInclude Include="UserSettings.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -173,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="TextureStorage.cpp">
       <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="UserSettings.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

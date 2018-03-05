@@ -22,6 +22,7 @@
 #include "Camera.h"
 #include "FreeCamera.h"
 #include "Window.h"
+#include "UserSettings.h"
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
@@ -63,6 +64,8 @@ namespace trview
         void cycle();
         void cycle_back();
         void toggle_highlight();
+
+        Event<std::list<std::wstring>> on_recent_files_changed;
     private:
         void generate_ui();
 
@@ -151,6 +154,8 @@ namespace trview
         // Room nav
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<ITextureStorage> _texture_storage;
+
+        UserSettings _settings;
     };
 }
 

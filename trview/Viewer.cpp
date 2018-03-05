@@ -204,6 +204,7 @@ namespace trview
         camera_sensitivity->on_value_changed += [&](float value)
         {
             _camera_sensitivity = value;
+            _settings.camera_sensitivity = value;
         };
         camera_sensitivity_box->add_child(std::move(camera_sensitivity));
 
@@ -597,6 +598,9 @@ namespace trview
 
     void Viewer::open(const std::wstring filename)
     {
+        _settings.add_recent_file(filename);
+        on_recent_files_changed(_settings.recent_files);
+
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
 
