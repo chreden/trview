@@ -38,6 +38,16 @@ namespace trview
     {
     }
 
+    void Viewer::load_settings()
+    {
+        // Load settings from somewhere in local appdata.
+    }
+
+    void Viewer::save_settings()
+    {
+        // Save the settings to somewhere in local appdata.
+    }
+
     void Viewer::generate_ui()
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
