@@ -79,7 +79,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TRVIEW));
 
     viewer = std::make_unique<trview::Viewer>(window);
+    // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
+    // Make sure the menu has the values loaded from the settings file.
+    update_menu(viewer->settings().recent_files);
 
     MSG msg;
     memset(&msg, 0, sizeof(msg));

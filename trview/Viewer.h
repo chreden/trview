@@ -65,11 +65,9 @@ namespace trview
         void cycle_back();
         void toggle_highlight();
 
+        UserSettings settings() const;
         Event<std::list<std::wstring>> on_recent_files_changed;
     private:
-        void load_settings();
-        void save_settings();
-
         void generate_ui();
 
         void generate_tool_window();

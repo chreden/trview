@@ -14,11 +14,14 @@ namespace trview
             virtual ~Slider() = default;
 
             Event<float> on_value_changed;
+
+            void set_value(float value);
         protected:
             virtual bool clicked(Point position) override;
             virtual bool move(Point position) override;
         private:
             void set_blob_position(Point position);
+            void set_blob_position(float percentage);
 
             float _value{ 0.5f };
             ui::Control* _blob;

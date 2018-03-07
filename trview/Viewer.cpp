@@ -8,6 +8,7 @@
 #include <string>
 #include <d3dcompiler.h>
 #include <directxmath.h>
+#include <shlobj.h>
 
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
@@ -25,6 +26,8 @@ namespace trview
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
     {
+        _settings = load_user_settings();
+
         initialise_d3d();
         initialise_input();
 
@@ -38,14 +41,9 @@ namespace trview
     {
     }
 
-    void Viewer::load_settings()
+    UserSettings Viewer::settings() const
     {
-        // Load settings from somewhere in local appdata.
-    }
-
-    void Viewer::save_settings()
-    {
-        // Save the settings to somewhere in local appdata.
+        return _settings;
     }
 
     void Viewer::generate_ui()
@@ -216,6 +214,7 @@ namespace trview
             _camera_sensitivity = value;
             _settings.camera_sensitivity = value;
         };
+        camera_sensitivity->set_value(_settings.camera_sensitivity);
         camera_sensitivity_box->add_child(std::move(camera_sensitivity));
 
         // Take a copy of buttons that need to be tracked.
@@ -610,6 +609,7 @@ namespace trview
     {
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
+        save_user_settings(_settings);
 
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
