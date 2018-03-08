@@ -39,6 +39,7 @@ namespace trview
 
     Viewer::~Viewer()
     {
+        save_user_settings(_settings);
     }
 
     UserSettings Viewer::settings() const

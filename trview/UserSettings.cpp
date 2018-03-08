@@ -2,7 +2,6 @@
 #include "UserSettings.h"
 
 #include <ShlObj.h>
-#include <PathCch.h>
 #include <fstream>
 
 namespace trview
@@ -16,7 +15,7 @@ namespace trview
             wchar_t* path;
             ~SafePath()
             {
-                if (path != nullptr)
+                if (path)
                 {
                     CoTaskMemFree(path);
                 }
@@ -36,21 +35,16 @@ namespace trview
     UserSettings load_user_settings()
     {
         UserSettings settings;
-        
+
         SafePath path;
         if (S_OK != SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path.path))
         {
             return settings;
         }
 
-        wchar_t file_path[PATHCCH_MAX_CCH];
-        memset(file_path, 0, sizeof(file_path));
-
-        if (S_OK != PathCchCombine(file_path, PATHCCH_MAX_CCH, path.path, L"trview\\settings.txt"))
-        {
-            return settings;
-        }
-
+        std::wstring file_path(path.path);
+        file_path += L"\\trview\\settings.txt";
+        
         try
         {
             std::wifstream file(file_path);
@@ -102,23 +96,14 @@ namespace trview
             return;
         }
 
-        wchar_t file_path[PATHCCH_MAX_CCH];
-        memset(file_path, 0, sizeof(file_path));
-        if (S_OK != PathCchCombine(file_path, PATHCCH_MAX_CCH, path.path, L"trview"))
+        std::wstring file_path(path.path);
+        file_path += L"\\trview";
+        if (!CreateDirectory(file_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS)
         {
             return;
         }
 
-        if (!CreateDirectory(file_path, nullptr))
-        {
-            return;
-        }
-
-        if (S_OK != PathCchCombine(file_path, PATHCCH_MAX_CCH, file_path, L"settings.txt"))
-        {
-            return;
-        }
-
+        file_path += L"\\settings.txt";
         std::wofstream file(file_path);
         if (!file.is_open())
         {
