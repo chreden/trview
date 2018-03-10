@@ -41,6 +41,8 @@ namespace trview
 
         uint16_t selected_room() const;
 
+        Room& room(uint32_t room) const;
+
         void render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection);
         
         RoomHighlightMode highlight_mode() const;

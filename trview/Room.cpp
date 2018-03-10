@@ -19,7 +19,7 @@ namespace trview
     {
         using namespace DirectX;
         _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
-        
+
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
@@ -33,6 +33,11 @@ namespace trview
     std::set<uint16_t> Room::neighbours() const
     {
         return _neighbours;
+    }
+
+    const std::vector<Room::Triangle>& Room::collision_triangles() const
+    {
+        return _collision_triangles;
     }
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
@@ -161,6 +166,9 @@ namespace trview
             tex_indices.push_back(base + 2);
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
+
+            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos) });
+            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base + 2].pos), XMLoadFloat3(&vertices[base + 3].pos), XMLoadFloat3(&vertices[base + 0].pos) });
         }
 
         for (const auto& tri : room.data.triangles)
@@ -197,6 +205,8 @@ namespace trview
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
+
+            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)});
         }
 
         if (!vertices.empty())

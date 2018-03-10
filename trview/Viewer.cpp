@@ -8,6 +8,7 @@
 #include <string>
 #include <d3dcompiler.h>
 #include <directxmath.h>
+#include <DirectXCollision.h>
 #include <shlobj.h>
 
 #include <trview.ui/StackPanel.h>
@@ -657,6 +658,9 @@ namespace trview
 
         update_camera();
 
+        // Prototype ray casting.
+        test_ray_casting();
+
         _context->OMSetRenderTargets(1, &_render_target_view.p, _depth_stencil_view);
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
 
@@ -670,6 +674,61 @@ namespace trview
         render_ui();
 
         _swap_chain->Present(1, 0);
+    }
+
+    void Viewer::test_ray_casting()
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        // Cast rays all the time.
+        using namespace DirectX;
+        using namespace DirectX::TriangleTests;
+
+        POINT mouse_pos;
+        GetCursorPos(&mouse_pos);
+        ScreenToClient(_window.window(), &mouse_pos);
+
+        auto world = XMMatrixIdentity();
+        auto direction = XMVector3Normalize(XMVector3Project(
+            XMVectorSet(mouse_pos.x,mouse_pos.y,1,0),
+            0,
+            0,
+            _window.width(),
+            _window.height(),
+            0,
+            1.0f,
+            _camera_mode == CameraMode::Free ? _free_camera.projection() : _camera.projection(),
+            _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view(),
+            world));
+
+        auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
+        // auto target = _camera_mode == CameraMode::Free ? _free_camera.target() : _camera.target();
+        // auto direction = XMVector3Normalize(XMVectorSubtract(target, position));
+
+        // Go through all the triangles in the rooms (only try one room for now?).
+        Room& room = _level->room(0);
+
+        auto room_offset = XMMatrixTranslation(-room.info().x / 1024.f, 0, -room.info().z / 1024.f);
+
+        auto transformed_position = XMVector3TransformCoord(position, room_offset);
+
+        const auto& triangles = room.collision_triangles();
+
+        float min_distance = FLT_MAX;
+        for (const auto& tri : triangles)
+        {
+            float distance = 0;
+            if (Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
+            {
+                if (distance < min_distance)
+                {
+                    min_distance = distance;
+                }
+            }
+        }
     }
 
     void Viewer::render_scene()

@@ -84,6 +84,11 @@ namespace trview
         return _rooms[room]->info();
     }
 
+    Room& Level::room(uint32_t room) const
+    {
+        return *_rooms[room];
+    }
+
     std::vector<Texture> Level::level_textures() const
     {
         std::vector<Texture> textures;

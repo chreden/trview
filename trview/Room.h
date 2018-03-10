@@ -32,14 +32,26 @@ namespace trview
             Neighbour
         };
 
+        struct Triangle
+        {
+            DirectX::XMVECTOR v0;
+            DirectX::XMVECTOR v1;
+            DirectX::XMVECTOR v2;
+        };
+
         explicit Room(CComPtr<ID3D11Device> device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
             const IMeshStorage& mesh_storage);
 
+        Room(const Room&) = delete;
+        Room& operator=(const Room&) = delete;
+
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
+
+        const std::vector<Triangle>& collision_triangles() const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
     private:
@@ -61,5 +73,8 @@ namespace trview
         uint32_t                           _untextured_index_count;
         CComPtr<ID3D11Buffer>              _matrix_buffer;
         DirectX::XMMATRIX                  _room_offset;
+
+        // Triangle copy for ray intersection.
+        std::vector<Triangle> _collision_triangles;
     };
 }

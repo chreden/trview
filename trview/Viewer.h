@@ -91,6 +91,8 @@ namespace trview
 
         void select_room(uint32_t room);
 
+        void test_ray_casting();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
