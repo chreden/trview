@@ -159,6 +159,8 @@ namespace trview
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         UserSettings _settings;
+
+        ui::Label* _picking;
     };
 }
 

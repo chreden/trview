@@ -6,6 +6,7 @@
 #include "IMeshStorage.h"
 
 #include <directxmath.h>
+#include <DirectXCollision.h>
 #include <array>
 
 namespace trview
@@ -35,9 +36,33 @@ namespace trview
         return _neighbours;
     }
 
-    const std::vector<Room::Triangle>& Room::collision_triangles() const
+    Room::PickResult Room::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction)
     {
-        return _collision_triangles;
+        using namespace DirectX;
+        using namespace DirectX::TriangleTests;
+
+        PickResult result;
+
+        auto room_offset = XMMatrixTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto transformed_position = XMVector3TransformCoord(position, room_offset);
+
+        bool any_hit = false;
+        result.distance = FLT_MAX;
+        for (const auto& tri : _collision_triangles)
+        {
+            float distance = 0;
+            if (XMVectorGetX(XMVector3Dot(direction, tri.normal)) < 0 &&
+                Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
+            {
+                result.hit = true;
+                if (distance < result.distance)
+                {
+                    result.distance = distance;
+                }
+            }
+        }
+
+        return result;
     }
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
@@ -167,8 +192,8 @@ namespace trview
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
 
-            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos) });
-            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base + 2].pos), XMLoadFloat3(&vertices[base + 3].pos), XMLoadFloat3(&vertices[base + 0].pos) });
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base + 2].pos), XMLoadFloat3(&vertices[base + 3].pos), XMLoadFloat3(&vertices[base + 0].pos)));
         }
 
         for (const auto& tri : room.data.triangles)
@@ -206,7 +231,7 @@ namespace trview
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
 
-            _collision_triangles.push_back({ XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)});
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
         }
 
         if (!vertices.empty())

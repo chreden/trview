@@ -32,11 +32,11 @@ namespace trview
             Neighbour
         };
 
-        struct Triangle
+        struct PickResult
         {
-            DirectX::XMVECTOR v0;
-            DirectX::XMVECTOR v1;
-            DirectX::XMVECTOR v2;
+            bool              hit{ false };
+            float             distance;
+            DirectX::XMVECTOR position;
         };
 
         explicit Room(CComPtr<ID3D11Device> device, 
@@ -51,13 +51,26 @@ namespace trview
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
-        const std::vector<Triangle>& collision_triangles() const;
+        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction);
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
+
+        struct Triangle
+        {
+            Triangle(DirectX::XMVECTOR v0, DirectX::XMVECTOR v1, DirectX::XMVECTOR v2)
+                : v0(v0), v1(v1), v2(v2), normal(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(v1, v0), DirectX::XMVectorSubtract(v2, v0)))
+            {
+            }
+
+            DirectX::XMVECTOR v0;
+            DirectX::XMVECTOR v1;
+            DirectX::XMVECTOR v2;
+            DirectX::XMVECTOR normal;
+        };
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;

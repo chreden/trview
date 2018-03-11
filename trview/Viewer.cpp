@@ -8,7 +8,6 @@
 #include <string>
 #include <d3dcompiler.h>
 #include <directxmath.h>
-#include <DirectXCollision.h>
 #include <shlobj.h>
 
 #include <trview.ui/StackPanel.h>
@@ -68,6 +67,10 @@ namespace trview
         {
             select_room(room);
         };
+
+        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(60, 24), ui::Colour(1, 0, 0, 0), L"no hit");
+        _picking = picking.get();
+        _control->add_child(std::move(picking));
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
@@ -685,14 +688,14 @@ namespace trview
 
         // Cast rays all the time.
         using namespace DirectX;
-        using namespace DirectX::TriangleTests;
 
         POINT mouse_pos;
         GetCursorPos(&mouse_pos);
         ScreenToClient(_window.window(), &mouse_pos);
 
-        auto world = XMMatrixIdentity();
-        auto direction = XMVector3Normalize(XMVector3Project(
+        auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
+        auto world = XMMatrixTranslationFromVector(position);
+        auto direction = XMVector3Normalize(XMVector3Unproject(
             XMVectorSet(mouse_pos.x,mouse_pos.y,1,0),
             0,
             0,
@@ -704,31 +707,10 @@ namespace trview
             _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view(),
             world));
 
-        auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
-        // auto target = _camera_mode == CameraMode::Free ? _free_camera.target() : _camera.target();
-        // auto direction = XMVector3Normalize(XMVectorSubtract(target, position));
-
         // Go through all the triangles in the rooms (only try one room for now?).
         Room& room = _level->room(0);
-
-        auto room_offset = XMMatrixTranslation(-room.info().x / 1024.f, 0, -room.info().z / 1024.f);
-
-        auto transformed_position = XMVector3TransformCoord(position, room_offset);
-
-        const auto& triangles = room.collision_triangles();
-
-        float min_distance = FLT_MAX;
-        for (const auto& tri : triangles)
-        {
-            float distance = 0;
-            if (Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
-            {
-                if (distance < min_distance)
-                {
-                    min_distance = distance;
-                }
-            }
-        }
+        auto result = room.pick(position, direction);
+        _picking->set_text(result.hit ? std::to_wstring(result.distance) : L"No Hit");
     }
 
     void Viewer::render_scene()
