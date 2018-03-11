@@ -36,7 +36,7 @@ namespace trview
         struct PickResult
         {
             bool              hit{ false };
-            Room*             room;
+            uint32_t          room;
             DirectX::XMVECTOR position;
             float             distance{ FLT_MAX };
         };
@@ -49,8 +49,12 @@ namespace trview
 
         uint16_t selected_room() const;
 
-        Room& room(uint32_t room) const;
-
+        // Determine whether the specified ray hits any of the triangles in any of the room geometry.
+        // position: The world space position of the source of the ray.
+        // direction: The direction of the ray.
+        // Returns: The result of the operation. If 'hit' is true, distance and position contain
+        // how far along the ray the hit was and the position in world space. The room that was hit
+        // is also specified.
         PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
 
         void render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection);
@@ -66,6 +70,11 @@ namespace trview
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
         void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+
+        // Determines whether the room is currently being rendered.
+        // room: The room index.
+        // Returns: True if the room is visible.
+        bool room_visible(uint32_t room) const;
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;

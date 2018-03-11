@@ -68,7 +68,7 @@ namespace trview
             select_room(room);
         };
 
-        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(60, 24), ui::Colour(1, 0, 0, 0), L"no hit");
+        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(100, 24), ui::Colour(1, 0, 0, 0), L"no hit");
         _picking = picking.get();
         _control->add_child(std::move(picking));
 
@@ -708,7 +708,8 @@ namespace trview
             world));
 
         auto result = _level->pick(position, direction);
-        _picking->set_text(result.hit ? L"Hit!" : L"No Hit");
+        
+        _picking->set_text(result.hit ? (L"Hit (" + std::to_wstring(result.room) + L")") : L"No Hit");
     }
 
     void Viewer::render_scene()
