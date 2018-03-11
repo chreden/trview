@@ -10,8 +10,12 @@ namespace trview
     public:
         FreeCamera(uint32_t width, uint32_t height);
         void                move(DirectX::XMVECTOR movement);
+        DirectX::XMMATRIX   view() const;
+        DirectX::XMMATRIX   projection() const;
         DirectX::XMMATRIX   view_projection() const;
 
+        DirectX::XMVECTOR   target() const;
+        DirectX::XMVECTOR   position() const;
         float               rotation_yaw() const;
         float               rotation_pitch() const;
         void                set_rotation_yaw(float rotation);

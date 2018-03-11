@@ -18,6 +18,11 @@ namespace trview
         calculate_projection_matrix(width, height);
     }
 
+    DirectX::XMVECTOR Camera::target() const
+    {
+        return _target;
+    }
+
     float Camera::rotation_pitch() const
     {
         return _rotation_pitch;
@@ -75,6 +80,16 @@ namespace trview
     {
         _zoom = std::min(std::max(zoom, min_zoom), max_zoom);
         calculate_view_matrix();
+    }
+
+    DirectX::XMMATRIX Camera::view() const
+    {
+        return _view;
+    }
+
+    DirectX::XMMATRIX Camera::projection() const
+    {
+        return _projection;
     }
 
     DirectX::XMMATRIX Camera::view_projection() const

@@ -6,6 +6,7 @@
 #include "IMeshStorage.h"
 
 #include <directxmath.h>
+#include <DirectXCollision.h>
 #include <array>
 
 namespace trview
@@ -19,7 +20,7 @@ namespace trview
     {
         using namespace DirectX;
         _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
-        
+
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
@@ -33,6 +34,52 @@ namespace trview
     std::set<uint16_t> Room::neighbours() const
     {
         return _neighbours;
+    }
+
+    // Determine whether the specified ray hits any of the triangles in the room geometry.
+    // position: The world space position of the source of the ray.
+    // direction: The direction of the ray.
+    // Returns: The result of the operation. If 'hit' is true, distance and position contain
+    // how far along the ray the hit was and the position in world space.
+    Room::PickResult Room::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    {
+        using namespace DirectX;
+        using namespace DirectX::TriangleTests;
+
+        PickResult result;
+
+        auto room_offset = XMMatrixTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto transformed_position = XMVector3TransformCoord(position, room_offset);
+
+        // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
+        float box_distance = 0;
+        if (!_bounding_box.Intersects(transformed_position, direction, box_distance))
+        {
+            return result;
+        }
+
+        bool any_hit = false;
+        result.distance = FLT_MAX;
+        for (const auto& tri : _collision_triangles)
+        {
+            float distance = 0;
+            if (XMVectorGetX(XMVector3Dot(direction, tri.normal)) < 0 &&
+                Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
+            {
+                result.hit = true;
+                if (distance < result.distance)
+                {
+                    result.distance = distance;
+                }
+            }
+        }
+
+        // Calculate the world space hit position, if there was a hit.
+        if (result.hit)
+        {
+            result.position = XMVectorAdd(position, XMVectorScale(direction, result.distance));
+        }
+        return result;
     }
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
@@ -161,6 +208,9 @@ namespace trview
             tex_indices.push_back(base + 2);
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
+
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base + 2].pos), XMLoadFloat3(&vertices[base + 3].pos), XMLoadFloat3(&vertices[base + 0].pos)));
         }
 
         for (const auto& tri : room.data.triangles)
@@ -197,6 +247,8 @@ namespace trview
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
+
+            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
         }
 
         if (!vertices.empty())
@@ -265,6 +317,23 @@ namespace trview
 
             _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
         }
+
+        // Generate the bounding box for use in picking.
+        XMFLOAT3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
+        XMFLOAT3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        for (const auto& v : vertices)
+        {
+            if (v.pos.x < minimum.x) { minimum.x = v.pos.x; }
+            if (v.pos.y < minimum.y) { minimum.y = v.pos.y; }
+            if (v.pos.z < minimum.z) { minimum.z = v.pos.z; }
+            if (v.pos.x > maximum.x) { maximum.x = v.pos.x; }
+            if (v.pos.y > maximum.y) { maximum.y = v.pos.y; }
+            if (v.pos.z > maximum.z) { maximum.z = v.pos.z; }
+        }
+
+        const XMFLOAT3 half_size((maximum.x - minimum.x) * 0.5f, (maximum.y - minimum.y) * 0.5f, (maximum.z - minimum.z) * 0.5f);
+        _bounding_box.Extents = half_size;
+        _bounding_box.Center = XMFLOAT3(minimum.x + half_size.x, minimum.y + half_size.y, minimum.z + half_size.z);
     }
 
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)

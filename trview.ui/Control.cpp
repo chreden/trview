@@ -160,5 +160,31 @@ namespace trview
             }
             return _focus_control;
         }
+
+        // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
+        // value: Whether the control handles input.
+        void Control::set_handles_input(bool value)
+        {
+            _handles_input = value;
+        }
+
+        bool Control::is_mouse_over(Point position) const
+        {
+            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            {
+                return false;
+            }
+
+            bool is_over_child = false;
+            for (const auto& child : _child_elements)
+            {
+                if (child->visible())
+                {
+                    is_over_child |= child->is_mouse_over(position - child->position());
+                }
+            }
+
+            return _handles_input || is_over_child;
+        }
     }
 }

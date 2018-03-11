@@ -222,4 +222,43 @@ namespace trview
             }
         }
     }
+
+    // Determine whether the specified ray hits any of the triangles in any of the room geometry.
+    // position: The world space position of the source of the ray.
+    // direction: The direction of the ray.
+    // Returns: The result of the operation. If 'hit' is true, distance and position contain
+    // how far along the ray the hit was and the position in world space. The room that was hit
+    // is also specified.
+    Level::PickResult Level::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    {
+        PickResult final_result;
+        for (uint32_t i = 0; i < _rooms.size(); ++i)
+        {
+            if (room_visible(i))
+            {
+                const auto& room = _rooms[i];
+                auto result = room->pick(position, direction);
+                if (result.hit && result.distance < final_result.distance)
+                {
+                    final_result.hit = true;
+                    final_result.distance = result.distance;
+                    final_result.position = result.position;
+                    final_result.room = i;
+                }
+            }
+        }
+        return final_result;
+    }
+
+    // Determines whether the room is currently being rendered.
+    // room: The room index.
+    // Returns: True if the room is visible.
+    bool Level::room_visible(uint32_t room) const
+    {
+        if (_room_highlight_mode != RoomHighlightMode::Neighbours)
+        {
+            return true;
+        }
+        return _neighbours.find(room) != _neighbours.end();
+    }
 }

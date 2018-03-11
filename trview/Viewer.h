@@ -91,6 +91,12 @@ namespace trview
 
         void select_room(uint32_t room);
 
+        // Determines whether the cursor is over a UI element that would take any input.
+        // Returns: True if there is any UI under the cursor that would take input.
+        bool over_ui() const;
+
+        void pick();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
@@ -157,6 +163,10 @@ namespace trview
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         UserSettings _settings;
+
+        // Picking
+        ui::Label*        _picking;
+        Level::PickResult _current_pick;
     };
 }
 

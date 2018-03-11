@@ -14,7 +14,7 @@ namespace trview
     }
 
     struct ITextureStorage;
-    class RoomInfo;
+    struct RoomInfo;
 
     // The room navigator control allows the user to select which room to look at and
     // whether to highlight the current room.

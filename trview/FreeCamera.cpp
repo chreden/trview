@@ -32,9 +32,31 @@ namespace trview
         _view_projection = _view * _projection;
     }
 
+    DirectX::XMMATRIX FreeCamera::view() const
+    {
+        return _view;
+    }
+
+    DirectX::XMMATRIX FreeCamera::projection() const
+    {
+        return _projection;
+    }
+
     DirectX::XMMATRIX FreeCamera::view_projection() const
     {
         return _view_projection;
+    }
+
+    DirectX::XMVECTOR FreeCamera::target() const
+    {
+        using namespace DirectX;
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        return XMVectorAdd(_position, XMVector3TransformCoord(XMVectorSet(0, 0, 1, 0), rotate));
+    }
+
+    DirectX::XMVECTOR FreeCamera::position() const
+    {
+        return _position;
     }
 
     void FreeCamera::move(DirectX::XMVECTOR movement)

@@ -56,6 +56,7 @@ namespace trview
                 ui::Point(0, 0),
                 ui::Size(_window.width(), _window.height()),
                 ui::Colour(0.f, 0.f, 0.f, 0.f));
+        _control->set_handles_input(false);
 
         generate_tool_window();
 
@@ -67,6 +68,12 @@ namespace trview
         {
             select_room(room);
         };
+
+        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        picking->set_visible(false);
+        picking->set_handles_input(false);
+        _picking = picking.get();
+        _control->add_child(std::move(picking));
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
@@ -462,7 +469,17 @@ namespace trview
         using namespace input;
         _mouse.mouse_down += [&](Mouse::Button button)
         {
-            if (button == Mouse::Button::Right)
+            if (button == Mouse::Button::Left)
+            {
+                if (!over_ui() && _picking->visible() && _current_pick.hit)
+                {
+                    select_room(_current_pick.room);
+                    _camera_mode = CameraMode::Orbit;
+                    _orbit_mode->set_state(true);
+                    _free_mode->set_state(false);
+                }
+            }
+            else if (button == Mouse::Button::Right)
             {
                 _rotating = true;
             }
@@ -657,6 +674,8 @@ namespace trview
 
         update_camera();
 
+        pick();
+
         _context->OMSetRenderTargets(1, &_render_target_view.p, _depth_stencil_view);
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
 
@@ -670,6 +689,51 @@ namespace trview
         render_ui();
 
         _swap_chain->Present(1, 0);
+    }
+
+    // Determines whether the cursor is over a UI element that would take any input.
+    // Returns: True if there is any UI under the cursor that would take input.
+    bool Viewer::over_ui() const
+    {
+        POINT cursor_pos;
+        GetCursorPos(&cursor_pos);
+        ScreenToClient(_window.window(), &cursor_pos);
+        return _control->is_mouse_over(ui::Point(cursor_pos.x, cursor_pos.y));
+    }
+
+    void Viewer::pick()
+    {
+        if (!_level || over_ui())
+        {
+            _picking->set_visible(false);
+            return;
+        }
+
+        using namespace DirectX;
+
+        POINT mouse_pos;
+        GetCursorPos(&mouse_pos);
+        ScreenToClient(_window.window(), &mouse_pos);
+
+        auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
+        auto world = XMMatrixTranslationFromVector(position);
+        auto projection = _camera_mode == CameraMode::Free ? _free_camera.projection() : _camera.projection();
+        auto view = _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view();
+
+        auto direction = XMVector3Normalize(XMVector3Unproject(
+            XMVectorSet(mouse_pos.x, mouse_pos.y, 1, 0), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world));
+
+        auto result = _level->pick(position, direction);
+
+        _picking->set_visible(result.hit);
+        if (result.hit)
+        {
+            XMFLOAT3 screen_pos;
+            XMStoreFloat3(&screen_pos, XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity()));
+            _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
+            _picking->set_text(std::to_wstring(result.room));
+        }
+        _current_pick = result;
     }
 
     void Viewer::render_scene()
