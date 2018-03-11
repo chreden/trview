@@ -62,6 +62,12 @@ namespace trview
             }
         }
 
+        // Calculate the world space hit position, if there was a hit.
+        if (result.hit)
+        {
+            result.position = XMVectorAdd(position, XMVectorScale(direction, result.distance));
+        }
+
         return result;
     }
 

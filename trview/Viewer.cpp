@@ -696,7 +696,7 @@ namespace trview
         auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
         auto world = XMMatrixTranslationFromVector(position);
         auto direction = XMVector3Normalize(XMVector3Unproject(
-            XMVectorSet(mouse_pos.x,mouse_pos.y,1,0),
+            XMVectorSet(mouse_pos.x, mouse_pos.y, 1, 0),
             0,
             0,
             _window.width(),
@@ -707,10 +707,8 @@ namespace trview
             _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view(),
             world));
 
-        // Go through all the triangles in the rooms (only try one room for now?).
-        Room& room = _level->room(0);
-        auto result = room.pick(position, direction);
-        _picking->set_text(result.hit ? std::to_wstring(result.distance) : L"No Hit");
+        auto result = _level->pick(position, direction);
+        _picking->set_text(result.hit ? L"Hit!" : L"No Hit");
     }
 
     void Viewer::render_scene()

@@ -227,4 +227,21 @@ namespace trview
             }
         }
     }
+
+    Level::PickResult Level::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    {
+        PickResult final_result;
+        for (const auto& room : _rooms)
+        {
+            auto result = room->pick(position, direction);
+            if (result.hit && result.distance < final_result.distance)
+            {
+                final_result.hit = true;
+                final_result.distance = result.distance;
+                final_result.position = result.position;
+                final_result.room = room.get();
+            }
+        }
+        return final_result;
+    }
 }

@@ -33,6 +33,14 @@ namespace trview
             Neighbours
         };
 
+        struct PickResult
+        {
+            bool              hit{ false };
+            Room*             room;
+            DirectX::XMVECTOR position;
+            float             distance{ FLT_MAX };
+        };
+
         // Temporary, for the room info and texture window.
 
         std::vector<RoomInfo> room_info() const;
@@ -43,8 +51,10 @@ namespace trview
 
         Room& room(uint32_t room) const;
 
+        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
+
         void render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection);
-        
+
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
         void set_selected_room(uint16_t index);

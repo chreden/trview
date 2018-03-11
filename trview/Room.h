@@ -51,6 +51,11 @@ namespace trview
         RoomInfo           info() const;
         std::set<uint16_t> neighbours() const;
 
+        // Determine whether the specified ray hits any of the triangles in the room geometry.
+        // position: The world space position of the source of the ray.
+        // direction: The direction of the ray.
+        // Returns: The result of the operation. If 'hit' is true, distance and position contain
+        // how far along the ray the hit was and the position in world space.
         PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction);
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
