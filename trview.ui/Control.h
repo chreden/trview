@@ -61,6 +61,16 @@ namespace trview
             // Process a mouse_move event at the position specified.
             // Returns whether the mouse move was handled.
             bool mouse_move(Point position);
+
+            // Determines whether the mouse is over the element or any child elements that are interested
+            // in taking input.
+            // position: The mouse position.
+            // Returns: True if the control or any child elements are under the cursor.
+            bool is_mouse_over(Point position) const;
+
+            // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
+            // value: Whether the control handles input.
+            void set_handles_input(bool value);
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.
@@ -80,6 +90,7 @@ namespace trview
             Point    _position;
             Size     _size;
             bool     _visible;
+            bool     _handles_input{ true };
         };
     }
 }

@@ -8,6 +8,7 @@
 #include <d3d11.h>
 #include <atlbase.h>
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 #include "RoomInfo.h"
 #include <trview.common/Texture.h>
@@ -56,7 +57,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction);
+        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
     private:
@@ -94,5 +95,6 @@ namespace trview
 
         // Triangle copy for ray intersection.
         std::vector<Triangle> _collision_triangles;
+        DirectX::BoundingBox  _bounding_box;
     };
 }
