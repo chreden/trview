@@ -474,6 +474,9 @@ namespace trview
                 if (!over_ui() && _picking->visible() && _current_pick.hit)
                 {
                     select_room(_current_pick.room);
+                    _camera_mode = CameraMode::Orbit;
+                    _orbit_mode->set_state(true);
+                    _free_mode->set_state(false);
                 }
             }
             else if (button == Mouse::Button::Right)
