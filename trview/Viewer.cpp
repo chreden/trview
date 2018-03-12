@@ -19,6 +19,7 @@
 #include <trview.ui/GroupBox.h>
 
 #include "RoomNavigator.h"
+#include "CameraControls.h"
 #include "TextureStorage.h"
 
 namespace trview
@@ -96,7 +97,12 @@ namespace trview
         _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
 
         tool_window->add_child(generate_neighbours_window());
-        tool_window->add_child(generate_camera_window());
+
+        _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
+        _camera_controls->on_reset += [&]() { _camera.reset(); };
+        _camera_controls->set_sensitivity(_settings.camera_sensitivity);
+
+        // tool_window->add_child(generate_camera_window());
         _control->add_child(std::move(tool_window));
     }
 

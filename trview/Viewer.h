@@ -23,6 +23,7 @@
 #include "FreeCamera.h"
 #include "Window.h"
 #include "UserSettings.h"
+#include "CameraMode.h"
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
@@ -41,6 +42,7 @@ namespace trview
     }
 
     class RoomNavigator;
+    class CameraControls;
     struct ITextureStorage;
 
     class Viewer
@@ -140,16 +142,6 @@ namespace trview
         ui::Button* _orbit_mode;
         ui::Button* _free_mode;
 
-        // Camera movement.
-        // Defines the behaviour of the camera.
-        enum class CameraMode
-        {
-            // The camera is orbiting around the centre of a room.
-            Orbit,
-            // The camera is free roaming - the user is in control.
-            Free
-        };
-
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
         bool _free_left{ false };
@@ -160,6 +152,7 @@ namespace trview
 
         // Room nav
         std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         UserSettings _settings;
