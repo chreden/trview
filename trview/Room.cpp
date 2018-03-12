@@ -138,7 +138,7 @@ namespace trview
 
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render(context, view_projection, texture_storage);
+            mesh->render(context, view_projection, texture_storage, colour);
         }
     }
 
