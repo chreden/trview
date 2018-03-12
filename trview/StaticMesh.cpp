@@ -16,11 +16,11 @@ namespace trview
         _position = XMVectorSet(static_mesh.x / 1024.0f, static_mesh.y / -1024.0f, static_mesh.z / 1024.0f, 1);
     }
 
-    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage)
+    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
     {
         using namespace DirectX;
         auto world_view_projection = 
             XMMatrixMultiply(XMMatrixMultiply(XMMatrixRotationY(_rotation),XMMatrixTranslationFromVector(_position)), view_projection);
-        _mesh->render(context, world_view_projection, texture_storage);
+        _mesh->render(context, world_view_projection, texture_storage, colour);
     }
 }

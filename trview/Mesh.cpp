@@ -181,7 +181,7 @@ namespace trview
 
     }
 
-    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ILevelTextureStorage& texture_storage)
+    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -200,7 +200,6 @@ namespace trview
             DirectX::XMFLOAT4 colour;
         };
 
-        XMFLOAT4 colour{ 1,1,1,1 };
         Data data{ world_view_projection, colour };
 
         context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
