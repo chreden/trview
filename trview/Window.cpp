@@ -26,5 +26,33 @@ namespace trview
     {
         return _window;
     }
+
+    // Get the position of the cursor in client coordinates.
+    // window: The client window.
+    // Returns: The point in client coordinates.
+    ui::Point client_cursor_position(const Window& window) noexcept
+    {
+        POINT cursor_pos;
+        GetCursorPos(&cursor_pos);
+        ScreenToClient(window.window(), &cursor_pos);
+        return ui::Point(cursor_pos.x, cursor_pos.y);
+    }
+
+    // Determines whether the cursor is outside the bounds of the window.
+    // window: The window to test the cursor against.
+    // Returns: True if the cursor is outside the bounds of the window.
+    bool cursor_outside_window(const Window& window) noexcept
+    {
+        const ui::Point cursor_pos = client_cursor_position(window);
+        return cursor_pos.x < 0 || cursor_pos.y < 0 || cursor_pos.x > window.width() || cursor_pos.y > window.height();
+    }
+
+    // Determines whether the window is minimsed.
+    // window: The window to test.
+    // Returns: True if the window is minimised.
+    bool window_is_minimised(const Window& window) noexcept
+    {
+        return IsIconic(window.window());
+    }
 }
 
