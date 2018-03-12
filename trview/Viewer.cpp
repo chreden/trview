@@ -491,12 +491,8 @@ namespace trview
             {
                 _rotating = false;
             }
-            
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
 
-            _control->mouse_up(ui::Point(cursor_pos.x, cursor_pos.y));
+            _control->mouse_up(client_cursor_position(_window));
         };
 
         _mouse.mouse_move += [&](long x, long y)
@@ -525,11 +521,7 @@ namespace trview
                 }
             }
 
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
-
-            _control->mouse_move(ui::Point(cursor_pos.x, cursor_pos.y));
+            _control->mouse_move(client_cursor_position(_window));
         };
 
         _mouse.mouse_wheel += [&](int16_t scroll)
@@ -541,13 +533,8 @@ namespace trview
         // to one at some point so that the UI can take priority where appropriate.
         _mouse.mouse_down += [&](Mouse::Button button)
         {
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
-
-            // The client mouse coordinate is already relative to the root windot (at
-            // present).
-            _control->mouse_down(ui::Point(cursor_pos.x, cursor_pos.y));
+            // The client mouse coordinate is already relative to the root window (at present).
+            _control->mouse_down(client_cursor_position(_window));
         };
     }
 
@@ -695,15 +682,12 @@ namespace trview
     // Returns: True if there is any UI under the cursor that would take input.
     bool Viewer::over_ui() const
     {
-        POINT cursor_pos;
-        GetCursorPos(&cursor_pos);
-        ScreenToClient(_window.window(), &cursor_pos);
-        return _control->is_mouse_over(ui::Point(cursor_pos.x, cursor_pos.y));
+        return _control->is_mouse_over(client_cursor_position(_window));
     }
 
     void Viewer::pick()
     {
-        if (!_level || over_ui())
+        if (!_level || window_is_minimised(_window) || over_ui() || cursor_outside_window(_window))
         {
             _picking->set_visible(false);
             return;
@@ -711,15 +695,12 @@ namespace trview
 
         using namespace DirectX;
 
-        POINT mouse_pos;
-        GetCursorPos(&mouse_pos);
-        ScreenToClient(_window.window(), &mouse_pos);
-
         auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
         auto world = XMMatrixTranslationFromVector(position);
         auto projection = _camera_mode == CameraMode::Free ? _free_camera.projection() : _camera.projection();
         auto view = _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view();
 
+        ui::Point mouse_pos = client_cursor_position(_window);
         auto direction = XMVector3Normalize(XMVector3Unproject(
             XMVectorSet(mouse_pos.x, mouse_pos.y, 1, 0), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world));
 
