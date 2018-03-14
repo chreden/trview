@@ -163,6 +163,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
+    <ClInclude Include="Neighbours.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
+    <ClCompile Include="Neighbours.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
     <ClCompile Include="UserSettings.cpp" />

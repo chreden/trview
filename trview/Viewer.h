@@ -5,7 +5,6 @@
 #include <atlbase.h>
 #include <cstdint>
 
-#include <vector>
 #include <string>
 #include <memory>
 
@@ -27,7 +26,6 @@
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
-#include <trview.ui/Control.h>
 
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
@@ -36,13 +34,13 @@ namespace trview
 {
     namespace ui
     {
+        class Control;
         class Label;
-        class Button;
-        class NumericUpDown;
     }
 
     class RoomNavigator;
     class CameraControls;
+    class Neighbours;
     struct ITextureStorage;
 
     class Viewer
@@ -71,10 +69,7 @@ namespace trview
         Event<std::list<std::wstring>> on_recent_files_changed;
     private:
         void generate_ui();
-
         void generate_tool_window();
-
-        std::unique_ptr<ui::Window> generate_neighbours_window();
 
         void initialise_d3d();
         void initialise_input();
@@ -87,8 +82,6 @@ namespace trview
         void render_scene();
         // Draw the user interface elements of the scene.
         void render_ui();
-
-        Texture create_coloured_texture(uint32_t colour);
 
         void select_room(uint32_t room);
 
@@ -135,8 +128,6 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
-        ui::Button* _room_neighbours;
-
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
         bool _free_left{ false };
@@ -145,9 +136,9 @@ namespace trview
         bool _free_up{ false };
         bool _free_down{ false };
 
-        // Room nav
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<CameraControls> _camera_controls;
+        std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         UserSettings _settings;

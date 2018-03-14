@@ -121,6 +121,9 @@
     <ClInclude Include="CameraMode.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Neighbours.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -187,6 +190,9 @@
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="CameraControls.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Neighbours.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
