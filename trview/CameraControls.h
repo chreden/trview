@@ -35,7 +35,13 @@ namespace trview
         // Set the sensitivity slider to the specified value. This will not raise the on_sensitivity_changed event.
         // value: The sensitivity value.
         void set_sensitivity(float value);
+
+        // Set the current camera mode. This will not raise the on_mode_selected event.
+        // mode: The camera mode to change to.
+        void set_mode(CameraMode mode);
     private:
+        // Set the current camera mode and raise the on_mode_selected event.
+        // mode: The new camera mode.
         void change_mode(CameraMode mode);
 
         ui::Button* _orbit;

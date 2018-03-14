@@ -75,7 +75,6 @@ namespace trview
         void generate_tool_window();
 
         std::unique_ptr<ui::Window> generate_neighbours_window();
-        std::unique_ptr<ui::Window> generate_camera_window();
 
         void initialise_d3d();
         void initialise_input();
@@ -137,10 +136,6 @@ namespace trview
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
         ui::Button* _room_neighbours;
-
-        // More buttons - the camera mode buttons this time.
-        ui::Button* _orbit_mode;
-        ui::Button* _free_mode;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
