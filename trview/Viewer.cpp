@@ -19,6 +19,7 @@
 #include <trview.ui/GroupBox.h>
 
 #include "RoomNavigator.h"
+#include "CameraControls.h"
 #include "TextureStorage.h"
 
 namespace trview
@@ -96,7 +97,27 @@ namespace trview
         _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
 
         tool_window->add_child(generate_neighbours_window());
-        tool_window->add_child(generate_camera_window());
+
+        _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
+        _camera_controls->on_reset += [&]() { _camera.reset(); };
+        _camera_controls->on_mode_selected += [&](CameraMode mode) 
+        {
+            _camera_mode = mode;
+            if (mode == CameraMode::Free)
+            {
+                _free_camera.set_position(_camera.position());
+                _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+                _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+            }
+        };
+        _camera_controls->on_sensitivity_changed += [&](float value)
+        {
+            _camera_sensitivity = value;
+            _settings.camera_sensitivity = value;
+        };
+        _camera_controls->set_sensitivity(_settings.camera_sensitivity);
+        _camera_controls->set_mode(CameraMode::Orbit);
+
         _control->add_child(std::move(tool_window));
     }
 
@@ -168,79 +189,6 @@ namespace trview
         neighbours_group->add_child(std::move(neighbours_depth_label));
         neighbours_group->add_child(std::move(neighbours_depth));
         return neighbours_group;
-    }
-
-    std::unique_ptr<ui::Window> Viewer::generate_camera_window()
-    {
-        using namespace ui;
-
-        auto camera_window = std::make_unique<GroupBox>(
-            Point(0,0),
-            Size(140, 115),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Camera");
-
-        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
-        reset_camera->on_click += [&](auto) { _camera.reset(); }; 
-
-        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto update_camera_mode_buttons = [&]()
-        {
-            auto mode = _camera_mode;
-            _orbit_mode->set_state(mode == CameraMode::Orbit);
-            _free_mode->set_state(mode == CameraMode::Free);
-        };
-
-        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        orbit_camera->on_click += [&, update_camera_mode_buttons](auto)
-        { 
-            _camera_mode = CameraMode::Orbit;
-            update_camera_mode_buttons();
-        };
-
-        auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        free_camera->on_click += [&, update_camera_mode_buttons](auto)
-        { 
-            _camera_mode = CameraMode::Free;
-            _free_camera.set_position(_camera.position());
-            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
-            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
-            update_camera_mode_buttons();
-        };
-
-        auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        // Camera section for the menu bar.
-        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
-        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
-        camera_sensitivity->on_value_changed += [&](float value)
-        {
-            _camera_sensitivity = value;
-            _settings.camera_sensitivity = value;
-        };
-        camera_sensitivity->set_value(_settings.camera_sensitivity);
-        camera_sensitivity_box->add_child(std::move(camera_sensitivity));
-
-        // Take a copy of buttons that need to be tracked.
-        _orbit_mode = orbit_camera.get();
-        _free_mode = free_camera.get();
-
-        camera_window->add_child(std::move(reset_camera));
-        camera_window->add_child(std::move(reset_camera_label));
-        camera_window->add_child(std::move(orbit_camera));
-        camera_window->add_child(std::move(orbit_camera_label));
-        camera_window->add_child(std::move(free_camera));
-        camera_window->add_child(std::move(free_camera_label));
-        camera_window->add_child(std::move(camera_sensitivity_box));
-
-        // Update the initial state of the buttons.
-        update_camera_mode_buttons();
-
-        return camera_window;
     }
 
     // Temporary function to createa a 50x50 coloured rectangle.
@@ -475,8 +423,7 @@ namespace trview
                 {
                     select_room(_current_pick.room);
                     _camera_mode = CameraMode::Orbit;
-                    _orbit_mode->set_state(true);
-                    _free_mode->set_state(false);
+                    _camera_controls->set_mode(CameraMode::Orbit);
                 }
             }
             else if (button == Mouse::Button::Right)
