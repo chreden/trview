@@ -2,24 +2,17 @@
 #include "Viewer.h"
 #include <trlevel/trlevel.h>
 
-#include <trview.common/FileLoader.h>
-
-#include <vector>
 #include <string>
-#include <d3dcompiler.h>
 #include <directxmath.h>
-#include <shlobj.h>
 
+#include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Slider.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/GroupBox.h>
 
 #include "RoomNavigator.h"
 #include "CameraControls.h"
+#include "Neighbours.h"
 #include "TextureStorage.h"
 
 namespace trview
@@ -86,17 +79,28 @@ namespace trview
         using namespace ui;
 
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::StackPanel>(
-            Point(0, 0),
-            Size(150.0f, 310.0f),
-            Colour(1.f, 0.5f, 0.5f, 0.5f),
-            Size(5, 5));
+        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 310.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
         _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
 
-        tool_window->add_child(generate_neighbours_window());
+        _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
+        _neighbours->on_depth_changed += [&](int32_t value)
+        {
+            if (_level)
+            {
+                _level->set_neighbour_depth(value);
+            }
+        };
+        _neighbours->on_enabled_changed += [&](bool enabled)
+        {
+            if (_level)
+            {
+                _level->set_highlight_mode(enabled ? Level::RoomHighlightMode::Neighbours : Level::RoomHighlightMode::None);
+                _room_navigator->set_highlight(false);
+            }
+        };
 
         _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
         _camera_controls->on_reset += [&]() { _camera.reset(); };
@@ -119,103 +123,6 @@ namespace trview
         _camera_controls->set_mode(CameraMode::Orbit);
 
         _control->add_child(std::move(tool_window));
-    }
-
-    std::unique_ptr<ui::Window> Viewer::generate_neighbours_window()
-    {
-        using namespace ui;
-
-        auto neighbours_group = std::make_unique<GroupBox>(
-            Point(0,0),
-            Size(140, 50),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Neighbours");
-
-        auto room_neighbours = std::make_unique<Button>(
-            Point(12, 20),
-            Size(16, 16),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-        room_neighbours->on_click += [&](auto) 
-        { 
-            if (_level)
-            {
-                if (_level->highlight_mode() == Level::RoomHighlightMode::Neighbours)
-                {
-                    _level->set_highlight_mode(Level::RoomHighlightMode::None);
-                    _room_neighbours->set_state(false);
-                    _room_navigator->set_highlight(false);
-                }
-                else
-                {
-                    _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours);
-                    _room_neighbours->set_state(true);
-                    _room_navigator->set_highlight(false);
-                }
-            } 
-        };
-
-        _room_neighbours = room_neighbours.get();
-
-        auto neighbours_depth_label = std::make_unique<Label>(
-            Point(32, 20),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Depth",
-            10.f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        auto neighbours_depth = std::make_unique<NumericUpDown>(
-            Point(90, 16),
-            Size(40, 20),
-            Colour(1.0f, 0.4f, 0.4f, 0.4f),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00),
-            0,
-            10);
-        neighbours_depth->set_value(1);
-
-        neighbours_depth->on_value_changed += [&](int value) 
-        { 
-            if (_level)
-            {
-                _level->set_neighbour_depth(value);
-            }
-        };
-
-        neighbours_group->add_child(std::move(room_neighbours));
-        neighbours_group->add_child(std::move(neighbours_depth_label));
-        neighbours_group->add_child(std::move(neighbours_depth));
-        return neighbours_group;
-    }
-
-    // Temporary function to createa a 50x50 coloured rectangle.
-    Texture Viewer::create_coloured_texture(uint32_t colour)
-    {
-        std::vector<uint32_t> data(50 * 50, colour);
-        D3D11_SUBRESOURCE_DATA srd;
-        memset(&srd, 0, sizeof(srd));
-        srd.pSysMem = &data[0];
-        srd.SysMemPitch = sizeof(uint32_t) * 50;
-
-        D3D11_TEXTURE2D_DESC desc;
-        memset(&desc, 0, sizeof(desc));
-        desc.Width = 50;
-        desc.Height = 50;
-        desc.MipLevels = desc.ArraySize = 1;
-        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        desc.SampleDesc.Count = 1;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = 0;
-
-        Texture tex;
-        _device->CreateTexture2D(&desc, &srd, &tex.texture);
-        _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
-        return tex;
     }
 
     void Viewer::initialise_d3d()
@@ -576,7 +483,7 @@ namespace trview
         _room_navigator->set_highlight(false);
         select_room(0);
 
-        _room_neighbours->set_state(false);
+        _neighbours->set_enabled(false);
     }
 
     void Viewer::on_char(uint16_t character)
@@ -715,13 +622,13 @@ namespace trview
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::None);
                 _room_navigator->set_highlight(false);
-                _room_neighbours->set_state(false);
+                _neighbours->set_enabled(false);
             }
             else
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::Highlight);
                 _room_navigator->set_highlight(true);
-                _room_neighbours->set_state(false);
+                _neighbours->set_enabled(false);
             }
         }
     }
