@@ -124,6 +124,9 @@
     <ClInclude Include="Neighbours.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="LevelInfo.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -193,6 +196,9 @@
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Neighbours.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelInfo.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>

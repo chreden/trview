@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "trtypes.h"
+#include "LevelVersion.h"
 
 namespace trlevel
 {
@@ -85,5 +86,9 @@ namespace trlevel
         // mesh_pointer: The mesh pointer index.
         // Returns: The mesh.
         virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const = 0;
+
+        // Get the version of the game that the level was built for.
+        // Returns: The level version.
+        virtual LevelVersion get_version() const = 0;
     };
 }

@@ -41,6 +41,7 @@ namespace trview
     class RoomNavigator;
     class CameraControls;
     class Neighbours;
+    class LevelInfo;
     struct ITextureStorage;
 
     class Viewer
@@ -139,6 +140,7 @@ namespace trview
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<Neighbours> _neighbours;
+        std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         UserSettings _settings;
