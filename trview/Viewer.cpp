@@ -17,6 +17,8 @@
 #include "TextureStorage.h"
 #include "LevelInfo.h"
 
+#include <external/DirectXTK/Inc/WICTextureLoader.h>
+
 namespace trview
 {
     Viewer::Viewer(Window window)
@@ -27,9 +29,13 @@ namespace trview
         initialise_d3d();
         initialise_input();
 
+        Texture unknown, tomb3;
+        DirectX::CreateWICTextureFromFile(_device.p, L"resources/unknown.png", reinterpret_cast<ID3D11Resource**>(&unknown.texture), &unknown.view.p);
+        DirectX::CreateWICTextureFromFile(_device.p, L"resources/tomb3.png", reinterpret_cast<ID3D11Resource**>(&tomb3.texture), &tomb3.view.p);
+
         _texture_storage = std::make_unique<TextureStorage>(_device);
-        _texture_storage->store("unknown", _texture_storage->coloured(0xff00ffff));
-        _texture_storage->store("tomb3", _texture_storage->coloured(0xff00ff00));
+        _texture_storage->store("unknown", unknown);
+        _texture_storage->store("tomb3", tomb3);
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
 

@@ -35,6 +35,9 @@
     <Filter Include="View\Mesh">
       <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bb6233b6-2218-4c3e-8934-1ef700a66256}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -213,6 +216,12 @@
     </Image>
     <Image Include="trview.ico">
       <Filter>Win\Resource Files</Filter>
+    </Image>
+    <Image Include="resources\tomb3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\unknown.png">
+      <Filter>Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
