@@ -223,12 +223,6 @@
     <Image Include="resources\unknown.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Content Include="resources\tomb3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\unknown.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Image Include="small.ico" />
     <Image Include="trview.ico" />
   </ItemGroup>

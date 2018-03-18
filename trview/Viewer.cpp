@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "resource.h"
 #include "Viewer.h"
 #include <trlevel/trlevel.h>
 
@@ -21,6 +22,60 @@
 
 namespace trview
 {
+    namespace
+    {
+        struct Resource
+        {
+            uint8_t* data;
+            uint32_t size;
+        };
+
+        // Get the data for the specified resource.
+        // resource_id: The integer identifier of the resource to load.
+        // resource_type: The type of resource to load.
+        // Returns: The resource.
+        Resource get_resource_memory(int resource_id, const wchar_t* resource_type)
+        {
+            HMODULE module = GetModuleHandle(NULL);
+            HRSRC resource = FindResource(module, MAKEINTRESOURCE(resource_id), resource_type);
+            HGLOBAL memory = LoadResource(module, resource);
+            DWORD size = SizeofResource(module, resource);
+            LPVOID data = LockResource(memory);
+            return Resource{ static_cast<uint8_t*>(data), static_cast<uint32_t>(size) };
+        }
+
+        // Load a specific texture with the specified ID from the embedded resource file.
+        // device: The Direct3D device to use to load the textures.
+        // resource_id: The integer ID of the texture in the resource file.
+        // Returns: The texture loaded from the resource.
+        Texture load_texture_from_resource(CComPtr<ID3D11Device> device, int resource_id)
+        {
+            CComPtr<ID3D11Resource> resource;
+            CComPtr<ID3D11ShaderResourceView> view;
+
+            auto resource_memory = get_resource_memory(resource_id, L"PNG");
+            DirectX::CreateWICTextureFromMemory(device.p, resource_memory.data, resource_memory.size, &resource, &view);
+
+            // Get the correct interface for a texture from the loaded resource.
+            CComPtr<ID3D11Texture2D> texture;
+            resource.QueryInterface(&texture);
+            return Texture{ texture, view };
+        }
+
+        // Loads the textures that have been embedded in the resource file and puts them into
+        // the texture storage provided.
+        // device: The Direct3D device to use to load the textures.
+        // storage: The ITextureStorage instance to store the textures in.
+        void load_embedded_textures(CComPtr<ID3D11Device> device, ITextureStorage& storage)
+        {
+            // Load some sort of manifest that contains the files to load.
+            // For each texture, load it with the given key.
+
+            Texture unknown, tomb3;
+            storage.store("tomb3", load_texture_from_resource(device, IDB_TOMB3_ICON));
+        }
+    }
+
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
     {
@@ -29,13 +84,8 @@ namespace trview
         initialise_d3d();
         initialise_input();
 
-        Texture unknown, tomb3;
-        DirectX::CreateWICTextureFromFile(_device.p, L"resources/unknown.png", reinterpret_cast<ID3D11Resource**>(&unknown.texture), &unknown.view.p);
-        DirectX::CreateWICTextureFromFile(_device.p, L"resources/tomb3.png", reinterpret_cast<ID3D11Resource**>(&tomb3.texture), &tomb3.view.p);
-
         _texture_storage = std::make_unique<TextureStorage>(_device);
-        _texture_storage->store("unknown", unknown);
-        _texture_storage->store("tomb3", tomb3);
+        load_embedded_textures(_device, *_texture_storage.get());
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
 

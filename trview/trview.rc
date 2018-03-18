@@ -194,6 +194,15 @@ BEGIN
     END
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_TOMB3_ICON                PNG                     "resources\\tomb3.png"
+IDB_UNKNOWN_ICON              PNG                     "resources\\unknown.png"
+
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
