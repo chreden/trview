@@ -130,6 +130,9 @@
     <ClInclude Include="LevelInfo.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultTextures.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -204,6 +207,9 @@
     <ClCompile Include="LevelInfo.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="DefaultTextures.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -223,6 +229,18 @@
     <Image Include="resources\unknown.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\tomb2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb5.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="level_pixel_shader.hlsl">
@@ -234,5 +252,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Controls.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="texturelist.txt">
+      <Filter>Win\Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

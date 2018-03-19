@@ -14,12 +14,12 @@ namespace trview
         // Ideally this will be stored somewhere else.
         const std::unordered_map<trlevel::LevelVersion, std::string> texture_names
         {
-            { trlevel::LevelVersion::Unknown, "unknown" },
-            { trlevel::LevelVersion::Tomb1, "tomb1" },
-            { trlevel::LevelVersion::Tomb2, "tomb2" },
-            { trlevel::LevelVersion::Tomb3, "tomb3" },
-            { trlevel::LevelVersion::Tomb4, "tomb4" },
-            { trlevel::LevelVersion::Tomb5, "tomb5" },
+            { trlevel::LevelVersion::Unknown, "unknown_icon" },
+            { trlevel::LevelVersion::Tomb1, "tomb1_icon" },
+            { trlevel::LevelVersion::Tomb2, "tomb2_icon" },
+            { trlevel::LevelVersion::Tomb3, "tomb3_icon" },
+            { trlevel::LevelVersion::Tomb4, "tomb4_icon" },
+            { trlevel::LevelVersion::Tomb5, "tomb5_icon" },
         };
     }
 

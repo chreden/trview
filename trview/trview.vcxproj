@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
@@ -185,6 +186,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
+    <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
@@ -217,9 +219,13 @@
     <ResourceCompile Include="trview.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\tomb1.png" />
+    <Image Include="resources\tomb2.png" />
     <Image Include="resources\tomb3.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="resources\tomb4.png" />
+    <Image Include="resources\tomb5.png" />
     <Image Include="resources\unknown.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
@@ -264,6 +270,9 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="texturelist.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
