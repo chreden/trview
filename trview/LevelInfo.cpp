@@ -46,11 +46,15 @@ namespace trview
         control.add_child(std::move(panel));
     }
 
+    // Set the name of the level.
+    // name: The level name.
     void LevelInfo::set_level(const std::wstring& name)
     {
         _name->set_text(name);
     }
 
+    // Set the version of the game that level was created for.
+    // version: The version of the game.
     void LevelInfo::set_level_version(trlevel::LevelVersion version)
     {
         _version->set_texture(get_version_image(version));
