@@ -32,4 +32,19 @@ namespace trview
         _device->CreateShaderResourceView(texture.texture, nullptr, &texture.view);
         return texture;
     }
+
+    Texture TextureStorage::lookup(const std::string& key) const
+    {
+        auto found = _textures.find(key);
+        if (found == _textures.end())
+        {
+            return Texture();
+        }
+        return found->second;
+    }
+
+    void TextureStorage::store(const std::string& key, const Texture& texture)
+    {
+        _textures.insert({ key, texture });
+    }
 }

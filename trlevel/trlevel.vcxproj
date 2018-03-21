@@ -149,12 +149,14 @@
   <ItemGroup>
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="trlevel.h" />
     <ClInclude Include="trtypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="trlevel.cpp" />
     <ClCompile Include="trtypes.cpp" />
   </ItemGroup>

@@ -35,6 +35,9 @@
     <Filter Include="View\Mesh">
       <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bb6233b6-2218-4c3e-8934-1ef700a66256}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -124,6 +127,12 @@
     <ClInclude Include="Neighbours.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="LevelInfo.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultTextures.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -195,6 +204,12 @@
     <ClCompile Include="Neighbours.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="LevelInfo.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultTextures.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -208,6 +223,24 @@
     <Image Include="trview.ico">
       <Filter>Win\Resource Files</Filter>
     </Image>
+    <Image Include="resources\tomb3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\unknown.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb5.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="level_pixel_shader.hlsl">
@@ -219,5 +252,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Controls.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="texturelist.txt">
+      <Filter>Win\Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

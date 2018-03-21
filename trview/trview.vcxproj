@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="Neighbours.h" />
@@ -184,12 +186,14 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
+    <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelInfo.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Neighbours.cpp" />
@@ -215,10 +219,23 @@
     <ResourceCompile Include="trview.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\tomb1.png" />
+    <Image Include="resources\tomb2.png" />
+    <Image Include="resources\tomb3.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="resources\tomb4.png" />
+    <Image Include="resources\tomb5.png" />
+    <Image Include="resources\unknown.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
     <Image Include="small.ico" />
     <Image Include="trview.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop_2017.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
     </ProjectReference>
@@ -253,6 +270,9 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="texturelist.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

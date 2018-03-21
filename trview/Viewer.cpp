@@ -3,6 +3,7 @@
 #include <trlevel/trlevel.h>
 
 #include <string>
+#include <algorithm>
 #include <directxmath.h>
 
 #include <trview.ui/Control.h>
@@ -14,6 +15,8 @@
 #include "CameraControls.h"
 #include "Neighbours.h"
 #include "TextureStorage.h"
+#include "LevelInfo.h"
+#include "DefaultTextures.h"
 
 namespace trview
 {
@@ -26,6 +29,8 @@ namespace trview
         initialise_input();
 
         _texture_storage = std::make_unique<TextureStorage>(_device);
+        load_default_textures(_device, *_texture_storage.get());
+
         _font_factory = std::make_unique<ui::render::FontFactory>();
 
         generate_ui();
@@ -45,11 +50,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control =
-            std::make_unique<ui::Window>(
-                ui::Point(0, 0),
-                ui::Size(_window.width(), _window.height()),
-                ui::Colour(0.f, 0.f, 0.f, 0.f));
+        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(_window.width(), _window.height()), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -68,6 +69,8 @@ namespace trview
         picking->set_handles_input(false);
         _picking = picking.get();
         _control->add_child(std::move(picking));
+
+        _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
@@ -484,6 +487,12 @@ namespace trview
         select_room(0);
 
         _neighbours->set_enabled(false);
+
+        // Strip the last part of the path away.
+        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+        _level_info->set_level(name);
+        _level_info->set_level_version(_current_level->get_version());
     }
 
     void Viewer::on_char(uint16_t character)

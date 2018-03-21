@@ -95,4 +95,13 @@ namespace trview
         auto palette = _level.get_palette_entry_16(index);
         return DirectX::XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
+
+    Texture LevelTextureStorage::lookup(const std::string& key) const
+    {
+        return Texture();
+    }
+
+    void LevelTextureStorage::store(const std::string& key, const Texture& texture)
+    {
+    }
 }

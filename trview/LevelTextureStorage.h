@@ -19,6 +19,8 @@ namespace trview
         virtual ~LevelTextureStorage() = default;
         virtual Texture           texture(uint32_t tile_index) const override;
         virtual Texture           coloured(uint32_t colour) const override;
+        virtual Texture           lookup(const std::string& key) const override;
+        virtual void              store(const std::string& key, const Texture& texture) override;
         virtual Texture           untextured() const override;
         virtual DirectX::XMFLOAT2 uv(uint32_t texture_index, uint32_t uv_index) const override;
         virtual uint32_t          tile(uint32_t texture_index) const override;

@@ -194,6 +194,32 @@ BEGIN
     END
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_TOMB3_ICON          PNG                     "resources\\tomb3.png"
+
+IDB_UNKNOWN_ICON        PNG                     "resources\\unknown.png"
+
+IDB_TOMB2_ICON          PNG                     "resources\\tomb2.png"
+
+IDB_TOMB1_ICON          PNG                     "resources\\tomb1.png"
+
+IDB_TOMB4_ICON          PNG                     "resources\\tomb4.png"
+
+IDB_TOMB5_ICON          PNG                     "resources\\tomb5.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
+
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 

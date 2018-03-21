@@ -92,8 +92,14 @@ namespace trlevel
         // index: The index of the mesh to get.
         // Returns: The mesh.
         virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
+
+        // Get the version of the game that the level was built for.
+        // Returns: The level version.
+        virtual LevelVersion get_version() const override;
     private:
         void generate_meshes(std::vector<uint16_t> mesh_data);
+
+        LevelVersion _version;
 
         std::vector<tr_colour>  _palette;
         std::vector<tr_colour4> _palette16;

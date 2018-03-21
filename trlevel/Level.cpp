@@ -40,7 +40,7 @@ namespace trlevel
         std::ifstream file;
         file.open(filename.c_str(), std::ios::binary);
 
-        uint32_t version = read<uint32_t>(file);
+        _version = convert_level_version(read<uint32_t>(file));
 
         _palette = read_vector<tr_colour>(file, 256);
         _palette16 = read_vector<tr_colour4>(file, 256);
@@ -266,5 +266,10 @@ namespace trlevel
     {
         auto index = _mesh_pointers[mesh_pointer];
         return _meshes.find(index)->second;
+    }
+
+    LevelVersion Level::get_version() const 
+    {
+        return _version;
     }
 }
