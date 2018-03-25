@@ -190,6 +190,7 @@ namespace trview
         void Control::set_size(ui::Size size)
         {
             _size = size;
+            on_size_changed(size);
         }
     }
 }

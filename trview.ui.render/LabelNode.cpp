@@ -53,7 +53,7 @@ namespace trview
                                                convert_paragraph_alignment(label->paragraph_alignment()))), _label(label)
             {
                 generate_font_texture();
-                if (label->size_mode() == Label::SizeMode::Auto)
+                if (label->size_mode() == SizeMode::Auto)
                 {
                     label->on_text_changed += [&](auto)
                     {
@@ -77,7 +77,7 @@ namespace trview
             // resize the label if the label has been set to auto size mode.
             void LabelNode::generate_font_texture()
             {
-                if (_label->size_mode() == Label::SizeMode::Auto)
+                if (_label->size_mode() == SizeMode::Auto)
                 {
                     auto new_size = _font->measure(_label->text());
                     _label->set_size(new_size);

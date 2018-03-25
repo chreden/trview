@@ -15,6 +15,7 @@ namespace trview
                 : _device(device), _control(control)
             {
                 regenerate_texture();
+                _control->on_size_changed += [&](auto) {regenerate_texture(); };
             }
 
             RenderNode::~RenderNode()

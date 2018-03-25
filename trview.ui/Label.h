@@ -5,6 +5,7 @@
 
 #include "TextAlignment.h"
 #include "ParagraphAlignment.h"
+#include "SizeMode.h"
 
 namespace trview
 {
@@ -13,14 +14,6 @@ namespace trview
         class Label : public Window
         {
         public:
-            enum class SizeMode
-            {
-                // The label will not resize when the text is changed.
-                Manual,
-                // The label will resize when the text is changed.
-                Auto
-            };
-
             Label(Point position, 
                 Size size, 
                 Colour background_colour, 

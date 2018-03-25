@@ -35,7 +35,7 @@ namespace trview
             return _paragraph_alignment;
         }
 
-        Label::SizeMode Label::size_mode() const
+        SizeMode Label::size_mode() const
         {
             return _size_mode;
         }

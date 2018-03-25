@@ -76,6 +76,9 @@ namespace trview
             // Set the size of the control.
             // size: The new size of the control.
             void set_size(Size size);
+
+            // Event raised when the size of the control has changed.
+            Event<Size> on_size_changed;
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.
