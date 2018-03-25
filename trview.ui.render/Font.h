@@ -36,7 +36,7 @@ namespace trview
                 // Determines the size in pixels that the text specified will be when rendered.
                 // text: The text to measure.
                 // Returns: The size in pixels required.
-                ui::Size measure(const std::wstring& text) const;
+                Size measure(const std::wstring& text) const;
             private:
                 CComPtr<ID3D11Device>      _device;
                 CComPtr<IDWriteFactory>    _dwrite_factory;

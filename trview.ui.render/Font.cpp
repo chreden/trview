@@ -84,7 +84,7 @@ namespace trview
             // Determines the size in pixels that the text specified will be when rendered.
             // text: The text to measure.
             // Returns: The size in pixels required.
-            ui::Size Font::measure(const std::wstring& text) const
+            Size Font::measure(const std::wstring& text) const
             {
                 // Create a text layout from the factory (which we don't have...)
                 CComPtr<IDWriteTextLayout> text_layout;
