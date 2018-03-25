@@ -241,6 +241,12 @@
     <Image Include="resources\tomb5.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\numericdown.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\numericup.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="level_pixel_shader.hlsl">

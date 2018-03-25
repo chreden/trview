@@ -201,16 +201,13 @@ END
 //
 
 IDB_TOMB3_ICON          PNG                     "resources\\tomb3.png"
-
 IDB_UNKNOWN_ICON        PNG                     "resources\\unknown.png"
-
 IDB_TOMB2_ICON          PNG                     "resources\\tomb2.png"
-
 IDB_TOMB1_ICON          PNG                     "resources\\tomb1.png"
-
 IDB_TOMB4_ICON          PNG                     "resources\\tomb4.png"
-
 IDB_TOMB5_ICON          PNG                     "resources\\tomb5.png"
+IDB_NUMERIC_UP          PNG                     "resources\\numericup.png"
+IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

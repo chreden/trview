@@ -24,7 +24,7 @@ namespace trview
         _enabled = enabled.get();
 
         auto depth_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Depth", 10.f, TextAlignment::Left, ParagraphAlignment::Centre);
-        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), red, green, 0, 10);
+        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 10);
         depth->set_value(1);
         depth->on_value_changed += [&](int value) { on_depth_changed(value); };
 
