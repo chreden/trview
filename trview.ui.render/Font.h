@@ -12,6 +12,8 @@ namespace trview
 {
     namespace ui
     {
+        struct Size;
+
         namespace render
         {
             class Font
@@ -19,6 +21,7 @@ namespace trview
             public:
                 explicit Font(
                     CComPtr<ID3D11Device> device,
+                    CComPtr<IDWriteFactory> dwrite_factory,
                     CComPtr<ID2D1Factory> d2d_factory,
                     CComPtr<IDWriteTextFormat> text_format);
 
@@ -29,8 +32,14 @@ namespace trview
 
                 // Render the text to the specified texture.
                 void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);
+
+                // Determines the size in pixels that the text specified will be when rendered.
+                // text: The text to measure.
+                // Returns: The size in pixels required.
+                Size measure(const std::wstring& text) const;
             private:
                 CComPtr<ID3D11Device>      _device;
+                CComPtr<IDWriteFactory>    _dwrite_factory;
                 CComPtr<ID2D1Factory>      _d2d_factory;
                 CComPtr<IDWriteTextFormat> _text_format;
             };

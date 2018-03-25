@@ -29,6 +29,7 @@
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
+    <ClInclude Include="SizeMode.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="TextAlignment.h" />

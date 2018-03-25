@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <trview.common/Event.h>
 
 #include "Point.h"
 #include "Size.h"
@@ -71,6 +72,13 @@ namespace trview
             // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
             // value: Whether the control handles input.
             void set_handles_input(bool value);
+
+            // Set the size of the control.
+            // size: The new size of the control.
+            void set_size(Size size);
+
+            // Event raised when the size of the control has changed.
+            Event<Size> on_size_changed;
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.

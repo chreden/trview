@@ -31,12 +31,12 @@ namespace trview
         }
 
         using namespace ui;
-        auto panel = std::make_unique<StackPanel>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(5, 5), StackPanel::Direction::Horizontal);
+        auto panel = std::make_unique<StackPanel>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(5, 5), StackPanel::Direction::Horizontal, SizeMode::Auto);
         auto version = std::make_unique<Image>(Point(), Size(16, 16));
         version->set_background_colour(Colour(0, 0, 0, 0));
         version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
 
-        auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"No level", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
+        auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"No level", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre, SizeMode::Auto);
 
         _version = version.get();
         _name = name.get();

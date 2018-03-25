@@ -44,6 +44,9 @@ namespace trview
             protected:
                 virtual void render_self(CComPtr<ID3D11DeviceContext> context, Sprite& sprite) = 0;
 
+                void regenerate_texture();
+
+                CComPtr<ID3D11Device>                    _device;
                 CComPtr<ID3D11Texture2D>                 _node_texture;
                 CComPtr<ID3D11ShaderResourceView>        _node_texture_view;
                 CComPtr<ID3D11RenderTargetView>          _render_target_view;
