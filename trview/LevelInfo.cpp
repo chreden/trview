@@ -36,7 +36,7 @@ namespace trview
         version->set_background_colour(Colour(0, 0, 0, 0));
         version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
 
-        auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"No level", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre);
+        auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"No level", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre, Label::SizeMode::Auto);
 
         _version = version.get();
         _name = name.get();

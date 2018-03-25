@@ -27,7 +27,7 @@ namespace trview
 
                 text_format->SetTextAlignment(text_alignment);
                 text_format->SetParagraphAlignment(paragraph_alignment);
-                return std::make_unique<Font>(device, _d2d_factory, text_format);
+                return std::make_unique<Font>(device, _dwrite_factory, _d2d_factory, text_format);
             }
         }
     }
