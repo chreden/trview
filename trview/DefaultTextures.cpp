@@ -43,6 +43,12 @@ namespace trview
             auto resource_memory = get_resource_memory(resource_id, L"PNG");
             DirectX::CreateWICTextureFromMemory(device.p, resource_memory.data, resource_memory.size, &resource, &view);
 
+            if (!resource)
+            {
+                std::string error("Could not load embedded texture with ID '" + std::to_string(resource_id) + "'");
+                throw std::exception(error.c_str());
+            }
+
             // Get the correct interface for a texture from the loaded resource.
             CComPtr<ID3D11Texture2D> texture;
             resource.QueryInterface(&texture);
