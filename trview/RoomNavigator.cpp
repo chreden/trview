@@ -6,7 +6,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Button.h>
+#include <trview.ui/Checkbox.h>
 #include <trview.ui/StackPanel.h>
 
 namespace trview
@@ -16,10 +16,10 @@ namespace trview
         using namespace ui;
 
         auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 130), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
-        auto highlight = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
+        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
         auto highlight_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Highlight", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        highlight->on_click += [&](bool state) { on_highlight(state); };
+        highlight->on_state_changed += [&](bool state) { on_highlight(state); };
         _highlight = highlight.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");

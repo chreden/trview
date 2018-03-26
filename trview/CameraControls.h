@@ -8,7 +8,7 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Button;
+        class Checkbox;
         class Slider;
     }
 
@@ -44,8 +44,8 @@ namespace trview
         // mode: The new camera mode.
         void change_mode(CameraMode mode);
 
-        ui::Button* _orbit;
-        ui::Button* _free;
+        ui::Checkbox* _orbit;
+        ui::Checkbox* _free;
         ui::Slider* _sensitivity;
     };
 }

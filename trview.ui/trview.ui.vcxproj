@@ -33,6 +33,7 @@
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="TextAlignment.h" />
+    <ClInclude Include="Checkbox.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +48,7 @@
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
+    <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

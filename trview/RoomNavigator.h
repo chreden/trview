@@ -8,7 +8,7 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Button;
+        class Checkbox;
         class Label;
         class NumericUpDown;
     }
@@ -57,7 +57,7 @@ namespace trview
         // selected_room: The room that has been selected.
         void set_selected_room(uint32_t selected_room);
     private:
-        ui::Button*        _highlight;
+        ui::Checkbox*      _highlight;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;
