@@ -15,11 +15,8 @@ namespace trview
     {
         using namespace ui;
 
-        auto red = texture_storage.coloured(0xff0000ff);
-        auto green = texture_storage.coloured(0xff00ff00);
-
         auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 130), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
-        auto highlight = std::make_unique<Button>(Point(12, 20), Size(16, 16), red, green);
+        auto highlight = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
         auto highlight_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Highlight", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         highlight->on_click += [&](bool state) { on_highlight(state); };
@@ -28,7 +25,7 @@ namespace trview
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(0, 0),StackPanel::Direction::Vertical);
         auto room_number_labels = std::make_unique<StackPanel>(Point(), Size(96, 30), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(5, 5), StackPanel::Direction::Horizontal);
-        auto room_number = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), red, green, 0, 0);
+        auto room_number = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0);
         auto room_number_label = std::make_unique<Label>(Point(),Size(8, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"/", 16.f, TextAlignment::Left, ParagraphAlignment::Centre);
         auto room_max_label = std::make_unique<Label>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), L"0", 10.f, TextAlignment::Centre, ParagraphAlignment::Centre);
 

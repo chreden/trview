@@ -219,6 +219,11 @@
     <ResourceCompile Include="trview.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\buttonup.png" />
+    <Image Include="resources\check_off.png" />
+    <Image Include="resources\check_on.png" />
+    <Image Include="resources\numericdown.png" />
+    <Image Include="resources\numericup.png" />
     <Image Include="resources\tomb1.png" />
     <Image Include="resources\tomb2.png" />
     <Image Include="resources\tomb3.png">

@@ -14,22 +14,22 @@ namespace trview
     {
         using namespace ui;
 
-        auto red = texture_storage.coloured(0xff0000ff);
-        auto green = texture_storage.coloured(0xff00ff00);
+        auto up = texture_storage.lookup("check_off");
+        auto down = texture_storage.lookup("check_on");
 
         auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 115), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
 
-        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), red, red);
+        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("button_up"), texture_storage.lookup("button_up"));
         reset_camera->on_click += [&](auto) { on_reset(); };
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), red, green);
+        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), up, down);
         orbit_camera->on_click += [&](auto) { change_mode(CameraMode::Orbit); };
 
         auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), red, green);
+        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), up, down);
         free_camera->on_click += [&](auto) { change_mode(CameraMode::Free); };
 
         auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
