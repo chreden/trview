@@ -6,3 +6,6 @@ tomb4_icon 135
 tomb5_icon 136
 numeric_up 137
 numeric_down 138
+check_off 139
+check_on 140
+button_up 141

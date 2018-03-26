@@ -247,6 +247,15 @@
     <Image Include="resources\numericup.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\check_off.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\check_on.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\buttonup.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="level_pixel_shader.hlsl">

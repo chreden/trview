@@ -22,6 +22,9 @@
 #define IDB_TOMB5_ICON                  136
 #define IDB_NUMERIC_UP                  137
 #define IDB_NUMERIC_DOWN                138
+#define IDB_CHECK_OFF                   139
+#define IDB_CHECK_ON                    140
+#define IDB_BUTTON_UP                   141
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              32772
 #define ID_EXIT                         32773
@@ -32,7 +35,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        139
+#define _APS_NEXT_RESOURCE_VALUE        142
 #define _APS_NEXT_COMMAND_VALUE         32774
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110

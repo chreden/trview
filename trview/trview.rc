@@ -208,6 +208,9 @@ IDB_TOMB4_ICON          PNG                     "resources\\tomb4.png"
 IDB_TOMB5_ICON          PNG                     "resources\\tomb5.png"
 IDB_NUMERIC_UP          PNG                     "resources\\numericup.png"
 IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
+IDB_CHECK_OFF           PNG                     "resources\\checkoff.png"
+IDB_CHECK_ON            PNG                     "resources\\checkon.png"
+IDB_BUTTON_UP           PNG                     "resources\\buttonup.png"
 
 
 /////////////////////////////////////////////////////////////////////////////
