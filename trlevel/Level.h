@@ -79,6 +79,11 @@ namespace trlevel
         // Returns: The model.
         virtual tr_model get_model(uint32_t index) const override;
 
+        // Get the model with the specified ID.
+        // id: The id of the model.
+        // Returns: The model.
+        virtual tr_model get_model_by_id(uint32_t id) const override;
+
         // Get the number of static meshes in the level.
         // Returns: The number of models.
         virtual uint32_t num_static_meshes() const override;
@@ -92,6 +97,18 @@ namespace trlevel
         // index: The index of the mesh to get.
         // Returns: The mesh.
         virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
+
+        // Get the mesh tree node at the specified index.
+        // index: The mesh tree index.
+        // node_count: The number of nodes to read.
+        // Returns: The mesh tree node.
+        virtual std::vector<tr_meshtree_node> get_meshtree(uint32_t starting_index, uint32_t node_count) const override;
+
+        // Get the frame at the specified index. Read the specified number of meshes.
+        // frame_offset: The frame offset.
+        // mesh_count: The number of meshes to read.
+        // Returns: The frame.
+        virtual tr2_frame get_frame(uint32_t frame_offset, uint32_t mesh_count) const override;
 
         // Get the version of the game that the level was built for.
         // Returns: The level version.
@@ -119,5 +136,7 @@ namespace trlevel
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;
         std::vector<uint32_t>                 _mesh_pointers;
+        std::vector<uint32_t>                 _meshtree;
+        std::vector<uint16_t>                 _frames;
     };
 }

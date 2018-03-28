@@ -7,6 +7,11 @@ namespace trlevel
 {
     namespace
     {
+        const float PiMul2 = 6.283185307179586476925286766559;
+    }
+
+    namespace
+    {
         template <typename T>
         T read(std::istream& file)
         {
@@ -114,9 +119,8 @@ namespace trlevel
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
         std::vector<tr_anim_command> anim_commands = read_vector<uint32_t, tr_anim_command>(file);
-        // std::vector<tr_meshtree_node> mesh_trees = read_vector<uint32_t, tr_meshtree_node>(file);
-        std::vector<tr2_meshtree> mesh_trees = read_vector<uint32_t, tr2_meshtree>(file);
-        std::vector<uint16_t> frames = read_vector<uint32_t, uint16_t>(file);
+        _meshtree = read_vector<uint32_t, uint32_t>(file);
+        _frames = read_vector<uint32_t, uint16_t>(file);
         _models = read_vector<uint32_t, tr_model>(file);
         
         auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
@@ -270,6 +274,18 @@ namespace trlevel
         return _models[index];
     }
 
+    tr_model Level::get_model_by_id(uint32_t id) const
+    {
+        for (const auto& model : _models)
+        {
+            if (model.ID == id)
+            {
+                return model;
+            }
+        }
+        return tr_model();
+    }
+
     uint32_t Level::num_static_meshes() const
     {
         return _static_meshes.size();
@@ -284,6 +300,70 @@ namespace trlevel
     {
         auto index = _mesh_pointers[mesh_pointer];
         return _meshes.find(index)->second;
+    }
+
+    std::vector<tr_meshtree_node> Level::get_meshtree(uint32_t starting_index, uint32_t node_count) const
+    {
+        uint32_t index = starting_index;
+        std::vector<tr_meshtree_node> nodes;
+        for (uint32_t i = 0; i < node_count; ++i)
+        {
+            tr_meshtree_node node;
+            node.Flags = _meshtree[index++];
+            node.Offset_X = static_cast<int32_t>(_meshtree[index++]);
+            node.Offset_Y = static_cast<int32_t>(_meshtree[index++]);
+            node.Offset_Z = static_cast<int32_t>(_meshtree[index++]);
+            nodes.push_back(node);
+        }
+        return nodes;
+    }
+
+    tr2_frame Level::get_frame(uint32_t frame_offset, uint32_t mesh_count) const
+    {
+        uint32_t offset = frame_offset;
+        tr2_frame frame;
+        frame.bb1x = _frames[offset++];
+        frame.bb1y = _frames[offset++];
+        frame.bb1z = _frames[offset++];
+        frame.bb2x = _frames[offset++];
+        frame.bb2y = _frames[offset++];
+        frame.bb2z = _frames[offset++];
+        frame.offsetx = _frames[offset++];
+        frame.offsety = _frames[offset++];
+        frame.offsetz = _frames[offset++];
+
+        for (int i = 0; i < mesh_count; ++i)
+        {
+            tr2_frame_rotation rotation;
+
+            uint16_t data = _frames[offset++];
+            uint16_t mode = data & 0xC000;
+            if (mode)
+            {
+                float angle = (data & 0x03ff) * PiMul2 / 1024.0f;
+                if (mode == 0x4000)
+                {
+                    rotation.x = angle;
+                }
+                else if (mode == 0x8000)
+                {
+                    rotation.y = angle;
+                }
+                else if (mode == 0xC000)
+                {
+                    rotation.z = angle;
+                }
+            }
+            else
+            {
+                uint16_t next = _frames[offset++];
+                rotation.x = ((data & 0x3ff0) >> 4) * PiMul2 / 1024.0f;
+                rotation.y = ((((data & 0x000f) << 6)) | ((next & 0xfc00) >> 10)) * PiMul2 / 1024.0f;
+                rotation.z = (next & 0x03ff) * PiMul2 / 1024.0f;
+            }
+            frame.values.push_back(rotation);
+        }
+        return frame;
     }
 
     LevelVersion Level::get_version() const 

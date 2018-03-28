@@ -187,6 +187,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />

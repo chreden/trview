@@ -18,7 +18,7 @@ namespace trview
     {
         using namespace DirectX;
         float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
-        _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 1.0f, 10000.0f);
+        _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
     }
 

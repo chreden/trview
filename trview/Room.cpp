@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Room.h"
 #include "RoomVertex.h"
+#include "Entity.h"
 
 #include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
@@ -139,6 +140,11 @@ namespace trview
         for (const auto& mesh : _static_meshes)
         {
             mesh->render(context, view_projection, texture_storage, colour);
+        }
+
+        for (const auto& entity : _entities)
+        {
+            entity->render(context, view_projection, texture_storage, colour);
         }
     }
 
@@ -419,5 +425,10 @@ namespace trview
 
         // Above and below.
         _neighbours = adjacent_rooms;
+    }
+
+    void Room::add_entity(Entity* entity)
+    {
+        _entities.push_back(entity);
     }
 }

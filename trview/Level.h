@@ -70,6 +70,7 @@ namespace trview
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
         void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+        void render_entities(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
 
         // Determines whether the room is currently being rendered.
         // room: The room index.

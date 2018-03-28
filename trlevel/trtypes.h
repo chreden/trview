@@ -362,6 +362,19 @@ namespace trlevel
         std::vector<tr_face3>  coloured_triangles;
     };
 
+    struct tr2_frame_rotation
+    {
+        float x{ 0.0f }, y{ 0.0f }, z{ 0.0f };
+    };
+
+    struct tr2_frame
+    {
+        int16_t bb1x, bb1y, bb1z;
+        int16_t bb2x, bb2y, bb2z;
+        int16_t offsetx, offsety, offsetz;
+        std::vector<tr2_frame_rotation> values;
+    };
+
 #pragma pack(pop)
 
     // Convert a 16 bit textile into a 32 bit argb value.

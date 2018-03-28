@@ -10,6 +10,7 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
+#include <trview.ui/Button.h>
 
 #include "RoomNavigator.h"
 #include "CameraControls.h"
@@ -461,7 +462,7 @@ namespace trview
                     _free_up ? 1 : 0 + _free_down ? -1 : 0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
 
-                const float Speed = 20;
+                const float Speed = 5;
                 _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
             }
         }

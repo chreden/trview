@@ -8,7 +8,7 @@ namespace trview
     namespace
     {
         const float max_zoom = 100.0f;
-        const float min_zoom = 1.0f;
+        const float min_zoom = 0.1f;
     }
 
     Camera::Camera(uint32_t width, uint32_t height)
@@ -42,7 +42,7 @@ namespace trview
     {
         using namespace DirectX;
         float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
-        _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 1.0f, 10000.0f);
+        _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
     }
 

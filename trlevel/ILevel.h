@@ -73,6 +73,11 @@ namespace trlevel
         // Returns: The model.
         virtual tr_model get_model(uint32_t index) const = 0;
 
+        // Get the model with the specified ID.
+        // id: The id of the model.
+        // Returns: The model.
+        virtual tr_model get_model_by_id(uint32_t id) const = 0;
+
         // Get the number of static meshes in the level.
         // Returns: The number of models.
         virtual uint32_t num_static_meshes() const = 0;
@@ -86,6 +91,18 @@ namespace trlevel
         // mesh_pointer: The mesh pointer index.
         // Returns: The mesh.
         virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const = 0;
+
+        // Get the mesh tree node at the specified index.
+        // index: The starting mesh tree index.
+        // node_count: The number of nodes to read.
+        // Returns: The mesh tree node.
+        virtual std::vector<tr_meshtree_node> get_meshtree(uint32_t starting_index, uint32_t node_count) const = 0;
+
+        // Get the frame at the specified index. Read the specified number of meshes.
+        // frame_offset: The frame offset.
+        // mesh_count: The number of meshes to read.
+        // Returns: The frame.
+        virtual tr2_frame get_frame(uint32_t frame_offset, uint32_t mesh_count) const = 0;
 
         // Get the version of the game that the level was built for.
         // Returns: The level version.

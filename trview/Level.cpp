@@ -191,8 +191,10 @@ namespace trview
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
-            auto entity = _level->get_entity(i);
-            _entities.push_back(std::make_unique<Entity>());
+            auto level_entity = _level->get_entity(i);
+            auto entity = std::make_unique<Entity>(_device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
+            _rooms[entity->room()]->add_entity(entity.get());
+            _entities.push_back(std::move(entity));
         }
     }
 
