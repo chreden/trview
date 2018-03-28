@@ -8,7 +8,7 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Button;
+        class Checkbox;
     }
 
     struct ITextureStorage;
@@ -32,6 +32,6 @@ namespace trview
         // value: Whether neighbours are enabled.
         void set_enabled(bool value);
     private:
-        ui::Button* _enabled;
+        ui::Checkbox* _enabled;
     };
 }

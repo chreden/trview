@@ -16,15 +16,12 @@ namespace trview
             virtual ~Button() = default;
 
             // This event is raised when the user clicks on the button.
-            Event<bool> on_click;
-
-            void set_state(bool state);
+            Event<void> on_click;
         protected:
             virtual bool clicked(Point position) override;
         private:
             Texture _up_image;
             Texture _down_image;
-            bool    _state{ false };
         };
     }
 }

@@ -46,6 +46,9 @@
     <ClInclude Include="SizeMode.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Checkbox.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">
@@ -82,6 +85,9 @@
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="StackPanel.cpp">
+      <Filter>Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Checkbox.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
   </ItemGroup>

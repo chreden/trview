@@ -5,7 +5,7 @@
 
 #include <trview.ui/Control.h>
 #include <trview.ui/GroupBox.h>
-#include <trview.ui/Button.h>
+#include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/NumericUpDown.h>
 
@@ -16,8 +16,8 @@ namespace trview
         using namespace ui;
 
         auto group = std::make_unique<GroupBox>(Point(), Size(140, 50), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Neighbours");
-        auto enabled = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
-        enabled->on_click += [&](bool value) { on_enabled_changed(value); };
+        auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
+        enabled->on_state_changed += [&](bool value) { on_enabled_changed(value); };
         _enabled = enabled.get();
 
         auto depth_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Depth", 10.f, TextAlignment::Left, ParagraphAlignment::Centre);
