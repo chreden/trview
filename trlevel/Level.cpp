@@ -85,15 +85,23 @@ namespace trlevel
             int16_t ambient1 = read<int16_t>(file);
             int16_t ambient2 = read<int16_t>(file);
 
+            if (get_version() == LevelVersion::Tomb2)
+            {
+                int16_t lightmode = read<int16_t>(file);
+            }
+
             room.lights = read_vector<uint16_t, tr3_room_light>(file);
             room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
 
             int16_t alternate = read<int16_t>(file);
             int16_t flags = read<int16_t>(file);
 
-            uint8_t water_scheme = read<uint8_t>(file);
-            uint8_t reverb_info = read<uint8_t>(file);
-            uint8_t filler = read<uint8_t>(file);
+            if (get_version() == LevelVersion::Tomb3)
+            {
+                uint8_t water_scheme = read<uint8_t>(file);
+                uint8_t reverb_info = read<uint8_t>(file);
+                uint8_t filler = read<uint8_t>(file);
+            }
 
             _rooms.push_back(room);
         }
@@ -117,6 +125,11 @@ namespace trlevel
             _static_meshes.insert({ mesh.ID, mesh });
         }
 
+        if (get_version() == LevelVersion::Tomb2)
+        {
+            _object_textures = read_vector<uint32_t, tr_object_texture>(file);
+        }
+
         std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
@@ -125,7 +138,12 @@ namespace trlevel
         std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
         std::vector<int16_t> zones = read_vector<int16_t>(file, boxes.size() * 10);
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
-        _object_textures = read_vector<uint32_t, tr_object_texture>(file);
+
+        if (get_version() == LevelVersion::Tomb3)
+        {
+            _object_textures = read_vector<uint32_t, tr_object_texture>(file);
+        }
+
         _entities = read_vector<uint32_t, tr2_entity>(file);
         std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
         std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
