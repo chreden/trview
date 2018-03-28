@@ -93,8 +93,8 @@ namespace trview
             Control* focus_control() const;
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
-            Control* _parent;
-            Control* _focus_control;
+            Control* _parent{ nullptr };
+            Control* _focus_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;

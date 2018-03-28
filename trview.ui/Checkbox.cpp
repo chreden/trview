@@ -17,6 +17,15 @@ namespace trview
             return true;
         }
 
+        // Gets whether the checkbox is currently checked.
+        // Returns: Whether the checkbox is currently checked.
+        bool Checkbox::state() const
+        {
+            return _state;
+        }
+
+        // Set the state of the checkbox. This will not raise the state changed event.
+        // state: The new state of the checkbox.
         void Checkbox::set_state(bool state)
         {
             _state = state;

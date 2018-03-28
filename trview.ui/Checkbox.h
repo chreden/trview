@@ -16,6 +16,10 @@ namespace trview
             // bool: The new state of the checkbox.
             Event<bool> on_state_changed;
 
+            // Gets whether the checkbox is currently checked.
+            // Returns: Whether the checkbox is currently checked.
+            bool state() const;
+
             // Set the state of the checkbox. This will not raise the state changed event.
             // state: The new state of the checkbox.
             void set_state(bool state);
