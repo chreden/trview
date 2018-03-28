@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonTests.cpp" />
     <ClCompile Include="CheckboxTests.cpp" />
   </ItemGroup>
   <ItemGroup>
