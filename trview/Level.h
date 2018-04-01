@@ -57,7 +57,7 @@ namespace trview
         // is also specified.
         PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
@@ -69,8 +69,7 @@ namespace trview
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
-        void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
-        void render_entities(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection);
+        void render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection);
 
         // Determines whether the room is currently being rendered.
         // room: The room index.

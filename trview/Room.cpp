@@ -83,7 +83,7 @@ namespace trview
         return result;
     }
 
-    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -93,6 +93,7 @@ namespace trview
 
         using namespace DirectX;
 
+        auto view_projection = XMMatrixMultiply(view, projection);
         auto wvp = _room_offset * view_projection;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
@@ -144,7 +145,7 @@ namespace trview
 
         for (const auto& entity : _entities)
         {
-            entity->render(context, view_projection, texture_storage, colour);
+            entity->render(context, view, projection, texture_storage, colour);
         }
     }
 

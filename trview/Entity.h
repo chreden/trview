@@ -26,7 +26,7 @@ namespace trview
     {
     public:
         explicit Entity(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage);
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
         uint16_t room() const;
     private:
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);

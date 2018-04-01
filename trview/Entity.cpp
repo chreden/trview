@@ -123,29 +123,47 @@ namespace trview
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         indices[sprite.Tile] = { 0, 1, 2, 2, 1, 3 };
 
-        _sprite_mesh = std::make_unique<Mesh>(
-            _device,
-            vertices,
-            indices,
-            std::vector<uint32_t>(),
-            texture_storage);
+        _sprite_mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), texture_storage);
 
         // Scale is computed from the 'side' values.
+        float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
+        float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / 1024.0f;
+        auto scale = XMMatrixScaling(object_width, object_height, 1);
 
+        // An offset to move the sprite up a bit.
+        auto offset = XMMatrixTranslation(0, object_height / 2.0f, 0);
+
+        _world = XMMatrixMultiply(XMMatrixMultiply(scale, offset), _world);
     }
 
-    void Entity::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void Entity::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
     {
+        using namespace DirectX;
+
+        auto view_projection = XMMatrixMultiply(view, projection);
+
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto w = DirectX::XMMatrixMultiply(_world_transforms[i], _world);
-            auto wvp = DirectX::XMMatrixMultiply(w, view_projection);
+            auto w = XMMatrixMultiply(_world_transforms[i], _world);
+            auto wvp = XMMatrixMultiply(w, view_projection);
             _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
         {
-            auto wvp = DirectX::XMMatrixMultiply(_world, view_projection);
+            // Disable backface culling for this.
+            auto inv = XMMatrixInverse(nullptr, view);
+            XMFLOAT4X4 inv_mat;
+            XMStoreFloat4x4(&inv_mat, inv);
+            inv_mat._41 = 0;
+            inv_mat._42 = 0;
+            inv_mat._43 = 0;
+            inv = XMLoadFloat4x4(&inv_mat);
+
+            auto world = DirectX::XMMatrixMultiply(inv, _world);
+
+            auto wvp = DirectX::XMMatrixMultiply(world, view_projection);
+
             _sprite_mesh->render(context, wvp, texture_storage, colour);
         }
     }

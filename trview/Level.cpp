@@ -130,7 +130,7 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection)
+    void Level::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection)
     {
         using namespace DirectX;
 
@@ -140,10 +140,10 @@ namespace trview
         context->PSSetShader(_pixel_shader, nullptr, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        render_rooms(context, view_projection);
+        render_rooms(context, view, projection);
     }
 
-    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection)
     {
         switch (_room_highlight_mode)
         {
@@ -151,7 +151,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), Room::SelectionMode::Selected);
+                    _rooms[i]->render(context, view, projection, *_texture_storage.get(), Room::SelectionMode::Selected);
                 }
                 break;
             }
@@ -159,7 +159,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    _rooms[i]->render(context, view, projection, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
                 }
                 break;
             }
@@ -167,7 +167,7 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    _rooms[i]->render(context, view, projection, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
                 }
                 break;
             }

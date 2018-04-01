@@ -60,7 +60,7 @@ namespace trview
         // how far along the ray the hit was and the position in world space.
         PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.

@@ -597,10 +597,11 @@ namespace trview
                 (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
 
             _camera.set_target(target_position);
-            
-            auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
 
-            _level->render(_context, view_projection);
+            auto view = _camera_mode == CameraMode::Orbit ? _camera.view() : _free_camera.view();
+            auto projection = _camera_mode == CameraMode::Orbit ? _camera.projection() : _free_camera.projection();
+
+            _level->render(_context, view, projection);
         }
     }
 
