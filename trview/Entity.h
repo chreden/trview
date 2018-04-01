@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
+#include <memory>
 #include <vector>
 
 namespace trlevel
@@ -34,6 +35,7 @@ namespace trview
         CComPtr<ID3D11Device>           _device;
         DirectX::XMMATRIX               _world;
         std::vector<Mesh*>              _meshes;
+        std::unique_ptr<Mesh>           _sprite_mesh;
         std::vector<DirectX::XMMATRIX>  _world_transforms;
         uint16_t                        _room;
     };

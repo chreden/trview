@@ -117,9 +117,23 @@ namespace trview
             { u, v }, { u + width, v }, { u, v + height }, { u + width, v + height }
         };
 
+        std::vector<MeshVertex> vertices
+        {
+            { XMFLOAT3(-0.5f, 0.5f, 0), XMFLOAT2(u, v), XMFLOAT4(1,1,1,1) },
+            { XMFLOAT3(0.5f, 0.5f, 0), XMFLOAT2(u + width, v), XMFLOAT4(1,1,1,1) },
+            { XMFLOAT3(-0.5f, -0.5f, 0), XMFLOAT2(u, v + height), XMFLOAT4(1,1,1,1) },
+            { XMFLOAT3(0.5f, -0.5f, 0), XMFLOAT2(u + width, v + height), XMFLOAT4(1,1,1,1) },
+        };
 
+        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
+        indices[sprite.Tile] = { 0, 1, 2, 2, 3, 0 };
 
-
+        _sprite_mesh = std::make_unique<Mesh>(
+            _device,
+            vertices,
+            indices,
+            std::vector<uint32_t>(),
+            texture_storage);
 
         // Scale is computed from the 'side' values.
 
@@ -132,6 +146,12 @@ namespace trview
             auto w = DirectX::XMMatrixMultiply(_world_transforms[i], _world);
             auto wvp = DirectX::XMMatrixMultiply(w, view_projection);
             _meshes[i]->render(context, wvp, texture_storage, colour);
+        }
+
+        if (_sprite_mesh)
+        {
+            auto wvp = DirectX::XMMatrixMultiply(_world, view_projection);
+            _sprite_mesh->render(context, wvp, texture_storage, colour);
         }
     }
 
