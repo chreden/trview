@@ -165,6 +165,7 @@
     <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
+    <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />

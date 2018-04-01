@@ -136,6 +136,9 @@
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="MeshVertex.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
