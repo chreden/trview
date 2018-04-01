@@ -112,11 +112,6 @@ namespace trview
 
         // Generate quad.
         using namespace DirectX;
-        const XMFLOAT2 uvs[] =
-        {
-            { u, v }, { u + width, v }, { u, v + height }, { u + width, v + height }
-        };
-
         std::vector<MeshVertex> vertices
         {
             { XMFLOAT3(-0.5f, 0.5f, 0), XMFLOAT2(u, v), XMFLOAT4(1,1,1,1) },
@@ -126,7 +121,7 @@ namespace trview
         };
 
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        indices[sprite.Tile] = { 0, 1, 2, 2, 3, 0 };
+        indices[sprite.Tile] = { 0, 1, 2, 2, 1, 3 };
 
         _sprite_mesh = std::make_unique<Mesh>(
             _device,
