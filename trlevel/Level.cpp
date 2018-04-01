@@ -134,8 +134,8 @@ namespace trlevel
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
         }
 
-        std::vector<tr_sprite_texture> sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
-        std::vector<tr_sprite_sequence> sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
+        _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
+        _sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
         std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
         std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
@@ -274,16 +274,17 @@ namespace trlevel
         return _models[index];
     }
 
-    tr_model Level::get_model_by_id(uint32_t id) const
+    bool Level::get_model_by_id(uint32_t id, tr_model& output) const 
     {
         for (const auto& model : _models)
         {
             if (model.ID == id)
             {
-                return model;
+                output = model;
+                return true;
             }
         }
-        return tr_model();
+        return false;
     }
 
     uint32_t Level::num_static_meshes() const
@@ -369,5 +370,23 @@ namespace trlevel
     LevelVersion Level::get_version() const 
     {
         return _version;
+    }
+
+    bool Level::get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& output) const
+    {
+        for (const auto& sequence : _sprite_sequences)
+        {
+            if (sequence.SpriteID == sprite_sequence_id)
+            {
+                output = sequence;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    tr_sprite_texture Level::get_sprite_texture(uint32_t index) const
+    {
+        return _sprite_textures[index];
     }
 }

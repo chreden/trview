@@ -11,6 +11,8 @@ namespace trlevel
 {
     struct ILevel;
     struct tr2_entity;
+    struct tr_model;
+    struct tr_sprite_sequence;
 }
 
 namespace trview
@@ -26,8 +28,10 @@ namespace trview
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
         uint16_t room() const;
     private:
-        CComPtr<ID3D11Device> _device;
+        void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);
+        void load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
+        CComPtr<ID3D11Device>           _device;
         DirectX::XMMATRIX               _world;
         std::vector<Mesh*>              _meshes;
         std::vector<DirectX::XMMATRIX>  _world_transforms;

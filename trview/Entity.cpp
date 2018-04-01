@@ -18,8 +18,29 @@ namespace trview
     {
         using namespace DirectX;
 
+        // Set up world matrix.
+        _world = XMMatrixMultiply(
+            XMMatrixRotationY((entity.Angle / 16384.0f) * XM_PIDIV2),
+            XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f));
+
         // Extract the meshes required from the model.
-        auto model = level.get_model_by_id(entity.TypeID);
+        trlevel::tr_model model;
+        trlevel::tr_sprite_sequence sprite;
+
+        if (level.get_model_by_id(entity.TypeID, model))
+        {
+            load_model(model, level, mesh_storage);
+        }
+        else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
+        {
+            load_sprite(sprite, level, texture_storage);
+        }
+    }
+
+    void Entity::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage)
+    {
+        using namespace DirectX;
+
         for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < model.StartingMesh + model.NumMeshes; ++mesh_pointer)
         {
             _meshes.push_back(mesh_storage.mesh(mesh_pointer));
@@ -37,11 +58,7 @@ namespace trview
             XMMATRIX initial_rotation = XMMatrixRotationRollPitchYaw(XM_2PI - initial_frame.x, initial_frame.y, XM_2PI - initial_frame.z);
             XMMATRIX initial_frame_offset = XMMatrixTranslation(frame.offsetx / 1024.0f, frame.offsety / -1024.0f, frame.offsetz / 1024.0f);
 
-            _world = XMMatrixMultiply(
-                        XMMatrixMultiply(initial_rotation, initial_frame_offset),
-                        XMMatrixMultiply(
-                            XMMatrixRotationY((entity.Angle / 16384.0f) * XM_PIDIV2),
-                            XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f)));
+            _world = XMMatrixMultiply(XMMatrixMultiply(initial_rotation, initial_frame_offset), _world);
 
             XMMATRIX initial_world = XMMatrixIdentity();
             _world_transforms.push_back(initial_world);
@@ -79,6 +96,33 @@ namespace trview
                 previous_world = node_transform;
             }
         }
+    }
+
+    void Entity::load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
+    {
+        // Get the first sprite image.
+        auto sprite = level.get_sprite_texture(sprite_sequence.Offset);
+        auto texture = texture_storage.texture(sprite.Tile);
+
+        // Calculate UVs.
+        float u = static_cast<float>(sprite.x) / 256.0f;
+        float v = static_cast<float>(sprite.y) / 256.0f;
+        float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
+        float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
+
+        // Generate quad.
+        using namespace DirectX;
+        const XMFLOAT2 uvs[] =
+        {
+            { u, v }, { u + width, v }, { u, v + height }, { u + width, v + height }
+        };
+
+
+
+
+
+        // Scale is computed from the 'side' values.
+
     }
 
     void Entity::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)

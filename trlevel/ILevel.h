@@ -75,8 +75,9 @@ namespace trlevel
 
         // Get the model with the specified ID.
         // id: The id of the model.
-        // Returns: The model.
-        virtual tr_model get_model_by_id(uint32_t id) const = 0;
+        // model: The location to store the model.
+        // Returns: Whether the model was found.
+        virtual bool get_model_by_id(uint32_t id, tr_model& out) const = 0;
 
         // Get the number of static meshes in the level.
         // Returns: The number of models.
@@ -107,5 +108,16 @@ namespace trlevel
         // Get the version of the game that the level was built for.
         // Returns: The level version.
         virtual LevelVersion get_version() const = 0;
+
+        // Get the sprite squence with the specified ID.
+        // sprite_sequence_id: The id of the sprite sequence to find.
+        // sequence: The place to store the sequence.
+        // Returns: Whether the sprite sequence was found.
+        virtual bool get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& sequence) const = 0;
+
+        // Get the sprite texture with the specified ID.
+        // index: The index of the sprite texture to get.
+        // Returns: The sprite texture.
+        virtual tr_sprite_texture get_sprite_texture(uint32_t index) const = 0;
     };
 }

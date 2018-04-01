@@ -81,8 +81,9 @@ namespace trlevel
 
         // Get the model with the specified ID.
         // id: The id of the model.
-        // Returns: The model.
-        virtual tr_model get_model_by_id(uint32_t id) const override;
+        // model: The location to store the model.
+        // Returns: Whether the model was found.
+        virtual bool get_model_by_id(uint32_t id, tr_model& model) const override;
 
         // Get the number of static meshes in the level.
         // Returns: The number of models.
@@ -113,6 +114,17 @@ namespace trlevel
         // Get the version of the game that the level was built for.
         // Returns: The level version.
         virtual LevelVersion get_version() const override;
+
+        // Get the sprite squence with the specified ID.
+        // sprite_sequence_id: The id of the sprite sequence to find.
+        // sequence: The place to store the sequence.
+        // Returns: Whether the sprite sequence was found.
+        virtual bool get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& sequence) const override;
+
+        // Get the sprite texture with the specified ID.
+        // index: The index of the sprite texture to get.
+        // Returns: The sprite texture.
+        virtual tr_sprite_texture get_sprite_texture(uint32_t index) const override;
     private:
         void generate_meshes(std::vector<uint16_t> mesh_data);
 
@@ -138,5 +150,7 @@ namespace trlevel
         std::vector<uint32_t>                 _mesh_pointers;
         std::vector<uint32_t>                 _meshtree;
         std::vector<uint16_t>                 _frames;
+        std::vector<tr_sprite_texture>        _sprite_textures;
+        std::vector<tr_sprite_sequence>       _sprite_sequences;
     };
 }
