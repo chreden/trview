@@ -16,6 +16,7 @@ namespace trlevel
         g += 3;
         b += 3;
 
-        return 0xff << 24 | r << 16 | g << 8 | b;
+        uint16_t a = t & 0x8000 ? 0xff : 0x00;
+        return a << 24 | r << 16 | g << 8 | b;
     }
 }
