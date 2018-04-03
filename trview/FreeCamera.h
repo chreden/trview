@@ -12,7 +12,7 @@ namespace trview
     public:
         FreeCamera(uint32_t width, uint32_t height);
         virtual ~FreeCamera() = default;
-        void                move(DirectX::XMVECTOR movement);
+        void move(DirectX::SimpleMath::Vector3 movement);
         virtual DirectX::SimpleMath::Matrix   view() const override;
         virtual DirectX::SimpleMath::Matrix   projection() const override;
         virtual DirectX::SimpleMath::Matrix   view_projection() const override;

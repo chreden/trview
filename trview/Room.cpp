@@ -8,6 +8,7 @@
 #include "ICamera.h"
 
 #include <directxmath.h>
+#include <external/DirectXTK/Inc/SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
 
@@ -93,8 +94,10 @@ namespace trview
         }
 
         using namespace DirectX;
+        using namespace SimpleMath;
 
-        auto wvp = _room_offset * camera.view_projection();
+        XMMATRIX vp = camera.view_projection();
+        XMMATRIX wvp = _room_offset * vp;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
