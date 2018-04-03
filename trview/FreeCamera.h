@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <DirectXMath.h>
 
 #include "ICamera.h"
 

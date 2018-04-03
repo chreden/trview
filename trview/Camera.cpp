@@ -46,7 +46,7 @@ namespace trview
         _view_projection = _view * _projection;
     }
 
-    void Camera::set_target(const DirectX::XMVECTOR& target)
+    void Camera::set_target(const DirectX::SimpleMath::Vector3& target)
     {
         _target = target;
         calculate_view_matrix();

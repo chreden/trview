@@ -1,7 +1,5 @@
 #pragma once
 
-#include <DirectXMath.h>
-
 #include "ICamera.h"
 
 namespace trview
@@ -15,7 +13,7 @@ namespace trview
         float               rotation_pitch() const;
         float               zoom() const;
         DirectX::SimpleMath::Vector3   target() const;
-        void                set_target(const DirectX::XMVECTOR& target);
+        void                set_target(const DirectX::SimpleMath::Vector3& target);
         virtual DirectX::SimpleMath::Matrix   view() const override;
         virtual DirectX::SimpleMath::Matrix   projection() const override;
         virtual DirectX::SimpleMath::Matrix   view_projection() const override;
