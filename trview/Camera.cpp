@@ -18,7 +18,7 @@ namespace trview
         calculate_projection_matrix(width, height);
     }
 
-    DirectX::XMVECTOR Camera::target() const
+    DirectX::SimpleMath::Vector3 Camera::target() const
     {
         return _target;
     }
@@ -55,12 +55,14 @@ namespace trview
     void Camera::calculate_view_matrix()
     {
         using namespace DirectX;
+        using namespace SimpleMath;
 
-        XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
-        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-        eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
+        Vector3 eye_position(0, 0, -_zoom);
 
-        XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+        eye_position = Vector3::Transform(eye_position, rotate) + _target;
+
+        Vector3 up_vector = Vector3::Transform(Vector3(0, 1, 0), rotate);
         _view = XMMatrixLookAtLH(eye_position, _target, up_vector);
         _view_projection = _view * _projection;
     }
@@ -83,17 +85,17 @@ namespace trview
         calculate_view_matrix();
     }
 
-    DirectX::XMMATRIX Camera::view() const
+    DirectX::SimpleMath::Matrix Camera::view() const
     {
         return _view;
     }
 
-    DirectX::XMMATRIX Camera::projection() const
+    DirectX::SimpleMath::Matrix Camera::projection() const
     {
         return _projection;
     }
 
-    DirectX::XMMATRIX Camera::view_projection() const
+    DirectX::SimpleMath::Matrix Camera::view_projection() const
     {
         return _view_projection;
     }
@@ -105,24 +107,26 @@ namespace trview
         set_zoom(default_zoom);
     }
 
-    DirectX::XMVECTOR Camera::position() const
+    DirectX::SimpleMath::Vector3 Camera::position() const
     {
-        using namespace DirectX;
-        XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
-        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-        return XMVector3TransformCoord(eye_position, rotate) + _target;
+        using namespace DirectX::SimpleMath;
+        Vector3 eye_position(0, 0, -_zoom);
+        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+        return Vector3::Transform(eye_position, rotate) + _target;
     }
 
-    DirectX::XMVECTOR Camera::up() const
+    DirectX::SimpleMath::Vector3 Camera::up() const
     {
-        using namespace DirectX;
-        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
-        return XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+        using namespace DirectX::SimpleMath;
+        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+        return Vector3::Transform(Vector3::Up, rotate);
     }
 
-    DirectX::XMVECTOR Camera::forward() const
+    DirectX::SimpleMath::Vector3 Camera::forward() const
     {
-        using namespace DirectX;
-        return XMVector3Normalize(_target - position());
+        using namespace DirectX::SimpleMath;
+        auto to = _target - position();
+        to.Normalize();
+        return to;
     }
 }

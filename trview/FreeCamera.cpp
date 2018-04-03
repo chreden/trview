@@ -32,29 +32,29 @@ namespace trview
         _view_projection = _view * _projection;
     }
 
-    DirectX::XMMATRIX FreeCamera::view() const
+    DirectX::SimpleMath::Matrix FreeCamera::view() const
     {
         return _view;
     }
 
-    DirectX::XMMATRIX FreeCamera::projection() const
+    DirectX::SimpleMath::Matrix FreeCamera::projection() const
     {
         return _projection;
     }
 
-    DirectX::XMMATRIX FreeCamera::view_projection() const
+    DirectX::SimpleMath::Matrix FreeCamera::view_projection() const
     {
         return _view_projection;
     }
 
-    DirectX::XMVECTOR FreeCamera::target() const
+    DirectX::SimpleMath::Vector3 FreeCamera::target() const
     {
         using namespace DirectX;
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         return XMVectorAdd(_position, XMVector3TransformCoord(XMVectorSet(0, 0, 1, 0), rotate));
     }
 
-    DirectX::XMVECTOR FreeCamera::position() const
+    DirectX::SimpleMath::Vector3 FreeCamera::position() const
     {
         return _position;
     }
@@ -103,16 +103,17 @@ namespace trview
         calculate_view_matrix();
     }
 
-    DirectX::XMVECTOR FreeCamera::up() const
+    DirectX::SimpleMath::Vector3 FreeCamera::up() const
     {
         using namespace DirectX;
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         return XMVector3TransformCoord(XMVectorSet(0, 1, 0, 0), rotate);
     }
     
-    DirectX::XMVECTOR FreeCamera::forward() const
+    DirectX::SimpleMath::Vector3 FreeCamera::forward() const
     {
         using namespace DirectX;
+        using namespace SimpleMath;
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         auto target = XMVectorAdd(_position, XMVector3TransformCoord(XMVectorSet(0, 0, 1, 0), rotate));
         return XMVector3Normalize(target - _position);
