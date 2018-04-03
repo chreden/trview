@@ -17,7 +17,7 @@ namespace trview
         }
 
         auto level_mesh = _level.get_mesh_by_pointer(mesh_pointer);
-        auto new_mesh = std::make_unique<Mesh>(level_mesh, _device, _texture_storage);
+        auto new_mesh = create_mesh(level_mesh, _device, _texture_storage);
         Mesh* mesh = new_mesh.get();
         _meshes.insert({ mesh_pointer, std::move(new_mesh) });
         return mesh;

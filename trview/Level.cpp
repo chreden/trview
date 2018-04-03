@@ -6,6 +6,8 @@
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
 
+#include "ICamera.h"
+
 namespace trview
 {
     Level::Level(CComPtr<ID3D11Device> device, const trlevel::ILevel* level)
@@ -130,7 +132,7 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection)
+    void Level::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
     {
         using namespace DirectX;
 
@@ -140,10 +142,10 @@ namespace trview
         context->PSSetShader(_pixel_shader, nullptr, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        render_rooms(context, view_projection);
+        render_rooms(context, camera);
     }
 
-    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
     {
         switch (_room_highlight_mode)
         {
@@ -151,7 +153,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), Room::SelectionMode::Selected);
+                    _rooms[i]->render(context, camera, *_texture_storage.get(), Room::SelectionMode::Selected);
                 }
                 break;
             }
@@ -159,7 +161,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    _rooms[i]->render(context, camera, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
                 }
                 break;
             }
@@ -167,7 +169,7 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    _rooms[i]->render(context, camera, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
                 }
                 break;
             }
@@ -191,8 +193,10 @@ namespace trview
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
-            auto entity = _level->get_entity(i);
-            _entities.push_back(std::make_unique<Entity>());
+            auto level_entity = _level->get_entity(i);
+            auto entity = std::make_unique<Entity>(_device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
+            _rooms[entity->room()]->add_entity(entity.get());
+            _entities.push_back(std::move(entity));
         }
     }
 

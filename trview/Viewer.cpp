@@ -461,7 +461,7 @@ namespace trview
                     _free_up ? 1 : 0 + _free_down ? -1 : 0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
 
-                const float Speed = 20;
+                const float Speed = 10;
                 _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
             }
         }
@@ -596,11 +596,17 @@ namespace trview
                 (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
 
             _camera.set_target(target_position);
-            
-            auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
-
-            _level->render(_context, view_projection);
+            _level->render(_context, current_camera());
         }
+    }
+
+    const ICamera& Viewer::current_camera() const
+    {
+        if (_camera_mode == CameraMode::Orbit)
+        {
+            return _camera;
+        }
+        return _free_camera;
     }
 
     void Viewer::render_ui()

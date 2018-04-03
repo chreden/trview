@@ -38,6 +38,9 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{bb6233b6-2218-4c3e-8934-1ef700a66256}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Entity">
+      <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -88,9 +91,6 @@
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>View</Filter>
     </ClInclude>
@@ -131,6 +131,15 @@
       <Filter>Program\Windows</Filter>
     </ClInclude>
     <ClInclude Include="DefaultTextures.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>View\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshVertex.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
       <Filter>Program</Filter>
     </ClInclude>
   </ItemGroup>
@@ -208,6 +217,12 @@
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="DefaultTextures.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>View\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
       <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,6 +10,6 @@ namespace trview
     {
         virtual ~IMeshStorage() = 0;
 
-        virtual Mesh* mesh(uint32_t index) const = 0;
+        virtual Mesh* mesh(uint32_t mesh_pointer) const = 0;
     };
 }

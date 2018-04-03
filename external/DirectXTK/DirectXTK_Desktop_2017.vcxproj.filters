@@ -33,6 +33,9 @@
     <ClInclude Include="Src\LoaderHelpers.h">
       <Filter>Src\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\SimpleMath.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\pch.cpp">
@@ -44,8 +47,14 @@
     <ClCompile Include="Src\WICTextureLoader.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\SimpleMath.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.txt" />
+    <None Include="Inc\SimpleMath.inl">
+      <Filter>Inc</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -22,6 +22,8 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct IMeshStorage;
+    class Entity;
+    struct ICamera;
 
     class Room
     {
@@ -59,7 +61,11 @@ namespace trview
         // how far along the ray the hit was and the position in world space.
         PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+
+        // Add the specified entity to the room.
+        // Entity: The entity to add.
+        void add_entity(Entity* entity);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
@@ -96,5 +102,7 @@ namespace trview
         // Triangle copy for ray intersection.
         std::vector<Triangle> _collision_triangles;
         DirectX::BoundingBox  _bounding_box;
+
+        std::vector<Entity*> _entities;
     };
 }

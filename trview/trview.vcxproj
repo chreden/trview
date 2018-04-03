@@ -158,6 +158,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
+    <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="ITextureStorage.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
+    <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
@@ -187,8 +189,10 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
+    <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
