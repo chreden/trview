@@ -102,4 +102,19 @@ namespace trview
         _position = position;
         calculate_view_matrix();
     }
+
+    DirectX::XMVECTOR FreeCamera::up() const
+    {
+        using namespace DirectX;
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        return XMVector3TransformCoord(XMVectorSet(0, 1, 0, 0), rotate);
+    }
+    
+    DirectX::XMVECTOR FreeCamera::forward() const
+    {
+        using namespace DirectX;
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        auto target = XMVectorAdd(_position, XMVector3TransformCoord(XMVectorSet(0, 0, 1, 0), rotate));
+        return XMVector3Normalize(target - _position);
+    }
 }

@@ -59,6 +59,7 @@ namespace trview
         XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         eye_position = XMVector3TransformCoord(eye_position, rotate) + _target;
+
         XMVECTOR up_vector = XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
         _view = XMMatrixLookAtLH(eye_position, _target, up_vector);
         _view_projection = _view * _projection;
@@ -110,5 +111,18 @@ namespace trview
         XMVECTOR eye_position = XMVectorSet(0, 0, -_zoom, 0);
         auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
         return XMVector3TransformCoord(eye_position, rotate) + _target;
+    }
+
+    DirectX::XMVECTOR Camera::up() const
+    {
+        using namespace DirectX;
+        auto rotate = XMMatrixRotationRollPitchYaw(_rotation_pitch, _rotation_yaw, 0);
+        return XMVector3TransformCoord(XMVectorSet(0, 1, 0, 1), rotate);
+    }
+
+    DirectX::XMVECTOR Camera::forward() const
+    {
+        using namespace DirectX;
+        return XMVector3Normalize(_target - position());
     }
 }

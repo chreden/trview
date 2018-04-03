@@ -598,10 +598,7 @@ namespace trview
 
             _camera.set_target(target_position);
 
-            auto view = _camera_mode == CameraMode::Orbit ? _camera.view() : _free_camera.view();
-            auto projection = _camera_mode == CameraMode::Orbit ? _camera.projection() : _free_camera.projection();
-
-            _level->render(_context, view, projection);
+            _level->render(_context, _camera_mode == CameraMode::Orbit ? static_cast<ICamera&>(_camera) : _free_camera);
         }
     }
 

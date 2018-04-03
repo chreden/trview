@@ -139,6 +139,9 @@
     <ClInclude Include="MeshVertex.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

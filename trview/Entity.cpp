@@ -4,8 +4,10 @@
 #include <stack>
 #include <algorithm>
 
+
 #include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
+#include "ICamera.h"
 #include "Mesh.h"
 
 #include <trlevel/ILevel.h>
@@ -18,22 +20,24 @@ namespace trview
     {
         using namespace DirectX;
 
-        // Set up world matrix.
-        _world = XMMatrixMultiply(
-            XMMatrixRotationY((entity.Angle / 16384.0f) * XM_PIDIV2),
-            XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f));
-
         // Extract the meshes required from the model.
         trlevel::tr_model model;
         trlevel::tr_sprite_sequence sprite;
 
         if (level.get_model_by_id(entity.TypeID, model))
         {
+            // Set up world matrix.
+            _world = XMMatrixMultiply(
+                XMMatrixRotationY((entity.Angle / 16384.0f) * XM_PIDIV2),
+                XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f));
+
             load_model(model, level, mesh_storage);
         }
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
+            _world = XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
             load_sprite(sprite, level, texture_storage);
+            _position = SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
     }
 
@@ -125,45 +129,35 @@ namespace trview
 
         _sprite_mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), texture_storage);
 
+        using namespace SimpleMath;
+
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
         float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / 1024.0f;
-        auto scale = XMMatrixScaling(object_width, object_height, 1);
+        _scale = Matrix::CreateScale(object_width, object_height, 1);
 
         // An offset to move the sprite up a bit.
-        auto offset = XMMatrixTranslation(0, object_height / 2.0f, 0);
-
-        _world = XMMatrixMultiply(XMMatrixMultiply(scale, offset), _world);
+        _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
     }
 
-    void Entity::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
     {
         using namespace DirectX;
-
-        auto view_projection = XMMatrixMultiply(view, projection);
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             auto w = XMMatrixMultiply(_world_transforms[i], _world);
-            auto wvp = XMMatrixMultiply(w, view_projection);
+            auto wvp = XMMatrixMultiply(w, camera.view_projection());
             _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
         {
-            // Disable backface culling for this.
-            auto inv = XMMatrixInverse(nullptr, view);
-            XMFLOAT4X4 inv_mat;
-            XMStoreFloat4x4(&inv_mat, inv);
-            inv_mat._41 = 0;
-            inv_mat._42 = 0;
-            inv_mat._43 = 0;
-            inv = XMLoadFloat4x4(&inv_mat);
-
-            auto world = DirectX::XMMatrixMultiply(inv, _world);
-
-            auto wvp = DirectX::XMMatrixMultiply(world, view_projection);
-
+            using namespace SimpleMath;
+            Vector3 forward = camera.forward();
+            auto billboard = SimpleMath::Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+            auto world = _scale * billboard * _offset;
+            auto wvp = world * camera.view_projection();
             _sprite_mesh->render(context, wvp, texture_storage, colour);
         }
     }

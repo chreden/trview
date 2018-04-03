@@ -2,27 +2,30 @@
 
 #include <DirectXMath.h>
 
+#include "ICamera.h"
+
 namespace trview
 {
-    class Camera
+    class Camera : public ICamera
     {
     public:
-        
-
-                            Camera(uint32_t width, uint32_t height);
+        Camera(uint32_t width, uint32_t height);
+        virtual ~Camera() = default;
         float               rotation_yaw() const;
         float               rotation_pitch() const;
         float               zoom() const;
         DirectX::XMVECTOR   target() const;
         void                set_target(const DirectX::XMVECTOR& target);
-        DirectX::XMMATRIX   view() const;
-        DirectX::XMMATRIX   projection() const;
-        DirectX::XMMATRIX   view_projection() const;
+        virtual DirectX::XMMATRIX   view() const override;
+        virtual DirectX::XMMATRIX   projection() const override;
+        virtual DirectX::XMMATRIX   view_projection() const override;
         void                set_rotation_yaw(float rotation);
         void                set_rotation_pitch(float rotation);
         void                set_zoom(float zoom);
         void                reset();
-        DirectX::XMVECTOR   position() const;
+        virtual DirectX::XMVECTOR   position() const override;
+        virtual DirectX::XMVECTOR up() const override;
+        virtual DirectX::XMVECTOR forward() const override;
     private:
         void calculate_projection_matrix(uint32_t width, uint32_t height);
         void calculate_view_matrix();

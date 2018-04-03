@@ -3,19 +3,24 @@
 #include <cstdint>
 #include <DirectXMath.h>
 
+#include "ICamera.h"
+
 namespace trview
 {
-    class FreeCamera
+    class FreeCamera : public ICamera
     {
     public:
         FreeCamera(uint32_t width, uint32_t height);
+        virtual ~FreeCamera() = default;
         void                move(DirectX::XMVECTOR movement);
-        DirectX::XMMATRIX   view() const;
-        DirectX::XMMATRIX   projection() const;
-        DirectX::XMMATRIX   view_projection() const;
+        virtual DirectX::XMMATRIX   view() const override;
+        virtual DirectX::XMMATRIX   projection() const override;
+        virtual DirectX::XMMATRIX   view_projection() const override;
 
         DirectX::XMVECTOR   target() const;
-        DirectX::XMVECTOR   position() const;
+        virtual DirectX::XMVECTOR   position() const override;
+        virtual DirectX::XMVECTOR up() const override;
+        virtual DirectX::XMVECTOR forward() const override;
         float               rotation_yaw() const;
         float               rotation_pitch() const;
         void                set_rotation_yaw(float rotation);

@@ -4,9 +4,11 @@
 #include <atlbase.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <external/DirectXTK/Inc/SimpleMath.h>
 
 #include <memory>
 #include <vector>
+
 
 namespace trlevel
 {
@@ -21,12 +23,13 @@ namespace trview
     struct IMeshStorage;
     struct ILevelTextureStorage;
     class Mesh;
+    struct ICamera;
 
     class Entity
     {
     public:
         explicit Entity(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage);
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
+        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
         uint16_t room() const;
     private:
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);
@@ -38,5 +41,9 @@ namespace trview
         std::unique_ptr<Mesh>           _sprite_mesh;
         std::vector<DirectX::XMMATRIX>  _world_transforms;
         uint16_t                        _room;
+
+        DirectX::SimpleMath::Matrix     _scale;
+        DirectX::SimpleMath::Matrix     _offset;
+        DirectX::SimpleMath::Vector3    _position;
     };
 }
