@@ -597,9 +597,17 @@ namespace trview
                 (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
 
             _camera.set_target(target_position);
-
-            _level->render(_context, _camera_mode == CameraMode::Orbit ? static_cast<ICamera&>(_camera) : _free_camera);
+            _level->render(_context, current_camera());
         }
+    }
+
+    const ICamera& Viewer::current_camera() const
+    {
+        if (_camera_mode == CameraMode::Orbit)
+        {
+            return _camera;
+        }
+        return _free_camera;
     }
 
     void Viewer::render_ui()
