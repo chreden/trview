@@ -4,7 +4,6 @@
 #include <stack>
 #include <algorithm>
 
-
 #include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
 #include "ICamera.h"
@@ -19,6 +18,7 @@ namespace trview
         : _device(device), _room(entity.Room)
     {
         using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         // Extract the meshes required from the model.
         trlevel::tr_model model;
@@ -27,23 +27,22 @@ namespace trview
         if (level.get_model_by_id(entity.TypeID, model))
         {
             // Set up world matrix.
-            _world = XMMatrixMultiply(
-                XMMatrixRotationY((entity.Angle / 16384.0f) * XM_PIDIV2),
-                XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f));
-
+            _world = Matrix::CreateRotationY((entity.Angle / 16384.0f) * XM_PIDIV2) * 
+                     Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
             load_model(model, level, mesh_storage);
         }
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
-            _world = XMMatrixTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _world = Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
             load_sprite(sprite, level, texture_storage);
-            _position = SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _position = Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
     }
 
     void Entity::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage)
     {
         using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < model.StartingMesh + model.NumMeshes; ++mesh_pointer)
         {
@@ -59,17 +58,15 @@ namespace trview
 
             auto initial_frame = frame.values[frame_offset++];
 
-            XMMATRIX initial_rotation = XMMatrixRotationRollPitchYaw(XM_2PI - initial_frame.x, initial_frame.y, XM_2PI - initial_frame.z);
-            XMMATRIX initial_frame_offset = XMMatrixTranslation(frame.offsetx / 1024.0f, frame.offsety / -1024.0f, frame.offsetz / 1024.0f);
+            Matrix initial_rotation = Matrix::CreateFromYawPitchRoll(initial_frame.y, XM_2PI - initial_frame.x, XM_2PI - initial_frame.z);
+            Matrix initial_frame_offset = Matrix::CreateTranslation(frame.offsetx / 1024.0f, frame.offsety / -1024.0f, frame.offsetz / 1024.0f);
 
-            _world = XMMatrixMultiply(XMMatrixMultiply(initial_rotation, initial_frame_offset), _world);
+            _world = initial_rotation * initial_frame_offset * _world;
 
-            XMMATRIX initial_world = XMMatrixIdentity();
-            _world_transforms.push_back(initial_world);
+            Matrix previous_world = Matrix::Identity;
+            _world_transforms.push_back(previous_world);
 
-            XMMATRIX previous_world = initial_world;
-
-            std::stack<XMMATRIX> world_stack;
+            std::stack<Matrix> world_stack;
 
             // Build the mesh tree.
             // Request one less node than we have meshes as the first mesh is at the same position as the entity.
@@ -77,7 +74,7 @@ namespace trview
 
             for (const auto& node : mesh_nodes)
             {
-                XMMATRIX parent_world = previous_world;
+                Matrix parent_world = previous_world;
 
                 if (node.Flags & 0x1)
                 {
@@ -92,9 +89,9 @@ namespace trview
                 // Get the rotation from the frames.
                 // Rotations are performed in Y, X, Z order.
                 auto rotation = frame.values[frame_offset++];
-                XMMATRIX rotation_matrix = XMMatrixRotationRollPitchYaw(XM_2PI - rotation.x, rotation.y, XM_2PI - rotation.z);
-                XMMATRIX translation_matrix = XMMatrixTranslation(node.Offset_X / 1024.0f, node.Offset_Y / -1024.0f, node.Offset_Z / 1024.0f);
-                XMMATRIX node_transform = XMMatrixMultiply(XMMatrixMultiply(rotation_matrix, translation_matrix), parent_world);
+                Matrix rotation_matrix = Matrix::CreateFromYawPitchRoll(rotation.y, XM_2PI - rotation.x, XM_2PI - rotation.z);
+                Matrix translation_matrix = Matrix::CreateTranslation(node.Offset_X / 1024.0f, node.Offset_Y / -1024.0f, node.Offset_Z / 1024.0f);
+                Matrix node_transform = rotation_matrix * translation_matrix * parent_world;
 
                 _world_transforms.push_back(node_transform);
                 previous_world = node_transform;
@@ -142,20 +139,18 @@ namespace trview
 
     void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
     {
-        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto w = XMMatrixMultiply(_world_transforms[i], _world);
-            auto wvp = XMMatrixMultiply(w, camera.view_projection());
+            auto wvp = _world_transforms[i] * _world * camera.view_projection();
             _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
         {
-            using namespace SimpleMath;
             Vector3 forward = camera.forward();
-            auto billboard = SimpleMath::Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
             auto world = _scale * billboard * _offset;
             auto wvp = world * camera.view_projection();
             _sprite_mesh->render(context, wvp, texture_storage, colour);

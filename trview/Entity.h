@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <atlbase.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
 #include <external/DirectXTK/Inc/SimpleMath.h>
 
 #include <memory>
@@ -35,15 +34,16 @@ namespace trview
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);
         void load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
-        CComPtr<ID3D11Device>           _device;
-        DirectX::XMMATRIX               _world;
-        std::vector<Mesh*>              _meshes;
-        std::unique_ptr<Mesh>           _sprite_mesh;
-        std::vector<DirectX::XMMATRIX>  _world_transforms;
-        uint16_t                        _room;
+        CComPtr<ID3D11Device>                     _device;
+        DirectX::SimpleMath::Matrix               _world;
+        std::vector<Mesh*>                        _meshes;
+        std::unique_ptr<Mesh>                     _sprite_mesh;
+        std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
+        uint16_t                                  _room;
 
-        DirectX::SimpleMath::Matrix     _scale;
-        DirectX::SimpleMath::Matrix     _offset;
-        DirectX::SimpleMath::Vector3    _position;
+        // Bits for sprites.
+        DirectX::SimpleMath::Matrix               _scale;
+        DirectX::SimpleMath::Matrix               _offset;
+        DirectX::SimpleMath::Vector3              _position;
     };
 }
