@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "Room.h"
-#include "RoomVertex.h"
+#include "MeshVertex.h"
 #include "Entity.h"
 
 #include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
 #include "ICamera.h"
+#include "Mesh.h"
 
 #include <directxmath.h>
 #include <external/DirectXTK/Inc/SimpleMath.h>
@@ -87,59 +88,16 @@ namespace trview
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        // There are no vertices.
-        if (!_vertex_buffer)
-        {
-            return;
-        }
-
         using namespace DirectX;
         using namespace SimpleMath;
 
         XMMATRIX vp = camera.view_projection();
         XMMATRIX wvp = _room_offset * vp;
 
-        D3D11_MAPPED_SUBRESOURCE mapped_resource;
-        memset(&mapped_resource, 0, sizeof(mapped_resource));
+        XMFLOAT4 colour = selected == SelectionMode::Selected ? XMFLOAT4(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? XMFLOAT4(0.4f, 0.4f, 0.4f, 1) : XMFLOAT4(0.2f, 0.2f, 0.2f, 1);
 
-        struct Data
-        {
-            DirectX::XMMATRIX matrix;
-            DirectX::XMFLOAT4 colour;
-        };
-
-        XMFLOAT4 colour = selected == SelectionMode::Selected ? XMFLOAT4( 1, 1, 1, 1) : 
-                          selected == SelectionMode::Neighbour ? XMFLOAT4(0.4f, 0.4f, 0.4f, 1) : XMFLOAT4(0.2f, 0.2f, 0.2f, 1 );
-        Data data{ wvp, colour };
-
-        context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
-        memcpy(mapped_resource.pData, &data, sizeof(data));
-        context->Unmap(_matrix_buffer, 0);
-
-        UINT stride = sizeof(room_vertex);
-        UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
-
-        for (uint32_t i = 0; i < _index_buffers.size(); ++i)
-        {
-            auto& index_buffer = _index_buffers[i];
-            if (index_buffer)
-            {
-                auto texture = texture_storage.texture(i);
-                context->PSSetShaderResources(0, 1, &texture.view.p);
-                context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
-                context->DrawIndexed(_index_counts[i], 0, 0);
-            }
-        }
-
-        if (_untextured_index_count)
-        {
-            auto texture = texture_storage.untextured();
-            context->PSSetShaderResources(0, 1, &texture.view.p);
-            context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-            context->DrawIndexed(_untextured_index_count, 0, 0);
-        }
+        _mesh->render(context, wvp, texture_storage, colour);
 
         for (const auto& mesh : _static_meshes)
         {
@@ -168,7 +126,7 @@ namespace trview
         using namespace DirectX;
 
         // Geometry.
-        std::vector<room_vertex> vertices;
+        std::vector<MeshVertex> vertices;
 
         // The indices are grouped by the number of textiles so that it can be drawn
         // as the selected texture.
@@ -261,72 +219,7 @@ namespace trview
             _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
         }
 
-        if (!vertices.empty())
-        {
-            D3D11_BUFFER_DESC vertex_desc;
-            memset(&vertex_desc, 0, sizeof(vertex_desc));
-            vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-            vertex_desc.ByteWidth = sizeof(room_vertex) * vertices.size();
-            vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-            D3D11_SUBRESOURCE_DATA vertex_data;
-            memset(&vertex_data, 0, sizeof(vertex_data));
-            vertex_data.pSysMem = &vertices[0];
-
-            HRESULT hr = _device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
-
-            for (const auto& tex_indices : indices)
-            {
-                _index_counts.push_back(tex_indices.size());
-
-                if (!tex_indices.size())
-                {
-                    _index_buffers.push_back(nullptr);
-                    continue;
-                }
-
-                D3D11_BUFFER_DESC index_desc;
-                memset(&index_desc, 0, sizeof(index_desc));
-                index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * tex_indices.size();
-                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-                D3D11_SUBRESOURCE_DATA index_data;
-                memset(&index_data, 0, sizeof(index_data));
-                index_data.pSysMem = &tex_indices[0];
-
-                CComPtr<ID3D11Buffer> index_buffer;
-                hr = _device->CreateBuffer(&index_desc, &index_data, &index_buffer);
-                _index_buffers.push_back(index_buffer);
-            }
-
-            if (!untextured_indices.empty())
-            {
-                D3D11_BUFFER_DESC index_desc;
-                memset(&index_desc, 0, sizeof(index_desc));
-                index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * untextured_indices.size();
-                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-                D3D11_SUBRESOURCE_DATA index_data;
-                memset(&index_data, 0, sizeof(index_data));
-                index_data.pSysMem = &untextured_indices[0];
-
-                CComPtr<ID3D11Buffer> index_buffer;
-                hr = _device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
-                _untextured_index_count = untextured_indices.size();
-            }
-
-            D3D11_BUFFER_DESC matrix_desc;
-            memset(&matrix_desc, 0, sizeof(matrix_desc));
-
-            matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(DirectX::XMMATRIX) + sizeof(DirectX::XMFLOAT4);
-            matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
-            matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
-        }
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, texture_storage);
 
         // Generate the bounding box for use in picking.
         XMFLOAT3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);

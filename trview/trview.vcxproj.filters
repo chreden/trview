@@ -67,9 +67,6 @@
     <ClInclude Include="RoomInfo.h">
       <Filter>View\Room</Filter>
     </ClInclude>
-    <ClInclude Include="RoomVertex.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Timer</Filter>
     </ClInclude>

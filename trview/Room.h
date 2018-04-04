@@ -24,6 +24,7 @@ namespace trview
     struct IMeshStorage;
     class Entity;
     struct ICamera;
+    class Mesh;
 
     class Room
     {
@@ -91,12 +92,7 @@ namespace trview
 
         // Rendering bits:
         CComPtr<ID3D11Device>              _device;
-        CComPtr<ID3D11Buffer>              _vertex_buffer;
-        std::vector<CComPtr<ID3D11Buffer>> _index_buffers;
-        std::vector<uint32_t>              _index_counts;
-        CComPtr<ID3D11Buffer>              _untextured_index_buffer;
-        uint32_t                           _untextured_index_count;
-        CComPtr<ID3D11Buffer>              _matrix_buffer;
+        std::unique_ptr<Mesh>              _mesh;
         DirectX::XMMATRIX                  _room_offset;
 
         // Triangle copy for ray intersection.
