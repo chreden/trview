@@ -66,6 +66,8 @@ namespace trview
         _mesh_storage = std::make_unique<MeshStorage>(_device, *_level, *_texture_storage.get());
         generate_rooms();
         generate_entities();
+
+        _transparency = std::make_unique<TransparencyBuffer>(_device);
     }
 
     Level::~Level()
@@ -159,18 +161,18 @@ namespace trview
         for (const auto& room : rooms)
         {
             room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
-            room.room->get_transparent_triangles(_transparency, room.selection_mode);
+            room.room->get_transparent_triangles(*_transparency, room.selection_mode);
         }
 
         // Sort the accumulated transparent triangles farthest to nearest.
-        _transparency.sort(camera.position());
+        _transparency->sort(camera.position());
 
         // Disable depth write.
 
         // Render the triangles that the transparency buffer has produced.
-        _transparency.render(_device, context, camera, *_texture_storage.get());
+        _transparency->render(context, camera, *_texture_storage.get());
 
-        _transparency.reset();
+        _transparency->reset();
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

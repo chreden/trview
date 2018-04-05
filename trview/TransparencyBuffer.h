@@ -39,7 +39,7 @@ namespace trview
     class TransparencyBuffer
     {
     public:
-        TransparencyBuffer() = default;
+        explicit TransparencyBuffer(CComPtr<ID3D11Device> device);
         TransparencyBuffer(const TransparencyBuffer&) = delete;
         TransparencyBuffer& operator=(const TransparencyBuffer&) = delete;
 
@@ -49,14 +49,17 @@ namespace trview
         // nearest, based on the position of the camera.
         void sort(const DirectX::SimpleMath::Vector3& eye_position);
 
-        void render(CComPtr<ID3D11Device> device, 
-            CComPtr<ID3D11DeviceContext> context, 
+        void render(CComPtr<ID3D11DeviceContext> context, 
             const ICamera& camera, 
             const ILevelTextureStorage& texture_storage);
 
         void reset();
     private:
+        void create_buffer();
+
+        CComPtr<ID3D11Device> _device;
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;
+
     };
 }

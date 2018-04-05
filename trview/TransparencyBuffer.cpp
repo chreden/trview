@@ -24,6 +24,11 @@ namespace trview
         return result;
     }
 
+    TransparencyBuffer::TransparencyBuffer(CComPtr<ID3D11Device> device)
+        : _device(device)
+    {
+    }
+
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
     {
         _triangles.push_back(triangle);
@@ -39,7 +44,7 @@ namespace trview
         });
     }
 
-    void TransparencyBuffer::render(CComPtr<ID3D11Device> device, CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void TransparencyBuffer::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_triangles.size())
         {
@@ -88,7 +93,7 @@ namespace trview
         vertex_data.pSysMem = &_vertices[0];
 
         CComPtr<ID3D11Buffer> vertex_buffer;
-        HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &vertex_buffer);
+        HRESULT hr = _device->CreateBuffer(&vertex_desc, &vertex_data, &vertex_buffer);
 
         using namespace DirectX::SimpleMath;
 
@@ -101,7 +106,7 @@ namespace trview
         matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
         CComPtr<ID3D11Buffer> matrix_buffer;
-        device->CreateBuffer(&matrix_desc, nullptr, &matrix_buffer);
+        _device->CreateBuffer(&matrix_desc, nullptr, &matrix_buffer);
 
         // Render the triangles in order (changing the texture where appropriate).
         // Actual rendering here...
@@ -141,5 +146,10 @@ namespace trview
     void TransparencyBuffer::reset()
     {
         _triangles.clear();
+    }
+
+    void TransparencyBuffer::create_buffer()
+    {
+
     }
 }
