@@ -20,11 +20,11 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3   position() const override;
         virtual DirectX::SimpleMath::Vector3 up() const override;
         virtual DirectX::SimpleMath::Vector3 forward() const override;
-        float               rotation_yaw() const;
-        float               rotation_pitch() const;
-        void                set_rotation_yaw(float rotation);
-        void                set_rotation_pitch(float rotation);
-        void                set_position(DirectX::XMVECTOR position);
+        float rotation_yaw() const;
+        float rotation_pitch() const;
+        void set_rotation_yaw(float rotation);
+        void set_rotation_pitch(float rotation);
+        void set_position(const DirectX::SimpleMath::Vector3& position);
     private:
         void calculate_projection_matrix(uint32_t width, uint32_t height);
         void calculate_view_matrix();

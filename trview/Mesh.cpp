@@ -65,11 +65,13 @@ namespace trview
                 _untextured_index_count = untextured_indices.size();
             }
 
+            using namespace DirectX::SimpleMath;
+
             D3D11_BUFFER_DESC matrix_desc;
             memset(&matrix_desc, 0, sizeof(matrix_desc));
 
             matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(DirectX::XMMATRIX) + sizeof(DirectX::XMFLOAT4);
+            matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
             matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -86,15 +88,15 @@ namespace trview
             return;
         }
 
-        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
         struct Data
         {
-            DirectX::XMMATRIX matrix;
-            DirectX::XMFLOAT4 colour;
+            Matrix matrix;
+            Color colour;
         };
 
         Data data{ world_view_projection, colour };

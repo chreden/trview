@@ -90,7 +90,7 @@ namespace trview
         return _rotation_yaw;
     }
     
-    void FreeCamera::set_position(DirectX::XMVECTOR position)
+    void FreeCamera::set_position(const DirectX::SimpleMath::Vector3& position)
     {
         _position = position;
         calculate_view_matrix();

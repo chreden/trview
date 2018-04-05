@@ -75,15 +75,15 @@ namespace trview
 
         struct Triangle
         {
-            Triangle(DirectX::XMVECTOR v0, DirectX::XMVECTOR v1, DirectX::XMVECTOR v2)
-                : v0(v0), v1(v1), v2(v2), normal(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(v1, v0), DirectX::XMVectorSubtract(v2, v0)))
+            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2)
+                : v0(v0), v1(v1), v2(v2), normal((v1 - v0).Cross(v2 - v0))
             {
             }
 
-            DirectX::XMVECTOR v0;
-            DirectX::XMVECTOR v1;
-            DirectX::XMVECTOR v2;
-            DirectX::XMVECTOR normal;
+            DirectX::SimpleMath::Vector3 v0;
+            DirectX::SimpleMath::Vector3 v1;
+            DirectX::SimpleMath::Vector3 v2;
+            DirectX::SimpleMath::Vector3 normal;
         };
 
         RoomInfo                           _info;
