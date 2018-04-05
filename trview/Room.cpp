@@ -7,6 +7,7 @@
 #include "IMeshStorage.h"
 #include "ICamera.h"
 #include "Mesh.h"
+#include "TransparencyBuffer.h"
 
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
@@ -81,6 +82,12 @@ namespace trview
         return result;
     }
 
+    // Render the level geometry and the objects contained in this room.
+    // context: The D3D context.
+    // camera: The camera to use to render.
+    // texture_storage: The textures for the level.
+    // selected: The selection mode to use to highlight geometry and objects.
+    // render_mode: The type of geometry and object geometry to render.
     void Room::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         using namespace DirectX::SimpleMath;
@@ -320,5 +327,10 @@ namespace trview
     void Room::add_entity(Entity* entity)
     {
         _entities.push_back(entity);
+    }
+
+    void Room::get_transparent_triangles(TransparencyBuffer& transparency)
+    {
+        
     }
 }

@@ -71,7 +71,25 @@ namespace trview
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
+        // Render the rooms in the level.
+        // context: The device context.
+        // camera: The current camera to render the level with.
         void render_rooms(CComPtr<ID3D11DeviceContext> context, const ICamera& camera);
+
+        struct RoomToRender
+        {
+            RoomToRender(Room* room, Room::SelectionMode selection_mode)
+                : room(room), selection_mode(selection_mode)
+            {
+            }
+
+            Room*               room{ nullptr };
+            Room::SelectionMode selection_mode;
+        };
+
+        // Get the collection of rooms that need to be renderered depending on the current view mode.
+        // Returns: The rooms to render and their selection mode.
+        std::vector<RoomToRender> get_rooms_to_render() const;
 
         // Determines whether the room is currently being rendered.
         // room: The room index.
