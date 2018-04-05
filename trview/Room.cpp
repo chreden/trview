@@ -123,7 +123,7 @@ namespace trview
 
     void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
-        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         // Geometry.
         std::vector<MeshVertex> vertices;
@@ -136,7 +136,7 @@ namespace trview
         auto get_vertex = [&](std::size_t index, const trlevel::tr3_room& room)
         {
             auto v = room.data.vertices[index].vertex;
-            return XMFLOAT3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
+            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
         };
 
         for (const auto& rect : room.data.rectangles)
@@ -144,8 +144,8 @@ namespace trview
             // What is selected inside the texture portion?
             //  The UV coordinates.
             //  Else, the face is a single colour.
-            std::array<XMFLOAT2, 4> uvs = { XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 } };
-            XMFLOAT4 colour{ 1,1,1,1 };
+            std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
+            Vector4 colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
@@ -186,8 +186,8 @@ namespace trview
             // What is selected inside the texture portion?
             //  The UV coordinates.
             //  Else, the face is a single colour.
-            std::array<XMFLOAT2, 3> uvs = { XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 } };
-            XMFLOAT4 colour{ 1,1,1,1 };
+            std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
+            Vector4 colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
@@ -222,21 +222,17 @@ namespace trview
         _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, texture_storage);
 
         // Generate the bounding box for use in picking.
-        XMFLOAT3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
-        XMFLOAT3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
+        Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
         for (const auto& v : vertices)
         {
-            if (v.pos.x < minimum.x) { minimum.x = v.pos.x; }
-            if (v.pos.y < minimum.y) { minimum.y = v.pos.y; }
-            if (v.pos.z < minimum.z) { minimum.z = v.pos.z; }
-            if (v.pos.x > maximum.x) { maximum.x = v.pos.x; }
-            if (v.pos.y > maximum.y) { maximum.y = v.pos.y; }
-            if (v.pos.z > maximum.z) { maximum.z = v.pos.z; }
+            minimum = Vector3::Min(minimum, v.pos);
+            maximum = Vector3::Max(maximum, v.pos);
         }
 
-        const XMFLOAT3 half_size((maximum.x - minimum.x) * 0.5f, (maximum.y - minimum.y) * 0.5f, (maximum.z - minimum.z) * 0.5f);
+        const Vector3 half_size = (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
-        _bounding_box.Center = XMFLOAT3(minimum.x + half_size.x, minimum.y + half_size.y, minimum.z + half_size.z);
+        _bounding_box.Center = minimum + half_size;
     }
 
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
