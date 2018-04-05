@@ -78,7 +78,7 @@ namespace trview
 
     }
 
-    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -146,7 +146,7 @@ namespace trview
 
         for (const auto& rect : mesh.textured_rectangles)
         {
-            const Vector4 colour{ 1,1,1,1 };
+            const Color colour{ 1,1,1,1 };
 
             std::array<Vector2, 4> uvs =
             {
@@ -174,7 +174,7 @@ namespace trview
 
         for (const auto& tri : mesh.textured_triangles)
         {
-            const Vector4 colour{ 1,1,1,1 };
+            const Color colour{ 1,1,1,1 };
 
             std::array<Vector2, 3> uvs =
             {

@@ -86,16 +86,16 @@ namespace trview
         return _tiles.size();
     }
 
-    DirectX::SimpleMath::Vector4 LevelTextureStorage::palette_from_texture(uint32_t texture) const
+    DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
         return palette((texture & 0x7fff) >> 8);
     }
 
-    DirectX::SimpleMath::Vector4 LevelTextureStorage::palette(uint32_t index) const
+    DirectX::SimpleMath::Color LevelTextureStorage::palette(uint32_t index) const
     {
         using namespace DirectX::SimpleMath;
         auto palette = _level.get_palette_entry_16(index);
-        return Vector4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+        return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
     Texture LevelTextureStorage::lookup(const std::string& key) const

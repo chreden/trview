@@ -8,6 +8,6 @@ namespace trview
     {
         DirectX::SimpleMath::Vector3 pos;
         DirectX::SimpleMath::Vector2 uv;
-        DirectX::SimpleMath::Vector4 colour;
+        DirectX::SimpleMath::Color colour;
     };
 }

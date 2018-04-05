@@ -135,7 +135,7 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
     }
 
-    void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
 

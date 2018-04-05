@@ -18,7 +18,7 @@ namespace trview
     public:
         StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh);
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
     private:
         float                        _rotation;
         DirectX::SimpleMath::Vector3 _position;
@@ -26,6 +26,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _visibility_max;
         DirectX::SimpleMath::Vector3 _collision_min;
         DirectX::SimpleMath::Vector3 _collision_max;
+        DirectX::SimpleMath::Matrix  _world;
         Mesh*                        _mesh;
     };
 }

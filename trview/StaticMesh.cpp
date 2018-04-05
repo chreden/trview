@@ -13,13 +13,12 @@ namespace trview
         _position(static_mesh.x / 1024.0f, static_mesh.y / -1024.0f, static_mesh.z / 1024.0f),
         _rotation(static_mesh.rotation / 16384.0f * DirectX::XM_PIDIV2)
     {
+        using namespace DirectX::SimpleMath;
+        _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        using namespace DirectX;
-        auto world_view_projection = 
-            XMMatrixMultiply(XMMatrixMultiply(XMMatrixRotationY(_rotation),XMMatrixTranslationFromVector(_position)), view_projection);
-        _mesh->render(context, world_view_projection, texture_storage, colour);
+        _mesh->render(context, _world * view_projection, texture_storage, colour);
     }
 }

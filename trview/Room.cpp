@@ -84,11 +84,10 @@ namespace trview
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        using namespace DirectX;
-        using namespace SimpleMath;
+        using namespace DirectX::SimpleMath;
 
-        XMFLOAT4 colour = selected == SelectionMode::Selected ? XMFLOAT4(1, 1, 1, 1) :
-            selected == SelectionMode::Neighbour ? XMFLOAT4(0.4f, 0.4f, 0.4f, 1) : XMFLOAT4(0.2f, 0.2f, 0.2f, 1);
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
 
         _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
 
@@ -138,7 +137,7 @@ namespace trview
             //  The UV coordinates.
             //  Else, the face is a single colour.
             std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Vector4 colour{ 1,1,1,1 };
+            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
@@ -180,7 +179,7 @@ namespace trview
             //  The UV coordinates.
             //  Else, the face is a single colour.
             std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Vector4 colour{ 1,1,1,1 };
+            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
