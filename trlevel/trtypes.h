@@ -199,9 +199,9 @@ namespace trlevel
 
     struct tr_object_texture_vert // 4 bytes
     {
-        uint8_t Xcoordinate; // 1 if Xpixel is the low value, 255 if Xpixel is the high value in the object texture
+        int8_t Xcoordinate; // 1 if Xpixel is the low value, 255 if Xpixel is the high value in the object texture
         uint8_t Xpixel;
-        uint8_t Ycoordinate; // 1 if Ypixel is the low value, 255 if Ypixel is the high value in the object texture
+        int8_t Ycoordinate; // 1 if Ypixel is the low value, 255 if Ypixel is the high value in the object texture
         uint8_t Ypixel;
     };
 
