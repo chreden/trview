@@ -41,10 +41,14 @@ namespace trview
 
     void TransparencyBuffer::render(CComPtr<ID3D11Device> device, CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
+        if (!_triangles.size())
+        {
+            return;
+        }
+
         // Convert the triangles into mesh vertexes.
         // Also will have to capture the runs of textures.
-        std::vector<MeshVertex> vertices;
-        vertices.reserve(_triangles.size() * 3);
+        _vertices.resize(_triangles.size() * 3);
 
         struct TextureRun
         {
@@ -54,9 +58,9 @@ namespace trview
 
         std::vector<TextureRun> texture_run;
 
+        std::size_t index = 0;
         for (const auto& triangle : _triangles)
         {
-            // Update texture run.
             if (texture_run.empty() || texture_run.back().texture != triangle.texture)
             {
                 texture_run.push_back({ triangle.texture, 1 });
@@ -68,7 +72,7 @@ namespace trview
 
             for (uint32_t i = 0; i < 3; ++i)
             {
-                vertices.push_back({ triangle.vertices[i], triangle.uvs[i], triangle.colour });
+                _vertices[index++]= { triangle.vertices[i], triangle.uvs[i], triangle.colour };
             }
         }
 
@@ -76,12 +80,12 @@ namespace trview
         D3D11_BUFFER_DESC vertex_desc;
         memset(&vertex_desc, 0, sizeof(vertex_desc));
         vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-        vertex_desc.ByteWidth = sizeof(MeshVertex) * vertices.size();
+        vertex_desc.ByteWidth = sizeof(MeshVertex) * _vertices.size();
         vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
         D3D11_SUBRESOURCE_DATA vertex_data;
         memset(&vertex_data, 0, sizeof(vertex_data));
-        vertex_data.pSysMem = &vertices[0];
+        vertex_data.pSysMem = &_vertices[0];
 
         CComPtr<ID3D11Buffer> vertex_buffer;
         HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &vertex_buffer);
@@ -132,5 +136,10 @@ namespace trview
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
         }
+    }
+
+    void TransparencyBuffer::reset()
+    {
+        _triangles.clear();
     }
 }

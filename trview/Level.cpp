@@ -156,20 +156,21 @@ namespace trview
 
         // Render the opaque portions of the rooms and also collect the transparent triangles
         // that need to be rendered in the second pass.
-        TransparencyBuffer transparency;
         for (const auto& room : rooms)
         {
             room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
-            room.room->get_transparent_triangles(transparency, room.selection_mode);
+            room.room->get_transparent_triangles(_transparency, room.selection_mode);
         }
 
         // Sort the accumulated transparent triangles farthest to nearest.
-        transparency.sort(camera.position());
+        _transparency.sort(camera.position());
 
         // Disable depth write.
 
         // Render the triangles that the transparency buffer has produced.
-        transparency.render(_device, context, camera, *_texture_storage.get());
+        _transparency.render(_device, context, camera, *_texture_storage.get());
+
+        _transparency.reset();
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

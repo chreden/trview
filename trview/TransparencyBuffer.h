@@ -4,6 +4,7 @@
 #include <SimpleMath.h>
 #include <atlbase.h>
 #include <d3d11.h>
+#include "MeshVertex.h"
 
 namespace trview
 {
@@ -52,7 +53,10 @@ namespace trview
             CComPtr<ID3D11DeviceContext> context, 
             const ICamera& camera, 
             const ILevelTextureStorage& texture_storage);
+
+        void reset();
     private:
         std::vector<TransparentTriangle> _triangles;
+        std::vector<MeshVertex> _vertices;
     };
 }
