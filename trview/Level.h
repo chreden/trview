@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include <vector>
 #include <unordered_map>
+#include <external/DirectXTK/Inc/SimpleMath.h>
 
 #include <trview.common/Texture.h>
 #include <trlevel/ILevel.h>
@@ -36,10 +37,10 @@ namespace trview
 
         struct PickResult
         {
-            bool              hit{ false };
-            uint32_t          room;
-            DirectX::XMVECTOR position;
-            float             distance{ FLT_MAX };
+            bool                         hit{ false };
+            uint32_t                     room;
+            DirectX::SimpleMath::Vector3 position;
+            float                        distance{ FLT_MAX };
         };
 
         // Temporary, for the room info and texture window.
@@ -56,7 +57,7 @@ namespace trview
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space. The room that was hit
         // is also specified.
-        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera);
 

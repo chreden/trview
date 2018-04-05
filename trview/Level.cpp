@@ -233,7 +233,7 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    Level::PickResult Level::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    Level::PickResult Level::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
         for (uint32_t i = 0; i < _rooms.size(); ++i)

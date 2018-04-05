@@ -557,23 +557,25 @@ namespace trview
         }
 
         using namespace DirectX;
+        using namespace SimpleMath;
 
-        auto position = _camera_mode == CameraMode::Free ? _free_camera.position() : _camera.position();
-        auto world = XMMatrixTranslationFromVector(position);
-        auto projection = _camera_mode == CameraMode::Free ? _free_camera.projection() : _camera.projection();
-        auto view = _camera_mode == CameraMode::Free ? _free_camera.view() : _camera.view();
+        const ICamera& camera = current_camera();
+        const Vector3 position = camera.position();
+        auto world = Matrix::CreateTranslation(position);
+        auto projection = camera.projection();
+        auto view = camera.view();
 
         ui::Point mouse_pos = client_cursor_position(_window);
-        auto direction = XMVector3Normalize(XMVector3Unproject(
-            XMVectorSet(mouse_pos.x, mouse_pos.y, 1, 0), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world));
+
+        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world);
+        direction.Normalize();
 
         auto result = _level->pick(position, direction);
 
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            XMFLOAT3 screen_pos;
-            XMStoreFloat3(&screen_pos, XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity()));
+            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
         }

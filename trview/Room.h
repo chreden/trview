@@ -9,6 +9,7 @@
 #include <atlbase.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include <external/DirectXTK/Inc/SimpleMath.h>
 
 #include "RoomInfo.h"
 #include <trview.common/Texture.h>
@@ -38,9 +39,9 @@ namespace trview
 
         struct PickResult
         {
-            bool              hit{ false };
-            float             distance;
-            DirectX::XMVECTOR position;
+            bool                         hit{ false };
+            float                        distance;
+            DirectX::SimpleMath::Vector3 position;
         };
 
         explicit Room(CComPtr<ID3D11Device> device, 
@@ -60,7 +61,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 

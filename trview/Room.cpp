@@ -45,15 +45,15 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    Room::PickResult Room::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    Room::PickResult Room::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
-        using namespace DirectX;
         using namespace DirectX::TriangleTests;
+        using namespace DirectX::SimpleMath;
 
         PickResult result;
 
-        auto room_offset = XMMatrixTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
-        auto transformed_position = XMVector3TransformCoord(position, room_offset);
+        auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto transformed_position = Vector3::Transform(position, room_offset);
 
         // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
         float box_distance = 0;
@@ -67,21 +67,18 @@ namespace trview
         for (const auto& tri : _collision_triangles)
         {
             float distance = 0;
-            if (XMVectorGetX(XMVector3Dot(direction, tri.normal)) < 0 &&
+            if (direction.Dot(tri.normal) < 0 &&
                 Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
             {
                 result.hit = true;
-                if (distance < result.distance)
-                {
-                    result.distance = distance;
-                }
+                result.distance = std::min(distance, result.distance);
             }
         }
 
         // Calculate the world space hit position, if there was a hit.
         if (result.hit)
         {
-            result.position = XMVectorAdd(position, XMVectorScale(direction, result.distance));
+            result.position = position + direction * result.distance;
         }
         return result;
     }
