@@ -456,13 +456,13 @@ namespace trview
         {
             if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
-                DirectX::XMVECTOR movement = DirectX::XMVectorSet(
+                DirectX::SimpleMath::Vector3 movement(
                     _free_left ? -1 : 0 + _free_right ? 1 : 0,
                     _free_up ? 1 : 0 + _free_down ? -1 : 0,
-                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
+                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0);
 
                 const float Speed = 10;
-                _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
+                _free_camera.move(movement * _timer.elapsed() * Speed);
             }
         }
     }
@@ -587,15 +587,13 @@ namespace trview
         _context->OMSetDepthStencilState(_depth_stencil_state, 1);
         if (_level)
         {
-            using namespace DirectX;
-
             // Update the view matrix based on the room selected in the room window.
             auto room = _current_level->get_room(_level->selected_room());
 
-            XMVECTOR target_position = XMVectorSet(
+            DirectX::SimpleMath::Vector3 target_position(
                 (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
                 (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
-                (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
+                (room.info.z / 1024.f) + room.num_z_sectors / 2.f);
 
             _camera.set_target(target_position);
             _level->render(_context, current_camera());

@@ -22,8 +22,7 @@ namespace trview
         const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
-        using namespace DirectX;
-        _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
 
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
@@ -88,13 +87,10 @@ namespace trview
         using namespace DirectX;
         using namespace SimpleMath;
 
-        XMMATRIX vp = camera.view_projection();
-        XMMATRIX wvp = _room_offset * vp;
-
         XMFLOAT4 colour = selected == SelectionMode::Selected ? XMFLOAT4(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? XMFLOAT4(0.4f, 0.4f, 0.4f, 1) : XMFLOAT4(0.2f, 0.2f, 0.2f, 1);
 
-        _mesh->render(context, wvp, texture_storage, colour);
+        _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
 
         for (const auto& mesh : _static_meshes)
         {

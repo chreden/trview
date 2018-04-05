@@ -92,9 +92,9 @@ namespace trview
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         // Rendering bits:
-        CComPtr<ID3D11Device>              _device;
-        std::unique_ptr<Mesh>              _mesh;
-        DirectX::XMMATRIX                  _room_offset;
+        CComPtr<ID3D11Device>       _device;
+        std::unique_ptr<Mesh>       _mesh;
+        DirectX::SimpleMath::Matrix _room_offset;
 
         // Triangle copy for ray intersection.
         std::vector<Triangle> _collision_triangles;

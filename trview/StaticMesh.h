@@ -6,6 +6,7 @@
 #include <atlbase.h>
 #include <cstdint>
 #include <DirectXMath.h>
+#include <external/DirectXTK/Inc/SimpleMath.h>
 
 namespace trview
 {
@@ -19,12 +20,12 @@ namespace trview
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
     private:
-        float             _rotation;
-        DirectX::XMVECTOR _position;
-        DirectX::XMVECTOR _visibility_min;
-        DirectX::XMVECTOR _visibility_max;
-        DirectX::XMVECTOR _collision_min;
-        DirectX::XMVECTOR _collision_max;
-        Mesh*             _mesh;
+        float                        _rotation;
+        DirectX::SimpleMath::Vector3 _position;
+        DirectX::SimpleMath::Vector3 _visibility_min;
+        DirectX::SimpleMath::Vector3 _visibility_max;
+        DirectX::SimpleMath::Vector3 _collision_min;
+        DirectX::SimpleMath::Vector3 _collision_max;
+        Mesh*                        _mesh;
     };
 }
