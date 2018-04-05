@@ -363,6 +363,12 @@ namespace trview
 
             uint32_t index = sector.floordata_index;
 
+            // There's no floordata for this sector.
+            if (index == 0)
+            {
+                continue;
+            }
+
             bool end_data = false;
 
             do
