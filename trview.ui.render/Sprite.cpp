@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include <vector>
 

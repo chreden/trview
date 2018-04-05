@@ -1,6 +1,6 @@
 #pragma once
 
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 namespace trview
 {

@@ -5,7 +5,7 @@
 #include <d3d11.h>
 #include <vector>
 #include <unordered_map>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include <trview.common/Texture.h>
 #include <trlevel/ILevel.h>

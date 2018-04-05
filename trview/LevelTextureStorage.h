@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <vector>
 #include <memory>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>

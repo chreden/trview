@@ -9,7 +9,7 @@
 #include "Mesh.h"
 
 #include <directxmath.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
 

@@ -6,7 +6,7 @@
 #include <atlbase.h>
 #include <cstdint>
 #include <DirectXMath.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 namespace trview
 {

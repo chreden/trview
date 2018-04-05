@@ -1,6 +1,6 @@
 #pragma once
 
-#include <external/DirectXTK/inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include "ITextureStorage.h"
 

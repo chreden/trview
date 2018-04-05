@@ -9,7 +9,7 @@
 #include <atlbase.h>
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include "RoomInfo.h"
 #include <trview.common/Texture.h>

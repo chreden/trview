@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <cstdint>
 
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 namespace trview
 {

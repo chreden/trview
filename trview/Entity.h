@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <atlbase.h>
 #include <d3d11.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include <memory>
 #include <vector>
