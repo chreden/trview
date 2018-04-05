@@ -72,7 +72,7 @@ namespace trview
     DirectX::XMFLOAT2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
     {
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-        return DirectX::XMFLOAT2(vert.Xpixel / 255.0f, vert.Ypixel / 255.0f);
+        return DirectX::XMFLOAT2((vert.Xpixel + vert.Xcoordinate) / 255.0f, (vert.Ypixel + vert.Ycoordinate) / 255.0f);
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
