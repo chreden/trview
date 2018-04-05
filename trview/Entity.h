@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <atlbase.h>
 #include <d3d11.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 
 #include <memory>
 #include <vector>
@@ -28,7 +28,7 @@ namespace trview
     {
     public:
         explicit Entity(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage);
-        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
+        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         uint16_t room() const;
     private:
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);

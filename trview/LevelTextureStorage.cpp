@@ -69,10 +69,11 @@ namespace trview
         return _untextured_texture;
     }
 
-    DirectX::XMFLOAT2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
+    DirectX::SimpleMath::Vector2 LevelTextureStorage::uv(uint32_t texture_index, uint32_t uv_index) const
     {
+        using namespace DirectX::SimpleMath;
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-        return DirectX::XMFLOAT2((vert.Xpixel + vert.Xcoordinate) / 255.0f, (vert.Ypixel + vert.Ycoordinate) / 255.0f);
+        return Vector2(vert.Xpixel + vert.Xcoordinate, vert.Ypixel + vert.Ycoordinate) / 255.0f;
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
@@ -85,15 +86,16 @@ namespace trview
         return _tiles.size();
     }
 
-    DirectX::XMFLOAT4 LevelTextureStorage::palette_from_texture(uint32_t texture) const
+    DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
         return palette((texture & 0x7fff) >> 8);
     }
 
-    DirectX::XMFLOAT4 LevelTextureStorage::palette(uint32_t index) const
+    DirectX::SimpleMath::Color LevelTextureStorage::palette(uint32_t index) const
     {
+        using namespace DirectX::SimpleMath;
         auto palette = _level.get_palette_entry_16(index);
-        return DirectX::XMFLOAT4(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+        return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
     Texture LevelTextureStorage::lookup(const std::string& key) const

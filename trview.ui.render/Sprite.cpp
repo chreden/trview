@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-#include <DirectXMath.h>
+#include <SimpleMath.h>
 
 #include <vector>
 
@@ -16,22 +16,22 @@ namespace trview
             {
                 struct Vertex
                 {
-                    DirectX::XMFLOAT3 pos;
-                    DirectX::XMFLOAT2 uv;
+                    DirectX::SimpleMath::Vector3 pos;
+                    DirectX::SimpleMath::Vector2 uv;
                 };
             }
 
             Sprite::Sprite(CComPtr<ID3D11Device> device, uint32_t width, uint32_t height)
                 : _device(device), _host_width(width), _host_height(height)
             {
-                using namespace DirectX;
+                using namespace DirectX::SimpleMath;
 
                 Vertex vertices[] =
                 {
-                    { XMFLOAT3(-1.0f, 1.0f, 0.0f), XMFLOAT2(0,0) },
-                    { XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT2(1,0) },
-                    { XMFLOAT3(-1.0f, -1.0f, 0.0f), XMFLOAT2(0,1) },
-                    { XMFLOAT3(1.0f, -1.0f, 0.0f), XMFLOAT2(1,1) }
+                    { Vector3(-1.0f, 1.0f, 0.0f), Vector2::Zero },
+                    { Vector3(1.0f, 1.0f, 0.0f), Vector2(1,0) },
+                    { Vector3(-1.0f, -1.0f, 0.0f), Vector2(0,1) },
+                    { Vector3(1.0f, -1.0f, 0.0f), Vector2(1,1) }
                 };
 
                 D3D11_BUFFER_DESC vertex_desc;
@@ -109,7 +109,7 @@ namespace trview
                 _host_height = height;
             }
 
-            void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::XMFLOAT4 colour)
+            void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
             {
                 update_matrix(context, x, y, width, height, colour);
 
@@ -131,39 +131,40 @@ namespace trview
 
             void Sprite::create_matrix()
             {
+                using namespace DirectX::SimpleMath;
                 D3D11_BUFFER_DESC desc;
                 memset(&desc, 0, sizeof(desc));
 
                 desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-                desc.ByteWidth = sizeof(DirectX::XMMATRIX) + sizeof(DirectX::XMFLOAT4);
+                desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
                 desc.Usage = D3D11_USAGE_DYNAMIC;
                 desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
                 _device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
             }
 
-            void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, DirectX::XMFLOAT4 colour)
+            void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
             {
-                // Need to scale the quad so that it is a certain size. Will need to know the 
-                // size of the host window as well as the size that we want the texture window
-                // to be. Then create a scaling matrix and throw it in to the shader.
-                auto scaling = DirectX::XMMatrixScaling(width / _host_width, height / _host_height, 1);
-
-                // Try to make the appropriate translation matrix to move it to the top left of the screen.
-                auto translation = DirectX::XMMatrixTranslation(-1.f + width / _host_width + (x * 2) / _host_width, 1.f - height / _host_height - (y * 2) / _host_height, 0);
-
-                scaling *= translation;
+                using namespace DirectX::SimpleMath;
 
                 D3D11_MAPPED_SUBRESOURCE mapped_resource;
                 memset(&mapped_resource, 0, sizeof(mapped_resource));
 
                 struct Data
                 {
-                    DirectX::XMMATRIX matrix;
-                    DirectX::XMFLOAT4 colour;
+                    Matrix matrix;
+                    Color colour;
                 };
 
-                Data data{ scaling, colour };
+                // Need to scale the quad so that it is a certain size. Will need to know the 
+                // size of the host window as well as the size that we want the texture window
+                // to be. Then create a scaling matrix and throw it in to the shader.
+                auto scaling = Matrix::CreateScale(width / _host_width, height / _host_height, 1);
+
+                // Try to make the appropriate translation matrix to move it to the top left of the screen.
+                auto translation = Matrix::CreateTranslation(-1.f + width / _host_width + (x * 2) / _host_width, 1.f - height / _host_height - (y * 2) / _host_height, 0);
+
+                Data data{ scaling * translation, colour };
 
                 context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
                 memcpy(mapped_resource.pData, &data, sizeof(data));

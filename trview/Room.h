@@ -7,8 +7,8 @@
 
 #include <d3d11.h>
 #include <atlbase.h>
-#include <DirectXMath.h>
 #include <DirectXCollision.h>
+#include <SimpleMath.h>
 
 #include "RoomInfo.h"
 #include <trview.common/Texture.h>
@@ -24,6 +24,7 @@ namespace trview
     struct IMeshStorage;
     class Entity;
     struct ICamera;
+    class Mesh;
 
     class Room
     {
@@ -37,9 +38,9 @@ namespace trview
 
         struct PickResult
         {
-            bool              hit{ false };
-            float             distance;
-            DirectX::XMVECTOR position;
+            bool                         hit{ false };
+            float                        distance;
+            DirectX::SimpleMath::Vector3 position;
         };
 
         explicit Room(CComPtr<ID3D11Device> device, 
@@ -59,7 +60,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
@@ -73,15 +74,15 @@ namespace trview
 
         struct Triangle
         {
-            Triangle(DirectX::XMVECTOR v0, DirectX::XMVECTOR v1, DirectX::XMVECTOR v2)
-                : v0(v0), v1(v1), v2(v2), normal(DirectX::XMVector3Cross(DirectX::XMVectorSubtract(v1, v0), DirectX::XMVectorSubtract(v2, v0)))
+            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2)
+                : v0(v0), v1(v1), v2(v2), normal((v1 - v0).Cross(v2 - v0))
             {
             }
 
-            DirectX::XMVECTOR v0;
-            DirectX::XMVECTOR v1;
-            DirectX::XMVECTOR v2;
-            DirectX::XMVECTOR normal;
+            DirectX::SimpleMath::Vector3 v0;
+            DirectX::SimpleMath::Vector3 v1;
+            DirectX::SimpleMath::Vector3 v2;
+            DirectX::SimpleMath::Vector3 normal;
         };
 
         RoomInfo                           _info;
@@ -90,14 +91,9 @@ namespace trview
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         // Rendering bits:
-        CComPtr<ID3D11Device>              _device;
-        CComPtr<ID3D11Buffer>              _vertex_buffer;
-        std::vector<CComPtr<ID3D11Buffer>> _index_buffers;
-        std::vector<uint32_t>              _index_counts;
-        CComPtr<ID3D11Buffer>              _untextured_index_buffer;
-        uint32_t                           _untextured_index_count;
-        CComPtr<ID3D11Buffer>              _matrix_buffer;
-        DirectX::XMMATRIX                  _room_offset;
+        CComPtr<ID3D11Device>       _device;
+        std::unique_ptr<Mesh>       _mesh;
+        DirectX::SimpleMath::Matrix _room_offset;
 
         // Triangle copy for ray intersection.
         std::vector<Triangle> _collision_triangles;

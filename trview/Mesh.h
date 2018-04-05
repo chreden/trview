@@ -2,7 +2,6 @@
 
 #include <atlbase.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
 #include <memory>
 
 #include <trlevel/trtypes.h>
@@ -28,7 +27,7 @@ namespace trview
              const std::vector<uint32_t>& untextured_indices,
              const ILevelTextureStorage& texture_storage);
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour);
+        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
     private:
         CComPtr<ID3D11Buffer>              _vertex_buffer;
         std::vector<uint32_t>              _index_counts;

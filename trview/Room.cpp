@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "Room.h"
-#include "RoomVertex.h"
+#include "MeshVertex.h"
 #include "Entity.h"
 
 #include "ILevelTextureStorage.h"
 #include "IMeshStorage.h"
 #include "ICamera.h"
+#include "Mesh.h"
 
-#include <directxmath.h>
-#include <external/DirectXTK/Inc/SimpleMath.h>
+#include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
 
@@ -21,8 +21,7 @@ namespace trview
         const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
     {
-        using namespace DirectX;
-        _room_offset = XMMatrixTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
 
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
@@ -44,15 +43,15 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    Room::PickResult Room::pick(DirectX::XMVECTOR position, DirectX::XMVECTOR direction) const
+    Room::PickResult Room::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
-        using namespace DirectX;
         using namespace DirectX::TriangleTests;
+        using namespace DirectX::SimpleMath;
 
         PickResult result;
 
-        auto room_offset = XMMatrixTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
-        auto transformed_position = XMVector3TransformCoord(position, room_offset);
+        auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto transformed_position = Vector3::Transform(position, room_offset);
 
         // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
         float box_distance = 0;
@@ -66,80 +65,30 @@ namespace trview
         for (const auto& tri : _collision_triangles)
         {
             float distance = 0;
-            if (XMVectorGetX(XMVector3Dot(direction, tri.normal)) < 0 &&
+            if (direction.Dot(tri.normal) < 0 &&
                 Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
             {
                 result.hit = true;
-                if (distance < result.distance)
-                {
-                    result.distance = distance;
-                }
+                result.distance = std::min(distance, result.distance);
             }
         }
 
         // Calculate the world space hit position, if there was a hit.
         if (result.hit)
         {
-            result.position = XMVectorAdd(position, XMVectorScale(direction, result.distance));
+            result.position = position + direction * result.distance;
         }
         return result;
     }
 
     void Room::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        // There are no vertices.
-        if (!_vertex_buffer)
-        {
-            return;
-        }
+        using namespace DirectX::SimpleMath;
 
-        using namespace DirectX;
-        using namespace SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
 
-        XMMATRIX vp = camera.view_projection();
-        XMMATRIX wvp = _room_offset * vp;
-
-        D3D11_MAPPED_SUBRESOURCE mapped_resource;
-        memset(&mapped_resource, 0, sizeof(mapped_resource));
-
-        struct Data
-        {
-            DirectX::XMMATRIX matrix;
-            DirectX::XMFLOAT4 colour;
-        };
-
-        XMFLOAT4 colour = selected == SelectionMode::Selected ? XMFLOAT4( 1, 1, 1, 1) : 
-                          selected == SelectionMode::Neighbour ? XMFLOAT4(0.4f, 0.4f, 0.4f, 1) : XMFLOAT4(0.2f, 0.2f, 0.2f, 1 );
-        Data data{ wvp, colour };
-
-        context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
-        memcpy(mapped_resource.pData, &data, sizeof(data));
-        context->Unmap(_matrix_buffer, 0);
-
-        UINT stride = sizeof(room_vertex);
-        UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
-
-        for (uint32_t i = 0; i < _index_buffers.size(); ++i)
-        {
-            auto& index_buffer = _index_buffers[i];
-            if (index_buffer)
-            {
-                auto texture = texture_storage.texture(i);
-                context->PSSetShaderResources(0, 1, &texture.view.p);
-                context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
-                context->DrawIndexed(_index_counts[i], 0, 0);
-            }
-        }
-
-        if (_untextured_index_count)
-        {
-            auto texture = texture_storage.untextured();
-            context->PSSetShaderResources(0, 1, &texture.view.p);
-            context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-            context->DrawIndexed(_untextured_index_count, 0, 0);
-        }
+        _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
 
         for (const auto& mesh : _static_meshes)
         {
@@ -165,10 +114,10 @@ namespace trview
 
     void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
-        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
 
         // Geometry.
-        std::vector<room_vertex> vertices;
+        std::vector<MeshVertex> vertices;
 
         // The indices are grouped by the number of textiles so that it can be drawn
         // as the selected texture.
@@ -178,7 +127,7 @@ namespace trview
         auto get_vertex = [&](std::size_t index, const trlevel::tr3_room& room)
         {
             auto v = room.data.vertices[index].vertex;
-            return XMFLOAT3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
+            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
         };
 
         for (const auto& rect : room.data.rectangles)
@@ -186,8 +135,8 @@ namespace trview
             // What is selected inside the texture portion?
             //  The UV coordinates.
             //  Else, the face is a single colour.
-            std::array<XMFLOAT2, 4> uvs = { XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 } };
-            XMFLOAT4 colour{ 1,1,1,1 };
+            std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
+            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
@@ -228,8 +177,8 @@ namespace trview
             // What is selected inside the texture portion?
             //  The UV coordinates.
             //  Else, the face is a single colour.
-            std::array<XMFLOAT2, 3> uvs = { XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 }, XMFLOAT2{ 1,1 } };
-            XMFLOAT4 colour{ 1,1,1,1 };
+            std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
+            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             // Select UVs - otherwise they will be 0.
@@ -261,89 +210,20 @@ namespace trview
             _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
         }
 
-        if (!vertices.empty())
-        {
-            D3D11_BUFFER_DESC vertex_desc;
-            memset(&vertex_desc, 0, sizeof(vertex_desc));
-            vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-            vertex_desc.ByteWidth = sizeof(room_vertex) * vertices.size();
-            vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-            D3D11_SUBRESOURCE_DATA vertex_data;
-            memset(&vertex_data, 0, sizeof(vertex_data));
-            vertex_data.pSysMem = &vertices[0];
-
-            HRESULT hr = _device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
-
-            for (const auto& tex_indices : indices)
-            {
-                _index_counts.push_back(tex_indices.size());
-
-                if (!tex_indices.size())
-                {
-                    _index_buffers.push_back(nullptr);
-                    continue;
-                }
-
-                D3D11_BUFFER_DESC index_desc;
-                memset(&index_desc, 0, sizeof(index_desc));
-                index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * tex_indices.size();
-                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-                D3D11_SUBRESOURCE_DATA index_data;
-                memset(&index_data, 0, sizeof(index_data));
-                index_data.pSysMem = &tex_indices[0];
-
-                CComPtr<ID3D11Buffer> index_buffer;
-                hr = _device->CreateBuffer(&index_desc, &index_data, &index_buffer);
-                _index_buffers.push_back(index_buffer);
-            }
-
-            if (!untextured_indices.empty())
-            {
-                D3D11_BUFFER_DESC index_desc;
-                memset(&index_desc, 0, sizeof(index_desc));
-                index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * untextured_indices.size();
-                index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-                D3D11_SUBRESOURCE_DATA index_data;
-                memset(&index_data, 0, sizeof(index_data));
-                index_data.pSysMem = &untextured_indices[0];
-
-                CComPtr<ID3D11Buffer> index_buffer;
-                hr = _device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
-                _untextured_index_count = untextured_indices.size();
-            }
-
-            D3D11_BUFFER_DESC matrix_desc;
-            memset(&matrix_desc, 0, sizeof(matrix_desc));
-
-            matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(DirectX::XMMATRIX) + sizeof(DirectX::XMFLOAT4);
-            matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
-            matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
-        }
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, texture_storage);
 
         // Generate the bounding box for use in picking.
-        XMFLOAT3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
-        XMFLOAT3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
+        Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
         for (const auto& v : vertices)
         {
-            if (v.pos.x < minimum.x) { minimum.x = v.pos.x; }
-            if (v.pos.y < minimum.y) { minimum.y = v.pos.y; }
-            if (v.pos.z < minimum.z) { minimum.z = v.pos.z; }
-            if (v.pos.x > maximum.x) { maximum.x = v.pos.x; }
-            if (v.pos.y > maximum.y) { maximum.y = v.pos.y; }
-            if (v.pos.z > maximum.z) { maximum.z = v.pos.z; }
+            minimum = Vector3::Min(minimum, v.pos);
+            maximum = Vector3::Max(maximum, v.pos);
         }
 
-        const XMFLOAT3 half_size((maximum.x - minimum.x) * 0.5f, (maximum.y - minimum.y) * 0.5f, (maximum.z - minimum.z) * 0.5f);
+        const Vector3 half_size = (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
-        _bounding_box.Center = XMFLOAT3(minimum.x + half_size.x, minimum.y + half_size.y, minimum.z + half_size.z);
+        _bounding_box.Center = minimum + half_size;
     }
 
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)

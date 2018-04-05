@@ -1,13 +1,13 @@
 #pragma once
 
-#include <DirectXMath.h>
+#include <SimpleMath.h>
 
 namespace trview
 {
     struct MeshVertex
     {
-        DirectX::XMFLOAT3 pos;
-        DirectX::XMFLOAT2 uv;
-        DirectX::XMFLOAT4 colour;
+        DirectX::SimpleMath::Vector3 pos;
+        DirectX::SimpleMath::Vector2 uv;
+        DirectX::SimpleMath::Color colour;
     };
 }

@@ -112,21 +112,19 @@ namespace trview
         float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
 
         // Generate quad.
-        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
         std::vector<MeshVertex> vertices
         {
-            { XMFLOAT3(-0.5f, 0.5f, 0), XMFLOAT2(u, v), XMFLOAT4(1,1,1,1) },
-            { XMFLOAT3(0.5f, 0.5f, 0), XMFLOAT2(u + width, v), XMFLOAT4(1,1,1,1) },
-            { XMFLOAT3(-0.5f, -0.5f, 0), XMFLOAT2(u, v + height), XMFLOAT4(1,1,1,1) },
-            { XMFLOAT3(0.5f, -0.5f, 0), XMFLOAT2(u + width, v + height), XMFLOAT4(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, -0.5f, 0), Vector2(u, v + height), Vector4(1,1,1,1) },
+            { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
         };
 
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         indices[sprite.Tile] = { 0, 1, 2, 2, 1, 3 };
 
         _sprite_mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), texture_storage);
-
-        using namespace SimpleMath;
 
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
@@ -137,7 +135,7 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
     }
 
-    void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::XMFLOAT4& colour)
+    void Entity::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
 

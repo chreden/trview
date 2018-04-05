@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <cstdint>
 
-#include <DirectXMath.h>
+#include <SimpleMath.h>
 
 namespace trview
 {
@@ -17,7 +17,7 @@ namespace trview
             public:
                 Sprite(CComPtr<ID3D11Device> device, uint32_t width, uint32_t height);
 
-                void render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::XMFLOAT4 colour = { 1,1,1,1 });
+                void render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
 
                 void set_host_size(uint32_t width, uint32_t height);
 
@@ -26,7 +26,7 @@ namespace trview
             private:
                 void create_matrix();
 
-                void update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, DirectX::XMFLOAT4 colour);
+                void update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour);
 
                 CComPtr<ID3D11Device>       _device;
                 CComPtr<ID3D11VertexShader> _vertex_shader;
