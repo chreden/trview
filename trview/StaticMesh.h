@@ -5,7 +5,6 @@
 #include <d3d11.h>
 #include <atlbase.h>
 #include <cstdint>
-#include <DirectXMath.h>
 #include <SimpleMath.h>
 
 namespace trview

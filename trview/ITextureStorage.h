@@ -2,7 +2,6 @@
 
 #include <string>
 #include <cstdint>
-#include <DirectXMath.h>
 #include <trview.common/Texture.h>
 
 namespace trview

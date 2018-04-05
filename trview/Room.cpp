@@ -8,7 +8,6 @@
 #include "ICamera.h"
 #include "Mesh.h"
 
-#include <directxmath.h>
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
