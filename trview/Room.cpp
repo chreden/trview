@@ -146,6 +146,12 @@ namespace trview
             Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
+            std::array<Vector3, 4> verts;
+            for (int i = 0; i < 4; ++i)
+            {
+                verts[i] = get_vertex(rect.vertices[i], room);
+            }
+
             // Select UVs - otherwise they will be 0.
             if (rect.texture < level.num_object_textures())
             {
@@ -153,6 +159,16 @@ namespace trview
                 {
                     uvs[i] = texture_storage.uv(rect.texture, i);
                 }
+
+                if (level.get_object_texture(rect.texture).Attribute != 0)
+                {
+                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], rect.texture);
+                    _transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], rect.texture);
+                    _collision_triangles.push_back(Triangle(verts[0], verts[1], verts[2]));
+                    _collision_triangles.push_back(Triangle(verts[2], verts[3], verts[0]));
+                    continue;
+                }
+
                 tex_indices_ptr = &indices[texture_storage.tile(rect.texture)];
             }
             else
@@ -164,7 +180,7 @@ namespace trview
             auto base = vertices.size();
             for (int i = 0; i < 4; ++i)
             {
-                vertices.push_back({ get_vertex(rect.vertices[i], room), uvs[i], colour });
+                vertices.push_back({verts[i], uvs[i], colour });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -175,8 +191,8 @@ namespace trview
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
 
-            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
-            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base + 2].pos), XMLoadFloat3(&vertices[base + 3].pos), XMLoadFloat3(&vertices[base + 0].pos)));
+            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
+            _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 3].pos, vertices[base + 0].pos));
         }
 
         for (const auto& tri : room.data.triangles)
@@ -187,6 +203,11 @@ namespace trview
             std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
             Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
+            std::array<Vector3, 3> verts;
+            for (int i = 0; i < 3; ++i)
+            {
+                verts[i] = get_vertex(tri.vertices[i], room);
+            }
 
             // Select UVs - otherwise they will be 0.
             if (tri.texture < level.num_object_textures())
@@ -195,6 +216,14 @@ namespace trview
                 {
                     uvs[i] = texture_storage.uv(tri.texture, i);
                 }
+
+                if (level.get_object_texture(tri.texture).Attribute != 0)
+                {
+                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], tri.texture);
+                    _collision_triangles.push_back(Triangle(verts[0], verts[1], verts[2]));
+                    continue;
+                }
+
                 tex_indices_ptr = &indices[texture_storage.tile(tri.texture)];
             }
             else
@@ -206,7 +235,7 @@ namespace trview
             auto base = vertices.size();
             for (int i = 0; i < 3; ++i)
             {
-                vertices.push_back({ get_vertex(tri.vertices[i], room), uvs[i], colour });
+                vertices.push_back({ verts[i], uvs[i], colour });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -214,7 +243,7 @@ namespace trview
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
 
-            _collision_triangles.push_back(Triangle(XMLoadFloat3(&vertices[base].pos), XMLoadFloat3(&vertices[base + 1].pos), XMLoadFloat3(&vertices[base + 2].pos)));
+            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
         }
 
         _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, texture_storage);
