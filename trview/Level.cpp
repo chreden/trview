@@ -160,15 +160,16 @@ namespace trview
         for (const auto& room : rooms)
         {
             room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
-            room.room->get_transparent_triangles(transparency);
+            room.room->get_transparent_triangles(transparency, room.selection_mode);
         }
 
         // Sort the accumulated transparent triangles farthest to nearest.
-        transparency.sort();
+        transparency.sort(camera.position());
 
         // Disable depth write.
 
         // Render the triangles that the transparency buffer has produced.
+        transparency.render(_device, context, camera, *_texture_storage.get());
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

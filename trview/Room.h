@@ -17,6 +17,7 @@
 #include <trlevel/ILevel.h>
 
 #include "StaticMesh.h"
+#include "TransparencyBuffer.h"
 
 namespace trview
 {
@@ -76,7 +77,7 @@ namespace trview
 
         // Add the transparent triangles to the specified transparency buffer.
         // transparency: The buffer to add triangles to.
-        void get_transparent_triangles(TransparencyBuffer& transparency);
+        void get_transparent_triangles(TransparencyBuffer& transparency, SelectionMode selected);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
@@ -111,25 +112,6 @@ namespace trview
 
         std::vector<Entity*> _entities;
 
-        // Transparency.
-        struct TransparentTriangle
-        {
-            TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
-                const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-                uint32_t texture)
-                : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture)
-            {
-            }
-
-            // The world space positions that make up the triangle.
-            DirectX::SimpleMath::Vector3 vertices[3];
-            // UV coordinates for the triangle.
-            DirectX::SimpleMath::Vector2 uvs[3];
-            // The world space centre position of the three vertices.
-            DirectX::SimpleMath::Vector3 position;
-            // The level texture index to use.
-            uint32_t                     texture;
-        };
         std::vector<TransparentTriangle> _transparent_triangles;
     };
 }

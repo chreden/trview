@@ -162,8 +162,8 @@ namespace trview
 
                 if (level.get_object_texture(rect.texture).Attribute != 0)
                 {
-                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], rect.texture);
-                    _transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], rect.texture);
+                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(rect.texture));
+                    _transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(rect.texture));
                     _collision_triangles.push_back(Triangle(verts[0], verts[1], verts[2]));
                     _collision_triangles.push_back(Triangle(verts[2], verts[3], verts[0]));
                     continue;
@@ -219,7 +219,7 @@ namespace trview
 
                 if (level.get_object_texture(tri.texture).Attribute != 0)
                 {
-                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], tri.texture);
+                    _transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(tri.texture));
                     _collision_triangles.push_back(Triangle(verts[0], verts[1], verts[2]));
                     continue;
                 }
@@ -358,8 +358,14 @@ namespace trview
         _entities.push_back(entity);
     }
 
-    void Room::get_transparent_triangles(TransparencyBuffer& transparency)
+    void Room::get_transparent_triangles(TransparencyBuffer& transparency, SelectionMode selected)
     {
-        
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        for (const auto& triangle : _transparent_triangles)
+        {
+            transparency.add(triangle.transform(_room_offset, colour));
+        }
     }
 }
