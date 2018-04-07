@@ -9,16 +9,16 @@ namespace trview
     public:
         Camera(uint32_t width, uint32_t height);
         virtual ~Camera() = default;
-        float               rotation_yaw() const;
-        float               rotation_pitch() const;
+        float rotation_yaw() const override;
+        float rotation_pitch() const override;
         float               zoom() const;
         DirectX::SimpleMath::Vector3   target() const;
         void                set_target(const DirectX::SimpleMath::Vector3& target);
         virtual DirectX::SimpleMath::Matrix   view() const override;
         virtual DirectX::SimpleMath::Matrix   projection() const override;
         virtual DirectX::SimpleMath::Matrix   view_projection() const override;
-        void                set_rotation_yaw(float rotation);
-        void                set_rotation_pitch(float rotation);
+        void                set_rotation_yaw(float rotation) override;
+        void                set_rotation_pitch(float rotation) override;
         void                set_zoom(float zoom);
         void                reset();
         virtual DirectX::SimpleMath::Vector3   position() const override;

@@ -65,6 +65,7 @@ namespace trview
         void set_highlight_mode(RoomHighlightMode mode);
         void set_selected_room(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
+        void on_camera_moved();
     private:
         void generate_rooms();
         void generate_entities();
@@ -116,5 +117,6 @@ namespace trview
         std::unique_ptr<TransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };
+        bool _resort_transparency{ true };
     };
 }

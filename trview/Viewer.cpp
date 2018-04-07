@@ -360,21 +360,15 @@ namespace trview
                 const float high_sensitivity = 25.0f;
                 const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
 
-                if (_camera_mode == CameraMode::Orbit)
-                {
-                    const float yaw = _camera.rotation_yaw() + x / sensitivity;
-                    const float pitch = _camera.rotation_pitch() + y / sensitivity;
+                ICamera& camera = current_camera();
+                const float yaw = camera.rotation_yaw() + x / sensitivity;
+                const float pitch = camera.rotation_pitch() + y / sensitivity;
+                camera.set_rotation_yaw(yaw);
+                camera.set_rotation_pitch(pitch);
 
-                    _camera.set_rotation_yaw(yaw);
-                    _camera.set_rotation_pitch(pitch);
-                }
-                else
+                if (_level)
                 {
-                    const float yaw = _free_camera.rotation_yaw() + x / sensitivity;
-                    const float pitch = _free_camera.rotation_pitch() + y / sensitivity;
-
-                    _free_camera.set_rotation_yaw(yaw);
-                    _free_camera.set_rotation_pitch(pitch);
+                    _level->on_camera_moved();
                 }
             }
 
@@ -601,6 +595,15 @@ namespace trview
     }
 
     const ICamera& Viewer::current_camera() const
+    {
+        if (_camera_mode == CameraMode::Orbit)
+        {
+            return _camera;
+        }
+        return _free_camera;
+    }
+
+    ICamera& Viewer::current_camera()
     {
         if (_camera_mode == CameraMode::Orbit)
         {

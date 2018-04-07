@@ -134,7 +134,6 @@ namespace trview
     {
         _neighbour_depth = depth;
         regenerate_neighbours();
-        _regenerate_transparency = true;
     }
 
     void Level::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
@@ -174,10 +173,14 @@ namespace trview
             }
         }
 
-        _regenerate_transparency = false;
+        if (_resort_transparency || _regenerate_transparency)
+        {
+            // Sort the accumulated transparent triangles farthest to nearest.
+            _transparency->sort(camera.position());
+            _resort_transparency = false;
+        }
 
-        // Sort the accumulated transparent triangles farthest to nearest.
-        _transparency->sort(camera.position());
+        _regenerate_transparency = false;
 
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(context, camera, *_texture_storage.get());
@@ -248,6 +251,7 @@ namespace trview
         if (_selected_room < _level->num_rooms())
         {
             generate_neighbours(_neighbours, _selected_room, _selected_room, 1, _neighbour_depth);
+            _regenerate_transparency = true;
         }
     }
 
@@ -306,5 +310,10 @@ namespace trview
             return true;
         }
         return _neighbours.find(room) != _neighbours.end();
+    }
+
+    void Level::on_camera_moved()
+    {
+        _resort_transparency = true;
     }
 }
