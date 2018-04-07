@@ -361,20 +361,17 @@ namespace trview
         using namespace DirectX::SimpleMath;
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+
         for (const auto& triangle : _mesh->transparent_triangles())
         {
             transparency.add(triangle.transform(_room_offset, colour));
         }
 
-        // Get transparent triangles from the things that are contained inside the room.
-
-        // Static meshes.
         for (const auto& static_mesh : _static_meshes)
         {
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
-        // Entities.
         for (const auto& entity : _entities)
         {
             entity->get_transparent_triangles(transparency, camera, colour);
