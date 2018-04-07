@@ -27,6 +27,7 @@ namespace trview
     TransparencyBuffer::TransparencyBuffer(CComPtr<ID3D11Device> device)
         : _device(device)
     {
+        create_matrix_buffer();
     }
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
@@ -81,35 +82,11 @@ namespace trview
             }
         }
 
-        // Generate the buffers.
-        D3D11_BUFFER_DESC vertex_desc;
-        memset(&vertex_desc, 0, sizeof(vertex_desc));
-        vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-        vertex_desc.ByteWidth = sizeof(MeshVertex) * _vertices.size();
-        vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-        D3D11_SUBRESOURCE_DATA vertex_data;
-        memset(&vertex_data, 0, sizeof(vertex_data));
-        vertex_data.pSysMem = &_vertices[0];
-
-        CComPtr<ID3D11Buffer> vertex_buffer;
-        HRESULT hr = _device->CreateBuffer(&vertex_desc, &vertex_data, &vertex_buffer);
-
-        using namespace DirectX::SimpleMath;
-
-        D3D11_BUFFER_DESC matrix_desc;
-        memset(&matrix_desc, 0, sizeof(matrix_desc));
-
-        matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
-        matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
-        matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-        CComPtr<ID3D11Buffer> matrix_buffer;
-        _device->CreateBuffer(&matrix_desc, nullptr, &matrix_buffer);
+        create_buffer();
 
         // Render the triangles in order (changing the texture where appropriate).
         // Actual rendering here...
+        using namespace DirectX::SimpleMath;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
@@ -122,15 +99,14 @@ namespace trview
 
         Data data{ camera.view_projection(), Color(1,1,1,1) };
 
-        context->Map(matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
         memcpy(mapped_resource.pData, &data, sizeof(data));
-        context->Unmap(matrix_buffer, 0);
+        context->Unmap(_matrix_buffer, 0);
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &vertex_buffer.p, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &matrix_buffer.p);
-
+        context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
+        context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 
         uint32_t sum = 0;
@@ -150,6 +126,36 @@ namespace trview
 
     void TransparencyBuffer::create_buffer()
     {
+        _vertex_buffer = nullptr;
 
+        // Generate the buffers.
+        D3D11_BUFFER_DESC vertex_desc;
+        memset(&vertex_desc, 0, sizeof(vertex_desc));
+        vertex_desc.Usage = D3D11_USAGE_DEFAULT;
+        vertex_desc.ByteWidth = sizeof(MeshVertex) * _vertices.size();
+        vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+        D3D11_SUBRESOURCE_DATA vertex_data;
+        memset(&vertex_data, 0, sizeof(vertex_data));
+        vertex_data.pSysMem = &_vertices[0];
+
+        _device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+    }
+
+    void TransparencyBuffer::create_matrix_buffer()
+    {
+        using namespace DirectX::SimpleMath;
+
+        _matrix_buffer = nullptr;
+
+        D3D11_BUFFER_DESC matrix_desc;
+        memset(&matrix_desc, 0, sizeof(matrix_desc));
+
+        matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+        matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
+        matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+        _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
     }
 }

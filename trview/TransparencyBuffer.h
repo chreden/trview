@@ -56,10 +56,13 @@ namespace trview
         void reset();
     private:
         void create_buffer();
+        void create_matrix_buffer();
 
         CComPtr<ID3D11Device> _device;
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;
 
+        CComPtr<ID3D11Buffer> _vertex_buffer;
+        CComPtr<ID3D11Buffer> _matrix_buffer;
     };
 }
