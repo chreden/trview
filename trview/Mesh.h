@@ -7,6 +7,7 @@
 #include <trlevel/trtypes.h>
 
 #include "MeshVertex.h"
+#include "TransparencyBuffer.h"
 
 namespace trview
 {
@@ -25,9 +26,12 @@ namespace trview
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
+             const std::vector<TransparentTriangle>& transparent_triangles,
              const ILevelTextureStorage& texture_storage);
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+
+        const std::vector<TransparentTriangle>& transparent_triangles() const;
     private:
         CComPtr<ID3D11Buffer>              _vertex_buffer;
         std::vector<uint32_t>              _index_counts;
@@ -35,6 +39,7 @@ namespace trview
         CComPtr<ID3D11Buffer>              _matrix_buffer;
         CComPtr<ID3D11Buffer>              _untextured_index_buffer;
         uint32_t                           _untextured_index_count;
+        std::vector<TransparentTriangle>   _transparent_triangles;
     };
 
     // Create a new mesh based on the contents of the mesh specified.

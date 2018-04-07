@@ -26,6 +26,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector2 uv(uint32_t texture_index, uint32_t uv_index) const override;
         virtual uint32_t          tile(uint32_t texture_index) const override;
         virtual uint32_t          num_tiles() const override;
+        virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
         virtual DirectX::SimpleMath::Color palette(uint32_t index) const override;
     private:

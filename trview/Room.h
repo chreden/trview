@@ -77,7 +77,7 @@ namespace trview
 
         // Add the transparent triangles to the specified transparency buffer.
         // transparency: The buffer to add triangles to.
-        void get_transparent_triangles(TransparencyBuffer& transparency, SelectionMode selected);
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
@@ -111,7 +111,5 @@ namespace trview
         DirectX::BoundingBox  _bounding_box;
 
         std::vector<Entity*> _entities;
-
-        std::vector<TransparentTriangle> _transparent_triangles;
     };
 }

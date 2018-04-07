@@ -161,7 +161,7 @@ namespace trview
         for (const auto& room : rooms)
         {
             room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
-            room.room->get_transparent_triangles(*_transparency, room.selection_mode);
+            room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
         }
 
         // Sort the accumulated transparent triangles farthest to nearest.

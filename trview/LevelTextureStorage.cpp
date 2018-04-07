@@ -86,6 +86,12 @@ namespace trview
         return _tiles.size();
     }
 
+    uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
+    {
+        return _object_textures[texture_index].Attribute;
+    }
+
+
     DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
         return palette((texture & 0x7fff) >> 8);

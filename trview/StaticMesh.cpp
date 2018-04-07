@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StaticMesh.h"
 #include "Mesh.h"
+#include "TransparencyBuffer.h"
 
 namespace trview
 {
@@ -20,5 +21,13 @@ namespace trview
     void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         _mesh->render(context, _world * view_projection, texture_storage, colour);
+    }
+
+    void StaticMesh::get_transparent_triangles(TransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)
+    {
+        for (const auto& triangle : _mesh->transparent_triangles())
+        {
+            transparency.add(triangle.transform(_world, colour));
+        }
     }
 }

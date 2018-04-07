@@ -23,6 +23,7 @@ namespace trview
     struct ILevelTextureStorage;
     class Mesh;
     struct ICamera;
+    class TransparencyBuffer;
 
     class Entity
     {
@@ -30,6 +31,8 @@ namespace trview
         explicit Entity(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage);
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         uint16_t room() const;
+
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
     private:
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);
         void load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
