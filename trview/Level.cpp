@@ -115,12 +115,13 @@ namespace trview
         {
             return;
         }
-        
+
         _room_highlight_mode = mode;
         if (_room_highlight_mode == RoomHighlightMode::Neighbours)
         {
             regenerate_neighbours();
         }
+        _regenerate_transparency = true;
     }
 
     void Level::set_selected_room(uint16_t index)
@@ -133,6 +134,7 @@ namespace trview
     {
         _neighbour_depth = depth;
         regenerate_neighbours();
+        _regenerate_transparency = true;
     }
 
     void Level::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
@@ -156,23 +158,29 @@ namespace trview
         // Only render the rooms that the current view mode includes.
         auto rooms = get_rooms_to_render();
 
+        if (_regenerate_transparency)
+        {
+            _transparency->reset();
+        }
+
         // Render the opaque portions of the rooms and also collect the transparent triangles
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
             room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
-            room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
+            if (_regenerate_transparency)
+            {
+                room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
+            }
         }
+
+        _regenerate_transparency = false;
 
         // Sort the accumulated transparent triangles farthest to nearest.
         _transparency->sort(camera.position());
 
-        // Disable depth write.
-
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(context, camera, *_texture_storage.get());
-
-        _transparency->reset();
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

@@ -114,5 +114,7 @@ namespace trview
         std::unique_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<IMeshStorage> _mesh_storage;
         std::unique_ptr<TransparencyBuffer> _transparency;
+
+        bool _regenerate_transparency{ true };
     };
 }
