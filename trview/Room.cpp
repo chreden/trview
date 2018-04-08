@@ -154,27 +154,20 @@ namespace trview
             }
 
             // Select UVs - otherwise they will be 0.
-            if (rect.texture < level.num_object_textures())
+            const uint16_t texture = rect.texture & 0x7fff;
+            for (int i = 0; i < uvs.size(); ++i)
             {
-                for (int i = 0; i < uvs.size(); ++i)
-                {
-                    uvs[i] = texture_storage.uv(rect.texture, i);
-                }
-
-                if (texture_storage.attribute(rect.texture) != 0)
-                {
-                    transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(rect.texture));
-                    transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(rect.texture));
-                    continue;
-                }
-
-                tex_indices_ptr = &indices[texture_storage.tile(rect.texture)];
+                uvs[i] = texture_storage.uv(texture, i);
             }
-            else
+
+            if (texture_storage.attribute(texture) != 0)
             {
-                tex_indices_ptr = &untextured_indices;
-                colour = texture_storage.palette_from_texture(rect.texture);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture));
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture));
+                continue;
             }
+
+            tex_indices_ptr = &indices[texture_storage.tile(texture)];
 
             auto base = vertices.size();
             for (int i = 0; i < 4; ++i)
@@ -209,26 +202,19 @@ namespace trview
             }
 
             // Select UVs - otherwise they will be 0.
-            if (tri.texture < level.num_object_textures())
+            const uint16_t texture = tri.texture & 0x7fff;
+            for (int i = 0; i < uvs.size(); ++i)
             {
-                for (int i = 0; i < uvs.size(); ++i)
-                {
-                    uvs[i] = texture_storage.uv(tri.texture, i);
-                }
-
-                if (texture_storage.attribute(tri.texture) != 0)
-                {
-                    transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(tri.texture));
-                    continue;
-                }
-
-                tex_indices_ptr = &indices[texture_storage.tile(tri.texture)];
+                uvs[i] = texture_storage.uv(texture, i);
             }
-            else
+
+            if (texture_storage.attribute(texture) != 0)
             {
-                tex_indices_ptr = &untextured_indices;
-                colour = texture_storage.palette_from_texture(tri.texture);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture));
+                continue;
             }
+
+            tex_indices_ptr = &indices[texture_storage.tile(texture)];
 
             auto base = vertices.size();
             for (int i = 0; i < 3; ++i)
