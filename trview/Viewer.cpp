@@ -378,6 +378,10 @@ namespace trview
         _mouse.mouse_wheel += [&](int16_t scroll)
         {
             _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
         };
 
         // Add some extra handlers for the user interface. These will be merged in

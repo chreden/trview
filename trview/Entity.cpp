@@ -121,16 +121,12 @@ namespace trview
             { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
         };
 
-        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        indices[sprite.Tile] = { 0, 1, 2, 2, 1, 3 };
-
         std::vector<TransparentTriangle> transparent_triangles
         {
             { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, sprite.Tile },
             { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile },
         };
 
-        // TODO: Transparency.
         _sprite_mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, texture_storage);
 
         // Scale is computed from the 'side' values.
