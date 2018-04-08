@@ -46,6 +46,7 @@ namespace trview
 
         ui::Checkbox* _orbit;
         ui::Checkbox* _free;
+        ui::Checkbox* _axis;
         ui::Slider* _sensitivity;
     };
 }
