@@ -38,8 +38,6 @@ namespace trview
             return;
         }
 
-        // Render the triangles in order (changing the texture where appropriate).
-        // Actual rendering here...
         using namespace DirectX::SimpleMath;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
