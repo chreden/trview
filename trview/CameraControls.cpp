@@ -35,6 +35,11 @@ namespace trview
 
         auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
+        auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), up, down);
+        axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
+
+        auto axis_camera_label = std::make_unique<Label>(Point(96, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Axis", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+
         // Camera section for the menu bar.
         auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
         auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
@@ -46,6 +51,7 @@ namespace trview
         // Take a copy of buttons that need to be tracked.
         _orbit = orbit_camera.get();
         _free = free_camera.get();
+        _axis = axis_camera.get();
         _sensitivity = camera_sensitivity.get();
 
         camera_sensitivity_box->add_child(std::move(camera_sensitivity));
@@ -56,6 +62,8 @@ namespace trview
         camera_window->add_child(std::move(orbit_camera_label));
         camera_window->add_child(std::move(free_camera));
         camera_window->add_child(std::move(free_camera_label));
+        camera_window->add_child(std::move(axis_camera));
+        camera_window->add_child(std::move(axis_camera_label));
         camera_window->add_child(std::move(camera_sensitivity_box));
 
         parent.add_child(std::move(camera_window));
@@ -82,5 +90,6 @@ namespace trview
     {
         _orbit->set_state(mode == CameraMode::Orbit);
         _free->set_state(mode == CameraMode::Free);
+        _axis->set_state(mode == CameraMode::Axis);
     }
 }

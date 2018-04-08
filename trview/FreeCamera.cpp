@@ -63,8 +63,15 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        _position = _position + Vector3(0, movement.y, 0) + Vector3::Transform(Vector3(movement.x, 0, movement.z), rotate);
+        if (_alignment == Alignment::Camera)
+        {
+            auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+            _position += Vector3(0, movement.y, 0) + Vector3::Transform(Vector3(movement.x, 0, movement.z), rotate);
+        }
+        else if (_alignment == Alignment::Axis)
+        {
+            _position += movement;
+        }
         calculate_view_matrix();
     }
 
@@ -110,5 +117,18 @@ namespace trview
         auto to = Vector3::Transform(Vector3(0, 0, 1), rotate);
         to.Normalize();
         return to;
+    }
+
+    // Set the camera alignment. This controls how the camera movement
+    // is applied to the current position.
+    // alignment: The new alignment mode.
+    void FreeCamera::set_alignment(Alignment alignment)
+    {
+        _alignment = alignment;
+    }
+
+    FreeCamera::Alignment camera_mode_to_alignment(CameraMode mode)
+    {
+        return mode == CameraMode::Axis ? FreeCamera::Alignment::Axis : FreeCamera::Alignment::Camera;
     }
 }

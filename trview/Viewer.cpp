@@ -285,6 +285,11 @@ namespace trview
                     set_camera_mode(CameraMode::Orbit);
                     break;
                 }
+                case 'X':
+                {
+                    set_camera_mode(CameraMode::Axis);
+                    break;
+                }
             }
         });
 
@@ -453,7 +458,7 @@ namespace trview
 
     void Viewer::update_camera()
     {
-        if (_camera_mode == CameraMode::Free)
+        if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
             if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
@@ -623,14 +628,18 @@ namespace trview
             return;
         }
 
-        _camera_mode = camera_mode;
-        if (camera_mode == CameraMode::Free)
+        if (camera_mode == CameraMode::Free || camera_mode == CameraMode::Axis)
         {
-            _free_camera.set_position(_camera.position());
-            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
-            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+            _free_camera.set_alignment(camera_mode_to_alignment(camera_mode));
+            if (_camera_mode == CameraMode::Orbit)
+            {
+                _free_camera.set_position(_camera.position());
+                _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+                _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+            }
         }
 
+        _camera_mode = camera_mode;
         _camera_controls->set_mode(camera_mode);
     }
 

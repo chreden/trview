@@ -9,6 +9,8 @@ namespace trview
         // The camera is orbiting around the centre of a room.
         Orbit,
         // The camera is free roaming - the user is in control.
-        Free
+        Free,
+        // Axis mode - the camera is free roaming but movement is constrained to the axes.
+        Axis
     };
 }
