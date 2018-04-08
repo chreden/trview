@@ -311,7 +311,9 @@ namespace trlevel
 
     struct tr3_room_staticmesh 
     {
-        uint32_t x, y, z;    // Absolute position in world coordinates
+        int32_t x;
+        int32_t y;
+        int32_t z;
         uint16_t rotation;
         uint16_t colour;     // 15-bit colour
         uint16_t unused;     // Not used!

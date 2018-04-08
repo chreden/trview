@@ -139,6 +139,12 @@
     <ClInclude Include="ICamera.h">
       <Filter>Program</Filter>
     </ClInclude>
+    <ClInclude Include="TransparencyBuffer.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparentTriangle.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -221,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="ICamera.cpp">
       <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparencyBuffer.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparentTriangle.cpp">
+      <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

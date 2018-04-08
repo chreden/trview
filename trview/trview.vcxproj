@@ -179,6 +179,8 @@
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="TextureWindow.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TransparencyBuffer.h" />
+    <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Viewer.h" />
@@ -202,6 +204,8 @@
     <ClCompile Include="Neighbours.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
+    <ClCompile Include="TransparencyBuffer.cpp" />
+    <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">

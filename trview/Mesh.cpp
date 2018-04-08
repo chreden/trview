@@ -7,7 +7,13 @@
 
 namespace trview
 {
-    Mesh::Mesh(CComPtr<ID3D11Device> device, const std::vector<MeshVertex>& vertices, const std::vector<std::vector<uint32_t>>& indices, const std::vector<uint32_t>& untextured_indices, const ILevelTextureStorage& texture_storage)
+    Mesh::Mesh(CComPtr<ID3D11Device> device, 
+        const std::vector<MeshVertex>& vertices, 
+        const std::vector<std::vector<uint32_t>>& indices, 
+        const std::vector<uint32_t>& untextured_indices, 
+        const std::vector<TransparentTriangle>& transparent_triangles, 
+        const ILevelTextureStorage& texture_storage)
+        : _transparent_triangles(transparent_triangles)
     {
         if (!vertices.empty())
         {
@@ -77,7 +83,6 @@ namespace trview
 
             device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
         }
-
     }
 
     void Mesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
@@ -131,6 +136,11 @@ namespace trview
         }
     }
 
+    const std::vector<TransparentTriangle>& Mesh::transparent_triangles() const
+    {
+        return _transparent_triangles;
+    }
+
     std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device, const ILevelTextureStorage& texture_storage)
     {
         using namespace DirectX;
@@ -139,6 +149,7 @@ namespace trview
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
         std::vector<uint32_t> untextured_indices;
+        std::vector<TransparentTriangle> transparent_triangles;
 
         auto get_vertex = [&](std::size_t index, const trlevel::tr_mesh& mesh)
         {
@@ -149,20 +160,34 @@ namespace trview
         for (const auto& rect : mesh.textured_rectangles)
         {
             const Color colour{ 1,1,1,1 };
+            const uint16_t texture = rect.texture & 0x7fff;
 
             std::array<Vector2, 4> uvs =
             {
-                texture_storage.uv(rect.texture, 0),
-                texture_storage.uv(rect.texture, 1),
-                texture_storage.uv(rect.texture, 2),
-                texture_storage.uv(rect.texture, 3)
+                texture_storage.uv(texture, 0),
+                texture_storage.uv(texture, 1),
+                texture_storage.uv(texture, 2),
+                texture_storage.uv(texture, 3)
             };
 
-            std::vector<uint32_t>* tex_indices_ptr = &indices[texture_storage.tile(rect.texture)];
+            std::array<Vector3, 4> verts;
+            for (int i = 0; i < 4; ++i)
+            {
+                verts[i] = get_vertex(rect.vertices[i], mesh);
+            }
+
+            if (texture_storage.attribute(texture) != 0)
+            {
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture));
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture));
+                continue;
+            }
+
+            std::vector<uint32_t>* tex_indices_ptr = &indices[texture_storage.tile(texture)];
             auto base = vertices.size();
             for (int i = 0; i < 4; ++i)
             {
-                vertices.push_back({ get_vertex(rect.vertices[i], mesh), uvs[i], colour });
+                vertices.push_back({ verts[i], uvs[i], colour });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -177,19 +202,32 @@ namespace trview
         for (const auto& tri : mesh.textured_triangles)
         {
             const Color colour{ 1,1,1,1 };
+            const uint16_t texture = tri.texture & 0x7fff;
 
             std::array<Vector2, 3> uvs =
             {
-                texture_storage.uv(tri.texture, 0),
-                texture_storage.uv(tri.texture, 1),
-                texture_storage.uv(tri.texture, 2),
+                texture_storage.uv(texture, 0),
+                texture_storage.uv(texture, 1),
+                texture_storage.uv(texture, 2),
             };
 
-            std::vector<uint32_t>* tex_indices_ptr = &indices[texture_storage.tile(tri.texture)];
+            std::array<Vector3, 3> verts;
+            for (int i = 0; i < 3; ++i)
+            {
+                verts[i] = get_vertex(tri.vertices[i], mesh);
+            }
+
+            if (texture_storage.attribute(texture) != 0)
+            {
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture));
+                continue;
+            }
+
+            std::vector<uint32_t>* tex_indices_ptr = &indices[texture_storage.tile(texture)];
             auto base = vertices.size();
             for (int i = 0; i < 3; ++i)
             {
-                vertices.push_back({ get_vertex(tri.vertices[i], mesh), uvs[i], colour });
+                vertices.push_back({ verts[i], uvs[i], colour });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -200,10 +238,11 @@ namespace trview
 
         for (const auto& rect : mesh.coloured_rectangles)
         {
+            const uint16_t texture = rect.texture & 0x7fff;
             auto base = vertices.size();
             for (int i = 0; i < 4; ++i)
             {
-                vertices.push_back({ get_vertex(rect.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(rect.texture) });
+                vertices.push_back({ get_vertex(rect.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(texture) });
             }
 
             untextured_indices.push_back(base);
@@ -216,10 +255,11 @@ namespace trview
 
         for (const auto& tri : mesh.coloured_triangles)
         {
+            const uint16_t texture = tri.texture & 0x7fff;
             auto base = vertices.size();
             for (int i = 0; i < 3; ++i)
             {
-                vertices.push_back({ get_vertex(tri.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(tri.texture) });
+                vertices.push_back({ get_vertex(tri.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(texture) });
             }
 
             untextured_indices.push_back(base);
@@ -227,6 +267,6 @@ namespace trview
             untextured_indices.push_back(base + 2);
         }
 
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, texture_storage);
+        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
     }
 }

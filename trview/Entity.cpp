@@ -121,10 +121,13 @@ namespace trview
             { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
         };
 
-        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        indices[sprite.Tile] = { 0, 1, 2, 2, 1, 3 };
+        std::vector<TransparentTriangle> transparent_triangles
+        {
+            { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, sprite.Tile },
+            { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile },
+        };
 
-        _sprite_mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), texture_storage);
+        _sprite_mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, texture_storage);
 
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
@@ -158,5 +161,28 @@ namespace trview
     uint16_t Entity::room() const
     {
         return _room;
+    }
+
+    void Entity::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
+        for (uint32_t i = 0; i < _meshes.size(); ++i)
+        {
+            for (const auto& triangle : _meshes[i]->transparent_triangles())
+            {
+                transparency.add(triangle.transform(_world_transforms[i] * _world, colour));
+            }
+        }
+
+        if (_sprite_mesh)
+        {
+            for (const auto& triangle : _sprite_mesh->transparent_triangles())
+            {
+                using namespace DirectX::SimpleMath;
+                Vector3 forward = camera.forward();
+                auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+                auto world = _scale * billboard * _offset;
+                transparency.add(triangle.transform(world, colour));
+            }
+        }
     }
 }

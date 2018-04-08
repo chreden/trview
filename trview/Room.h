@@ -17,6 +17,7 @@
 #include <trlevel/ILevel.h>
 
 #include "StaticMesh.h"
+#include "TransparencyBuffer.h"
 
 namespace trview
 {
@@ -25,6 +26,7 @@ namespace trview
     class Entity;
     struct ICamera;
     class Mesh;
+    class TransparencyBuffer;
 
     class Room
     {
@@ -62,11 +64,20 @@ namespace trview
         // how far along the ray the hit was and the position in world space.
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
+        // Render the level geometry and the objects contained in this room.
+        // context: The D3D context.
+        // camera: The camera to use to render.
+        // texture_storage: The textures for the level.
+        // selected: The selection mode to use to highlight geometry and objects.
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
         void add_entity(Entity* entity);
+
+        // Add the transparent triangles to the specified transparency buffer.
+        // transparency: The buffer to add triangles to.
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);

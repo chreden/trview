@@ -93,6 +93,7 @@ namespace trview
         void pick();
 
         const ICamera& current_camera() const;
+        ICamera& current_camera();
 
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;

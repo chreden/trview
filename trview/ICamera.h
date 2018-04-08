@@ -19,5 +19,13 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 up() const = 0;
 
         virtual DirectX::SimpleMath::Vector3 forward() const = 0;
+
+        virtual float rotation_yaw() const = 0;
+
+        virtual float rotation_pitch() const = 0;
+
+        virtual void set_rotation_yaw(float rotation) = 0;
+
+        virtual void set_rotation_pitch(float rotation) = 0;
     };
 }
