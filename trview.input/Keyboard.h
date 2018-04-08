@@ -18,12 +18,10 @@ namespace trview
             void register_key_up(const std::function<void(uint16_t)>& key);
             void register_char(const std::function<void(uint16_t)>& key);
             bool control() const;
-            void set_control(bool value);
         private:
             std::vector<std::function<void(uint16_t)>> _key_down_listeners;
             std::vector<std::function<void(uint16_t)>> _key_up_listeners;
             std::vector<std::function<void(uint16_t)>> _char_listeners;
-            bool _control{ false };
         };
     }
 }

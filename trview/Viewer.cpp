@@ -107,16 +107,7 @@ namespace trview
 
         _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
         _camera_controls->on_reset += [&]() { _camera.reset(); };
-        _camera_controls->on_mode_selected += [&](CameraMode mode) 
-        {
-            _camera_mode = mode;
-            if (mode == CameraMode::Free)
-            {
-                _free_camera.set_position(_camera.position());
-                _free_camera.set_rotation_yaw(_camera.rotation_yaw());
-                _free_camera.set_rotation_pitch(_camera.rotation_pitch());
-            }
-        };
+        _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
         _camera_controls->on_sensitivity_changed += [&](float value)
         {
             _camera_sensitivity = value;
@@ -284,6 +275,16 @@ namespace trview
                     _free_backward = true;
                     break;
                 }
+                case 'F':
+                {
+                    set_camera_mode(CameraMode::Free);
+                    break;
+                }
+                case 'O':
+                {
+                    set_camera_mode(CameraMode::Orbit);
+                    break;
+                }
             }
         });
 
@@ -411,11 +412,13 @@ namespace trview
             switch (key)
             {
                 case 'R':
+                {
                     if (_keyboard.control())
                     {
                         _go_to_room->toggle_visible();
                     }
                     break;
+                }
                 case VK_PRIOR:
                     cycle_back();
                     break;
@@ -495,19 +498,16 @@ namespace trview
 
     void Viewer::on_char(uint16_t character)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_char(character);
     }
 
     void Viewer::on_key_down(uint16_t key)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_down(key);
     }
 
     void Viewer::on_key_up(uint16_t key)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_up(key);
     }
 
@@ -616,6 +616,24 @@ namespace trview
         return _free_camera;
     }
 
+    void Viewer::set_camera_mode(CameraMode camera_mode)
+    {
+        if (_camera_mode == camera_mode) 
+        {
+            return;
+        }
+
+        _camera_mode = camera_mode;
+        if (camera_mode == CameraMode::Free)
+        {
+            _free_camera.set_position(_camera.position());
+            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+        }
+
+        _camera_controls->set_mode(camera_mode);
+    }
+
     void Viewer::render_ui()
     {
         _ui_renderer->render(_context);
@@ -663,6 +681,8 @@ namespace trview
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
+
+            set_camera_mode(CameraMode::Orbit);
         }
     }
 }

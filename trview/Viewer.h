@@ -94,6 +94,7 @@ namespace trview
 
         const ICamera& current_camera() const;
         ICamera& current_camera();
+        void set_camera_mode(CameraMode camera_mode);
 
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
