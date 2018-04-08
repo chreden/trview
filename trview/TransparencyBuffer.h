@@ -35,6 +35,7 @@ namespace trview
     private:
         void create_buffer();
         void create_matrix_buffer();
+        void complete();
 
         CComPtr<ID3D11Device> _device;
         std::vector<TransparentTriangle> _triangles;
@@ -42,5 +43,13 @@ namespace trview
 
         CComPtr<ID3D11Buffer> _vertex_buffer;
         CComPtr<ID3D11Buffer> _matrix_buffer;
+
+        struct TextureRun
+        {
+            uint32_t texture;
+            uint32_t count;
+        };
+
+        std::vector<TextureRun> _texture_run;
     };
 }

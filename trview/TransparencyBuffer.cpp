@@ -28,6 +28,7 @@ namespace trview
         {
             return Vector3::DistanceSquared(eye_position, l.position) > Vector3::DistanceSquared(eye_position, r.position);
         });
+        complete();
     }
 
     void TransparencyBuffer::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
@@ -36,38 +37,6 @@ namespace trview
         {
             return;
         }
-
-        // Convert the triangles into mesh vertexes.
-        // Also will have to capture the runs of textures.
-        _vertices.resize(_triangles.size() * 3);
-
-        struct TextureRun
-        {
-            uint32_t texture;
-            uint32_t count;
-        };
-
-        std::vector<TextureRun> texture_run;
-
-        std::size_t index = 0;
-        for (const auto& triangle : _triangles)
-        {
-            if (texture_run.empty() || texture_run.back().texture != triangle.texture)
-            {
-                texture_run.push_back({ triangle.texture, 1 });
-            }
-            else
-            {
-                ++texture_run.back().count;
-            }
-
-            for (uint32_t i = 0; i < 3; ++i)
-            {
-                _vertices[index++]= { triangle.vertices[i], triangle.uvs[i], triangle.colour };
-            }
-        }
-
-        create_buffer();
 
         // Render the triangles in order (changing the texture where appropriate).
         // Actual rendering here...
@@ -95,7 +64,7 @@ namespace trview
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
 
         uint32_t sum = 0;
-        for (const auto& run : texture_run)
+        for (const auto& run : _texture_run)
         {
             auto texture = texture_storage.texture(run.texture);
             context->PSSetShaderResources(0, 1, &texture.view.p);
@@ -142,5 +111,34 @@ namespace trview
         matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
         _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
+    }
+
+    void TransparencyBuffer::complete()
+    {
+        // Convert the triangles into mesh vertexes.
+        // Also will have to capture the runs of textures.
+        _vertices.resize(_triangles.size() * 3);
+
+        _texture_run.clear();
+
+        std::size_t index = 0;
+        for (const auto& triangle : _triangles)
+        {
+            if (_texture_run.empty() || _texture_run.back().texture != triangle.texture)
+            {
+                _texture_run.push_back({ triangle.texture, 1 });
+            }
+            else
+            {
+                ++_texture_run.back().count;
+            }
+
+            for (uint32_t i = 0; i < 3; ++i)
+            {
+                _vertices[index++] = { triangle.vertices[i], triangle.uvs[i], triangle.colour };
+            }
+        }
+
+        create_buffer();
     }
 }
