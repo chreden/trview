@@ -469,6 +469,11 @@ namespace trview
 
                 const float Speed = 10;
                 _free_camera.move(movement * _timer.elapsed() * Speed);
+
+                if (_level)
+                {
+                    _level->on_camera_moved();
+                }
             }
         }
     }

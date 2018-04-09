@@ -117,6 +117,5 @@ namespace trview
         std::unique_ptr<TransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };
-        bool _resort_transparency{ true };
     };
 }

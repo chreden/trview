@@ -227,8 +227,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\buttonup.png" />
-    <Image Include="resources\check_off.png" />
-    <Image Include="resources\check_on.png" />
+    <Image Include="resources\checkoff.png" />
+    <Image Include="resources\checkon.png" />
     <Image Include="resources\numericdown.png" />
     <Image Include="resources\numericup.png" />
     <Image Include="resources\tomb1.png" />
