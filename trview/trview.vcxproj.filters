@@ -35,15 +35,18 @@
     <Filter Include="View\Mesh">
       <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{bb6233b6-2218-4c3e-8934-1ef700a66256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="View\Entity">
+      <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
       <Filter>Program</Filter>
     </ClInclude>
     <ClInclude Include="TextureWindow.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomWindow.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -63,9 +66,6 @@
     </ClInclude>
     <ClInclude Include="RoomInfo.h">
       <Filter>View\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomVertex.h">
-      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Timer</Filter>
@@ -88,17 +88,11 @@
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureStorage.h">
-      <Filter>View\Textures</Filter>
     </ClInclude>
     <ClInclude Include="ITextureStorage.h">
       <Filter>View\Textures</Filter>
@@ -109,15 +103,54 @@
     <ClInclude Include="IMeshStorage.h">
       <Filter>View\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="ILevelTextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelTextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureStorage.h">
+      <Filter>View\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="UserSettings.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraControls.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMode.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Neighbours.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelInfo.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultTextures.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>View\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshVertex.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>Program</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparencyBuffer.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparentTriangle.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="TextureWindow.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomWindow.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
@@ -156,9 +189,6 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="TextureStorage.cpp">
-      <Filter>View\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>View\Textures</Filter>
     </ClCompile>
@@ -167,6 +197,42 @@
     </ClCompile>
     <ClCompile Include="IMeshStorage.cpp">
       <Filter>View\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ILevelTextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelTextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureStorage.cpp">
+      <Filter>View\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="UserSettings.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraControls.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Neighbours.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelInfo.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultTextures.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>View\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparencyBuffer.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparentTriangle.cpp">
+      <Filter>View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +247,39 @@
     <Image Include="trview.ico">
       <Filter>Win\Resource Files</Filter>
     </Image>
+    <Image Include="resources\tomb3.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\unknown.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb2.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb1.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb4.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\tomb5.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\numericdown.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\numericup.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\buttonup.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\checkon.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\checkoff.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="level_pixel_shader.hlsl">
@@ -192,5 +291,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Controls.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="texturelist.txt">
+      <Filter>Win\Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

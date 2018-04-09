@@ -26,27 +26,27 @@ namespace trview
             {
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
-                    mouse_down.raise(Button::Left);
+                    mouse_down(Button::Left);
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_UP)
                 {
-                    mouse_up.raise(Button::Left);
+                    mouse_up(Button::Left);
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
-                    mouse_down.raise(Button::Right);
+                    mouse_down(Button::Right);
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_UP)
                 {
-                    mouse_up.raise(Button::Right);
+                    mouse_up(Button::Right);
                 }
 
                 if (input.data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
                 {
-                    mouse_move.raise(input.data.mouse.lLastX, input.data.mouse.lLastY);
+                    mouse_move(input.data.mouse.lLastX, input.data.mouse.lLastY);
                 }
 
                 if (input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
@@ -56,7 +56,7 @@ namespace trview
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_WHEEL)
                 {
-                    mouse_wheel.raise(input.data.mouse.usButtonData);
+                    mouse_wheel(input.data.mouse.usButtonData);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace trview
         {
             if (_any_absolute_previous)
             {
-                mouse_move.raise(x - _absolute_x, y - _absolute_y);
+                mouse_move(x - _absolute_x, y - _absolute_y);
             }
 
             _any_absolute_previous = true;

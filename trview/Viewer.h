@@ -5,7 +5,6 @@
 #include <atlbase.h>
 #include <cstdint>
 
-#include <vector>
 #include <string>
 #include <memory>
 
@@ -16,17 +15,17 @@
 #include "Room.h"
 
 #include "TextureWindow.h"
-#include "RoomWindow.h"
 #include "GoToRoom.h"
 
 #include "Timer.h"
 #include "Camera.h"
 #include "FreeCamera.h"
 #include "Window.h"
+#include "UserSettings.h"
+#include "CameraMode.h"
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
-#include <trview.ui/Control.h>
 
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
@@ -35,14 +34,21 @@ namespace trview
 {
     namespace ui
     {
+        class Control;
         class Label;
-        class Button;
     }
+
+    class RoomNavigator;
+    class CameraControls;
+    class Neighbours;
+    class LevelInfo;
+    struct ITextureStorage;
 
     class Viewer
     {
     public:
         explicit Viewer(Window window);
+        ~Viewer();
 
         void render();
 
@@ -54,22 +60,17 @@ namespace trview
         void on_input(const RAWINPUT& input);
 
         // Old ways of doing things - will be mapped.
-        void toggle_room_window();
         void toggle_texture_window();
 
         void cycle();
-        void cycle_room();
         void cycle_back();
-        void cycle_room_back();
         void toggle_highlight();
+
+        UserSettings settings() const;
+        Event<std::list<std::wstring>> on_recent_files_changed;
     private:
         void generate_ui();
-
         void generate_tool_window();
-
-        std::unique_ptr<ui::Window> generate_neighbours_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_room_window(ui::Point point);
-        std::unique_ptr<ui::Window> generate_camera_window(ui::Point point);
 
         void initialise_d3d();
         void initialise_input();
@@ -83,7 +84,17 @@ namespace trview
         // Draw the user interface elements of the scene.
         void render_ui();
 
-        Texture create_coloured_texture(uint32_t colour);
+        void select_room(uint32_t room);
+
+        // Determines whether the cursor is over a UI element that would take any input.
+        // Returns: True if there is any UI under the cursor that would take input.
+        bool over_ui() const;
+
+        void pick();
+
+        const ICamera& current_camera() const;
+        ICamera& current_camera();
+        void set_camera_mode(CameraMode camera_mode);
 
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
@@ -96,7 +107,6 @@ namespace trview
         std::unique_ptr<TextureWindow>   _texture_window;
 
         std::unique_ptr<ui::render::FontFactory> _font_factory;
-        std::unique_ptr<RoomWindow> _room_window;
         CComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
@@ -123,23 +133,6 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
 
-        ui::Button* _room_highlight;
-        ui::Button* _room_neighbours;
-
-        // More buttons - the camera mode buttons this time.
-        ui::Button* _orbit_mode;
-        ui::Button* _free_mode;
-
-        // Camera movement.
-        // Defines the behaviour of the camera.
-        enum class CameraMode
-        {
-            // The camera is orbiting around the centre of a room.
-            Orbit,
-            // The camera is free roaming - the user is in control.
-            Free
-        };
-
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
         bool _free_left{ false };
@@ -147,6 +140,18 @@ namespace trview
         bool _free_backward{ false };
         bool _free_up{ false };
         bool _free_down{ false };
+
+        std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<CameraControls> _camera_controls;
+        std::unique_ptr<Neighbours> _neighbours;
+        std::unique_ptr<LevelInfo> _level_info;
+        std::unique_ptr<ITextureStorage> _texture_storage;
+
+        UserSettings _settings;
+
+        // Picking
+        ui::Label*        _picking;
+        Level::PickResult _current_pick;
     };
 }
 

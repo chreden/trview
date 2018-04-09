@@ -16,12 +16,12 @@ namespace trview
             return *this;
         }
 
-        void raise(Args... arguments)
+        void operator()(Args... arguments)
         {
-            for(auto& func : listeners_)
+            for (auto& func : listeners_)
             {
                 func(arguments...);
-            } 
+            }
         }
     private:
         std::vector<std::function<void(Args...)>> listeners_;
@@ -38,9 +38,9 @@ namespace trview
             return *this;
         }
 
-        void raise()
+        void operator()()
         {
-            for(auto& func : listeners_)
+            for (auto& func : listeners_)
             {
                 func();
             }

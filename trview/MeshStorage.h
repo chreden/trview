@@ -13,12 +13,12 @@
 
 namespace trview
 {
-    struct ITextureStorage;
+    struct ILevelTextureStorage;
 
     class MeshStorage final : public IMeshStorage
     {
     public:
-        explicit MeshStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const ITextureStorage& texture_storage);
+        explicit MeshStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
         virtual ~MeshStorage() = default;
 
@@ -26,7 +26,7 @@ namespace trview
     private:
         CComPtr<ID3D11Device> _device;
         const trlevel::ILevel& _level;
-        const ITextureStorage& _texture_storage;
+        const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;
     };
 }

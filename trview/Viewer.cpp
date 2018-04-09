@@ -2,59 +2,75 @@
 #include "Viewer.h"
 #include <trlevel/trlevel.h>
 
-#include <trview.common/FileLoader.h>
-
-#include <vector>
 #include <string>
-#include <sstream>
-#include <d3dcompiler.h>
+#include <algorithm>
 #include <directxmath.h>
 
+#include <trview.ui/Control.h>
+#include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
-#include <trview.ui/Button.h>
-#include <trview.ui/Slider.h>
-#include <trview.ui/NumericUpDown.h>
-#include <trview.ui/GroupBox.h>
+
+#include "RoomNavigator.h"
+#include "CameraControls.h"
+#include "Neighbours.h"
+#include "TextureStorage.h"
+#include "LevelInfo.h"
+#include "DefaultTextures.h"
 
 namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
     {
+        _settings = load_user_settings();
+
         initialise_d3d();
         initialise_input();
+
+        _texture_storage = std::make_unique<TextureStorage>(_device);
+        load_default_textures(_device, *_texture_storage.get());
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
 
         generate_ui();
     }
 
+    Viewer::~Viewer()
+    {
+        save_user_settings(_settings);
+    }
+
+    UserSettings Viewer::settings() const
+    {
+        return _settings;
+    }
+
     void Viewer::generate_ui()
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control =
-            std::make_unique<ui::Window>(
-                ui::Point(0, 0),
-                ui::Size(_window.width(), _window.height()),
-                ui::Colour(0.f, 0.f, 0.f, 0.f));
+        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(_window.width(), _window.height()), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control->set_handles_input(false);
 
         generate_tool_window();
 
-        _room_window = std::make_unique<RoomWindow>(_control.get());
         _texture_window = std::make_unique<TextureWindow>(_control.get());
         _texture_window->set_visible(false);
 
         _go_to_room = std::make_unique<GoToRoom>(_control.get());
         _go_to_room->room_selected += [&](uint32_t room)
         {
-            if (_current_level && room < _current_level->num_rooms())
-            {
-                _room_window->select_room(room);
-                _level->set_selected_room(room);
-            }
+            select_room(room);
         };
+
+        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        picking->set_visible(false);
+        picking->set_handles_input(false);
+        _picking = picking.get();
+        _control->add_child(std::move(picking));
+
+        _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
@@ -66,218 +82,41 @@ namespace trview
         using namespace ui;
 
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::Window>(
-            Point(0, 0),
-            Size(150.0f, 230.0f),
-            Colour(1.f, 0.5f, 0.5f, 0.5f));
+        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 310.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
 
-        tool_window->add_child(generate_room_window(Point(5, 5)));
-        tool_window->add_child(generate_neighbours_window(Point(5, 60)));
-        tool_window->add_child(generate_camera_window(Point(5, 115)));
-        _control->add_child(std::move(tool_window));
-    }
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
+        _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
+        _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
 
-    std::unique_ptr<ui::Window> Viewer::generate_neighbours_window(ui::Point point)
-    {
-        using namespace ui;
-
-        auto neighbours_group = std::make_unique<GroupBox>(
-            point,
-            Size(140, 50),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Neighbours");
-
-        auto room_neighbours = std::make_unique<Button>(
-            Point(12, 20),
-            Size(16, 16),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-        room_neighbours->on_click += [&]() 
-        { 
-            if (_level)
-            {
-                if (_level->highlight_mode() == Level::RoomHighlightMode::Neighbours)
-                {
-                    _level->set_highlight_mode(Level::RoomHighlightMode::None);
-                    _room_neighbours->set_state(false);
-                    _room_highlight->set_state(false);
-                }
-                else
-                {
-                    _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours);
-                    _room_neighbours->set_state(true);
-                    _room_highlight->set_state(false);
-                }
-            } 
-        };
-
-        _room_neighbours = room_neighbours.get();
-
-        auto neighbours_depth_label = std::make_unique<Label>(
-            Point(32, 20),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Depth",
-            10.f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        auto neighbours_depth = std::make_unique<NumericUpDown>(
-            Point(90, 16),
-            Size(40, 20),
-            Colour(1.0f, 0.4f, 0.4f, 0.4f),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00),
-            0,
-            10);
-        neighbours_depth->set_value(1);
-
-        neighbours_depth->on_value_changed += [&](int value) 
-        { 
+        _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
+        _neighbours->on_depth_changed += [&](int32_t value)
+        {
             if (_level)
             {
                 _level->set_neighbour_depth(value);
             }
         };
-
-        neighbours_group->add_child(std::move(room_neighbours));
-        neighbours_group->add_child(std::move(neighbours_depth_label));
-        neighbours_group->add_child(std::move(neighbours_depth));
-        return neighbours_group;
-    }
-
-    std::unique_ptr<ui::Window> Viewer::generate_room_window(ui::Point point)
-    {
-        using namespace ui;
-
-        auto rooms_groups = std::make_unique<GroupBox>(
-            point,
-            Size(140, 50),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Rooms");
-
-        auto room_highlight = std::make_unique<Button>(
-            Point(12, 20),
-            Size(16, 16),
-            create_coloured_texture(0xff0000ff),
-            create_coloured_texture(0xff00ff00));
-
-        auto room_highlight_label = std::make_unique<Label>(
-            Point(32, 20),
-            Size(40, 16),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            L"Highlight",
-            10.0f,
-            TextAlignment::Left,
-            ParagraphAlignment::Centre);
-
-        room_highlight->on_click += [&]() { toggle_highlight(); };
-        _room_highlight = room_highlight.get();
-
-        rooms_groups->add_child(std::move(room_highlight));
-        rooms_groups->add_child(std::move(room_highlight_label));
-
-        return rooms_groups;
-    }
-
-    std::unique_ptr<ui::Window> Viewer::generate_camera_window(ui::Point point)
-    {
-        using namespace ui;
-
-        auto camera_window = std::make_unique<GroupBox>(
-            point,
-            Size(140, 115),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
-            L"Camera");
-
-        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff0000ff));
-        reset_camera->on_click += [&]() { _camera.reset(); }; 
-
-        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto update_camera_mode_buttons = [&]()
+        _neighbours->on_enabled_changed += [&](bool enabled)
         {
-            auto mode = _camera_mode;
-            _orbit_mode->set_state(mode == CameraMode::Orbit);
-            _free_mode->set_state(mode == CameraMode::Free);
+            if (_level)
+            {
+                _level->set_highlight_mode(enabled ? Level::RoomHighlightMode::Neighbours : Level::RoomHighlightMode::None);
+                _room_navigator->set_highlight(false);
+            }
         };
 
-        auto orbit_camera = std::make_unique<Button>(Point(76, 20), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        orbit_camera->on_click += [&, update_camera_mode_buttons]()
-        { 
-            _camera_mode = CameraMode::Orbit;
-            update_camera_mode_buttons();
-        };
-
-        auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto free_camera = std::make_unique<Button>(Point(12, 42), Size(16, 16), create_coloured_texture(0xff0000ff), create_coloured_texture(0xff00ff00));
-        free_camera->on_click += [&, update_camera_mode_buttons]()
-        { 
-            _camera_mode = CameraMode::Free;
-            _free_camera.set_position(_camera.position());
-            _free_camera.set_rotation_yaw(_camera.rotation_yaw());
-            _free_camera.set_rotation_pitch(_camera.rotation_pitch());
-            update_camera_mode_buttons();
-        };
-
-        auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        // Camera section for the menu bar.
-        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
-        auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
-        camera_sensitivity->on_value_changed += [&](float value)
+        _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
+        _camera_controls->on_reset += [&]() { _camera.reset(); };
+        _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
+        _camera_controls->on_sensitivity_changed += [&](float value)
         {
             _camera_sensitivity = value;
+            _settings.camera_sensitivity = value;
         };
-        camera_sensitivity_box->add_child(std::move(camera_sensitivity));
+        _camera_controls->set_sensitivity(_settings.camera_sensitivity);
+        _camera_controls->set_mode(CameraMode::Orbit);
 
-        // Take a copy of buttons that need to be tracked.
-        _orbit_mode = orbit_camera.get();
-        _free_mode = free_camera.get();
-
-        camera_window->add_child(std::move(reset_camera));
-        camera_window->add_child(std::move(reset_camera_label));
-        camera_window->add_child(std::move(orbit_camera));
-        camera_window->add_child(std::move(orbit_camera_label));
-        camera_window->add_child(std::move(free_camera));
-        camera_window->add_child(std::move(free_camera_label));
-        camera_window->add_child(std::move(camera_sensitivity_box));
-
-        // Update the initial state of the buttons.
-        update_camera_mode_buttons();
-
-        return camera_window;
-    }
-
-    // Temporary function to createa a 50x50 coloured rectangle.
-    Texture Viewer::create_coloured_texture(uint32_t colour)
-    {
-        std::vector<uint32_t> data(50 * 50, colour);
-        D3D11_SUBRESOURCE_DATA srd;
-        memset(&srd, 0, sizeof(srd));
-        srd.pSysMem = &data[0];
-        srd.SysMemPitch = sizeof(uint32_t) * 50;
-
-        D3D11_TEXTURE2D_DESC desc;
-        memset(&desc, 0, sizeof(desc));
-        desc.Width = 50;
-        desc.Height = 50;
-        desc.MipLevels = desc.ArraySize = 1;
-        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        desc.SampleDesc.Count = 1;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = 0;
-
-        Texture tex;
-        _device->CreateTexture2D(&desc, &srd, &tex.texture);
-        _device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
-        return tex;
+        _control->add_child(std::move(tool_window));
     }
 
     void Viewer::initialise_d3d()
@@ -436,6 +275,21 @@ namespace trview
                     _free_backward = true;
                     break;
                 }
+                case 'F':
+                {
+                    set_camera_mode(CameraMode::Free);
+                    break;
+                }
+                case 'O':
+                {
+                    set_camera_mode(CameraMode::Orbit);
+                    break;
+                }
+                case 'X':
+                {
+                    set_camera_mode(CameraMode::Axis);
+                    break;
+                }
             }
         });
 
@@ -479,7 +333,16 @@ namespace trview
         using namespace input;
         _mouse.mouse_down += [&](Mouse::Button button)
         {
-            if (button == Mouse::Button::Right)
+            if (button == Mouse::Button::Left)
+            {
+                if (!over_ui() && _picking->visible() && _current_pick.hit)
+                {
+                    select_room(_current_pick.room);
+                    _camera_mode = CameraMode::Orbit;
+                    _camera_controls->set_mode(CameraMode::Orbit);
+                }
+            }
+            else if (button == Mouse::Button::Right)
             {
                 _rotating = true;
             }
@@ -491,12 +354,8 @@ namespace trview
             {
                 _rotating = false;
             }
-            
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
 
-            _control->mouse_up(ui::Point(cursor_pos.x, cursor_pos.y));
+            _control->mouse_up(client_cursor_position(_window));
         };
 
         _mouse.mouse_move += [&](long x, long y)
@@ -507,47 +366,36 @@ namespace trview
                 const float high_sensitivity = 25.0f;
                 const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
 
-                if (_camera_mode == CameraMode::Orbit)
-                {
-                    const float yaw = _camera.rotation_yaw() + x / sensitivity;
-                    const float pitch = _camera.rotation_pitch() + y / sensitivity;
+                ICamera& camera = current_camera();
+                const float yaw = camera.rotation_yaw() + x / sensitivity;
+                const float pitch = camera.rotation_pitch() + y / sensitivity;
+                camera.set_rotation_yaw(yaw);
+                camera.set_rotation_pitch(pitch);
 
-                    _camera.set_rotation_yaw(yaw);
-                    _camera.set_rotation_pitch(pitch);
-                }
-                else
+                if (_level)
                 {
-                    const float yaw = _free_camera.rotation_yaw() + x / sensitivity;
-                    const float pitch = _free_camera.rotation_pitch() + y / sensitivity;
-
-                    _free_camera.set_rotation_yaw(yaw);
-                    _free_camera.set_rotation_pitch(pitch);
+                    _level->on_camera_moved();
                 }
             }
 
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
-
-            _control->mouse_move(ui::Point(cursor_pos.x, cursor_pos.y));
+            _control->mouse_move(client_cursor_position(_window));
         };
 
         _mouse.mouse_wheel += [&](int16_t scroll)
         {
             _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
         };
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
         _mouse.mouse_down += [&](Mouse::Button button)
         {
-            POINT cursor_pos;
-            GetCursorPos(&cursor_pos);
-            ScreenToClient(_window.window(), &cursor_pos);
-
-            // The client mouse coordinate is already relative to the root windot (at
-            // present).
-            _control->mouse_down(ui::Point(cursor_pos.x, cursor_pos.y));
+            // The client mouse coordinate is already relative to the root window (at present).
+            _control->mouse_down(client_cursor_position(_window));
         };
     }
 
@@ -569,25 +417,18 @@ namespace trview
             switch (key)
             {
                 case 'R':
+                {
                     if (_keyboard.control())
                     {
                         _go_to_room->toggle_visible();
                     }
                     break;
+                }
                 case VK_PRIOR:
                     cycle_back();
                     break;
                 case VK_NEXT:
                     cycle();
-                    break;
-                case VK_HOME:
-                    cycle_room_back();
-                    break;
-                case VK_END:
-                    cycle_room();
-                    break;
-                case VK_F1:
-                    toggle_room_window();
                     break;
                 case VK_F2:
                     toggle_texture_window();
@@ -617,51 +458,66 @@ namespace trview
 
     void Viewer::update_camera()
     {
-        if (_camera_mode == CameraMode::Free)
+        if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
             if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
-                DirectX::XMVECTOR movement = DirectX::XMVectorSet(
+                DirectX::SimpleMath::Vector3 movement(
                     _free_left ? -1 : 0 + _free_right ? 1 : 0,
                     _free_up ? 1 : 0 + _free_down ? -1 : 0,
-                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0, 0);
+                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0);
 
-                const float Speed = 20;
-                _free_camera.move(DirectX::XMVectorScale(movement, _timer.elapsed() * Speed));
+                const float Speed = 10;
+                _free_camera.move(movement * _timer.elapsed() * Speed);
+
+                if (_level)
+                {
+                    _level->on_camera_moved();
+                }
             }
         }
     }
 
     void Viewer::open(const std::wstring filename)
     {
+        _settings.add_recent_file(filename);
+        on_recent_files_changed(_settings.recent_files);
+        save_user_settings(_settings);
+
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
 
         // Set up the views.
+        auto rooms = _level->room_info();
         _texture_window->set_textures(_level->level_textures());
-        _room_window->set_rooms(_level->room_info());
         _camera.reset();
 
         // Reset UI buttons
-        _room_highlight->set_state(false);
-        _room_neighbours->set_state(false);
+        _room_navigator->set_max_rooms(rooms.size());
+        _room_navigator->set_highlight(false);
+        select_room(0);
+
+        _neighbours->set_enabled(false);
+
+        // Strip the last part of the path away.
+        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+        _level_info->set_level(name);
+        _level_info->set_level_version(_current_level->get_version());
     }
 
     void Viewer::on_char(uint16_t character)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_char(character);
     }
 
     void Viewer::on_key_down(uint16_t key)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_down(key);
     }
 
     void Viewer::on_key_up(uint16_t key)
     {
-        _keyboard.set_control(GetKeyState(VK_CONTROL));
         _keyboard.on_key_up(key);
     }
 
@@ -675,6 +531,8 @@ namespace trview
         _timer.update();
 
         update_camera();
+
+        pick();
 
         _context->OMSetRenderTargets(1, &_render_target_view.p, _depth_stencil_view);
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
@@ -691,27 +549,103 @@ namespace trview
         _swap_chain->Present(1, 0);
     }
 
+    // Determines whether the cursor is over a UI element that would take any input.
+    // Returns: True if there is any UI under the cursor that would take input.
+    bool Viewer::over_ui() const
+    {
+        return _control->is_mouse_over(client_cursor_position(_window));
+    }
+
+    void Viewer::pick()
+    {
+        if (!_level || window_is_minimised(_window) || over_ui() || cursor_outside_window(_window))
+        {
+            _picking->set_visible(false);
+            return;
+        }
+
+        using namespace DirectX;
+        using namespace SimpleMath;
+
+        const ICamera& camera = current_camera();
+        const Vector3 position = camera.position();
+        auto world = Matrix::CreateTranslation(position);
+        auto projection = camera.projection();
+        auto view = camera.view();
+
+        ui::Point mouse_pos = client_cursor_position(_window);
+
+        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world);
+        direction.Normalize();
+
+        auto result = _level->pick(position, direction);
+
+        _picking->set_visible(result.hit);
+        if (result.hit)
+        {
+            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity());
+            _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
+            _picking->set_text(std::to_wstring(result.room));
+        }
+        _current_pick = result;
+    }
+
     void Viewer::render_scene()
     {
         _context->OMSetDepthStencilState(_depth_stencil_state, 1);
         if (_level)
         {
-            using namespace DirectX;
-
             // Update the view matrix based on the room selected in the room window.
-            auto room = _current_level->get_room(_room_window->selected_room());
+            auto room = _current_level->get_room(_level->selected_room());
 
-            XMVECTOR target_position = XMVectorSet(
+            DirectX::SimpleMath::Vector3 target_position(
                 (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
                 (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
-                (room.info.z / 1024.f) + room.num_z_sectors / 2.f, 0);
+                (room.info.z / 1024.f) + room.num_z_sectors / 2.f);
 
             _camera.set_target(target_position);
-            
-            auto view_projection = _camera_mode == CameraMode::Orbit ? _camera.view_projection() : _free_camera.view_projection();
-
-            _level->render(_context, view_projection);
+            _level->render(_context, current_camera());
         }
+    }
+
+    const ICamera& Viewer::current_camera() const
+    {
+        if (_camera_mode == CameraMode::Orbit)
+        {
+            return _camera;
+        }
+        return _free_camera;
+    }
+
+    ICamera& Viewer::current_camera()
+    {
+        if (_camera_mode == CameraMode::Orbit)
+        {
+            return _camera;
+        }
+        return _free_camera;
+    }
+
+    void Viewer::set_camera_mode(CameraMode camera_mode)
+    {
+        if (_camera_mode == camera_mode) 
+        {
+            return;
+        }
+
+        if (camera_mode == CameraMode::Free || camera_mode == CameraMode::Axis)
+        {
+            _free_camera.set_alignment(camera_mode_to_alignment(camera_mode));
+            if (_camera_mode == CameraMode::Orbit)
+            {
+                _free_camera.set_position(_camera.position());
+                _free_camera.set_rotation_yaw(_camera.rotation_yaw());
+                _free_camera.set_rotation_pitch(_camera.rotation_pitch());
+            }
+        }
+
+        _camera_mode = camera_mode;
+        _camera_controls->set_mode(camera_mode);
     }
 
     void Viewer::render_ui()
@@ -724,32 +658,9 @@ namespace trview
         _texture_window->cycle();
     }
 
-    void Viewer::cycle_room()
-    {
-        _room_window->cycle();
-        if (_level)
-        {
-            _level->set_selected_room(_room_window->selected_room());
-        }
-    }
-
     void Viewer::cycle_back()
     {
         _texture_window->cycle_back();
-    }
-
-    void Viewer::cycle_room_back()
-    {
-        _room_window->cycle_back();
-        if (_level)
-        {
-            _level->set_selected_room(_room_window->selected_room());
-        }
-    }
-
-    void Viewer::toggle_room_window()
-    {
-        _room_window->toggle_visibility();
     }
 
     void Viewer::toggle_texture_window()
@@ -764,15 +675,28 @@ namespace trview
             if (_level->highlight_mode() == Level::RoomHighlightMode::Highlight)
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::None);
-                _room_highlight->set_state(false);
-                _room_neighbours->set_state(false);
+                _room_navigator->set_highlight(false);
+                _neighbours->set_enabled(false);
             }
             else
             {
                 _level->set_highlight_mode(Level::RoomHighlightMode::Highlight);
-                _room_highlight->set_state(true);
-                _room_neighbours->set_state(false);
+                _room_navigator->set_highlight(true);
+                _neighbours->set_enabled(false);
             }
+        }
+    }
+
+    void Viewer::select_room(uint32_t room)
+    {
+        if (_current_level && room < _current_level->num_rooms())
+        {
+            _level->set_selected_room(room);
+
+            _room_navigator->set_selected_room(room);
+            _room_navigator->set_room_info(_level->room_info(room));
+
+            set_camera_mode(CameraMode::Orbit);
         }
     }
 }

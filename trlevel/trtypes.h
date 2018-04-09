@@ -199,9 +199,9 @@ namespace trlevel
 
     struct tr_object_texture_vert // 4 bytes
     {
-        uint8_t Xcoordinate; // 1 if Xpixel is the low value, 255 if Xpixel is the high value in the object texture
+        int8_t Xcoordinate; // 1 if Xpixel is the low value, 255 if Xpixel is the high value in the object texture
         uint8_t Xpixel;
-        uint8_t Ycoordinate; // 1 if Ypixel is the low value, 255 if Ypixel is the high value in the object texture
+        int8_t Ycoordinate; // 1 if Ypixel is the low value, 255 if Ypixel is the high value in the object texture
         uint8_t Ypixel;
     };
 
@@ -311,7 +311,9 @@ namespace trlevel
 
     struct tr3_room_staticmesh 
     {
-        uint32_t x, y, z;    // Absolute position in world coordinates
+        int32_t x;
+        int32_t y;
+        int32_t z;
         uint16_t rotation;
         uint16_t colour;     // 15-bit colour
         uint16_t unused;     // Not used!
@@ -360,6 +362,19 @@ namespace trlevel
         std::vector<tr_face3>  textured_triangles;
         std::vector<tr_face4>  coloured_rectangles;
         std::vector<tr_face3>  coloured_triangles;
+    };
+
+    struct tr2_frame_rotation
+    {
+        float x{ 0.0f }, y{ 0.0f }, z{ 0.0f };
+    };
+
+    struct tr2_frame
+    {
+        int16_t bb1x, bb1y, bb1z;
+        int16_t bb2x, bb2y, bb2z;
+        int16_t offsetx, offsety, offsetz;
+        std::vector<tr2_frame_rotation> values;
     };
 
 #pragma pack(pop)

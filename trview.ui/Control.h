@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <trview.common/Event.h>
 
 #include "Point.h"
 #include "Size.h"
@@ -46,7 +47,7 @@ namespace trview
 
             // Add the specified control as a child element of this control.
             // Sets the parent element of the child to be this element.
-            void add_child(std::unique_ptr<Control>&& child_element);
+            virtual void add_child(std::unique_ptr<Control>&& child_element);
 
             // Get the elements that are direct children of this element.
             // To add a new child, use add_child.
@@ -61,6 +62,23 @@ namespace trview
             // Process a mouse_move event at the position specified.
             // Returns whether the mouse move was handled.
             bool mouse_move(Point position);
+
+            // Determines whether the mouse is over the element or any child elements that are interested
+            // in taking input.
+            // position: The mouse position.
+            // Returns: True if the control or any child elements are under the cursor.
+            bool is_mouse_over(Point position) const;
+
+            // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
+            // value: Whether the control handles input.
+            void set_handles_input(bool value);
+
+            // Set the size of the control.
+            // size: The new size of the control.
+            void set_size(Size size);
+
+            // Event raised when the size of the control has changed.
+            Event<Size> on_size_changed;
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.
@@ -75,11 +93,12 @@ namespace trview
             Control* focus_control() const;
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
-            Control* _parent;
-            Control* _focus_control;
+            Control* _parent{ nullptr };
+            Control* _focus_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;
+            bool     _handles_input{ true };
         };
     }
 }

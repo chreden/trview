@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    MeshStorage::MeshStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const ITextureStorage& texture_storage)
+    MeshStorage::MeshStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
         : _device(device), _level(level), _texture_storage(texture_storage)
     {
     }
@@ -17,7 +17,7 @@ namespace trview
         }
 
         auto level_mesh = _level.get_mesh_by_pointer(mesh_pointer);
-        auto new_mesh = std::make_unique<Mesh>(level_mesh, _device, _texture_storage);
+        auto new_mesh = create_mesh(level_mesh, _device, _texture_storage);
         Mesh* mesh = new_mesh.get();
         _meshes.insert({ mesh_pointer, std::move(new_mesh) });
         return mesh;

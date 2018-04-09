@@ -1,6 +1,6 @@
 #include "Font.h"
+#include <trview.ui/Size.h>
 
-#include <sstream>
 #include <d2d1.h>
 
 namespace trview
@@ -11,9 +11,10 @@ namespace trview
         {
             Font::Font(
                 CComPtr<ID3D11Device> device,
+                CComPtr<IDWriteFactory> dwrite_factory,
                 CComPtr<ID2D1Factory> d2d_factory,
                 CComPtr<IDWriteTextFormat> text_format)
-                : _device(device), _d2d_factory(d2d_factory), _text_format(text_format)
+                : _device(device), _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
             {
             }
 
@@ -78,6 +79,19 @@ namespace trview
                 texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
                 texture.render_target->DrawText(text.c_str(), text.size(), _text_format, layoutRect, texture.brush);
                 texture.render_target->EndDraw();
+            }
+
+            // Determines the size in pixels that the text specified will be when rendered.
+            // text: The text to measure.
+            // Returns: The size in pixels required.
+            Size Font::measure(const std::wstring& text) const
+            {
+                // Create a text layout from the factory (which we don't have...)
+                CComPtr<IDWriteTextLayout> text_layout;
+                _dwrite_factory->CreateTextLayout(text.c_str(), text.size(), _text_format, 10000, 10000, &text_layout);
+                DWRITE_TEXT_METRICS metrics;
+                text_layout->GetMetrics(&metrics);
+                return ui::Size(std::ceil(metrics.width), std::ceil(metrics.height));
             }
         }
     }

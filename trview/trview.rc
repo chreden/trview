@@ -46,6 +46,7 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "Open",                        ID_FILE_OPEN
+        MENUITEM "Open Recent",                 ID_FILE_OPENRECENT
         MENUITEM "E&xit",                       IDM_EXIT
     END
     POPUP "&Help"
@@ -146,6 +147,90 @@ BEGIN
 END
 
 #endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,4,0
+ PRODUCTVERSION 1,0,4,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "FileDescription", "Tomb Raider Level Viewer and Speedrun Planner"
+            VALUE "FileVersion", "1.0.4.0"
+            VALUE "InternalName", "trview.exe"
+            VALUE "LegalCopyright", "Copyright (C) chreden 2018"
+            VALUE "OriginalFilename", "trview.exe"
+            VALUE "ProductName", "TRView"
+            VALUE "ProductVersion", "1.0.4.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_TOMB3_ICON          PNG                     "resources\\tomb3.png"
+
+IDB_UNKNOWN_ICON        PNG                     "resources\\unknown.png"
+
+IDB_TOMB2_ICON          PNG                     "resources\\tomb2.png"
+
+IDB_TOMB1_ICON          PNG                     "resources\\tomb1.png"
+
+IDB_TOMB4_ICON          PNG                     "resources\\tomb4.png"
+
+IDB_TOMB5_ICON          PNG                     "resources\\tomb5.png"
+
+IDB_NUMERIC_UP          PNG                     "resources\\numericup.png"
+
+IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
+
+IDB_CHECK_OFF           PNG                     "resources\\checkoff.png"
+
+IDB_CHECK_ON            PNG                     "resources\\checkon.png"
+
+IDB_BUTTON_UP           PNG                     "resources\\buttonup.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
+
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

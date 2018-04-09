@@ -3,8 +3,11 @@
 
 #include <trview.common/FileLoader.h>
 
-#include "TextureStorage.h"
+#include "LevelTextureStorage.h"
 #include "MeshStorage.h"
+
+#include "ICamera.h"
+#include "TransparencyBuffer.h"
 
 namespace trview
 {
@@ -49,9 +52,9 @@ namespace trview
         D3D11_SAMPLER_DESC sampler_desc;
         memset(&sampler_desc, 0, sizeof(sampler_desc));
         sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
         sampler_desc.MaxAnisotropy = 1;
         sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
@@ -59,10 +62,16 @@ namespace trview
         // Create the texture sampler state.
         _device->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<TextureStorage>(_device, *_level);
+        _texture_storage = std::make_unique<LevelTextureStorage>(_device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(_device, *_level, *_texture_storage.get());
         generate_rooms();
         generate_entities();
+
+        _transparency = std::make_unique<TransparencyBuffer>(_device);
+    }
+
+    Level::~Level()
+    {
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -75,6 +84,11 @@ namespace trview
         return room_infos;
     }
 
+    RoomInfo Level::room_info(uint32_t room) const
+    {
+        return _rooms[room]->info();
+    }
+
     std::vector<Texture> Level::level_textures() const
     {
         std::vector<Texture> textures;
@@ -83,6 +97,11 @@ namespace trview
             textures.push_back(_texture_storage->texture(i));
         }
         return textures;
+    }
+
+    uint16_t Level::selected_room() const
+    {
+        return _selected_room;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -96,12 +115,13 @@ namespace trview
         {
             return;
         }
-        
+
         _room_highlight_mode = mode;
         if (_room_highlight_mode == RoomHighlightMode::Neighbours)
         {
             regenerate_neighbours();
         }
+        _regenerate_transparency = true;
     }
 
     void Level::set_selected_room(uint16_t index)
@@ -116,7 +136,7 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(CComPtr<ID3D11DeviceContext> context, DirectX::XMMATRIX view_projection)
+    void Level::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
     {
         using namespace DirectX;
 
@@ -126,18 +146,57 @@ namespace trview
         context->PSSetShader(_pixel_shader, nullptr, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        render_rooms(context, view_projection);
+        render_rooms(context, camera);
     }
 
-    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const DirectX::XMMATRIX& view_projection)
+    // Render the rooms in the level.
+    // context: The device context.
+    // camera: The current camera to render the level with.
+    void Level::render_rooms(CComPtr<ID3D11DeviceContext> context, const ICamera& camera)
     {
+        // Only render the rooms that the current view mode includes.
+        auto rooms = get_rooms_to_render();
+
+        if (_regenerate_transparency)
+        {
+            _transparency->reset();
+        }
+
+        // Render the opaque portions of the rooms and also collect the transparent triangles
+        // that need to be rendered in the second pass.
+        for (const auto& room : rooms)
+        {
+            room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
+            if (_regenerate_transparency)
+            {
+                room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
+            }
+        }
+
+        if (_regenerate_transparency)
+        {
+            // Sort the accumulated transparent triangles farthest to nearest.
+            _transparency->sort(camera.position());
+        }
+
+        _regenerate_transparency = false;
+
+        // Render the triangles that the transparency buffer has produced.
+        _transparency->render(context, camera, *_texture_storage.get());
+    }
+
+    // Get the collection of rooms that need to be renderered depending on the current view mode.
+    // Returns: The rooms to render and their selection mode.
+    std::vector<Level::RoomToRender> Level::get_rooms_to_render() const
+    {
+        std::vector<RoomToRender> rooms;
         switch (_room_highlight_mode)
         {
             case RoomHighlightMode::None:
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), Room::SelectionMode::Selected);
+                    rooms.emplace_back(_rooms[i].get(), Room::SelectionMode::Selected);
                 }
                 break;
             }
@@ -145,7 +204,7 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    rooms.emplace_back(_rooms[i].get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
                 }
                 break;
             }
@@ -153,11 +212,12 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    _rooms[i]->render(context, view_projection, *_texture_storage.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    rooms.emplace_back(_rooms[i].get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
                 }
                 break;
             }
         }
+        return rooms;
     }
 
     void Level::generate_rooms()
@@ -177,8 +237,10 @@ namespace trview
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
-            auto entity = _level->get_entity(i);
-            _entities.push_back(std::make_unique<Entity>());
+            auto level_entity = _level->get_entity(i);
+            auto entity = std::make_unique<Entity>(_device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
+            _rooms[entity->room()]->add_entity(entity.get());
+            _entities.push_back(std::move(entity));
         }
     }
 
@@ -188,6 +250,7 @@ namespace trview
         if (_selected_room < _level->num_rooms())
         {
             generate_neighbours(_neighbours, _selected_room, _selected_room, 1, _neighbour_depth);
+            _regenerate_transparency = true;
         }
     }
 
@@ -207,5 +270,49 @@ namespace trview
                 generate_neighbours(all_rooms, selected_room, *room, current_depth + 1, max_depth);
             }
         }
+    }
+
+    // Determine whether the specified ray hits any of the triangles in any of the room geometry.
+    // position: The world space position of the source of the ray.
+    // direction: The direction of the ray.
+    // Returns: The result of the operation. If 'hit' is true, distance and position contain
+    // how far along the ray the hit was and the position in world space. The room that was hit
+    // is also specified.
+    Level::PickResult Level::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        PickResult final_result;
+        for (uint32_t i = 0; i < _rooms.size(); ++i)
+        {
+            if (room_visible(i))
+            {
+                const auto& room = _rooms[i];
+                auto result = room->pick(position, direction);
+                if (result.hit && result.distance < final_result.distance)
+                {
+                    final_result.hit = true;
+                    final_result.distance = result.distance;
+                    final_result.position = result.position;
+                    final_result.room = i;
+                }
+            }
+        }
+        return final_result;
+    }
+
+    // Determines whether the room is currently being rendered.
+    // room: The room index.
+    // Returns: True if the room is visible.
+    bool Level::room_visible(uint32_t room) const
+    {
+        if (_room_highlight_mode != RoomHighlightMode::Neighbours)
+        {
+            return true;
+        }
+        return _neighbours.find(room) != _neighbours.end();
+    }
+
+    void Level::on_camera_moved()
+    {
+        _regenerate_transparency = true;
     }
 }

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GoToRoom.h"
-#include <sstream>
 
 #include <trview.ui/Label.h>
 #include <trview.ui/GroupBox.h>
@@ -91,10 +90,7 @@ namespace trview
 
         if (key == VK_RETURN)
         {
-            std::wstringstream stream(_input);
-            uint32_t room = 0;
-            stream >> room;
-            room_selected.raise(room);
+            room_selected(std::stoul(_input));
             toggle_visible();
         }
         else if (key == VK_ESCAPE)
