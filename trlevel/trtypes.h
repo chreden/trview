@@ -205,6 +205,17 @@ namespace trlevel
         uint8_t Ypixel;
     };
 
+    // Version of box used in TR1/UB.
+    struct tr_box
+    {
+        uint32_t Zmin;
+        uint32_t Zmax;
+        uint32_t Xmin;
+        uint32_t Xmax;
+        int16_t TrueFloor;
+        uint16_t OverlapIndex;
+    };
+
     struct tr2_box   // 8 bytes
     {
         uint8_t Zmin;          // Horizontal dimensions in sectors
@@ -213,6 +224,18 @@ namespace trlevel
         uint8_t Xmax;
         int16_t TrueFloor;     // Height value in global units
         int16_t OverlapIndex;  // Bits 0-13 is the index into Overlaps[]
+    };
+
+    struct tr_entity
+    {
+        int16_t TypeID;
+        int16_t Room;
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        int16_t Angle;
+        int16_t Intensity1;
+        uint16_t Flags;
     };
 
     struct tr2_entity // 24 bytes
@@ -265,6 +288,13 @@ namespace trlevel
         tr_object_texture_vert Vertices[4]; // The four corners of the texture
     };
 
+    // Room vertex for Tomb Raider 1/Unfinished Business.
+    struct tr_room_vertex
+    {
+        tr_vertex vertex;
+        int16_t   lighting;
+    };
+
     struct tr3_room_vertex
     {
         tr_vertex   vertex;
@@ -298,6 +328,16 @@ namespace trlevel
         int8_t   ceiling;    // Absolute height of ceiling
     };
 
+    // Version of the room_light structure used in Tomb Raider I/UB.
+    struct tr_room_light
+    {
+        int32_t  x;
+        int32_t  y;
+        int32_t  z;
+        uint16_t intensity;
+        uint32_t fade;
+    };
+
     struct tr3_room_light   // 24 bytes
     {
         // Position of light, in world coordinates
@@ -307,6 +347,17 @@ namespace trlevel
         tr_colour4 colour;        // Colour of the light
         uint32_t   intensity;
         uint32_t   fade;          // Falloff value
+    };
+
+    // Version of tr_room_staticmesh used in TR1/UB.
+    struct tr_room_staticmesh
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        uint16_t rotation;
+        uint16_t intensity;
+        uint16_t mesh_id;
     };
 
     struct tr3_room_staticmesh 
@@ -346,11 +397,6 @@ namespace trlevel
         uint8_t filler;
     };
 
-    struct tr_entity
-    {
-
-    };
-
     struct tr_mesh
     {
         tr_vertex              centre;
@@ -381,4 +427,20 @@ namespace trlevel
 
     // Convert a 16 bit textile into a 32 bit argb value.
     uint32_t convert_textile16(uint16_t t);
+
+    // Convert a set of Tomb Raider I vertices into a vertex format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices);
+
+    // Convert a set of Tomb Raider I lights into a light format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr3_room_light> convert_lights(std::vector<tr_room_light> lights);
+
+    // Convert a set of Tomb Raider I static meshes into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr3_room_staticmesh> convert_room_static_meshes(std::vector<tr_room_staticmesh> meshes);
+
+    // Convert a set of Tomb Raider I entities into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr2_entity> convert_entities(std::vector<tr_entity> entities);
 }
