@@ -173,11 +173,10 @@ namespace trview
             }
         }
 
-        if (_resort_transparency || _regenerate_transparency)
+        if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
             _transparency->sort(camera.position());
-            _resort_transparency = false;
         }
 
         _regenerate_transparency = false;
@@ -314,6 +313,6 @@ namespace trview
 
     void Level::on_camera_moved()
     {
-        _resort_transparency = true;
+        _regenerate_transparency = true;
     }
 }
