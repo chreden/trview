@@ -460,12 +460,37 @@ namespace trlevel
         frame.offsety = _frames[offset++];
         frame.offsetz = _frames[offset++];
 
+        // Tomb Raider I has the mesh count in the frame structure - all other tombs
+        // already know based on the number of meshes.
+        if (_version == LevelVersion::Tomb1)
+        {
+            mesh_count = _frames[offset++];
+        }
+
         for (int i = 0; i < mesh_count; ++i)
         {
             tr2_frame_rotation rotation;
 
-            uint16_t data = _frames[offset++];
-            uint16_t mode = data & 0xC000;
+            uint16_t next = 0;
+            uint16_t data = 0;
+            uint16_t mode = 0;
+
+            // Tomb Raider I has reversed words and always uses the two word format.
+            if (_version == LevelVersion::Tomb1)
+            {
+                next = _frames[offset++];
+                data = _frames[offset++];
+            }
+            else
+            {
+                data = _frames[offset++];
+                mode = data & 0xC000;
+                if (mode)
+                {
+                    next = _frames[offset++];
+                }
+            }
+
             if (mode)
             {
                 float angle = (data & 0x03ff) * PiMul2 / 1024.0f;
@@ -484,7 +509,6 @@ namespace trlevel
             }
             else
             {
-                uint16_t next = _frames[offset++];
                 rotation.x = ((data & 0x3ff0) >> 4) * PiMul2 / 1024.0f;
                 rotation.y = ((((data & 0x000f) << 6)) | ((next & 0xfc00) >> 10)) * PiMul2 / 1024.0f;
                 rotation.z = (next & 0x03ff) * PiMul2 / 1024.0f;
