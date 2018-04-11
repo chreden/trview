@@ -489,7 +489,7 @@ namespace trlevel
             {
                 data = _frames[offset++];
                 mode = data & 0xC000;
-                if (mode)
+                if (!mode)
                 {
                     next = _frames[offset++];
                 }
