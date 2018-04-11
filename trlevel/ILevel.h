@@ -26,6 +26,13 @@ namespace trlevel
         // Returns: The palette colour.
         virtual tr_colour4 get_palette_entry(uint32_t index) const = 0;
 
+        // Get the entry from the 8 or 16 bit palette. Will try to use the 16 bit palette
+        // and will fall back to the 8 bit palette if the 16 bit palette is missing.
+        // index8: The index into the 8 bit palette.
+        // index16: The index into the 16 bit palette.
+        // Returns: The palette colour.
+        virtual tr_colour4 get_palette_entry(uint32_t index8, uint32_t index16) const = 0;
+
         // Gets the number of textiles in the level.
         // Returns: The number of textiles.
         virtual uint32_t num_textiles() const = 0;

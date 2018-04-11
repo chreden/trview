@@ -83,16 +83,10 @@ namespace trview
         return _object_textures[texture_index].Attribute;
     }
 
-
     DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
-        return palette((texture & 0x7fff) >> 8);
-    }
-
-    DirectX::SimpleMath::Color LevelTextureStorage::palette(uint32_t index) const
-    {
         using namespace DirectX::SimpleMath;
-        auto palette = _level.get_palette_entry(index);
+        auto palette = _level.get_palette_entry(texture & 0xff, texture >> 8);
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 

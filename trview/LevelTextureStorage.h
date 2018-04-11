@@ -28,7 +28,6 @@ namespace trview
         virtual uint32_t          num_tiles() const override;
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
-        virtual DirectX::SimpleMath::Color palette(uint32_t index) const override;
     private:
         CComPtr<ID3D11Device> _device;
         std::vector<Texture>  _tiles;

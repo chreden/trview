@@ -303,9 +303,16 @@ namespace trlevel
         {
             return get_palette_entry_16(index);
         }
-        auto colour = get_palette_entry8(index);
-        return tr_colour4{ 
-            static_cast<uint8_t>(colour.Red << 2), static_cast<uint8_t>(colour.Green << 2), static_cast<uint8_t>(colour.Blue << 2), 0 };
+        return convert_to_colour4(get_palette_entry8(index));
+    }
+
+    tr_colour4 Level::get_palette_entry(uint32_t index8, uint32_t index16) const
+    {
+        if (index16 < _palette16.size())
+        {
+            return get_palette_entry_16(index16);
+        }
+        return convert_to_colour4(get_palette_entry8(index8));
     }
 
     uint32_t Level::num_textiles() const
@@ -345,10 +352,7 @@ namespace trlevel
                 [&](uint8_t entry_index)
             {
                 auto entry = get_palette_entry(entry_index);
-                uint16_t r = entry.Red;
-                uint16_t g = entry.Green;
-                uint16_t b = entry.Blue;
-                uint32_t value = 0xff000000 | r << 16 | g << 8 | b;
+                uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
                 return value;
             });
         }

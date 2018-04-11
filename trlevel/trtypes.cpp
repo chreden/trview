@@ -80,4 +80,10 @@ namespace trlevel
         });
         return new_entities;
     }
+
+    // Convert the tr_colour to a tr_colour4 value.
+    tr_colour4 convert_to_colour4(const tr_colour& colour)
+    {
+        return tr_colour4{static_cast<uint8_t>(colour.Red << 2), static_cast<uint8_t>(colour.Green << 2), static_cast<uint8_t>(colour.Blue << 2), 0x00 };
+    }
 }
