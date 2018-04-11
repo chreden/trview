@@ -20,12 +20,17 @@ namespace trlevel
         // Get the entry from the 8 bit palette at the given index.
         // index: The 0-255 index into the palette.
         // Returns: The palette colour.
-        virtual tr_colour get_palette_entry(uint32_t index) const override;
+        virtual tr_colour get_palette_entry8(uint32_t index) const override;
 
         // Get the entry from the 16 bit palette at the given index.
         // index: The 0-255 index into the palette.
         // Returns: The palette colour.
         virtual tr_colour4 get_palette_entry_16(uint32_t index) const override;
+
+        // Get the entry from the 8 bit palette at the given index.
+        // index: The 0-255 index into the palette.
+        // Returns: The palette colour.
+        virtual tr_colour4 get_palette_entry(uint32_t index) const override;
 
         // Gets the number of textiles in the level.
         // Returns: The number of textiles.
@@ -38,6 +43,10 @@ namespace trlevel
         // Gets the 16 bit textile with the specified index.
         // Returns: The textile for this index.
         virtual tr_textile16 get_textile16(uint32_t index) const override;
+
+        // Get the 8 or 16 bit textile with the specified index.
+        // Returns: The colours for this index.
+        virtual std::vector<uint32_t> get_textile(uint32_t index) const override;
 
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.

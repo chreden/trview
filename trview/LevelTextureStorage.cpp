@@ -10,15 +10,7 @@ namespace trview
         // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
-            auto t16 = level.get_textile16(i);
-
-            std::vector<uint32_t> data(256 * 256, 0u);
-
-            uint32_t index = 0;
-            for (auto t : t16.Tile)
-            {
-                data[index++] = trlevel::convert_textile16(t);
-            }
+            std::vector<uint32_t> data = level.get_textile(i);
 
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
@@ -100,7 +92,7 @@ namespace trview
     DirectX::SimpleMath::Color LevelTextureStorage::palette(uint32_t index) const
     {
         using namespace DirectX::SimpleMath;
-        auto palette = _level.get_palette_entry_16(index);
+        auto palette = _level.get_palette_entry(index);
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 

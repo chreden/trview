@@ -154,20 +154,24 @@ namespace trlevel
         _meshtree = read_vector<uint32_t, uint32_t>(file);
         _frames = read_vector<uint32_t, uint16_t>(file);
         _models = read_vector<uint32_t, tr_model>(file);
-        
+
         auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
         for (const auto& mesh : static_meshes)
         {
             _static_meshes.insert({ mesh.ID, mesh });
         }
 
-        if (get_version() == LevelVersion::Tomb2)
+        if (get_version() < LevelVersion::Tomb3)
         {
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
         }
 
         _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         _sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
+
+        // If this is Unfinished Business, the palette is here.
+        // Need to do something about that, instead of just crashing.
+
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
         std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
 
@@ -283,7 +287,7 @@ namespace trlevel
         }
     }
 
-    tr_colour Level::get_palette_entry(uint32_t index) const
+    tr_colour Level::get_palette_entry8(uint32_t index) const
     {
         return _palette[index];
     }
@@ -291,6 +295,17 @@ namespace trlevel
     tr_colour4 Level::get_palette_entry_16(uint32_t index) const
     {
         return _palette16[index];
+    }
+
+    tr_colour4 Level::get_palette_entry(uint32_t index) const
+    {
+        if (index < _palette16.size())
+        {
+            return get_palette_entry_16(index);
+        }
+        auto colour = get_palette_entry8(index);
+        return tr_colour4{ 
+            static_cast<uint8_t>(colour.Red << 2), static_cast<uint8_t>(colour.Green << 2), static_cast<uint8_t>(colour.Blue << 2), 0 };
     }
 
     uint32_t Level::num_textiles() const
@@ -306,6 +321,39 @@ namespace trlevel
     tr_textile16 Level::get_textile16(uint32_t index) const
     {
         return _textile16[index];
+    }
+
+    std::vector<uint32_t> Level::get_textile(uint32_t index) const
+    {
+        std::vector<uint32_t> results;
+        results.reserve(256 * 256);
+
+        if (index < _textile16.size())
+        {
+            auto textile = _textile16[index];
+            std::transform(textile.Tile, 
+                textile.Tile + sizeof(textile.Tile) / sizeof(uint16_t),  
+                std::back_inserter(results),
+                convert_textile16);
+        }
+        else
+        {
+            auto textile = _textile8[index];
+            std::transform(textile.Tile,
+                textile.Tile + sizeof(textile.Tile) / sizeof(uint8_t),
+                std::back_inserter(results),
+                [&](uint8_t entry_index)
+            {
+                auto entry = get_palette_entry(entry_index);
+                uint16_t r = entry.Red;
+                uint16_t g = entry.Green;
+                uint16_t b = entry.Blue;
+                uint32_t value = 0xff000000 | r << 16 | g << 8 | b;
+                return value;
+            });
+        }
+
+        return results;
     }
 
     uint16_t Level::num_rooms() const

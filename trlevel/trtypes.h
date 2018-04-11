@@ -8,9 +8,9 @@ namespace trlevel
 #pragma pack(push, 1)
     struct tr_colour
     {
-        uint8_t Red;
-        uint8_t Green;
         uint8_t Blue;
+        uint8_t Green;
+        uint8_t Red;
     };
 
     struct tr_colour4
