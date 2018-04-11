@@ -33,7 +33,7 @@ namespace trview
 
     void TransparencyBuffer::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
-        if (!_triangles.size())
+        if (!_vertices.size())
         {
             return;
         }
@@ -79,6 +79,11 @@ namespace trview
     void TransparencyBuffer::create_buffer()
     {
         _vertex_buffer = nullptr;
+
+        if (_vertices.empty())
+        {
+            return;
+        }
 
         // Generate the buffers.
         D3D11_BUFFER_DESC vertex_desc;
