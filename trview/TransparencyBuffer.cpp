@@ -13,6 +13,30 @@ namespace trview
         : _device(device)
     {
         create_matrix_buffer();
+
+        D3D11_BLEND_DESC alpha_desc;
+        memset(&alpha_desc, 0, sizeof(alpha_desc));
+        alpha_desc.RenderTarget[0].BlendEnable = true;
+        alpha_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        alpha_desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        alpha_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        alpha_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        alpha_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+        alpha_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        alpha_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        _device->CreateBlendState(&alpha_desc, &_alpha_blend);
+
+        D3D11_BLEND_DESC additive_desc;
+        memset(&additive_desc, 0, sizeof(additive_desc));
+        additive_desc.RenderTarget[0].BlendEnable = true;
+        additive_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+        additive_desc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+        additive_desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+        additive_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+        additive_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+        additive_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+        additive_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+        _device->CreateBlendState(&additive_desc, &_additive_blend);
     }
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
@@ -60,10 +84,18 @@ namespace trview
         context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
         context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
+        context->OMSetBlendState(_alpha_blend, 0, 0xffffffff);
 
         uint32_t sum = 0;
+        TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
         for (const auto& run : _texture_run)
         {
+            if (run.mode != previous_mode)
+            {
+                set_blend_mode(context, run.mode);
+            }
+            previous_mode = run.mode;
+
             auto texture = texture_storage.texture(run.texture);
             context->PSSetShaderResources(0, 1, &texture.view.p);
             context->Draw(run.count * 3, sum);
@@ -127,9 +159,11 @@ namespace trview
         std::size_t index = 0;
         for (const auto& triangle : _triangles)
         {
-            if (_texture_run.empty() || _texture_run.back().texture != triangle.texture)
+            if (_texture_run.empty() ||
+                _texture_run.back().texture != triangle.texture || 
+                _texture_run.back().mode != triangle.mode) 
             {
-                _texture_run.push_back({ triangle.texture, 1 });
+                _texture_run.push_back({ triangle.texture, triangle.mode, 1 });
             }
             else
             {
@@ -143,5 +177,17 @@ namespace trview
         }
 
         create_buffer();
+    }
+
+    void TransparencyBuffer::set_blend_mode(CComPtr<ID3D11DeviceContext> context, TransparentTriangle::Mode mode) const
+    {
+        if (mode == TransparentTriangle::Mode::Normal)
+        {
+            context->OMSetBlendState(_alpha_blend, 0, 0xffffffff);
+        }
+        else
+        {
+            context->OMSetBlendState(_additive_blend, 0, 0xffffffff);
+        }
     }
 }

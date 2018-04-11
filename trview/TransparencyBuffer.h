@@ -44,16 +44,22 @@ namespace trview
         void create_buffer();
         void create_matrix_buffer();
         void complete();
+        void set_blend_mode(CComPtr<ID3D11DeviceContext> context, TransparentTriangle::Mode mode) const;
 
         CComPtr<ID3D11Device> _device;
         CComPtr<ID3D11Buffer> _vertex_buffer;
         CComPtr<ID3D11Buffer> _matrix_buffer;
+
+        CComPtr<ID3D11BlendState> _alpha_blend;
+        CComPtr<ID3D11BlendState> _additive_blend;
+
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;
 
         struct TextureRun
         {
             uint32_t texture;
+            TransparentTriangle::Mode mode;
             uint32_t count;
         };
 

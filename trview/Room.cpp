@@ -163,7 +163,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
-                auto mode = attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+                auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
                 continue;
@@ -213,7 +213,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
-                auto mode = attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+                auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 continue;
             }
