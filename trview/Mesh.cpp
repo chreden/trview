@@ -161,6 +161,7 @@ namespace trview
         {
             const Color colour{ 1,1,1,1 };
             const uint16_t texture = rect.texture & 0x7fff;
+            const bool double_sided = rect.texture & 0x8000;
 
             std::array<Vector2, 4> uvs =
             {
@@ -182,6 +183,11 @@ namespace trview
                 auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
+                if (double_sided)
+                {
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), mode);
+                }
                 continue;
             }
 
@@ -199,12 +205,22 @@ namespace trview
             tex_indices.push_back(base + 2);
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
+            if (double_sided)
+            {
+                tex_indices.push_back(base + 2);
+                tex_indices.push_back(base + 1);
+                tex_indices.push_back(base);
+                tex_indices.push_back(base);
+                tex_indices.push_back(base + 3);
+                tex_indices.push_back(base + 2);
+            }
         }
 
         for (const auto& tri : mesh.textured_triangles)
         {
             const Color colour{ 1,1,1,1 };
             const uint16_t texture = tri.texture & 0x7fff;
+            const bool double_sided = tri.texture & 0x8000;
 
             std::array<Vector2, 3> uvs =
             {
@@ -224,6 +240,10 @@ namespace trview
             {
                 auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
+                if (double_sided)
+                {
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                }
                 continue;
             }
 
@@ -238,11 +258,18 @@ namespace trview
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
+            if (double_sided)
+            {
+                tex_indices.push_back(base + 2);
+                tex_indices.push_back(base + 1);
+                tex_indices.push_back(base);
+            }
         }
 
         for (const auto& rect : mesh.coloured_rectangles)
         {
             const uint16_t texture = rect.texture & 0x7fff;
+            const bool double_sided = rect.texture & 0x8000;
             auto base = vertices.size();
             for (int i = 0; i < 4; ++i)
             {
@@ -255,11 +282,21 @@ namespace trview
             untextured_indices.push_back(base + 2);
             untextured_indices.push_back(base + 3);
             untextured_indices.push_back(base + 0);
+            if (double_sided)
+            {
+                untextured_indices.push_back(base + 2);
+                untextured_indices.push_back(base + 1);
+                untextured_indices.push_back(base);
+                untextured_indices.push_back(base);
+                untextured_indices.push_back(base + 3);
+                untextured_indices.push_back(base + 2);
+            }
         }
 
         for (const auto& tri : mesh.coloured_triangles)
         {
             const uint16_t texture = tri.texture & 0x7fff;
+            const bool double_sided = tri.texture & 0x8000;
             auto base = vertices.size();
             for (int i = 0; i < 3; ++i)
             {
@@ -269,6 +306,12 @@ namespace trview
             untextured_indices.push_back(base);
             untextured_indices.push_back(base + 1);
             untextured_indices.push_back(base + 2);
+            if (double_sided)
+            {
+                untextured_indices.push_back(base + 2);
+                untextured_indices.push_back(base + 1);
+                untextured_indices.push_back(base);
+            }
         }
 
         return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);

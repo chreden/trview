@@ -52,6 +52,7 @@ namespace trview
 
         CComPtr<ID3D11BlendState> _alpha_blend;
         CComPtr<ID3D11BlendState> _additive_blend;
+        CComPtr<ID3D11DepthStencilState> _transparency_depth_state;
 
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;
