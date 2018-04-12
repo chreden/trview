@@ -160,12 +160,19 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
+            bool double_sided = rect.texture & 0x8000;
+
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
                 auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
+                if (double_sided)
+                {
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), mode);
+                }
                 continue;
             }
 
@@ -185,8 +192,23 @@ namespace trview
             tex_indices.push_back(base + 3);
             tex_indices.push_back(base + 0);
 
+            if (double_sided)
+            {
+                tex_indices.push_back(base + 2);
+                tex_indices.push_back(base + 1);
+                tex_indices.push_back(base);
+                tex_indices.push_back(base);
+                tex_indices.push_back(base + 3);
+                tex_indices.push_back(base + 2);
+            }
+
             _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
             _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 3].pos, vertices[base + 0].pos));
+            if (double_sided)
+            {
+                _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 1].pos, vertices[base + 0].pos));
+                _collision_triangles.push_back(Triangle(vertices[base + 0].pos, vertices[base + 3].pos, vertices[base + 2].pos));
+            }
         }
 
         for (const auto& tri : room.data.triangles)
@@ -210,11 +232,17 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
+            bool double_sided = tri.texture & 0x8000;
+
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
                 auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
+                if (double_sided)
+                {
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                }
                 continue;
             }
 
@@ -230,8 +258,18 @@ namespace trview
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
+            if (double_sided)
+            {
+                tex_indices.push_back(base + 2);
+                tex_indices.push_back(base + 1);
+                tex_indices.push_back(base);
+            }
 
             _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
+            if (double_sided)
+            {
+                _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 1].pos, vertices[base].pos));
+            }
         }
 
         _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
