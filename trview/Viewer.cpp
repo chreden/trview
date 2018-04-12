@@ -82,7 +82,7 @@ namespace trview
         using namespace ui;
 
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 310.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
+        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 348.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
@@ -113,8 +113,19 @@ namespace trview
             _camera_sensitivity = value;
             _settings.camera_sensitivity = value;
         };
+
+        _camera_controls->on_movement_speed_changed += [&](float value)
+        {
+            _camera_movement_speed = value; 
+            _settings.camera_movement_speed = value;
+        };
+
         _camera_controls->set_sensitivity(_settings.camera_sensitivity);
         _camera_controls->set_mode(CameraMode::Orbit);
+
+        _camera_controls->set_movement_speed (
+            _settings.camera_movement_speed == 0? _CAMERA_MOVEMENT_SPEED_DEFAULT: _settings.camera_movement_speed
+        );
 
         _control->add_child(std::move(tool_window));
     }
@@ -467,7 +478,7 @@ namespace trview
                     _free_up ? 1 : 0 + _free_down ? -1 : 0,
                     _free_forward ? 1 : 0 + _free_backward ? -1 : 0);
 
-                const float Speed = 10;
+                const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
                 _free_camera.move(movement * _timer.elapsed() * Speed);
 
                 if (_level)

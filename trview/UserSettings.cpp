@@ -72,6 +72,10 @@ namespace trview
                 {
                     file >> settings.camera_sensitivity;
                 }
+                else if (setting == L"movement")
+                {
+                    file >> settings.camera_movement_speed;
+                }
                 else if (setting == L"recent")
                 {
                     uint32_t recent_count = 0;
@@ -119,8 +123,9 @@ namespace trview
             return;
         }
 
-        file << L"camera " << settings.camera_sensitivity << '\n';
-        file << L"recent " << settings.recent_files.size() << '\n';
+        file << L"camera "  << settings.camera_sensitivity      << '\n';
+        file << L"movement "<< settings.camera_movement_speed   << '\n';
+        file << L"recent "  << settings.recent_files.size()     << '\n';
         for (const auto& file_name : settings.recent_files)
         {
             file << file_name << '\n';

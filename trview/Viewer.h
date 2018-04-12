@@ -122,6 +122,10 @@ namespace trview
         input::Keyboard _keyboard;
         input::Mouse _mouse;
         float _camera_sensitivity{ 0.0f };
+        float _camera_movement_speed{ 0.0f };
+
+        const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
+        const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
 
         // Camera rotation variables - eventually to be moved to a camera class.
         bool _rotating{ false };

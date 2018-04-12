@@ -29,12 +29,19 @@ namespace trview
         // sensitivity: The new sensitivity value.
         Event<float> on_sensitivity_changed;
 
+        // Event raised when the movement speed has been changed.
+        Event<float> on_movement_speed_changed;
+
         // Event raised when the user clicks the reset button.
         Event<void> on_reset;
 
         // Set the sensitivity slider to the specified value. This will not raise the on_sensitivity_changed event.
         // value: The sensitivity value.
         void set_sensitivity(float value);
+
+        // Set the movement speed slider to specified value.
+        // value: The movement speed.
+        void set_movement_speed(float value);
 
         // Set the current camera mode. This will not raise the on_mode_selected event.
         // mode: The camera mode to change to.
@@ -48,5 +55,6 @@ namespace trview
         ui::Checkbox* _free;
         ui::Checkbox* _axis;
         ui::Slider* _sensitivity;
+        ui::Slider* _movement_speed;
     };
 }
