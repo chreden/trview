@@ -555,6 +555,8 @@ namespace trview
         render_scene();
 
         _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+        _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
         render_ui();
 
         _swap_chain->Present(1, 0);

@@ -6,10 +6,16 @@ namespace trview
 {
     struct TransparentTriangle
     {
+        enum class Mode
+        {
+            Normal,
+            Additive
+        };
+
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-            uint32_t texture)
-            : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture)
+            uint32_t texture, Mode mode)
+            : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode)
         {
         }
 
@@ -23,7 +29,11 @@ namespace trview
         DirectX::SimpleMath::Vector3 position;
         // The level texture index to use.
         uint32_t                     texture;
+        
+        Mode                         mode;
 
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
     };
+
+    TransparentTriangle::Mode attribute_to_transparency(uint16_t attribute);
 }
