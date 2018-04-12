@@ -283,8 +283,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 int index = wmId - ID_RECENT_FILE_BASE;
                 if (index >= 0 && index < recent_files.size())
                 {
-                    viewer->open(recent_files[index]);
-                    populate_directory_listing_menu(recent_files[index]);
+                    const auto file = recent_files[index];
+                    viewer->open(file);
+                    populate_directory_listing_menu(file);
                 }
                 break;
             }
