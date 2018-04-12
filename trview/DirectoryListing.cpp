@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "DirectoryListing.h"
+#include <algorithm>
 
 namespace trview
 {
@@ -24,28 +25,53 @@ DirectoryListing::IsDirectory(const std::wstring& path) const
 std::vector<File> 
 DirectoryListing::GetFiles(const std::wstring& pattern) const
 {
+    std::vector<std::wstring> patterns;
+    std::size_t index = 0;
+    do
+    {
+        std::size_t next = pattern.find(L',', index);
+        patterns.push_back(pattern.substr(index, next - index));
+        index = ++next;
+    } while(index);
+
+    return GetFiles(patterns);
+}
+
+std::vector<File>
+DirectoryListing::GetFiles(const std::vector<std::wstring>& patterns) const
+{
     std::vector<File> data;
-    WIN32_FIND_DATA fd;
 
     if (_is_path_set)
     {
-        HANDLE find = FindFirstFileW((_path + pattern).c_str(), &fd);
-
-        if (find == INVALID_HANDLE_VALUE)
-            throw std::runtime_error("could not open directory listing");
-
-        do
+        for (const auto& pattern : patterns)
         {
-            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            WIN32_FIND_DATA fd;
+            HANDLE find = FindFirstFileW((_path + pattern).c_str(), &fd);
+
+            if (find == INVALID_HANDLE_VALUE)
             {
-                File file{ _path + L"\\" + fd.cFileName, fd.cFileName, fd.nFileSizeLow };
-                data.push_back(file);
+                DWORD error = GetLastError();
+                if (error != ERROR_FILE_NOT_FOUND)
+                {
+                    throw std::runtime_error("could not open directory listing");
+                }
+                continue;
             }
-        } while
-            (FindNextFileW(find, &fd) != 0);
+
+            do
+            {
+                if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+                {
+                    File file{ _path + L"\\" + fd.cFileName, fd.cFileName, fd.nFileSizeLow };
+                    data.push_back(file);
+                }
+            } while
+                (FindNextFileW(find, &fd) != 0);
+        }
     }
 
-    return data; 
+    return data;
 }
 
 }

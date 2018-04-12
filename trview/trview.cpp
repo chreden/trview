@@ -283,8 +283,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 int index = wmId - ID_RECENT_FILE_BASE;
                 if (index >= 0 && index < recent_files.size())
                 {
-                    viewer->open(recent_files[index]);
-                    populate_directory_listing_menu(recent_files[index]);
+                    const auto file = recent_files[index];
+                    viewer->open(file);
+                    populate_directory_listing_menu(file);
                 }
                 break;
             }
@@ -318,7 +319,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ofn.lpstrFile = path;
                 ofn.nMaxFile = MAX_PATH;
                 ofn.lpstrTitle = L"Open level";
-                ofn.lpstrFilter = L"TR2 Files\0*.tr2\0";
+                ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr2;*.tub;*.phd\0";
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
                 ofn.nFilterIndex = -1;
 
