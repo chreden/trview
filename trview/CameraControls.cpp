@@ -18,7 +18,7 @@ namespace trview
         auto up = texture_storage.lookup("check_off");
         auto down = texture_storage.lookup("check_on");
 
-        auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 115), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
+        auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 152), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("button_up"), texture_storage.lookup("button_up"));
         reset_camera->on_click += [&]() { on_reset(); };
@@ -43,9 +43,18 @@ namespace trview
         // Camera section for the menu bar.
         auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
         auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
+        
+        auto movement_speed_box = std::make_unique<GroupBox>(Point(12, 104), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Movement Speed");
+        auto movement_speed = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
+
         camera_sensitivity->on_value_changed += [&](float value)
         {
             on_sensitivity_changed(value);
+        };
+
+        movement_speed->on_value_changed += [&](float value)
+        {
+            on_movement_speed_changed(value);
         };
 
         // Take a copy of buttons that need to be tracked.
@@ -53,8 +62,10 @@ namespace trview
         _free = free_camera.get();
         _axis = axis_camera.get();
         _sensitivity = camera_sensitivity.get();
+        _movement_speed = movement_speed.get();
 
         camera_sensitivity_box->add_child(std::move(camera_sensitivity));
+        movement_speed_box->add_child(std::move(movement_speed));
 
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
@@ -65,6 +76,7 @@ namespace trview
         camera_window->add_child(std::move(axis_camera));
         camera_window->add_child(std::move(axis_camera_label));
         camera_window->add_child(std::move(camera_sensitivity_box));
+        camera_window->add_child(std::move(movement_speed_box));
 
         parent.add_child(std::move(camera_window));
     }
@@ -82,6 +94,13 @@ namespace trview
     void CameraControls::set_sensitivity(float value)
     {
         _sensitivity->set_value(value);
+    }
+
+    // Set the movement speed slider to specified value.
+    // value: The movement speed.
+    void CameraControls::set_movement_speed(float value)
+    {
+        _movement_speed->set_value(value);
     }
 
     // Set the current camera mode. This will not raise the on_mode_selected event.
