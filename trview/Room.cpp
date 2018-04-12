@@ -160,7 +160,7 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            bool double_sided = rect.texture & 0x8000;
+            const bool double_sided = rect.texture & 0x8000;
 
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
@@ -232,7 +232,7 @@ namespace trview
                 uvs[i] = texture_storage.uv(texture, i);
             }
 
-            bool double_sided = tri.texture & 0x8000;
+            const bool double_sided = tri.texture & 0x8000;
 
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
