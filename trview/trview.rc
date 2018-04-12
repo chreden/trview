@@ -47,6 +47,7 @@ BEGIN
     BEGIN
         MENUITEM "Open",                        ID_FILE_OPEN
         MENUITEM "Open Recent",                 ID_FILE_OPENRECENT
+        MENUITEM "Switch &Level",               ID_FILE_SWITCHLEVEL
         MENUITEM "E&xit",                       IDM_EXIT
     END
     POPUP "&Help"

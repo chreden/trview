@@ -145,6 +145,9 @@
     <ClInclude Include="TransparentTriangle.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="DirectoryListing.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -233,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="TransparentTriangle.cpp">
       <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryListing.cpp">
+      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

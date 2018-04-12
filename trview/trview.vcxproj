@@ -155,6 +155,7 @@
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraMode.h" />
     <ClInclude Include="DefaultTextures.h" />
+    <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
+    <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
