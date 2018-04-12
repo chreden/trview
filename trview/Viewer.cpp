@@ -608,7 +608,6 @@ namespace trview
             _camera.set_target(target_position);
             _level->render(_context, current_camera());
         }
-        _context->OMSetDepthStencilState(_depth_stencil_state, 1);
     }
 
     const ICamera& Viewer::current_camera() const
