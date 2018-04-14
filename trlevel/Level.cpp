@@ -351,6 +351,12 @@ namespace trlevel
                 std::back_inserter(results),
                 [&](uint8_t entry_index)
             {
+                // The first entry in the 8 bit palette is the transparent colour, so just return 
+                // fully transparent instead of replacing it later.
+                if (entry_index == 0)
+                {
+                    return 0x00000000u;
+                }
                 auto entry = get_palette_entry(entry_index);
                 uint32_t value = 0xff000000 | entry.Blue << 16 | entry.Green << 8 | entry.Red;
                 return value;
