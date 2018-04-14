@@ -42,10 +42,41 @@ namespace trview
         std::vector<TransparentTriangle>   _transparent_triangles;
     };
 
+    struct Triangle
+    {
+        Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2)
+            : v0(v0), v1(v1), v2(v2), normal((v1 - v0).Cross(v2 - v0))
+        {
+        }
+
+        DirectX::SimpleMath::Vector3 v0;
+        DirectX::SimpleMath::Vector3 v1;
+        DirectX::SimpleMath::Vector3 v2;
+        DirectX::SimpleMath::Vector3 normal;
+    };
+
     // Create a new mesh based on the contents of the mesh specified.
     // mesh: The level mesh to generate.
     // device: The D3D device to use to create the mesh.
     // texture_storage: The textures for the level.
     // Returns: The new mesh.
     std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device, const ILevelTextureStorage& texture_storage);
+
+    void process_textured_rectangles(
+        const std::vector<trlevel::tr_face4>& rectangles, 
+        const std::vector<trlevel::tr_vertex>& input_vertices, 
+        const ILevelTextureStorage& texture_storage,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<std::vector<uint32_t>>& output_indices,
+        std::vector<TransparentTriangle>& transparent_triangles,
+        std::vector<Triangle>& collision_triangles);
+
+    void process_textured_triangles(
+        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const ILevelTextureStorage& texture_storage,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<std::vector<uint32_t>>& output_indices,
+        std::vector<TransparentTriangle>& transparent_triangles,
+        std::vector<Triangle>& collision_triangles);
 }
