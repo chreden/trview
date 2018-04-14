@@ -20,7 +20,7 @@ public:
     // Gets a list of files in the directory.
     // pattern: Comma separated list of file filters.
     // Returns an empty vector if no path has been set.
-    std::vector<File> GetFiles(const std::wstring& pattern=L"\\*.TR*,\\*.TUB,\\*.PHD") const; 
+    std::vector<File> GetFiles(const std::wstring& pattern=L"\\*.TR*,\\*.PHD") const; 
 
     // Sets the directory to get the file listing from.
     void SetDirectory(const std::wstring& path);
