@@ -109,6 +109,10 @@ namespace trview
         // Returns: True if the room is visible.
         bool room_visible(uint32_t room) const;
 
+        // Determines whether the alternate mode specified is a mismatch with the current setting of 
+        // the alternate mode flag.
+        bool is_alternate_mismatch(Room::AlternateMode mode) const;
+
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Entity>> _entities;

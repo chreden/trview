@@ -132,8 +132,7 @@ namespace trview
         // If the user has selected a room that is or has an alternate mode, raise the event that the
         // alternate mode needs to change so that the correct rooms can be rendered.
         const auto& room = *_rooms[index];
-        if (room.alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode ||
-            room.alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode)
+        if (is_alternate_mismatch(room.alternate_mode()))
         {
             on_alternate_mode_selected(!_alternate_mode);
         }
@@ -217,8 +216,7 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i].get();
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
-                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if (is_alternate_mismatch(room->alternate_mode()))
                     {
                         continue;
                     }
@@ -231,8 +229,7 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i];
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
-                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if (is_alternate_mismatch(room->alternate_mode()))
                     {
                         continue;
                     }
@@ -245,8 +242,7 @@ namespace trview
                 for (uint16_t i : _neighbours)
                 {
                     const auto& room = _rooms[i];
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
-                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if (is_alternate_mismatch(room->alternate_mode()))
                     {
                         continue;
                     }
@@ -374,11 +370,17 @@ namespace trview
         // If the currently selected room is a room involved in flipmaps, select the alternate
         // room so that the user doesn't have an invisible room selected.
         const auto& current_room = *_rooms[selected_room()];
-        const auto mode = current_room.alternate_mode();
-        if (mode == Room::AlternateMode::IsAlternate && !enabled || 
-            mode == Room::AlternateMode::HasAlternate && enabled)
+        if (is_alternate_mismatch(current_room.alternate_mode()))
         {
             on_room_selected(current_room.alternate_room());
         }
+    }
+
+    // Determines whether the alternate mode specified is a mismatch with the current setting of 
+    // the alternate mode flag.
+    bool Level::is_alternate_mismatch(Room::AlternateMode mode) const
+    {
+        return mode == Room::AlternateMode::IsAlternate && !_alternate_mode ||
+               mode == Room::AlternateMode::HasAlternate && _alternate_mode;
     }
 }
