@@ -12,6 +12,7 @@
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
+#include <iterator>
 
 namespace trview
 {
