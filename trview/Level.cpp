@@ -180,6 +180,17 @@ namespace trview
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode);
             }
+
+            // If this is an alternate room, render the items from the original room in the sample places.
+            if (_alternate_mode && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            {
+                auto& original_room = _rooms[room.room.alternate_room()];
+                original_room->render_contained(context, camera, *_texture_storage.get(), room.selection_mode);
+                if (_regenerate_transparency)
+                {
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode);
+                }
+            }
         }
 
         if (_regenerate_transparency)

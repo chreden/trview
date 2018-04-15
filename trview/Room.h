@@ -82,6 +82,8 @@ namespace trview
         // selected: The selection mode to use to highlight geometry and objects.
         void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
+        void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+
         // Add the specified entity to the room.
         // Entity: The entity to add.
         void add_entity(Entity* entity);
@@ -89,6 +91,8 @@ namespace trview
         // Add the transparent triangles to the specified transparency buffer.
         // transparency: The buffer to add triangles to.
         void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
+
+        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
 
         // Determines the alternate state of the room.
         AlternateMode alternate_mode() const;
@@ -106,6 +110,8 @@ namespace trview
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
+        void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;

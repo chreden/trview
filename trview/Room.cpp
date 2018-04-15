@@ -108,6 +108,19 @@ namespace trview
             mesh->render(context, camera.view_projection(), texture_storage, colour);
         }
 
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->render(context, camera, texture_storage, colour);
@@ -283,6 +296,19 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->get_transparent_triangles(transparency, camera, colour);
