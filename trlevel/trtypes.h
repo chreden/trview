@@ -389,7 +389,7 @@ namespace trlevel
 
         std::vector<tr3_room_staticmesh> static_meshes;
 
-        int16_t alternate_flags;
+        int16_t alternate_room;
         int16_t flags;
 
         uint8_t water_scheme;

@@ -76,7 +76,7 @@ namespace trlevel
         {
             tr3_room room;
             room.info = read<tr_room_info>(file);
-            
+
             uint32_t NumDataWords = read<uint32_t>(file);
 
             // Read actual room data.
@@ -131,7 +131,7 @@ namespace trlevel
                 room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
             }
 
-            int16_t alternate = read<int16_t>(file);
+            room.alternate_room = read<int16_t>(file);
             int16_t flags = read<int16_t>(file);
 
             if (get_version() == LevelVersion::Tomb3)

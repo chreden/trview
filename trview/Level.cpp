@@ -226,9 +226,22 @@ namespace trview
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
             auto room = _level->get_room(i);
-
-            // Convert that room into a Room that we can use in the UI.
             _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
+        }
+
+        // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
+        // This can only be done once all the rooms are loaded.
+        for (int16_t i = 0; i < _rooms.size(); ++i)
+        {
+            const auto& room = _rooms[i];
+            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            {
+                int16_t alternate = room->alternate_room();
+                if (alternate != -1)
+                {
+                    _rooms[alternate]->set_is_alternate(i);
+                }
+            }
         }
     }
 

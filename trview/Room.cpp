@@ -21,10 +21,15 @@ namespace trview
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
-        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
+        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
+        _alternate_room(room.alternate_room)
     {
-        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
+        // the level can fix up the rooms so that they know if they are alternates of another room
+        // (IsAlternate).
+        _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
+        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
@@ -269,5 +274,27 @@ namespace trview
         {
             entity->get_transparent_triangles(transparency, camera, colour);
         }
+    }
+
+    // Determines the alternate state of the room.
+    Room::AlternateMode Room::alternate_mode() const
+    {
+        return _alternate_mode;
+    }
+
+    // Gets the room number of the room that is the alternate to this room.
+    // If this room does not have an alternate this will be -1.
+    // Returns: The room number of the alternate room.
+    int16_t Room::alternate_room() const
+    {
+        return _alternate_room;
+    }
+
+    // Set this room to be the alternate room of the room specified.
+    // This will change the alternate_mode of this room to IsAlternate.
+    // number: The room number.
+    void Room::set_is_alternate(int16_t number)
+    {
+        _alternate_room = number;
     }
 }
