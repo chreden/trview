@@ -7,6 +7,17 @@
 
 namespace trview
 {
+    namespace
+    {
+        // Convert the vertex to the scale used by the viewer.
+        // vertex: The vertex to convert.
+        // Returns: The scaled vector.
+        DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
+        {
+            return DirectX::SimpleMath::Vector3(vertex.x / 1024.f, -vertex.y / 1024.f, vertex.z / 1024.f);
+        };
+    }
+
     Mesh::Mesh(CComPtr<ID3D11Device> device, 
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
@@ -151,75 +162,15 @@ namespace trview
         std::vector<uint32_t> untextured_indices;
         std::vector<TransparentTriangle> transparent_triangles;
 
-        auto get_vertex = [&](std::size_t index, const trlevel::tr_mesh& mesh)
-        {
-            auto v = mesh.vertices[index];
-            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
-        };
-
+        // Collision triangles are currently discarded for non-room geometry, though this may be changed when item picking is implemented.
         std::vector<Triangle> collision_triangles;
 
         process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
         process_textured_triangles(mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
-
-        for (const auto& rect : mesh.coloured_rectangles)
-        {
-            const uint16_t texture = rect.texture & 0x7fff;
-            const bool double_sided = rect.texture & 0x8000;
-            auto base = vertices.size();
-            for (int i = 0; i < 4; ++i)
-            {
-                vertices.push_back({ get_vertex(rect.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(texture) });
-            }
-
-            untextured_indices.push_back(base);
-            untextured_indices.push_back(base + 1);
-            untextured_indices.push_back(base + 2);
-            untextured_indices.push_back(base + 2);
-            untextured_indices.push_back(base + 3);
-            untextured_indices.push_back(base + 0);
-            if (double_sided)
-            {
-                untextured_indices.push_back(base + 2);
-                untextured_indices.push_back(base + 1);
-                untextured_indices.push_back(base);
-                untextured_indices.push_back(base);
-                untextured_indices.push_back(base + 3);
-                untextured_indices.push_back(base + 2);
-            }
-        }
-
-        for (const auto& tri : mesh.coloured_triangles)
-        {
-            const uint16_t texture = tri.texture & 0x7fff;
-            const bool double_sided = tri.texture & 0x8000;
-            auto base = vertices.size();
-            for (int i = 0; i < 3; ++i)
-            {
-                vertices.push_back({ get_vertex(tri.vertices[i], mesh), Vector2::Zero, texture_storage.palette_from_texture(texture) });
-            }
-
-            untextured_indices.push_back(base);
-            untextured_indices.push_back(base + 1);
-            untextured_indices.push_back(base + 2);
-            if (double_sided)
-            {
-                untextured_indices.push_back(base + 2);
-                untextured_indices.push_back(base + 1);
-                untextured_indices.push_back(base);
-            }
-        }
+        process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
+        process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
         return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
-    }
-
-    namespace
-    {
-        DirectX::SimpleMath::Vector3 convert_vertex(std::size_t index, const std::vector<trlevel::tr_vertex>& vertices)
-        {
-            auto v = vertices[index];
-            return DirectX::SimpleMath::Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
-        };
     }
 
     void process_textured_rectangles(
@@ -236,17 +187,13 @@ namespace trview
 
         for (const auto& rect : rectangles)
         {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
             std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
 
             std::array<Vector3, 4> verts;
             for (int i = 0; i < 4; ++i)
             {
-                verts[i] = convert_vertex(rect.vertices[i], input_vertices);
+                verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
             
             // Select UVs - otherwise they will be 0.
@@ -277,7 +224,7 @@ namespace trview
             auto base = output_vertices.size();
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], uvs[i], colour });
+                output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -298,12 +245,12 @@ namespace trview
                 tex_indices.push_back(base + 2);
             }
 
-            collision_triangles.push_back(Triangle(output_vertices[base].pos, output_vertices[base + 1].pos, output_vertices[base + 2].pos));
-            collision_triangles.push_back(Triangle(output_vertices[base + 2].pos, output_vertices[base + 3].pos, output_vertices[base + 0].pos));
+            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+            collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
             if (double_sided)
             {
-                collision_triangles.push_back(Triangle(output_vertices[base + 2].pos, output_vertices[base + 1].pos, output_vertices[base + 0].pos));
-                collision_triangles.push_back(Triangle(output_vertices[base + 0].pos, output_vertices[base + 3].pos, output_vertices[base + 2].pos));
+                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
             }
         }
     }
@@ -321,16 +268,12 @@ namespace trview
 
         for (const auto& tri : triangles)
         {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
             std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
             std::vector<uint32_t>* tex_indices_ptr = nullptr;
             std::array<Vector3, 3> verts;
             for (int i = 0; i < 3; ++i)
             {
-                verts[i] = convert_vertex(tri.vertices[i], input_vertices);
+                verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
             }
 
             // Select UVs - otherwise they will be 0.
@@ -359,7 +302,7 @@ namespace trview
             auto base = output_vertices.size();
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], uvs[i], colour });
+                output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
             }
 
             auto& tex_indices = *tex_indices_ptr;
@@ -373,10 +316,105 @@ namespace trview
                 tex_indices.push_back(base);
             }
 
-            collision_triangles.push_back(Triangle(output_vertices[base].pos, output_vertices[base + 1].pos, output_vertices[base + 2].pos));
+            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
             if (double_sided)
             {
-                collision_triangles.push_back(Triangle(output_vertices[base + 2].pos, output_vertices[base + 1].pos, output_vertices[base].pos));
+                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+            }
+        }
+    }
+
+    void process_coloured_rectangles(
+        const std::vector<trlevel::tr_face4>& rectangles,
+        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const ILevelTextureStorage& texture_storage,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<uint32_t>& output_indices,
+        std::vector<Triangle>& collision_triangles)
+    {
+        using namespace DirectX::SimpleMath;
+
+        for (const auto& rect : rectangles)
+        {
+            const uint16_t texture = rect.texture & 0x7fff;
+            const bool double_sided = rect.texture & 0x8000;
+
+            std::array<Vector3, 4> verts;
+            for (int i = 0; i < 4; ++i)
+            {
+                verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
+            }
+
+            auto base = output_vertices.size();
+            for (int i = 0; i < 4; ++i)
+            {
+                output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
+            }
+
+            output_indices.push_back(base);
+            output_indices.push_back(base + 1);
+            output_indices.push_back(base + 2);
+            output_indices.push_back(base + 2);
+            output_indices.push_back(base + 3);
+            output_indices.push_back(base + 0);
+            if (double_sided)
+            {
+                output_indices.push_back(base + 2);
+                output_indices.push_back(base + 1);
+                output_indices.push_back(base);
+                output_indices.push_back(base);
+                output_indices.push_back(base + 3);
+                output_indices.push_back(base + 2);
+            }
+
+            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+            collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
+            if (double_sided)
+            {
+                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
+            }
+        }
+    }
+
+    void process_coloured_triangles(
+        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr_vertex>& input_vertices,
+        const ILevelTextureStorage& texture_storage,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<uint32_t>& output_indices,
+        std::vector<Triangle>& collision_triangles)
+    {
+        using namespace DirectX::SimpleMath;
+
+        for (const auto& tri : triangles)
+        {
+            const uint16_t texture = tri.texture & 0x7fff;
+            const bool double_sided = tri.texture & 0x8000;
+
+            std::array<Vector3, 3> verts;
+            for (int i = 0; i < 3; ++i)
+            {
+                verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
+            }
+
+            auto base = output_vertices.size();
+            for (int i = 0; i < 3; ++i)
+            {
+                output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
+            }
+
+            output_indices.push_back(base);
+            output_indices.push_back(base + 1);
+            output_indices.push_back(base + 2);
+            collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+
+            if (double_sided)
+            {
+                output_indices.push_back(base + 2);
+                output_indices.push_back(base + 1);
+                output_indices.push_back(base);
+                collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
             }
         }
     }

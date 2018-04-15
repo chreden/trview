@@ -123,29 +123,20 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        // Geometry.
-        std::vector<MeshVertex> vertices;
-        std::vector<TransparentTriangle> transparent_triangles;
-
-        // The indices are grouped by the number of textiles so that it can be drawn
-        // as the selected texture.
-        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        std::vector<uint32_t> untextured_indices;
-
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
             [](const auto& v) { return v.vertex; });
 
-        auto get_vertex = [&](std::size_t index, const trlevel::tr3_room& room)
-        {
-            auto v = room.data.vertices[index].vertex;
-            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
-        };
+        std::vector<MeshVertex> vertices;
+        std::vector<TransparentTriangle> transparent_triangles;
+
+        // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
+        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
 
         process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, texture_storage);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
