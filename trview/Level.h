@@ -66,6 +66,10 @@ namespace trview
         void set_selected_room(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
+
+        // Set whether to render the alternate mode (the flipmap) or the regular room.
+        // enabled: Whether to render the flipmap.
+        void set_alternate_mode(bool enabled);
     private:
         void generate_rooms();
         void generate_entities();
@@ -79,13 +83,14 @@ namespace trview
 
         struct RoomToRender
         {
-            RoomToRender(Room* room, Room::SelectionMode selection_mode)
-                : room(room), selection_mode(selection_mode)
+            RoomToRender(Room& room, Room::SelectionMode selection_mode, uint16_t number)
+                : room(room), selection_mode(selection_mode), number(number)
             {
             }
 
-            Room*               room{ nullptr };
+            Room&               room;
             Room::SelectionMode selection_mode;
+            uint16_t            number;
         };
 
         // Get the collection of rooms that need to be renderered depending on the current view mode.
@@ -117,5 +122,6 @@ namespace trview
         std::unique_ptr<TransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };
+        bool _alternate_mode{ false };
     };
 }

@@ -87,6 +87,7 @@ namespace trview
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
         _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
+        _room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); };
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _neighbours->on_depth_changed += [&](int32_t value)
@@ -710,6 +711,14 @@ namespace trview
             _room_navigator->set_room_info(_level->room_info(room));
 
             set_camera_mode(CameraMode::Orbit);
+        }
+    }
+
+    void Viewer::set_alternate_mode(bool enabled)
+    {
+        if (_level)
+        {
+            _level->set_alternate_mode(enabled);
         }
     }
 }

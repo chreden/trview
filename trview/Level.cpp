@@ -166,10 +166,10 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
+            room.room.render(context, camera, *_texture_storage.get(), room.selection_mode);
             if (_regenerate_transparency)
             {
-                room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode);
             }
         }
 
@@ -196,7 +196,13 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    rooms.emplace_back(_rooms[i].get(), Room::SelectionMode::Selected);
+                    const auto& room = _rooms[i].get();
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
+                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room, Room::SelectionMode::Selected, i);
                 }
                 break;
             }
@@ -204,7 +210,13 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    rooms.emplace_back(_rooms[i].get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    const auto& room = _rooms[i];
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
+                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, i);
                 }
                 break;
             }
@@ -212,7 +224,13 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    rooms.emplace_back(_rooms[i].get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    const auto& room = _rooms[i];
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
+                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour, i);
                 }
                 break;
             }
@@ -294,19 +312,16 @@ namespace trview
     Level::PickResult Level::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
-        for (uint32_t i = 0; i < _rooms.size(); ++i)
+        auto rooms = get_rooms_to_render();
+        for (auto& room : rooms)
         {
-            if (room_visible(i))
+            auto result = room.room.pick(position, direction);
+            if (result.hit && result.distance < final_result.distance)
             {
-                const auto& room = _rooms[i];
-                auto result = room->pick(position, direction);
-                if (result.hit && result.distance < final_result.distance)
-                {
-                    final_result.hit = true;
-                    final_result.distance = result.distance;
-                    final_result.position = result.position;
-                    final_result.room = i;
-                }
+                final_result.hit = true;
+                final_result.distance = result.distance;
+                final_result.position = result.position;
+                final_result.room = room.number;
             }
         }
         return final_result;
@@ -326,6 +341,14 @@ namespace trview
 
     void Level::on_camera_moved()
     {
+        _regenerate_transparency = true;
+    }
+
+    // Set whether to render the alternate mode (the flipmap) or the regular room.
+    // enabled: Whether to render the flipmap.
+    void Level::set_alternate_mode(bool enabled)
+    {
+        _alternate_mode = enabled;
         _regenerate_transparency = true;
     }
 }
