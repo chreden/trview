@@ -161,16 +161,29 @@ namespace trview
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
         std::set<uint16_t> adjacent_rooms;
+
+        // When adding an adjacent room, make sure to add the alternate room of that room
+        // as well, so that the depth mode works properly when the flip map is enabled.
+        auto add_adjacent_room = [&](int16_t room)
+        {
+            adjacent_rooms.insert(room);
+            auto r = level.get_room(room);
+            if (r.alternate_room != -1)
+            {
+                adjacent_rooms.insert(r.alternate_room);
+            }
+        };
+
         for (const auto& sector : room.sector_list)
         {
             if (sector.room_above != 0xff)
             {
-                adjacent_rooms.insert(sector.room_above);
+                add_adjacent_room(sector.room_above);
             }
 
             if (sector.room_below != 0xff)
             {
-                adjacent_rooms.insert(sector.room_below);
+                add_adjacent_room(sector.room_below);
             }
 
             uint32_t index = sector.floordata_index;
@@ -196,7 +209,7 @@ namespace trview
                     end_data = true;
                     break;
                 case 0x1:
-                    adjacent_rooms.insert(level.get_floor_data(++index));
+                    add_adjacent_room(level.get_floor_data(++index));
                     break;
                 case 0x2:
                 case 0x3:
