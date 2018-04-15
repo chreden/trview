@@ -296,5 +296,6 @@ namespace trview
     void Room::set_is_alternate(int16_t number)
     {
         _alternate_room = number;
+        _alternate_mode = AlternateMode::IsAlternate;
     }
 }

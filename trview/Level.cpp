@@ -197,8 +197,8 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i].get();
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
-                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
+                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
                     {
                         continue;
                     }
@@ -211,8 +211,8 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i];
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
-                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
+                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
                     {
                         continue;
                     }
@@ -225,8 +225,8 @@ namespace trview
                 for (uint16_t i : _neighbours)
                 {
                     const auto& room = _rooms[i];
-                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode)
-                        || (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
+                    if ((room->alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode) ||
+                        (room->alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode))
                     {
                         continue;
                     }
