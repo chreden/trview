@@ -187,17 +187,15 @@ namespace trview
 
         for (const auto& rect : rectangles)
         {
-            std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
-
             std::array<Vector3, 4> verts;
             for (int i = 0; i < 4; ++i)
             {
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
-            
-            // Select UVs - otherwise they will be 0.
+
             const uint16_t texture = rect.texture & 0x7fff;
+
+            std::array<Vector2, 4> uvs;
             for (int i = 0; i < uvs.size(); ++i)
             {
                 uvs[i] = texture_storage.uv(texture, i);
@@ -208,7 +206,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
-                auto mode = attribute_to_transparency(attribute);
+                const auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
                 if (double_sided)
@@ -219,15 +217,13 @@ namespace trview
                 continue;
             }
 
-            tex_indices_ptr = &output_indices[texture_storage.tile(texture)];
-
-            auto base = output_vertices.size();
+            const auto base = output_vertices.size();
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
             }
 
-            auto& tex_indices = *tex_indices_ptr;
+            auto& tex_indices = output_indices[texture_storage.tile(texture)];
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
@@ -268,8 +264,6 @@ namespace trview
 
         for (const auto& tri : triangles)
         {
-            std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
             std::array<Vector3, 3> verts;
             for (int i = 0; i < 3; ++i)
             {
@@ -278,6 +272,7 @@ namespace trview
 
             // Select UVs - otherwise they will be 0.
             const uint16_t texture = tri.texture & 0x7fff;
+            std::array<Vector2, 3> uvs;
             for (int i = 0; i < uvs.size(); ++i)
             {
                 uvs[i] = texture_storage.uv(texture, i);
@@ -288,7 +283,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0)
             {
-                auto mode = attribute_to_transparency(attribute);
+                const auto mode = attribute_to_transparency(attribute);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 if (double_sided)
                 {
@@ -297,15 +292,13 @@ namespace trview
                 continue;
             }
 
-            tex_indices_ptr = &output_indices[texture_storage.tile(texture)];
-
-            auto base = output_vertices.size();
+            const auto base = output_vertices.size();
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
             }
 
-            auto& tex_indices = *tex_indices_ptr;
+            auto& tex_indices = output_indices[texture_storage.tile(texture)];
             tex_indices.push_back(base);
             tex_indices.push_back(base + 1);
             tex_indices.push_back(base + 2);
@@ -345,7 +338,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
 
-            auto base = output_vertices.size();
+            const auto base = output_vertices.size();
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
@@ -398,7 +391,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
             }
 
-            auto base = output_vertices.size();
+            const auto base = output_vertices.size();
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
