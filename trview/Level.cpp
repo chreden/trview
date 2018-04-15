@@ -354,7 +354,9 @@ namespace trview
         // If the currently selected room is a room involved in flipmaps, select the alternate
         // room so that the user doesn't have an invisible room selected.
         const auto& current_room = *_rooms[selected_room()];
-        if (current_room.alternate_mode() != Room::AlternateMode::None)
+        const auto mode = current_room.alternate_mode();
+        if (mode == Room::AlternateMode::IsAlternate && !enabled || 
+            mode == Room::AlternateMode::HasAlternate && enabled)
         {
             on_room_selected(current_room.alternate_room());
         }
