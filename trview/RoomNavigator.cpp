@@ -25,6 +25,7 @@ namespace trview
         _highlight = highlight.get();
 
         flip->on_state_changed += [&](bool state) { on_flip(state); };
+        _flip = flip.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(0, 0),StackPanel::Direction::Vertical);
@@ -89,5 +90,10 @@ namespace trview
     void RoomNavigator::set_selected_room(uint32_t selected_room)
     {
         _current->set_value(selected_room);
+    }
+
+    void RoomNavigator::set_flip(bool flip)
+    {
+        _flip->set_state(flip);
     }
 }

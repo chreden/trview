@@ -499,6 +499,7 @@ namespace trview
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
+        _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -718,6 +719,7 @@ namespace trview
         if (_level)
         {
             _level->set_alternate_mode(enabled);
+            _room_navigator->set_flip(enabled);
         }
     }
 }

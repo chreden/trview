@@ -125,9 +125,18 @@ namespace trview
     }
 
     void Level::set_selected_room(uint16_t index)
-    {
+    { 
         _selected_room = index;
         regenerate_neighbours();
+
+        // If the user has selected a room that is or has an alternate mode, raise the event that the
+        // alternate mode needs to change so that the correct rooms can be rendered.
+        const auto& room = *_rooms[index];
+        if (room.alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode ||
+            room.alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode)
+        {
+            on_alternate_mode_selected(!_alternate_mode);
+        }
     }
 
     void Level::set_neighbour_depth(uint32_t depth)

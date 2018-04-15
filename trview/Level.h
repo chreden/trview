@@ -74,6 +74,9 @@ namespace trview
 
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
+
+        // Event raised when the level needs to change the alternate mode.
+        Event<bool> on_alternate_mode_selected;
     private:
         void generate_rooms();
         void generate_entities();
