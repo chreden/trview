@@ -498,6 +498,7 @@ namespace trview
 
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
+        _level->on_room_selected += [&](uint16_t room) { select_room(room); };
 
         // Set up the views.
         auto rooms = _level->room_info();

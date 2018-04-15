@@ -8,6 +8,7 @@
 #include <SimpleMath.h>
 
 #include <trview.common/Texture.h>
+#include <trview.common/Event.h>
 #include <trlevel/ILevel.h>
 
 #include "Room.h"
@@ -70,6 +71,9 @@ namespace trview
         // Set whether to render the alternate mode (the flipmap) or the regular room.
         // enabled: Whether to render the flipmap.
         void set_alternate_mode(bool enabled);
+
+        // Event raised when the level needs to change the selected room.
+        Event<uint16_t> on_room_selected;
     private:
         void generate_rooms();
         void generate_entities();
