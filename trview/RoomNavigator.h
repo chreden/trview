@@ -37,6 +37,10 @@ namespace trview
         // highlight: Whether highlighting is enabled or disabled.
         Event<bool> on_highlight;
 
+        // Event raised when the user toggles the alternate mode.
+        // flip: Whether the flipmap should be treated as on.
+        Event<bool> on_flip;
+
         // Set the room information for the current room. This will be used to 
         // populate the labels (eg position).
         // room_info: The room information.
