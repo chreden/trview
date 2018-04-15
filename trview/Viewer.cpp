@@ -62,6 +62,7 @@ namespace trview
         _go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
+            set_camera_mode(CameraMode::Orbit);
         };
 
         auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
@@ -350,8 +351,7 @@ namespace trview
                 if (!over_ui() && _picking->visible() && _current_pick.hit)
                 {
                     select_room(_current_pick.room);
-                    _camera_mode = CameraMode::Orbit;
-                    _camera_controls->set_mode(CameraMode::Orbit);
+                    set_camera_mode(CameraMode::Orbit);
                 }
             }
             else if (button == Mouse::Button::Right)
@@ -710,8 +710,6 @@ namespace trview
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
-
-            set_camera_mode(CameraMode::Orbit);
         }
     }
 
