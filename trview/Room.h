@@ -18,6 +18,7 @@
 
 #include "StaticMesh.h"
 #include "TransparencyBuffer.h"
+#include "Mesh.h"
 
 namespace trview
 {
@@ -82,19 +83,6 @@ namespace trview
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
-
-        struct Triangle
-        {
-            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2)
-                : v0(v0), v1(v1), v2(v2), normal((v1 - v0).Cross(v2 - v0))
-            {
-            }
-
-            DirectX::SimpleMath::Vector3 v0;
-            DirectX::SimpleMath::Vector3 v1;
-            DirectX::SimpleMath::Vector3 v2;
-            DirectX::SimpleMath::Vector3 normal;
-        };
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;

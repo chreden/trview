@@ -12,6 +12,7 @@
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
+#include <iterator>
 
 namespace trview
 {
@@ -123,156 +124,20 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        // Geometry.
+        std::vector<trlevel::tr_vertex> room_vertices;
+        std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
+            [](const auto& v) { return v.vertex; });
+
         std::vector<MeshVertex> vertices;
         std::vector<TransparentTriangle> transparent_triangles;
 
-        // The indices are grouped by the number of textiles so that it can be drawn
-        // as the selected texture.
+        // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        std::vector<uint32_t> untextured_indices;
 
-        auto get_vertex = [&](std::size_t index, const trlevel::tr3_room& room)
-        {
-            auto v = room.data.vertices[index].vertex;
-            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
-        };
+        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
+        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        for (const auto& rect : room.data.rectangles)
-        {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
-            std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
-
-            std::array<Vector3, 4> verts;
-            for (int i = 0; i < 4; ++i)
-            {
-                verts[i] = get_vertex(rect.vertices[i], room);
-            }
-
-            // Select UVs - otherwise they will be 0.
-            const uint16_t texture = rect.texture & 0x7fff;
-            for (int i = 0; i < uvs.size(); ++i)
-            {
-                uvs[i] = texture_storage.uv(texture, i);
-            }
-
-            const bool double_sided = rect.texture & 0x8000;
-
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
-            {
-                auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
-                if (double_sided)
-                {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), mode);
-                }
-                continue;
-            }
-
-            tex_indices_ptr = &indices[texture_storage.tile(texture)];
-
-            auto base = vertices.size();
-            for (int i = 0; i < 4; ++i)
-            {
-                vertices.push_back({verts[i], uvs[i], colour });
-            }
-
-            auto& tex_indices = *tex_indices_ptr;
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 3);
-            tex_indices.push_back(base + 0);
-
-            if (double_sided)
-            {
-                tex_indices.push_back(base + 2);
-                tex_indices.push_back(base + 1);
-                tex_indices.push_back(base);
-                tex_indices.push_back(base);
-                tex_indices.push_back(base + 3);
-                tex_indices.push_back(base + 2);
-            }
-
-            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
-            _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 3].pos, vertices[base + 0].pos));
-            if (double_sided)
-            {
-                _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 1].pos, vertices[base + 0].pos));
-                _collision_triangles.push_back(Triangle(vertices[base + 0].pos, vertices[base + 3].pos, vertices[base + 2].pos));
-            }
-        }
-
-        for (const auto& tri : room.data.triangles)
-        {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
-            std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
-            std::array<Vector3, 3> verts;
-            for (int i = 0; i < 3; ++i)
-            {
-                verts[i] = get_vertex(tri.vertices[i], room);
-            }
-
-            // Select UVs - otherwise they will be 0.
-            const uint16_t texture = tri.texture & 0x7fff;
-            for (int i = 0; i < uvs.size(); ++i)
-            {
-                uvs[i] = texture_storage.uv(texture, i);
-            }
-
-            const bool double_sided = tri.texture & 0x8000;
-
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
-            {
-                auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                if (double_sided)
-                {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
-                }
-                continue;
-            }
-
-            tex_indices_ptr = &indices[texture_storage.tile(texture)];
-
-            auto base = vertices.size();
-            for (int i = 0; i < 3; ++i)
-            {
-                vertices.push_back({ verts[i], uvs[i], colour });
-            }
-
-            auto& tex_indices = *tex_indices_ptr;
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-            if (double_sided)
-            {
-                tex_indices.push_back(base + 2);
-                tex_indices.push_back(base + 1);
-                tex_indices.push_back(base);
-            }
-
-            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
-            if (double_sided)
-            {
-                _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 1].pos, vertices[base].pos));
-            }
-        }
-
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, texture_storage);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);

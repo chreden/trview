@@ -1,5 +1,6 @@
 #include "trtypes.h"
 #include <algorithm>
+#include <iterator>
 
 namespace trlevel
 {
