@@ -21,10 +21,15 @@ namespace trview
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
-        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
+        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
+        _alternate_room(room.alternate_room)
     {
-        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
+        // the level can fix up the rooms so that they know if they are alternates of another room
+        // (IsAlternate).
+        _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
+        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
@@ -103,6 +108,19 @@ namespace trview
             mesh->render(context, camera.view_projection(), texture_storage, colour);
         }
 
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->render(context, camera, texture_storage, colour);
@@ -156,16 +174,29 @@ namespace trview
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
         std::set<uint16_t> adjacent_rooms;
+
+        // When adding an adjacent room, make sure to add the alternate room of that room
+        // as well, so that the depth mode works properly when the flip map is enabled.
+        auto add_adjacent_room = [&](int16_t room)
+        {
+            adjacent_rooms.insert(room);
+            auto r = level.get_room(room);
+            if (r.alternate_room != -1)
+            {
+                adjacent_rooms.insert(r.alternate_room);
+            }
+        };
+
         for (const auto& sector : room.sector_list)
         {
             if (sector.room_above != 0xff)
             {
-                adjacent_rooms.insert(sector.room_above);
+                add_adjacent_room(sector.room_above);
             }
 
             if (sector.room_below != 0xff)
             {
-                adjacent_rooms.insert(sector.room_below);
+                add_adjacent_room(sector.room_below);
             }
 
             uint32_t index = sector.floordata_index;
@@ -191,7 +222,7 @@ namespace trview
                     end_data = true;
                     break;
                 case 0x1:
-                    adjacent_rooms.insert(level.get_floor_data(++index));
+                    add_adjacent_room(level.get_floor_data(++index));
                     break;
                 case 0x2:
                 case 0x3:
@@ -265,9 +296,45 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->get_transparent_triangles(transparency, camera, colour);
         }
+    }
+
+    // Determines the alternate state of the room.
+    Room::AlternateMode Room::alternate_mode() const
+    {
+        return _alternate_mode;
+    }
+
+    // Gets the room number of the room that is the alternate to this room.
+    // If this room does not have an alternate this will be -1.
+    // Returns: The room number of the alternate room.
+    int16_t Room::alternate_room() const
+    {
+        return _alternate_room;
+    }
+
+    // Set this room to be the alternate room of the room specified.
+    // This will change the alternate_mode of this room to IsAlternate.
+    // number: The room number.
+    void Room::set_is_alternate(int16_t number)
+    {
+        _alternate_room = number;
+        _alternate_mode = AlternateMode::IsAlternate;
     }
 }

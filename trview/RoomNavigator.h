@@ -37,6 +37,10 @@ namespace trview
         // highlight: Whether highlighting is enabled or disabled.
         Event<bool> on_highlight;
 
+        // Event raised when the user toggles the alternate mode.
+        // flip: Whether the flipmap should be treated as on.
+        Event<bool> on_flip;
+
         // Set the room information for the current room. This will be used to 
         // populate the labels (eg position).
         // room_info: The room information.
@@ -56,8 +60,14 @@ namespace trview
         // but will update the user interface appropriately.
         // selected_room: The room that has been selected.
         void set_selected_room(uint32_t selected_room);
+
+        // Set the current flip mode. This will not raise the on_flip event
+        // but will update the user interface appropriately.
+        // flip: The new flip mode.
+        void set_flip(bool flip);
     private:
         ui::Checkbox*      _highlight;
+        ui::Checkbox*      _flip;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;

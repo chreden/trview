@@ -125,9 +125,17 @@ namespace trview
     }
 
     void Level::set_selected_room(uint16_t index)
-    {
+    { 
         _selected_room = index;
         regenerate_neighbours();
+
+        // If the user has selected a room that is or has an alternate mode, raise the event that the
+        // alternate mode needs to change so that the correct rooms can be rendered.
+        const auto& room = *_rooms[index];
+        if (is_alternate_mismatch(room.alternate_mode()))
+        {
+            on_alternate_mode_selected(!_alternate_mode);
+        }
     }
 
     void Level::set_neighbour_depth(uint32_t depth)
@@ -166,10 +174,21 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room->render(context, camera, *_texture_storage.get(), room.selection_mode);
+            room.room.render(context, camera, *_texture_storage.get(), room.selection_mode);
             if (_regenerate_transparency)
             {
-                room.room->get_transparent_triangles(*_transparency, camera, room.selection_mode);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode);
+            }
+
+            // If this is an alternate room, render the items from the original room in the sample places.
+            if (_alternate_mode && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            {
+                auto& original_room = _rooms[room.room.alternate_room()];
+                original_room->render_contained(context, camera, *_texture_storage.get(), room.selection_mode);
+                if (_regenerate_transparency)
+                {
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode);
+                }
             }
         }
 
@@ -196,7 +215,12 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    rooms.emplace_back(_rooms[i].get(), Room::SelectionMode::Selected);
+                    const auto& room = _rooms[i].get();
+                    if (is_alternate_mismatch(room->alternate_mode()))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room, Room::SelectionMode::Selected, i);
                 }
                 break;
             }
@@ -204,7 +228,12 @@ namespace trview
             {
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
-                    rooms.emplace_back(_rooms[i].get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected);
+                    const auto& room = _rooms[i];
+                    if (is_alternate_mismatch(room->alternate_mode()))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, i);
                 }
                 break;
             }
@@ -212,7 +241,12 @@ namespace trview
             {
                 for (uint16_t i : _neighbours)
                 {
-                    rooms.emplace_back(_rooms[i].get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour);
+                    const auto& room = _rooms[i];
+                    if (is_alternate_mismatch(room->alternate_mode()))
+                    {
+                        continue;
+                    }
+                    rooms.emplace_back(*room.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour, i);
                 }
                 break;
             }
@@ -226,9 +260,22 @@ namespace trview
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
             auto room = _level->get_room(i);
-
-            // Convert that room into a Room that we can use in the UI.
             _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
+        }
+
+        // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
+        // This can only be done once all the rooms are loaded.
+        for (int16_t i = 0; i < _rooms.size(); ++i)
+        {
+            const auto& room = _rooms[i];
+            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            {
+                int16_t alternate = room->alternate_room();
+                if (alternate != -1)
+                {
+                    _rooms[alternate]->set_is_alternate(i);
+                }
+            }
         }
     }
 
@@ -281,19 +328,16 @@ namespace trview
     Level::PickResult Level::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
-        for (uint32_t i = 0; i < _rooms.size(); ++i)
+        auto rooms = get_rooms_to_render();
+        for (auto& room : rooms)
         {
-            if (room_visible(i))
+            auto result = room.room.pick(position, direction);
+            if (result.hit && result.distance < final_result.distance)
             {
-                const auto& room = _rooms[i];
-                auto result = room->pick(position, direction);
-                if (result.hit && result.distance < final_result.distance)
-                {
-                    final_result.hit = true;
-                    final_result.distance = result.distance;
-                    final_result.position = result.position;
-                    final_result.room = i;
-                }
+                final_result.hit = true;
+                final_result.distance = result.distance;
+                final_result.position = result.position;
+                final_result.room = room.number;
             }
         }
         return final_result;
@@ -314,5 +358,29 @@ namespace trview
     void Level::on_camera_moved()
     {
         _regenerate_transparency = true;
+    }
+
+    // Set whether to render the alternate mode (the flipmap) or the regular room.
+    // enabled: Whether to render the flipmap.
+    void Level::set_alternate_mode(bool enabled)
+    {
+        _alternate_mode = enabled;
+        _regenerate_transparency = true;
+
+        // If the currently selected room is a room involved in flipmaps, select the alternate
+        // room so that the user doesn't have an invisible room selected.
+        const auto& current_room = *_rooms[selected_room()];
+        if (is_alternate_mismatch(current_room.alternate_mode()))
+        {
+            on_room_selected(current_room.alternate_room());
+        }
+    }
+
+    // Determines whether the alternate mode specified is a mismatch with the current setting of 
+    // the alternate mode flag.
+    bool Level::is_alternate_mismatch(Room::AlternateMode mode) const
+    {
+        return mode == Room::AlternateMode::IsAlternate && !_alternate_mode ||
+               mode == Room::AlternateMode::HasAlternate && _alternate_mode;
     }
 }
