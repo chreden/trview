@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="Entity.h" />
@@ -198,6 +199,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
+    <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="Entity.cpp" />

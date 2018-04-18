@@ -17,6 +17,8 @@
 #include "TextureStorage.h"
 #include "LevelInfo.h"
 #include "DefaultTextures.h"
+#include "ShaderStorage.h"
+#include "DefaultShaders.h"
 
 namespace trview
 {
@@ -32,6 +34,9 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
+
+        _shader_storage = std::make_unique<ShaderStorage>(_device);
+        load_default_shaders(_device, *_shader_storage.get());
 
         generate_ui();
     }
@@ -469,7 +474,7 @@ namespace trview
         save_user_settings(_settings);
 
         _current_level = trlevel::load_level(filename);
-        _level = std::make_unique<Level>(_device, _current_level.get());
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 

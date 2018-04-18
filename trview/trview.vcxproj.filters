@@ -175,6 +175,9 @@
     <ClInclude Include="PixelShader.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultShaders.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -287,6 +290,9 @@
     </ClCompile>
     <ClCompile Include="Sector.cpp">
       <Filter>View\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultShaders.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ICamera;
     struct IShaderStorage;
+    struct IShader;
 
     class Level
     {
