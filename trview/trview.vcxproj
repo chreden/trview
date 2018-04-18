@@ -173,6 +173,7 @@
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
+    <ClInclude Include="PixelShader.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
@@ -213,8 +214,10 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Neighbours.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sector.cpp" />
     <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />

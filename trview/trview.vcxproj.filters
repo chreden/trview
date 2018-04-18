@@ -172,6 +172,9 @@
     <ClInclude Include="Sector.h">
       <Filter>View\Map</Filter>
     </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -271,6 +274,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="VertexShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">

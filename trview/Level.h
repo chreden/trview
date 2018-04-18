@@ -22,11 +22,12 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
+    struct IShaderStorage;
 
     class Level
     {
     public:
-        Level(CComPtr<ID3D11Device> device, const trlevel::ILevel* level);
+        Level(CComPtr<ID3D11Device> device, const IShaderStorage& shader_storage, const trlevel::ILevel* level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -118,9 +119,8 @@ namespace trview
         std::vector<std::unique_ptr<Entity>> _entities;
 
         CComPtr<ID3D11Device>       _device;
-        CComPtr<ID3D11VertexShader> _vertex_shader;
-        CComPtr<ID3D11PixelShader>  _pixel_shader;
-        CComPtr<ID3D11InputLayout>  _input_layout;
+        IShader*                    _vertex_shader;
+        IShader*                    _pixel_shader;
         CComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
