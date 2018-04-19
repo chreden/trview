@@ -55,6 +55,10 @@ namespace trlevel
         // Returns: The floor data.
         virtual uint16_t get_floor_data(uint32_t index) const = 0;
 
+        // Returns entire floor data vector.
+        // Returns: The floor data.
+        virtual std::vector<std::uint16_t> get_floor_data_all() const = 0;
+
         // Get the number of entities in the level.
         // Returns: The number of entities.
         virtual uint32_t num_entities() const = 0;

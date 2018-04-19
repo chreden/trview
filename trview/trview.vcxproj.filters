@@ -41,6 +41,9 @@
     <Filter Include="View\Entity">
       <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Map">
+      <UniqueIdentifier>{8624538e-4b81-47e0-ab41-6bded8dcc325}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -148,6 +151,12 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>View\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniMapWindow.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -238,6 +247,12 @@
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="DirectoryListing.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>View\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniMapWindow.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>

@@ -29,6 +29,9 @@
     <ClInclude Include="ImageNode.h">
       <Filter>Nodes</Filter>
     </ClInclude>
+    <ClInclude Include="MapRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="ImageNode.cpp">
       <Filter>Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="MapRenderer.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

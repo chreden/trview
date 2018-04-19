@@ -30,6 +30,8 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
 
+#include "trview.ui.render/MapRenderer.h"
+
 namespace trview
 {
     namespace ui
@@ -136,6 +138,8 @@ namespace trview
         // New user interface control structure.
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
+
+        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };

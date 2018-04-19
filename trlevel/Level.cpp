@@ -254,6 +254,12 @@ namespace trlevel
         return _floor_data[index];
     }
 
+    std::vector<std::uint16_t> 
+    Level::get_floor_data_all() const
+    {
+        return _floor_data;
+    }
+
     uint32_t Level::num_entities() const
     {
         return _entities.size();

@@ -75,6 +75,9 @@ namespace trview
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
         _ui_renderer->load(_control.get());
+
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, _window.width(), _window.height());
+        
     }
 
     void Viewer::generate_tool_window()
@@ -664,6 +667,7 @@ namespace trview
     void Viewer::render_ui()
     {
         _ui_renderer->render(_context);
+        _map_renderer->render(_context);
     }
 
     void Viewer::cycle()
@@ -708,6 +712,8 @@ namespace trview
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
+
+            _map_renderer->set_room(*_current_level, _current_level->get_room(room));
 
             set_camera_mode(CameraMode::Orbit);
         }
