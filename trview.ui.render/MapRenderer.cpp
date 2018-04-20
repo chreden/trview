@@ -56,6 +56,12 @@ namespace trview
                 else                    _map->load(level, room);
             }
 
+            void 
+            MapRenderer::set_colours(const std::vector<FunctionColour>& colours)
+            {
+                _colours = colours; 
+            }
+
             Point
             MapRenderer::get_origin()
             {
@@ -68,24 +74,23 @@ namespace trview
             DirectX::SimpleMath::Color 
             MapRenderer::get_colour(const FloorData& fd)
             {
-                switch (fd.function)
-                {
-                case Function::PORTAL:
-                    return DirectX::SimpleMath::Color(0.0, 0.0, 0.0);
-                case Function::TRIGGER:
-                    return DirectX::SimpleMath::Color(1.0, 0.3, 0.7);
-                default: 
-                    if (fd.floor <= fd.ceiling)
-                        return DirectX::SimpleMath::Color(0.5, 0.5, 0.5); // square is a wall 
-                    else 
-                        return DirectX::SimpleMath::Color(0.0, 0.7, 0.7);
-                };
+                if (fd.floor <= fd.ceiling)
+                    return _COLOUR_WALL; 
+
+                auto colour = std::find_if(_colours.begin(), _colours.end(), [&fd] (const FunctionColour& colour) throw() {
+                    return fd.function == colour.function;
+                }); 
+
+                return (colour != std::end(_colours)) 
+                    ? colour->colour 
+                    : _COLOUR_FALLBACK;
             }
 
             CComPtr<ID3D11ShaderResourceView> 
             MapRenderer::get_texture()
             {
-                return _texture_storage.coloured(0xFFFFFFFF).view;
+                if (_texture == nullptr) _texture = _texture_storage.coloured(0xFFFFFFFF).view;
+                return _texture; 
             }
         }
     }

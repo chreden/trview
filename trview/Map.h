@@ -3,24 +3,10 @@
 #include "RoomInfo.h"
 #include "trlevel/ILevel.h"
 
+#include "MapTypes.h"
+
 namespace trview
 {
-    enum class Function
-    {
-        PORTAL=0x1, FLOOR_SLANT, CEILING_SLANT, TRIGGER,
-        KILL, CLIMBABLE
-    };
-
-    struct FloorData
-    {
-    public: 
-        int row, column; 
-        Function function; 
-        std::uint16_t subfunction; 
-
-        std::int16_t floor, ceiling; 
-    };
-
     class Map
     {
     public:

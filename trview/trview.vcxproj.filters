@@ -154,8 +154,8 @@
     <ClInclude Include="Map.h">
       <Filter>View\Map</Filter>
     </ClInclude>
-    <ClInclude Include="MiniMapWindow.h">
-      <Filter>Program\Windows</Filter>
+    <ClInclude Include="MapTypes.h">
+      <Filter>View\Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +251,6 @@
     </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>View\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="MiniMapWindow.cpp">
-      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

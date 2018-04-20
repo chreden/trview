@@ -166,6 +166,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MapTypes.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
