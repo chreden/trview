@@ -37,6 +37,25 @@ namespace trview
         additive_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         additive_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
         _device->CreateBlendState(&additive_desc, &_additive_blend);
+
+        // Depth stencil that will test depth, but will not write it.
+        D3D11_DEPTH_STENCIL_DESC stencil_desc;
+        memset(&stencil_desc, 0, sizeof(stencil_desc));
+        stencil_desc.DepthEnable = true;
+        stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+        stencil_desc.DepthFunc = D3D11_COMPARISON_LESS;
+        stencil_desc.StencilEnable = true;
+        stencil_desc.StencilReadMask = 0xFF;
+        stencil_desc.StencilWriteMask = 0xFF;
+        stencil_desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        stencil_desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        stencil_desc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        stencil_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        stencil_desc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        _device->CreateDepthStencilState(&stencil_desc, &_transparency_depth_state);
     }
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
@@ -61,6 +80,11 @@ namespace trview
         {
             return;
         }
+
+        CComPtr<ID3D11DepthStencilState> old_state;
+        context->OMGetDepthStencilState(&old_state, nullptr);
+
+        context->OMSetDepthStencilState(_transparency_depth_state, 1);
 
         using namespace DirectX::SimpleMath;
 
@@ -101,6 +125,8 @@ namespace trview
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
         }
+
+        context->OMSetDepthStencilState(old_state, 1);
     }
 
     void TransparencyBuffer::reset()

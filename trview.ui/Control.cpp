@@ -1,6 +1,7 @@
 #include "Control.h"
 
 #include <algorithm>
+#include <iterator>
 
 namespace trview
 {

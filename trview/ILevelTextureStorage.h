@@ -23,8 +23,6 @@ namespace trview
         virtual uint16_t attribute(uint32_t texture_index) const = 0;
 
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const = 0;
-
-        virtual DirectX::SimpleMath::Color palette(uint32_t index) const = 0;
     };
 }
 

@@ -12,6 +12,7 @@
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
 #include <array>
+#include <iterator>
 
 namespace trview
 {
@@ -20,10 +21,15 @@ namespace trview
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
-        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }
+        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
+        _alternate_room(room.alternate_room)
     {
-        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
+        // the level can fix up the rooms so that they know if they are alternates of another room
+        // (IsAlternate).
+        _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
+        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(level, room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
@@ -102,6 +108,19 @@ namespace trview
             mesh->render(context, camera.view_projection(), texture_storage, colour);
         }
 
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        render_contained(context, camera, texture_storage, colour);
+    }
+
+    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->render(context, camera, texture_storage, colour);
@@ -123,118 +142,20 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        // Geometry.
+        std::vector<trlevel::tr_vertex> room_vertices;
+        std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
+            [](const auto& v) { return v.vertex; });
+
         std::vector<MeshVertex> vertices;
         std::vector<TransparentTriangle> transparent_triangles;
 
-        // The indices are grouped by the number of textiles so that it can be drawn
-        // as the selected texture.
+        // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        std::vector<uint32_t> untextured_indices;
 
-        auto get_vertex = [&](std::size_t index, const trlevel::tr3_room& room)
-        {
-            auto v = room.data.vertices[index].vertex;
-            return Vector3(v.x / 1024.f, -v.y / 1024.f, v.z / 1024.f);
-        };
+        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
+        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        for (const auto& rect : room.data.rectangles)
-        {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
-            std::array<Vector2, 4> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
-
-            std::array<Vector3, 4> verts;
-            for (int i = 0; i < 4; ++i)
-            {
-                verts[i] = get_vertex(rect.vertices[i], room);
-            }
-
-            // Select UVs - otherwise they will be 0.
-            const uint16_t texture = rect.texture & 0x7fff;
-            for (int i = 0; i < uvs.size(); ++i)
-            {
-                uvs[i] = texture_storage.uv(texture, i);
-            }
-
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
-            {
-                auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
-                continue;
-            }
-
-            tex_indices_ptr = &indices[texture_storage.tile(texture)];
-
-            auto base = vertices.size();
-            for (int i = 0; i < 4; ++i)
-            {
-                vertices.push_back({verts[i], uvs[i], colour });
-            }
-
-            auto& tex_indices = *tex_indices_ptr;
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 2);
-            tex_indices.push_back(base + 3);
-            tex_indices.push_back(base + 0);
-
-            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
-            _collision_triangles.push_back(Triangle(vertices[base + 2].pos, vertices[base + 3].pos, vertices[base + 0].pos));
-        }
-
-        for (const auto& tri : room.data.triangles)
-        {
-            // What is selected inside the texture portion?
-            //  The UV coordinates.
-            //  Else, the face is a single colour.
-            std::array<Vector2, 3> uvs = { Vector2(1,1), Vector2(1,1), Vector2(1,1) };
-            Color colour{ 1,1,1,1 };
-            std::vector<uint32_t>* tex_indices_ptr = nullptr;
-            std::array<Vector3, 3> verts;
-            for (int i = 0; i < 3; ++i)
-            {
-                verts[i] = get_vertex(tri.vertices[i], room);
-            }
-
-            // Select UVs - otherwise they will be 0.
-            const uint16_t texture = tri.texture & 0x7fff;
-            for (int i = 0; i < uvs.size(); ++i)
-            {
-                uvs[i] = texture_storage.uv(texture, i);
-            }
-
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
-            {
-                auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                continue;
-            }
-
-            tex_indices_ptr = &indices[texture_storage.tile(texture)];
-
-            auto base = vertices.size();
-            for (int i = 0; i < 3; ++i)
-            {
-                vertices.push_back({ verts[i], uvs[i], colour });
-            }
-
-            auto& tex_indices = *tex_indices_ptr;
-            tex_indices.push_back(base);
-            tex_indices.push_back(base + 1);
-            tex_indices.push_back(base + 2);
-
-            _collision_triangles.push_back(Triangle(vertices[base].pos, vertices[base + 1].pos, vertices[base + 2].pos));
-        }
-
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, texture_storage);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -253,16 +174,29 @@ namespace trview
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
         std::set<uint16_t> adjacent_rooms;
+
+        // When adding an adjacent room, make sure to add the alternate room of that room
+        // as well, so that the depth mode works properly when the flip map is enabled.
+        auto add_adjacent_room = [&](int16_t room)
+        {
+            adjacent_rooms.insert(room);
+            auto r = level.get_room(room);
+            if (r.alternate_room != -1)
+            {
+                adjacent_rooms.insert(r.alternate_room);
+            }
+        };
+
         for (const auto& sector : room.sector_list)
         {
             if (sector.room_above != 0xff)
             {
-                adjacent_rooms.insert(sector.room_above);
+                add_adjacent_room(sector.room_above);
             }
 
             if (sector.room_below != 0xff)
             {
-                adjacent_rooms.insert(sector.room_below);
+                add_adjacent_room(sector.room_below);
             }
 
             uint32_t index = sector.floordata_index;
@@ -288,7 +222,7 @@ namespace trview
                     end_data = true;
                     break;
                 case 0x1:
-                    adjacent_rooms.insert(level.get_floor_data(++index));
+                    add_adjacent_room(level.get_floor_data(++index));
                     break;
                 case 0x2:
                 case 0x3:
@@ -362,9 +296,45 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    {
+        using namespace DirectX::SimpleMath;
+        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
+            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        get_contained_transparent_triangles(transparency, camera, colour);
+    }
+
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
         for (const auto& entity : _entities)
         {
             entity->get_transparent_triangles(transparency, camera, colour);
         }
+    }
+
+    // Determines the alternate state of the room.
+    Room::AlternateMode Room::alternate_mode() const
+    {
+        return _alternate_mode;
+    }
+
+    // Gets the room number of the room that is the alternate to this room.
+    // If this room does not have an alternate this will be -1.
+    // Returns: The room number of the alternate room.
+    int16_t Room::alternate_room() const
+    {
+        return _alternate_room;
+    }
+
+    // Set this room to be the alternate room of the room specified.
+    // This will change the alternate_mode of this room to IsAlternate.
+    // number: The room number.
+    void Room::set_is_alternate(int16_t number)
+    {
+        _alternate_room = number;
+        _alternate_mode = AlternateMode::IsAlternate;
     }
 }

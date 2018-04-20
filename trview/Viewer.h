@@ -98,6 +98,8 @@ namespace trview
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);
 
+        void set_alternate_mode(bool enabled);
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;

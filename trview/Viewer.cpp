@@ -62,6 +62,7 @@ namespace trview
         _go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
+            set_camera_mode(CameraMode::Orbit);
         };
 
         auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
@@ -90,6 +91,7 @@ namespace trview
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
         _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
+        _room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); };
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _neighbours->on_depth_changed += [&](int32_t value)
@@ -352,8 +354,7 @@ namespace trview
                 if (!over_ui() && _picking->visible() && _current_pick.hit)
                 {
                     select_room(_current_pick.room);
-                    _camera_mode = CameraMode::Orbit;
-                    _camera_controls->set_mode(CameraMode::Orbit);
+                    set_camera_mode(CameraMode::Orbit);
                 }
             }
             else if (button == Mouse::Button::Right)
@@ -500,6 +501,8 @@ namespace trview
 
         _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, _current_level.get());
+        _level->on_room_selected += [&](uint16_t room) { select_room(room); };
+        _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -716,6 +719,15 @@ namespace trview
             _map_renderer->set_room(*_current_level, _current_level->get_room(room));
 
             set_camera_mode(CameraMode::Orbit);
+        }
+    }
+
+    void Viewer::set_alternate_mode(bool enabled)
+    {
+        if (_level)
+        {
+            _level->set_alternate_mode(enabled);
+            _room_navigator->set_flip(enabled);
         }
     }
 }
