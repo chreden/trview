@@ -60,7 +60,7 @@ namespace trview
 
                 hr = device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
-                std::vector<char> vs_data = load_file(L"ui_vertex_shader.cso");
+                std::vector<uint8_t> vs_data = load_file(L"ui_vertex_shader.cso");
 
                 D3D11_INPUT_ELEMENT_DESC input_desc[2];
                 memset(&input_desc, 0, sizeof(input_desc));
@@ -83,7 +83,7 @@ namespace trview
 
                 hr = device->CreateVertexShader(&vs_data[0], vs_data.size(), nullptr, &_vertex_shader);
 
-                std::vector<char> ps_data = load_file(L"ui_pixel_shader.cso");
+                std::vector<uint8_t> ps_data = load_file(L"ui_pixel_shader.cso");
                 hr = device->CreatePixelShader(&ps_data[0], ps_data.size(), nullptr, &_pixel_shader);
 
                 // Create a texture sampler state description.
