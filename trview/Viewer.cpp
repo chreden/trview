@@ -565,6 +565,8 @@ namespace trview
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
         render_ui();
 
+        render_map();
+
         _swap_chain->Present(1, 0);
     }
 
@@ -670,6 +672,11 @@ namespace trview
     void Viewer::render_ui()
     {
         _ui_renderer->render(_context);
+    }
+
+    void Viewer::render_map()
+    {
+        _map_renderer->set_mouse_position(client_cursor_position(_window));
         _map_renderer->render(_context);
     }
 

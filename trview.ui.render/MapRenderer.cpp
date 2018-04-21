@@ -34,19 +34,21 @@ namespace trview
                 auto point = get_position(fd);
                 auto square_colour = get_colour(fd); 
                 auto texture = get_texture();
+                bool ishover = false;
+
+                if (_mouse_position.is_between(_first, _last))
+                    ishover = _mouse_position.is_between(point, Point(point.x + _DRAW_SCALE - 1, point.y + _DRAW_SCALE - 1));
 
                 _sprite.render (
-                    context, texture, point.x, point.y, _DRAW_SCALE-1, _DRAW_SCALE-1, square_colour
+                    context, texture, point.x, point.y, _DRAW_SCALE - 1, _DRAW_SCALE - 1,
+                    ishover ? Color(0.7, 0.7, 0.7): square_colour
                 );
             }
 
             Point
             MapRenderer::get_position(const FloorData& fd)
             {
-                return Point {
-                    get_origin().x + (fd.column * _DRAW_SCALE),
-                    get_origin().y + (fd.row * _DRAW_SCALE)
-                };
+                return _first + Point(fd.column * _DRAW_SCALE, fd.row * _DRAW_SCALE);
             }
 
             void
@@ -54,21 +56,15 @@ namespace trview
             {
                 if (_map == nullptr)    _map = std::make_unique<Map>(level, room);
                 else                    _map->load(level, room);
+
+                _first = Point(_window_width - (_DRAW_SCALE * _map->columns()) - _DRAW_MARGIN, _DRAW_MARGIN);
+                _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
             }
 
             void 
             MapRenderer::set_colours(const std::vector<FunctionColour>& colours)
             {
                 _colours = colours; 
-            }
-
-            Point
-            MapRenderer::get_origin()
-            {
-                return Point {
-                    (_window_width - (_DRAW_SCALE * _map->columns())) - _DRAW_MARGIN,
-                    _DRAW_MARGIN
-                };
             }
 
             DirectX::SimpleMath::Color 
@@ -91,6 +87,12 @@ namespace trview
             {
                 if (_texture == nullptr) _texture = _texture_storage.coloured(0xFFFFFFFF).view;
                 return _texture; 
+            }
+
+            void 
+            MapRenderer::set_mouse_position(const Point& p)
+            {
+                _mouse_position = p;
             }
         }
     }

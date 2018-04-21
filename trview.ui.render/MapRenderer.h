@@ -36,6 +36,13 @@ namespace trview
 
                 // Sets the colours used by the map 
                 void set_colours(const std::vector<FunctionColour>& colours);
+                 
+                // Sets the mouse position 
+                void set_mouse_position(const Point& p);
+
+            protected:
+                // Returns true if mouse is over the control, false otherwise 
+                bool is_mouse_over() const;
 
             private:
                 // Draws the square at the position specified in pt using flood data in fd.  
@@ -49,19 +56,18 @@ namespace trview
                 Color get_colour(const FloorData& fd);
 
                 // Gets base texture
-                CComPtr<ID3D11ShaderResourceView> get_texture(); 
-
-                // Gets the origin point (0, 0) of where to draw the map
-                Point get_origin(); 
+                CComPtr<ID3D11ShaderResourceView> get_texture();
 
                 CComPtr<ID3D11Device>               _device;
                 int                                 _window_width, _window_height;
                 std::unique_ptr<Map>                _map;
-                float                               _origin_x, _origin_y; 
                 Sprite                              _sprite; 
                 TextureStorage                      _texture_storage; 
                 std::vector<FunctionColour>         _colours = default_colours; 
                 CComPtr<ID3D11ShaderResourceView>   _texture;
+
+                Point                               _first, _last; // top-left corner, bottom-right corner
+                Point                               _mouse_position; 
 
                 const float _DRAW_MARGIN = 20.0f; 
                 const float _DRAW_SCALE = 15.0f; 

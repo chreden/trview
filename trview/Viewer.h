@@ -85,6 +85,8 @@ namespace trview
         void render_scene();
         // Draw the user interface elements of the scene.
         void render_ui();
+        // Draws a minimap 
+        void render_map(); 
 
         void select_room(uint32_t room);
 
