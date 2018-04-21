@@ -5,6 +5,8 @@
 #include <vector>
 
 #include <trview.common/FileLoader.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/IShader.h>
 
 namespace trview
 {
@@ -21,7 +23,7 @@ namespace trview
                 };
             }
 
-            Sprite::Sprite(CComPtr<ID3D11Device> device, uint32_t width, uint32_t height)
+            Sprite::Sprite(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
                 : _device(device), _host_width(width), _host_height(height)
             {
                 using namespace DirectX::SimpleMath;
@@ -60,31 +62,8 @@ namespace trview
 
                 hr = device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
-                std::vector<uint8_t> vs_data = load_file(L"ui_vertex_shader.cso");
-
-                D3D11_INPUT_ELEMENT_DESC input_desc[2];
-                memset(&input_desc, 0, sizeof(input_desc));
-                input_desc[0].SemanticName = "Position";
-                input_desc[0].SemanticIndex = 0;
-                input_desc[0].InstanceDataStepRate = 0;
-                input_desc[0].InputSlot = 0;
-                input_desc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                input_desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-
-                input_desc[1].SemanticName = "Texcoord";
-                input_desc[1].SemanticIndex = 0;
-                input_desc[1].InstanceDataStepRate = 0;
-                input_desc[1].InputSlot = 0;
-                input_desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-                input_desc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-                input_desc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-
-                hr = device->CreateInputLayout(input_desc, 2, &vs_data[0], vs_data.size(), &_input_layout);
-
-                hr = device->CreateVertexShader(&vs_data[0], vs_data.size(), nullptr, &_vertex_shader);
-
-                std::vector<uint8_t> ps_data = load_file(L"ui_pixel_shader.cso");
-                hr = device->CreatePixelShader(&ps_data[0], ps_data.size(), nullptr, &_pixel_shader);
+                _vertex_shader = shader_storage.shader("ui_vertex_shader");
+                _pixel_shader = shader_storage.shader("ui_pixel_shader");
 
                 // Create a texture sampler state description.
                 D3D11_SAMPLER_DESC desc;
@@ -119,11 +98,12 @@ namespace trview
                 // select which vertex buffer to display
                 UINT stride = sizeof(Vertex);
                 UINT offset = 0;
-                context->IASetInputLayout(_input_layout);
+
+                _vertex_shader->apply(context);
+                _pixel_shader->apply(context);
+
                 context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
                 context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-                context->VSSetShader(_vertex_shader, nullptr, 0);
-                context->PSSetShader(_pixel_shader, nullptr, 0);
                 context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
                 context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
                 context->DrawIndexed(4, 0, 0);

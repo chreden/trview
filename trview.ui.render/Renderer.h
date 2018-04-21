@@ -13,6 +13,11 @@
 
 namespace trview
 {
+    namespace graphics
+    {
+        struct IShaderStorage;
+    }
+
     namespace ui
     {
         namespace render
@@ -20,7 +25,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(CComPtr<ID3D11Device> device, uint32_t host_width, uint32_t host_height);
+                explicit Renderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height);
 
                 // Examine a control heirarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering

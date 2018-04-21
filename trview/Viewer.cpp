@@ -80,7 +80,7 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, _window.width(), _window.height());
