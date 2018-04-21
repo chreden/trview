@@ -45,7 +45,11 @@ namespace trview
     class Neighbours;
     class LevelInfo;
     struct ITextureStorage;
-    struct IShaderStorage;
+
+    namespace graphics
+    {
+        struct IShaderStorage;
+    }
 
     class Viewer
     {
@@ -176,7 +180,7 @@ namespace trview
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
-        std::unique_ptr<IShaderStorage> _shader_storage;
+        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
 
         UserSettings _settings;
 

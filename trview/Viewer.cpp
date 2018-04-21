@@ -11,13 +11,14 @@
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
 
+#include <trview.graphics/ShaderStorage.h>
+
 #include "RoomNavigator.h"
 #include "CameraControls.h"
 #include "Neighbours.h"
 #include "TextureStorage.h"
 #include "LevelInfo.h"
 #include "DefaultTextures.h"
-#include "ShaderStorage.h"
 #include "DefaultShaders.h"
 
 namespace trview
@@ -35,7 +36,7 @@ namespace trview
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
 
-        _shader_storage = std::make_unique<ShaderStorage>(_device);
+        _shader_storage = std::make_unique<graphics::ShaderStorage>(_device);
         load_default_shaders(_device, *_shader_storage.get());
 
         generate_ui();

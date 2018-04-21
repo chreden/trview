@@ -9,12 +9,12 @@
 #include "ICamera.h"
 #include "TransparencyBuffer.h"
 
-#include "IShaderStorage.h"
-#include "IShader.h"
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/IShader.h>
 
 namespace trview
 {
-    Level::Level(CComPtr<ID3D11Device> device, const IShaderStorage& shader_storage, const trlevel::ILevel* level)
+    Level::Level(CComPtr<ID3D11Device> device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _device(device), _level(level)
     {
         _vertex_shader = shader_storage.shader("level_vertex_shader");

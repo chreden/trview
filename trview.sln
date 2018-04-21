@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2017", "e
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.ui.tests", "trview.ui.tests\trview.ui.tests.vcxproj", "{BD627C7D-0143-453F-BAE4-9819D2CB50A9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.graphics", "trview.graphics\trview.graphics.vcxproj", "{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -103,6 +105,14 @@ Global
 		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x64.Build.0 = Release|x64
 		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x86.ActiveCfg = Release|Win32
 		{BD627C7D-0143-453F-BAE4-9819D2CB50A9}.Release|x86.Build.0 = Release|Win32
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x64.ActiveCfg = Debug|x64
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x64.Build.0 = Debug|x64
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x86.ActiveCfg = Debug|Win32
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Debug|x86.Build.0 = Debug|Win32
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Release|x64.ActiveCfg = Release|x64
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Release|x64.Build.0 = Release|x64
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Release|x86.ActiveCfg = Release|Win32
+		{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
