@@ -22,7 +22,7 @@ namespace trview
             for (int row = 0; row < _count_rows; ++row)// row >= 0; --row)
             {
                 std::uint16_t sector_index = (_count_rows * column) + row;
-                auto data = get_floor_data_at_sector_index(sector_index, _count_rows - row, column);
+                FloorData data = parse(sector_index, _count_rows - row - 1, column);
 
                 _data.push_back(data);
             }
@@ -43,23 +43,40 @@ namespace trview
     }
 
     FloorData
-    Map::get_floor_data_at_sector_index(std::uint16_t sector_index, std::uint16_t row, std::uint16_t column) const
+    Map::parse(std::uint16_t sector_index, std::uint16_t row, std::uint16_t column) const
     {
-        FloorData data;
-        trlevel::tr_room_sector sector; 
-        std::uint16_t floor; 
+        FloorData data; 
+        trlevel::tr_room_sector sector;
+        std::uint16_t start_index, cur_index; 
+        bool end_data = false; 
 
-        if (sector_index > 0
-            && sector_index <= (_room.num_x_sectors * _room.num_z_sectors))
+        if (sector_index <= area()
+            && sector_index < _room.sector_list.size())
         {
-            sector = _room.sector_list.at(sector_index);
-            floor = _raw_floor_data.at(sector.floordata_index);
+            sector = _room.sector_list[sector_index];
+            data.floor = sector.floor; 
+            data.ceiling = sector.ceiling; 
 
-            data.floor = sector.floor;
-            data.ceiling = sector.ceiling;
+            // This continues to read the *next* floordata entry until we receive the enddata flag
+            // The enddata flag is (floordata & 0x8000) > 0
+            for (cur_index = sector.floordata_index; !end_data; ++cur_index)
+            {
+                // No bounds check on this 
+                // If this fails I want it to be caught early rather than silently failing, at() throws out_of_range
+                std::uint16_t header = _raw_floor_data.at(cur_index); 
 
-            data.function = (Function) (floor & 0x1F); 
-            data.subfunction = (floor & 0x7F00);
+                // https://opentomb.earvillage.net/OpenTomb/doc/trosettastone.html#FloorData
+                // Function: bits 0..4 (0x001F) => type of action
+                // Subfunction: bits 8..14 (0x7F00) => action's conditions and case switches 
+                // EndData: bit 15 (0x8000) => if != 0, end of data - stop parsing 
+                std::uint8_t function = header & 0x1F;
+                std::uint16_t sub_function = (header & 0x7F00) >> 8; 
+                end_data = (bool) ((header & 0x8000) >> 15);
+                
+                // Handle function specific items 
+                Function func((FunctionType) function);
+                data.functions.push_back(func); 
+            }
         }
 
         data.row = row; 

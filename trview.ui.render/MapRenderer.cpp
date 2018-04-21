@@ -78,7 +78,7 @@ namespace trview
                     return _COLOUR_WALL; 
 
                 auto colour = std::find_if(_colours.begin(), _colours.end(), [&fd] (const FunctionColour& colour) throw() {
-                    return fd.function == colour.function;
+                    return fd.has_function(colour.function);
                 }); 
 
                 return (colour != std::end(_colours)) 

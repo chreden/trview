@@ -27,9 +27,12 @@ namespace trview
         // Returns the number of rows in the room (equal to number of X sectors) 
         inline std::uint16_t rows() const { return _count_rows; }
 
+        // Gets the total number of sectors in the room 
+        inline std::uint16_t area() const { return _count_columns * _count_rows; }
+
     private:
         // Returns the floor data at the specified sector index 
-        FloorData get_floor_data_at_sector_index(std::uint16_t, std::uint16_t, std::uint16_t) const;
+        FloorData parse(std::uint16_t, std::uint16_t, std::uint16_t) const;
 
         trlevel::tr3_room           _room;
         std::vector<std::uint16_t>  _raw_floor_data;
