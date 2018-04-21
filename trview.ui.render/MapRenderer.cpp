@@ -20,39 +20,58 @@ namespace trview
             void
             MapRenderer::render(CComPtr<ID3D11DeviceContext> context)
             {
-                if (_map == nullptr) return;
+                // No map loaded so nothing to render 
+                if (!_map)      return; 
+                // Loaded a new level so regenerate all tiles 
+                if (_is_dirty)  generate_tiles(); 
 
-                const std::vector<FloorData>& data = _map->generate();
-                std::for_each(data.begin(), data.end(), [&] (const FloorData& fd) {
-                    draw_square(context, fd);
-                });
+                std::for_each(_tiles.begin(), _tiles.end(), [&] (const MapTile& tile) {
+                    render_tile(context, tile);
+                }); 
+            }
+
+            void 
+            MapRenderer::generate_tiles()
+            {
+                _tiles.clear(); 
+                _tiles.reserve(_map->area()); 
+
+                std::vector<Sector> sectors = _map->generate(); 
+
+                std::for_each(sectors.begin(), sectors.end(), [&] (const Sector& sector) 
+                {
+                    MapTile tile; 
+
+                    tile.origin = Point(_first + Point(sector.column * _DRAW_SCALE, sector.row * _DRAW_SCALE));
+                    tile.last = Point(tile.origin.x + _DRAW_SCALE - 1, tile.origin.y + _DRAW_SCALE - 1);
+                    tile.sector = sector;
+                    tile.color = _COLOUR_FALLBACK;
+
+                    // determine what colour we're going to use 
+                    for (const auto& floor: tile.sector.floor_data)
+                    {
+                        if (_colours.find(floor.function) != _colours.end())
+                            tile.color = _colours[floor.function];
+                    }
+
+                    _tiles.push_back(tile); 
+                }); 
+            }
+
+            void 
+            MapRenderer::render_tile(CComPtr<ID3D11DeviceContext> context, const MapTile& tile)
+            {
+                // Determine color, if we're over this tile then we need a specific color 
+                Color color = tile.color; 
+                if (_cursor.is_between(tile.origin, tile.last))
+                    color.Negate(); 
+
+                // Render tile as a sprite 
+                _sprite.render(context, get_texture(), tile.origin.x, tile.origin.y, _DRAW_SCALE-1, _DRAW_SCALE-1, color);
             }
 
             void
-            MapRenderer::draw_square(CComPtr<ID3D11DeviceContext> context, const FloorData& fd)
-            {
-                auto point = get_position(fd);
-                auto square_colour = get_colour(fd); 
-                auto texture = get_texture();
-                bool ishover = false;
-
-                if (_mouse_position.is_between(_first, _last))
-                    ishover = _mouse_position.is_between(point, Point(point.x + _DRAW_SCALE - 1, point.y + _DRAW_SCALE - 1));
-
-                _sprite.render (
-                    context, texture, point.x, point.y, _DRAW_SCALE - 1, _DRAW_SCALE - 1,
-                    ishover ? Color(0.7, 0.7, 0.7): square_colour
-                );
-            }
-
-            Point
-            MapRenderer::get_position(const FloorData& fd)
-            {
-                return _first + Point(fd.column * _DRAW_SCALE, fd.row * _DRAW_SCALE);
-            }
-
-            void
-            MapRenderer::set_room(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+            MapRenderer::load(const trlevel::ILevel& level, const trlevel::tr3_room& room)
             {
                 if (_map == nullptr)    _map = std::make_unique<Map>(level, room);
                 else                    _map->load(level, room);
@@ -61,39 +80,32 @@ namespace trview
                 _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
             }
 
-            void 
-            MapRenderer::set_colours(const std::vector<FunctionColour>& colours)
-            {
-                _colours = colours; 
-            }
-
-            DirectX::SimpleMath::Color 
-            MapRenderer::get_colour(const FloorData& fd)
-            {
-                if (fd.floor <= fd.ceiling)
-                    return _COLOUR_WALL; 
-
-                auto colour = std::find_if(_colours.begin(), _colours.end(), [&fd] (const FunctionColour& colour) throw() {
-                    return fd.has_function(colour.function);
-                }); 
-
-                return (colour != std::end(_colours)) 
-                    ? colour->colour 
-                    : _COLOUR_FALLBACK;
-            }
-
-            CComPtr<ID3D11ShaderResourceView> 
+            CComPtr<ID3D11ShaderResourceView>
             MapRenderer::get_texture()
             {
                 if (_texture == nullptr) _texture = _texture_storage.coloured(0xFFFFFFFF).view;
-                return _texture; 
+                return _texture;
             }
 
-            void 
-            MapRenderer::set_mouse_position(const Point& p)
+            std::unique_ptr<MapTile> 
+            MapRenderer::map_tile_at(const Point& p) const
             {
-                _mouse_position = p;
+                for (const MapTile &tile: _tiles)
+                {
+                    if (p.is_between(tile.origin, tile.last))
+                        return std::make_unique<MapTile>(tile); 
+                }
             }
+
+            bool 
+            MapRenderer::cursor_is_over_control() const
+            {
+                Point origin_with_margin(_first.x - _DRAW_MARGIN, _first.y - _DRAW_MARGIN); 
+                Point end_with_margin(_last.x + _DRAW_MARGIN, _last.y + _DRAW_MARGIN);
+
+                return _cursor.is_between(origin_with_margin, end_with_margin);
+            }
+
         }
     }
 };

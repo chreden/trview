@@ -16,7 +16,7 @@ namespace trview
         // Generates floor data
         // If the level and room have not changed since the last generation, then this does not 
         // regenerate and instead just returns _data.
-        std::vector<FloorData> generate();
+        std::vector<Sector> generate();
 
         // Loads the level and room specified
         void load(const trlevel::ILevel&, const trlevel::tr3_room&);
@@ -32,12 +32,12 @@ namespace trview
 
     private:
         // Returns the floor data at the specified sector index 
-        FloorData parse(std::uint16_t, std::uint16_t, std::uint16_t) const;
+        Sector parse(std::uint16_t, std::uint16_t, std::uint16_t) const;
 
         trlevel::tr3_room           _room;
         std::vector<std::uint16_t>  _raw_floor_data;
         std::uint16_t               _count_columns = 0, _count_rows = 0;
         bool                        _is_dirty = true; // flag to say whether new room has been loaded, so regeneration required
-        std::vector<FloorData>      _data; 
+        std::vector<Sector>         _sectors; 
     };
 }

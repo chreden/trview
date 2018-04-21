@@ -579,7 +579,7 @@ namespace trview
 
     void Viewer::pick()
     {
-        if (!_level || window_is_minimised(_window) || over_ui() || cursor_outside_window(_window))
+        if (!_level || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window))
         {
             _picking->set_visible(false);
             return;
@@ -676,7 +676,11 @@ namespace trview
 
     void Viewer::render_map()
     {
-        _map_renderer->set_mouse_position(client_cursor_position(_window));
+        ui::Point point = client_cursor_position(_window);
+        _map_renderer->set_cursor_position(point);
+
+        //std::unique_ptr<MapTile> tile = _map_renderer->map_tile_at(client_cursor_position(_window));
+
         _map_renderer->render(_context);
     }
 
@@ -723,7 +727,7 @@ namespace trview
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
 
-            _map_renderer->set_room(*_current_level, _current_level->get_room(room));
+            _map_renderer->load(*_current_level, _current_level->get_room(room));
 
             set_camera_mode(CameraMode::Orbit);
         }

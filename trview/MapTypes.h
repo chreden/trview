@@ -5,49 +5,41 @@
 #include <memory>
 #include <algorithm>
 
+#include <trview.ui\Point.h>
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    enum class FunctionType
+    enum class Function
     {
         NORMAL, PORTAL, FLOOR_SLANT, CEILING_SLANT,
-        TRIGGER, KILL, CLIMBABLE
+        TRIGGER, KILL, CLIMBABLE, WALL=0x20
     };
 
-    struct Function
+    struct Floor 
     {
-        Function(const FunctionType& p_type) { type = p_type; }
-        FunctionType type; 
+        Floor(const Function& func) : function(func) {}
+        Function function; 
     };
 
-    struct FloorData
+    struct Sector
     {
+        std::vector<Floor> floor_data;
+        std::int8_t floor, ceiling;
         int row, column; 
-        std::uint16_t floor, ceiling; 
-
-        std::vector<Function> functions; 
-
-        inline bool has_function(const FunctionType& ft) const
-        {
-            auto ptr = std::find_if(functions.begin(), functions.end(), [&ft] (const Function& f) throw() {
-                return f.type == ft;
-            });
-
-            return ptr != std::end(functions);
-        }
     };
 
-    struct FunctionColour
+    struct MapTile
     {
-        FunctionType function;
-        Color colour;
-    };
+        // Where to draw the tile on screen 
+        // origin = top left corner, last = bottom right corner 
+        ui::Point origin, last; 
 
-    const static std::vector<FunctionColour> default_colours = {
-        FunctionColour { FunctionType::NORMAL, Color(0.0, 0.7, 0.7) },
-        FunctionColour { FunctionType::PORTAL, Color(0.0, 0.0, 0.0) },
-        FunctionColour { FunctionType::TRIGGER, Color(1.0, 0.3, 0.7) },
-        FunctionColour { FunctionType::KILL, Color(0.8, 0.2, 0.2) },
-    }; 
+        // Color of the tile 
+        Color color;
+
+        // Sector this tile points to 
+        Sector sector; 
+    };
 }

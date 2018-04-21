@@ -13,7 +13,7 @@ namespace trview
             Point operator -(const Point& other);
             Point operator +(const Point& other);
 
-            bool is_between(const Point& first, const Point& second);
+            bool is_between(const Point& first, const Point& second) const;
 
             float x, y;
         };

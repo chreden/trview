@@ -94,6 +94,8 @@ namespace trview
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
 
+        inline bool over_map() const { return _map_renderer->cursor_is_over_control(); }
+
         void pick();
 
         const ICamera& current_camera() const;
