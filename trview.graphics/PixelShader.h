@@ -19,7 +19,7 @@ namespace trview
 
             virtual ~PixelShader() = default;
 
-            virtual void PixelShader::apply(const CComPtr<ID3D11DeviceContext>& context) override;
+            virtual void apply(const CComPtr<ID3D11DeviceContext>& context) override;
         private:
             CComPtr<ID3D11PixelShader> _pixel_shader;
         };
