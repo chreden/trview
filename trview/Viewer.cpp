@@ -732,6 +732,10 @@ namespace trview
         create_render_target_view();
         create_depth_stencil();
         set_viewport();
+
+        // Inform elements that need to know that the device has been resized.
+        _camera.set_view_size(_window.width(), _window.height());
+        _free_camera.set_view_size(_window.width(), _window.height());
     }
 
     // Create the render target view from the swap chain that has been created.

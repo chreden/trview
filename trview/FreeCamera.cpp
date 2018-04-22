@@ -7,8 +7,6 @@ namespace trview
 {
     FreeCamera::FreeCamera(uint32_t width, uint32_t height)
     {
-        // Projection matrix only has to be calculated once, or when the width and height
-        // of the window changes.
         calculate_view_matrix();
         calculate_projection_matrix(width, height);
     }
@@ -130,5 +128,13 @@ namespace trview
     FreeCamera::Alignment camera_mode_to_alignment(CameraMode mode)
     {
         return mode == CameraMode::Axis ? FreeCamera::Alignment::Axis : FreeCamera::Alignment::Camera;
+    }
+
+    // Set the dimensions of the render target for the camera.
+    // width: The width in pixels of the render target.
+    // height: The width in height of the render target.
+    void FreeCamera::set_view_size(uint32_t width, uint32_t height)
+    {
+        calculate_projection_matrix(width, height);
     }
 }

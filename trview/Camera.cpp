@@ -13,8 +13,6 @@ namespace trview
 
     Camera::Camera(uint32_t width, uint32_t height)
     {
-        // Projection matrix only has to be calculated once, or when the width and height
-        // of the window changes.
         calculate_projection_matrix(width, height);
     }
 
@@ -128,5 +126,10 @@ namespace trview
         auto to = _target - position();
         to.Normalize();
         return to;
+    }
+
+    void Camera::set_view_size(uint32_t width, uint32_t height)
+    {
+        calculate_projection_matrix(width, height);
     }
 }
