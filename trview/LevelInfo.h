@@ -34,6 +34,7 @@ namespace trview
     private:
         Texture get_version_image(trlevel::LevelVersion version) const;
 
+        ui::Control* _panel;
         ui::Label* _name;
         ui::Image* _version;
         std::unordered_map<trlevel::LevelVersion, Texture> _version_textures;

@@ -91,6 +91,16 @@ namespace trview
                     }
                 }
             }
+
+            // Set the size of the host render area.
+            // width: The width of the render area.
+            // height: The height of the render area.
+            void Renderer::set_host_size(uint32_t width, uint32_t height)
+            {
+                _host_width = width;
+                _host_height = height;
+                _sprite->set_host_size(width, height);
+            }
         }
     }
 }
