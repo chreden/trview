@@ -17,8 +17,8 @@ namespace trview
     Level::Level(CComPtr<ID3D11Device> device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _device(device), _level(level)
     {
-        _vertex_shader = shader_storage.shader("level_vertex_shader");
-        _pixel_shader = shader_storage.shader("level_pixel_shader");
+        _vertex_shader = shader_storage.get("level_vertex_shader");
+        _pixel_shader = shader_storage.get("level_pixel_shader");
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;
