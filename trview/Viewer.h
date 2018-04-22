@@ -116,6 +116,9 @@ namespace trview
         // Set the viewport on the context.
         void set_viewport();
 
+        // Tell things that need to be resized that they should resize.
+        void resize_elements();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;

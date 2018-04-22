@@ -61,6 +61,8 @@ namespace trview
                 // Returns whether the map is loaded
                 inline bool loaded() const { return _map != nullptr; }
 
+                // Set the size of the host window.
+                void set_window_size(int width, int height);
             private:
                 // Generates sector positions required to render the map
                 void generate_sector_positions(); 
@@ -73,6 +75,9 @@ namespace trview
 
                 // Determine the colour for a particular sector, based on the function(s) it has 
                 Color get_colour(const Sector& sector) const; 
+
+                // Update the stored positions of the corners of the map.
+                void update_map_position();
 
 
                 CComPtr<ID3D11Device>               _device;

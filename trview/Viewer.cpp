@@ -733,11 +733,7 @@ namespace trview
         create_depth_stencil();
         set_viewport();
 
-        // Inform elements that need to know that the device has been resized.
-        _camera.set_view_size(_window.width(), _window.height());
-        _free_camera.set_view_size(_window.width(), _window.height());
-        _control->set_size(ui::Size(_window.width(), _window.height()));
-        _ui_renderer->set_host_size(_window.width(), _window.height());
+        resize_elements();
     }
 
     // Create the render target view from the swap chain that has been created.
@@ -792,5 +788,15 @@ namespace trview
         viewport.TopLeftX = 0;
         viewport.TopLeftY = 0;
         _context->RSSetViewports(1, &viewport);
+    }
+
+    void Viewer::resize_elements()
+    {
+        // Inform elements that need to know that the device has been resized.
+        _camera.set_view_size(_window.width(), _window.height());
+        _free_camera.set_view_size(_window.width(), _window.height());
+        _control->set_size(ui::Size(_window.width(), _window.height()));
+        _ui_renderer->set_host_size(_window.width(), _window.height());
+        _map_renderer->set_window_size(_window.width(), _window.height());
     }
 }

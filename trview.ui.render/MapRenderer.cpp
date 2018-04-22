@@ -92,10 +92,7 @@ namespace trview
                 // Otherwise just call load() 
                 else                    _map->load(level, room);
 
-                // Location of the origin of the control 
-                _first = Point(_window_width - (_DRAW_SCALE * _map->columns()) - _DRAW_MARGIN, _DRAW_MARGIN);
-                // Location of the last point of the control (bottom-right)
-                _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
+                update_map_position();
             }
 
             CComPtr<ID3D11ShaderResourceView>
@@ -130,6 +127,23 @@ namespace trview
                 return _cursor.is_between(origin_with_margin, end_with_margin);
             }
 
+            void 
+            MapRenderer::set_window_size(int width, int height)
+            {
+                _window_width = width;
+                _window_height = height;
+                _sprite.set_host_size(width, height);
+                update_map_position();
+            }
+
+            void 
+            MapRenderer::update_map_position()
+            {
+                // Location of the origin of the control 
+                _first = Point(_window_width - (_DRAW_SCALE * _map->columns()) - _DRAW_MARGIN, _DRAW_MARGIN);
+                // Location of the last point of the control (bottom-right)
+                _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
+            }
         }
     }
 };
