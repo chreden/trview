@@ -8,6 +8,7 @@
 #include "Viewer.h"
 #include <memory>
 #include <commdlg.h>
+#include <shellapi.h>
 
 #include "DirectoryListing.h"
 
@@ -116,6 +117,14 @@ void update_menu(std::list<std::wstring> files)
     SetMenu(window, menu);
 }
 
+std::wstring get_exe_directory()
+{
+    std::vector<wchar_t> exe_directory(MAX_PATH);
+    GetModuleFileName(nullptr, &exe_directory[0], exe_directory.size());
+    PathRemoveFileSpec(&exe_directory[0]);
+    return std::wstring(exe_directory.begin(), exe_directory.end());
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -140,6 +149,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TRVIEW));
 
+    // Set the current directory to the directory that the exe is running from
+    // so that the shaders can be found.
+    SetCurrentDirectory(get_exe_directory().c_str());
+
     viewer = std::make_unique<trview::Viewer>(window);
     // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
@@ -147,6 +160,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     update_menu(viewer->settings().recent_files);
     // Create current directory files menu entry.
     create_directory_listing_menu();
+
+    // Open the level passed in on the command line, if there is one.
+    int number_of_arguments = 0;
+    const LPWSTR* const arguments = CommandLineToArgvW(GetCommandLine(), &number_of_arguments);
+    if (number_of_arguments > 1)
+    {
+        viewer->open(arguments[1]);
+    }
 
     MSG msg;
     memset(&msg, 0, sizeof(msg));
