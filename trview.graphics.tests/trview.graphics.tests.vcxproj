@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="PixelShaderTests.cpp" />
     <ClCompile Include="ShaderStorageTests.cpp" />
+    <ClCompile Include="VertexShaderTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
