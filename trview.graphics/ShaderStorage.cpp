@@ -4,11 +4,6 @@ namespace trview
 {
     namespace graphics
     {
-        ShaderStorage::ShaderStorage(const CComPtr<ID3D11Device>& device)
-            : _device(device)
-        {
-        }
-
         // Add the shader to the store.
         // name: The name of the shader.
         // shader: The shader.
