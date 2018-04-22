@@ -4,6 +4,7 @@
 #include "trlevel/ILevel.h"
 
 #include "MapTypes.h"
+#include "Sector.h"
 
 namespace trview
 {

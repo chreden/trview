@@ -157,6 +157,9 @@
     <ClInclude Include="MapTypes.h">
       <Filter>View\Map</Filter>
     </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>View\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -250,6 +253,9 @@
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
+      <Filter>View\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
       <Filter>View\Map</Filter>
     </ClCompile>
   </ItemGroup>

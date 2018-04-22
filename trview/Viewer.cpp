@@ -351,10 +351,19 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
-                if (!over_ui() && _picking->visible() && _current_pick.hit)
+                if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
                     select_room(_current_pick.room);
                     set_camera_mode(CameraMode::Orbit);
+                }
+                else if (over_map())
+                {
+                    std::unique_ptr<Sector> sector = _map_renderer->sector_at_cursor();
+                    if (sector != nullptr && sector->has_function(FunctionType::PORTAL))
+                    {
+                        std::unique_ptr<Floor> floor = sector->at(FunctionType::PORTAL);
+                        select_room(floor->portal_to);
+                    }
                 }
             }
             else if (button == Mouse::Button::Right)
@@ -678,9 +687,6 @@ namespace trview
     {
         ui::Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
-
-        //std::unique_ptr<MapTile> tile = _map_renderer->map_tile_at(client_cursor_position(_window));
-
         _map_renderer->render(_context);
     }
 
