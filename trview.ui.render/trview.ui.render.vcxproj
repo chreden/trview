@@ -24,6 +24,7 @@
     <ClInclude Include="FontTexture.h" />
     <ClInclude Include="ImageNode.h" />
     <ClInclude Include="LabelNode.h" />
+    <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="RenderTargetStore.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="ImageNode.cpp" />
     <ClCompile Include="LabelNode.cpp" />
+    <ClCompile Include="MapRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderNode.cpp" />
     <ClCompile Include="RenderTargetStore.cpp" />

@@ -76,6 +76,9 @@ namespace trview
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
         _ui_renderer->load(_control.get());
+
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, _window.width(), _window.height());
+        
     }
 
     void Viewer::generate_tool_window()
@@ -348,10 +351,19 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
-                if (!over_ui() && _picking->visible() && _current_pick.hit)
+                if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
                     select_room(_current_pick.room);
                     set_camera_mode(CameraMode::Orbit);
+                }
+                else if (over_map())
+                {
+                    std::unique_ptr<Sector> sector = _map_renderer->sector_at_cursor();
+                    if (sector != nullptr && sector->has_function(FunctionType::PORTAL))
+                    {
+                        std::unique_ptr<Floor> floor = sector->at(FunctionType::PORTAL);
+                        select_room(floor->portal_to);
+                    }
                 }
             }
             else if (button == Mouse::Button::Right)
@@ -562,6 +574,8 @@ namespace trview
         _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
         render_ui();
 
+        render_map();
+
         _swap_chain->Present(1, 0);
     }
 
@@ -574,7 +588,7 @@ namespace trview
 
     void Viewer::pick()
     {
-        if (!_level || window_is_minimised(_window) || over_ui() || cursor_outside_window(_window))
+        if (!_level || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window))
         {
             _picking->set_visible(false);
             return;
@@ -669,6 +683,13 @@ namespace trview
         _ui_renderer->render(_context);
     }
 
+    void Viewer::render_map()
+    {
+        ui::Point point = client_cursor_position(_window);
+        _map_renderer->set_cursor_position(point);
+        _map_renderer->render(_context);
+    }
+
     void Viewer::cycle()
     {
         _texture_window->cycle();
@@ -711,6 +732,10 @@ namespace trview
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
+
+            _map_renderer->load(*_current_level, _current_level->get_room(room));
+
+            set_camera_mode(CameraMode::Orbit);
         }
     }
 

@@ -30,6 +30,8 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
 
+#include "trview.ui.render/MapRenderer.h"
+
 namespace trview
 {
     namespace ui
@@ -83,12 +85,16 @@ namespace trview
         void render_scene();
         // Draw the user interface elements of the scene.
         void render_ui();
+        // Draws a minimap 
+        void render_map(); 
 
         void select_room(uint32_t room);
 
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
+
+        inline bool over_map() const { return _map_renderer->loaded() && _map_renderer->cursor_is_over_control(); }
 
         void pick();
 
@@ -138,6 +144,8 @@ namespace trview
         // New user interface control structure.
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
+
+        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
         bool _free_forward{ false };
