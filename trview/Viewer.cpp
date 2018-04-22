@@ -509,6 +509,7 @@ namespace trview
         // Reset UI buttons
         _room_navigator->set_max_rooms(rooms.size());
         _room_navigator->set_highlight(false);
+        _room_navigator->set_flip(false);
         select_room(0);
 
         _neighbours->set_enabled(false);
