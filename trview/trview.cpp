@@ -41,6 +41,8 @@ std::vector<trview::File> file_switcher_list;
 
 HMENU directory_listing_menu;
 
+bool resizing = false;
+
 void create_directory_listing_menu()
 {
     HMENU menu = GetMenu(window);
@@ -351,8 +353,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_ENTERSIZEMOVE:
+    {
+        resizing = true;
+        break;
+    }
+    case WM_SIZE:
+    {
+        if (viewer && !resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED))
+        {
+            viewer->resize();
+        }
+        break;
+    }
     case WM_EXITSIZEMOVE:
     {
+        resizing = false;
         if (viewer)
         {
             viewer->resize();

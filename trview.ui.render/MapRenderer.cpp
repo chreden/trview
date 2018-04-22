@@ -139,10 +139,13 @@ namespace trview
             void 
             MapRenderer::update_map_position()
             {
-                // Location of the origin of the control 
-                _first = Point(_window_width - (_DRAW_SCALE * _map->columns()) - _DRAW_MARGIN, _DRAW_MARGIN);
-                // Location of the last point of the control (bottom-right)
-                _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
+                if (_map)
+                {
+                    // Location of the origin of the control 
+                    _first = Point(_window_width - (_DRAW_SCALE * _map->columns()) - _DRAW_MARGIN, _DRAW_MARGIN);
+                    // Location of the last point of the control (bottom-right)
+                    _last = _first + Point(_DRAW_SCALE * _map->columns(), _DRAW_SCALE * _map->rows());
+                }
             }
         }
     }
