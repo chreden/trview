@@ -747,4 +747,20 @@ namespace trview
             _room_navigator->set_flip(enabled);
         }
     }
+
+    // Resize the window and the rendering system.
+    void Viewer::resize()
+    {
+        // If the window is the same size as before, do nothing.
+        Window window{ _window.window() };
+        if (window.width() == _window.width() && window.height() == _window.height())
+        {
+            return;
+        }
+
+        // Refresh the window so that the new size is known.
+        _window = Window(_window.window());
+
+        _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+    }
 }

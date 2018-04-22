@@ -70,6 +70,9 @@ namespace trview
 
         UserSettings settings() const;
         Event<std::list<std::wstring>> on_recent_files_changed;
+
+        // Resize the window and the rendering system.
+        void resize();
     private:
         void generate_ui();
         void generate_tool_window();
