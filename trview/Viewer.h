@@ -107,6 +107,15 @@ namespace trview
 
         void set_alternate_mode(bool enabled);
 
+        // Create the render target view from the swap chain that has been created.
+        void create_render_target_view();
+
+        // Create the depth stencil view and buffer.
+        void create_depth_stencil();
+
+        // Set the viewport on the context.
+        void set_viewport();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
