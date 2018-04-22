@@ -121,10 +121,9 @@ namespace trview
         using namespace DirectX;
 
         context->PSSetSamplers(0, 1, &_sampler_state.p);
-
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         _vertex_shader->apply(context);
         _pixel_shader->apply(context);
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         render_rooms(context, camera);
     }

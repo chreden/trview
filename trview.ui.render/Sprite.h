@@ -30,21 +30,18 @@ namespace trview
                 Sprite(const Sprite&) = delete;
                 Sprite& operator=(const Sprite&) = delete;
             private:
-                void create_matrix();
+                void create_matrix(const CComPtr<ID3D11Device>& device);
 
                 void update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour);
 
-                CComPtr<ID3D11Device>       _device;
                 CComPtr<ID3D11Buffer>       _vertex_buffer;
                 CComPtr<ID3D11Buffer>       _index_buffer;
                 CComPtr<ID3D11SamplerState> _sampler_state;
                 CComPtr<ID3D11Buffer>       _matrix_buffer;
-
-                graphics::IShader* _vertex_shader;
-                graphics::IShader* _pixel_shader;
-
-                uint32_t _host_width;
-                uint32_t _host_height;
+                graphics::IShader*          _vertex_shader;
+                graphics::IShader*          _pixel_shader;
+                uint32_t                    _host_width;
+                uint32_t                    _host_height;
             };
         }
     }

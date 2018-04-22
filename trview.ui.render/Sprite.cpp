@@ -24,7 +24,7 @@ namespace trview
             }
 
             Sprite::Sprite(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
-                : _device(device), _host_width(width), _host_height(height)
+                : _host_width(width), _host_height(height)
             {
                 using namespace DirectX::SimpleMath;
 
@@ -79,7 +79,7 @@ namespace trview
                 // Create the texture sampler state.
                 device->CreateSamplerState(&desc, &_sampler_state);
 
-                create_matrix();
+                create_matrix(device);
             }
 
             void Sprite::set_host_size(uint32_t width, uint32_t height)
@@ -92,16 +92,12 @@ namespace trview
             {
                 update_matrix(context, x, y, width, height, colour);
 
-                context->PSSetShaderResources(0, 1, &texture.p);
-                context->PSSetSamplers(0, 1, &_sampler_state.p);
-
-                // select which vertex buffer to display
-                UINT stride = sizeof(Vertex);
-                UINT offset = 0;
-
                 _vertex_shader->apply(context);
                 _pixel_shader->apply(context);
-
+                context->PSSetShaderResources(0, 1, &texture.p);
+                context->PSSetSamplers(0, 1, &_sampler_state.p);
+                UINT stride = sizeof(Vertex);
+                UINT offset = 0;
                 context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
                 context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
@@ -109,7 +105,7 @@ namespace trview
                 context->DrawIndexed(4, 0, 0);
             }
 
-            void Sprite::create_matrix()
+            void Sprite::create_matrix(const CComPtr<ID3D11Device>& device)
             {
                 using namespace DirectX::SimpleMath;
                 D3D11_BUFFER_DESC desc;
@@ -120,7 +116,7 @@ namespace trview
                 desc.Usage = D3D11_USAGE_DYNAMIC;
                 desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-                _device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
+                device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
             }
 
             void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
