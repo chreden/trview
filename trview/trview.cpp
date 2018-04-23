@@ -160,6 +160,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     update_menu(viewer->settings().recent_files);
     // Create current directory files menu entry.
     create_directory_listing_menu();
+    // Makes this window accept dropped files.
+    DragAcceptFiles(window, TRUE);
 
     // Open the level passed in on the command line, if there is one.
     int number_of_arguments = 0;
@@ -217,6 +219,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
                     
                     viewer->on_input(data);
+                    break;
+                }
+                case WM_DROPFILES:
+                {
+                    wchar_t filename[MAX_PATH];
+                    memset(&filename, 0, sizeof(filename));
+                    DragQueryFile((HDROP)msg.wParam, 0, filename, MAX_PATH);
+                    viewer->open(filename);
+                    populate_directory_listing_menu(filename);
                     break;
                 }
             }
