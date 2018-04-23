@@ -38,12 +38,19 @@ namespace trview
 
         auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"No level", 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre, SizeMode::Auto);
 
+        _panel = panel.get();
         _version = version.get();
         _name = name.get();
 
         panel->add_child(std::move(version));
         panel->add_child(std::move(name));
         control.add_child(std::move(panel));
+
+        // Have the control move itself when the parent control resizes.
+        control.on_size_changed += [&](const Size& size)
+        {
+            _panel->set_position(Point(size.width / 2.0f - 50, 0));
+        };
     }
 
     // Set the name of the level.

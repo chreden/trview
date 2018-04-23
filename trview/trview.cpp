@@ -8,6 +8,7 @@
 #include "Viewer.h"
 #include <memory>
 #include <commdlg.h>
+#include <shellapi.h>
 
 #include "DirectoryListing.h"
 
@@ -40,6 +41,8 @@ trview::DirectoryListing dir_lister;
 std::vector<trview::File> file_switcher_list;
 
 HMENU directory_listing_menu;
+
+bool resizing = false;
 
 void create_directory_listing_menu()
 {
@@ -114,6 +117,14 @@ void update_menu(std::list<std::wstring> files)
     SetMenu(window, menu);
 }
 
+std::wstring get_exe_directory()
+{
+    std::vector<wchar_t> exe_directory(MAX_PATH);
+    GetModuleFileName(nullptr, &exe_directory[0], exe_directory.size());
+    PathRemoveFileSpec(&exe_directory[0]);
+    return std::wstring(exe_directory.begin(), exe_directory.end());
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -138,6 +149,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TRVIEW));
 
+    // Set the current directory to the directory that the exe is running from
+    // so that the shaders can be found.
+    SetCurrentDirectory(get_exe_directory().c_str());
+
     viewer = std::make_unique<trview::Viewer>(window);
     // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
@@ -145,6 +160,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     update_menu(viewer->settings().recent_files);
     // Create current directory files menu entry.
     create_directory_listing_menu();
+    // Makes this window accept dropped files.
+    DragAcceptFiles(window, TRUE);
+
+    // Open the level passed in on the command line, if there is one.
+    int number_of_arguments = 0;
+    const LPWSTR* const arguments = CommandLineToArgvW(GetCommandLine(), &number_of_arguments);
+    if (number_of_arguments > 1)
+    {
+        viewer->open(arguments[1]);
+    }
 
     MSG msg;
     memset(&msg, 0, sizeof(msg));
@@ -194,6 +219,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
                     
                     viewer->on_input(data);
+                    break;
+                }
+                case WM_DROPFILES:
+                {
+                    wchar_t filename[MAX_PATH];
+                    memset(&filename, 0, sizeof(filename));
+                    DragQueryFile((HDROP)msg.wParam, 0, filename, MAX_PATH);
+                    viewer->open(filename);
+                    populate_directory_listing_menu(filename);
                     break;
                 }
             }
@@ -351,6 +385,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+    case WM_ENTERSIZEMOVE:
+    {
+        resizing = true;
+        break;
+    }
+    case WM_SIZE:
+    {
+        if (viewer && !resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED))
+        {
+            viewer->resize();
+        }
+        break;
+    }
+    case WM_EXITSIZEMOVE:
+    {
+        resizing = false;
+        if (viewer)
+        {
+            viewer->resize();
+        }
+        return 0;
+    }
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

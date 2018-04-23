@@ -28,6 +28,11 @@ namespace trview
                 void load(Control* control);
 
                 void render(CComPtr<ID3D11DeviceContext> context);
+
+                // Set the size of the host render area.
+                // width: The width of the render area.
+                // height: The height of the render area.
+                void set_host_size(uint32_t width, uint32_t height);
             private:
                 std::unique_ptr<RenderNode> process_control(Control* control);
 

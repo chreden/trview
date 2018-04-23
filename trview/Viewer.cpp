@@ -166,19 +166,9 @@ namespace trview
             nullptr,
             &_context);
 
-        CComPtr<ID3D11Texture2D> back_buffer;
-
-        _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&back_buffer));
-        _device->CreateRenderTargetView(back_buffer, nullptr, &_render_target_view);
-
-        D3D11_VIEWPORT viewport;
-        viewport.Width = static_cast<float>(_window.width());
-        viewport.Height = static_cast<float>(_window.height());
-        viewport.MaxDepth = 1;
-        viewport.MinDepth = 0;
-        viewport.TopLeftX = 0;
-        viewport.TopLeftY = 0;
-        _context->RSSetViewports(1, &viewport);
+        create_render_target_view();
+        set_viewport();
+        create_depth_stencil();
 
         D3D11_BLEND_DESC desc;
         memset(&desc, 0, sizeof(desc));
@@ -191,25 +181,6 @@ namespace trview
         desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
         _device->CreateBlendState(&desc, &_blend_state);
-
-        // Initialize the description of the depth buffer.
-        D3D11_TEXTURE2D_DESC depthBufferDesc;
-        memset(&depthBufferDesc, 0, sizeof(depthBufferDesc));
-
-        // Set up the description of the depth buffer.
-        depthBufferDesc.Width = _window.width();
-        depthBufferDesc.Height = _window.height();
-        depthBufferDesc.MipLevels = 1;
-        depthBufferDesc.ArraySize = 1;
-        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthBufferDesc.SampleDesc.Count = 1;
-        depthBufferDesc.SampleDesc.Quality = 0;
-        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-        depthBufferDesc.CPUAccessFlags = 0;
-        depthBufferDesc.MiscFlags = 0;
-
-        _device->CreateTexture2D(&depthBufferDesc, NULL, &_depth_stencil_buffer);
 
         // Initialize the description of the stencil state.
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -239,17 +210,6 @@ namespace trview
         _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
 
         _context->OMSetDepthStencilState(_depth_stencil_state, 1);
-
-        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-        memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
-
-        // Set up the depth stencil view description.
-        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-        // Create the depth stencil view.
-        _device->CreateDepthStencilView(_depth_stencil_buffer, &depthStencilViewDesc, &_depth_stencil_view);
     }
 
     void Viewer::initialise_input()
@@ -521,6 +481,7 @@ namespace trview
         // Reset UI buttons
         _room_navigator->set_max_rooms(rooms.size());
         _room_navigator->set_highlight(false);
+        _room_navigator->set_flip(false);
         select_room(0);
 
         _neighbours->set_enabled(false);
@@ -746,5 +707,97 @@ namespace trview
             _level->set_alternate_mode(enabled);
             _room_navigator->set_flip(enabled);
         }
+    }
+
+    // Resize the window and the rendering system.
+    void Viewer::resize()
+    {
+        // If the window is the same size as before, do nothing.
+        Window window{ _window.window() };
+        if (window.width() == _window.width() && window.height() == _window.height())
+        {
+            return;
+        }
+
+        // Refresh the window so that the new size is known.
+        _window = Window(_window.window());
+
+        _context->ClearState();
+
+        _render_target_view = nullptr;
+        _depth_stencil_buffer = nullptr;
+        _depth_stencil_view = nullptr;
+
+        HRESULT hr = _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+
+        create_render_target_view();
+        create_depth_stencil();
+        set_viewport();
+
+        resize_elements();
+    }
+
+    // Create the render target view from the swap chain that has been created.
+    void Viewer::create_render_target_view()
+    {
+        CComPtr<ID3D11Texture2D> back_buffer;
+        _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&back_buffer));
+        _device->CreateRenderTargetView(back_buffer, nullptr, &_render_target_view);
+    }
+
+    // Create the depth stencil view and buffer.
+    void Viewer::create_depth_stencil()
+    {
+        // Initialize the description of the depth buffer.
+        D3D11_TEXTURE2D_DESC depthBufferDesc;
+        memset(&depthBufferDesc, 0, sizeof(depthBufferDesc));
+
+        // Set up the description of the depth buffer.
+        depthBufferDesc.Width = _window.width();
+        depthBufferDesc.Height = _window.height();
+        depthBufferDesc.MipLevels = 1;
+        depthBufferDesc.ArraySize = 1;
+        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        depthBufferDesc.SampleDesc.Count = 1;
+        depthBufferDesc.SampleDesc.Quality = 0;
+        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        depthBufferDesc.CPUAccessFlags = 0;
+        depthBufferDesc.MiscFlags = 0;
+
+        _device->CreateTexture2D(&depthBufferDesc, NULL, &_depth_stencil_buffer);
+
+        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+        memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
+
+        // Set up the depth stencil view description.
+        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+        // Create the depth stencil view.
+        _device->CreateDepthStencilView(_depth_stencil_buffer, &depthStencilViewDesc, &_depth_stencil_view);
+    }
+
+    void Viewer::set_viewport()
+    {
+        D3D11_VIEWPORT viewport;
+        viewport.Width = static_cast<float>(_window.width());
+        viewport.Height = static_cast<float>(_window.height());
+        viewport.MaxDepth = 1;
+        viewport.MinDepth = 0;
+        viewport.TopLeftX = 0;
+        viewport.TopLeftY = 0;
+        _context->RSSetViewports(1, &viewport);
+    }
+
+    void Viewer::resize_elements()
+    {
+        // Inform elements that need to know that the device has been resized.
+        _camera.set_view_size(_window.width(), _window.height());
+        _free_camera.set_view_size(_window.width(), _window.height());
+        _control->set_size(ui::Size(_window.width(), _window.height()));
+        _ui_renderer->set_host_size(_window.width(), _window.height());
+        _map_renderer->set_window_size(_window.width(), _window.height());
     }
 }

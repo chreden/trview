@@ -70,6 +70,9 @@ namespace trview
 
         UserSettings settings() const;
         Event<std::list<std::wstring>> on_recent_files_changed;
+
+        // Resize the window and the rendering system.
+        void resize();
     private:
         void generate_ui();
         void generate_tool_window();
@@ -103,6 +106,18 @@ namespace trview
         void set_camera_mode(CameraMode camera_mode);
 
         void set_alternate_mode(bool enabled);
+
+        // Create the render target view from the swap chain that has been created.
+        void create_render_target_view();
+
+        // Create the depth stencil view and buffer.
+        void create_depth_stencil();
+
+        // Set the viewport on the context.
+        void set_viewport();
+
+        // Tell things that need to be resized that they should resize.
+        void resize_elements();
 
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;

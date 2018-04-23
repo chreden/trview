@@ -36,6 +36,11 @@ namespace trview
         // is applied to the current position.
         // alignment: The new alignment mode.
         void set_alignment(Alignment alignment);
+
+        // Set the dimensions of the render target for the camera.
+        // width: The width in pixels of the render target.
+        // height: The width in height of the render target.
+        void set_view_size(uint32_t width, uint32_t height);
     private:
         void calculate_projection_matrix(uint32_t width, uint32_t height);
         void calculate_view_matrix();
