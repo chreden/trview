@@ -176,7 +176,6 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="RoomNavigator.h" />
-    <ClInclude Include="ShaderStorage.h" />
     <ClInclude Include="Sector.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
@@ -214,7 +213,6 @@
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
     <ClCompile Include="Sector.cpp" />
-    <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="UserSettings.cpp" />

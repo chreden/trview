@@ -151,12 +151,6 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="IShaderStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStorage.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>View\Map</Filter>
     </ClInclude>
@@ -260,12 +254,6 @@
     </ClCompile>
     <ClCompile Include="DirectoryListing.cpp">
       <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="IShaderStorage.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderStorage.cpp">
-      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>View\Map</Filter>
