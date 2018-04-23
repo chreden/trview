@@ -17,6 +17,11 @@
 
 namespace trview
 {
+    namespace graphics
+    {
+        struct IShaderStorage;
+    }
+
     namespace ui
     {
         namespace render
@@ -35,7 +40,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(CComPtr<ID3D11Device> device, int width, int height);
+                MapRenderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height);
 
                 // Renders the map 
                 void render(CComPtr<ID3D11DeviceContext> context);
