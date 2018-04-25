@@ -77,6 +77,9 @@ namespace trview
 
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;
+
+        // Get the current state of the alternate mode (flipmap).
+        bool alternate_mode() const;
     private:
         void generate_rooms();
         void generate_entities();
