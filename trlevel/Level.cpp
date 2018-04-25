@@ -484,7 +484,7 @@ namespace trlevel
             mesh_count = _frames[offset++];
         }
 
-        for (int i = 0; i < mesh_count; ++i)
+        for (uint32_t i = 0; i < mesh_count; ++i)
         {
             tr2_frame_rotation rotation;
 

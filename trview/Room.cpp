@@ -30,7 +30,7 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
-        generate_geometry(level, room, texture_storage);
+        generate_geometry(room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
     }
@@ -138,7 +138,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         using namespace DirectX::SimpleMath;
 

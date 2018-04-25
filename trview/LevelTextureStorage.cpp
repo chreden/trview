@@ -90,12 +90,12 @@ namespace trview
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
-    Texture LevelTextureStorage::lookup(const std::string& key) const
+    Texture LevelTextureStorage::lookup(const std::string&) const
     {
         return Texture();
     }
 
-    void LevelTextureStorage::store(const std::string& key, const Texture& texture)
+    void LevelTextureStorage::store(const std::string&, const Texture&)
     {
     }
 }

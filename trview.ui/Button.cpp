@@ -10,7 +10,7 @@ namespace trview
             set_texture(_up_image);
         }
 
-        bool Button::clicked(Point position)
+        bool Button::clicked(Point)
         {
             on_click();
             return true;
