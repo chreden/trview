@@ -19,57 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FontFactory.h" />
-    <ClInclude Include="FontTexture.h" />
-    <ClInclude Include="ImageNode.h" />
-    <ClInclude Include="LabelNode.h" />
-    <ClInclude Include="MapRenderer.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderNode.h" />
-    <ClInclude Include="RenderTargetStore.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="WindowNode.h" />
+    <ClInclude Include="IShader.h" />
+    <ClInclude Include="IShaderStorage.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="ShaderStorage.h" />
+    <ClInclude Include="VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FontFactory.cpp" />
-    <ClCompile Include="ImageNode.cpp" />
-    <ClCompile Include="LabelNode.cpp" />
-    <ClCompile Include="MapRenderer.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RenderNode.cpp" />
-    <ClCompile Include="RenderTargetStore.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="WindowNode.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
-      <Project>{3270fd29-edab-40be-8ca1-dabc5e261e4c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
-      <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="ui_pixel_shader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="ui_vertex_shader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-    </FxCompile>
+    <ClCompile Include="IShaderStorage.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderStorage.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{0C5A9791-6CF1-42E9-9776-AC47EEFF8EC8}</ProjectGuid>
+    <ProjectGuid>{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>trviewuirender</RootNamespace>
+    <RootNamespace>trviewgraphics</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -137,15 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,15 +120,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -175,7 +138,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,9 +147,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -197,7 +158,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)external\DirectXTK\Inc</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -205,9 +167,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

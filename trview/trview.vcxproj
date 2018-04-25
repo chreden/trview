@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="Entity.h" />
@@ -193,6 +194,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
+    <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -257,6 +259,9 @@
     </ProjectReference>
     <ProjectReference Include="..\trlevel\trlevel.vcxproj">
       <Project>{8ffb19fa-1c9d-4d9c-ab96-844bf695e79c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.graphics\trview.graphics.vcxproj">
+      <Project>{3270fd29-edab-40be-8ca1-dabc5e261e4c}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.input\trview.input.vcxproj">
       <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>

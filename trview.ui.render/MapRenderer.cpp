@@ -8,11 +8,11 @@ namespace trview
     {
         namespace render
         {
-            MapRenderer::MapRenderer(CComPtr<ID3D11Device> device, int width, int height)
+            MapRenderer::MapRenderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
                 : _device(device),
                 _window_width(width), 
                 _window_height(height),
-                _sprite(device, width, height),
+                _sprite(device, shader_storage, width, height),
                 _texture_storage(device)
             {
             }

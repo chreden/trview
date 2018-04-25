@@ -11,12 +11,15 @@
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
 
+#include <trview.graphics/ShaderStorage.h>
+
 #include "RoomNavigator.h"
 #include "CameraControls.h"
 #include "Neighbours.h"
 #include "TextureStorage.h"
 #include "LevelInfo.h"
 #include "DefaultTextures.h"
+#include "DefaultShaders.h"
 
 namespace trview
 {
@@ -32,6 +35,9 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _font_factory = std::make_unique<ui::render::FontFactory>();
+
+        _shader_storage = std::make_unique<graphics::ShaderStorage>();
+        load_default_shaders(_device, *_shader_storage.get());
 
         generate_ui();
     }
@@ -74,10 +80,10 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, _window.width(), _window.height());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, *_shader_storage.get(), _window.width(), _window.height());
         
     }
 
@@ -469,7 +475,7 @@ namespace trview
         save_user_settings(_settings);
 
         _current_level = trlevel::load_level(filename);
-        _level = std::make_unique<Level>(_device, _current_level.get());
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 
