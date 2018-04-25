@@ -354,4 +354,10 @@ namespace trview
         return mode == Room::AlternateMode::IsAlternate && !_alternate_mode ||
                mode == Room::AlternateMode::HasAlternate && _alternate_mode;
     }
+
+    // Get the current state of the alternate mode (flipmap).
+    bool Level::alternate_mode() const
+    {
+        return _alternate_mode;
+    }
 }

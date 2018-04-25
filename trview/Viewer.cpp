@@ -272,6 +272,11 @@ namespace trview
                     set_camera_mode(CameraMode::Axis);
                     break;
                 }
+                case 'P':
+                {
+                    set_alternate_mode(!_level->alternate_mode());
+                    break;
+                }
             }
         });
 
