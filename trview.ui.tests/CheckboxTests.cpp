@@ -19,7 +19,7 @@ namespace trview
                 {
                     Checkbox checkbox(Point(), Size(20, 20), Texture(), Texture());
                     bool raised = false;
-                    checkbox.on_state_changed += [&](bool state)
+                    checkbox.on_state_changed += [&](bool)
                     {
                         raised = true;
                     };

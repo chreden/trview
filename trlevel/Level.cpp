@@ -132,13 +132,13 @@ namespace trlevel
             }
 
             room.alternate_room = read<int16_t>(file);
-            int16_t flags = read<int16_t>(file);
+            room.flags = read<int16_t>(file);
 
             if (get_version() == LevelVersion::Tomb3)
             {
-                uint8_t water_scheme = read<uint8_t>(file);
-                uint8_t reverb_info = read<uint8_t>(file);
-                uint8_t filler = read<uint8_t>(file);
+                room.water_scheme = read<uint8_t>(file);
+                room.reverb_info = read<uint8_t>(file);
+                room.filler = read<uint8_t>(file);
             }
 
             _rooms.push_back(room);

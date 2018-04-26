@@ -110,6 +110,7 @@ namespace trview
                     if (p.is_between(sector.origin, sector.last))
                         return std::make_unique<Sector>(sector);
                 }
+                return nullptr;
             }
 
             std::unique_ptr<Sector> 

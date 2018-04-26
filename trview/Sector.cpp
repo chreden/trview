@@ -14,14 +14,14 @@ namespace trview
     std::unique_ptr<Floor> 
     Sector::at(const FunctionType& func) const
     {
-        auto floor = std::find_if(_floor_data.begin(), _floor_data.end(), [&func] (const Floor& floor) {
+        auto found_floor = std::find_if(_floor_data.begin(), _floor_data.end(), [&func] (const Floor& floor) {
             return floor.function == func; 
         }); 
 
-        if (floor == _floor_data.end())
+        if (found_floor == _floor_data.end())
             return nullptr;
         else
-            return std::make_unique <Floor> (*floor);
+            return std::make_unique <Floor> (*found_floor);
     }
 
     // Returns the floordata at the specified index 
@@ -37,16 +37,16 @@ namespace trview
 
     // Adds a new floordata entry to this sector 
     void 
-    Sector::add(const Floor& floor)
+    Sector::add(const Floor& new_floor)
     {
-        switch (floor.function)
+        switch (new_floor.function)
         {
             case FunctionType::PORTAL: is_portal = true; break;
             case FunctionType::TRIGGER: is_trigger = true; break; 
             case FunctionType::KILL: is_death = true; break; 
         }; 
 
-        _floor_data.push_back(floor); 
+        _floor_data.push_back(new_floor);
     }
 
     // Returns the number of floordata(s) this sector has 
@@ -67,8 +67,7 @@ namespace trview
     bool 
     Sector::has_function(const FunctionType& func) const
     {
-        auto& floor = at(func); 
-        return (floor != nullptr); 
+        return at(func) != nullptr;
     }
 }
 
