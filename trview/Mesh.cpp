@@ -31,7 +31,7 @@ namespace trview
             D3D11_BUFFER_DESC vertex_desc;
             memset(&vertex_desc, 0, sizeof(vertex_desc));
             vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-            vertex_desc.ByteWidth = sizeof(MeshVertex) * vertices.size();
+            vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(vertices.size());
             vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
             D3D11_SUBRESOURCE_DATA vertex_data;
@@ -53,7 +53,7 @@ namespace trview
                 D3D11_BUFFER_DESC index_desc;
                 memset(&index_desc, 0, sizeof(index_desc));
                 index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * tex_indices.size();
+                index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(tex_indices.size());
                 index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
                 D3D11_SUBRESOURCE_DATA index_data;
@@ -70,7 +70,7 @@ namespace trview
                 D3D11_BUFFER_DESC index_desc;
                 memset(&index_desc, 0, sizeof(index_desc));
                 index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * untextured_indices.size();
+                index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(untextured_indices.size());
                 index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
                 D3D11_SUBRESOURCE_DATA index_data;
