@@ -8,7 +8,7 @@ namespace trlevel
 {
     namespace
     {
-        const float PiMul2 = 6.283185307179586476925286766559;
+        const float PiMul2 = 6.283185307179586476925286766559f;
     }
 
     namespace
@@ -68,7 +68,8 @@ namespace trlevel
             }
         }
 
-        uint32_t unused = read<uint32_t>(file);
+        // Read unused value.
+        read<uint32_t>(file);
 
         _num_rooms = read<uint16_t>(file);
 
@@ -101,16 +102,16 @@ namespace trlevel
             room.num_x_sectors = read<uint16_t>(file);
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
 
-            int16_t ambient1 = read<int16_t>(file);
+            room.ambient_intensity_1 = read<int16_t>(file);
 
             if (_version > LevelVersion::Tomb1)
             {
-                int16_t ambient2 = read<int16_t>(file);
+                room.ambient_intensity_2 = read<int16_t>(file);
             }
 
             if (get_version() == LevelVersion::Tomb2)
             {
-                int16_t lightmode = read<int16_t>(file);
+                room.light_mode = read<int16_t>(file);
             }
 
             if (_version == LevelVersion::Tomb1)
@@ -379,7 +380,7 @@ namespace trlevel
 
     uint32_t Level::num_object_textures() const
     {
-        return _object_textures.size();
+        return static_cast<uint32_t>(_object_textures.size());
     }
 
     tr_object_texture Level::get_object_texture(uint32_t index) const
@@ -400,7 +401,7 @@ namespace trlevel
 
     uint32_t Level::num_entities() const
     {
-        return _entities.size();
+        return static_cast<uint32_t>(_entities.size());
     }
 
     tr2_entity Level::get_entity(uint32_t index) const 
@@ -410,7 +411,7 @@ namespace trlevel
 
     uint32_t Level::num_models() const
     {
-        return _models.size();
+        return static_cast<uint32_t>(_models.size());
     }
 
     tr_model Level::get_model(uint32_t index) const
@@ -433,7 +434,7 @@ namespace trlevel
 
     uint32_t Level::num_static_meshes() const
     {
-        return _static_meshes.size();
+        return static_cast<uint32_t>(_static_meshes.size());
     }
 
     tr_staticmesh Level::get_static_mesh(uint32_t mesh_id) const

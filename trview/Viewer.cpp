@@ -158,7 +158,7 @@ namespace trview
         swap_chain_desc.SampleDesc.Count = 1;
         swap_chain_desc.SampleDesc.Quality = 0;
 
-        HRESULT hr = D3D11CreateDeviceAndSwapChain(
+        D3D11CreateDeviceAndSwapChain(
             nullptr,
             D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
@@ -458,9 +458,9 @@ namespace trview
             if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
                 DirectX::SimpleMath::Vector3 movement(
-                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
-                    _free_up ? 1 : 0 + _free_down ? -1 : 0,
-                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0);
+                    _free_left ? -1.0f : 0.0f + _free_right ? 1.0f : 0.0f,
+                    _free_up ? 1.0f : 0.0f + _free_down ? -1.0f : 0.0f,
+                    _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
 
                 const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
                 _free_camera.move(movement * _timer.elapsed() * Speed);
@@ -739,7 +739,7 @@ namespace trview
         _depth_stencil_buffer = nullptr;
         _depth_stencil_view = nullptr;
 
-        HRESULT hr = _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+        _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
         create_render_target_view();
         create_depth_stencil();

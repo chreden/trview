@@ -75,7 +75,7 @@ namespace trview
 
     uint32_t LevelTextureStorage::num_tiles() const
     {
-        return _tiles.size();
+        return static_cast<uint32_t>(_tiles.size());
     }
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const

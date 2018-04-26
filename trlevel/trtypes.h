@@ -391,6 +391,7 @@ namespace trlevel
 
         int16_t ambient_intensity_1;
         int16_t ambient_intensity_2;
+        int16_t light_mode;
 
         std::vector<tr3_room_light> lights;
 
