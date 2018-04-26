@@ -17,7 +17,7 @@ namespace trview
             }
 
             device->CreateVertexShader(&data[0], data.size(), nullptr, &_vertex_shader);
-            device->CreateInputLayout(&input_desc[0], input_desc.size(), &data[0], data.size(), &_input_layout);
+            device->CreateInputLayout(&input_desc[0], input_desc.size(), &data[0], static_cast<uint32_t>(data.size()), &_input_layout);
         }
 
         void VertexShader::apply(const CComPtr<ID3D11DeviceContext>& context)

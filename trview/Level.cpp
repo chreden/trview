@@ -191,7 +191,7 @@ namespace trview
                     {
                         continue;
                     }
-                    rooms.emplace_back(*room, Room::SelectionMode::Selected, i);
+                    rooms.emplace_back(*room, Room::SelectionMode::Selected, static_cast<uint16_t>(i));
                 }
                 break;
             }

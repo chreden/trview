@@ -77,7 +77,7 @@ namespace trview
 
                 texture.render_target->BeginDraw();
                 texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
-                texture.render_target->DrawText(text.c_str(), text.size(), _text_format, layoutRect, texture.brush);
+                texture.render_target->DrawText(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, layoutRect, texture.brush);
                 texture.render_target->EndDraw();
             }
 

@@ -35,7 +35,7 @@ namespace trview
         POINT cursor_pos;
         GetCursorPos(&cursor_pos);
         ScreenToClient(window.window(), &cursor_pos);
-        return ui::Point(cursor_pos.x, cursor_pos.y);
+        return ui::Point(static_cast<float>(cursor_pos.x), static_cast<float>(cursor_pos.y));
     }
 
     // Determines whether the cursor is outside the bounds of the window.
