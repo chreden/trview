@@ -180,12 +180,12 @@ namespace trlevel
         if (_version == LevelVersion::Tomb1)
         {
             std::vector<tr_box> boxes = read_vector<uint32_t, tr_box>(file);
-            num_boxes = boxes.size();
+            num_boxes = static_cast<uint32_t>(boxes.size());
         }
         else
         {
             std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
-            num_boxes = boxes.size();
+            num_boxes = static_cast<uint32_t>(boxes.size());
         }
         std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
 

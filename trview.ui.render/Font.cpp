@@ -88,7 +88,7 @@ namespace trview
             {
                 // Create a text layout from the factory (which we don't have...)
                 CComPtr<IDWriteTextLayout> text_layout;
-                _dwrite_factory->CreateTextLayout(text.c_str(), text.size(), _text_format, 10000, 10000, &text_layout);
+                _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);
                 return ui::Size(std::ceil(metrics.width), std::ceil(metrics.height));

@@ -79,7 +79,7 @@ namespace trview
 
                 CComPtr<ID3D11Buffer> index_buffer;
                 hr = device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
-                _untextured_index_count = untextured_indices.size();
+                _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
 
             using namespace DirectX::SimpleMath;
@@ -217,7 +217,7 @@ namespace trview
                 continue;
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
@@ -292,7 +292,7 @@ namespace trview
                 continue;
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
@@ -338,7 +338,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
@@ -391,7 +391,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
