@@ -9,7 +9,7 @@ namespace trview
 struct File
 {
     std::wstring path, friendly_name; 
-    int size; 
+    uint32_t size; 
 };
 
 class DirectoryListing

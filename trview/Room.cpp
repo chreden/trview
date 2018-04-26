@@ -233,7 +233,7 @@ namespace trview
                     uint16_t action = 0;
                     do
                     {
-                        uint16_t action = level.get_floor_data(++index);
+                        action = level.get_floor_data(++index);
                     } while (action & 0x8000);
                     break;
                 }
