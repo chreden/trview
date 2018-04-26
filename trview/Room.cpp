@@ -67,7 +67,6 @@ namespace trview
             return result;
         }
 
-        bool any_hit = false;
         result.distance = FLT_MAX;
         for (const auto& tri : _collision_triangles)
         {

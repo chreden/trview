@@ -8,10 +8,10 @@ namespace trview
 {
     namespace
     {
-        const int WindowWidth = 80;
-        const int WindowHeight = 50;
-        const int Width = 50;
-        const int Height = 20;
+        const float WindowWidth = 80.0f;
+        const float WindowHeight = 50.0f;
+        const float Width = 50.0f;
+        const float Height = 20.0f;
     }
 
     GoToRoom::GoToRoom(ui::Control* parent)

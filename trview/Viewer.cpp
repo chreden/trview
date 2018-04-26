@@ -96,7 +96,7 @@ namespace trview
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
-        _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
+        _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
         _room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); };
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
@@ -387,7 +387,7 @@ namespace trview
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
-        _mouse.mouse_down += [&](Mouse::Button button)
+        _mouse.mouse_down += [&](Mouse::Button)
         {
             // The client mouse coordinate is already relative to the root window (at present).
             _control->mouse_down(client_cursor_position(_window));
