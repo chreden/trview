@@ -274,7 +274,10 @@ namespace trview
                 }
                 case 'P':
                 {
-                    set_alternate_mode(!_level->alternate_mode());
+                    if (_level)
+                    {
+                        set_alternate_mode(!_level->alternate_mode());
+                    }
                     break;
                 }
             }
