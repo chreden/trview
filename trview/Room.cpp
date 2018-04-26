@@ -229,7 +229,8 @@ namespace trview
                     break;
                 case 0x4:
                 {
-                    uint16_t trigger_setup = level.get_floor_data(++index);
+                    // trigger_setup : uint16_t
+                    ++index;
                     uint16_t action = 0;
                     do
                     {

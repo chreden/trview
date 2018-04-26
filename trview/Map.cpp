@@ -71,8 +71,8 @@ namespace trview
                 // Function: bits 0..4 (0x001F) => type of action
                 // Subfunction: bits 8..14 (0x7F00) => action's conditions and case switches 
                 // EndData: bit 15 (0x8000) => if != 0, end of data - stop parsing 
+                // std::uint8_t sub_function = (floor & 0x7F00) >> 8;
                 std::uint16_t function = floor & 0x1F;
-                std::uint8_t sub_function = (floor & 0x7F00) >> 8;
                 end_data = (floor >> 15); 
 
                 Floor floor_data((FunctionType) function);
