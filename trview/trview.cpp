@@ -355,7 +355,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ofn.lpstrTitle = L"Open level";
                 ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-                ofn.nFilterIndex = -1;
 
                 if (GetOpenFileName(&ofn))
                 {

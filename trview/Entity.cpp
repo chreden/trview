@@ -44,7 +44,8 @@ namespace trview
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
 
-        for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < model.StartingMesh + model.NumMeshes; ++mesh_pointer)
+        const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
+        for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
         {
             _meshes.push_back(mesh_storage.mesh(mesh_pointer));
         }
