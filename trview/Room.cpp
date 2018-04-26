@@ -154,7 +154,7 @@ namespace trview
         process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, texture_storage);
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);

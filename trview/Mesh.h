@@ -21,13 +21,11 @@ namespace trview
         // vertices: The vertices that make up the mesh.
         // indices: The indices for triangles that use level textures.
         // untextured_indices: The indices for triangles that do not use level textures.
-        // texture_storage: The texture storage for the level.
         Mesh(CComPtr<ID3D11Device> device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
-             const std::vector<TransparentTriangle>& transparent_triangles,
-             const ILevelTextureStorage& texture_storage);
+             const std::vector<TransparentTriangle>& transparent_triangles);
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 

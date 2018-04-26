@@ -22,8 +22,7 @@ namespace trview
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
-        const std::vector<TransparentTriangle>& transparent_triangles, 
-        const ILevelTextureStorage& texture_storage)
+        const std::vector<TransparentTriangle>& transparent_triangles)
         : _transparent_triangles(transparent_triangles)
     {
         if (!vertices.empty())
@@ -170,7 +169,7 @@ namespace trview
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
+        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles);
     }
 
     void process_textured_rectangles(

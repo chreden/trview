@@ -128,7 +128,7 @@ namespace trview
             { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
         };
 
-        _sprite_mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, texture_storage);
+        _sprite_mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles);
 
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
