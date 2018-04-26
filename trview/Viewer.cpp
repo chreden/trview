@@ -700,7 +700,7 @@ namespace trview
     {
         if (_current_level && room < _current_level->num_rooms())
         {
-            _level->set_selected_room(room);
+            _level->set_selected_room(static_cast<uint16_t>(room));
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));

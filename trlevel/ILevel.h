@@ -133,7 +133,7 @@ namespace trlevel
         // sprite_sequence_id: The id of the sprite sequence to find.
         // sequence: The place to store the sequence.
         // Returns: Whether the sprite sequence was found.
-        virtual bool get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& sequence) const = 0;
+        virtual bool get_sprite_sequence_by_id(int32_t sprite_sequence_id, tr_sprite_sequence& sequence) const = 0;
 
         // Get the sprite texture with the specified ID.
         // index: The index of the sprite texture to get.

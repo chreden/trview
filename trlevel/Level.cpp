@@ -541,17 +541,20 @@ namespace trlevel
         return _version;
     }
 
-    bool Level::get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& output) const
+    bool Level::get_sprite_sequence_by_id(int32_t sprite_sequence_id, tr_sprite_sequence& output) const
     {
-        for (const auto& sequence : _sprite_sequences)
+        auto found_sequence = std::find_if(_sprite_sequences.begin(), _sprite_sequences.end(), [=](const auto& sequence)
         {
-            if (sequence.SpriteID == sprite_sequence_id)
-            {
-                output = sequence;
-                return true;
-            }
+            return sequence.SpriteID == sprite_sequence_id; 
+        });
+
+        if (found_sequence == _sprite_sequences.end())
+        {
+            return false;
         }
-        return false;
+
+        output = *found_sequence;
+        return true;
     }
 
     tr_sprite_texture Level::get_sprite_texture(uint32_t index) const
