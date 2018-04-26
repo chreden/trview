@@ -17,9 +17,9 @@ namespace trview
         _sectors.clear();
         _sectors.reserve(_count_columns * _count_rows);
 
-        for (int column = 0; column < _count_columns; ++column)
+        for (uint16_t column = 0; column < _count_columns; ++column)
         {
-            for (int row = 0; row < _count_rows; ++row)// row >= 0; --row)
+            for (uint16_t row = 0; row < _count_rows; ++row)
             {
                 std::uint16_t sector_index = (_count_rows * column) + row;
                 Sector data = parse(sector_index, _count_rows - row - 1, column);

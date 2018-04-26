@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour) const
+    TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const
     {
         using namespace DirectX::SimpleMath;
         TransparentTriangle result(
@@ -14,7 +14,7 @@ namespace trview
         Vector3 minimum = Vector3::Min(Vector3::Min(result.vertices[0], result.vertices[1]), result.vertices[2]);
         Vector3 maximum = Vector3::Max(Vector3::Max(result.vertices[0], result.vertices[1]), result.vertices[2]);
         result.position = Vector3::Lerp(minimum, maximum, 0.5f);
-        result.colour = colour;
+        result.colour = colour_override;
         return result;
     }
 

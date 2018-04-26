@@ -490,7 +490,7 @@ namespace trview
         _camera.reset();
 
         // Reset UI buttons
-        _room_navigator->set_max_rooms(rooms.size());
+        _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
         _room_navigator->set_flip(false);
         select_room(0);
@@ -577,7 +577,7 @@ namespace trview
 
         ui::Point mouse_pos = client_cursor_position(_window);
 
-        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world);
+        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, world);
         direction.Normalize();
 
         auto result = _level->pick(position, direction);
@@ -585,7 +585,7 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity());
+            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
         }
@@ -807,7 +807,7 @@ namespace trview
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(_window.width(), _window.height());
         _free_camera.set_view_size(_window.width(), _window.height());
-        _control->set_size(ui::Size(_window.width(), _window.height()));
+        _control->set_size(ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
         _ui_renderer->set_host_size(_window.width(), _window.height());
         _map_renderer->set_window_size(_window.width(), _window.height());
     }

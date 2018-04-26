@@ -253,7 +253,8 @@ namespace trview
                 case 0x11:
                 case 0x12:
                 {
-                    uint16_t triangulation = level.get_floor_data(++index);
+                    // Triangulation: uint16_t
+                    ++index;
                     break;
                 }
                 case 0x13:

@@ -19,7 +19,7 @@ namespace trview
         {
         }
 
-        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour) const;
+        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
 
         // The world space positions that make up the triangle.
         DirectX::SimpleMath::Vector3 vertices[3];

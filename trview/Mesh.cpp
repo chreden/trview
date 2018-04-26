@@ -41,7 +41,7 @@ namespace trview
 
             for (const auto& tex_indices : indices)
             {
-                _index_counts.push_back(tex_indices.size());
+                _index_counts.push_back(static_cast<uint32_t>(tex_indices.size()));
 
                 if (!tex_indices.size())
                 {
