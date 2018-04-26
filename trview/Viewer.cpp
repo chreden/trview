@@ -705,7 +705,7 @@ namespace trview
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
 
-            _map_renderer->load(*_current_level, _current_level->get_room(room));
+            _map_renderer->load(*_current_level, _current_level->get_room(static_cast<uint16_t>(room)));
 
             set_camera_mode(CameraMode::Orbit);
         }

@@ -204,7 +204,7 @@ namespace trview
                     {
                         continue;
                     }
-                    rooms.emplace_back(*room.get(), _selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, i);
+                    rooms.emplace_back(*room.get(), _selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, static_cast<uint16_t>(i));
                 }
                 break;
             }
