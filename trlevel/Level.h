@@ -117,7 +117,7 @@ namespace trlevel
         // Get the mesh at the specified index.
         // index: The index of the mesh to get.
         // Returns: The mesh.
-        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
+        virtual tr_mesh get_mesh_by_pointer(uint32_t mesh_pointer) const override;
 
         // Get the mesh tree node at the specified index.
         // index: The mesh tree index.

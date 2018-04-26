@@ -442,7 +442,7 @@ namespace trlevel
         return _static_meshes.find(mesh_id)->second;
     }
 
-    tr_mesh Level::get_mesh_by_pointer(uint16_t mesh_pointer) const
+    tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
     {
         auto index = _mesh_pointers[mesh_pointer];
         return _meshes.find(index)->second;

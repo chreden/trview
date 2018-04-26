@@ -56,7 +56,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(_window.width(), _window.height()), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
