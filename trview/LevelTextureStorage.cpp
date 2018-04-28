@@ -65,7 +65,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-        return Vector2(vert.Xpixel + vert.Xcoordinate, vert.Ypixel + vert.Ycoordinate) / 255.0f;
+        return Vector2(static_cast<float>(vert.Xpixel + vert.Xcoordinate), static_cast<float>(vert.Ypixel + vert.Ycoordinate)) / 255.0f;
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
@@ -75,7 +75,7 @@ namespace trview
 
     uint32_t LevelTextureStorage::num_tiles() const
     {
-        return _tiles.size();
+        return static_cast<uint32_t>(_tiles.size());
     }
 
     uint16_t LevelTextureStorage::attribute(uint32_t texture_index) const
@@ -90,12 +90,12 @@ namespace trview
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
-    Texture LevelTextureStorage::lookup(const std::string& key) const
+    Texture LevelTextureStorage::lookup(const std::string&) const
     {
         return Texture();
     }
 
-    void LevelTextureStorage::store(const std::string& key, const Texture& texture)
+    void LevelTextureStorage::store(const std::string&, const Texture&)
     {
     }
 }

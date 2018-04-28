@@ -8,7 +8,7 @@ namespace trlevel
 {
     namespace
     {
-        const float PiMul2 = 6.283185307179586476925286766559;
+        const float PiMul2 = 6.283185307179586476925286766559f;
     }
 
     namespace
@@ -68,7 +68,8 @@ namespace trlevel
             }
         }
 
-        uint32_t unused = read<uint32_t>(file);
+        // Read unused value.
+        read<uint32_t>(file);
 
         _num_rooms = read<uint16_t>(file);
 
@@ -101,16 +102,16 @@ namespace trlevel
             room.num_x_sectors = read<uint16_t>(file);
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
 
-            int16_t ambient1 = read<int16_t>(file);
+            room.ambient_intensity_1 = read<int16_t>(file);
 
             if (_version > LevelVersion::Tomb1)
             {
-                int16_t ambient2 = read<int16_t>(file);
+                room.ambient_intensity_2 = read<int16_t>(file);
             }
 
             if (get_version() == LevelVersion::Tomb2)
             {
-                int16_t lightmode = read<int16_t>(file);
+                room.light_mode = read<int16_t>(file);
             }
 
             if (_version == LevelVersion::Tomb1)
@@ -132,13 +133,13 @@ namespace trlevel
             }
 
             room.alternate_room = read<int16_t>(file);
-            int16_t flags = read<int16_t>(file);
+            room.flags = read<int16_t>(file);
 
             if (get_version() == LevelVersion::Tomb3)
             {
-                uint8_t water_scheme = read<uint8_t>(file);
-                uint8_t reverb_info = read<uint8_t>(file);
-                uint8_t filler = read<uint8_t>(file);
+                room.water_scheme = read<uint8_t>(file);
+                room.reverb_info = read<uint8_t>(file);
+                room.filler = read<uint8_t>(file);
             }
 
             _rooms.push_back(room);
@@ -180,12 +181,12 @@ namespace trlevel
         if (_version == LevelVersion::Tomb1)
         {
             std::vector<tr_box> boxes = read_vector<uint32_t, tr_box>(file);
-            num_boxes = boxes.size();
+            num_boxes = static_cast<uint32_t>(boxes.size());
         }
         else
         {
             std::vector<tr2_box> boxes = read_vector<uint32_t, tr2_box>(file);
-            num_boxes = boxes.size();
+            num_boxes = static_cast<uint32_t>(boxes.size());
         }
         std::vector<uint16_t> overlaps = read_vector<uint32_t, uint16_t>(file);
 
@@ -379,7 +380,7 @@ namespace trlevel
 
     uint32_t Level::num_object_textures() const
     {
-        return _object_textures.size();
+        return static_cast<uint32_t>(_object_textures.size());
     }
 
     tr_object_texture Level::get_object_texture(uint32_t index) const
@@ -400,7 +401,7 @@ namespace trlevel
 
     uint32_t Level::num_entities() const
     {
-        return _entities.size();
+        return static_cast<uint32_t>(_entities.size());
     }
 
     tr2_entity Level::get_entity(uint32_t index) const 
@@ -410,7 +411,7 @@ namespace trlevel
 
     uint32_t Level::num_models() const
     {
-        return _models.size();
+        return static_cast<uint32_t>(_models.size());
     }
 
     tr_model Level::get_model(uint32_t index) const
@@ -433,7 +434,7 @@ namespace trlevel
 
     uint32_t Level::num_static_meshes() const
     {
-        return _static_meshes.size();
+        return static_cast<uint32_t>(_static_meshes.size());
     }
 
     tr_staticmesh Level::get_static_mesh(uint32_t mesh_id) const
@@ -441,7 +442,7 @@ namespace trlevel
         return _static_meshes.find(mesh_id)->second;
     }
 
-    tr_mesh Level::get_mesh_by_pointer(uint16_t mesh_pointer) const
+    tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
     {
         auto index = _mesh_pointers[mesh_pointer];
         return _meshes.find(index)->second;
@@ -484,7 +485,7 @@ namespace trlevel
             mesh_count = _frames[offset++];
         }
 
-        for (int i = 0; i < mesh_count; ++i)
+        for (uint32_t i = 0; i < mesh_count; ++i)
         {
             tr2_frame_rotation rotation;
 
@@ -540,17 +541,20 @@ namespace trlevel
         return _version;
     }
 
-    bool Level::get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& output) const
+    bool Level::get_sprite_sequence_by_id(int32_t sprite_sequence_id, tr_sprite_sequence& output) const
     {
-        for (const auto& sequence : _sprite_sequences)
+        auto found_sequence = std::find_if(_sprite_sequences.begin(), _sprite_sequences.end(), [=](const auto& sequence)
         {
-            if (sequence.SpriteID == sprite_sequence_id)
-            {
-                output = sequence;
-                return true;
-            }
+            return sequence.SpriteID == sprite_sequence_id; 
+        });
+
+        if (found_sequence == _sprite_sequences.end())
+        {
+            return false;
         }
-        return false;
+
+        output = *found_sequence;
+        return true;
     }
 
     tr_sprite_texture Level::get_sprite_texture(uint32_t index) const

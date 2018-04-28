@@ -27,6 +27,6 @@ namespace trview
         CComPtr<ID3D11Device> _device;
         const trlevel::ILevel& _level;
         const ILevelTextureStorage& _texture_storage;
-        mutable std::unordered_map<uint16_t, std::unique_ptr<Mesh>> _meshes;
+        mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;
     };
 }

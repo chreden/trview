@@ -17,9 +17,9 @@ namespace trview
         _sectors.clear();
         _sectors.reserve(_count_columns * _count_rows);
 
-        for (int column = 0; column < _count_columns; ++column)
+        for (uint16_t column = 0; column < _count_columns; ++column)
         {
-            for (int row = 0; row < _count_rows; ++row)// row >= 0; --row)
+            for (uint16_t row = 0; row < _count_rows; ++row)
             {
                 std::uint16_t sector_index = (_count_rows * column) + row;
                 Sector data = parse(sector_index, _count_rows - row - 1, column);
@@ -71,8 +71,8 @@ namespace trview
                 // Function: bits 0..4 (0x001F) => type of action
                 // Subfunction: bits 8..14 (0x7F00) => action's conditions and case switches 
                 // EndData: bit 15 (0x8000) => if != 0, end of data - stop parsing 
+                // std::uint8_t sub_function = (floor & 0x7F00) >> 8;
                 std::uint16_t function = floor & 0x1F;
-                std::uint8_t sub_function = (floor & 0x7F00) >> 8;
                 end_data = (floor >> 15); 
 
                 Floor floor_data((FunctionType) function);

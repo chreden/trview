@@ -27,7 +27,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int, HWND& window);
+BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -120,7 +120,7 @@ void update_menu(std::list<std::wstring> files)
 std::wstring get_exe_directory()
 {
     std::vector<wchar_t> exe_directory(MAX_PATH);
-    GetModuleFileName(nullptr, &exe_directory[0], exe_directory.size());
+    GetModuleFileName(nullptr, &exe_directory[0], static_cast<uint32_t>(exe_directory.size()));
     PathRemoveFileSpec(&exe_directory[0]);
     return std::wstring(exe_directory.begin(), exe_directory.end());
 }
@@ -142,7 +142,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow, window))
+    if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
@@ -275,7 +275,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND& window)
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -355,7 +355,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ofn.lpstrTitle = L"Open level";
                 ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-                ofn.nFilterIndex = -1;
 
                 if (GetOpenFileName(&ofn))
                 {
@@ -372,14 +371,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:

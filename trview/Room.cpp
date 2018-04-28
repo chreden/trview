@@ -30,7 +30,7 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
-        generate_geometry(level, room, texture_storage);
+        generate_geometry(room, texture_storage);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
     }
@@ -67,7 +67,6 @@ namespace trview
             return result;
         }
 
-        bool any_hit = false;
         result.distance = FLT_MAX;
         for (const auto& tri : _collision_triangles)
         {
@@ -138,7 +137,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         using namespace DirectX::SimpleMath;
 
@@ -155,7 +154,7 @@ namespace trview
         process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, texture_storage);
+        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -230,11 +229,12 @@ namespace trview
                     break;
                 case 0x4:
                 {
-                    uint16_t trigger_setup = level.get_floor_data(++index);
+                    // trigger_setup : uint16_t
+                    ++index;
                     uint16_t action = 0;
                     do
                     {
-                        uint16_t action = level.get_floor_data(++index);
+                        action = level.get_floor_data(++index);
                     } while (action & 0x8000);
                     break;
                 }
@@ -254,7 +254,8 @@ namespace trview
                 case 0x11:
                 case 0x12:
                 {
-                    uint16_t triangulation = level.get_floor_data(++index);
+                    // Triangulation: uint16_t
+                    ++index;
                     break;
                 }
                 case 0x13:

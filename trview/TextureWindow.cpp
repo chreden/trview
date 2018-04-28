@@ -55,7 +55,7 @@ namespace trview
     {
         if (_texture_index == 0)
         {
-            _texture_index = _level_textures.size() - 1;
+            _texture_index = static_cast<uint32_t>(_level_textures.size()) - 1;
         }
         else
         {

@@ -56,7 +56,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(_window.width(), _window.height()), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -96,7 +96,7 @@ namespace trview
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
-        _room_navigator->on_highlight += [&](bool highlight) { toggle_highlight(); };
+        _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
         _room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); };
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
@@ -158,7 +158,7 @@ namespace trview
         swap_chain_desc.SampleDesc.Count = 1;
         swap_chain_desc.SampleDesc.Quality = 0;
 
-        HRESULT hr = D3D11CreateDeviceAndSwapChain(
+        D3D11CreateDeviceAndSwapChain(
             nullptr,
             D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
@@ -390,7 +390,7 @@ namespace trview
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
-        _mouse.mouse_down += [&](Mouse::Button button)
+        _mouse.mouse_down += [&](Mouse::Button)
         {
             // The client mouse coordinate is already relative to the root window (at present).
             _control->mouse_down(client_cursor_position(_window));
@@ -461,9 +461,9 @@ namespace trview
             if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
             {
                 DirectX::SimpleMath::Vector3 movement(
-                    _free_left ? -1 : 0 + _free_right ? 1 : 0,
-                    _free_up ? 1 : 0 + _free_down ? -1 : 0,
-                    _free_forward ? 1 : 0 + _free_backward ? -1 : 0);
+                    _free_left ? -1.0f : 0.0f + _free_right ? 1.0f : 0.0f,
+                    _free_up ? 1.0f : 0.0f + _free_down ? -1.0f : 0.0f,
+                    _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
 
                 const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
                 _free_camera.move(movement * _timer.elapsed() * Speed);
@@ -493,7 +493,7 @@ namespace trview
         _camera.reset();
 
         // Reset UI buttons
-        _room_navigator->set_max_rooms(rooms.size());
+        _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
         _room_navigator->set_flip(false);
         select_room(0);
@@ -580,7 +580,7 @@ namespace trview
 
         ui::Point mouse_pos = client_cursor_position(_window);
 
-        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, world);
+        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, world);
         direction.Normalize();
 
         auto result = _level->pick(position, direction);
@@ -588,7 +588,7 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, _window.width(), _window.height(), 0, 1.0f, projection, view, XMMatrixIdentity());
+            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
         }
@@ -703,12 +703,12 @@ namespace trview
     {
         if (_current_level && room < _current_level->num_rooms())
         {
-            _level->set_selected_room(room);
+            _level->set_selected_room(static_cast<uint16_t>(room));
 
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
 
-            _map_renderer->load(*_current_level, _current_level->get_room(room));
+            _map_renderer->load(*_current_level, _current_level->get_room(static_cast<uint16_t>(room)));
 
             set_camera_mode(CameraMode::Orbit);
         }
@@ -742,7 +742,7 @@ namespace trview
         _depth_stencil_buffer = nullptr;
         _depth_stencil_view = nullptr;
 
-        HRESULT hr = _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+        _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
         create_render_target_view();
         create_depth_stencil();
@@ -810,7 +810,7 @@ namespace trview
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(_window.width(), _window.height());
         _free_camera.set_view_size(_window.width(), _window.height());
-        _control->set_size(ui::Size(_window.width(), _window.height()));
+        _control->set_size(ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
         _ui_renderer->set_host_size(_window.width(), _window.height());
         _map_renderer->set_window_size(_window.width(), _window.height());
     }

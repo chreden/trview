@@ -82,7 +82,8 @@ namespace trview
                     file >> recent_count;
 
                     // Get the eol for the count.
-                    std::getline(file, std::wstring());
+                    std::wstring line;
+                    std::getline(file, line);
 
                     for (uint32_t i = 0; i < recent_count; ++i)
                     {

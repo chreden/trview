@@ -87,7 +87,7 @@ namespace trview
                     auto texture_view = _root_node->node_texture_view();
                     if (texture_view)
                     {
-                        _sprite->render(context, texture_view, 0, 0, _host_width, _host_height);
+                        _sprite->render(context, texture_view, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
                     }
                 }
             }

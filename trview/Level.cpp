@@ -191,7 +191,7 @@ namespace trview
                     {
                         continue;
                     }
-                    rooms.emplace_back(*room, Room::SelectionMode::Selected, i);
+                    rooms.emplace_back(*room, Room::SelectionMode::Selected, static_cast<uint16_t>(i));
                 }
                 break;
             }
@@ -204,7 +204,7 @@ namespace trview
                     {
                         continue;
                     }
-                    rooms.emplace_back(*room.get(), _selected_room == i ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, i);
+                    rooms.emplace_back(*room.get(), _selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, static_cast<uint16_t>(i));
                 }
                 break;
             }
@@ -323,7 +323,7 @@ namespace trview
         {
             return true;
         }
-        return _neighbours.find(room) != _neighbours.end();
+        return _neighbours.find(static_cast<uint16_t>(room)) != _neighbours.end();
     }
 
     void Level::on_camera_moved()

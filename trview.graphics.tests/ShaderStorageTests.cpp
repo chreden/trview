@@ -18,7 +18,7 @@ namespace trview
                 public:
                     virtual ~TestShader() = default;
 
-                    virtual void apply(const CComPtr<ID3D11DeviceContext>& context) override
+                    virtual void apply(const CComPtr<ID3D11DeviceContext>&) override
                     {
                     }
                 };

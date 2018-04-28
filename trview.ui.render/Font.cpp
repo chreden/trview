@@ -77,7 +77,7 @@ namespace trview
 
                 texture.render_target->BeginDraw();
                 texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
-                texture.render_target->DrawText(text.c_str(), text.size(), _text_format, layoutRect, texture.brush);
+                texture.render_target->DrawText(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, layoutRect, texture.brush);
                 texture.render_target->EndDraw();
             }
 
@@ -88,7 +88,7 @@ namespace trview
             {
                 // Create a text layout from the factory (which we don't have...)
                 CComPtr<IDWriteTextLayout> text_layout;
-                _dwrite_factory->CreateTextLayout(text.c_str(), text.size(), _text_format, 10000, 10000, &text_layout);
+                _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);
                 return ui::Size(std::ceil(metrics.width), std::ceil(metrics.height));

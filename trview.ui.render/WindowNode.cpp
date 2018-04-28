@@ -16,7 +16,7 @@ namespace trview
             {
             }
 
-            void WindowNode::render_self(CComPtr<ID3D11DeviceContext> context, Sprite& sprite)
+            void WindowNode::render_self(CComPtr<ID3D11DeviceContext> context, Sprite&)
             {
                 // Render this node.
                 auto bg_colour = _window->background_colour();
