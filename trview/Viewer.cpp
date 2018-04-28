@@ -478,11 +478,20 @@ namespace trview
 
     void Viewer::open(const std::wstring filename)
     {
+        try
+        {
+            _current_level = trlevel::load_level(filename);
+        }
+        catch(...)
+        {
+            MessageBox(_window.window(), L"Failed to load level", L"Error", MB_OK);
+            return;
+        }
+
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _current_level = trlevel::load_level(filename);
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
