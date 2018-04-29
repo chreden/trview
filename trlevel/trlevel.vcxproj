@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="trlevel.h" />
     <ClInclude Include="trtypes.h" />
