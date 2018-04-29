@@ -113,31 +113,33 @@ namespace trlevel
         return new_object_textures;
     }
 
-    std::vector<tr_face3> convert_mesh_triangles(std::vector<tr4_mesh_face3> triangles)
+    std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles)
     {
-        std::vector<tr_face3> new_triangles;
+        std::vector<tr4_mesh_face3> new_triangles;
         new_triangles.reserve(triangles.size());
         std::transform(triangles.begin(), triangles.end(),
             std::back_inserter(new_triangles), [](const auto& tri)
         {
-            tr_face3 new_face3;
-            new_face3.texture = tri.texture;
+            tr4_mesh_face3 new_face3;
             memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
+            new_face3.texture = tri.texture;
+            new_face3.effects = 0;
             return new_face3;
         });
         return new_triangles;
     }
 
-    std::vector<tr_face4> convert_mesh_rectangles(std::vector<tr4_mesh_face4> rectangles)
+    std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles)
     {
-        std::vector<tr_face4> new_rectangles;
+        std::vector<tr4_mesh_face4> new_rectangles;
         new_rectangles.reserve(rectangles.size());
         std::transform(rectangles.begin(), rectangles.end(),
             std::back_inserter(new_rectangles), [](const auto& rect)
         {
-            tr_face4 new_face4;
-            new_face4.texture = rect.texture;
+            tr4_mesh_face4 new_face4;
             memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
+            new_face4.texture = rect.texture;
+            new_face4.effects = 0;
             return new_face4;
         });
         return new_rectangles;

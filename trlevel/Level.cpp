@@ -167,15 +167,15 @@ namespace trlevel
 
             if (_version < LevelVersion::Tomb4)
             {
-                mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
-                mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
+                mesh.textured_rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(stream));
+                mesh.textured_triangles = convert_triangles(read_vector<int16_t, tr_face3>(stream));
                 mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
                 mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
             }
             else
             {
-                mesh.textured_rectangles = convert_mesh_rectangles(read_vector<int16_t, tr4_mesh_face4>(stream));
-                mesh.textured_triangles = convert_mesh_triangles(read_vector<int16_t, tr4_mesh_face3>(stream));
+                mesh.textured_rectangles = read_vector<int16_t, tr4_mesh_face4>(stream);
+                mesh.textured_triangles = read_vector<int16_t, tr4_mesh_face3>(stream);
             }
 
             _meshes.insert({ pointer, mesh });
@@ -515,8 +515,8 @@ namespace trlevel
                 {
                     room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
                 }
-                room.data.rectangles = read_vector<int16_t, tr_face4>(file);
-                room.data.triangles = read_vector<int16_t, tr_face3>(file);
+                room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+                room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
                 room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
             }
 

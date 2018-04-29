@@ -173,7 +173,7 @@ namespace trview
     }
 
     void process_textured_rectangles(
-        const std::vector<trlevel::tr_face4>& rectangles, 
+        const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -203,9 +203,9 @@ namespace trview
             const bool double_sided = rect.texture & 0x8000;
 
             uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
+            if (attribute != 0 || rect.effects)
             {
-                const auto mode = attribute_to_transparency(attribute);
+                const auto mode = attribute_to_transparency(attribute, rect.effects);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
                 if (double_sided)
@@ -251,7 +251,7 @@ namespace trview
     }
 
     void process_textured_triangles(
-        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -280,9 +280,9 @@ namespace trview
             const bool double_sided = tri.texture & 0x8000;
 
             uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
+            if (attribute != 0 || tri.effects)
             {
-                const auto mode = attribute_to_transparency(attribute);
+                const auto mode = attribute_to_transparency(attribute, tri.effects);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 if (double_sided)
                 {

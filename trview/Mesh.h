@@ -69,7 +69,7 @@ namespace trview
     // transparent_triangles: The collection to add transparent triangles to.
     // collision_triangles: The collection to add collision triangles to.
     void process_textured_rectangles(
-        const std::vector<trlevel::tr_face4>& rectangles, 
+        const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices, 
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -86,7 +86,7 @@ namespace trview
     // transparent_triangles: The collection to add transparent triangles to.
     // collision_triangles: The collection to add collision triangles to.
     void process_textured_triangles(
-        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,

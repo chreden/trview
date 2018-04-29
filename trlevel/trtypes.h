@@ -372,14 +372,6 @@ namespace trlevel
         uint16_t    colour;
     };
 
-    struct tr3_room_data
-    {
-        std::vector<tr3_room_vertex> vertices;
-        std::vector<tr_face4> rectangles;
-        std::vector<tr_face3> triangles;
-        std::vector<tr_room_sprite> sprites;
-    };
-
     struct tr_room_portal
     {
         uint16_t  adjoining_room;
@@ -476,6 +468,14 @@ namespace trlevel
 
 #pragma pack(pop)
 
+    struct tr3_room_data
+    {
+        std::vector<tr3_room_vertex> vertices;
+        std::vector<tr4_mesh_face4> rectangles;
+        std::vector<tr4_mesh_face3> triangles;
+        std::vector<tr_room_sprite> sprites;
+    };
+
     struct tr3_room
     {
         tr_room_info info;
@@ -518,8 +518,8 @@ namespace trlevel
         std::vector<tr_vertex> vertices;
         std::vector<tr_vertex> normals;
         std::vector<int16_t>   lights;
-        std::vector<tr_face4>  textured_rectangles;
-        std::vector<tr_face3>  textured_triangles;
+        std::vector<tr4_mesh_face4>  textured_rectangles;
+        std::vector<tr4_mesh_face3>  textured_triangles;
         std::vector<tr_face4>  coloured_rectangles;
         std::vector<tr_face3>  coloured_triangles;
     };
@@ -558,7 +558,7 @@ namespace trlevel
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
 
-    std::vector<tr_face3> convert_mesh_triangles(std::vector<tr4_mesh_face3> triangles);
+    std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles);
 
-    std::vector<tr_face4> convert_mesh_rectangles(std::vector<tr4_mesh_face4> rectangles);
+    std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles);
 }
