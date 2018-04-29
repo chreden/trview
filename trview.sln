@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.graphics", "trview.g
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.graphics.tests", "trview.graphics.tests\trview.graphics.tests.vcxproj", "{6E6B151D-DF48-4FE2-B7AF-2D07FB3451D2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstat", "external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj", "{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -123,12 +125,21 @@ Global
 		{6E6B151D-DF48-4FE2-B7AF-2D07FB3451D2}.Release|x64.Build.0 = Release|x64
 		{6E6B151D-DF48-4FE2-B7AF-2D07FB3451D2}.Release|x86.ActiveCfg = Release|Win32
 		{6E6B151D-DF48-4FE2-B7AF-2D07FB3451D2}.Release|x86.Build.0 = Release|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|x64.ActiveCfg = Debug|x64
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|x64.Build.0 = Debug|x64
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|x86.ActiveCfg = Debug|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Debug|x86.Build.0 = Debug|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|x64.ActiveCfg = Release|x64
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|x64.Build.0 = Release|x64
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|x86.ActiveCfg = Release|Win32
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
