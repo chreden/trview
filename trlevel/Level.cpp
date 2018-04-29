@@ -573,7 +573,14 @@ namespace trlevel
 
         _mesh_data = read_vector<uint32_t, uint16_t>(file);
         _mesh_pointers = read_vector<uint32_t, uint32_t>(file);
-        std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
+        if (_version >= LevelVersion::Tomb4)
+        {
+            auto animations = read_vector<uint32_t, tr4_animation>(file);
+        }
+        else
+        {
+            std::vector<tr_animation> animations = read_vector<uint32_t, tr_animation>(file);
+        }
         std::vector<tr_state_change> state_changes = read_vector<uint32_t, tr_state_change>(file);
         std::vector<tr_anim_dispatch> anim_dispatches = read_vector<uint32_t, tr_anim_dispatch>(file);
         std::vector<tr_anim_command> anim_commands = read_vector<uint32_t, tr_anim_command>(file);
@@ -592,6 +599,12 @@ namespace trlevel
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
         }
 
+        if (_version == LevelVersion::Tomb4)
+        {
+            // Skip past the 'SPR' marker.
+            file.seekg(3, std::ios::cur);
+        }
+
         _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
         _sprite_sequences = read_vector<uint32_t, tr_sprite_sequence>(file);
 
@@ -599,6 +612,12 @@ namespace trlevel
         // Need to do something about that, instead of just crashing.
 
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
+
+        if (_version == LevelVersion::Tomb4)
+        {
+            std::vector<tr4_flyby_camera> flyby_cameras = read_vector<uint32_t, tr4_flyby_camera>(file);
+        }
+
         std::vector<tr_sound_source> sound_sources = read_vector<uint32_t, tr_sound_source>(file);
 
         uint32_t num_boxes = 0;
@@ -624,9 +643,19 @@ namespace trlevel
         }
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
 
+        if (_version == LevelVersion::Tomb4)
+        {
+            uint8_t animated_textures_uv_count = read<uint8_t>(file);
+            file.seekg(3, std::ios::cur);
+        }
+
         if (get_version() == LevelVersion::Tomb3)
         {
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
+        }
+        if (get_version() == LevelVersion::Tomb4)
+        {
+            _object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
         }
 
         if (_version == LevelVersion::Tomb1)
@@ -635,16 +664,30 @@ namespace trlevel
         }
         else
         {
+            // TR4 entity is in here, OCB is not set but goes into intensity2 (convert later).
             _entities = read_vector<uint32_t, tr2_entity>(file);
         }
-        std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
+
+        if (_version < LevelVersion::Tomb4)
+        {
+            std::vector<uint8_t> light_map = read_vector<uint8_t>(file, 32 * 256);
+        }
 
         if (_version == LevelVersion::Tomb1)
         {
             _palette = read_vector<tr_colour>(file, 256);
         }
 
-        std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
+        if (_version == LevelVersion::Tomb4)
+        {
+            std::vector<tr4_ai_object> ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
+        }
+
+        if (_version < LevelVersion::Tomb4)
+        {
+            std::vector<tr_cinematic_frame> cinematic_frames = read_vector<uint16_t, tr_cinematic_frame>(file);
+        }
+
         std::vector<uint8_t> demo_data = read_vector<uint16_t, uint8_t>(file);
 
         if (_version == LevelVersion::Tomb1)

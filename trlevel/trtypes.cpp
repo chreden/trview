@@ -96,4 +96,20 @@ namespace trlevel
     {
         return tr_colour4{static_cast<uint8_t>(colour.Red << 2), static_cast<uint8_t>(colour.Green << 2), static_cast<uint8_t>(colour.Blue << 2), 0x00 };
     }
+
+    // Convert a set of Tomb Raider IV object textures into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures)
+    {
+        std::vector<tr_object_texture> new_object_textures;
+        new_object_textures.reserve(object_textures.size());
+        std::transform(object_textures.begin(), object_textures.end(),
+            std::back_inserter(new_object_textures), [](const auto& texture)
+        {
+            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
+            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
+            return new_entity;
+        });
+        return new_object_textures;
+    }
 }

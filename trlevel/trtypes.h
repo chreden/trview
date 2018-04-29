@@ -102,6 +102,31 @@ namespace trlevel
         uint16_t AnimCommand;       // Offset into AnimCommand[]
     };
 
+    struct tr4_animation
+    {
+        uint32_t FrameOffset; // Byte offset into Frames[] (divide by 2 for Frames[i])
+        uint8_t FrameRate;   // Engine ticks per frame
+        uint8_t FrameSize;   // Number of int16_t's in Frames[] used by this animation
+
+        uint16_t State_ID;
+
+        uint32_t Speed;     // fixed
+        uint32_t Accel;     // fixed
+        uint32_t SpeedLateral; // fixed
+        uint32_t AccelLateral; // fixed
+
+        uint16_t FrameStart;  // First frame in this animation
+        uint16_t FrameEnd;    // Last frame in this animation
+        uint16_t NextAnimation;
+        uint16_t NextFrame;
+
+        uint16_t NumStateChanges;
+        uint16_t StateChangeOffset; // Offset into StateChanges[]
+
+        uint16_t NumAnimCommands;   // How many of them to use.
+        uint16_t AnimCommand;       // Offset into AnimCommand[]
+    };
+
     struct tr_anim_command // 2 bytes
     {
         int16_t Value;
@@ -186,6 +211,24 @@ namespace trlevel
         int32_t  z;
         int16_t  Room;
         uint16_t Flag;
+    };
+
+    struct tr4_flyby_camera
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        int32_t dx;
+        int32_t dy;
+        int32_t dz;
+        uint8_t sequence;
+        uint8_t index;
+        uint16_t fov;
+        int16_t  roll;
+        uint16_t timer;
+        uint16_t speed;
+        uint16_t flags;
+        uint32_t room_id;
     };
 
     struct tr_sound_source // 16 bytes
@@ -286,6 +329,18 @@ namespace trlevel
         uint16_t               Attribute;
         uint16_t               TileAndFlag;
         tr_object_texture_vert Vertices[4]; // The four corners of the texture
+    };
+
+    struct tr4_object_texture // 38 bytes
+    {
+        uint16_t               Attribute;
+        uint16_t               TileAndFlag;
+        uint16_t               NewFlags;
+        tr_object_texture_vert Vertices[4]; // The four corners of the texture
+        uint32_t               OriginalU;
+        uint32_t               OriginalV;
+        uint32_t               Width;     // Actually width-1
+        uint32_t               Height;    // Actually height-1
     };
 
     // Room vertex for Tomb Raider 1/Unfinished Business.
@@ -393,6 +448,18 @@ namespace trlevel
         float x{ 0.0f }, y{ 0.0f }, z{ 0.0f };
     };
 
+    struct tr4_ai_object
+    {
+        uint16_t type_id;
+        uint16_t room;
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        int16_t ocb;
+        uint16_t flags;     // Activation mask, bitwise-shifted left by 1
+        int32_t angle;
+    };
+
 #pragma pack(pop)
 
     struct tr3_room
@@ -472,4 +539,8 @@ namespace trlevel
 
     // Convert the tr_colour to a tr_colour4 value.
     tr_colour4 convert_to_colour4(const tr_colour& colour);
+
+    // Convert a set of Tomb Raider IV object textures into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
 }
