@@ -98,6 +98,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x040c</Culture>
@@ -124,6 +125,7 @@
       <ProgramDataBaseFileName>$(OutDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>..\..\..</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x040c</Culture>
@@ -152,6 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\..\..</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x040c</Culture>
@@ -181,6 +184,7 @@
       <ProgramDataBaseFileName>$(OutDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalIncludeDirectories>..\..\..</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x040c</Culture>
