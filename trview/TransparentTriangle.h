@@ -35,5 +35,5 @@ namespace trview
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
     };
 
-    TransparentTriangle::Mode attribute_to_transparency(uint16_t attribute, uint16_t effects);
+    TransparentTriangle::Mode determine_transparency(uint16_t attribute, uint16_t effects);
 }

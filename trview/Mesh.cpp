@@ -205,7 +205,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0 || rect.effects)
             {
-                const auto mode = attribute_to_transparency(attribute, rect.effects);
+                const auto mode = determine_transparency(attribute, rect.effects);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
                 if (double_sided)
@@ -282,7 +282,7 @@ namespace trview
             uint16_t attribute = texture_storage.attribute(texture);
             if (attribute != 0 || tri.effects)
             {
-                const auto mode = attribute_to_transparency(attribute, tri.effects);
+                const auto mode = determine_transparency(attribute, tri.effects);
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
                 if (double_sided)
                 {
