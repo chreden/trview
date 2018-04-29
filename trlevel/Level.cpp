@@ -166,8 +166,12 @@ namespace trlevel
             
             mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
             mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
-            mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
-            mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
+
+            if (_version < LevelVersion::Tomb4)
+            {
+                mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
+                mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
+            }
             _meshes.insert({ pointer, mesh });
         }
     }
