@@ -340,13 +340,30 @@ namespace trlevel
 
     struct tr3_room_light   // 24 bytes
     {
-        // Position of light, in world coordinates
         int32_t x;
         int32_t y;
-        int32_t z;       
+        int32_t z;
         tr_colour4 colour;        // Colour of the light
         uint32_t   intensity;
         uint32_t   fade;          // Falloff value
+    };
+
+    struct tr4_room_light
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        tr_colour colour;
+        uint8_t light_type;
+        uint8_t unknown;
+        uint8_t intensity;
+        float in;
+        float out;
+        float length;
+        float cutoff;
+        float dx;
+        float dy;
+        float dz;
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.
@@ -402,7 +419,7 @@ namespace trlevel
 
         uint8_t water_scheme;
         uint8_t reverb_info;
-        uint8_t filler;
+        uint8_t alternate_group;
     };
 
     struct tr2_frame

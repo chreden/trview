@@ -514,11 +514,18 @@ namespace trlevel
             room.num_x_sectors = read<uint16_t>(file);
             room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
 
-            room.ambient_intensity_1 = read<int16_t>(file);
-
-            if (_version > LevelVersion::Tomb1)
+            if (_version == LevelVersion::Tomb4)
             {
-                room.ambient_intensity_2 = read<int16_t>(file);
+                uint32_t room_colour = read<uint32_t>(file);
+            }
+            else
+            {
+                room.ambient_intensity_1 = read<int16_t>(file);
+
+                if (_version > LevelVersion::Tomb1)
+                {
+                    room.ambient_intensity_2 = read<int16_t>(file);
+                }
             }
 
             if (get_version() == LevelVersion::Tomb2)
@@ -526,9 +533,14 @@ namespace trlevel
                 room.light_mode = read<int16_t>(file);
             }
 
+
             if (_version == LevelVersion::Tomb1)
             {
                 room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
+            }
+            else if (_version == LevelVersion::Tomb4)
+            {
+                auto lights = read_vector<uint16_t, tr4_room_light>(file);
             }
             else
             {
@@ -547,11 +559,11 @@ namespace trlevel
             room.alternate_room = read<int16_t>(file);
             room.flags = read<int16_t>(file);
 
-            if (get_version() == LevelVersion::Tomb3)
+            if (get_version() >= LevelVersion::Tomb3)
             {
                 room.water_scheme = read<uint8_t>(file);
                 room.reverb_info = read<uint8_t>(file);
-                room.filler = read<uint8_t>(file);
+                room.alternate_group = read<uint8_t>(file);
             }
 
             _rooms.push_back(room);
