@@ -138,6 +138,7 @@ namespace trlevel
 
         std::string data(reinterpret_cast<const char*>(&mesh_data[0]), mesh_data.size() * sizeof(uint16_t));
         std::istringstream stream(data, std::ios::binary);
+        stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         for (auto pointer : _mesh_pointers)
         {
             // Does the map already contain this mesh? If so, don't bother reading it again.
@@ -163,15 +164,20 @@ namespace trlevel
             {
                 mesh.lights = read_vector<int16_t>(stream, abs(normals));
             }
-            
-            mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
-            mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
 
             if (_version < LevelVersion::Tomb4)
             {
+                mesh.textured_rectangles = read_vector<int16_t, tr_face4>(stream);
+                mesh.textured_triangles = read_vector<int16_t, tr_face3>(stream);
                 mesh.coloured_rectangles = read_vector<int16_t, tr_face4>(stream);
                 mesh.coloured_triangles = read_vector<int16_t, tr_face3>(stream);
             }
+            else
+            {
+                mesh.textured_rectangles = convert_mesh_rectangles(read_vector<int16_t, tr4_mesh_face4>(stream));
+                mesh.textured_triangles = convert_mesh_triangles(read_vector<int16_t, tr4_mesh_face3>(stream));
+            }
+
             _meshes.insert({ pointer, mesh });
         }
     }
@@ -480,6 +486,8 @@ namespace trlevel
         {
             sound_samples[i].sound_data = read_compressed(file);
         }
+
+        generate_meshes(_mesh_data);
     }
 
     void Level::load_level_data(std::istream& file)
@@ -536,7 +544,6 @@ namespace trlevel
             {
                 room.light_mode = read<int16_t>(file);
             }
-
 
             if (_version == LevelVersion::Tomb1)
             {

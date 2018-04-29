@@ -73,6 +73,20 @@ namespace trlevel
         uint16_t texture;
     };
 
+    struct tr4_mesh_face3
+    {
+        uint16_t vertices[3];
+        uint16_t texture;
+        uint16_t effects;
+    };
+
+    struct tr4_mesh_face4
+    {
+        uint16_t vertices[4];
+        uint16_t texture;
+        uint16_t effects;
+    };
+
     struct tr_room_sprite
     {
         int16_t vertex;
@@ -543,4 +557,8 @@ namespace trlevel
     // Convert a set of Tomb Raider IV object textures into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
+
+    std::vector<tr_face3> convert_mesh_triangles(std::vector<tr4_mesh_face3> triangles);
+
+    std::vector<tr_face4> convert_mesh_rectangles(std::vector<tr4_mesh_face4> rectangles);
 }
