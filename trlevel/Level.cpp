@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iterator>
 
+#include <external/zlib/zlib.h>
+
 namespace trlevel
 {
     namespace
@@ -18,17 +20,23 @@ namespace trlevel
         T read(std::istream& file)
         {
             T value;
-            file.read(reinterpret_cast<char*>(&value), sizeof(value));
+            read<T>(file, value);
             return value;
+        }
+
+        template < typename T >
+        void read(std::istream& file, T& value)
+        {
+            file.read(reinterpret_cast<char*>(&value), sizeof(value));
         }
 
         template < typename DataType, typename SizeType >
         std::vector<DataType> read_vector(std::istream& file, SizeType size)
         {
-            std::vector<DataType> data;
+            std::vector<DataType> data(size);
             for (SizeType i = 0; i < size; ++i)
             {
-                data.emplace_back(read<DataType>(file));
+                read<DataType>(file, data[i]);
             }
             return data;
         }
@@ -39,9 +47,33 @@ namespace trlevel
             auto size = read<SizeType>(file);
             return read_vector<DataType, SizeType>(file, size);
         }
+
+        template < typename DataType >
+        std::vector<DataType> read_vector_compressed(std::istream& file, uint32_t elements)
+        {
+            auto uncompressed_size = read<uint32_t>(file);
+            auto compressed_size = read<uint32_t>(file);
+            auto compressed = read_vector<uint8_t>(file, compressed_size);
+            std::vector<uint8_t> uncompressed_data(uncompressed_size);
+
+            z_stream stream;
+            memset(&stream, 0, sizeof(stream));
+            int result = inflateInit(&stream);
+            // Exception...
+            stream.avail_in = compressed_size;
+            stream.next_in = &compressed[0];
+            stream.avail_out = uncompressed_size;
+            stream.next_out = &uncompressed_data[0];
+            result = inflate(&stream, Z_NO_FLUSH);
+            inflateEnd(&stream);
+
+            std::string data(reinterpret_cast<char*>(&uncompressed_data[0]), uncompressed_data.size());
+            std::istringstream data_stream(data, std::ios::binary);
+            return read_vector<DataType>(data_stream, elements);
+        }
     }
 
-    Level::Level(std::wstring filename)
+    Level::Level(const std::wstring& filename)
     {
         // Load the level from the file.
         try
@@ -51,6 +83,12 @@ namespace trlevel
             file.open(filename.c_str(), std::ios::binary);
 
             _version = convert_level_version(read<uint32_t>(file));
+
+            if (_version == LevelVersion::Tomb4)
+            {
+                load_tr4(file);
+                return;
+            }
 
             if (_version > LevelVersion::Tomb1)
             {
@@ -569,5 +607,16 @@ namespace trlevel
     tr_sprite_texture Level::get_sprite_texture(uint32_t index) const
     {
         return _sprite_textures[index];
+    }
+
+    void Level::load_tr4(std::ifstream& file)
+    {
+        uint16_t num_room_textiles = read<uint16_t>(file);
+        uint16_t num_obj_textiles = read<uint16_t>(file);
+        uint16_t num_bump_textiles = read<uint16_t>(file);
+
+        auto textiles = read_vector_compressed<tr_textile32>(file, num_room_textiles + num_obj_textiles + num_bump_textiles);
+
+        throw std::exception();
     }
 }

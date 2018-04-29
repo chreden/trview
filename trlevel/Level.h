@@ -13,7 +13,7 @@ namespace trlevel
     class Level : public ILevel
     {
     public:
-        explicit Level(std::wstring filename);
+        explicit Level(const std::wstring& filename);
 
         virtual ~Level();
 
@@ -147,6 +147,9 @@ namespace trlevel
         virtual tr_sprite_texture get_sprite_texture(uint32_t index) const override;
     private:
         void generate_meshes(std::vector<uint16_t> mesh_data);
+
+        // Load a Tomb Raider IV level.
+        void load_tr4(std::ifstream& file);
 
         LevelVersion _version;
 
