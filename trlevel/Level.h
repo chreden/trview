@@ -159,6 +159,7 @@ namespace trlevel
         uint32_t                  _num_textiles;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
+        std::vector<tr_textile32> _textile32;
 
         uint16_t                       _num_rooms;
         std::vector<tr3_room>          _rooms;

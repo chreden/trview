@@ -391,9 +391,17 @@ namespace trlevel
         std::vector<uint32_t> results;
         results.reserve(256 * 256);
 
-        if (index < _textile16.size())
+        if (index < _textile32.size())
         {
-            auto textile = _textile16[index];
+            const auto& textile = _textile32[index];
+            std::transform(textile.Tile,
+                textile.Tile + sizeof(textile.Tile) / sizeof(uint32_t),
+                std::back_inserter(results),
+                convert_textile32);
+        }
+        else if (index < _textile16.size())
+        {
+            const auto& textile = _textile16[index];
             std::transform(textile.Tile, 
                 textile.Tile + sizeof(textile.Tile) / sizeof(uint16_t),  
                 std::back_inserter(results),
@@ -401,7 +409,7 @@ namespace trlevel
         }
         else
         {
-            auto textile = _textile8[index];
+            const auto& textile = _textile8[index];
             std::transform(textile.Tile,
                 textile.Tile + sizeof(textile.Tile) / sizeof(uint8_t),
                 std::back_inserter(results),
@@ -623,7 +631,7 @@ namespace trlevel
         uint16_t num_bump_textiles = read<uint16_t>(file);
         _num_textiles = num_room_textiles + num_obj_textiles + num_bump_textiles;
 
-        auto textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
+        _textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
         _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
         auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 

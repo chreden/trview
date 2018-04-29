@@ -4,11 +4,20 @@
 
 namespace trlevel
 {
+    uint32_t convert_textile32(uint32_t t)
+    {
+        uint32_t a = (t & 0xff000000) >> 24;
+        uint32_t r = (t & 0x00ff0000) >> 16;
+        uint32_t g = (t & 0x0000ff00) >> 8;
+        uint32_t b = t & 0x000000ff;
+        return a << 24 | b << 16 | g << 8 | r;
+    }
+
     uint32_t convert_textile16(uint16_t t)
     {
-        uint16_t r = t & 0x001f;
+        uint16_t r = (t & 0x7c00) >> 10;
         uint16_t g = (t & 0x03e0) >> 5;
-        uint16_t b = (t & 0x7c00) >> 10;
+        uint16_t b = t & 0x001f;
 
         r <<= 3;
         g <<= 3;
@@ -19,7 +28,7 @@ namespace trlevel
         b += 3;
 
         uint16_t a = t & 0x8000 ? 0xff : 0x00;
-        return a << 24 | r << 16 | g << 8 | b;
+        return a << 24 | b << 16 | g << 8 | r;
     }
 
     // Convert a set of Tomb Raider I vertices into a vertex format compatible
