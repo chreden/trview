@@ -1,6 +1,10 @@
 
                 ChangeLog file for zlib
 
+Changes as included in trview repository
+- Strip down to remove everything that isn't required for Windows static lib
+- Alter vcxproj configurations to fit in with trview solutions.
+
 Changes in 1.2.11 (15 Jan 2017)
 - Fix deflate stored bug when pulling last block from window
 - Permit immediate deflateParams changes before any deflate input
