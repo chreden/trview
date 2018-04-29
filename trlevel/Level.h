@@ -146,10 +146,12 @@ namespace trlevel
         // Returns: The sprite texture.
         virtual tr_sprite_texture get_sprite_texture(uint32_t index) const override;
     private:
-        void generate_meshes(std::vector<uint16_t> mesh_data);
+        void generate_meshes(const std::vector<uint16_t>& mesh_data);
 
         // Load a Tomb Raider IV level.
         void load_tr4(std::ifstream& file);
+
+        void load_level_data(std::istream& file);
 
         LevelVersion _version;
 
@@ -171,6 +173,7 @@ namespace trlevel
 
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;
+        std::vector<uint16_t>                 _mesh_data;
         std::vector<uint32_t>                 _mesh_pointers;
         std::vector<uint32_t>                 _meshtree;
         std::vector<uint16_t>                 _frames;
