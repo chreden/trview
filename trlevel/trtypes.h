@@ -558,7 +558,9 @@ namespace trlevel
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
 
+    // Convert a set of Tomb Raider I-III triangles to TRIV triangles.
     std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles);
 
+    // Convert a set of Tomb Raider I-III rectangles to TRIV rectangles.
     std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles);
 }
