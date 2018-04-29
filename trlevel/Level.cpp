@@ -48,8 +48,7 @@ namespace trlevel
             return read_vector<DataType, SizeType>(file, size);
         }
 
-        template < typename DataType >
-        std::vector<DataType> read_vector_compressed(std::istream& file, uint32_t elements)
+        std::vector<uint8_t> read_compressed(std::istream& file)
         {
             auto uncompressed_size = read<uint32_t>(file);
             auto compressed_size = read<uint32_t>(file);
@@ -67,8 +66,16 @@ namespace trlevel
             result = inflate(&stream, Z_NO_FLUSH);
             inflateEnd(&stream);
 
+            return uncompressed_data;
+        }
+
+        template < typename DataType >
+        std::vector<DataType> read_vector_compressed(std::istream& file, uint32_t elements)
+        {
+            auto uncompressed_data = read_compressed(file);
             std::string data(reinterpret_cast<char*>(&uncompressed_data[0]), uncompressed_data.size());
             std::istringstream data_stream(data, std::ios::binary);
+            data_stream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             return read_vector<DataType>(data_stream, elements);
         }
     }
@@ -614,9 +621,19 @@ namespace trlevel
         uint16_t num_room_textiles = read<uint16_t>(file);
         uint16_t num_obj_textiles = read<uint16_t>(file);
         uint16_t num_bump_textiles = read<uint16_t>(file);
+        _num_textiles = num_room_textiles + num_obj_textiles + num_bump_textiles;
 
-        auto textiles = read_vector_compressed<tr_textile32>(file, num_room_textiles + num_obj_textiles + num_bump_textiles);
+        auto textile32 = read_vector_compressed<tr_textile32>(file, _num_textiles);
+        _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
+        auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
-        throw std::exception();
+        auto level_data = read_compressed(file);
+
+        uint32_t num_sound_samples = read<uint32_t>(file);
+        std::vector<tr4_sample> sound_samples(num_sound_samples);
+        for (uint32_t i = 0; i < num_sound_samples; ++i)
+        {
+            sound_samples[i].sound_data = read_compressed(file);
+        }
     }
 }

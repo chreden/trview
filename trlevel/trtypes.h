@@ -426,6 +426,11 @@ namespace trlevel
         std::vector<tr_face3>  coloured_triangles;
     };
 
+    struct tr4_sample
+    {
+        std::vector<uint8_t> sound_data;
+    };
+
     // Convert a 16 bit textile into a 32 bit argb value.
     uint32_t convert_textile16(uint16_t t);
 
