@@ -18,8 +18,12 @@ namespace trview
         return result;
     }
 
-    TransparentTriangle::Mode attribute_to_transparency(uint16_t attribute)
+    TransparentTriangle::Mode determine_transparency(uint16_t attribute, uint16_t effects)
     {
+        if (effects & 0x1)
+        {
+            return TransparentTriangle::Mode::Additive;
+        }
         return attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
     }
 }

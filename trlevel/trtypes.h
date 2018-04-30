@@ -73,6 +73,20 @@ namespace trlevel
         uint16_t texture;
     };
 
+    struct tr4_mesh_face3
+    {
+        uint16_t vertices[3];
+        uint16_t texture;
+        uint16_t effects;
+    };
+
+    struct tr4_mesh_face4
+    {
+        uint16_t vertices[4];
+        uint16_t texture;
+        uint16_t effects;
+    };
+
     struct tr_room_sprite
     {
         int16_t vertex;
@@ -89,6 +103,31 @@ namespace trlevel
 
         uint32_t Speed;     // fixed
         uint32_t Accel;     // fixed
+
+        uint16_t FrameStart;  // First frame in this animation
+        uint16_t FrameEnd;    // Last frame in this animation
+        uint16_t NextAnimation;
+        uint16_t NextFrame;
+
+        uint16_t NumStateChanges;
+        uint16_t StateChangeOffset; // Offset into StateChanges[]
+
+        uint16_t NumAnimCommands;   // How many of them to use.
+        uint16_t AnimCommand;       // Offset into AnimCommand[]
+    };
+
+    struct tr4_animation
+    {
+        uint32_t FrameOffset; // Byte offset into Frames[] (divide by 2 for Frames[i])
+        uint8_t FrameRate;   // Engine ticks per frame
+        uint8_t FrameSize;   // Number of int16_t's in Frames[] used by this animation
+
+        uint16_t State_ID;
+
+        uint32_t Speed;     // fixed
+        uint32_t Accel;     // fixed
+        uint32_t SpeedLateral; // fixed
+        uint32_t AccelLateral; // fixed
 
         uint16_t FrameStart;  // First frame in this animation
         uint16_t FrameEnd;    // Last frame in this animation
@@ -186,6 +225,24 @@ namespace trlevel
         int32_t  z;
         int16_t  Room;
         uint16_t Flag;
+    };
+
+    struct tr4_flyby_camera
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        int32_t dx;
+        int32_t dy;
+        int32_t dz;
+        uint8_t sequence;
+        uint8_t index;
+        uint16_t fov;
+        int16_t  roll;
+        uint16_t timer;
+        uint16_t speed;
+        uint16_t flags;
+        uint32_t room_id;
     };
 
     struct tr_sound_source // 16 bytes
@@ -288,6 +345,18 @@ namespace trlevel
         tr_object_texture_vert Vertices[4]; // The four corners of the texture
     };
 
+    struct tr4_object_texture // 38 bytes
+    {
+        uint16_t               Attribute;
+        uint16_t               TileAndFlag;
+        uint16_t               NewFlags;
+        tr_object_texture_vert Vertices[4]; // The four corners of the texture
+        uint32_t               OriginalU;
+        uint32_t               OriginalV;
+        uint32_t               Width;     // Actually width-1
+        uint32_t               Height;    // Actually height-1
+    };
+
     // Room vertex for Tomb Raider 1/Unfinished Business.
     struct tr_room_vertex
     {
@@ -301,14 +370,6 @@ namespace trlevel
         int16_t     lighting;
         uint16_t    attributes;
         uint16_t    colour;
-    };
-
-    struct tr3_room_data
-    {
-        std::vector<tr3_room_vertex> vertices;
-        std::vector<tr_face4> rectangles;
-        std::vector<tr_face3> triangles;
-        std::vector<tr_room_sprite> sprites;
     };
 
     struct tr_room_portal
@@ -340,13 +401,30 @@ namespace trlevel
 
     struct tr3_room_light   // 24 bytes
     {
-        // Position of light, in world coordinates
         int32_t x;
         int32_t y;
-        int32_t z;       
+        int32_t z;
         tr_colour4 colour;        // Colour of the light
         uint32_t   intensity;
         uint32_t   fade;          // Falloff value
+    };
+
+    struct tr4_room_light
+    {
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        tr_colour colour;
+        uint8_t light_type;
+        uint8_t unknown;
+        uint8_t intensity;
+        float in;
+        float out;
+        float length;
+        float cutoff;
+        float dx;
+        float dy;
+        float dz;
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.
@@ -376,7 +454,27 @@ namespace trlevel
         float x{ 0.0f }, y{ 0.0f }, z{ 0.0f };
     };
 
+    struct tr4_ai_object
+    {
+        uint16_t type_id;
+        uint16_t room;
+        int32_t x;
+        int32_t y;
+        int32_t z;
+        int16_t ocb;
+        uint16_t flags;     // Activation mask, bitwise-shifted left by 1
+        int32_t angle;
+    };
+
 #pragma pack(pop)
+
+    struct tr3_room_data
+    {
+        std::vector<tr3_room_vertex> vertices;
+        std::vector<tr4_mesh_face4> rectangles;
+        std::vector<tr4_mesh_face3> triangles;
+        std::vector<tr_room_sprite> sprites;
+    };
 
     struct tr3_room
     {
@@ -402,7 +500,7 @@ namespace trlevel
 
         uint8_t water_scheme;
         uint8_t reverb_info;
-        uint8_t filler;
+        uint8_t alternate_group;
     };
 
     struct tr2_frame
@@ -420,11 +518,19 @@ namespace trlevel
         std::vector<tr_vertex> vertices;
         std::vector<tr_vertex> normals;
         std::vector<int16_t>   lights;
-        std::vector<tr_face4>  textured_rectangles;
-        std::vector<tr_face3>  textured_triangles;
+        std::vector<tr4_mesh_face4>  textured_rectangles;
+        std::vector<tr4_mesh_face3>  textured_triangles;
         std::vector<tr_face4>  coloured_rectangles;
         std::vector<tr_face3>  coloured_triangles;
     };
+
+    struct tr4_sample
+    {
+        std::vector<uint8_t> sound_data;
+    };
+
+    // Convert a 32 bit textile into a 32 bit argb value.
+    uint32_t convert_textile32(uint32_t t);
 
     // Convert a 16 bit textile into a 32 bit argb value.
     uint32_t convert_textile16(uint16_t t);
@@ -447,4 +553,14 @@ namespace trlevel
 
     // Convert the tr_colour to a tr_colour4 value.
     tr_colour4 convert_to_colour4(const tr_colour& colour);
+
+    // Convert a set of Tomb Raider IV object textures into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
+
+    // Convert a set of Tomb Raider I-III triangles to TRIV triangles.
+    std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles);
+
+    // Convert a set of Tomb Raider I-III rectangles to TRIV rectangles.
+    std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles);
 }
