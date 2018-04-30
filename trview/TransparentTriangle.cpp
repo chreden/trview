@@ -18,12 +18,26 @@ namespace trview
         return result;
     }
 
-    TransparentTriangle::Mode determine_transparency(uint16_t attribute, uint16_t effects)
+    // Determine whether the face should be transparent give the attribute and effects values. The 
+    // mode is stored in out if it is transparent.
+    // attribute: The texture attribute value.
+    // effects: The face effects value.
+    // Returns: True if the face is transparent. If this is false, out is not set.
+    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out)
     {
+        // The effects value takes precendence over the attribute value.
         if (effects & 0x1)
         {
-            return TransparentTriangle::Mode::Additive;
+            out = TransparentTriangle::Mode::Additive;
+            return true;
         }
-        return attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+
+        if (!attribute)
+        {
+            return false;
+        }
+
+        out = attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+        return true;
     }
 }

@@ -202,16 +202,15 @@ namespace trview
 
             const bool double_sided = rect.texture & 0x8000;
 
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0 || rect.effects)
+            TransparentTriangle::Mode transparency_mode;
+            if (determine_transparency(texture_storage.attribute(texture), rect.effects, transparency_mode))
             {
-                const auto mode = determine_transparency(attribute, rect.effects);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode);
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode);
                 }
                 continue;
             }
@@ -279,14 +278,13 @@ namespace trview
 
             const bool double_sided = tri.texture & 0x8000;
 
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0 || tri.effects)
+            TransparentTriangle::Mode transparency_mode;
+            if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
             {
-                const auto mode = determine_transparency(attribute, tri.effects);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
                 }
                 continue;
             }
