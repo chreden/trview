@@ -35,5 +35,10 @@ namespace trview
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
     };
 
-    TransparentTriangle::Mode determine_transparency(uint16_t attribute, uint16_t effects);
+    // Determine whether the face should be transparent give the attribute and effects values. The 
+    // mode is stored in out if it is transparent.
+    // attribute: The texture attribute value.
+    // effects: The face effects value.
+    // Returns: True if the face is transparent. If this is false, out is not set.
+    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out);
 }
