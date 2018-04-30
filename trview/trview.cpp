@@ -154,6 +154,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     SetCurrentDirectory(get_exe_directory().c_str());
 
     viewer = std::make_unique<trview::Viewer>(window);
+    // Register to know when a file has been succesfully loaded by the viewer.
+    viewer->on_file_loaded += populate_directory_listing_menu;
     // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
     // Make sure the menu has the values loaded from the settings file.
@@ -227,7 +229,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     memset(&filename, 0, sizeof(filename));
                     DragQueryFile((HDROP)msg.wParam, 0, filename, MAX_PATH);
                     viewer->open(filename);
-                    populate_directory_listing_menu(filename);
                     break;
                 }
             }
@@ -319,7 +320,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     const auto file = recent_files[index];
                     viewer->open(file);
-                    populate_directory_listing_menu(file);
                 }
                 break;
             }
@@ -360,8 +360,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     SetCurrentDirectory(cd);
                     viewer->open(ofn.lpstrFile);
-
-                    populate_directory_listing_menu(ofn.lpstrFile);
                 }
                 break;
             } 

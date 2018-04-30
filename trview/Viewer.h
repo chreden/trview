@@ -74,6 +74,7 @@ namespace trview
         void toggle_highlight();
 
         UserSettings settings() const;
+        Event<std::wstring> on_file_loaded;
         Event<std::list<std::wstring>> on_recent_files_changed;
 
         // Resize the window and the rendering system.

@@ -488,6 +488,7 @@ namespace trview
             return;
         }
 
+        on_file_loaded(filename);
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
