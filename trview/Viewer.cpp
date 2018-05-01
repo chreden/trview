@@ -223,40 +223,13 @@ namespace trview
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
+        _keyboard.register_key_down([&](auto key) {_camera_input.on_key_down(key); });
+        _keyboard.register_key_up([&](auto key) {_camera_input.on_key_up(key); });
+
         _keyboard.register_key_down([&](uint16_t key)
         {
             switch (key)
             {
-                case 'Q':
-                {
-                    _free_down = true;
-                    break;
-                }
-                case 'E':
-                {
-                    _free_up = true;
-                    break;
-                }
-                case 'W':
-                {
-                    _free_forward = true;
-                    break;
-                }
-                case 'A':
-                {
-                    _free_left = true;
-                    break;
-                }
-                case 'D':
-                {
-                    _free_right = true;
-                    break;
-                }
-                case 'S':
-                {
-                    _free_backward = true;
-                    break;
-                }
                 case 'F':
                 {
                     set_camera_mode(CameraMode::Free);
@@ -278,43 +251,6 @@ namespace trview
                     {
                         set_alternate_mode(!_level->alternate_mode());
                     }
-                    break;
-                }
-            }
-        });
-
-        _keyboard.register_key_up([&](uint16_t key)
-        {
-            switch (key)
-            {
-                case 'Q':
-                {
-                    _free_down = false;
-                    break;
-                }
-                case 'E':
-                {
-                    _free_up = false;
-                    break;
-                }
-                case 'W':
-                {
-                    _free_forward = false;
-                    break;
-                }
-                case 'A':
-                {
-                    _free_left = false;
-                    break;
-                }
-                case 'D':
-                {
-                    _free_right = false;
-                    break;
-                }
-                case 'S':
-                {
-                    _free_backward = false;
                     break;
                 }
             }
@@ -458,20 +394,12 @@ namespace trview
     {
         if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
-            if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
+            const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
+            _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
+
+            if (_level)
             {
-                DirectX::SimpleMath::Vector3 movement(
-                    _free_left ? -1.0f : 0.0f + _free_right ? 1.0f : 0.0f,
-                    _free_up ? 1.0f : 0.0f + _free_down ? -1.0f : 0.0f,
-                    _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
-
-                const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
-                _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
-
-                if (_level)
-                {
-                    _level->on_camera_moved();
-                }
+                _level->on_camera_moved();
             }
         }
     }

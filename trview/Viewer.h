@@ -170,12 +170,6 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
-        bool _free_forward{ false };
-        bool _free_left{ false };
-        bool _free_right{ false };
-        bool _free_backward{ false };
-        bool _free_up{ false };
-        bool _free_down{ false };
         CameraInput _camera_input;
 
         std::unique_ptr<RoomNavigator> _room_navigator;

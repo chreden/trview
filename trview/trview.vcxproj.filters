@@ -163,6 +163,9 @@
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="CameraInput.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -263,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraInput.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
