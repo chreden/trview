@@ -13,6 +13,8 @@ namespace trview
             _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
     }
 
+    // Process a key being pressed down.
+    // key: The key that was pressed.
     void CameraInput::on_key_down(uint16_t key)
     {
         switch (key)
@@ -50,6 +52,8 @@ namespace trview
         }
     }
 
+    // Process a key being released.
+    // key: The key that was released.
     void CameraInput::on_key_up(uint16_t key)
     {
         switch (key)
