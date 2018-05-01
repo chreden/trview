@@ -29,8 +29,9 @@
 
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
+#include <trview.ui.render/MapRenderer.h>
 
-#include "trview.ui.render/MapRenderer.h"
+#include "CameraInput.h"
 
 namespace trview
 {
@@ -175,6 +176,7 @@ namespace trview
         bool _free_backward{ false };
         bool _free_up{ false };
         bool _free_down{ false };
+        CameraInput _camera_input;
 
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<CameraControls> _camera_controls;

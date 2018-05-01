@@ -466,7 +466,7 @@ namespace trview
                     _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
 
                 const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
-                _free_camera.move(movement * _timer.elapsed() * Speed);
+                _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
 
                 if (_level)
                 {
