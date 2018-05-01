@@ -13,7 +13,7 @@ namespace trview
             _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
     }
 
-    // Process a key being pressed down.
+    // Process a key being pressed.
     // key: The key that was pressed.
     void CameraInput::on_key_down(uint16_t key)
     {
@@ -88,6 +88,40 @@ namespace trview
                 _free_backward = false;
                 break;
             }
+        }
+    }
+
+    // Process a mouse button being pressed.
+    // button: The button that was pressed.
+    void CameraInput::on_mouse_down(input::Mouse::Button button)
+    {
+        if (button == input::Mouse::Button::Right)
+        {
+            _rotating = true;
+        }
+    }
+
+    // Process a mouse button being released.
+    // button: The button that was released.
+    void CameraInput::on_mouse_up(input::Mouse::Button button)
+    {
+        if (button == input::Mouse::Button::Right)
+        {
+            _rotating = false;
+        }
+    }
+
+    // Process the mouse being moved.
+    // x: The x movement.
+    // y: The y movement.
+    void CameraInput::on_mouse_move(long x, long y)
+    {
+        if (_rotating)
+        {
+            const float low_sensitivity = 200.0f;
+            const float high_sensitivity = 25.0f;
+            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
+            on_rotate(x / sensitivity, y / sensitivity);
         }
     }
 }

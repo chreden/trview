@@ -257,6 +257,22 @@ namespace trview
         });
 
         using namespace input;
+
+        _mouse.mouse_down += [&](auto button) { _camera_input.on_mouse_down(button); };
+        _mouse.mouse_up += [&](auto button) { _camera_input.on_mouse_up(button); };
+        _mouse.mouse_move += [&](long x, long y) { _camera_input.on_mouse_move(x, y); };
+
+        _camera_input.on_rotate += [&](float x, float y)
+        {
+            ICamera& camera = current_camera();
+            camera.set_rotation_yaw(camera.rotation_yaw() + x);
+            camera.set_rotation_pitch(camera.rotation_pitch() + y);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
         _mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
@@ -276,44 +292,10 @@ namespace trview
                     }
                 }
             }
-            else if (button == Mouse::Button::Right)
-            {
-                _rotating = true;
-            }
         };
 
-        _mouse.mouse_up += [&](Mouse::Button button)
-        {
-            if (button == Mouse::Button::Right)
-            {
-                _rotating = false;
-            }
-
-            _control->mouse_up(client_cursor_position(_window));
-        };
-
-        _mouse.mouse_move += [&](long x, long y)
-        {
-            if (_rotating)
-            {
-                const float low_sensitivity = 200.0f;
-                const float high_sensitivity = 25.0f;
-                const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
-
-                ICamera& camera = current_camera();
-                const float yaw = camera.rotation_yaw() + x / sensitivity;
-                const float pitch = camera.rotation_pitch() + y / sensitivity;
-                camera.set_rotation_yaw(yaw);
-                camera.set_rotation_pitch(pitch);
-
-                if (_level)
-                {
-                    _level->on_camera_moved();
-                }
-            }
-
-            _control->mouse_move(client_cursor_position(_window));
-        };
+        _mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); };
+        _mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); };
 
         _mouse.mouse_wheel += [&](int16_t scroll)
         {

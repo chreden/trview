@@ -157,9 +157,6 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
         const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
 
-        // Camera rotation variables - eventually to be moved to a camera class.
-        bool _rotating{ false };
-
         // Room navigator code.
         std::unique_ptr<GoToRoom> _go_to_room;
 
