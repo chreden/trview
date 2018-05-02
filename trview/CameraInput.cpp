@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CameraInput.h"
+#include "CameraMode.h"
 
 namespace trview
 {
@@ -19,6 +20,21 @@ namespace trview
     {
         switch (key)
         {
+            case 'F':
+            {
+                on_mode_change(CameraMode::Free);
+                break;
+            }
+            case 'O':
+            {
+                on_mode_change(CameraMode::Orbit);
+                break;
+            }
+            case 'X':
+            {
+                on_mode_change(CameraMode::Axis);
+                break;
+            }
             case 'Q':
             {
                 _free_down = true;

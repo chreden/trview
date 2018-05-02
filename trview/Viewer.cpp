@@ -230,21 +230,6 @@ namespace trview
         {
             switch (key)
             {
-                case 'F':
-                {
-                    set_camera_mode(CameraMode::Free);
-                    break;
-                }
-                case 'O':
-                {
-                    set_camera_mode(CameraMode::Orbit);
-                    break;
-                }
-                case 'X':
-                {
-                    set_camera_mode(CameraMode::Axis);
-                    break;
-                }
                 case 'P':
                 {
                     if (_level)
@@ -256,32 +241,9 @@ namespace trview
             }
         });
 
+        setup_camera_input();
+
         using namespace input;
-
-        _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
-        _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
-        _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
-        _mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); };
-
-        _camera_input.on_rotate += [&](float x, float y)
-        {
-            ICamera& camera = current_camera();
-            camera.set_rotation_yaw(camera.rotation_yaw() + x);
-            camera.set_rotation_pitch(camera.rotation_pitch() + y);
-            if (_level)
-            {
-                _level->on_camera_moved();
-            }
-        };
-
-        _camera_input.on_zoom += [&](float zoom)
-        {
-            _camera.set_zoom(_camera.zoom() + zoom);
-            if (_level)
-            {
-                _level->on_camera_moved();
-            }
-        };
 
         _mouse.mouse_down += [&](Mouse::Button button)
         {
@@ -737,5 +699,38 @@ namespace trview
         _control->set_size(ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
         _ui_renderer->set_host_size(_window.width(), _window.height());
         _map_renderer->set_window_size(_window.width(), _window.height());
+    }
+
+    // Set up keyboard and mouse input for the camera.
+    void Viewer::setup_camera_input()
+    {
+        using namespace input;
+
+        _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
+        _mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); };
+
+        _camera_input.on_rotate += [&](float x, float y)
+        {
+            ICamera& camera = current_camera();
+            camera.set_rotation_yaw(camera.rotation_yaw() + x);
+            camera.set_rotation_pitch(camera.rotation_pitch() + y);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
+        _camera_input.on_zoom += [&](float zoom)
+        {
+            _camera.set_zoom(_camera.zoom() + zoom);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
+        _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
     }
 }

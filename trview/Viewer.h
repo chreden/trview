@@ -126,6 +126,9 @@ namespace trview
         // Tell things that need to be resized that they should resize.
         void resize_elements();
 
+        // Set up keyboard and mouse input for the camera.
+        void setup_camera_input();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;

@@ -37,6 +37,8 @@ namespace trview
         Event<float, float> on_rotate;
         // Event raised when the zoom level needs to change.
         Event<float> on_zoom;
+        // Event raised when the camera mode needs to change.
+        Event<CameraMode> on_mode_change;
     private:
         bool _free_forward{ false };
         bool _free_left{ false };
