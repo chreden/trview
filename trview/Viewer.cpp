@@ -223,8 +223,8 @@ namespace trview
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
-        _keyboard.register_key_down([&](auto key) {_camera_input.on_key_down(key); });
-        _keyboard.register_key_up([&](auto key) {_camera_input.on_key_up(key); });
+        _keyboard.register_key_down([&](auto key) {_camera_input.key_down(key); });
+        _keyboard.register_key_up([&](auto key) {_camera_input.key_up(key); });
 
         _keyboard.register_key_down([&](uint16_t key)
         {
@@ -258,15 +258,25 @@ namespace trview
 
         using namespace input;
 
-        _mouse.mouse_down += [&](auto button) { _camera_input.on_mouse_down(button); };
-        _mouse.mouse_up += [&](auto button) { _camera_input.on_mouse_up(button); };
-        _mouse.mouse_move += [&](long x, long y) { _camera_input.on_mouse_move(x, y); };
+        _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
+        _mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); };
 
         _camera_input.on_rotate += [&](float x, float y)
         {
             ICamera& camera = current_camera();
             camera.set_rotation_yaw(camera.rotation_yaw() + x);
             camera.set_rotation_pitch(camera.rotation_pitch() + y);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
+        _camera_input.on_zoom += [&](float zoom)
+        {
+            _camera.set_zoom(_camera.zoom() + zoom);
             if (_level)
             {
                 _level->on_camera_moved();
@@ -296,15 +306,6 @@ namespace trview
 
         _mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); };
         _mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); };
-
-        _mouse.mouse_wheel += [&](int16_t scroll)
-        {
-            _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
-            if (_level)
-            {
-                _level->on_camera_moved();
-            }
-        };
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.

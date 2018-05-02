@@ -15,7 +15,7 @@ namespace trview
 
     // Process a key being pressed.
     // key: The key that was pressed.
-    void CameraInput::on_key_down(uint16_t key)
+    void CameraInput::key_down(uint16_t key)
     {
         switch (key)
         {
@@ -54,7 +54,7 @@ namespace trview
 
     // Process a key being released.
     // key: The key that was released.
-    void CameraInput::on_key_up(uint16_t key)
+    void CameraInput::key_up(uint16_t key)
     {
         switch (key)
         {
@@ -93,7 +93,7 @@ namespace trview
 
     // Process a mouse button being pressed.
     // button: The button that was pressed.
-    void CameraInput::on_mouse_down(input::Mouse::Button button)
+    void CameraInput::mouse_down(input::Mouse::Button button)
     {
         if (button == input::Mouse::Button::Right)
         {
@@ -103,7 +103,7 @@ namespace trview
 
     // Process a mouse button being released.
     // button: The button that was released.
-    void CameraInput::on_mouse_up(input::Mouse::Button button)
+    void CameraInput::mouse_up(input::Mouse::Button button)
     {
         if (button == input::Mouse::Button::Right)
         {
@@ -114,7 +114,7 @@ namespace trview
     // Process the mouse being moved.
     // x: The x movement.
     // y: The y movement.
-    void CameraInput::on_mouse_move(long x, long y)
+    void CameraInput::mouse_move(long x, long y)
     {
         if (_rotating)
         {
@@ -123,5 +123,12 @@ namespace trview
             const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
             on_rotate(x / sensitivity, y / sensitivity);
         }
+    }
+
+    // Process the mouse wheel being turned.
+    // scroll: The mouse wheel movement.
+    void CameraInput::mouse_scroll(int16_t scroll)
+    {
+        on_zoom(scroll / -100.0f);
     }
 }
