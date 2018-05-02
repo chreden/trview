@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CameraInput.h"
-#include "CameraMode.h"
 
 namespace trview
 {
@@ -134,10 +133,7 @@ namespace trview
     {
         if (_rotating)
         {
-            const float low_sensitivity = 200.0f;
-            const float high_sensitivity = 25.0f;
-            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
-            on_rotate(x / sensitivity, y / sensitivity);
+            on_rotate(static_cast<float>(x), static_cast<float>(y));
         }
     }
 

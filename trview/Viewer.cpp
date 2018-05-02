@@ -714,8 +714,11 @@ namespace trview
         _camera_input.on_rotate += [&](float x, float y)
         {
             ICamera& camera = current_camera();
-            camera.set_rotation_yaw(camera.rotation_yaw() + x);
-            camera.set_rotation_pitch(camera.rotation_pitch() + y);
+            const float low_sensitivity = 200.0f;
+            const float high_sensitivity = 25.0f;
+            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
+            camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
+            camera.set_rotation_pitch(camera.rotation_pitch() + y / sensitivity);
             if (_level)
             {
                 _level->on_camera_moved();

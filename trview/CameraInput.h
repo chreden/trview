@@ -6,6 +6,8 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/Event.h>
 
+#include "CameraMode.h"
+
 namespace trview
 {
     class CameraInput
@@ -47,6 +49,5 @@ namespace trview
         bool _free_up{ false };
         bool _free_down{ false };
         bool _rotating{ false };
-        float _camera_sensitivity{ 0.0f };
     };
 }
