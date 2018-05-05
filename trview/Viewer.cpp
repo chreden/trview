@@ -223,55 +223,13 @@ namespace trview
         _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
         _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
+        _keyboard.register_key_down([&](auto key) {_camera_input.key_down(key); });
+        _keyboard.register_key_up([&](auto key) {_camera_input.key_up(key); });
+
         _keyboard.register_key_down([&](uint16_t key)
         {
             switch (key)
             {
-                case 'Q':
-                {
-                    _free_down = true;
-                    break;
-                }
-                case 'E':
-                {
-                    _free_up = true;
-                    break;
-                }
-                case 'W':
-                {
-                    _free_forward = true;
-                    break;
-                }
-                case 'A':
-                {
-                    _free_left = true;
-                    break;
-                }
-                case 'D':
-                {
-                    _free_right = true;
-                    break;
-                }
-                case 'S':
-                {
-                    _free_backward = true;
-                    break;
-                }
-                case 'F':
-                {
-                    set_camera_mode(CameraMode::Free);
-                    break;
-                }
-                case 'O':
-                {
-                    set_camera_mode(CameraMode::Orbit);
-                    break;
-                }
-                case 'X':
-                {
-                    set_camera_mode(CameraMode::Axis);
-                    break;
-                }
                 case 'P':
                 {
                     if (_level)
@@ -283,44 +241,10 @@ namespace trview
             }
         });
 
-        _keyboard.register_key_up([&](uint16_t key)
-        {
-            switch (key)
-            {
-                case 'Q':
-                {
-                    _free_down = false;
-                    break;
-                }
-                case 'E':
-                {
-                    _free_up = false;
-                    break;
-                }
-                case 'W':
-                {
-                    _free_forward = false;
-                    break;
-                }
-                case 'A':
-                {
-                    _free_left = false;
-                    break;
-                }
-                case 'D':
-                {
-                    _free_right = false;
-                    break;
-                }
-                case 'S':
-                {
-                    _free_backward = false;
-                    break;
-                }
-            }
-        });
+        setup_camera_input();
 
         using namespace input;
+
         _mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
@@ -340,53 +264,10 @@ namespace trview
                     }
                 }
             }
-            else if (button == Mouse::Button::Right)
-            {
-                _rotating = true;
-            }
         };
 
-        _mouse.mouse_up += [&](Mouse::Button button)
-        {
-            if (button == Mouse::Button::Right)
-            {
-                _rotating = false;
-            }
-
-            _control->mouse_up(client_cursor_position(_window));
-        };
-
-        _mouse.mouse_move += [&](long x, long y)
-        {
-            if (_rotating)
-            {
-                const float low_sensitivity = 200.0f;
-                const float high_sensitivity = 25.0f;
-                const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
-
-                ICamera& camera = current_camera();
-                const float yaw = camera.rotation_yaw() + x / sensitivity;
-                const float pitch = camera.rotation_pitch() + y / sensitivity;
-                camera.set_rotation_yaw(yaw);
-                camera.set_rotation_pitch(pitch);
-
-                if (_level)
-                {
-                    _level->on_camera_moved();
-                }
-            }
-
-            _control->mouse_move(client_cursor_position(_window));
-        };
-
-        _mouse.mouse_wheel += [&](int16_t scroll)
-        {
-            _camera.set_zoom(_camera.zoom() + scroll / -100.0f);
-            if (_level)
-            {
-                _level->on_camera_moved();
-            }
-        };
+        _mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); };
+        _mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); };
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
@@ -458,20 +339,12 @@ namespace trview
     {
         if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
-            if (_free_left || _free_right || _free_forward || _free_backward || _free_up || _free_down)
+            const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
+            _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
+
+            if (_level)
             {
-                DirectX::SimpleMath::Vector3 movement(
-                    _free_left ? -1.0f : 0.0f + _free_right ? 1.0f : 0.0f,
-                    _free_up ? 1.0f : 0.0f + _free_down ? -1.0f : 0.0f,
-                    _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
-
-                const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
-                _free_camera.move(movement * _timer.elapsed() * Speed);
-
-                if (_level)
-                {
-                    _level->on_camera_moved();
-                }
+                _level->on_camera_moved();
             }
         }
     }
@@ -826,5 +699,41 @@ namespace trview
         _control->set_size(ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
         _ui_renderer->set_host_size(_window.width(), _window.height());
         _map_renderer->set_window_size(_window.width(), _window.height());
+    }
+
+    // Set up keyboard and mouse input for the camera.
+    void Viewer::setup_camera_input()
+    {
+        using namespace input;
+
+        _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
+        _mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); };
+
+        _camera_input.on_rotate += [&](float x, float y)
+        {
+            ICamera& camera = current_camera();
+            const float low_sensitivity = 200.0f;
+            const float high_sensitivity = 25.0f;
+            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
+            camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
+            camera.set_rotation_pitch(camera.rotation_pitch() + y / sensitivity);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
+        _camera_input.on_zoom += [&](float zoom)
+        {
+            _camera.set_zoom(_camera.zoom() + zoom);
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+        };
+
+        _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
     }
 }
