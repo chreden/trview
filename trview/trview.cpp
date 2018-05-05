@@ -213,14 +213,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(msg.lParam);
 
                     uint32_t size = 0;
-                    GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
-
-                    std::vector<uint8_t> data_buffer(size);
-                    GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
-
-                    RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
-                    
-                    viewer->on_input(data);
+                    if (GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER))
+                        != static_cast<uint32_t>(-1))
+                    {
+                        std::vector<uint8_t> data_buffer(size);
+                        GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
+                        RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
+                        viewer->on_input(data);
+                    }
                     break;
                 }
                 case WM_DROPFILES:
