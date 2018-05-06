@@ -50,6 +50,10 @@ namespace trview
                     { MinecartLeft, { 0.0f, 0.9f, 0.9f } },
                     { MinecartRight, { 0.0f, 0.9f, 0.9f } },
                     { MonkeySwing, { 0.9f, 0.9f, 0.4f } },
+                    { ClimbableUp, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                    { ClimbableDown, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                    { ClimbableRight, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                    { ClimbableLeft, { 0.0f, 0.9f, 0.0f, 0.6f } },
                 };
             }
 

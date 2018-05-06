@@ -13,7 +13,7 @@ namespace trview
         Death = 0x8,
         FloorSlant = 0x10,
         CeilingSlant = 0x20, 
-        ClimbableTop = 0x40, // Top edge is climbable 
+        ClimbableUp = 0x40, // Top edge is climbable 
         ClimbableRight = 0x80, // Right edge is climbable 
         ClimbableDown = 0x100, // Bottom edge is climbable 
         ClimbableLeft = 0x200, // Left edge is climbable

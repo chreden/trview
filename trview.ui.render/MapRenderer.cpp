@@ -33,7 +33,8 @@ namespace trview
                     for (const auto& color : default_colours)
                     {
                         if ((color.first & tile.sector->flags)
-                            && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1))
+                            && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
+                            && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
                         {
                             minimum_flag_enabled = color.first;
                             draw_color = color.second;
@@ -47,6 +48,19 @@ namespace trview
 
                     // Draw the base tile 
                     draw(context, tile.position, tile.size, draw_color);
+
+                    // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
+                    // In the future I'd like to just draw a hollow square instead.
+                    const float thickness = _DRAW_SCALE / 4;
+
+                    if (tile.sector->flags & SectorFlag::ClimbableUp)
+                        draw(context, tile.position, Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableUp]);
+                    if (tile.sector->flags & SectorFlag::ClimbableRight)
+                        draw(context, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableRight]);
+                    if (tile.sector->flags & SectorFlag::ClimbableDown)
+                        draw(context, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableDown]);
+                    if (tile.sector->flags & SectorFlag::ClimbableLeft)
+                        draw(context, tile.position, Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableLeft]);
 
                     // If sector is a down portal, draw a transparent black square over it 
                     if (tile.sector->flags & SectorFlag::RoomBelow)
