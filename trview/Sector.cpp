@@ -23,9 +23,21 @@ namespace trview
     {
         std::set<std::uint16_t> neighbours; 
 
-        if (flags & SectorFlag::Portal)     neighbours.insert(_portal);
-        if (flags & SectorFlag::RoomAbove)  neighbours.insert(_room_above);
-        if (flags & SectorFlag::RoomBelow)  neighbours.insert(_room_below); 
+        const auto add_neighbour = [&] (std::uint16_t room)
+        {
+            const auto &r = _level.get_room(room); 
+            if (r.alternate_room != -1)
+                neighbours.insert(r.alternate_room); 
+
+            neighbours.insert(room); 
+        }; 
+
+        if (flags & SectorFlag::Portal)
+            add_neighbour(_portal);
+        if (flags & SectorFlag::RoomAbove)
+            add_neighbour(_room_above); 
+        if (flags & SectorFlag::RoomBelow)
+            add_neighbour(_room_below); 
 
         return neighbours; 
     }
