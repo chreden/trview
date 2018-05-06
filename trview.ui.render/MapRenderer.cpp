@@ -106,17 +106,17 @@ namespace trview
             std::shared_ptr<Sector> 
             MapRenderer::sector_at(const Point& p) const
             {
-                std::shared_ptr<Sector> ptr = nullptr; 
-                std::for_each(_tiles.begin(), _tiles.end(), [&] (const Tile& tile)
-                {
-                    Point first = tile.position;
-                    Point last = Point(tile.size.width, tile.size.height) + tile.position;
-
-                    if (p.is_between(first, last))
-                        ptr = tile.sector; 
+                auto iter = std::find_if(_tiles.begin(), _tiles.end(), [&] (const Tile& tile) {
+                    // Get bottom-right point of the tile 
+                    Point last = Point(tile.size.width, tile.size.height) + tile.position; 
+                    // Check if point is between the origin, and the bottom-right corner 
+                    return p.is_between(tile.position, last); 
                 });
-                return ptr; 
-                return nullptr;
+                
+                if (iter == _tiles.end())
+                    return nullptr;
+                else
+                    return std::shared_ptr<Sector>(iter->sector);
             }
 
             std::shared_ptr<Sector> 

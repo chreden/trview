@@ -61,7 +61,7 @@ namespace trview
                 // Renders the map 
                 void render(CComPtr<ID3D11DeviceContext> context);
 
-                // Changes the level (or room) to what is specified in the parameters 
+                // Changes the room to specified room, reloads map
                 void load(trview::Room *room);
 
                 // Returns the total area of the room 
@@ -72,9 +72,6 @@ namespace trview
 
                 // Returns the sector that the cursor is within, or nullptr if none
                 std::shared_ptr<Sector> sector_at_cursor() const;
-
-                //// Sets the colours used by the map 
-                //inline void set_colours(const std::unordered_map<FunctionType, Color> colours) { _colours = colours; }
 
                 // Returns true if cursor is on the control
                 bool cursor_is_over_control() const;
@@ -109,7 +106,6 @@ namespace trview
                 Sprite                              _sprite; 
                 TextureStorage                      _texture_storage; 
                 CComPtr<ID3D11ShaderResourceView>   _texture;
-                //std::unordered_map<FunctionType, Color> _colours = default_colours;
                 std::vector<Tile>                   _tiles; 
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
