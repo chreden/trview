@@ -19,6 +19,7 @@
 #include "StaticMesh.h"
 #include "TransparencyBuffer.h"
 #include "Mesh.h"
+#include <trview\Sector.h>
 
 namespace trview
 {
@@ -88,6 +89,9 @@ namespace trview
         // Entity: The entity to add.
         void add_entity(Entity* entity);
 
+        // Returns all sectors 
+        const inline std::map<int, std::shared_ptr<Sector>>& sectors() const { return _sectors; }
+
         // Add the transparent triangles to the specified transparency buffer.
         // transparency: The buffer to add triangles to.
         // camera: The current viewpoint.
@@ -113,12 +117,21 @@ namespace trview
         // This will change the alternate_mode of this room to IsAlternate.
         // number: The room number.
         void set_is_alternate(int16_t number);
+
+        // Returns the number of x sectors in the room 
+        inline std::uint16_t num_x_sectors() const { return _num_x_sectors; }
+
+        // Returns the number of z sectors in the room 
+        inline std::uint16_t num_z_sectors() const { return _num_z_sectors; }
+
+
     private:
         void generate_geometry(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
         void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
+        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
@@ -134,6 +147,12 @@ namespace trview
         DirectX::BoundingBox  _bounding_box;
 
         std::vector<Entity*> _entities;
+
+        // Maps a sector to its sector ID 
+        std::map<int, std::shared_ptr<Sector>> _sectors; 
+
+        // Number of sectors for both X and Z (required by map renderer) 
+        std::uint16_t       _num_x_sectors, _num_z_sectors; 
 
         int16_t              _alternate_room;
         AlternateMode        _alternate_mode;

@@ -151,14 +151,11 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>View\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="MapTypes.h">
-      <Filter>View\Map</Filter>
-    </ClInclude>
     <ClInclude Include="Sector.h">
-      <Filter>View\Map</Filter>
+      <Filter>View\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>View\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,11 +249,8 @@
     <ClCompile Include="DirectoryListing.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>View\Map</Filter>
-    </ClCompile>
     <ClCompile Include="Sector.cpp">
-      <Filter>View\Map</Filter>
+      <Filter>View\Room</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

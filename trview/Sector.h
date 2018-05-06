@@ -2,46 +2,60 @@
 
 #include <memory>
 #include <vector>
-#include "MapTypes.h" 
+#include <utility>
+#include <map>
+#include <set>
+
+#include "trlevel/trtypes.h"
+#include "trlevel/ILevel.h"
+#include "RoomInfo.h"
+#include "Types.h" 
 
 namespace trview
 {
-    struct Sector
+    class Sector
     {
     public:
-        std::int8_t         floor, ceiling;
-        int                 row, column;
-        ui::Point           origin, last; // Origin point, last point (bottom right corner 
+        // Constructs sector object and parses floor data automatically 
+        Sector(const trlevel::ILevel &level, const trlevel::tr_room_sector &sector, int sector_id);
 
-        // Constructs sector object 
-        Sector(int p_row, int p_column); 
+        // Returns the id of the room that this floor data points to 
+        std::uint16_t portal() const; 
 
-        // Returns the first floordata that has the specified function 
-        // Returns nullptr if no such floordata
-        std::unique_ptr<Floor> at(const FunctionType& func) const; 
+        // Gets/sets id of the sector. Used by map renderer. 
+        inline std::uint16_t id() const { return _sector_id; }
 
-        // Returns the floordata at the specified index 
-        // Returns nullptr if no such floordata
-        std::unique_ptr<Floor> at(int index) const;
+        // Returns all neighbours for the current sector, maximum of 3 (up, down, portal). 
+        std::set<std::uint16_t> neighbours() const; 
 
-        // Adds a new floordata entry to this sector 
-        void add(const Floor& floor); 
+        // Returns room below 
+        inline std::uint16_t room_below() const { return _room_below; }
 
-        // Returns the number of floordata(s) this sector has 
-        std::size_t size() const; 
+        // Returns room above 
+        inline std::uint16_t room_above() const { return _room_above; }
 
-        // Returns true if function is a wall, false otherwise 
-        bool is_wall() const; 
+        // Holds "Function" enum bitwise values 
+        std::uint16_t flags = 0;
 
-        // Returns true if sector has the specified function, false otherwise 
-        bool has_function(const FunctionType& func) const; 
+    private:
+        bool parse(); 
 
-        // Quick lookups rather than iterating _floor_data 
-        bool is_portal = false; 
-        bool is_trigger = false; 
-        bool is_death = false; 
+        // Holds the "wall portal" that this sector points to - this is the id of the room 
+        std::uint8_t _portal, _room_above, _room_below;
 
-    private: 
-        std::vector<Floor>  _floor_data;
+        // Holds slope data 
+        std::uint16_t _floor_slant, _ceiling_slant; 
+
+        // Holds trigger data 
+        struct Trigger _trigger; 
+
+        // ID of the sector 
+        std::uint16_t _sector_id; 
+
+        // Reference to the level this sector belongs to 
+        const trlevel::ILevel &_level;
+
+        // Reference to the base sector structure 
+        const trlevel::tr_room_sector &_sector;
     };
 }

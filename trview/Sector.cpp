@@ -3,72 +3,136 @@
 
 namespace trview
 {
-    // Constructs sector object 
-    Sector::Sector(int p_row, int p_column)
-        : row(p_row), column(p_column)
+    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr_room_sector &sector, int sector_id)
+        : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below)
     {
+        parse();
     }
 
-    // Returns the first floordata that has the specified function 
-    // Returns nullptr if no such floordata
-    std::unique_ptr<Floor> 
-    Sector::at(const FunctionType& func) const
+    std::uint16_t
+    Sector::portal() const
     {
-        auto floor = std::find_if(_floor_data.begin(), _floor_data.end(), [&func] (const Floor& floor) {
-            return floor.function == func; 
-        }); 
+        if (!(flags & SectorFlag::Portal))
+            throw std::runtime_error("Sector does not have portal function");
 
-        if (floor == _floor_data.end())
-            return nullptr;
-        else
-            return std::make_unique <Floor> (*floor);
+        return _portal;
     }
 
-    // Returns the floordata at the specified index 
-    // Returns nullptr if no such floordata
-    std::unique_ptr<Floor> 
-    Sector::at(int index) const
+    std::set<std::uint16_t> 
+    Sector::neighbours() const
     {
-        if (index < _floor_data.size())
-            return std::make_unique<Floor>(_floor_data[index]); 
-        else
-            return nullptr;
+        std::set<std::uint16_t> neighbours; 
+
+        if (flags & SectorFlag::Portal)     neighbours.insert(_portal);
+        if (flags & SectorFlag::RoomAbove)  neighbours.insert(_room_above);
+        if (flags & SectorFlag::RoomBelow)  neighbours.insert(_room_below); 
+
+        return neighbours; 
     }
 
-    // Adds a new floordata entry to this sector 
-    void 
-    Sector::add(const Floor& floor)
-    {
-        switch (floor.function)
+    bool
+    Sector::parse()
+    {   
+        // Basic sector items 
+        if (_sector.floor == -127 && _sector.ceiling == -127)
+            flags |= SectorFlag::Wall;
+        if (_room_above != 0xFF)
+            flags |= SectorFlag::RoomAbove;
+        if (_room_below != 0xFF)
+            flags |= SectorFlag::RoomBelow; 
+
+        std::uint16_t cur_index = _sector.floordata_index;
+        if (cur_index == 0x0)
+            return true; 
+
+        for (;;)
         {
-            case FunctionType::PORTAL: is_portal = true; break;
-            case FunctionType::TRIGGER: is_trigger = true; break; 
-            case FunctionType::KILL: is_death = true; break; 
-        }; 
+            std::uint16_t floor = _level.get_floor_data(cur_index);
+            std::uint16_t subfunction = (floor & 0x7F00) >> 8; 
 
-        _floor_data.push_back(floor); 
-    }
+            switch (floor & 0x1f)
+            {
+            case 0x1:
+                _portal = _level.get_floor_data(++cur_index) & 0xFF;
+                flags |= SectorFlag::Portal;
+                break; 
 
-    // Returns the number of floordata(s) this sector has 
-    std::size_t 
-    Sector::size() const
-    {
-        return _floor_data.size(); 
-    }
+            case 0x2: 
+                _floor_slant = _level.get_floor_data(++cur_index); 
+                flags |= SectorFlag::FloorSlant; 
+                break; 
 
-    // Returns true if function is a wall, false otherwise 
-    bool 
-    Sector::is_wall() const
-    {
-        return floor == -127 && ceiling == -127; 
-    }
+            case 0x3:
+                _ceiling_slant = _level.get_floor_data(++cur_index);
+                flags |= SectorFlag::CeilingSlant;
+                break;
 
-    // Returns true if sector has the specified function, false otherwise 
-    bool 
-    Sector::has_function(const FunctionType& func) const
-    {
-        auto& floor = at(func); 
-        return (floor != nullptr); 
+            case 0x4:
+            {
+                std::uint16_t command; 
+                std::uint16_t setup = _level.get_floor_data(++cur_index);
+
+                // Basic trigger setup 
+                _trigger.timer = setup & 0xFF;
+                _trigger.oneshot = (setup & 0x100) >> 8; 
+                _trigger.mask = (setup & 0x3E00) >> 9; 
+
+                // Type of the trigger, e.g. Pad, Switch, etc.
+                _trigger.type = (TriggerType) subfunction;
+
+                // Parse actions 
+                while ((command = _level.get_floor_data(++cur_index)) & 0x8000)
+                {
+                    _trigger.commands.emplace_back (
+                        (TriggerCommandType) ((command & 0x7C00) >> 10),
+                        command & 0x3FF
+                    ); 
+                }
+
+                flags |= SectorFlag::Trigger; 
+                break; 
+            }
+            case 0x5: 
+                flags |= SectorFlag::Death; 
+                break; 
+
+            case 0x6: // climbable walls 
+                flags |= (subfunction << 6); 
+                break; 
+
+            case 0x7:
+            case 0x8:
+            case 0x9:
+            case 0xA:
+            case 0xB:
+            case 0xC:
+            case 0xD:
+            case 0xE:
+            case 0xF:
+            case 0x10:
+            case 0x11:
+            case 0x12:
+                // Triangulation. Don't care about this right now.
+                if ((floor & 0x1f) >= 0x7 && (floor & 0x1f) <= 0x12)
+                    (void) _level.get_floor_data(++cur_index);
+                break;
+
+            case 0x13: 
+                flags |= SectorFlag::MonkeySwing;
+                break; 
+            case 0x14:
+                flags |= SectorFlag::MinecartLeft;
+                break; 
+            case 0x15:
+                flags |= SectorFlag::MinecartRight; 
+                break; 
+            }
+
+            if ((floor >> 15) || cur_index == 0x0) break; 
+            else cur_index++; 
+        }
+
+        return true; 
     }
 }
 

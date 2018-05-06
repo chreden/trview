@@ -22,7 +22,9 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
         : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
-        _alternate_room(room.alternate_room)
+        _alternate_room(room.alternate_room),
+        _num_x_sectors(room.num_x_sectors),
+        _num_z_sectors(room.num_z_sectors)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -31,6 +33,7 @@ namespace trview
 
         _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(level, room, texture_storage);
+        generate_sectors(level, room);
         generate_adjacency(level, room);
         generate_static_meshes(level, room, mesh_storage);
     }
@@ -173,111 +176,31 @@ namespace trview
 
     void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
-        std::set<uint16_t> adjacent_rooms;
+        _neighbours.clear(); 
 
-        // When adding an adjacent room, make sure to add the alternate room of that room
-        // as well, so that the depth mode works properly when the flip map is enabled.
-        auto add_adjacent_room = [&](int16_t room)
-        {
-            adjacent_rooms.insert(room);
-            auto r = level.get_room(room);
-            if (r.alternate_room != -1)
-            {
-                adjacent_rooms.insert(r.alternate_room);
-            }
-        };
+        std::for_each(_sectors.begin(), _sectors.end(), [&] (const auto& pair) {
+            const std::set<std::uint16_t> n = pair.second->neighbours(); 
+            _neighbours.insert(n.begin(), n.end());
+        });
 
-        for (const auto& sector : room.sector_list)
-        {
-            if (sector.room_above != 0xff)
-            {
-                add_adjacent_room(sector.room_above);
-            }
-
-            if (sector.room_below != 0xff)
-            {
-                add_adjacent_room(sector.room_below);
-            }
-
-            uint32_t index = sector.floordata_index;
-
-            // There's no floordata for this sector.
-            if (index == 0)
-            {
-                continue;
-            }
-
-            bool end_data = false;
-
-            do
-            {
-                uint16_t floor_data = level.get_floor_data(index);
-                end_data = floor_data & 0x8000;
-                uint32_t function = floor_data & 0x001F;
-
-                // Portal
-                switch (function)
-                {
-                case 0x0:
-                    end_data = true;
-                    break;
-                case 0x1:
-                    add_adjacent_room(level.get_floor_data(++index));
-                    break;
-                case 0x2:
-                case 0x3:
-                    ++index;
-                    break;
-                case 0x4:
-                {
-                    uint16_t trigger_setup = level.get_floor_data(++index);
-                    uint16_t action = 0;
-                    do
-                    {
-                        uint16_t action = level.get_floor_data(++index);
-                    } while (action & 0x8000);
-                    break;
-                }
-                case 0x5:
-                case 0x6:
-                    break;
-                case 0x7:
-                case 0x8:
-                case 0x9:
-                case 0xA:
-                case 0xB:
-                case 0xC:
-                case 0xD:
-                case 0xE:
-                case 0xF:
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                {
-                    uint16_t triangulation = level.get_floor_data(++index);
-                    break;
-                }
-                case 0x13:
-                    break;
-                case 0x14: // trigger triggerer
-                    break;
-                case 0x15:
-                    break;
-                }
-
-                ++index;
-
-            } while (!end_data);
-            
-        }
-
-        // Above and below.
-        _neighbours = adjacent_rooms;
+        int count = _neighbours.size();
     }
 
     void Room::add_entity(Entity* entity)
     {
         _entities.push_back(entity);
+    }
+
+    void 
+    Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    {
+        for (int i = 0; i < room.sector_list.size(); ++i)
+        {
+            const trlevel::tr_room_sector &sector = room.sector_list.at(i);
+            _sectors.emplace(std::make_pair(
+                i, std::make_shared<Sector>(level, sector, i)
+            ));
+        }
     }
 
     void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
