@@ -256,12 +256,23 @@ namespace trview
                 }
                 else if (over_map())
                 {
-                    std::unique_ptr<Sector> sector = _map_renderer->sector_at_cursor();
-                    if (sector != nullptr && sector->has_function(FunctionType::PORTAL))
+                    std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
+                    if (sector != nullptr)
                     {
-                        std::unique_ptr<Floor> floor = sector->at(FunctionType::PORTAL);
-                        select_room(floor->portal_to);
+                        if (sector->flags & SectorFlag::Portal)
+                            select_room(sector->portal());
+                        else if (sector->flags & SectorFlag::RoomBelow)
+                            select_room(sector->room_below()); 
                     }
+                }
+            }
+            else if (button == Mouse::Button::Right)
+            {
+                if (over_map())
+                {
+                    std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
+                    if (sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
+                        select_room(sector->room_above()); 
                 }
             }
         };
@@ -594,7 +605,7 @@ namespace trview
             _room_navigator->set_selected_room(room);
             _room_navigator->set_room_info(_level->room_info(room));
 
-            _map_renderer->load(*_current_level, _current_level->get_room(static_cast<uint16_t>(room)));
+            _map_renderer->load(_level->room(_level->selected_room()));
 
             set_camera_mode(CameraMode::Orbit);
         }

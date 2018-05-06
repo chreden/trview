@@ -167,8 +167,6 @@
     <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelInfo.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="MapTypes.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
@@ -188,6 +186,7 @@
     <ClInclude Include="TransparencyBuffer.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="trview.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Viewer.h" />
     <ClInclude Include="Window.h" />
@@ -208,7 +207,6 @@
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelInfo.cpp" />
-    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Neighbours.cpp" />

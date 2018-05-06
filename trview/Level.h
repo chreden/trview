@@ -82,7 +82,11 @@ namespace trview
         Event<uint16_t> on_room_selected;
 
         // Event raised when the level needs to change the alternate mode.
-        Event<bool> on_alternate_mode_selected;
+        Event<bool> on_alternate_mode_selected;   
+
+        // Returns the room with ID provided 
+        inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
+
 
         // Get the current state of the alternate mode (flipmap).
         bool alternate_mode() const;
