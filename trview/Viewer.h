@@ -29,8 +29,9 @@
 
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/FontFactory.h>
+#include <trview.ui.render/MapRenderer.h>
 
-#include "trview.ui.render/MapRenderer.h"
+#include "CameraInput.h"
 
 namespace trview
 {
@@ -45,6 +46,11 @@ namespace trview
     class Neighbours;
     class LevelInfo;
     struct ITextureStorage;
+
+    namespace graphics
+    {
+        struct IShaderStorage;
+    }
 
     class Viewer
     {
@@ -69,6 +75,7 @@ namespace trview
         void toggle_highlight();
 
         UserSettings settings() const;
+        Event<std::wstring> on_file_loaded;
         Event<std::list<std::wstring>> on_recent_files_changed;
 
         // Resize the window and the rendering system.
@@ -119,6 +126,9 @@ namespace trview
         // Tell things that need to be resized that they should resize.
         void resize_elements();
 
+        // Set up keyboard and mouse input for the camera.
+        void setup_camera_input();
+
         CComPtr<IDXGISwapChain>          _swap_chain;
         CComPtr<ID3D11Device>            _device;
         CComPtr<ID3D11DeviceContext>     _context;
@@ -150,9 +160,6 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
         const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
 
-        // Camera rotation variables - eventually to be moved to a camera class.
-        bool _rotating{ false };
-
         // Room navigator code.
         std::unique_ptr<GoToRoom> _go_to_room;
 
@@ -163,18 +170,14 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
-        bool _free_forward{ false };
-        bool _free_left{ false };
-        bool _free_right{ false };
-        bool _free_backward{ false };
-        bool _free_up{ false };
-        bool _free_down{ false };
+        CameraInput _camera_input;
 
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
+        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
 
         UserSettings _settings;
 

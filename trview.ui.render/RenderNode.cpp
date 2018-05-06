@@ -84,8 +84,8 @@ namespace trview
                 _render_target_view = nullptr;
 
                 auto size = _control->size();
-                uint32_t width = size.width;
-                uint32_t height = size.height;
+                uint32_t width = static_cast<uint32_t>(size.width);
+                uint32_t height = static_cast<uint32_t>(size.height);
 
                 std::vector<uint32_t> pixels(width * height, 0x00000000);
 

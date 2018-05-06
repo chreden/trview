@@ -6,6 +6,7 @@
     <ClInclude Include="trlevel.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="LevelVersion.h" />
+    <ClInclude Include="LevelLoadException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />

@@ -27,7 +27,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int, HWND& window);
+BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -120,7 +120,7 @@ void update_menu(std::list<std::wstring> files)
 std::wstring get_exe_directory()
 {
     std::vector<wchar_t> exe_directory(MAX_PATH);
-    GetModuleFileName(nullptr, &exe_directory[0], exe_directory.size());
+    GetModuleFileName(nullptr, &exe_directory[0], static_cast<uint32_t>(exe_directory.size()));
     PathRemoveFileSpec(&exe_directory[0]);
     return std::wstring(exe_directory.begin(), exe_directory.end());
 }
@@ -142,7 +142,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
     // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow, window))
+    if (!InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
@@ -154,6 +154,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     SetCurrentDirectory(get_exe_directory().c_str());
 
     viewer = std::make_unique<trview::Viewer>(window);
+    // Register to know when a file has been succesfully loaded by the viewer.
+    viewer->on_file_loaded += populate_directory_listing_menu;
     // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
     // Make sure the menu has the values loaded from the settings file.
@@ -211,14 +213,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(msg.lParam);
 
                     uint32_t size = 0;
-                    GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
-
-                    std::vector<uint8_t> data_buffer(size);
-                    GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
-
-                    RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
-                    
-                    viewer->on_input(data);
+                    if (GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER))
+                        != static_cast<uint32_t>(-1))
+                    {
+                        std::vector<uint8_t> data_buffer(size);
+                        GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
+                        RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
+                        viewer->on_input(data);
+                    }
                     break;
                 }
                 case WM_DROPFILES:
@@ -227,7 +229,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     memset(&filename, 0, sizeof(filename));
                     DragQueryFile((HDROP)msg.wParam, 0, filename, MAX_PATH);
                     viewer->open(filename);
-                    populate_directory_listing_menu(filename);
                     break;
                 }
             }
@@ -275,7 +276,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND& window)
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
@@ -319,7 +320,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     const auto file = recent_files[index];
                     viewer->open(file);
-                    populate_directory_listing_menu(file);
                 }
                 break;
             }
@@ -355,14 +355,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ofn.lpstrTitle = L"Open level";
                 ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
                 ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-                ofn.nFilterIndex = -1;
 
                 if (GetOpenFileName(&ofn))
                 {
                     SetCurrentDirectory(cd);
                     viewer->open(ofn.lpstrFile);
-
-                    populate_directory_listing_menu(ofn.lpstrFile);
                 }
                 break;
             } 
@@ -372,14 +369,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:

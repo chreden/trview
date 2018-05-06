@@ -7,5 +7,5 @@
 namespace trview
 {
     // Load the contents of a file.
-    std::vector<char> load_file(std::wstring filename);
+    std::vector<uint8_t> load_file(std::wstring filename);
 }

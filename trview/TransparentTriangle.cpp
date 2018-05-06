@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour) const
+    TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const
     {
         using namespace DirectX::SimpleMath;
         TransparentTriangle result(
@@ -14,12 +14,30 @@ namespace trview
         Vector3 minimum = Vector3::Min(Vector3::Min(result.vertices[0], result.vertices[1]), result.vertices[2]);
         Vector3 maximum = Vector3::Max(Vector3::Max(result.vertices[0], result.vertices[1]), result.vertices[2]);
         result.position = Vector3::Lerp(minimum, maximum, 0.5f);
-        result.colour = colour;
+        result.colour = colour_override;
         return result;
     }
 
-    TransparentTriangle::Mode attribute_to_transparency(uint16_t attribute)
+    // Determine whether the face should be transparent give the attribute and effects values. The 
+    // mode is stored in out if it is transparent.
+    // attribute: The texture attribute value.
+    // effects: The face effects value.
+    // Returns: True if the face is transparent. If this is false, out is not set.
+    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out)
     {
-        return attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+        // The effects value takes precendence over the attribute value.
+        if (effects & 0x1)
+        {
+            out = TransparentTriangle::Mode::Additive;
+            return true;
+        }
+
+        if (!attribute)
+        {
+            return false;
+        }
+
+        out = attribute == 2 ? TransparentTriangle::Mode::Additive : TransparentTriangle::Mode::Normal;
+        return true;
     }
 }

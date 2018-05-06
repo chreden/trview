@@ -125,18 +125,18 @@ namespace trview
             return handled | move(position);
         }
 
-        bool Control::mouse_up(Point position)
+        bool Control::mouse_up(Point)
         {
             set_focus_control(nullptr);
             return true;
         }
 
-        bool Control::clicked(Point position)
+        bool Control::clicked(Point)
         {
             return false;
         }
 
-        bool Control::move(Point position)
+        bool Control::move(Point)
         {
             return false;
         }

@@ -10,7 +10,7 @@ namespace trview
             set_texture(_up_image);
         }
 
-        bool Checkbox::clicked(Point position)
+        bool Checkbox::clicked(Point)
         {
             set_state(!_state);
             on_state_changed(_state);

@@ -147,7 +147,7 @@ namespace trview
         D3D11_BUFFER_DESC vertex_desc;
         memset(&vertex_desc, 0, sizeof(vertex_desc));
         vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-        vertex_desc.ByteWidth = sizeof(MeshVertex) * _vertices.size();
+        vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(_vertices.size());
         vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
         D3D11_SUBRESOURCE_DATA vertex_data;

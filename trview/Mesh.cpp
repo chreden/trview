@@ -22,8 +22,7 @@ namespace trview
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
-        const std::vector<TransparentTriangle>& transparent_triangles, 
-        const ILevelTextureStorage& texture_storage)
+        const std::vector<TransparentTriangle>& transparent_triangles)
         : _transparent_triangles(transparent_triangles)
     {
         if (!vertices.empty())
@@ -31,7 +30,7 @@ namespace trview
             D3D11_BUFFER_DESC vertex_desc;
             memset(&vertex_desc, 0, sizeof(vertex_desc));
             vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-            vertex_desc.ByteWidth = sizeof(MeshVertex) * vertices.size();
+            vertex_desc.ByteWidth = sizeof(MeshVertex) * static_cast<uint32_t>(vertices.size());
             vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
             D3D11_SUBRESOURCE_DATA vertex_data;
@@ -42,7 +41,7 @@ namespace trview
 
             for (const auto& tex_indices : indices)
             {
-                _index_counts.push_back(tex_indices.size());
+                _index_counts.push_back(static_cast<uint32_t>(tex_indices.size()));
 
                 if (!tex_indices.size())
                 {
@@ -53,7 +52,7 @@ namespace trview
                 D3D11_BUFFER_DESC index_desc;
                 memset(&index_desc, 0, sizeof(index_desc));
                 index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * tex_indices.size();
+                index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(tex_indices.size());
                 index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
                 D3D11_SUBRESOURCE_DATA index_data;
@@ -70,7 +69,7 @@ namespace trview
                 D3D11_BUFFER_DESC index_desc;
                 memset(&index_desc, 0, sizeof(index_desc));
                 index_desc.Usage = D3D11_USAGE_DEFAULT;
-                index_desc.ByteWidth = sizeof(uint32_t) * untextured_indices.size();
+                index_desc.ByteWidth = sizeof(uint32_t) * static_cast<uint32_t>(untextured_indices.size());
                 index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
                 D3D11_SUBRESOURCE_DATA index_data;
@@ -79,7 +78,7 @@ namespace trview
 
                 CComPtr<ID3D11Buffer> index_buffer;
                 hr = device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
-                _untextured_index_count = untextured_indices.size();
+                _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
 
             using namespace DirectX::SimpleMath;
@@ -170,11 +169,11 @@ namespace trview
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, texture_storage);
+        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles);
     }
 
     void process_textured_rectangles(
-        const std::vector<trlevel::tr_face4>& rectangles, 
+        const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -203,21 +202,20 @@ namespace trview
 
             const bool double_sided = rect.texture & 0x8000;
 
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
+            TransparentTriangle::Mode transparency_mode;
+            if (determine_transparency(texture_storage.attribute(texture), rect.effects, transparency_mode))
             {
-                const auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
-                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode);
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
-                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode);
                 }
                 continue;
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
@@ -252,7 +250,7 @@ namespace trview
     }
 
     void process_textured_triangles(
-        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -280,19 +278,18 @@ namespace trview
 
             const bool double_sided = tri.texture & 0x8000;
 
-            uint16_t attribute = texture_storage.attribute(texture);
-            if (attribute != 0)
+            TransparentTriangle::Mode transparency_mode;
+            if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
             {
-                const auto mode = attribute_to_transparency(attribute);
-                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), mode);
+                transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
                 if (double_sided)
                 {
-                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), mode);
+                    transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
                 }
                 continue;
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
@@ -338,7 +335,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 4; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
@@ -391,7 +388,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[tri.vertices[i]]);
             }
 
-            const auto base = output_vertices.size();
+            const uint32_t base = static_cast<uint32_t>(output_vertices.size());
             for (int i = 0; i < 3; ++i)
             {
                 output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });

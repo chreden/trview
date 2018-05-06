@@ -21,13 +21,11 @@ namespace trview
         // vertices: The vertices that make up the mesh.
         // indices: The indices for triangles that use level textures.
         // untextured_indices: The indices for triangles that do not use level textures.
-        // texture_storage: The texture storage for the level.
         Mesh(CComPtr<ID3D11Device> device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
-             const std::vector<TransparentTriangle>& transparent_triangles,
-             const ILevelTextureStorage& texture_storage);
+             const std::vector<TransparentTriangle>& transparent_triangles);
 
         void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
@@ -71,7 +69,7 @@ namespace trview
     // transparent_triangles: The collection to add transparent triangles to.
     // collision_triangles: The collection to add collision triangles to.
     void process_textured_rectangles(
-        const std::vector<trlevel::tr_face4>& rectangles, 
+        const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices, 
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,
@@ -88,7 +86,7 @@ namespace trview
     // transparent_triangles: The collection to add transparent triangles to.
     // collision_triangles: The collection to add collision triangles to.
     void process_textured_triangles(
-        const std::vector<trlevel::tr_face3>& triangles,
+        const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
         std::vector<MeshVertex>& output_vertices,

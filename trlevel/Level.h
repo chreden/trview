@@ -13,7 +13,7 @@ namespace trlevel
     class Level : public ILevel
     {
     public:
-        explicit Level(std::wstring filename);
+        explicit Level(const std::wstring& filename);
 
         virtual ~Level();
 
@@ -117,7 +117,7 @@ namespace trlevel
         // Get the mesh at the specified index.
         // index: The index of the mesh to get.
         // Returns: The mesh.
-        virtual tr_mesh get_mesh_by_pointer(uint16_t mesh_pointer) const override;
+        virtual tr_mesh get_mesh_by_pointer(uint32_t mesh_pointer) const override;
 
         // Get the mesh tree node at the specified index.
         // index: The mesh tree index.
@@ -139,14 +139,19 @@ namespace trlevel
         // sprite_sequence_id: The id of the sprite sequence to find.
         // sequence: The place to store the sequence.
         // Returns: Whether the sprite sequence was found.
-        virtual bool get_sprite_sequence_by_id(uint32_t sprite_sequence_id, tr_sprite_sequence& sequence) const override;
+        virtual bool get_sprite_sequence_by_id(int32_t sprite_sequence_id, tr_sprite_sequence& sequence) const override;
 
         // Get the sprite texture with the specified ID.
         // index: The index of the sprite texture to get.
         // Returns: The sprite texture.
         virtual tr_sprite_texture get_sprite_texture(uint32_t index) const override;
     private:
-        void generate_meshes(std::vector<uint16_t> mesh_data);
+        void generate_meshes(const std::vector<uint16_t>& mesh_data);
+
+        // Load a Tomb Raider IV level.
+        void load_tr4(std::ifstream& file);
+
+        void load_level_data(std::istream& file);
 
         LevelVersion _version;
 
@@ -156,6 +161,7 @@ namespace trlevel
         uint32_t                  _num_textiles;
         std::vector<tr_textile8>  _textile8;
         std::vector<tr_textile16> _textile16;
+        std::vector<tr_textile32> _textile32;
 
         uint16_t                       _num_rooms;
         std::vector<tr3_room>          _rooms;
@@ -167,6 +173,7 @@ namespace trlevel
 
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;
+        std::vector<uint16_t>                 _mesh_data;
         std::vector<uint32_t>                 _mesh_pointers;
         std::vector<uint32_t>                 _meshtree;
         std::vector<uint16_t>                 _frames;

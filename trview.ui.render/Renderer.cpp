@@ -15,9 +15,9 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(CComPtr<ID3D11Device> device, uint32_t host_width, uint32_t host_height)
+            Renderer::Renderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height)
                 : _device(device), 
-                _sprite(std::make_unique<Sprite>(device, host_width, host_height)), 
+                _sprite(std::make_unique<Sprite>(device, shader_storage, host_width, host_height)), 
                 _font_factory(std::make_unique<FontFactory>()),
                 _host_width(host_width), 
                 _host_height(host_height)
@@ -87,7 +87,7 @@ namespace trview
                     auto texture_view = _root_node->node_texture_view();
                     if (texture_view)
                     {
-                        _sprite->render(context, texture_view, 0, 0, _host_width, _host_height);
+                        _sprite->render(context, texture_view, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
                     }
                 }
             }

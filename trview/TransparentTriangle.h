@@ -19,7 +19,7 @@ namespace trview
         {
         }
 
-        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour) const;
+        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
 
         // The world space positions that make up the triangle.
         DirectX::SimpleMath::Vector3 vertices[3];
@@ -35,5 +35,10 @@ namespace trview
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
     };
 
-    TransparentTriangle::Mode attribute_to_transparency(uint16_t attribute);
+    // Determine whether the face should be transparent give the attribute and effects values. The 
+    // mode is stored in out if it is transparent.
+    // attribute: The texture attribute value.
+    // effects: The face effects value.
+    // Returns: True if the face is transparent. If this is false, out is not set.
+    bool determine_transparency(uint16_t attribute, uint16_t effects, TransparentTriangle::Mode& out);
 }

@@ -22,11 +22,17 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
+    
+    namespace graphics
+    {
+        struct IShaderStorage;
+        struct IShader;
+    }
 
     class Level
     {
     public:
-        Level(CComPtr<ID3D11Device> device, const trlevel::ILevel* level);
+        Level(CComPtr<ID3D11Device> device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -81,6 +87,9 @@ namespace trview
         // Returns the room with ID provided 
         inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
 
+
+        // Get the current state of the alternate mode (flipmap).
+        bool alternate_mode() const;
     private:
         void generate_rooms();
         void generate_entities();
@@ -122,9 +131,8 @@ namespace trview
         std::vector<std::unique_ptr<Entity>> _entities;
 
         CComPtr<ID3D11Device>       _device;
-        CComPtr<ID3D11VertexShader> _vertex_shader;
-        CComPtr<ID3D11PixelShader>  _pixel_shader;
-        CComPtr<ID3D11InputLayout>  _input_layout;
+        graphics::IShader*          _vertex_shader;
+        graphics::IShader*          _pixel_shader;
         CComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };

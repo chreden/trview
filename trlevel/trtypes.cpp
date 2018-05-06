@@ -4,11 +4,20 @@
 
 namespace trlevel
 {
+    uint32_t convert_textile32(uint32_t t)
+    {
+        uint32_t a = (t & 0xff000000) >> 24;
+        uint32_t r = (t & 0x00ff0000) >> 16;
+        uint32_t g = (t & 0x0000ff00) >> 8;
+        uint32_t b = t & 0x000000ff;
+        return a << 24 | b << 16 | g << 8 | r;
+    }
+
     uint32_t convert_textile16(uint16_t t)
     {
-        uint16_t r = t & 0x001f;
+        uint16_t r = (t & 0x7c00) >> 10;
         uint16_t g = (t & 0x03e0) >> 5;
-        uint16_t b = (t & 0x7c00) >> 10;
+        uint16_t b = t & 0x001f;
 
         r <<= 3;
         g <<= 3;
@@ -19,7 +28,7 @@ namespace trlevel
         b += 3;
 
         uint16_t a = t & 0x8000 ? 0xff : 0x00;
-        return a << 24 | r << 16 | g << 8 | b;
+        return a << 24 | b << 16 | g << 8 | r;
     }
 
     // Convert a set of Tomb Raider I vertices into a vertex format compatible
@@ -86,5 +95,53 @@ namespace trlevel
     tr_colour4 convert_to_colour4(const tr_colour& colour)
     {
         return tr_colour4{static_cast<uint8_t>(colour.Red << 2), static_cast<uint8_t>(colour.Green << 2), static_cast<uint8_t>(colour.Blue << 2), 0x00 };
+    }
+
+    // Convert a set of Tomb Raider IV object textures into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures)
+    {
+        std::vector<tr_object_texture> new_object_textures;
+        new_object_textures.reserve(object_textures.size());
+        std::transform(object_textures.begin(), object_textures.end(),
+            std::back_inserter(new_object_textures), [](const auto& texture)
+        {
+            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
+            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
+            return new_entity;
+        });
+        return new_object_textures;
+    }
+
+    std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles)
+    {
+        std::vector<tr4_mesh_face3> new_triangles;
+        new_triangles.reserve(triangles.size());
+        std::transform(triangles.begin(), triangles.end(),
+            std::back_inserter(new_triangles), [](const auto& tri)
+        {
+            tr4_mesh_face3 new_face3;
+            memcpy(new_face3.vertices, tri.vertices, sizeof(tri.vertices));
+            new_face3.texture = tri.texture;
+            new_face3.effects = 0;
+            return new_face3;
+        });
+        return new_triangles;
+    }
+
+    std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles)
+    {
+        std::vector<tr4_mesh_face4> new_rectangles;
+        new_rectangles.reserve(rectangles.size());
+        std::transform(rectangles.begin(), rectangles.end(),
+            std::back_inserter(new_rectangles), [](const auto& rect)
+        {
+            tr4_mesh_face4 new_face4;
+            memcpy(new_face4.vertices, rect.vertices, sizeof(rect.vertices));
+            new_face4.texture = rect.texture;
+            new_face4.effects = 0;
+            return new_face4;
+        });
+        return new_rectangles;
     }
 }
