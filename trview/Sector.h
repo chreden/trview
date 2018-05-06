@@ -23,7 +23,7 @@ namespace trview
         std::uint16_t portal() const; 
 
         // Gets/sets id of the sector. Used by map renderer. 
-        inline std::uint16_t id() const { return _sector_id; }
+        inline int id() const { return _sector_id; }
 
         // Returns all neighbours for the current sector, maximum of 3 (up, down, portal). 
         std::set<std::uint16_t> neighbours() const; 
@@ -50,7 +50,7 @@ namespace trview
         struct Trigger _trigger; 
 
         // ID of the sector 
-        std::uint16_t _sector_id; 
+        int _sector_id; 
 
         // Reference to the level this sector belongs to 
         const trlevel::ILevel &_level;

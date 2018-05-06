@@ -95,7 +95,7 @@ namespace trview
                 ui::Point get_position(const Sector& sector); 
 
                 // Determines the size of a sector 
-                ui::Size get_size(const Sector& sector) const;
+                ui::Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
                 void draw(CComPtr<ID3D11DeviceContext> context, Point p, Size s, Color c);
@@ -114,7 +114,7 @@ namespace trview
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor 
-                std::uint8_t                        _rows, _columns; 
+                std::uint16_t                       _rows, _columns; 
                 bool                                _loaded = false;
 
                 const float                         _DRAW_MARGIN = 30.0f; 

@@ -34,7 +34,7 @@ namespace trview
         _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(room, texture_storage);
         generate_sectors(level, room);
-        generate_adjacency(level, room);
+        generate_adjacency();
         generate_static_meshes(level, room, mesh_storage);
     }
 
@@ -173,7 +173,7 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Room::generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    void Room::generate_adjacency()
     {
         _neighbours.clear(); 
 
@@ -181,8 +181,6 @@ namespace trview
             const std::set<std::uint16_t> n = pair.second->neighbours(); 
             _neighbours.insert(n.begin(), n.end());
         });
-
-        int count = _neighbours.size();
     }
 
     void Room::add_entity(Entity* entity)

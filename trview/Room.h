@@ -127,7 +127,7 @@ namespace trview
 
     private:
         void generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
-        void generate_adjacency(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
         void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);

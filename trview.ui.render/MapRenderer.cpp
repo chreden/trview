@@ -78,7 +78,7 @@ namespace trview
 
                 const auto& sectors = room->sectors(); 
                 std::for_each(sectors.begin(), sectors.end(), [&] (const auto& pair) {
-                    _tiles.emplace_back(std::shared_ptr<Sector>(pair.second), get_position(*pair.second), get_size(*pair.second));
+                    _tiles.emplace_back(std::shared_ptr<Sector>(pair.second), get_position(*pair.second), get_size());
                 });
             }
 
@@ -91,7 +91,7 @@ namespace trview
         
             }
 
-            ui::Size MapRenderer::get_size(const Sector& sector) const
+            ui::Size MapRenderer::get_size() const
             {
                 return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
             }
