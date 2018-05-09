@@ -28,8 +28,6 @@ namespace trview
     {
         namespace render
         {
-            using namespace DirectX::SimpleMath;
-
             namespace
             {
                 struct Tile
@@ -43,7 +41,7 @@ namespace trview
                     ui::Size size; 
                 };
 
-                std::map<SectorFlag, Color> default_colours = {
+                std::map<SectorFlag, DirectX::SimpleMath::Color> default_colours = {
                     { Portal, { 0.0f, 0.0f, 0.0f } }, 
                     { Wall, { 0.4f, 0.4f, 0.4f } }, 
                     { Trigger, { 1.0f, 0.3f, 0.7f } },
@@ -100,7 +98,7 @@ namespace trview
                 ui::Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
-                void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c);
+                void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, DirectX::SimpleMath::Color c);
 
                 // Update the stored positions of the corners of the map.
                 void update_map_position();

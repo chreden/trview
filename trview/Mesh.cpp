@@ -5,6 +5,9 @@
 
 #include "ILevelTextureStorage.h"
 
+using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
     namespace
@@ -12,13 +15,13 @@ namespace trview
         // Convert the vertex to the scale used by the viewer.
         // vertex: The vertex to convert.
         // Returns: The scaled vector.
-        DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
+        Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
         {
-            return DirectX::SimpleMath::Vector3(vertex.x / 1024.f, -vertex.y / 1024.f, vertex.z / 1024.f);
+            return Vector3(vertex.x / 1024.f, -vertex.y / 1024.f, vertex.z / 1024.f);
         };
     }
 
-    Mesh::Mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
+    Mesh::Mesh(const ComPtr<ID3D11Device>& device, 
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
@@ -59,7 +62,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &tex_indices[0];
 
-                Microsoft::WRL::ComPtr<ID3D11Buffer> index_buffer;
+                ComPtr<ID3D11Buffer> index_buffer;
                 hr = device->CreateBuffer(&index_desc, &index_data, &index_buffer);
                 _index_buffers.push_back(index_buffer);
             }
@@ -76,12 +79,10 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &untextured_indices[0];
 
-                Microsoft::WRL::ComPtr<ID3D11Buffer> index_buffer;
+                ComPtr<ID3D11Buffer> index_buffer;
                 hr = device->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
                 _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
-
-            using namespace DirectX::SimpleMath;
 
             D3D11_BUFFER_DESC matrix_desc;
             memset(&matrix_desc, 0, sizeof(matrix_desc));
@@ -95,15 +96,13 @@ namespace trview
         }
     }
 
-    void Mesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         // There are no vertices.
         if (!_vertex_buffer)
         {
             return;
         }
-
-        using namespace DirectX::SimpleMath;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
@@ -151,11 +150,8 @@ namespace trview
         return _transparent_triangles;
     }
 
-    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage)
+    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage)
     {
-        using namespace DirectX;
-        using namespace SimpleMath;
-
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
         std::vector<uint32_t> untextured_indices;
@@ -182,7 +178,6 @@ namespace trview
         std::vector<Triangle>& collision_triangles)
     {
         using namespace trlevel;
-        using namespace DirectX::SimpleMath;
 
         for (const auto& rect : rectangles)
         {
@@ -258,8 +253,6 @@ namespace trview
         std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<Triangle>& collision_triangles)
     {
-        using namespace DirectX::SimpleMath;
-
         for (const auto& tri : triangles)
         {
             std::array<Vector3, 3> verts;
@@ -322,8 +315,6 @@ namespace trview
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles)
     {
-        using namespace DirectX::SimpleMath;
-
         for (const auto& rect : rectangles)
         {
             const uint16_t texture = rect.texture & 0x7fff;
@@ -375,8 +366,6 @@ namespace trview
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles)
     {
-        using namespace DirectX::SimpleMath;
-
         for (const auto& tri : triangles)
         {
             const uint16_t texture = tri.texture & 0x7fff;

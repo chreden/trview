@@ -12,9 +12,11 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
+using namespace Microsoft::WRL;
+
 namespace trview
 {
-    Level::Level(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
+    Level::Level(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _device(device), _level(level)
     {
         _vertex_shader = shader_storage.get("level_vertex_shader");
@@ -116,7 +118,7 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    void Level::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         using namespace DirectX;
 
@@ -131,7 +133,7 @@ namespace trview
     // Render the rooms in the level.
     // context: The device context.
     // camera: The current camera to render the level with.
-    void Level::render_rooms(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    void Level::render_rooms(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         // Only render the rooms that the current view mode includes.
         auto rooms = get_rooms_to_render();

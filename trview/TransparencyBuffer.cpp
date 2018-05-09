@@ -7,9 +7,12 @@
 
 #include <algorithm>
 
+using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
-    TransparencyBuffer::TransparencyBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+    TransparencyBuffer::TransparencyBuffer(const ComPtr<ID3D11Device>& device)
         : _device(device)
     {
         create_matrix_buffer();
@@ -63,9 +66,8 @@ namespace trview
         _triangles.push_back(triangle);
     }
 
-    void TransparencyBuffer::sort(const DirectX::SimpleMath::Vector3& eye_position)
+    void TransparencyBuffer::sort(const Vector3& eye_position)
     {
-        using namespace DirectX::SimpleMath;
         std::sort(_triangles.begin(), _triangles.end(),
             [&eye_position](const auto& l, const auto& r)
         {
@@ -74,19 +76,17 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_vertices.size())
         {
             return;
         }
 
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> old_state;
+        ComPtr<ID3D11DepthStencilState> old_state;
         context->OMGetDepthStencilState(&old_state, nullptr);
 
         context->OMSetDepthStencilState(_transparency_depth_state.Get(), 1);
-
-        using namespace DirectX::SimpleMath;
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
@@ -159,8 +159,6 @@ namespace trview
 
     void TransparencyBuffer::create_matrix_buffer()
     {
-        using namespace DirectX::SimpleMath;
-
         _matrix_buffer = nullptr;
 
         D3D11_BUFFER_DESC matrix_desc;
@@ -205,7 +203,7 @@ namespace trview
         create_buffer();
     }
 
-    void TransparencyBuffer::set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const
+    void TransparencyBuffer::set_blend_mode(const ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const
     {
         if (mode == TransparentTriangle::Mode::Normal)
         {

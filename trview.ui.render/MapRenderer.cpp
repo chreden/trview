@@ -1,6 +1,7 @@
 #include "MapRenderer.h"
 
-using namespace DirectX;
+using namespace DirectX::SimpleMath;
+using namespace Microsoft::WRL;
 
 namespace trview
 {
@@ -8,7 +9,7 @@ namespace trview
     {
         namespace render
         {
-            MapRenderer::MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
+            MapRenderer::MapRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
                 : _device(device),
                 _window_width(width), 
                 _window_height(height),
@@ -18,7 +19,7 @@ namespace trview
             }
 
             void
-            MapRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+            MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
                 // Draw base square, this is the backdrop for the map 
                 draw(context, Point(_first.x - 1, _first.y - 1), Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1), Color(0.0f, 0.0f, 0.0f));
@@ -73,7 +74,7 @@ namespace trview
             }
 
             void 
-            MapRenderer::draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
+            MapRenderer::draw(const ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
             {
                 const auto texture = get_texture();
                 _sprite.render(context, texture, p.x, p.y, s.width, s.height, c); 
@@ -111,7 +112,7 @@ namespace trview
                 return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
             }
 
-            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>
+            ComPtr<ID3D11ShaderResourceView>
             MapRenderer::get_texture()
             {
                 if (_texture == nullptr)

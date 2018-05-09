@@ -3,24 +3,22 @@
 
 #include <d2d1.h>
 
+using namespace Microsoft::WRL;
+
 namespace trview
 {
     namespace ui
     {
         namespace render
         {
-            Font::Font(
-                const Microsoft::WRL::ComPtr<ID3D11Device>& device,
-                const Microsoft::WRL::ComPtr<IDWriteFactory>& dwrite_factory,
-                const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
-                const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format)
+            Font::Font(const ComPtr<ID3D11Device>& device, const ComPtr<IDWriteFactory>& dwrite_factory, const ComPtr<ID2D1Factory>& d2d_factory, const ComPtr<IDWriteTextFormat>& text_format)
                 : _device(device), _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
             {
             }
 
             FontTexture Font::create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
             {
-                Microsoft::WRL::ComPtr<IDXGISurface> surface;
+                ComPtr<IDXGISurface> surface;
                 texture.As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
@@ -54,7 +52,7 @@ namespace trview
                 desc.Usage = D3D11_USAGE_DEFAULT;
                 _device->CreateTexture2D(&desc, nullptr, &new_texture.texture);
 
-                Microsoft::WRL::ComPtr<IDXGISurface> surface;
+                ComPtr<IDXGISurface> surface;
                 new_texture.texture.As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
@@ -87,7 +85,7 @@ namespace trview
             Size Font::measure(const std::wstring& text) const
             {
                 // Create a text layout from the factory (which we don't have...)
-                Microsoft::WRL::ComPtr<IDWriteTextLayout> text_layout;
+                ComPtr<IDWriteTextLayout> text_layout;
                 _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);

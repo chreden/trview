@@ -14,9 +14,12 @@
 #include <array>
 #include <iterator>
 
+using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
-    Room::Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
+    Room::Room(const ComPtr<ID3D11Device>& device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
@@ -31,7 +34,7 @@ namespace trview
         // (IsAlternate).
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
-        _room_offset = DirectX::SimpleMath::Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        _room_offset = Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
         generate_geometry(room, texture_storage);
         generate_sectors(level, room);
         generate_adjacency();
@@ -53,10 +56,9 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    Room::PickResult Room::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    Room::PickResult Room::pick(const Vector3& position, const Vector3& direction) const
     {
         using namespace DirectX::TriangleTests;
-        using namespace DirectX::SimpleMath;
 
         PickResult result;
 
@@ -96,10 +98,8 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        using namespace DirectX::SimpleMath;
-
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
 
@@ -113,15 +113,14 @@ namespace trview
         render_contained(context, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render_contained(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        using namespace DirectX::SimpleMath;
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
         render_contained(context, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Room::render_contained(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         for (const auto& entity : _entities)
         {
@@ -142,8 +141,6 @@ namespace trview
 
     void Room::generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
-        using namespace DirectX::SimpleMath;
-
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
             [](const auto& v) { return v.vertex; });
@@ -202,7 +199,6 @@ namespace trview
 
     void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
     {
-        using namespace DirectX::SimpleMath;
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
 
@@ -221,13 +217,12 @@ namespace trview
 
     void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
     {
-        using namespace DirectX::SimpleMath;
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
-    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const Color& colour)
     {
         for (const auto& entity : _entities)
         {

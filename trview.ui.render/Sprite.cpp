@@ -8,6 +8,8 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
+using namespace Microsoft::WRL;
+
 namespace trview
 {
     namespace ui
@@ -23,7 +25,7 @@ namespace trview
                 };
             }
 
-            Sprite::Sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
+            Sprite::Sprite(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
                 : _host_width(width), _host_height(height)
             {
                 using namespace DirectX::SimpleMath;
@@ -88,7 +90,7 @@ namespace trview
                 _host_height = height;
             }
 
-            void Sprite::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
+            void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const ComPtr<ID3D11ShaderResourceView>& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
             {
                 update_matrix(context, x, y, width, height, colour);
 
@@ -105,7 +107,7 @@ namespace trview
                 context->DrawIndexed(4, 0, 0);
             }
 
-            void Sprite::create_matrix(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+            void Sprite::create_matrix(const ComPtr<ID3D11Device>& device)
             {
                 using namespace DirectX::SimpleMath;
                 D3D11_BUFFER_DESC desc;
@@ -119,7 +121,7 @@ namespace trview
                 device->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
             }
 
-            void Sprite::update_matrix(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
+            void Sprite::update_matrix(const ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
             {
                 using namespace DirectX::SimpleMath;
 

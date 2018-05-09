@@ -7,6 +7,8 @@
 #include <external/DirectXTK/Inc/WICTextureLoader.h>
 #include <sstream>
 
+using namespace Microsoft::WRL;
+
 namespace trview
 {
     namespace
@@ -35,10 +37,10 @@ namespace trview
         // device: The Direct3D device to use to load the textures.
         // resource_id: The integer ID of the texture in the resource file.
         // Returns: The texture loaded from the resource.
-        Texture load_texture_from_resource(const Microsoft::WRL::ComPtr<ID3D11Device>& device, int resource_id)
+        Texture load_texture_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
         {
-            Microsoft::WRL::ComPtr<ID3D11Resource> resource;
-            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> view;
+            ComPtr<ID3D11Resource> resource;
+            ComPtr<ID3D11ShaderResourceView> view;
 
             auto resource_memory = get_resource_memory(resource_id, L"PNG");
             DirectX::CreateWICTextureFromMemory(device.Get(), resource_memory.data, resource_memory.size, &resource, &view);
@@ -50,7 +52,7 @@ namespace trview
             }
 
             // Get the correct interface for a texture from the loaded resource.
-            Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+            ComPtr<ID3D11Texture2D> texture;
             resource.As(&texture);
             return Texture{ texture, view };
         }
@@ -60,7 +62,7 @@ namespace trview
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.
     // storage: The ITextureStorage instance to store the textures in.
-    void load_default_textures(const Microsoft::WRL::ComPtr<ID3D11Device>& device, ITextureStorage& storage)
+    void load_default_textures(const ComPtr<ID3D11Device>& device, ITextureStorage& storage)
     {
         // Load some sort of manifest that contains the files to load.
         // For each texture, load it with the given key.
