@@ -9,6 +9,7 @@
 #include <memory>
 #include <commdlg.h>
 #include <shellapi.h>
+#include <Shlwapi.h>
 
 #include "DirectoryListing.h"
 

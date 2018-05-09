@@ -22,7 +22,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 RenderTargetStore store(context);
-                context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
+                context->OMSetRenderTargets(1, &_render_target_view, nullptr);
                 auto texture = _image->texture();
                 if (texture.view)
                 {

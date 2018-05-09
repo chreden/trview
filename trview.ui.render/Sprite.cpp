@@ -94,13 +94,13 @@ namespace trview
 
                 _vertex_shader->apply(context);
                 _pixel_shader->apply(context);
-                context->PSSetShaderResources(0, 1, &texture);
-                context->PSSetSamplers(0, 1, &_sampler_state);
+                context->PSSetShaderResources(0, 1, texture.GetAddressOf());
+                context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
                 UINT stride = sizeof(Vertex);
                 UINT offset = 0;
-                context->IASetVertexBuffers(0, 1, &_vertex_buffer, &stride, &offset);
-                context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-                context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
+                context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
+                context->IASetIndexBuffer(_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+                context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
                 context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
                 context->DrawIndexed(4, 0, 0);
             }
@@ -116,7 +116,7 @@ namespace trview
                 desc.Usage = D3D11_USAGE_DYNAMIC;
                 desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-                device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
+                device->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
             }
 
             void Sprite::update_matrix(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
@@ -142,9 +142,9 @@ namespace trview
 
                 Data data{ scaling * translation, colour };
 
-                context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+                context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
                 memcpy(mapped_resource.pData, &data, sizeof(data));
-                context->Unmap(_matrix_buffer, 0);
+                context->Unmap(_matrix_buffer.Get(), 0);
             }
         }
     }

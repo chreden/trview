@@ -21,7 +21,7 @@ namespace trview
                 // Render this node.
                 auto bg_colour = _window->background_colour();
                 float colour[] = { bg_colour.r, bg_colour.g, bg_colour.b, bg_colour.a };
-                context->ClearRenderTargetView(_render_target_view, colour);
+                context->ClearRenderTargetView(_render_target_view.Get(), colour);
             }
         }
     }

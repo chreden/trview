@@ -41,7 +41,7 @@ namespace trview
 
                 RenderTargetStore render_target_store(context);
                 render_self(context, sprite);
-                context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
+                context->OMSetRenderTargets(1, &_render_target_view, nullptr);
                 for (auto& child : _child_nodes)
                 {
                     if (!child->visible())
@@ -107,8 +107,8 @@ namespace trview
                 desc.MiscFlags = 0;
 
                 _device->CreateTexture2D(&desc, &srd, &_node_texture);
-                _device->CreateShaderResourceView(_node_texture, nullptr, &_node_texture_view);
-                _device->CreateRenderTargetView(_node_texture, nullptr, &_render_target_view);
+                _device->CreateShaderResourceView(_node_texture.Get(), nullptr, &_node_texture_view);
+                _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
             }
         }
     }

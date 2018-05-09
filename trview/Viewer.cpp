@@ -652,8 +652,8 @@ namespace trview
     void Viewer::create_render_target_view()
     {
         Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer;
-        _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&back_buffer));
-        _device->CreateRenderTargetView(back_buffer, nullptr, &_render_target_view);
+        _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(back_buffer.GetAddressOf()));
+        _device->CreateRenderTargetView(back_buffer.Get(), nullptr, &_render_target_view);
     }
 
     // Create the depth stencil view and buffer.

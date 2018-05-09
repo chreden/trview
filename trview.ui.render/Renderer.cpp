@@ -69,7 +69,7 @@ namespace trview
 
             void Renderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
-                context->OMSetDepthStencilState(_depth_stencil_state, 1);
+                context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
 
                 // The job of the renderer is to render the texture that has been generated
                 // by the top level control. This texture is generated from the child windows

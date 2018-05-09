@@ -105,8 +105,8 @@ namespace trview
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &_vertex_buffer, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &_matrix_buffer);
+        context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
+        context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
         context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
 
@@ -171,7 +171,7 @@ namespace trview
         matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
         matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        _device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
+        _device->CreateBuffer(&matrix_desc, nullptr, _matrix_buffer.GetAddressOf());
     }
 
     void TransparencyBuffer::complete()

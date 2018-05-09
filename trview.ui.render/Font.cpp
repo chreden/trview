@@ -32,7 +32,7 @@ namespace trview
                     );
 
                 FontTexture new_texture;
-                _d2d_factory->CreateDxgiSurfaceRenderTarget(surface, &props, &new_texture.render_target);
+                _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
                 new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
                 return new_texture;
             }
@@ -65,7 +65,7 @@ namespace trview
                         96
                     );
 
-                _d2d_factory->CreateDxgiSurfaceRenderTarget(surface, &props, &new_texture.render_target);
+                _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
                 new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
                 _device->CreateShaderResourceView(new_texture.texture.Get(), nullptr, &new_texture.view);
                 return new_texture;
@@ -88,7 +88,7 @@ namespace trview
             {
                 // Create a text layout from the factory (which we don't have...)
                 Microsoft::WRL::ComPtr<IDWriteTextLayout> text_layout;
-                _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, 10000, 10000, &text_layout);
+                _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);
                 return ui::Size(std::ceil(metrics.width), std::ceil(metrics.height));
