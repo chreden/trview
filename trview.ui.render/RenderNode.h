@@ -44,9 +44,13 @@ namespace trview
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) = 0;
 
+            public:
+                // Determines if the control itself needs to redraw.
+                bool needs_redraw() const;
+
                 // Determines if the control has any children that need to be re-rendered on to the
                 // render target for the control (they have been redrawn).
-                bool needs_redraw() const;
+                bool needs_recompositing() const;
 
                 void regenerate_texture();
 

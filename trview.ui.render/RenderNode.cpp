@@ -6,7 +6,6 @@
 #include "Sprite.h"
 #include "RenderTargetStore.h"
 
-
 using namespace Microsoft::WRL;
 
 namespace trview
@@ -34,8 +33,14 @@ namespace trview
 
             void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
-                if (!visible() || !needs_redraw())
+                if (!needs_redraw() && !needs_recompositing())
                 {
+                    return;
+                }
+
+                if (!visible())
+                {
+                    _needs_redraw = false;
                     return;
                 }
 
@@ -118,12 +123,18 @@ namespace trview
                 _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
             }
 
-            // Determines if the control has any children that need to be re-rendered on to the
-            // render target for the control (they have been redrawn).
+            // Determines if the control itself needs to redraw.
             bool RenderNode::needs_redraw() const
             {
-                return _needs_redraw || std::any_of(_child_nodes.begin(), _child_nodes.end(),
-                    [](const auto& n) { return n->needs_redraw(); });
+                return _needs_redraw;
+            }
+
+            // Determines if the control has any children that need to be re-rendered on to the
+            // render target for the control (they have been redrawn).
+            bool RenderNode::needs_recompositing() const
+            {
+                return std::any_of(_child_nodes.begin(), _child_nodes.end(),
+                    [](const auto& n) { return n->needs_redraw() || n->needs_recompositing(); });
             }
         }
     }
