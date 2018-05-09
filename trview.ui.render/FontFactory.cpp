@@ -12,9 +12,9 @@ namespace trview
                 DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&_dwrite_factory));
             }
 
-            std::unique_ptr<Font> FontFactory::create_font(CComPtr<ID3D11Device> device, const std::wstring& font_face, float size, DWRITE_TEXT_ALIGNMENT text_alignment, DWRITE_PARAGRAPH_ALIGNMENT paragraph_alignment)
+            std::unique_ptr<Font> FontFactory::create_font(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::wstring& font_face, float size, DWRITE_TEXT_ALIGNMENT text_alignment, DWRITE_PARAGRAPH_ALIGNMENT paragraph_alignment)
             {
-                CComPtr<IDWriteTextFormat> text_format;
+                Microsoft::WRL::ComPtr<IDWriteTextFormat> text_format;
                 _dwrite_factory->CreateTextFormat(
                     font_face.c_str(),
                     nullptr,

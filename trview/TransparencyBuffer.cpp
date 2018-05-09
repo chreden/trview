@@ -9,7 +9,7 @@
 
 namespace trview
 {
-    TransparencyBuffer::TransparencyBuffer(CComPtr<ID3D11Device> device)
+    TransparencyBuffer::TransparencyBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
         : _device(device)
     {
         create_matrix_buffer();
@@ -74,17 +74,17 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void TransparencyBuffer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_vertices.size())
         {
             return;
         }
 
-        CComPtr<ID3D11DepthStencilState> old_state;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> old_state;
         context->OMGetDepthStencilState(&old_state, nullptr);
 
-        context->OMSetDepthStencilState(_transparency_depth_state, 1);
+        context->OMSetDepthStencilState(_transparency_depth_state.Get(), 1);
 
         using namespace DirectX::SimpleMath;
 
@@ -99,16 +99,16 @@ namespace trview
 
         Data data{ camera.view_projection(), Color(1,1,1,1) };
 
-        context->Map(_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
         memcpy(mapped_resource.pData, &data, sizeof(data));
-        context->Unmap(_matrix_buffer, 0);
+        context->Unmap(_matrix_buffer.Get(), 0);
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
+        context->IASetVertexBuffers(0, 1, &_vertex_buffer, &stride, &offset);
+        context->VSSetConstantBuffers(0, 1, &_matrix_buffer);
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
-        context->OMSetBlendState(_alpha_blend, 0, 0xffffffff);
+        context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
 
         uint32_t sum = 0;
         TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
@@ -126,7 +126,7 @@ namespace trview
             sum += run.count * 3;
         }
 
-        context->OMSetDepthStencilState(old_state, 1);
+        context->OMSetDepthStencilState(old_state.Get(), 1);
     }
 
     void TransparencyBuffer::reset()
@@ -205,15 +205,15 @@ namespace trview
         create_buffer();
     }
 
-    void TransparencyBuffer::set_blend_mode(CComPtr<ID3D11DeviceContext> context, TransparentTriangle::Mode mode) const
+    void TransparencyBuffer::set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const
     {
         if (mode == TransparentTriangle::Mode::Normal)
         {
-            context->OMSetBlendState(_alpha_blend, 0, 0xffffffff);
+            context->OMSetBlendState(_alpha_blend.Get(), 0, 0xffffffff);
         }
         else
         {
-            context->OMSetBlendState(_additive_blend, 0, 0xffffffff);
+            context->OMSetBlendState(_additive_blend.Get(), 0, 0xffffffff);
         }
     }
 }

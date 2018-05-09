@@ -10,18 +10,18 @@ namespace trview
         namespace render
         {
             Font::Font(
-                CComPtr<ID3D11Device> device,
-                CComPtr<IDWriteFactory> dwrite_factory,
-                CComPtr<ID2D1Factory> d2d_factory,
-                CComPtr<IDWriteTextFormat> text_format)
+                const Microsoft::WRL::ComPtr<ID3D11Device>& device,
+                const Microsoft::WRL::ComPtr<IDWriteFactory>& dwrite_factory,
+                const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
+                const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format)
                 : _device(device), _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
             {
             }
 
-            FontTexture Font::create_texture(CComPtr<ID3D11Texture2D> texture)
+            FontTexture Font::create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
             {
-                CComPtr<IDXGISurface> surface;
-                texture->QueryInterface(&surface);
+                Microsoft::WRL::ComPtr<IDXGISurface> surface;
+                texture.As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
                     D2D1::RenderTargetProperties(
@@ -54,8 +54,8 @@ namespace trview
                 desc.Usage = D3D11_USAGE_DEFAULT;
                 _device->CreateTexture2D(&desc, nullptr, &new_texture.texture);
 
-                CComPtr<IDXGISurface> surface;
-                new_texture.texture->QueryInterface(&surface);
+                Microsoft::WRL::ComPtr<IDXGISurface> surface;
+                new_texture.texture.As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
                     D2D1::RenderTargetProperties(
@@ -67,7 +67,7 @@ namespace trview
 
                 _d2d_factory->CreateDxgiSurfaceRenderTarget(surface, &props, &new_texture.render_target);
                 new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
-                _device->CreateShaderResourceView(new_texture.texture, nullptr, &new_texture.view);
+                _device->CreateShaderResourceView(new_texture.texture.Get(), nullptr, &new_texture.view);
                 return new_texture;
             }
 
@@ -77,7 +77,7 @@ namespace trview
 
                 texture.render_target->BeginDraw();
                 texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
-                texture.render_target->DrawText(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, layoutRect, texture.brush);
+                texture.render_target->DrawText(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), layoutRect, texture.brush.Get());
                 texture.render_target->EndDraw();
             }
 
@@ -87,7 +87,7 @@ namespace trview
             Size Font::measure(const std::wstring& text) const
             {
                 // Create a text layout from the factory (which we don't have...)
-                CComPtr<IDWriteTextLayout> text_layout;
+                Microsoft::WRL::ComPtr<IDWriteTextLayout> text_layout;
                 _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format, 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);

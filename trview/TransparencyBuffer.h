@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <SimpleMath.h>
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include "MeshVertex.h"
 #include "TransparentTriangle.h"
@@ -17,7 +17,7 @@ namespace trview
     class TransparencyBuffer
     {
     public:
-        explicit TransparencyBuffer(CComPtr<ID3D11Device> device);
+        explicit TransparencyBuffer(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         TransparencyBuffer(const TransparencyBuffer&) = delete;
         TransparencyBuffer& operator=(const TransparencyBuffer&) = delete;
 
@@ -36,7 +36,7 @@ namespace trview
         // context: Current device context.
         // camera: The current camera.
         // texture_storage: Texture storage for the level.
-        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage);
 
         // Reset the triangles buffer.
         void reset();
@@ -44,15 +44,14 @@ namespace trview
         void create_buffer();
         void create_matrix_buffer();
         void complete();
-        void set_blend_mode(CComPtr<ID3D11DeviceContext> context, TransparentTriangle::Mode mode) const;
+        void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const;
 
-        CComPtr<ID3D11Device> _device;
-        CComPtr<ID3D11Buffer> _vertex_buffer;
-        CComPtr<ID3D11Buffer> _matrix_buffer;
-
-        CComPtr<ID3D11BlendState> _alpha_blend;
-        CComPtr<ID3D11BlendState> _additive_blend;
-        CComPtr<ID3D11DepthStencilState> _transparency_depth_state;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _vertex_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _matrix_buffer;
+        Microsoft::WRL::ComPtr<ID3D11BlendState> _alpha_blend;
+        Microsoft::WRL::ComPtr<ID3D11BlendState> _additive_blend;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _transparency_depth_state;
 
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;

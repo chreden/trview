@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d2d1.h>
 
 namespace trview
@@ -11,10 +11,10 @@ namespace trview
         {
             struct FontTexture
             {
-                CComPtr<ID3D11Texture2D>          texture;
-                CComPtr<ID3D11ShaderResourceView> view;
-                CComPtr<ID2D1RenderTarget>        render_target;
-                CComPtr<ID2D1SolidColorBrush>     brush;
+                Microsoft::WRL::ComPtr<ID3D11Texture2D>          texture;
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> view;
+                Microsoft::WRL::ComPtr<ID2D1RenderTarget>        render_target;
+                Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>     brush;
             };
         }
     }

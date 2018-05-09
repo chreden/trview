@@ -16,7 +16,7 @@
 
 namespace trview
 {
-    Room::Room(CComPtr<ID3D11Device> device, 
+    Room::Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
@@ -96,7 +96,7 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         using namespace DirectX::SimpleMath;
 
@@ -113,7 +113,7 @@ namespace trview
         render_contained(context, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         using namespace DirectX::SimpleMath;
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
@@ -121,7 +121,7 @@ namespace trview
         render_contained(context, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Room::render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         for (const auto& entity : _entities)
         {

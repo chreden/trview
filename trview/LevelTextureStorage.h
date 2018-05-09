@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include <vector>
 #include <memory>
@@ -16,7 +16,7 @@ namespace trview
     class LevelTextureStorage final : public ILevelTextureStorage
     {
     public:
-        explicit LevelTextureStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level);
+        explicit LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level);
         virtual ~LevelTextureStorage() = default;
         virtual Texture           texture(uint32_t tile_index) const override;
         virtual Texture           coloured(uint32_t colour) const override;
@@ -29,7 +29,7 @@ namespace trview
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
     private:
-        CComPtr<ID3D11Device> _device;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         std::vector<Texture>  _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;

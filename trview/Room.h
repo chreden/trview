@@ -6,7 +6,7 @@
 #include <memory>
 
 #include <d3d11.h>
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
@@ -57,7 +57,7 @@ namespace trview
             DirectX::SimpleMath::Vector3 position;
         };
 
-        explicit Room(CComPtr<ID3D11Device> device, 
+        explicit Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
@@ -81,9 +81,9 @@ namespace trview
         // camera: The camera to use to render.
         // texture_storage: The textures for the level.
         // selected: The selection mode to use to highlight geometry and objects.
-        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
-        void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
@@ -129,7 +129,7 @@ namespace trview
         void generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
-        void render_contained(CComPtr<ID3D11DeviceContext> context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render_contained(Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
 
@@ -138,7 +138,7 @@ namespace trview
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
-        CComPtr<ID3D11Device>       _device;
+        Microsoft::WRL::ComPtr<ID3D11Device>       _device;
         std::unique_ptr<Mesh>       _mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
