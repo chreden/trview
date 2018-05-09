@@ -308,6 +308,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_MOUSEWHEEL:
+    {
+        viewer->on_scroll(static_cast<int16_t>(GET_WHEEL_DELTA_WPARAM(wParam)));
+        break;
+    }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
