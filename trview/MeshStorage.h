@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include <unordered_map>
 #include <cstdint>
@@ -18,13 +18,13 @@ namespace trview
     class MeshStorage final : public IMeshStorage
     {
     public:
-        explicit MeshStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        explicit MeshStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
         virtual ~MeshStorage() = default;
 
         virtual Mesh* mesh(uint32_t mesh_pointer) const override;
     private:
-        CComPtr<ID3D11Device> _device;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         const trlevel::ILevel& _level;
         const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;

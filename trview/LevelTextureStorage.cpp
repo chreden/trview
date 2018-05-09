@@ -4,7 +4,7 @@
 
 namespace trview
 {
-    LevelTextureStorage::LevelTextureStorage(CComPtr<ID3D11Device> device, const trlevel::ILevel& level)
+    LevelTextureStorage::LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level)
         : _device(device), _level(level), _texture_storage(std::make_unique<TextureStorage>(device))
     {
         // Load the textures from the level and then allow to cycle through them?
@@ -31,7 +31,7 @@ namespace trview
 
             Texture tex;
             device->CreateTexture2D(&desc, &srd, &tex.texture);
-            device->CreateShaderResourceView(tex.texture, nullptr, &tex.view);
+            device->CreateShaderResourceView(tex.texture.Get(), nullptr, &tex.view);
             _tiles.push_back(tex);
         }
 

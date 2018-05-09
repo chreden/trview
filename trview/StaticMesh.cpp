@@ -18,7 +18,7 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         _mesh->render(context, _world * view_projection, texture_storage, colour);
     }

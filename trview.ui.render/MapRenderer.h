@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include <wrl/client.h>
 #include <SimpleMath.h>
 
 #include <vector> 
@@ -27,14 +28,12 @@ namespace trview
     {
         namespace render
         {
-            using namespace DirectX::SimpleMath;
-
             namespace
             {
                 struct Tile
                 {
                 public:
-                    Tile(const std::shared_ptr<Sector> p_sector, Point p_position, Size p_size)
+                    Tile(const std::shared_ptr<Sector>& p_sector, Point p_position, Size p_size)
                         : sector(p_sector), position(p_position), size(p_size) {}
 
                     std::shared_ptr<Sector> sector; 
@@ -42,7 +41,7 @@ namespace trview
                     ui::Size size; 
                 };
 
-                std::map<SectorFlag, Color> default_colours = {
+                std::map<SectorFlag, DirectX::SimpleMath::Color> default_colours = {
                     { Portal, { 0.0f, 0.0f, 0.0f } }, 
                     { Wall, { 0.4f, 0.4f, 0.4f } }, 
                     { Trigger, { 1.0f, 0.3f, 0.7f } },
@@ -60,10 +59,10 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height);
+                MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height);
 
                 // Renders the map 
-                void render(CComPtr<ID3D11DeviceContext> context);
+                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
                 // Changes the room to specified room, reloads map
                 void load(trview::Room *room);
@@ -90,7 +89,7 @@ namespace trview
                 void set_window_size(int width, int height);
             private:
                 // Gets base texture
-                CComPtr<ID3D11ShaderResourceView> get_texture();
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> get_texture();
 
                 // Determines the position (on screen) to draw a sector 
                 ui::Point get_position(const Sector& sector); 
@@ -99,18 +98,18 @@ namespace trview
                 ui::Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
-                void draw(CComPtr<ID3D11DeviceContext> context, Point p, Size s, Color c);
+                void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, DirectX::SimpleMath::Color c);
 
                 // Update the stored positions of the corners of the map.
                 void update_map_position();
 
 
-                CComPtr<ID3D11Device>               _device;
-                int                                 _window_width, _window_height;
-                Sprite                              _sprite; 
-                TextureStorage                      _texture_storage; 
-                CComPtr<ID3D11ShaderResourceView>   _texture;
-                std::vector<Tile>                   _tiles; 
+                Microsoft::WRL::ComPtr<ID3D11Device>               _device;
+                int                                                _window_width, _window_height;
+                Sprite                                             _sprite; 
+                TextureStorage                                     _texture_storage; 
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
+                std::vector<Tile>                                  _tiles; 
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor 

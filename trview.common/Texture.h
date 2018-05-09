@@ -1,13 +1,13 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 
 namespace trview
 {
     struct Texture
     {
-        CComPtr<ID3D11Texture2D>          texture;
-        CComPtr<ID3D11ShaderResourceView> view;
+        Microsoft::WRL::ComPtr<ID3D11Texture2D>          texture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> view;
     };
 }

@@ -4,7 +4,7 @@ namespace trview
 {
     namespace graphics
     {
-        PixelShader::PixelShader(const CComPtr<ID3D11Device>& device, const std::vector<uint8_t>& data)
+        PixelShader::PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::vector<uint8_t>& data)
         {
             if (data.empty())
             {
@@ -14,9 +14,9 @@ namespace trview
             device->CreatePixelShader(&data[0], data.size(), nullptr, &_pixel_shader);
         }
 
-        void PixelShader::apply(const CComPtr<ID3D11DeviceContext>& context)
+        void PixelShader::apply(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
         {
-            context->PSSetShader(_pixel_shader, nullptr, 0);
+            context->PSSetShader(_pixel_shader.Get(), nullptr, 0);
         }
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d2d1.h>
 #include <dwrite.h>
 #include <d3d11.h> 
@@ -20,12 +20,12 @@ namespace trview
             {
             public:
                 explicit Font(
-                    CComPtr<ID3D11Device> device,
-                    CComPtr<IDWriteFactory> dwrite_factory,
-                    CComPtr<ID2D1Factory> d2d_factory,
-                    CComPtr<IDWriteTextFormat> text_format);
+                    const Microsoft::WRL::ComPtr<ID3D11Device>& device,
+                    const Microsoft::WRL::ComPtr<IDWriteFactory>& dwrite_factory,
+                    const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
+                    const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format);
 
-                FontTexture create_texture(CComPtr<ID3D11Texture2D> texture);
+                FontTexture create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
 
                 // Create a texture that can be used for font rendering.
                 FontTexture create_texture();
@@ -38,10 +38,10 @@ namespace trview
                 // Returns: The size in pixels required.
                 Size measure(const std::wstring& text) const;
             private:
-                CComPtr<ID3D11Device>      _device;
-                CComPtr<IDWriteFactory>    _dwrite_factory;
-                CComPtr<ID2D1Factory>      _d2d_factory;
-                CComPtr<IDWriteTextFormat> _text_format;
+                Microsoft::WRL::ComPtr<ID3D11Device>      _device;
+                Microsoft::WRL::ComPtr<IDWriteFactory>    _dwrite_factory;
+                Microsoft::WRL::ComPtr<ID2D1Factory>      _d2d_factory;
+                Microsoft::WRL::ComPtr<IDWriteTextFormat> _text_format;
             };
         }
     }

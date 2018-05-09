@@ -17,10 +17,10 @@ namespace trview
             class LabelNode : public WindowNode
             {
             public:
-                LabelNode(CComPtr<ID3D11Device> device, Label* label, FontFactory& font_factory);
+                LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, FontFactory& font_factory);
                 virtual ~LabelNode();
             protected:
-                virtual void render_self(CComPtr<ID3D11DeviceContext> context, Sprite& sprite) override;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) override;
             private:
                 // Generate the font texture and other textures required to render the label. This will also
                 // resize the label if the label has been set to auto size mode.

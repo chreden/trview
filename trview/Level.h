@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include <vector>
 #include <unordered_map>
@@ -32,7 +32,7 @@ namespace trview
     class Level
     {
     public:
-        Level(CComPtr<ID3D11Device> device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
+        Level(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -66,7 +66,7 @@ namespace trview
         // is also specified.
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
-        void render(CComPtr<ID3D11DeviceContext> context, const ICamera& camera);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
 
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
@@ -99,7 +99,7 @@ namespace trview
         // Render the rooms in the level.
         // context: The device context.
         // camera: The current camera to render the level with.
-        void render_rooms(CComPtr<ID3D11DeviceContext> context, const ICamera& camera);
+        void render_rooms(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
 
         struct RoomToRender
         {
@@ -130,10 +130,10 @@ namespace trview
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Entity>> _entities;
 
-        CComPtr<ID3D11Device>       _device;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
-        CComPtr<ID3D11SamplerState> _sampler_state;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
         uint16_t           _selected_room{ 0u };

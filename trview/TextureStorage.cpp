@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    TextureStorage::TextureStorage(CComPtr<ID3D11Device> device)
+    TextureStorage::TextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
         : _device(device)
     {
     }
@@ -29,7 +29,7 @@ namespace trview
 
         Texture texture;
         _device->CreateTexture2D(&tex_desc, &srd, &texture.texture);
-        _device->CreateShaderResourceView(texture.texture, nullptr, &texture.view);
+        _device->CreateShaderResourceView(texture.texture.Get(), nullptr, &texture.view);
         return texture;
     }
 

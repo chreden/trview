@@ -5,13 +5,15 @@
 #include "Sprite.h"
 #include "RenderTargetStore.h"
 
+using namespace Microsoft::WRL;
+
 namespace trview
 {
     namespace ui
     {
         namespace render
         {
-            RenderNode::RenderNode(CComPtr<ID3D11Device> device, Control* control)
+            RenderNode::RenderNode(const ComPtr<ID3D11Device>& device, Control* control)
                 : _device(device), _control(control)
             {
                 regenerate_texture();
@@ -22,12 +24,12 @@ namespace trview
             {
             }
 
-            CComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
+            ComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
             {
                 return _node_texture_view;
             }
 
-            void RenderNode::render(CComPtr<ID3D11DeviceContext> context, Sprite& sprite)
+            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
                 if (!visible())
                 {
@@ -41,7 +43,7 @@ namespace trview
 
                 RenderTargetStore render_target_store(context);
                 render_self(context, sprite);
-                context->OMSetRenderTargets(1, &_render_target_view.p, nullptr);
+                context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
                 for (auto& child : _child_nodes)
                 {
                     if (!child->visible())
@@ -107,8 +109,8 @@ namespace trview
                 desc.MiscFlags = 0;
 
                 _device->CreateTexture2D(&desc, &srd, &_node_texture);
-                _device->CreateShaderResourceView(_node_texture, nullptr, &_node_texture_view);
-                _device->CreateRenderTargetView(_node_texture, nullptr, &_render_target_view);
+                _device->CreateShaderResourceView(_node_texture.Get(), nullptr, &_node_texture_view);
+                _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
             }
         }
     }

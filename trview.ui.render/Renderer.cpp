@@ -15,7 +15,7 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height)
+            Renderer::Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height)
                 : _device(device), 
                 _sprite(std::make_unique<Sprite>(device, shader_storage, host_width, host_height)), 
                 _font_factory(std::make_unique<FontFactory>()),
@@ -67,9 +67,9 @@ namespace trview
                 return node;
             }
 
-            void Renderer::render(CComPtr<ID3D11DeviceContext> context)
+            void Renderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
-                context->OMSetDepthStencilState(_depth_stencil_state, 1);
+                context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
 
                 // The job of the renderer is to render the texture that has been generated
                 // by the top level control. This texture is generated from the child windows

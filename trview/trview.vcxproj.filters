@@ -41,9 +41,6 @@
     <Filter Include="View\Entity">
       <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="View\Map">
-      <UniqueIdentifier>{8624538e-4b81-47e0-ab41-6bded8dcc325}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
