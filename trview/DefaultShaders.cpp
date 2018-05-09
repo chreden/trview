@@ -12,7 +12,7 @@ namespace trview
 {
     namespace
     {
-        void load_level_shaders(const CComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
+        void load_level_shaders(const Microsoft::WRL::ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
         {
             std::vector<D3D11_INPUT_ELEMENT_DESC> input_desc(3);
             memset(&input_desc[0], 0, sizeof(D3D11_INPUT_ELEMENT_DESC) * input_desc.size());
@@ -35,7 +35,7 @@ namespace trview
             storage.add("level_pixel_shader", std::make_unique<graphics::PixelShader>(device, load_file(L"level_pixel_shader.cso")));
         }
 
-        void load_ui_shaders(const CComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
+        void load_ui_shaders(const Microsoft::WRL::ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
         {
             std::vector<D3D11_INPUT_ELEMENT_DESC> input_desc(2);
             memset(&input_desc[0], 0, sizeof(D3D11_INPUT_ELEMENT_DESC) * input_desc.size());
@@ -53,7 +53,7 @@ namespace trview
         }
     }
 
-    void load_default_shaders(const CComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
+    void load_default_shaders(const Microsoft::WRL::ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
     {
         load_level_shaders(device, storage);
         load_ui_shaders(device, storage);

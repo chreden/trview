@@ -215,7 +215,7 @@ namespace trview
 
         _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
 
-        _context->OMSetDepthStencilState(_depth_stencil_state, 1);
+        _context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
     }
 
     void Viewer::initialise_input()
@@ -429,18 +429,18 @@ namespace trview
 
         pick();
 
-        _context->OMSetRenderTargets(1, &_render_target_view.p, _depth_stencil_view);
-        _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
+        _context->OMSetRenderTargets(1, &_render_target_view, _depth_stencil_view.Get());
+        _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
 
         float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };
-        _context->ClearRenderTargetView(_render_target_view, colours);
-        _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        _context->ClearRenderTargetView(_render_target_view.Get(), colours);
+        _context->ClearDepthStencilView(_depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
         render_scene();
 
-        _context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        _context->ClearDepthStencilView(_depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-        _context->OMSetBlendState(_blend_state, 0, 0xffffffff);
+        _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
         render_ui();
 
         render_map();
@@ -491,7 +491,7 @@ namespace trview
 
     void Viewer::render_scene()
     {
-        _context->OMSetDepthStencilState(_depth_stencil_state, 1);
+        _context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
         if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
@@ -651,7 +651,7 @@ namespace trview
     // Create the render target view from the swap chain that has been created.
     void Viewer::create_render_target_view()
     {
-        CComPtr<ID3D11Texture2D> back_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer;
         _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&back_buffer));
         _device->CreateRenderTargetView(back_buffer, nullptr, &_render_target_view);
     }
@@ -687,7 +687,7 @@ namespace trview
         depthStencilViewDesc.Texture2D.MipSlice = 0;
 
         // Create the depth stencil view.
-        _device->CreateDepthStencilView(_depth_stencil_buffer, &depthStencilViewDesc, &_depth_stencil_view);
+        _device->CreateDepthStencilView(_depth_stencil_buffer.Get(), &depthStencilViewDesc, &_depth_stencil_view);
     }
 
     void Viewer::set_viewport()

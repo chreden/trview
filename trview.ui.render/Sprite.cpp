@@ -23,7 +23,7 @@ namespace trview
                 };
             }
 
-            Sprite::Sprite(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
+            Sprite::Sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
                 : _host_width(width), _host_height(height)
             {
                 using namespace DirectX::SimpleMath;
@@ -88,24 +88,24 @@ namespace trview
                 _host_height = height;
             }
 
-            void Sprite::render(CComPtr<ID3D11DeviceContext> context, CComPtr<ID3D11ShaderResourceView> texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
+            void Sprite::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
             {
                 update_matrix(context, x, y, width, height, colour);
 
                 _vertex_shader->apply(context);
                 _pixel_shader->apply(context);
-                context->PSSetShaderResources(0, 1, &texture.p);
-                context->PSSetSamplers(0, 1, &_sampler_state.p);
+                context->PSSetShaderResources(0, 1, &texture);
+                context->PSSetSamplers(0, 1, &_sampler_state);
                 UINT stride = sizeof(Vertex);
                 UINT offset = 0;
-                context->IASetVertexBuffers(0, 1, &_vertex_buffer.p, &stride, &offset);
+                context->IASetVertexBuffers(0, 1, &_vertex_buffer, &stride, &offset);
                 context->IASetIndexBuffer(_index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->VSSetConstantBuffers(0, 1, &_matrix_buffer.p);
                 context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
                 context->DrawIndexed(4, 0, 0);
             }
 
-            void Sprite::create_matrix(const CComPtr<ID3D11Device>& device)
+            void Sprite::create_matrix(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
             {
                 using namespace DirectX::SimpleMath;
                 D3D11_BUFFER_DESC desc;
@@ -119,7 +119,7 @@ namespace trview
                 device->CreateBuffer(&desc, nullptr, &_matrix_buffer);
             }
 
-            void Sprite::update_matrix(CComPtr<ID3D11DeviceContext> context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
+            void Sprite::update_matrix(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)
             {
                 using namespace DirectX::SimpleMath;
 

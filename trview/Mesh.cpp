@@ -131,7 +131,7 @@ namespace trview
             if (index_buffer)
             {
                 auto texture = texture_storage.texture(i);
-                context->PSSetShaderResources(0, 1, &texture.view.p);
+                context->PSSetShaderResources(0, 1, &texture.view);
                 context->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
             }
@@ -140,7 +140,7 @@ namespace trview
         if (_untextured_index_count)
         {
             auto texture = texture_storage.untextured();
-            context->PSSetShaderResources(0, 1, &texture.view.p);
+            context->PSSetShaderResources(0, 1, &texture.view);
             context->IASetIndexBuffer(_untextured_index_buffer, DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
         }

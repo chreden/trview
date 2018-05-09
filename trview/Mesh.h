@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include <memory>
 
@@ -21,23 +21,23 @@ namespace trview
         // vertices: The vertices that make up the mesh.
         // indices: The indices for triangles that use level textures.
         // untextured_indices: The indices for triangles that do not use level textures.
-        Mesh(CComPtr<ID3D11Device> device,
+        Mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
              const std::vector<TransparentTriangle>& transparent_triangles);
 
-        void render(CComPtr<ID3D11DeviceContext> context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
         const std::vector<TransparentTriangle>& transparent_triangles() const;
     private:
-        CComPtr<ID3D11Buffer>              _vertex_buffer;
-        std::vector<uint32_t>              _index_counts;
-        std::vector<CComPtr<ID3D11Buffer>> _index_buffers;
-        CComPtr<ID3D11Buffer>              _matrix_buffer;
-        CComPtr<ID3D11Buffer>              _untextured_index_buffer;
-        uint32_t                           _untextured_index_count;
-        std::vector<TransparentTriangle>   _transparent_triangles;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
+        std::vector<uint32_t>                             _index_counts;
+        std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> _index_buffers;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>              _matrix_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>              _untextured_index_buffer;
+        uint32_t                                          _untextured_index_count;
+        std::vector<TransparentTriangle>                  _transparent_triangles;
     };
 
     struct Triangle
@@ -58,7 +58,7 @@ namespace trview
     // device: The D3D device to use to create the mesh.
     // texture_storage: The textures for the level.
     // Returns: The new mesh.
-    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, CComPtr<ID3D11Device> device, const ILevelTextureStorage& texture_storage);
+    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage);
 
     // Convert the textured rectangles into collections required to create a mesh.
     // rectangles: The rectangles from the mesh or room geometry.

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <d3d11.h>
 #include <cstdint>
 
@@ -26,13 +26,13 @@ namespace trview
             class RenderNode
             {
             public:
-                RenderNode(CComPtr<ID3D11Device> device, Control* control);
+                RenderNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Control* control);
 
                 virtual ~RenderNode() = 0;
 
-                CComPtr<ID3D11ShaderResourceView> node_texture_view() const;
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> node_texture_view() const;
 
-                void render(CComPtr<ID3D11DeviceContext> context, Sprite& sprite);
+                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite);
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
@@ -42,16 +42,16 @@ namespace trview
 
                 bool visible() const;
             protected:
-                virtual void render_self(CComPtr<ID3D11DeviceContext> context, Sprite& sprite) = 0;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) = 0;
 
                 void regenerate_texture();
 
-                CComPtr<ID3D11Device>                    _device;
-                CComPtr<ID3D11Texture2D>                 _node_texture;
-                CComPtr<ID3D11ShaderResourceView>        _node_texture_view;
-                CComPtr<ID3D11RenderTargetView>          _render_target_view;
-                std::vector<std::unique_ptr<RenderNode>> _child_nodes;
-                Control*                                 _control;
+                Microsoft::WRL::ComPtr<ID3D11Device>             _device;
+                Microsoft::WRL::ComPtr<ID3D11Texture2D>          _node_texture;
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _node_texture_view;
+                Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _render_target_view;
+                std::vector<std::unique_ptr<RenderNode>>         _child_nodes;
+                Control*                                         _control;
             };
         }
     }

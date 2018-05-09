@@ -44,7 +44,7 @@ namespace trview
             }
 
 
-            LabelNode::LabelNode(CComPtr<ID3D11Device> device, Label* label, FontFactory& font_factory)
+            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, FontFactory& font_factory)
                 : WindowNode(device, label), 
                 _font(font_factory.create_font(device, 
                                                L"Arial", 
@@ -66,7 +66,7 @@ namespace trview
             {
             }
 
-            void LabelNode::render_self(CComPtr<ID3D11DeviceContext> context, Sprite& sprite)
+            void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
                 const auto size = _label->size();

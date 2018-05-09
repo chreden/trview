@@ -8,7 +8,7 @@ namespace trview
     {
         namespace render
         {
-            MapRenderer::MapRenderer(const CComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
+            MapRenderer::MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
                 : _device(device),
                 _window_width(width), 
                 _window_height(height),
@@ -18,7 +18,7 @@ namespace trview
             }
 
             void
-            MapRenderer::render(CComPtr<ID3D11DeviceContext> context)
+            MapRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
                 // Draw base square, this is the backdrop for the map 
                 draw(context, Point(_first.x - 1, _first.y - 1), Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1), Color(0.0f, 0.0f, 0.0f));
@@ -73,9 +73,10 @@ namespace trview
             }
 
             void 
-            MapRenderer::draw(CComPtr<ID3D11DeviceContext> context, Point p, Size s, Color c)
+            MapRenderer::draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
             {
-                _sprite.render(context, get_texture(), p.x, p.y, s.width, s.height, c); 
+                const auto texture = get_texture();
+                _sprite.render(context, texture, p.x, p.y, s.width, s.height, c); 
             }
 
             void
@@ -110,10 +111,13 @@ namespace trview
                 return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
             }
 
-            CComPtr<ID3D11ShaderResourceView>
+            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>
             MapRenderer::get_texture()
             {
-                if (_texture == nullptr) _texture = _texture_storage.coloured(0xFFFFFFFF).view;
+                if (_texture == nullptr)
+                {
+                    _texture = _texture_storage.coloured(0xFFFFFFFF).view;
+                }
                 return _texture;
             }
 

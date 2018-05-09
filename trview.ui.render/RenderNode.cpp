@@ -11,7 +11,7 @@ namespace trview
     {
         namespace render
         {
-            RenderNode::RenderNode(CComPtr<ID3D11Device> device, Control* control)
+            RenderNode::RenderNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Control* control)
                 : _device(device), _control(control)
             {
                 regenerate_texture();
@@ -22,12 +22,12 @@ namespace trview
             {
             }
 
-            CComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
+            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
             {
                 return _node_texture_view;
             }
 
-            void RenderNode::render(CComPtr<ID3D11DeviceContext> context, Sprite& sprite)
+            void RenderNode::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
                 if (!visible())
                 {

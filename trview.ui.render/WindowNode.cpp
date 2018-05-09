@@ -7,7 +7,7 @@ namespace trview
     {
         namespace render
         {
-            WindowNode::WindowNode(CComPtr<ID3D11Device> device, Window* window)
+            WindowNode::WindowNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Window* window)
                 : _window(window), RenderNode(device, window)
             {
             }
@@ -16,7 +16,7 @@ namespace trview
             {
             }
 
-            void WindowNode::render_self(CComPtr<ID3D11DeviceContext> context, Sprite&)
+            void WindowNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite&)
             {
                 // Render this node.
                 auto bg_colour = _window->background_colour();

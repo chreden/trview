@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <d3d11.h>
-#include <atlbase.h>
+#include <wrl/client.h>
 #include <cstdint>
 
 #include <string>
@@ -129,18 +129,18 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
 
-        CComPtr<IDXGISwapChain>          _swap_chain;
-        CComPtr<ID3D11Device>            _device;
-        CComPtr<ID3D11DeviceContext>     _context;
-        CComPtr<ID3D11RenderTargetView>  _render_target_view;
-        CComPtr<ID3D11Texture2D>         _depth_stencil_buffer;
-        CComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-        CComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
+        Microsoft::WRL::ComPtr<IDXGISwapChain>          _swap_chain;
+        Microsoft::WRL::ComPtr<ID3D11Device>            _device;
+        Microsoft::WRL::ComPtr<ID3D11DeviceContext>     _context;
+        Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  _render_target_view;
+        Microsoft::WRL::ComPtr<ID3D11Texture2D>         _depth_stencil_buffer;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
 
         std::unique_ptr<TextureWindow>   _texture_window;
 
         std::unique_ptr<ui::render::FontFactory> _font_factory;
-        CComPtr<ID3D11BlendState> _blend_state;
+        Microsoft::WRL::ComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
