@@ -1,9 +1,11 @@
 #include "RenderNode.h"
 #include <vector>
+#include <algorithm>
 
 #include <trview.ui/Control.h>
 #include "Sprite.h"
 #include "RenderTargetStore.h"
+
 
 using namespace Microsoft::WRL;
 
@@ -57,6 +59,8 @@ namespace trview
                     auto size = child->size();
                     sprite.render(context, child->node_texture_view(), pos.x, pos.y, size.width, size.height);
                 }
+
+                _needs_redraw = false;
             }
 
             void RenderNode::add_child(std::unique_ptr<RenderNode>&& child)
@@ -114,9 +118,12 @@ namespace trview
                 _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
             }
 
+            // Determines if the control has any children that need to be re-rendered on to the
+            // render target for the control (they have been redrawn).
             bool RenderNode::needs_redraw() const
             {
-                return _needs_redraw;
+                return _needs_redraw || std::any_of(_child_nodes.begin(), _child_nodes.end(),
+                    [](const auto& n) { return n->needs_redraw(); });
             }
         }
     }
