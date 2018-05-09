@@ -17,6 +17,7 @@ namespace trview
         void Image::set_texture(Texture texture)
         {
             _texture = texture;
+            on_invalidate();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace trview
         void Window::set_background_colour(Colour colour)
         {
             _background_colour = colour;
+            on_invalidate();
         }
     }
 }

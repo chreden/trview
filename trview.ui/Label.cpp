@@ -23,6 +23,7 @@ namespace trview
         {
             _text = text;
             on_text_changed(text);
+            on_invalidate();
         }
 
         TextAlignment Label::text_alignment() const
