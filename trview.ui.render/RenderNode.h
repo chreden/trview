@@ -44,6 +44,8 @@ namespace trview
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) = 0;
 
+                bool needs_redraw() const;
+
                 void regenerate_texture();
 
                 Microsoft::WRL::ComPtr<ID3D11Device>             _device;

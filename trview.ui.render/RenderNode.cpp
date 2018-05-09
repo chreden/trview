@@ -31,7 +31,7 @@ namespace trview
 
             void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
-                if (!visible())
+                if (!visible() || !needs_redraw())
                 {
                     return;
                 }
@@ -111,6 +111,11 @@ namespace trview
                 _device->CreateTexture2D(&desc, &srd, &_node_texture);
                 _device->CreateShaderResourceView(_node_texture.Get(), nullptr, &_node_texture_view);
                 _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
+            }
+
+            bool RenderNode::needs_redraw() const
+            {
+                return true;
             }
         }
     }
