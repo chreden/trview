@@ -429,7 +429,7 @@ namespace trview
 
         pick();
 
-        _context->OMSetRenderTargets(1, &_render_target_view, _depth_stencil_view.Get());
+        _context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), _depth_stencil_view.Get());
         _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
 
         float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };

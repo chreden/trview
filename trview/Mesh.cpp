@@ -122,8 +122,8 @@ namespace trview
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, &_vertex_buffer, &stride, &offset);
-        context->VSSetConstantBuffers(0, 1, &_matrix_buffer);
+        context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
+        context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
 
         for (uint32_t i = 0; i < _index_buffers.size(); ++i)
         {
@@ -131,7 +131,7 @@ namespace trview
             if (index_buffer)
             {
                 auto texture = texture_storage.texture(i);
-                context->PSSetShaderResources(0, 1, &texture.view);
+                context->PSSetShaderResources(0, 1, texture.view.GetAddressOf());
                 context->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
                 context->DrawIndexed(_index_counts[i], 0, 0);
             }
@@ -140,7 +140,7 @@ namespace trview
         if (_untextured_index_count)
         {
             auto texture = texture_storage.untextured();
-            context->PSSetShaderResources(0, 1, &texture.view);
+            context->PSSetShaderResources(0, 1, texture.view.GetAddressOf());
             context->IASetIndexBuffer(_untextured_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
             context->DrawIndexed(_untextured_index_count, 0, 0);
         }
