@@ -14,7 +14,7 @@ namespace trview
 
             RenderTargetStore::~RenderTargetStore()
             {
-                _context->OMSetRenderTargets(1, &_render_target, nullptr);
+                _context->OMSetRenderTargets(1, _render_target.GetAddressOf(), nullptr);
             }
         }
     }
