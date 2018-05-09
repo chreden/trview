@@ -18,6 +18,7 @@ namespace trview
             {
                 regenerate_texture();
                 _control->on_size_changed += [&](auto) {regenerate_texture(); };
+                _control->on_invalidate += [&]() { _needs_redraw = true; };
             }
 
             RenderNode::~RenderNode()
@@ -115,7 +116,7 @@ namespace trview
 
             bool RenderNode::needs_redraw() const
             {
-                return true;
+                return _needs_redraw;
             }
         }
     }

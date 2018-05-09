@@ -54,6 +54,7 @@ namespace trview
                 Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _render_target_view;
                 std::vector<std::unique_ptr<RenderNode>>         _child_nodes;
                 Control*                                         _control;
+                bool                                             _needs_redraw{ true };
             };
         }
     }
