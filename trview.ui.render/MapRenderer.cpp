@@ -1,4 +1,5 @@
 #include "MapRenderer.h"
+#include "RenderTargetStore.h"
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -22,6 +23,29 @@ namespace trview
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
+                {
+                    // RenderTargetStore store(context);
+                    // Clear the render target to be transparent (as it may not be using
+                    // the entire area).
+                    float colour[4] = { 1, 1, 1, 1 };
+                    context->ClearRenderTargetView(_render_target_view.Get(), colour);
+
+                    // Set the host size to be the size of the render target so that the
+                    // aspect ratio is correct.
+                    _sprite.set_host_size(_render_target_size.width, _render_target_size.height);
+
+                    // Set the sprite host size to be the window size again, as we are now rendering
+                    // to the window render target.
+                    _sprite.set_host_size(_window_width, _window_height);
+
+                    // Now render the render target in the correct position.
+                    auto p = Point(_first.x - 1, _first.y - 1);
+                    auto s = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
+                    _sprite.render(context, _render_target_resource, p.x, p.y, s.width, s.height);
+                }
+
+                return;
+
                 // Draw base square, this is the backdrop for the map 
                 draw(context, Point(_first.x - 1, _first.y - 1), Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1), Color(0.0f, 0.0f, 0.0f));
 
@@ -173,6 +197,8 @@ namespace trview
             MapRenderer::update_map_render_target()
             {
                 auto size = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
+
+                _render_target_size = size;
 
                 // If the size is larger than the current size, recreate the render target.
                 std::vector<uint32_t> pixels(size.width * size.height, 0x00000000);

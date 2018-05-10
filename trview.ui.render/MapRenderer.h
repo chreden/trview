@@ -114,6 +114,7 @@ namespace trview
                 std::vector<Tile>                                  _tiles; 
 
                 // Render target to minimise redraw.
+                Size _render_target_size;
                 Microsoft::WRL::ComPtr<ID3D11Texture2D> _render_target_texture;
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _render_target_resource;
                 Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _render_target_view;
