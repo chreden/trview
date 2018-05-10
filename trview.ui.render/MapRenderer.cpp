@@ -194,8 +194,14 @@ namespace trview
             void
             MapRenderer::update_map_render_target()
             {
-                auto size = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
-                _render_target = std::make_unique<graphics::RenderTarget>(_device, size.width, size.height);
+                uint32_t width = static_cast<uint32_t>(_DRAW_SCALE * _columns + 1);
+                uint32_t height = static_cast<uint32_t>(_DRAW_SCALE * _rows + 1);
+
+                // Minor optimisation - don't recreate the render target if the room dimensions are the same.
+                if (!_render_target || (_render_target->width() != width || _render_target->height() != height))
+                {
+                    _render_target = std::make_unique<graphics::RenderTarget>(_device, width, height);
+                }
                 _force_redraw = true;
             }
 
