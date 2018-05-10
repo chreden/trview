@@ -7,7 +7,7 @@
 #include "WindowNode.h"
 #include "LabelNode.h"
 #include "ImageNode.h"
-#include "RenderTargetStore.h"
+#include <trview.graphics/RenderTargetStore.h>
 
 namespace trview
 {
@@ -77,7 +77,7 @@ namespace trview
                 if (_root_node && _root_node->visible())
                 {
                     {
-                        RenderTargetStore render_target_store(context);
+                        graphics::RenderTargetStore render_target_store(context);
 
                         // The nodes will detect whether or not they need to actually re-render
                         // their content, based on changes to the control that they are watching.

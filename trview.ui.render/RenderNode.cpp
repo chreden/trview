@@ -3,7 +3,7 @@
 
 #include <trview.ui/Control.h>
 #include "Sprite.h"
-#include "RenderTargetStore.h"
+#include <trview.graphics/RenderTargetStore.h>
 
 using namespace Microsoft::WRL;
 
@@ -41,7 +41,7 @@ namespace trview
                     child->render(context, sprite);
                 }
 
-                RenderTargetStore render_target_store(context);
+                graphics::RenderTargetStore render_target_store(context);
                 render_self(context, sprite);
                 context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
                 for (auto& child : _child_nodes)

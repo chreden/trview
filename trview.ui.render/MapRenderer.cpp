@@ -1,6 +1,6 @@
 #include "MapRenderer.h"
-#include "RenderTargetStore.h"
-#include "ViewportStore.h"
+#include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/ViewportStore.h>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -34,8 +34,8 @@ namespace trview
                     // Clear the render target to be transparent (as it may not be using the entire area).
                     _render_target->clear(context, Color(1, 1, 1, 1));
 
-                    RenderTargetStore rs_store(context);
-                    ViewportStore vp_store(context);
+                    graphics::RenderTargetStore rs_store(context);
+                    graphics::ViewportStore vp_store(context);
 
                     // Set the host size to match the render target as we will have adjusted the viewport.
                     _sprite.set_host_size(_render_target->width(), _render_target->height());

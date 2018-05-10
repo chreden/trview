@@ -1,7 +1,7 @@
 #include "ImageNode.h"
 #include <trview.ui/Image.h>
 #include "Sprite.h"
-#include "RenderTargetStore.h"
+#include <trview.graphics/RenderTargetStore.h>
 
 namespace trview
 {
@@ -21,7 +21,7 @@ namespace trview
             void ImageNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
-                RenderTargetStore store(context);
+                graphics::RenderTargetStore store(context);
                 context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
                 auto texture = _image->texture();
                 if (texture.view)
