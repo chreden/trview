@@ -29,6 +29,7 @@
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="RenderTargetStore.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="ViewportStore.h" />
     <ClInclude Include="WindowNode.h" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,9 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

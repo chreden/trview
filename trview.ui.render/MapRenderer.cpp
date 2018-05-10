@@ -1,5 +1,6 @@
 #include "MapRenderer.h"
 #include "RenderTargetStore.h"
+#include "ViewportStore.h"
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -23,22 +24,39 @@ namespace trview
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
+                // Clear the render target to be transparent (as it may not be using
+                // the entire area).
+                float colour[4] = { 1, 1, 1, 1 };
+                context->ClearRenderTargetView(_render_target_view.Get(), colour);
+
                 {
-                    // Clear the render target to be transparent (as it may not be using
-                    // the entire area).
-                    float colour[4] = { 1, 1, 1, 1 };
-                    context->ClearRenderTargetView(_render_target_view.Get(), colour);
+                    RenderTargetStore rs_store(context);
+                    ViewportStore vp_store(context);
 
-                    {
-                        RenderTargetStore store(context);
-                        context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
-                        render_internal(context);
-                    }
+                    D3D11_VIEWPORT viewport;
+                    viewport.Width = static_cast<float>(_render_target_size.width);
+                    viewport.Height = static_cast<float>(_render_target_size.height);
+                    viewport.MaxDepth = 1;
+                    viewport.MinDepth = 0;
+                    viewport.TopLeftX = 0;
+                    viewport.TopLeftY = 0;
+                    context->RSSetViewports(1, &viewport);
 
-                    // Now render the render target in the correct position.
-                    auto p = Point(_first.x - 1, _first.y - 1);
-                    _sprite.render(context, _render_target_resource, p.x, p.y, _render_target_size.width, _render_target_size.height);
+                    // Set the host size to match the render target as we have adjusted the viewport.
+                    _sprite.set_host_size(static_cast<uint32_t>(_render_target_size.width), static_cast<uint32_t>(_render_target_size.height));
+
+                    context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
+                    render_internal(context);
+
+                    // Reset the host size as the render target is going to switch back to the 
+                    // full window.
+                    _sprite.set_host_size(_window_width, _window_height);
                 }
+
+
+                // Now render the render target in the correct position.
+                auto p = Point(_first.x - 1, _first.y - 1);
+                _sprite.render(context, _render_target_resource, p.x, p.y, _render_target_size.width, _render_target_size.height);
             }
 
             void

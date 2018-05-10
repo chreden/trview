@@ -32,6 +32,9 @@
     <ClInclude Include="MapRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ViewportStore.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -80,5 +83,10 @@
     <Filter Include="Graphics\Text">
       <UniqueIdentifier>{58374a2f-5a73-4ed3-a3d0-55d06ac980b0}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ViewportStore.cpp">
+      <Filter>Helpers</Filter>
+    </None>
   </ItemGroup>
 </Project>
