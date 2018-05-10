@@ -13,9 +13,10 @@ namespace trview
                 : _device(device),
                 _window_width(width), 
                 _window_height(height),
-                _sprite(device, shader_storage, width, height),
-                _texture_storage(device)
+                _sprite(device, shader_storage, width, height)
             {
+                TextureStorage texture_storage{ device };
+                _texture = texture_storage.coloured(0xFFFFFFFF).view;
             }
 
             void
@@ -76,8 +77,7 @@ namespace trview
             void 
             MapRenderer::draw(const ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
             {
-                const auto texture = get_texture();
-                _sprite.render(context, texture, p.x, p.y, s.width, s.height, c); 
+                _sprite.render(context, _texture, p.x, p.y, s.width, s.height, c); 
             }
 
             void
@@ -115,10 +115,6 @@ namespace trview
             ComPtr<ID3D11ShaderResourceView>
             MapRenderer::get_texture()
             {
-                if (_texture == nullptr)
-                {
-                    _texture = _texture_storage.coloured(0xFFFFFFFF).view;
-                }
                 return _texture;
             }
 
