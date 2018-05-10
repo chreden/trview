@@ -119,7 +119,7 @@ namespace trview
                 std::unique_ptr<graphics::RenderTarget>            _render_target;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
-                Point                               _cursor; // Position of the cursor 
+                Point                               _cursor; // Position of the cursor relative to the top left of the control.
                 std::uint16_t                       _rows, _columns; 
                 bool                                _loaded = false;
                 
