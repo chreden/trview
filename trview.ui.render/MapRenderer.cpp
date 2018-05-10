@@ -176,10 +176,7 @@ namespace trview
             bool 
             MapRenderer::cursor_is_over_control() const
             {
-                Point origin_with_margin(_first.x - _DRAW_MARGIN, _first.y - _DRAW_MARGIN); 
-                Point end_with_margin(_last.x + _DRAW_MARGIN, _last.y + _DRAW_MARGIN);
-
-                return _cursor.is_between(origin_with_margin, end_with_margin);
+                return _cursor.is_between(Point(), Point(_render_target_size.width, _render_target_size.height));
             }
 
             void 
