@@ -234,7 +234,8 @@ namespace trview
                 _force_redraw = true;
             }
 
-            bool MapRenderer::needs_redraw()
+            bool 
+            MapRenderer::needs_redraw()
             {
                 if (_force_redraw)
                 {
@@ -252,6 +253,8 @@ namespace trview
                     _cursor_was_over = false;
                     return true;
                 }
+
+                return false;
             }
         }
     }
