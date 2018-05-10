@@ -16,6 +16,7 @@
     <ClInclude Include="VertexShader.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -33,6 +34,7 @@
     <ClCompile Include="VertexShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

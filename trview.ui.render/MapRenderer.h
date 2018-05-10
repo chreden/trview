@@ -12,10 +12,11 @@
 #include "Sprite.h"
 #include "trview\Types.h"
 #include "trview\TextureStorage.h"
-#include "trview.common\Texture.h"
-#include "trview.ui\Point.h"
-#include "trview.ui\Size.h"
+#include <trview.common/Texture.h>
+#include <trview.ui/Point.h>
+#include <trview.ui/Size.h>
 #include "trview\Room.h"
+#include <trview.graphics/RenderTarget.h>
 
 namespace trview
 {
@@ -115,12 +116,7 @@ namespace trview
                 Sprite                                             _sprite; 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
                 std::vector<Tile>                                  _tiles; 
-
-                // Render target to minimise redraw.
-                Size _render_target_size;
-                Microsoft::WRL::ComPtr<ID3D11Texture2D> _render_target_texture;
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _render_target_resource;
-                Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _render_target_view;
+                std::unique_ptr<graphics::RenderTarget>            _render_target;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor 

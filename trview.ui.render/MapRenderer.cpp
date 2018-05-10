@@ -24,47 +24,39 @@ namespace trview
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
+                if (!_render_target)
+                {
+                    return;
+                }
+
                 if (needs_redraw())
                 {
-                    // Clear the render target to be transparent (as it may not be using
-                    // the entire area).
-                    float colour[4] = { 1, 1, 1, 1 };
-                    context->ClearRenderTargetView(_render_target_view.Get(), colour);
+                    // Clear the render target to be transparent (as it may not be using the entire area).
+                    _render_target->clear(context, Color(1, 1, 1, 1));
 
                     RenderTargetStore rs_store(context);
                     ViewportStore vp_store(context);
 
-                    D3D11_VIEWPORT viewport;
-                    viewport.Width = static_cast<float>(_render_target_size.width);
-                    viewport.Height = static_cast<float>(_render_target_size.height);
-                    viewport.MaxDepth = 1;
-                    viewport.MinDepth = 0;
-                    viewport.TopLeftX = 0;
-                    viewport.TopLeftY = 0;
-                    context->RSSetViewports(1, &viewport);
+                    // Set the host size to match the render target as we will have adjusted the viewport.
+                    _sprite.set_host_size(_render_target->width(), _render_target->height());
 
-                    // Set the host size to match the render target as we have adjusted the viewport.
-                    _sprite.set_host_size(static_cast<uint32_t>(_render_target_size.width), static_cast<uint32_t>(_render_target_size.height));
-
-                    context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
+                    _render_target->apply(context);
                     render_internal(context);
 
                     // Reset the host size as the render target is going to switch back to the full window.
                     _sprite.set_host_size(_window_width, _window_height);
-
-                    // Clear redraw flags
                 }
 
                 // Now render the render target in the correct position.
                 auto p = Point(_first.x - 1, _first.y - 1);
-                _sprite.render(context, _render_target_resource, p.x, p.y, _render_target_size.width, _render_target_size.height);
+                _sprite.render(context, _render_target->resource(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
             }
 
             void
             MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
                 // Draw base square, this is the backdrop for the map 
-                draw(context, Point(), _render_target_size, Color(0.0f, 0.0f, 0.0f));
+                draw(context, Point(), ui::Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
 
                 std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
                 {
@@ -178,7 +170,7 @@ namespace trview
             bool 
             MapRenderer::cursor_is_over_control() const
             {
-                return _cursor.is_between(Point(), Point(_render_target_size.width, _render_target_size.height));
+                return _render_target && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
             }
 
             void 
@@ -197,40 +189,13 @@ namespace trview
                 _first = Point(_window_width - (_DRAW_SCALE * _columns) - _DRAW_MARGIN, _DRAW_MARGIN);
                 // Location of the last point of the control (bottom-right)
                 _last = _first + Point(_DRAW_SCALE * _columns, _DRAW_SCALE * _rows);
-
             }
 
             void
             MapRenderer::update_map_render_target()
             {
                 auto size = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
-
-                _render_target_size = size;
-
-                // If the size is larger than the current size, recreate the render target.
-                std::vector<uint32_t> pixels(size.width * size.height, 0x00000000);
-
-                D3D11_SUBRESOURCE_DATA srd;
-                memset(&srd, 0, sizeof(srd));
-                srd.pSysMem = &pixels[0];
-                srd.SysMemPitch = sizeof(uint32_t) * size.width;
-
-                D3D11_TEXTURE2D_DESC desc;
-                memset(&desc, 0, sizeof(desc));
-                desc.Width = size.width;
-                desc.Height = size.height;
-                desc.MipLevels = desc.ArraySize = 1;
-                desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-                desc.SampleDesc.Count = 1;
-                desc.Usage = D3D11_USAGE_DEFAULT;
-                desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-                desc.CPUAccessFlags = 0;
-                desc.MiscFlags = 0;
-
-                _device->CreateTexture2D(&desc, &srd, &_render_target_texture);
-                _device->CreateShaderResourceView(_render_target_texture.Get(), nullptr, &_render_target_resource);
-                _device->CreateRenderTargetView(_render_target_texture.Get(), nullptr, &_render_target_view);
-
+                _render_target = std::make_unique<graphics::RenderTarget>(_device, size.width, size.height);
                 _force_redraw = true;
             }
 
