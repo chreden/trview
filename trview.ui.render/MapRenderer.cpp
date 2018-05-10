@@ -24,12 +24,13 @@ namespace trview
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
-                // Clear the render target to be transparent (as it may not be using
-                // the entire area).
-                float colour[4] = { 1, 1, 1, 1 };
-                context->ClearRenderTargetView(_render_target_view.Get(), colour);
-
+                if (needs_redraw())
                 {
+                    // Clear the render target to be transparent (as it may not be using
+                    // the entire area).
+                    float colour[4] = { 1, 1, 1, 1 };
+                    context->ClearRenderTargetView(_render_target_view.Get(), colour);
+
                     RenderTargetStore rs_store(context);
                     ViewportStore vp_store(context);
 
@@ -48,9 +49,10 @@ namespace trview
                     context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
                     render_internal(context);
 
-                    // Reset the host size as the render target is going to switch back to the 
-                    // full window.
+                    // Reset the host size as the render target is going to switch back to the full window.
                     _sprite.set_host_size(_window_width, _window_height);
+
+                    // Clear redraw flags
                 }
 
                 // Now render the render target in the correct position.
@@ -228,6 +230,28 @@ namespace trview
                 _device->CreateTexture2D(&desc, &srd, &_render_target_texture);
                 _device->CreateShaderResourceView(_render_target_texture.Get(), nullptr, &_render_target_resource);
                 _device->CreateRenderTargetView(_render_target_texture.Get(), nullptr, &_render_target_view);
+
+                _force_redraw = true;
+            }
+
+            bool MapRenderer::needs_redraw()
+            {
+                if (_force_redraw)
+                {
+                    return true;
+                }
+
+                if (cursor_is_over_control())
+                {
+                    _cursor_was_over = true;
+                    return true;
+                }
+
+                if (_cursor_was_over)
+                {
+                    _cursor_was_over = false;
+                    return true;
+                }
             }
         }
     }

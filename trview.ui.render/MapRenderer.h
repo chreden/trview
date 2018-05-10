@@ -107,6 +107,9 @@ namespace trview
                 // Render the map squares and the background.
                 void render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
+                // Determines if the minimap needs to be re-drawn.
+                bool needs_redraw();
+
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
                 Sprite                                             _sprite; 
@@ -123,6 +126,9 @@ namespace trview
                 Point                               _cursor; // Position of the cursor 
                 std::uint16_t                       _rows, _columns; 
                 bool                                _loaded = false;
+                
+                bool                                _cursor_was_over = false;
+                bool                                _force_redraw = true;
 
                 const float                         _DRAW_MARGIN = 30.0f; 
                 const float                         _DRAW_SCALE = 14.0f; 
