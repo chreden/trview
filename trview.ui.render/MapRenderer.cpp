@@ -88,6 +88,7 @@ namespace trview
                 _rows = room->num_z_sectors();
                 _loaded = true; 
                 update_map_position(); 
+                update_map_render_target();
 
                 // Load up sectors 
                 _tiles.clear(); 
@@ -166,6 +167,36 @@ namespace trview
                 // Location of the last point of the control (bottom-right)
                 _last = _first + Point(_DRAW_SCALE * _columns, _DRAW_SCALE * _rows);
 
+            }
+
+            void
+            MapRenderer::update_map_render_target()
+            {
+                auto size = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
+
+                // If the size is larger than the current size, recreate the render target.
+                std::vector<uint32_t> pixels(size.width * size.height, 0x00000000);
+
+                D3D11_SUBRESOURCE_DATA srd;
+                memset(&srd, 0, sizeof(srd));
+                srd.pSysMem = &pixels[0];
+                srd.SysMemPitch = sizeof(uint32_t) * size.width;
+
+                D3D11_TEXTURE2D_DESC desc;
+                memset(&desc, 0, sizeof(desc));
+                desc.Width = size.width;
+                desc.Height = size.height;
+                desc.MipLevels = desc.ArraySize = 1;
+                desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                desc.SampleDesc.Count = 1;
+                desc.Usage = D3D11_USAGE_DEFAULT;
+                desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+                desc.CPUAccessFlags = 0;
+                desc.MiscFlags = 0;
+
+                _device->CreateTexture2D(&desc, &srd, &_render_target_texture);
+                _device->CreateShaderResourceView(_render_target_texture.Get(), nullptr, &_render_target_resource);
+                _device->CreateRenderTargetView(_render_target_texture.Get(), nullptr, &_render_target_view);
             }
         }
     }

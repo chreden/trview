@@ -103,12 +103,20 @@ namespace trview
                 // Update the stored positions of the corners of the map.
                 void update_map_position();
 
+                // Update the render target that the squares will be rendered to, depending
+                // on the size of the room (based on columns and rows).
+                void update_map_render_target();
 
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
                 Sprite                                             _sprite; 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
                 std::vector<Tile>                                  _tiles; 
+
+                // Render target to minimise redraw.
+                Microsoft::WRL::ComPtr<ID3D11Texture2D> _render_target_texture;
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _render_target_resource;
+                Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _render_target_view;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor 
