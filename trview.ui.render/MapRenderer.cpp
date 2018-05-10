@@ -24,16 +24,21 @@ namespace trview
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
                 {
-                    // RenderTargetStore store(context);
                     // Clear the render target to be transparent (as it may not be using
                     // the entire area).
                     float colour[4] = { 1, 1, 1, 1 };
                     context->ClearRenderTargetView(_render_target_view.Get(), colour);
 
-                    // Set the host size to be the size of the render target so that the
-                    // aspect ratio is correct.
-                    _sprite.set_host_size(_render_target_size.width, _render_target_size.height);
+                    {
+                        RenderTargetStore store(context);
+                        context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
 
+                        // Set the host size to be the size of the render target so that the
+                        // aspect ratio is correct.
+                        _sprite.set_host_size(_render_target_size.width, _render_target_size.height);
+
+                        render_internal(context);
+                    }
                     // Set the sprite host size to be the window size again, as we are now rendering
                     // to the window render target.
                     _sprite.set_host_size(_window_width, _window_height);
@@ -43,13 +48,15 @@ namespace trview
                     auto s = Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1);
                     _sprite.render(context, _render_target_resource, p.x, p.y, s.width, s.height);
                 }
+            }
 
-                return;
-
+            void
+            MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+            {
                 // Draw base square, this is the backdrop for the map 
                 draw(context, Point(_first.x - 1, _first.y - 1), Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1), Color(0.0f, 0.0f, 0.0f));
 
-                std::for_each(_tiles.begin(), _tiles.end(), [&] (const Tile &tile) 
+                std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
                 {
                     // Firstly get the colour for the tile 
                     // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
@@ -94,7 +101,7 @@ namespace trview
 
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
                     if (tile.sector->flags & SectorFlag::RoomAbove)
-                        draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f)); 
+                        draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
                 });
             }
 
@@ -135,12 +142,6 @@ namespace trview
             ui::Size MapRenderer::get_size() const
             {
                 return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
-            }
-
-            ComPtr<ID3D11ShaderResourceView>
-            MapRenderer::get_texture()
-            {
-                return _texture;
             }
 
             std::shared_ptr<Sector> 

@@ -88,9 +88,6 @@ namespace trview
                 // Set the size of the host window.
                 void set_window_size(int width, int height);
             private:
-                // Gets base texture
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> get_texture();
-
                 // Determines the position (on screen) to draw a sector 
                 ui::Point get_position(const Sector& sector); 
 
@@ -106,6 +103,9 @@ namespace trview
                 // Update the render target that the squares will be rendered to, depending
                 // on the size of the room (based on columns and rows).
                 void update_map_render_target();
+
+                // Render the map squares and the background.
+                void render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
