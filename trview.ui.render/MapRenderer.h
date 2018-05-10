@@ -80,7 +80,7 @@ namespace trview
                 bool cursor_is_over_control() const;
 
                 // Sets the position of the cursor 
-                inline void set_cursor_position(const Point& cursor) { _cursor = cursor; }
+                inline void set_cursor_position(const Point& cursor) { _cursor = cursor - _first; }
 
                 // Returns whether the map is loaded
                 inline bool loaded() const { return _loaded; }

@@ -53,7 +53,6 @@ namespace trview
                     _sprite.set_host_size(_window_width, _window_height);
                 }
 
-
                 // Now render the render target in the correct position.
                 auto p = Point(_first.x - 1, _first.y - 1);
                 _sprite.render(context, _render_target_resource, p.x, p.y, _render_target_size.width, _render_target_size.height);
