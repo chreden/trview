@@ -38,6 +38,10 @@ namespace trview
             // Returns: The shader resource view.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> resource() const;
 
+            // Get the render target interface for the render target.
+            // Returns: The render target.
+            Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target() const;
+
             // Get the width of the render target in pixels.
             // Returns: The width.
             uint32_t width() const;

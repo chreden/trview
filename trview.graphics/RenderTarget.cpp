@@ -80,6 +80,13 @@ namespace trview
             return _resource;
         }
 
+        // Get the render target interface for the render target.
+        // Returns: The render target.
+        ComPtr<ID3D11RenderTargetView> RenderTarget::render_target() const
+        {
+            return _view;
+        }
+
         // Get the width of the render target in pixels.
         // Returns: The width.
         uint32_t RenderTarget::width() const

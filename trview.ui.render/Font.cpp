@@ -38,22 +38,11 @@ namespace trview
             FontTexture Font::create_texture()
             {
                 FontTexture new_texture;
-                D3D11_TEXTURE2D_DESC desc;
-                desc.ArraySize = 1;
-                desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-                desc.CPUAccessFlags = 0;
-                desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-                desc.Height = 512;
-                desc.Width = 512;
-                desc.MipLevels = 1;
-                desc.MiscFlags = 0;
-                desc.SampleDesc.Count = 1;
-                desc.SampleDesc.Quality = 0;
-                desc.Usage = D3D11_USAGE_DEFAULT;
-                _device->CreateTexture2D(&desc, nullptr, &new_texture.texture);
+
+                new_texture.texture = std::make_unique<graphics::RenderTarget>(_device, 512, 512);
 
                 ComPtr<IDXGISurface> surface;
-                new_texture.texture.As(&surface);
+                new_texture.texture->texture().As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
                     D2D1::RenderTargetProperties(
@@ -65,7 +54,6 @@ namespace trview
 
                 _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
                 new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
-                _device->CreateShaderResourceView(new_texture.texture.Get(), nullptr, &new_texture.view);
                 return new_texture;
             }
 
