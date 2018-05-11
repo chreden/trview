@@ -35,28 +35,6 @@ namespace trview
                 return new_texture;
             }
 
-            FontTexture Font::create_texture()
-            {
-                FontTexture new_texture;
-
-                new_texture.texture = std::make_unique<graphics::RenderTarget>(_device, 512, 512);
-
-                ComPtr<IDXGISurface> surface;
-                new_texture.texture->texture().As(&surface);
-
-                D2D1_RENDER_TARGET_PROPERTIES props =
-                    D2D1::RenderTargetProperties(
-                        D2D1_RENDER_TARGET_TYPE_DEFAULT,
-                        D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_IGNORE),
-                        96,
-                        96
-                    );
-
-                _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
-                new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
-                return new_texture;
-            }
-
             void Font::render(FontTexture& texture, const std::wstring& text, float x, float y, float width, float height)
             {
                 D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, width, height);
