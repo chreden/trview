@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "RenderNode.h"
-#include "Sprite.h"
 #include "FontFactory.h"
 
 #include <trview.ui/Control.h>
@@ -16,6 +15,7 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
+        class Sprite;
     }
 
     namespace ui
@@ -42,7 +42,7 @@ namespace trview
                 std::unique_ptr<RenderNode> process_control(Control* control);
 
                 std::unique_ptr<RenderNode>                     _root_node;
-                std::unique_ptr<Sprite>                         _sprite;
+                std::unique_ptr<graphics::Sprite>               _sprite;
                 std::unique_ptr<FontFactory>                    _font_factory;
                 Microsoft::WRL::ComPtr<ID3D11Device>            _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;

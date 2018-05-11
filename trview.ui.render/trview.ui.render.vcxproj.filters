@@ -20,9 +20,6 @@
     <ClInclude Include="FontTexture.h">
       <Filter>Graphics\Text</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="ImageNode.h">
       <Filter>Nodes</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
     </ClCompile>
     <ClCompile Include="FontFactory.cpp">
       <Filter>Graphics\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="ImageNode.cpp">
       <Filter>Nodes</Filter>

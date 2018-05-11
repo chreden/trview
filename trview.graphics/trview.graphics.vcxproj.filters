@@ -25,6 +25,12 @@
     <ClInclude Include="ViewportStore.h">
       <Filter>RenderTarget</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSizeStore.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -51,6 +57,12 @@
     <ClCompile Include="ViewportStore.cpp">
       <Filter>RenderTarget</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSizeStore.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -58,6 +70,9 @@
     </Filter>
     <Filter Include="RenderTarget">
       <UniqueIdentifier>{540b9821-6078-493f-bbd4-4dbe626715a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{abd882fa-9bf6-487a-b9bc-779aebf2ab26}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

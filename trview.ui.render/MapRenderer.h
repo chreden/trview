@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <map>
 
-#include "Sprite.h"
+#include <trview.graphics/Sprite.h>
 #include "trview\Types.h"
 #include "trview\TextureStorage.h"
 #include <trview.common/Texture.h>
@@ -113,7 +113,7 @@ namespace trview
 
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
-                Sprite                                             _sprite; 
+                graphics::Sprite                                   _sprite; 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
                 std::vector<Tile>                                  _tiles; 
                 std::unique_ptr<graphics::RenderTarget>            _render_target;

@@ -3,8 +3,10 @@
 #include <algorithm>
 
 #include <trview.ui/Control.h>
-#include "Sprite.h"
+#include <trview.graphics/Sprite.h>
 #include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/ViewportStore.h>
+#include <trview.graphics/SpriteSizeStore.h>
 
 using namespace Microsoft::WRL;
 
@@ -28,10 +30,10 @@ namespace trview
 
             ComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
             {
-                return _node_texture_view;
+                return _render_target->resource();
             }
 
-            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
+            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
                 if (!needs_redraw() && !needs_recompositing())
                 {
@@ -51,7 +53,13 @@ namespace trview
 
                 graphics::RenderTargetStore render_target_store(context);
                 render_self(context, sprite);
-                context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
+                
+                graphics::ViewportStore vp_store(context);
+                graphics::SpriteSizeStore s_store(sprite);
+
+                _render_target->apply(context);
+                sprite.set_host_size(_render_target->width(), _render_target->height());
+
                 for (auto& child : _child_nodes)
                 {
                     if (!child->visible())
@@ -90,37 +98,8 @@ namespace trview
 
             void RenderNode::regenerate_texture()
             {
-                // Reset existing textures.
-                _node_texture = nullptr;
-                _node_texture_view = nullptr;
-                _render_target_view = nullptr;
-
-                auto size = _control->size();
-                uint32_t width = static_cast<uint32_t>(size.width);
-                uint32_t height = static_cast<uint32_t>(size.height);
-
-                std::vector<uint32_t> pixels(width * height, 0x00000000);
-
-                D3D11_SUBRESOURCE_DATA srd;
-                memset(&srd, 0, sizeof(srd));
-                srd.pSysMem = &pixels[0];
-                srd.SysMemPitch = sizeof(uint32_t) * width;
-
-                D3D11_TEXTURE2D_DESC desc;
-                memset(&desc, 0, sizeof(desc));
-                desc.Width = width;
-                desc.Height = height;
-                desc.MipLevels = desc.ArraySize = 1;
-                desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-                desc.SampleDesc.Count = 1;
-                desc.Usage = D3D11_USAGE_DEFAULT;
-                desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-                desc.CPUAccessFlags = 0;
-                desc.MiscFlags = 0;
-
-                _device->CreateTexture2D(&desc, &srd, &_node_texture);
-                _device->CreateShaderResourceView(_node_texture.Get(), nullptr, &_node_texture_view);
-                _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
+                const auto size = _control->size();
+                _render_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
             }
 
             // Determines if the control itself needs to redraw.

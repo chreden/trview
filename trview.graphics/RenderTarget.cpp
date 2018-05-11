@@ -66,6 +66,13 @@ namespace trview
             context->OMSetRenderTargets(1, _view.GetAddressOf(), nullptr);
         }
 
+        // Get the texture for the render target.
+        // Returns: The texture.
+        ComPtr<ID3D11Texture2D> RenderTarget::texture() const
+        {
+            return _texture;
+        }
+
         // Get the shader resource for the render target.
         // Returns: The shader resource view.
         ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const

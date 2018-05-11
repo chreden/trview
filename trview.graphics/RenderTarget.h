@@ -30,6 +30,10 @@ namespace trview
             // context: The D3D device context.
             void apply(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
+            // Get the texture for the render target.
+            // Returns: The texture.
+            Microsoft::WRL::ComPtr<ID3D11Texture2D> texture() const;
+
             // Get the shader resource for the render target.
             // Returns: The shader resource view.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> resource() const;

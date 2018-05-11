@@ -66,7 +66,7 @@ namespace trview
             {
             }
 
-            void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
+            void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
                 const auto size = _label->size();
@@ -84,7 +84,7 @@ namespace trview
                     regenerate_texture();
                 }
 
-                _font_texture = _font->create_texture(_node_texture);
+                _font_texture = _font->create_texture(_render_target->texture());
             }
         }
     }
