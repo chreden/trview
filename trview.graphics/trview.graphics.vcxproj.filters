@@ -26,10 +26,10 @@
       <Filter>RenderTarget</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Graphics</Filter>
+      <Filter>Sprite</Filter>
     </ClInclude>
     <ClInclude Include="SpriteSizeStore.h">
-      <Filter>Graphics</Filter>
+      <Filter>Sprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -58,10 +58,10 @@
       <Filter>RenderTarget</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Graphics</Filter>
+      <Filter>Sprite</Filter>
     </ClCompile>
     <ClCompile Include="SpriteSizeStore.cpp">
-      <Filter>Graphics</Filter>
+      <Filter>Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -71,7 +71,7 @@
     <Filter Include="RenderTarget">
       <UniqueIdentifier>{540b9821-6078-493f-bbd4-4dbe626715a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics">
+    <Filter Include="Sprite">
       <UniqueIdentifier>{abd882fa-9bf6-487a-b9bc-779aebf2ab26}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
