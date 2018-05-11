@@ -1,5 +1,6 @@
 #include "RenderNode.h"
 #include <vector>
+#include <algorithm>
 
 #include <trview.ui/Control.h>
 #include "Sprite.h"
@@ -18,6 +19,7 @@ namespace trview
             {
                 regenerate_texture();
                 _control->on_size_changed += [&](auto) {regenerate_texture(); };
+                _control->on_invalidate += [&]() { _needs_redraw = true; };
             }
 
             RenderNode::~RenderNode()
@@ -31,8 +33,14 @@ namespace trview
 
             void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
             {
+                if (!needs_redraw() && !needs_recompositing())
+                {
+                    return;
+                }
+
                 if (!visible())
                 {
+                    _needs_redraw = false;
                     return;
                 }
 
@@ -56,6 +64,8 @@ namespace trview
                     auto size = child->size();
                     sprite.render(context, child->node_texture_view(), pos.x, pos.y, size.width, size.height);
                 }
+
+                _needs_redraw = false;
             }
 
             void RenderNode::add_child(std::unique_ptr<RenderNode>&& child)
@@ -111,6 +121,20 @@ namespace trview
                 _device->CreateTexture2D(&desc, &srd, &_node_texture);
                 _device->CreateShaderResourceView(_node_texture.Get(), nullptr, &_node_texture_view);
                 _device->CreateRenderTargetView(_node_texture.Get(), nullptr, &_render_target_view);
+            }
+
+            // Determines if the control itself needs to redraw.
+            bool RenderNode::needs_redraw() const
+            {
+                return _needs_redraw;
+            }
+
+            // Determines if the control has any children that need to be re-rendered on to the
+            // render target for the control (they have been redrawn).
+            bool RenderNode::needs_recompositing() const
+            {
+                return std::any_of(_child_nodes.begin(), _child_nodes.end(),
+                    [](const auto& n) { return n->needs_redraw() || n->needs_recompositing(); });
             }
         }
     }

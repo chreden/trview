@@ -40,6 +40,7 @@ namespace trview
             _value = value;
             _label->set_text(std::to_wstring(value));
             on_value_changed(_value);
+            on_invalidate();
         }
 
         void NumericUpDown::set_maximum(int32_t maximum)

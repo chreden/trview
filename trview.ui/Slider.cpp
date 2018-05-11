@@ -62,6 +62,7 @@ namespace trview
             const auto pos = _blob->position();
             _blob->set_position(Point(x, pos.y));
             on_value_changed(percentage);
+            on_invalidate();
         }
 
         void Slider::set_blob_position(Point position)

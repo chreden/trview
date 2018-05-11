@@ -44,6 +44,14 @@ namespace trview
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) = 0;
 
+            public:
+                // Determines if the control itself needs to redraw.
+                bool needs_redraw() const;
+
+                // Determines if the control has any children that need to be re-rendered on to the
+                // render target for the control (they have been redrawn).
+                bool needs_recompositing() const;
+
                 void regenerate_texture();
 
                 Microsoft::WRL::ComPtr<ID3D11Device>             _device;
@@ -52,6 +60,7 @@ namespace trview
                 Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _render_target_view;
                 std::vector<std::unique_ptr<RenderNode>>         _child_nodes;
                 Control*                                         _control;
+                bool                                             _needs_redraw{ true };
             };
         }
     }

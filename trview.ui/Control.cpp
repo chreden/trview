@@ -24,6 +24,7 @@ namespace trview
         void Control::set_position(Point position)
         {
             _position = position;
+            on_invalidate();
         }
 
         Size Control::size() const
@@ -39,6 +40,7 @@ namespace trview
         void Control::set_visible(bool value)
         {
             _visible = value;
+            on_invalidate();
         }
 
         Control* Control::parent() const
@@ -50,6 +52,7 @@ namespace trview
         {
             child_element->_parent = this;
             _child_elements.push_back(std::move(child_element));
+            on_invalidate();
         }
 
         std::vector<Control*> Control::child_elements() const
@@ -192,6 +195,7 @@ namespace trview
         {
             _size = size;
             on_size_changed(size);
+            on_invalidate();
         }
     }
 }
