@@ -28,10 +28,8 @@ namespace trview
                 {
                     graphics::RenderTargetStore rt_store(context);
                     graphics::ViewportStore vp_store(context);
-                    graphics::SpriteSizeStore s_store(sprite);
-
+                    graphics::SpriteSizeStore s_store(sprite, _render_target->width(), _render_target->height());
                     _render_target->apply(context);
-                    sprite.set_host_size(_render_target->width(), _render_target->height());
 
                     auto size = _image->size();
                     sprite.render(context, texture.view, 0, 0, size.width, size.height);

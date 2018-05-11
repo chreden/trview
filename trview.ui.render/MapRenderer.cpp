@@ -37,10 +37,8 @@ namespace trview
 
                     graphics::RenderTargetStore rs_store(context);
                     graphics::ViewportStore vp_store(context);
-                    graphics::SpriteSizeStore s_store(_sprite);
-
                     // Set the host size to match the render target as we will have adjusted the viewport.
-                    _sprite.set_host_size(_render_target->width(), _render_target->height());
+                    graphics::SpriteSizeStore s_store(_sprite, _render_target->width(), _render_target->height());
 
                     _render_target->apply(context);
                     render_internal(context);
