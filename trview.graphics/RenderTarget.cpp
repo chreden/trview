@@ -3,6 +3,7 @@
 #include <vector>
 
 using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -44,7 +45,7 @@ namespace trview
         // Clear the render target.
         // context: The D3D device context.
         // colour: The colour with which to clear the render target.
-        void RenderTarget::clear(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Color& colour)
+        void RenderTarget::clear(const ComPtr<ID3D11DeviceContext>& context, const Color& colour)
         {
             context->ClearRenderTargetView(_view.Get(), colour);
         }
@@ -52,7 +53,7 @@ namespace trview
         // Set the render target as the current render target. This will also apply a viewport that matches the 
         // dimensions of the render target.
         // context: The D3D device context.
-        void RenderTarget::apply(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+        void RenderTarget::apply(const ComPtr<ID3D11DeviceContext>& context)
         {
             D3D11_VIEWPORT viewport;
             viewport.Width = static_cast<float>(_width);
@@ -67,7 +68,7 @@ namespace trview
 
         // Get the shader resource for the render target.
         // Returns: The shader resource view.
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
+        ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
         {
             return _resource;
         }
