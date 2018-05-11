@@ -421,6 +421,11 @@ namespace trview
         _mouse.process_input(input);
     }
 
+    void Viewer::on_scroll(int16_t delta)
+    {
+        _mouse.process_scroll(delta);
+    }
+
     void Viewer::render()
     {
         _timer.update();

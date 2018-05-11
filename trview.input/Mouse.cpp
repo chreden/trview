@@ -61,6 +61,11 @@ namespace trview
             }
         }
 
+        void Mouse::process_scroll(int16_t delta)
+        {
+            mouse_wheel(delta);
+        }
+
         long Mouse::x() const
         {
             return _absolute_x;

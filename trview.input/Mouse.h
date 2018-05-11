@@ -18,6 +18,7 @@ namespace trview
 
             Mouse();
             void process_input(const RAWINPUT& input);
+            void process_scroll(int16_t delta);
 
             Event<Button> mouse_down;
             Event<Button> mouse_up;
