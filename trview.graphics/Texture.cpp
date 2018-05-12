@@ -1,7 +1,5 @@
 #include "Texture.h"
 
-#include <vector>
-
 using namespace Microsoft::WRL;
 
 namespace trview
@@ -30,9 +28,12 @@ namespace trview
         }
 
         Texture::Texture(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, Usage usage)
+            : Texture(device, width, height, std::vector<uint32_t>(width * height, 0x00000000), usage)
         {
-            std::vector<uint32_t> pixels(width * height, 0x00000000);
+        }
 
+        Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Usage usage)
+        {
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
             srd.pSysMem = &pixels[0];
