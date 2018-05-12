@@ -16,6 +16,15 @@
     <ClInclude Include="VertexShader.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetStore.h">
+      <Filter>RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewportStore.h">
+      <Filter>RenderTarget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -33,10 +42,22 @@
     <ClCompile Include="VertexShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetStore.cpp">
+      <Filter>RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewportStore.cpp">
+      <Filter>RenderTarget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
       <UniqueIdentifier>{e2aa40d1-8c31-4aa1-9325-2c4a9193e98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderTarget">
+      <UniqueIdentifier>{540b9821-6078-493f-bbd4-4dbe626715a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,4 +1,6 @@
 #include "MapRenderer.h"
+#include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/ViewportStore.h>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -13,18 +15,50 @@ namespace trview
                 : _device(device),
                 _window_width(width), 
                 _window_height(height),
-                _sprite(device, shader_storage, width, height),
-                _texture_storage(device)
+                _sprite(device, shader_storage, width, height)
             {
+                TextureStorage texture_storage{ device };
+                _texture = texture_storage.coloured(0xFFFFFFFF).view;
             }
 
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
-                // Draw base square, this is the backdrop for the map 
-                draw(context, Point(_first.x - 1, _first.y - 1), Size(_DRAW_SCALE * _columns + 1, _DRAW_SCALE * _rows + 1), Color(0.0f, 0.0f, 0.0f));
+                if (!_render_target)
+                {
+                    return;
+                }
 
-                std::for_each(_tiles.begin(), _tiles.end(), [&] (const Tile &tile) 
+                if (needs_redraw())
+                {
+                    // Clear the render target to be transparent (as it may not be using the entire area).
+                    _render_target->clear(context, Color(1, 1, 1, 1));
+
+                    graphics::RenderTargetStore rs_store(context);
+                    graphics::ViewportStore vp_store(context);
+
+                    // Set the host size to match the render target as we will have adjusted the viewport.
+                    _sprite.set_host_size(_render_target->width(), _render_target->height());
+
+                    _render_target->apply(context);
+                    render_internal(context);
+
+                    // Reset the host size as the render target is going to switch back to the full window.
+                    _sprite.set_host_size(_window_width, _window_height);
+                }
+
+                // Now render the render target in the correct position.
+                auto p = Point(_first.x - 1, _first.y - 1);
+                _sprite.render(context, _render_target->resource(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+            }
+
+            void
+            MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+            {
+                // Draw base square, this is the backdrop for the map 
+                draw(context, Point(), ui::Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
+
+                std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
                 {
                     // Firstly get the colour for the tile 
                     // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
@@ -69,15 +103,14 @@ namespace trview
 
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
                     if (tile.sector->flags & SectorFlag::RoomAbove)
-                        draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f)); 
+                        draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
                 });
             }
 
             void 
             MapRenderer::draw(const ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
             {
-                const auto texture = get_texture();
-                _sprite.render(context, texture, p.x, p.y, s.width, s.height, c); 
+                _sprite.render(context, _texture, p.x, p.y, s.width, s.height, c); 
             }
 
             void
@@ -88,6 +121,7 @@ namespace trview
                 _rows = room->num_z_sectors();
                 _loaded = true; 
                 update_map_position(); 
+                update_map_render_target();
 
                 // Load up sectors 
                 _tiles.clear(); 
@@ -103,23 +137,12 @@ namespace trview
                 return Point {
                     /* X */ _DRAW_SCALE * (sector.id() / _rows),
                     /* Y */ _DRAW_SCALE * (_rows - (sector.id() % _rows) - 1)
-                } + _first; 
-        
+                } + Point(1,1); 
             }
 
             ui::Size MapRenderer::get_size() const
             {
                 return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
-            }
-
-            ComPtr<ID3D11ShaderResourceView>
-            MapRenderer::get_texture()
-            {
-                if (_texture == nullptr)
-                {
-                    _texture = _texture_storage.coloured(0xFFFFFFFF).view;
-                }
-                return _texture;
             }
 
             std::shared_ptr<Sector> 
@@ -147,10 +170,7 @@ namespace trview
             bool 
             MapRenderer::cursor_is_over_control() const
             {
-                Point origin_with_margin(_first.x - _DRAW_MARGIN, _first.y - _DRAW_MARGIN); 
-                Point end_with_margin(_last.x + _DRAW_MARGIN, _last.y + _DRAW_MARGIN);
-
-                return _cursor.is_between(origin_with_margin, end_with_margin);
+                return _render_target && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
             }
 
             void 
@@ -169,7 +189,43 @@ namespace trview
                 _first = Point(_window_width - (_DRAW_SCALE * _columns) - _DRAW_MARGIN, _DRAW_MARGIN);
                 // Location of the last point of the control (bottom-right)
                 _last = _first + Point(_DRAW_SCALE * _columns, _DRAW_SCALE * _rows);
+            }
 
+            void
+            MapRenderer::update_map_render_target()
+            {
+                uint32_t width = static_cast<uint32_t>(_DRAW_SCALE * _columns + 1);
+                uint32_t height = static_cast<uint32_t>(_DRAW_SCALE * _rows + 1);
+
+                // Minor optimisation - don't recreate the render target if the room dimensions are the same.
+                if (!_render_target || (_render_target->width() != width || _render_target->height() != height))
+                {
+                    _render_target = std::make_unique<graphics::RenderTarget>(_device, width, height);
+                }
+                _force_redraw = true;
+            }
+
+            bool 
+            MapRenderer::needs_redraw()
+            {
+                if (_force_redraw)
+                {
+                    return true;
+                }
+
+                if (cursor_is_over_control())
+                {
+                    _cursor_was_over = true;
+                    return true;
+                }
+
+                if (_cursor_was_over)
+                {
+                    _cursor_was_over = false;
+                    return true;
+                }
+
+                return false;
             }
         }
     }

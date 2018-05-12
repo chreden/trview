@@ -12,10 +12,11 @@
 #include "Sprite.h"
 #include "trview\Types.h"
 #include "trview\TextureStorage.h"
-#include "trview.common\Texture.h"
-#include "trview.ui\Point.h"
-#include "trview.ui\Size.h"
+#include <trview.common/Texture.h>
+#include <trview.ui/Point.h>
+#include <trview.ui/Size.h>
 #include "trview\Room.h"
+#include <trview.graphics/RenderTarget.h>
 
 namespace trview
 {
@@ -80,7 +81,7 @@ namespace trview
                 bool cursor_is_over_control() const;
 
                 // Sets the position of the cursor 
-                inline void set_cursor_position(const Point& cursor) { _cursor = cursor; }
+                inline void set_cursor_position(const Point& cursor) { _cursor = cursor - _first; }
 
                 // Returns whether the map is loaded
                 inline bool loaded() const { return _loaded; }
@@ -88,9 +89,6 @@ namespace trview
                 // Set the size of the host window.
                 void set_window_size(int width, int height);
             private:
-                // Gets base texture
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> get_texture();
-
                 // Determines the position (on screen) to draw a sector 
                 ui::Point get_position(const Sector& sector); 
 
@@ -103,18 +101,30 @@ namespace trview
                 // Update the stored positions of the corners of the map.
                 void update_map_position();
 
+                // Update the render target that the squares will be rendered to, depending
+                // on the size of the room (based on columns and rows).
+                void update_map_render_target();
+
+                // Render the map squares and the background.
+                void render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+
+                // Determines if the minimap needs to be re-drawn.
+                bool needs_redraw();
 
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
                 Sprite                                             _sprite; 
-                TextureStorage                                     _texture_storage; 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
                 std::vector<Tile>                                  _tiles; 
+                std::unique_ptr<graphics::RenderTarget>            _render_target;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
-                Point                               _cursor; // Position of the cursor 
+                Point                               _cursor; // Position of the cursor relative to the top left of the control.
                 std::uint16_t                       _rows, _columns; 
                 bool                                _loaded = false;
+                
+                bool                                _cursor_was_over = false;
+                bool                                _force_redraw = true;
 
                 const float                         _DRAW_MARGIN = 30.0f; 
                 const float                         _DRAW_SCALE = 14.0f; 
