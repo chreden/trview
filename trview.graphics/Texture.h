@@ -14,7 +14,8 @@ namespace trview
             enum class Bind
             {
                 Texture,
-                RenderTarget
+                RenderTarget,
+                DepthStencil
             };
 
             Texture() = default;

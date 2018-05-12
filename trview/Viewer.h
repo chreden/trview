@@ -134,7 +134,6 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11Device>            _device;
         Microsoft::WRL::ComPtr<ID3D11DeviceContext>     _context;
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  _render_target_view;
-        Microsoft::WRL::ComPtr<ID3D11Texture2D>         _depth_stencil_buffer;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
 

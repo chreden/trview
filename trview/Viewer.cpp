@@ -641,7 +641,6 @@ namespace trview
         _context->ClearState();
 
         _render_target_view = nullptr;
-        _depth_stencil_buffer = nullptr;
         _depth_stencil_view = nullptr;
 
         _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
@@ -664,24 +663,7 @@ namespace trview
     // Create the depth stencil view and buffer.
     void Viewer::create_depth_stencil()
     {
-        // Initialize the description of the depth buffer.
-        D3D11_TEXTURE2D_DESC depthBufferDesc;
-        memset(&depthBufferDesc, 0, sizeof(depthBufferDesc));
-
-        // Set up the description of the depth buffer.
-        depthBufferDesc.Width = _window.width();
-        depthBufferDesc.Height = _window.height();
-        depthBufferDesc.MipLevels = 1;
-        depthBufferDesc.ArraySize = 1;
-        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthBufferDesc.SampleDesc.Count = 1;
-        depthBufferDesc.SampleDesc.Quality = 0;
-        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-        depthBufferDesc.CPUAccessFlags = 0;
-        depthBufferDesc.MiscFlags = 0;
-
-        _device->CreateTexture2D(&depthBufferDesc, NULL, &_depth_stencil_buffer);
+        graphics::Texture depth_stencil_buffer{ _device, _window.width(), _window.height(), graphics::Texture::Bind::DepthStencil };
 
         D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
         memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
@@ -692,7 +674,7 @@ namespace trview
         depthStencilViewDesc.Texture2D.MipSlice = 0;
 
         // Create the depth stencil view.
-        _device->CreateDepthStencilView(_depth_stencil_buffer.Get(), &depthStencilViewDesc, &_depth_stencil_view);
+        _device->CreateDepthStencilView(depth_stencil_buffer.texture.Get(), &depthStencilViewDesc, &_depth_stencil_view);
     }
 
     void Viewer::set_viewport()

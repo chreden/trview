@@ -8,7 +8,7 @@ namespace trview
     {
         namespace
         {
-            // Convert the texture usage mode into the appropriate bind flags for a D3D texture.
+            // Convert the texture bind mode into the appropriate bind flags for a D3D texture.
             // bind: The bind mode to convert.
             // Returns: The UINT that contains the appropriate flags.
             UINT get_bind_flags(Texture::Bind bind)
@@ -18,7 +18,23 @@ namespace trview
                 {
                     flags |= D3D11_BIND_RENDER_TARGET;
                 }
+                else if (bind == Texture::Bind::DepthStencil)
+                {
+                    flags = D3D11_BIND_DEPTH_STENCIL;
+                }
                 return flags;
+            }
+
+            // Conver the texture bind mode into the appropriate texture format.
+            // bind: The bind mode to convert.
+            // Returns: The format to use.
+            DXGI_FORMAT get_format(Texture::Bind bind)
+            {
+                if (bind == Texture::Bind::DepthStencil)
+                {
+                    return DXGI_FORMAT_D24_UNORM_S8_UINT;
+                }
+                return DXGI_FORMAT_R8G8B8A8_UNORM;
             }
         }
 
@@ -44,7 +60,7 @@ namespace trview
             desc.Width = width;
             desc.Height = height;
             desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+            desc.Format = get_format(bind);
             desc.SampleDesc.Count = 1;
             desc.Usage = D3D11_USAGE_DEFAULT;
             desc.BindFlags = get_bind_flags(bind);
@@ -52,7 +68,10 @@ namespace trview
             desc.MiscFlags = 0;
 
             device->CreateTexture2D(&desc, &srd, &texture);
-            device->CreateShaderResourceView(texture.Get(), nullptr, &view);
+            if (bind != Texture::Bind::DepthStencil)
+            {
+                device->CreateShaderResourceView(texture.Get(), nullptr, &view);
+            }
         }
     }
 }
