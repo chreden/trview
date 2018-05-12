@@ -10,7 +10,6 @@
 
 #include <trlevel/ILevel.h>
 
-#include <trview.graphics/Texture.h>
 #include "Level.h"
 #include "Room.h"
 
@@ -28,7 +27,6 @@
 #include <trview.input/Mouse.h>
 
 #include <trview.ui.render/Renderer.h>
-#include <trview.ui.render/FontFactory.h>
 #include <trview.ui.render/MapRenderer.h>
 
 #include "CameraInput.h"
@@ -133,7 +131,6 @@ namespace trview
 
         std::unique_ptr<TextureWindow>   _texture_window;
 
-        std::unique_ptr<ui::render::FontFactory> _font_factory;
         Microsoft::WRL::ComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;

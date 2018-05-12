@@ -35,8 +35,6 @@ namespace trview
         _texture_storage = std::make_unique<TextureStorage>(_device);
         load_default_textures(_device, *_texture_storage.get());
 
-        _font_factory = std::make_unique<ui::render::FontFactory>();
-
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
 
