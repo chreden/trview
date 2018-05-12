@@ -11,28 +11,7 @@ namespace trview
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
             std::vector<uint32_t> data = level.get_textile(i);
-
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &data[0];
-            srd.SysMemPitch = sizeof(uint32_t) * 256;
-
-            D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = 256;
-            desc.Height = 256;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-
-            graphics::Texture tex;
-            device->CreateTexture2D(&desc, &srd, &tex.texture);
-            device->CreateShaderResourceView(tex.texture.Get(), nullptr, &tex.view);
-            _tiles.push_back(tex);
+            _tiles.emplace_back(device, 256, 256, data);
         }
 
         // Copy object textures locally from the level.
