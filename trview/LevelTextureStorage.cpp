@@ -7,7 +7,6 @@ namespace trview
     LevelTextureStorage::LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level)
         : _device(device), _level(level), _texture_storage(std::make_unique<TextureStorage>(device))
     {
-        // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
             std::vector<uint32_t> data = level.get_textile(i);
