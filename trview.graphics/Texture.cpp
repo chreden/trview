@@ -9,12 +9,12 @@ namespace trview
         namespace
         {
             // Convert the texture usage mode into the appropriate bind flags for a D3D texture.
-            // usage: The usage mode to convert.
+            // bind: The bind mode to convert.
             // Returns: The UINT that contains the appropriate flags.
-            UINT get_bind_flags(Texture::Usage usage)
+            UINT get_bind_flags(Texture::Bind bind)
             {
                 UINT flags = D3D11_BIND_SHADER_RESOURCE;
-                if (usage == Texture::Usage::RenderTarget)
+                if (bind == Texture::Bind::RenderTarget)
                 {
                     flags |= D3D11_BIND_RENDER_TARGET;
                 }
@@ -27,12 +27,12 @@ namespace trview
         {
         }
 
-        Texture::Texture(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, Usage usage)
-            : Texture(device, width, height, std::vector<uint32_t>(width * height, 0x00000000), usage)
+        Texture::Texture(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, Bind bind)
+            : Texture(device, width, height, std::vector<uint32_t>(width * height, 0x00000000), bind)
         {
         }
 
-        Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Usage usage)
+        Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
         {
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
@@ -47,7 +47,7 @@ namespace trview
             desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
             desc.SampleDesc.Count = 1;
             desc.Usage = D3D11_USAGE_DEFAULT;
-            desc.BindFlags = get_bind_flags(usage);
+            desc.BindFlags = get_bind_flags(bind);
             desc.CPUAccessFlags = 0;
             desc.MiscFlags = 0;
 

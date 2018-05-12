@@ -13,7 +13,7 @@ namespace trview
         // width: The width of the new render target.
         // height: The height of the new render target.
         RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height)
-            : _width(width), _height(height), _texture(device, width, height, Texture::Usage::RenderTarget)
+            : _width(width), _height(height), _texture(device, width, height, Texture::Bind::RenderTarget)
         {
             device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
         }
