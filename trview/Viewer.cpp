@@ -633,13 +633,10 @@ namespace trview
         _window = Window(_window.window());
 
         _context->ClearState();
-
         _render_target.reset();
 
         _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
-
         create_render_target();
-
         resize_elements();
     }
 

@@ -15,6 +15,7 @@ namespace trview
         private:
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _render_target;
+            Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _depth_stencil;
         };
     }
 }
