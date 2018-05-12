@@ -10,7 +10,7 @@ namespace trview
 {
     namespace ui
     {
-        NumericUpDown::NumericUpDown(Point point, Size size, Colour background_colour, Texture up_texture, Texture down_texture, int32_t minimum, int32_t maximum)
+        NumericUpDown::NumericUpDown(Point point, Size size, Colour background_colour, graphics::Texture up_texture, graphics::Texture down_texture, int32_t minimum, int32_t maximum)
             : Window(point, size, background_colour), _minimum(minimum), _maximum(maximum)
         {
             auto label = std::make_unique<Label>(Point(), Size(size.width - 16, size.height), background_colour, L"0", 10.f, TextAlignment::Centre, ParagraphAlignment::Centre);

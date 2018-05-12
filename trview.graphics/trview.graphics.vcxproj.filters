@@ -66,6 +66,9 @@
     <ClCompile Include="SpriteSizeStore.cpp">
       <Filter>Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

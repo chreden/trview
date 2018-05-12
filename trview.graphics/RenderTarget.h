@@ -5,6 +5,8 @@
 #include <wrl/client.h>
 #include <SimpleMath.h>
 
+#include "Texture.h"
+
 namespace trview
 {
     namespace graphics
@@ -50,8 +52,7 @@ namespace trview
             // Returns: The height.
             uint32_t height() const;
         private:
-            Microsoft::WRL::ComPtr<ID3D11Texture2D>          _texture;
-            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _resource;
+            Texture _texture;
             Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _view;
             uint32_t _width;
             uint32_t _height;

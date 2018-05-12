@@ -40,6 +40,7 @@
     <ClCompile Include="ShaderStorage.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteSizeStore.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>

@@ -10,9 +10,9 @@ namespace trview
     {
         virtual ~ILevelTextureStorage() = 0;
 
-        virtual Texture texture(uint32_t texture_index) const = 0;
+        virtual graphics::Texture texture(uint32_t texture_index) const = 0;
 
-        virtual Texture untextured() const = 0;
+        virtual graphics::Texture untextured() const = 0;
 
         virtual DirectX::SimpleMath::Vector2 uv(uint32_t texture_index, uint32_t uv_index) const = 0;
 

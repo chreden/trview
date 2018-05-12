@@ -63,9 +63,9 @@ namespace trview
         return _rooms[room]->info();
     }
 
-    std::vector<Texture> Level::level_textures() const
+    std::vector<graphics::Texture> Level::level_textures() const
     {
-        std::vector<Texture> textures;
+        std::vector<graphics::Texture> textures;
         for (uint32_t i = 0; i < _texture_storage->num_tiles(); ++i)
         {
             textures.push_back(_texture_storage->texture(i));

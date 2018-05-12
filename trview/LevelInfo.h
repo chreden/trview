@@ -32,11 +32,11 @@ namespace trview
         // version: The version of the game.
         void set_level_version(trlevel::LevelVersion version);
     private:
-        Texture get_version_image(trlevel::LevelVersion version) const;
+        graphics::Texture get_version_image(trlevel::LevelVersion version) const;
 
         ui::Control* _panel;
         ui::Label* _name;
         ui::Image* _version;
-        std::unordered_map<trlevel::LevelVersion, Texture> _version_textures;
+        std::unordered_map<trlevel::LevelVersion, graphics::Texture> _version_textures;
     };
 }

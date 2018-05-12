@@ -4,7 +4,7 @@ namespace trview
 {
     namespace ui
     {
-        Checkbox::Checkbox(Point position, Size size, Texture up_image, Texture down_image)
+        Checkbox::Checkbox(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
             : Image(position, size), _up_image(up_image), _down_image(down_image)
         {
             set_texture(_up_image);

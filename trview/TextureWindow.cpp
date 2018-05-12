@@ -34,7 +34,7 @@ namespace trview
         parent->add_child(std::move(texture_window));
     }
 
-    void TextureWindow::set_textures(std::vector<Texture> textures)
+    void TextureWindow::set_textures(std::vector<graphics::Texture> textures)
     {
         _texture_index = 0u;
         _level_textures = textures;

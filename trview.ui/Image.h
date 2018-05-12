@@ -14,11 +14,11 @@ namespace trview
 
             virtual ~Image() = default;
 
-            void set_texture(Texture texture);
+            void set_texture(graphics::Texture texture);
 
-            Texture texture() const;
+            graphics::Texture texture() const;
         private:
-            Texture _texture;
+            graphics::Texture _texture;
         };
     }
 }

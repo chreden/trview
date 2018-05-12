@@ -29,7 +29,7 @@ namespace trview
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
             desc.MiscFlags = 0;
 
-            Texture tex;
+            graphics::Texture tex;
             device->CreateTexture2D(&desc, &srd, &tex.texture);
             device->CreateShaderResourceView(tex.texture.Get(), nullptr, &tex.view);
             _tiles.push_back(tex);
@@ -42,17 +42,17 @@ namespace trview
         }
     }
 
-    Texture LevelTextureStorage::texture(uint32_t tile_index) const
+    graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
     {
         return _tiles[tile_index];
     }
 
-    Texture LevelTextureStorage::coloured(uint32_t colour) const
+    graphics::Texture LevelTextureStorage::coloured(uint32_t colour) const
     {
         return _texture_storage->coloured(colour);
     }
 
-    Texture LevelTextureStorage::untextured() const
+    graphics::Texture LevelTextureStorage::untextured() const
     {
         if (!_untextured_texture.texture)
         {
@@ -90,12 +90,12 @@ namespace trview
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
-    Texture LevelTextureStorage::lookup(const std::string&) const
+    graphics::Texture LevelTextureStorage::lookup(const std::string&) const
     {
-        return Texture();
+        return graphics::Texture();
     }
 
-    void LevelTextureStorage::store(const std::string&, const Texture&)
+    void LevelTextureStorage::store(const std::string&, const graphics::Texture&)
     {
     }
 }

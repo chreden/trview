@@ -1,7 +1,5 @@
 #include "RenderTarget.h"
 
-#include <vector>
-
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
 
@@ -15,31 +13,9 @@ namespace trview
         // width: The width of the new render target.
         // height: The height of the new render target.
         RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height)
-            : _width(width), _height(height)
+            : _width(width), _height(height), _texture(device, width, height, Texture::Usage::RenderTarget)
         {
-            // If the size is larger than the current size, recreate the render target.
-            std::vector<uint32_t> pixels(width * height, 0x00000000);
-
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &pixels[0];
-            srd.SysMemPitch = sizeof(uint32_t) * width;
-
-            D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = width;
-            desc.Height = height;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DEFAULT;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-            desc.CPUAccessFlags = 0;
-            desc.MiscFlags = 0;
-
-            device->CreateTexture2D(&desc, &srd, &_texture);
-            device->CreateShaderResourceView(_texture.Get(), nullptr, &_resource);
-            device->CreateRenderTargetView(_texture.Get(), nullptr, &_view);
+            device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
         }
 
         // Clear the render target.
@@ -70,14 +46,14 @@ namespace trview
         // Returns: The texture.
         ComPtr<ID3D11Texture2D> RenderTarget::texture() const
         {
-            return _texture;
+            return _texture.texture;
         }
 
         // Get the shader resource for the render target.
         // Returns: The shader resource view.
         ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
         {
-            return _resource;
+            return _texture.view;
         }
 
         // Get the render target interface for the render target.

@@ -54,7 +54,7 @@ namespace trview
 
         std::vector<RoomInfo> room_info() const;
         RoomInfo room_info(uint32_t room) const;
-        std::vector<Texture> level_textures() const;
+        std::vector<graphics::Texture> level_textures() const;
 
         uint16_t selected_room() const;
 

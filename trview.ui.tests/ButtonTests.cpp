@@ -16,7 +16,7 @@ namespace trview
                 // Tests that the click event is raised when the button is clicked on.
                 TEST_METHOD(ClickEventRaised)
                 {
-                    Button button(Point(), Size(20, 20), Texture(), Texture());
+                    Button button(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
                     bool raised = false;
                     button.on_click += [&raised]() { raised = true; };
                     button.mouse_down(Point());

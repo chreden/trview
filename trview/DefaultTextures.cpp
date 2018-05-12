@@ -37,7 +37,7 @@ namespace trview
         // device: The Direct3D device to use to load the textures.
         // resource_id: The integer ID of the texture in the resource file.
         // Returns: The texture loaded from the resource.
-        Texture load_texture_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
+        graphics::Texture load_texture_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
         {
             ComPtr<ID3D11Resource> resource;
             ComPtr<ID3D11ShaderResourceView> view;
@@ -54,7 +54,7 @@ namespace trview
             // Get the correct interface for a texture from the loaded resource.
             ComPtr<ID3D11Texture2D> texture;
             resource.As(&texture);
-            return Texture{ texture, view };
+            return graphics::Texture{ texture, view };
         }
     }
 

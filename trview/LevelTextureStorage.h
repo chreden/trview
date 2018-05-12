@@ -18,11 +18,11 @@ namespace trview
     public:
         explicit LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level);
         virtual ~LevelTextureStorage() = default;
-        virtual Texture           texture(uint32_t tile_index) const override;
-        virtual Texture           coloured(uint32_t colour) const override;
-        virtual Texture           lookup(const std::string& key) const override;
-        virtual void              store(const std::string& key, const Texture& texture) override;
-        virtual Texture           untextured() const override;
+        virtual graphics::Texture texture(uint32_t tile_index) const override;
+        virtual graphics::Texture coloured(uint32_t colour) const override;
+        virtual graphics::Texture lookup(const std::string& key) const override;
+        virtual void              store(const std::string& key, const graphics::Texture& texture) override;
+        virtual graphics::Texture untextured() const override;
         virtual DirectX::SimpleMath::Vector2 uv(uint32_t texture_index, uint32_t uv_index) const override;
         virtual uint32_t          tile(uint32_t texture_index) const override;
         virtual uint32_t          num_tiles() const override;
@@ -30,10 +30,10 @@ namespace trview
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
     private:
         Microsoft::WRL::ComPtr<ID3D11Device> _device;
-        std::vector<Texture>  _tiles;
+        std::vector<graphics::Texture> _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;
-        mutable Texture _untextured_texture;
+        mutable graphics::Texture _untextured_texture;
         const trlevel::ILevel& _level;
     };
 }

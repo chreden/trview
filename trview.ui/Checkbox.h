@@ -9,7 +9,7 @@ namespace trview
         class Checkbox : public Image
         {
         public:
-            Checkbox(Point position, Size size, Texture up_image, Texture down_image);
+            Checkbox(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image);
             virtual ~Checkbox() = default;
 
             // This event is raised when the user changes the state of the checkbox.
@@ -26,8 +26,8 @@ namespace trview
         protected:
             virtual bool clicked(Point position) override;
         private:
-            Texture _up_image;
-            Texture _down_image;
+            graphics::Texture _up_image;
+            graphics::Texture _down_image;
             bool    _state{ false };
         };
     }
