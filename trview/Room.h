@@ -11,7 +11,7 @@
 #include <SimpleMath.h>
 
 #include "RoomInfo.h"
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>

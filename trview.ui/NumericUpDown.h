@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Window.h"
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 
 namespace trview

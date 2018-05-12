@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include <trlevel/LevelVersion.h>
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 
 namespace trview
 {

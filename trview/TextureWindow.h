@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 
 namespace trview
 {

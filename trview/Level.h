@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <SimpleMath.h>
 
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 #include <trlevel/ILevel.h>
 

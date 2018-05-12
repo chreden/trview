@@ -10,7 +10,7 @@
 
 #include <trlevel/ILevel.h>
 
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include "Level.h"
 #include "Room.h"
 

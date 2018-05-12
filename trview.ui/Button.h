@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 
 #include "Image.h"

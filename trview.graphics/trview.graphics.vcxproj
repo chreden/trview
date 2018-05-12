@@ -27,6 +27,7 @@
     <ClInclude Include="ShaderStorage.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteSizeStore.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="ViewportStore.h" />
   </ItemGroup>

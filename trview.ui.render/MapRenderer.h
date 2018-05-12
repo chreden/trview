@@ -12,7 +12,7 @@
 #include <trview.graphics/Sprite.h>
 #include "trview\Types.h"
 #include "trview\TextureStorage.h"
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include <trview.ui/Point.h>
 #include <trview.ui/Size.h>
 #include "trview\Room.h"

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <cstdint>
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 
 namespace trview
 {

@@ -31,6 +31,9 @@
     <ClInclude Include="SpriteSizeStore.h">
       <Filter>Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -73,6 +76,9 @@
     </Filter>
     <Filter Include="Sprite">
       <UniqueIdentifier>{abd882fa-9bf6-487a-b9bc-779aebf2ab26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{d5f12495-6ec8-4838-afd9-3f6097bce6f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
