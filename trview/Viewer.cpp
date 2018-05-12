@@ -12,6 +12,7 @@
 #include <trview.ui/Label.h>
 
 #include <trview.graphics/ShaderStorage.h>
+#include <trview.graphics/RenderTarget.h>
 
 #include "RoomNavigator.h"
 #include "CameraControls.h"
@@ -172,9 +173,7 @@ namespace trview
             nullptr,
             &_context);
 
-        create_render_target_view();
-        set_viewport();
-        create_depth_stencil();
+        create_render_target();
 
         D3D11_BLEND_DESC desc;
         memset(&desc, 0, sizeof(desc));
@@ -434,16 +433,11 @@ namespace trview
 
         pick();
 
-        _context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), _depth_stencil_view.Get());
+        _render_target->apply(_context);
         _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
-
-        float colours[4] = { 0.f, 0.2f, 0.4f, 1.f };
-        _context->ClearRenderTargetView(_render_target_view.Get(), colours);
-        _context->ClearDepthStencilView(_depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+        _render_target->clear(_context, DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
-
-        _context->ClearDepthStencilView(_depth_stencil_view.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
         _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
         render_ui();
@@ -640,53 +634,21 @@ namespace trview
 
         _context->ClearState();
 
-        _render_target_view = nullptr;
-        _depth_stencil_view = nullptr;
+        _render_target.reset();
 
         _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
 
-        create_render_target_view();
-        create_depth_stencil();
-        set_viewport();
+        create_render_target();
 
         resize_elements();
     }
 
     // Create the render target view from the swap chain that has been created.
-    void Viewer::create_render_target_view()
+    void Viewer::create_render_target()
     {
         Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer;
         _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(back_buffer.GetAddressOf()));
-        _device->CreateRenderTargetView(back_buffer.Get(), nullptr, &_render_target_view);
-    }
-
-    // Create the depth stencil view and buffer.
-    void Viewer::create_depth_stencil()
-    {
-        graphics::Texture depth_stencil_buffer{ _device, _window.width(), _window.height(), graphics::Texture::Bind::DepthStencil };
-
-        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-        memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
-
-        // Set up the depth stencil view description.
-        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-        // Create the depth stencil view.
-        _device->CreateDepthStencilView(depth_stencil_buffer.texture.Get(), &depthStencilViewDesc, &_depth_stencil_view);
-    }
-
-    void Viewer::set_viewport()
-    {
-        D3D11_VIEWPORT viewport;
-        viewport.Width = static_cast<float>(_window.width());
-        viewport.Height = static_cast<float>(_window.height());
-        viewport.MaxDepth = 1;
-        viewport.MinDepth = 0;
-        viewport.TopLeftX = 0;
-        viewport.TopLeftY = 0;
-        _context->RSSetViewports(1, &viewport);
+        _render_target = std::make_unique<graphics::RenderTarget>(_device, back_buffer, graphics::RenderTarget::DepthStencilMode::Enabled);
     }
 
     void Viewer::resize_elements()

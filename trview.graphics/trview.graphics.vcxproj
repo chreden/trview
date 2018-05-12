@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="PixelShader.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="ViewportStore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="RenderTarget.cpp" />

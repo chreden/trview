@@ -50,6 +50,7 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
+        class RenderTarget;
     }
 
     class Viewer
@@ -116,13 +117,7 @@ namespace trview
         void set_alternate_mode(bool enabled);
 
         // Create the render target view from the swap chain that has been created.
-        void create_render_target_view();
-
-        // Create the depth stencil view and buffer.
-        void create_depth_stencil();
-
-        // Set the viewport on the context.
-        void set_viewport();
+        void create_render_target();
 
         // Tell things that need to be resized that they should resize.
         void resize_elements();
@@ -133,9 +128,8 @@ namespace trview
         Microsoft::WRL::ComPtr<IDXGISwapChain>          _swap_chain;
         Microsoft::WRL::ComPtr<ID3D11Device>            _device;
         Microsoft::WRL::ComPtr<ID3D11DeviceContext>     _context;
-        Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  _render_target_view;
+        std::unique_ptr<graphics::RenderTarget>         _render_target;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  _depth_stencil_view;
 
         std::unique_ptr<TextureWindow>   _texture_window;
 
