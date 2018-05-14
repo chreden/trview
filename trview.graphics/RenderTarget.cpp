@@ -93,16 +93,9 @@ namespace trview
 
         // Get the texture for the render target.
         // Returns: The texture.
-        ComPtr<ID3D11Texture2D> RenderTarget::texture() const
+        Texture RenderTarget::texture() const
         {
-            return _texture.texture;
-        }
-
-        // Get the shader resource for the render target.
-        // Returns: The shader resource view.
-        ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
-        {
-            return _texture.view;
+            return _texture;
         }
 
         // Get the render target interface for the render target.

@@ -19,7 +19,7 @@ namespace trview
                 _sprite(device, shader_storage, width, height)
             {
                 TextureStorage texture_storage{ device };
-                _texture = texture_storage.coloured(0xFFFFFFFF).view;
+                _texture = texture_storage.coloured(0xFFFFFFFF);
             }
 
             void
@@ -46,7 +46,7 @@ namespace trview
 
                 // Now render the render target in the correct position.
                 auto p = Point(_first.x - 1, _first.y - 1);
-                _sprite.render(context, _render_target->resource(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+                _sprite.render(context, _render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
             }
 
             void

@@ -24,7 +24,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 auto texture = _image->texture();
-                if (texture.view)
+                if (texture.view())
                 {
                     graphics::RenderTargetStore rt_store(context);
                     graphics::ViewportStore vp_store(context);
@@ -32,7 +32,7 @@ namespace trview
                     _render_target->apply(context);
 
                     auto size = _image->size();
-                    sprite.render(context, texture.view, 0, 0, size.width, size.height);
+                    sprite.render(context, texture, 0, 0, size.width, size.height);
                 }
             }
         }

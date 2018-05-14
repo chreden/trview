@@ -39,7 +39,7 @@ namespace trview
         }
 
         Texture::Texture(const ComPtr<ID3D11Texture2D>& texture, const ComPtr<ID3D11ShaderResourceView>& view)
-            : texture(texture), view(view)
+            : texture(texture), _view(view)
         {
         }
 
@@ -70,8 +70,13 @@ namespace trview
             device->CreateTexture2D(&desc, &srd, &texture);
             if (bind != Texture::Bind::DepthStencil)
             {
-                device->CreateShaderResourceView(texture.Get(), nullptr, &view);
+                device->CreateShaderResourceView(texture.Get(), nullptr, &_view);
             }
+        }
+
+        const ComPtr<ID3D11ShaderResourceView>& Texture::view() const
+        {
+            return _view;
         }
     }
 }

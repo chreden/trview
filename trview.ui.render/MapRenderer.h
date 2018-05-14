@@ -114,7 +114,7 @@ namespace trview
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
                 int                                                _window_width, _window_height;
                 graphics::Sprite                                   _sprite; 
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>   _texture;
+                graphics::Texture                                  _texture;
                 std::vector<Tile>                                  _tiles; 
                 std::unique_ptr<graphics::RenderTarget>            _render_target;
 

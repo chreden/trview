@@ -54,11 +54,7 @@ namespace trview
 
             // Get the texture for the render target.
             // Returns: The texture.
-            Microsoft::WRL::ComPtr<ID3D11Texture2D> texture() const;
-
-            // Get the shader resource for the render target.
-            // Returns: The shader resource view.
-            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> resource() const;
+            Texture texture() const;
 
             // Get the render target interface for the render target.
             // Returns: The render target.
