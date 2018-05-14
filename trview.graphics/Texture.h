@@ -62,12 +62,16 @@ namespace trview
             /// @see Bind
             Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
 
+            /// Gets the D3D texture for the texture.
+            /// @returns The D3D texture.
+            const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture() const;
+
             /// Gets the shader resource view for the texture.
             /// @returns The shader resource view.
             const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& view() const;
         private:
             /// The D3D texture that has been created or stored. Can be empty if this was created with the default constructor.
-            Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+            Microsoft::WRL::ComPtr<ID3D11Texture2D> _texture;
 
             /// The resource view for the D3D texture. Can be empty if this was created with the default constructor or if this texture was created
             /// with the Bind::DepthStencil bind mode.

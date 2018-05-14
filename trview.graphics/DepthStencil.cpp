@@ -23,7 +23,7 @@ namespace trview
             depthStencilViewDesc.Texture2D.MipSlice = 0;
 
             // Create the depth stencil view.
-            device->CreateDepthStencilView(depth_stencil_buffer.texture.Get(), &depthStencilViewDesc, &_view);
+            device->CreateDepthStencilView(depth_stencil_buffer.texture().Get(), &depthStencilViewDesc, &_view);
         }
 
         // Get the depth stencil view for the depth stencil.

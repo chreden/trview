@@ -35,7 +35,7 @@ namespace trview
                 _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
             }
 
-            device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
+            device->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
         }
 
         // Create a render target using the specfied pre-existing texture.
@@ -56,7 +56,7 @@ namespace trview
                 _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
             }
 
-            device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
+            device->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
         }
 
         RenderTarget::~RenderTarget() 
@@ -93,7 +93,7 @@ namespace trview
 
         // Get the texture for the render target.
         // Returns: The texture.
-        Texture RenderTarget::texture() const
+        const Texture& RenderTarget::texture() const
         {
             return _texture;
         }

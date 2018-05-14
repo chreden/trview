@@ -54,7 +54,7 @@ namespace trview
 
             // Get the texture for the render target.
             // Returns: The texture.
-            Texture texture() const;
+            const Texture& texture() const;
 
             // Get the render target interface for the render target.
             // Returns: The render target.

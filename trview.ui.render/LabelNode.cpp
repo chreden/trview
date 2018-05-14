@@ -84,7 +84,7 @@ namespace trview
                     regenerate_texture();
                 }
 
-                _font_texture = _font->create_texture(_render_target->texture());
+                _font_texture = _font->create_texture(_render_target->texture().texture());
             }
         }
     }
