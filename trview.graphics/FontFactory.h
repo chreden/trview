@@ -1,4 +1,4 @@
-/// @file Font.h
+/// @file FontFactory.h
 /// @brief Creates fonts that can be used to render text to textures.
 /// 
 /// Handles creation of fonts using DirectWrite and Direct2D.
