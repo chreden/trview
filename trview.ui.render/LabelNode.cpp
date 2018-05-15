@@ -1,7 +1,7 @@
 #include "LabelNode.h"
 
 #include <trview.ui/Label.h>
-#include "FontFactory.h"
+#include <trview.graphics/FontFactory.h>
 
 namespace trview
 {

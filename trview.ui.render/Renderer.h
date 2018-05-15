@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "RenderNode.h"
-#include "FontFactory.h"
 
 #include <trview.ui/Control.h>
 
@@ -20,6 +19,8 @@ namespace trview
 
     namespace ui
     {
+        class FontFactory;
+
         namespace render
         {
             class Renderer

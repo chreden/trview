@@ -19,9 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FontFactory.h" />
-    <ClInclude Include="FontTexture.h" />
     <ClInclude Include="ImageNode.h" />
     <ClInclude Include="LabelNode.h" />
     <ClInclude Include="MapRenderer.h" />
@@ -30,8 +27,6 @@
     <ClInclude Include="WindowNode.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="ImageNode.cpp" />
     <ClCompile Include="LabelNode.cpp" />
     <ClCompile Include="MapRenderer.cpp" />

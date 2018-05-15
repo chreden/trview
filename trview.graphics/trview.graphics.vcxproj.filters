@@ -37,6 +37,15 @@
     <ClInclude Include="DepthStencil.h">
       <Filter>DepthStencil</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Font</Filter>
+    </ClInclude>
+    <ClInclude Include="FontFactory.h">
+      <Filter>Font</Filter>
+    </ClInclude>
+    <ClInclude Include="FontTexture.h">
+      <Filter>Font</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -75,6 +84,12 @@
     <ClCompile Include="DepthStencil.cpp">
       <Filter>DepthStencil</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="FontFactory.cpp">
+      <Filter>Font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -91,6 +106,9 @@
     </Filter>
     <Filter Include="DepthStencil">
       <UniqueIdentifier>{cf20108a-97e4-44be-9ffe-b501414bf7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Font">
+      <UniqueIdentifier>{c637d862-3e5c-4ef3-895f-190ad90bb456}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

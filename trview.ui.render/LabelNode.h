@@ -1,8 +1,8 @@
 #pragma once
 
 #include "WindowNode.h"
-#include "Font.h"
-#include "FontTexture.h"
+#include <trview.graphics/Font.h>
+#include <trview.graphics/FontTexture.h>
 
 namespace trview
 {
