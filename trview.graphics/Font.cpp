@@ -8,8 +8,8 @@ namespace trview
 {
     namespace graphics
     {
-        Font::Font(const ComPtr<ID3D11Device>& device, const ComPtr<IDWriteFactory>& dwrite_factory, const ComPtr<ID2D1Factory>& d2d_factory, const ComPtr<IDWriteTextFormat>& text_format)
-            : _device(device), _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
+        Font::Font(const ComPtr<IDWriteFactory>& dwrite_factory, const ComPtr<ID2D1Factory>& d2d_factory, const ComPtr<IDWriteTextFormat>& text_format)
+            : _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
         {
         }
 

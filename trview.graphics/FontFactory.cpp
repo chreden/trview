@@ -10,7 +10,7 @@ namespace trview
             DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(_dwrite_factory.GetAddressOf()));
         }
 
-        std::unique_ptr<Font> FontFactory::create_font(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::wstring& font_face, float size, DWRITE_TEXT_ALIGNMENT text_alignment, DWRITE_PARAGRAPH_ALIGNMENT paragraph_alignment)
+        std::unique_ptr<Font> FontFactory::create_font(const std::wstring& font_face, float size, DWRITE_TEXT_ALIGNMENT text_alignment, DWRITE_PARAGRAPH_ALIGNMENT paragraph_alignment)
         {
             Microsoft::WRL::ComPtr<IDWriteTextFormat> text_format;
             _dwrite_factory->CreateTextFormat(
@@ -25,7 +25,7 @@ namespace trview
 
             text_format->SetTextAlignment(text_alignment);
             text_format->SetParagraphAlignment(paragraph_alignment);
-            return std::make_unique<Font>(device, _dwrite_factory, _d2d_factory, text_format);
+            return std::make_unique<Font>(_dwrite_factory, _d2d_factory, text_format);
         }
     }
 }

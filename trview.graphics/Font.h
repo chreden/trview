@@ -11,7 +11,6 @@
 #include <wrl/client.h>
 #include <d2d1.h>
 #include <dwrite.h>
-#include <d3d11.h> 
 
 #include "FontTexture.h"
 
@@ -28,12 +27,10 @@ namespace trview
         {
         public:
             /// Create a new font.
-            /// @param device: The D3D device to use.
             /// @param dwrite_factory: The DirectWrite factory to use to create DirectWrite resources.
             /// @param d2d_factory: The Direct2D factory to use to create Direct2D resources.
             /// @param text_format: The DirectWrite text format to use for the font.
             explicit Font(
-                const Microsoft::WRL::ComPtr<ID3D11Device>& device,
                 const Microsoft::WRL::ComPtr<IDWriteFactory>& dwrite_factory,
                 const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
                 const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format);
@@ -61,7 +58,6 @@ namespace trview
             /// @returns The size in pixels required to render the specified text.
             Size measure(const std::wstring& text) const;
         private:
-            Microsoft::WRL::ComPtr<ID3D11Device>      _device;
             Microsoft::WRL::ComPtr<IDWriteFactory>    _dwrite_factory;
             Microsoft::WRL::ComPtr<ID2D1Factory>      _d2d_factory;
             Microsoft::WRL::ComPtr<IDWriteTextFormat> _text_format;
