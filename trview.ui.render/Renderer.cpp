@@ -86,7 +86,7 @@ namespace trview
                     }
 
                     auto texture = _root_node->node_texture();
-                    if (texture.view())
+                    if (texture.can_use_as_resource())
                     {
                         _sprite->render(context, texture, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
                     }

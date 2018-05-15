@@ -24,7 +24,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 auto texture = _image->texture();
-                if (texture.view())
+                if (texture.can_use_as_resource())
                 {
                     graphics::RenderTargetStore rt_store(context);
                     graphics::ViewportStore vp_store(context);
