@@ -19,14 +19,16 @@ namespace trview
 
     namespace ui
     {
-        class FontFactory;
-
         namespace render
         {
+            class FontFactory;
+
             class Renderer
             {
             public:
                 explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height);
+
+                ~Renderer();
 
                 // Examine a control heirarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering

@@ -9,6 +9,7 @@
 #include "ImageNode.h"
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/FontFactory.h>
 
 namespace trview
 {
@@ -26,6 +27,10 @@ namespace trview
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
                 device->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
+            }
+
+            Renderer::~Renderer()
+            {
             }
 
             void Renderer::load(Control* control)
