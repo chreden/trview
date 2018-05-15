@@ -47,8 +47,8 @@ namespace trview
             /// @param text The text to render on to the font texture.
             /// @param x The x position on the texture at which to render the text.
             /// @param y The y position on the texture at which to render the text.
-            /// @param width The optional width of the font texture. Defaults to 256.
-            /// @param height The optional height of the font texture. Defaults to 256.
+            /// @param width The optional width of the rectangle in which to render text. Defaults to 256.
+            /// @param height The optional height of the rectangle in which to render text. Defaults to 256.
             /// @see create_texture
             /// @see FontTexture
             void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);

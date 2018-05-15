@@ -1,3 +1,8 @@
+/// @file Font.h
+/// @brief Creates fonts that can be used to render text to textures.
+/// 
+/// Handles creation of fonts using DirectWrite and Direct2D.
+
 #pragma once
 
 #include <string>
@@ -7,19 +12,31 @@
 #include <dwrite.h>
 #include <memory>
 
-#include "Font.h"
-
 namespace trview
 {
     namespace graphics
     {
+        class Font;
+
+        /// Creates fonts that can be used to render text to textures.
         class FontFactory
         {
         public:
+            /// Creates a new instace of the FontFactory class.
             FontFactory();
+
+            ~FontFactory();
 
             FontFactory(const FontFactory&) = delete;
 
+            /// Create a new font with the specified settings and alignment options.
+            /// @param font_face The font face to use (eg Arial).
+            /// @param size Optional size of the font. Defaults to 20.0f.
+            /// @param text_alignment Optional alignment of the text, describes how the text will be rendered
+            ///        with respect to the layout rectangle in the horizontal axis. Defaults to DWRITE_TEXT_ALIGNMENT_LEADING.
+            /// @param paragraph_alignment Optional alignment of the text, describes how the text will be rendered
+            ///        with respect to the layout rectangle in the vertical axis. Defaults to DWRITE_PARAGRAPH_ALIGNMENT_NEAR.
+            /// @returns The new font instance.
             std::unique_ptr<Font> create_font(
                 const std::wstring& font_face,
                 float size = 20.f,
