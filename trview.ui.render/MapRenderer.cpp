@@ -53,7 +53,7 @@ namespace trview
             MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
                 // Draw base square, this is the backdrop for the map 
-                draw(context, Point(), ui::Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
+                draw(context, Point(), Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
 
                 std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
                 {
@@ -137,9 +137,9 @@ namespace trview
                 } + Point(1,1); 
             }
 
-            ui::Size MapRenderer::get_size() const
+            Size MapRenderer::get_size() const
             {
-                return ui::Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
+                return Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
             }
 
             std::shared_ptr<Sector> 

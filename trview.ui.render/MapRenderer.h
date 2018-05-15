@@ -14,7 +14,7 @@
 #include "trview\TextureStorage.h"
 #include <trview.graphics/Texture.h>
 #include <trview.ui/Point.h>
-#include <trview.ui/Size.h>
+#include <trview.common/Size.h>
 #include "trview\Room.h"
 #include <trview.graphics/RenderTarget.h>
 
@@ -39,7 +39,7 @@ namespace trview
 
                     std::shared_ptr<Sector> sector; 
                     ui::Point position; 
-                    ui::Size size; 
+                    Size size; 
                 };
 
                 std::map<SectorFlag, DirectX::SimpleMath::Color> default_colours = {
@@ -93,7 +93,7 @@ namespace trview
                 ui::Point get_position(const Sector& sector); 
 
                 // Determines the size of a sector 
-                ui::Size get_size() const;
+                Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
                 void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, DirectX::SimpleMath::Color c);

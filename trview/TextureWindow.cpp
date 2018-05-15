@@ -12,16 +12,16 @@ namespace trview
     {
         auto texture_window = std::make_unique<ui::Window>(
             ui::Point(300, 10),
-            ui::Size(260, 300),
+            Size(260, 300),
             ui::Colour(1.0f, 0.0f, 0.0f, 0.0f));
 
         auto image = std::make_unique<ui::Image>(
             ui::Point(2, 2),
-            ui::Size(256, 256));
+            Size(256, 256));
 
         auto label = std::make_unique<ui::Label>(
             ui::Point(0, 260),
-            ui::Size(260, 40),
+            Size(260, 40),
             ui::Colour(1.0f, 0.1f, 0.1f, 0.1f),
             L"No level loaded");
 

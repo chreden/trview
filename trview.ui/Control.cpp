@@ -191,7 +191,7 @@ namespace trview
             return _handles_input || is_over_child;
         }
 
-        void Control::set_size(ui::Size size)
+        void Control::set_size(Size size)
         {
             _size = size;
             on_size_changed(size);

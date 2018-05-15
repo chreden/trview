@@ -55,7 +55,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(ui::Point(), ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(ui::Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -70,7 +70,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), ui::Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();
@@ -651,7 +651,7 @@ namespace trview
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(_window.width(), _window.height());
         _free_camera.set_view_size(_window.width(), _window.height());
-        _control->set_size(ui::Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
+        _control->set_size(Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
         _ui_renderer->set_host_size(_window.width(), _window.height());
         _map_renderer->set_window_size(_window.width(), _window.height());
     }

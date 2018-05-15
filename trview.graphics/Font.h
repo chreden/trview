@@ -10,6 +10,8 @@
 
 namespace trview
 {
+    struct Size;
+
     namespace graphics
     {
         class Texture;
@@ -17,8 +19,6 @@ namespace trview
 
     namespace ui
     {
-        struct Size;
-
         namespace render
         {
             class Font

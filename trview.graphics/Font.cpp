@@ -1,9 +1,6 @@
 #include "Font.h"
 #include <trview.graphics/Texture.h>
-
-#include <trview.ui/Size.h>
-
-#include <d2d1.h>
+#include <trview.common/Size.h>
 
 using namespace Microsoft::WRL;
 
@@ -57,7 +54,7 @@ namespace trview
                 _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), 10000, 10000, &text_layout);
                 DWRITE_TEXT_METRICS metrics;
                 text_layout->GetMetrics(&metrics);
-                return ui::Size(std::ceil(metrics.width), std::ceil(metrics.height));
+                return Size(std::ceil(metrics.width), std::ceil(metrics.height));
             }
         }
     }

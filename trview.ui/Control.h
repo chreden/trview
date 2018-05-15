@@ -3,9 +3,9 @@
 #include <vector>
 #include <memory>
 #include <trview.common/Event.h>
+#include <trview.common/Size.h>
 
 #include "Point.h"
-#include "Size.h"
 
 namespace trview
 {
