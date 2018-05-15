@@ -62,6 +62,10 @@ namespace trview
             /// @see Bind
             Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
 
+            /// Indicates whether this texture has any texture content.
+            /// @returns True if the texture has content.
+            bool has_content() const;
+
             /// Indicates whether this texture can be used as an input to a render operation.
             /// @returns True if this can be used as a shader resource.
             bool can_use_as_resource() const;

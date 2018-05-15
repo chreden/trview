@@ -74,9 +74,14 @@ namespace trview
             }
         }
 
+        bool Texture::has_content() const
+        {
+            return _texture;
+        }
+
         bool Texture::can_use_as_resource() const
         {
-            return _view != nullptr;
+            return _view;
         }
 
         const ComPtr<ID3D11Texture2D>& Texture::texture() const
