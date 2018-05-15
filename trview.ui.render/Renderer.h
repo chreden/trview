@@ -15,14 +15,13 @@ namespace trview
     {
         struct IShaderStorage;
         class Sprite;
+        class FontFactory;
     }
 
     namespace ui
     {
         namespace render
         {
-            class FontFactory;
-
             class Renderer
             {
             public:
@@ -46,12 +45,11 @@ namespace trview
 
                 std::unique_ptr<RenderNode>                     _root_node;
                 std::unique_ptr<graphics::Sprite>               _sprite;
-                std::unique_ptr<FontFactory>                    _font_factory;
+                std::unique_ptr<graphics::FontFactory>          _font_factory;
                 Microsoft::WRL::ComPtr<ID3D11Device>            _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 uint32_t                                        _host_width;
                 uint32_t                                        _host_height;
-                
             };
         }
     }

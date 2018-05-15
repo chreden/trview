@@ -20,7 +20,7 @@ namespace trview
             Renderer::Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height)
                 : _device(device), 
                 _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_width, host_height)),
-                _font_factory(std::make_unique<FontFactory>()),
+                _font_factory(std::make_unique<graphics::FontFactory>()),
                 _host_width(host_width), 
                 _host_height(host_height)
             {

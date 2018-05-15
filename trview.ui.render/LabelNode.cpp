@@ -44,7 +44,7 @@ namespace trview
             }
 
 
-            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, FontFactory& font_factory)
+            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, graphics::FontFactory& font_factory)
                 : WindowNode(device, label), 
                 _font(font_factory.create_font(device, 
                                                L"Arial", 
