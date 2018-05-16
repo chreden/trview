@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
-    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Event.cpp" />

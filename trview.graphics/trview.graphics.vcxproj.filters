@@ -25,6 +25,18 @@
     <ClInclude Include="ViewportStore.h">
       <Filter>RenderTarget</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSizeStore.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencil.h">
+      <Filter>DepthStencil</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -51,6 +63,18 @@
     <ClCompile Include="ViewportStore.cpp">
       <Filter>RenderTarget</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSizeStore.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencil.cpp">
+      <Filter>DepthStencil</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -58,6 +82,15 @@
     </Filter>
     <Filter Include="RenderTarget">
       <UniqueIdentifier>{540b9821-6078-493f-bbd4-4dbe626715a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sprite">
+      <UniqueIdentifier>{abd882fa-9bf6-487a-b9bc-779aebf2ab26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{d5f12495-6ec8-4838-afd9-3f6097bce6f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DepthStencil">
+      <UniqueIdentifier>{cf20108a-97e4-44be-9ffe-b501414bf7f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

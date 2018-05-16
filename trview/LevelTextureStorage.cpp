@@ -7,32 +7,10 @@ namespace trview
     LevelTextureStorage::LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level)
         : _device(device), _level(level), _texture_storage(std::make_unique<TextureStorage>(device))
     {
-        // Load the textures from the level and then allow to cycle through them?
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
             std::vector<uint32_t> data = level.get_textile(i);
-
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &data[0];
-            srd.SysMemPitch = sizeof(uint32_t) * 256;
-
-            D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = 256;
-            desc.Height = 256;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-
-            Texture tex;
-            device->CreateTexture2D(&desc, &srd, &tex.texture);
-            device->CreateShaderResourceView(tex.texture.Get(), nullptr, &tex.view);
-            _tiles.push_back(tex);
+            _tiles.emplace_back(device, 256, 256, data);
         }
 
         // Copy object textures locally from the level.
@@ -42,17 +20,17 @@ namespace trview
         }
     }
 
-    Texture LevelTextureStorage::texture(uint32_t tile_index) const
+    graphics::Texture LevelTextureStorage::texture(uint32_t tile_index) const
     {
         return _tiles[tile_index];
     }
 
-    Texture LevelTextureStorage::coloured(uint32_t colour) const
+    graphics::Texture LevelTextureStorage::coloured(uint32_t colour) const
     {
         return _texture_storage->coloured(colour);
     }
 
-    Texture LevelTextureStorage::untextured() const
+    graphics::Texture LevelTextureStorage::untextured() const
     {
         if (!_untextured_texture.texture)
         {
@@ -90,12 +68,12 @@ namespace trview
         return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
     }
 
-    Texture LevelTextureStorage::lookup(const std::string&) const
+    graphics::Texture LevelTextureStorage::lookup(const std::string&) const
     {
-        return Texture();
+        return graphics::Texture();
     }
 
-    void LevelTextureStorage::store(const std::string&, const Texture&)
+    void LevelTextureStorage::store(const std::string&, const graphics::Texture&)
     {
     }
 }

@@ -11,11 +11,11 @@ namespace trview
     public:
         explicit TextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         virtual ~TextureStorage() = default;
-        virtual Texture coloured(uint32_t colour) const override;
-        virtual Texture lookup(const std::string& key) const override;
-        virtual void store(const std::string& key, const Texture& texture) override;
+        virtual graphics::Texture coloured(uint32_t colour) const override;
+        virtual graphics::Texture lookup(const std::string& key) const override;
+        virtual void store(const std::string& key, const graphics::Texture& texture) override;
     private:
         Microsoft::WRL::ComPtr<ID3D11Device>     _device;
-        std::unordered_map<std::string, Texture> _textures;
+        std::unordered_map<std::string, graphics::Texture> _textures;
     };
 }

@@ -9,12 +9,12 @@ namespace trview
         {
         }
 
-        Texture Image::texture() const
+        graphics::Texture Image::texture() const
         {
             return _texture;
         }
 
-        void Image::set_texture(Texture texture)
+        void Image::set_texture(graphics::Texture texture)
         {
             _texture = texture;
             on_invalidate();

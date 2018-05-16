@@ -9,17 +9,21 @@
 
 #include <trview.ui/Point.h>
 #include <trview.ui/Size.h>
+#include <trview.graphics/RenderTarget.h>
 
 namespace trview
 {
+    namespace graphics
+    {
+        class Sprite;
+    }
+
     namespace ui
     {
         class Control;
 
         namespace render
         {
-            class Sprite;
-
             // Render node controls all the basic functionality of the rendering system
             // for the UI, such as the render targets that are required and it will help
             // to manage the compositing of the final image to be rendered to the screen.
@@ -32,7 +36,7 @@ namespace trview
 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> node_texture_view() const;
 
-                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite);
+                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite);
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
@@ -42,7 +46,7 @@ namespace trview
 
                 bool visible() const;
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) = 0;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) = 0;
 
             public:
                 // Determines if the control itself needs to redraw.
@@ -54,12 +58,10 @@ namespace trview
 
                 void regenerate_texture();
 
-                Microsoft::WRL::ComPtr<ID3D11Device>             _device;
-                Microsoft::WRL::ComPtr<ID3D11Texture2D>          _node_texture;
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _node_texture_view;
-                Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _render_target_view;
-                std::vector<std::unique_ptr<RenderNode>>         _child_nodes;
-                Control*                                         _control;
+                Microsoft::WRL::ComPtr<ID3D11Device>     _device;
+                std::unique_ptr<graphics::RenderTarget>  _render_target;
+                std::vector<std::unique_ptr<RenderNode>> _child_nodes;
+                Control*                                 _control;
                 bool                                             _needs_redraw{ true };
             };
         }

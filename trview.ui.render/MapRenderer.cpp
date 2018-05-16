@@ -1,6 +1,7 @@
 #include "MapRenderer.h"
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
+#include <trview.graphics/SpriteSizeStore.h>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -36,15 +37,11 @@ namespace trview
 
                     graphics::RenderTargetStore rs_store(context);
                     graphics::ViewportStore vp_store(context);
-
                     // Set the host size to match the render target as we will have adjusted the viewport.
-                    _sprite.set_host_size(_render_target->width(), _render_target->height());
+                    graphics::SpriteSizeStore s_store(_sprite, _render_target->width(), _render_target->height());
 
                     _render_target->apply(context);
                     render_internal(context);
-
-                    // Reset the host size as the render target is going to switch back to the full window.
-                    _sprite.set_host_size(_window_width, _window_height);
                 }
 
                 // Now render the render target in the correct position.

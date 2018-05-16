@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 
 namespace trview
 {
@@ -20,7 +20,7 @@ namespace trview
     {
     public:
         explicit TextureWindow(ui::Control* parent);
-        void     set_textures(std::vector<Texture> textures);
+        void     set_textures(std::vector<graphics::Texture> textures);
         void     cycle();
         void     cycle_back();
         void     toggle_visibility();
@@ -29,7 +29,7 @@ namespace trview
     private:
         void update_texture_status();
 
-        std::vector<Texture>  _level_textures;
+        std::vector<graphics::Texture>  _level_textures;
         uint32_t              _texture_index{ 0u };
         uint32_t              _x { 10u };
         uint32_t              _y { 10u };

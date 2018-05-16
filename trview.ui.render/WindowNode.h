@@ -19,7 +19,7 @@ namespace trview
                 WindowNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Window* window);
                 virtual ~WindowNode();
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite) override;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
             private:
                 Window* _window;
             };

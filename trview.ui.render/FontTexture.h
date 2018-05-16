@@ -11,9 +11,9 @@ namespace trview
         {
             struct FontTexture
             {
-                Microsoft::WRL::ComPtr<ID3D11Texture2D>          texture;
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> view;
+                // The D2D render target for the font texture.
                 Microsoft::WRL::ComPtr<ID2D1RenderTarget>        render_target;
+                // The brush used to write the text on to the texture.
                 Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>     brush;
             };
         }

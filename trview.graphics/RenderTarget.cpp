@@ -1,58 +1,84 @@
 #include "RenderTarget.h"
-
-#include <vector>
+#include "DepthStencil.h"
 
 using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
     namespace graphics
     {
+        namespace
+        {
+            ID3D11DepthStencilView* get_depth_stencil(const std::unique_ptr<DepthStencil>& depth_stencil)
+            {
+                if (depth_stencil)
+                {
+                    return depth_stencil->view().Get();
+                }
+                return nullptr;
+            }
+        }
+
         // Create a render target of the specified dimensions. The new render target will
         // have its pixels initialised to zero.
         // device: The D3D device.
         // width: The width of the new render target.
         // height: The height of the new render target.
-        RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height)
-            : _width(width), _height(height)
+        // depth_mode: Whether a depth stencil should be created.
+        RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode)
+            : _width(width), _height(height), 
+            _texture(device, width, height, Texture::Bind::RenderTarget)
         {
-            // If the size is larger than the current size, recreate the render target.
-            std::vector<uint32_t> pixels(width * height, 0x00000000);
+            if (depth_mode == DepthStencilMode::Enabled)
+            {
+                _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
+            }
 
-            D3D11_SUBRESOURCE_DATA srd;
-            memset(&srd, 0, sizeof(srd));
-            srd.pSysMem = &pixels[0];
-            srd.SysMemPitch = sizeof(uint32_t) * width;
+            device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
+        }
 
+        // Create a render target using the specfied pre-existing texture.
+        // device: The D3D device.
+        // texture: The texture to use as the render target.
+        // depth_mode: Whether a depth stencil should be created.
+        RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode)
+            : _texture{ texture, nullptr }
+        {
+            // Initialise properties from the existing texture.
             D3D11_TEXTURE2D_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-            desc.Width = width;
-            desc.Height = height;
-            desc.MipLevels = desc.ArraySize = 1;
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.SampleDesc.Count = 1;
-            desc.Usage = D3D11_USAGE_DEFAULT;
-            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-            desc.CPUAccessFlags = 0;
-            desc.MiscFlags = 0;
+            texture->GetDesc(&desc);
+            _width = desc.Width;
+            _height = desc.Height;
 
-            device->CreateTexture2D(&desc, &srd, &_texture);
-            device->CreateShaderResourceView(_texture.Get(), nullptr, &_resource);
-            device->CreateRenderTargetView(_texture.Get(), nullptr, &_view);
+            if (depth_mode == DepthStencilMode::Enabled)
+            {
+                _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
+            }
+
+            device->CreateRenderTargetView(_texture.texture.Get(), nullptr, &_view);
+        }
+
+        RenderTarget::~RenderTarget() 
+        {
         }
 
         // Clear the render target.
         // context: The D3D device context.
         // colour: The colour with which to clear the render target.
-        void RenderTarget::clear(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Color& colour)
+        void RenderTarget::clear(const ComPtr<ID3D11DeviceContext>& context, const Color& colour)
         {
             context->ClearRenderTargetView(_view.Get(), colour);
+            if (_depth_stencil)
+            {
+                _depth_stencil->clear(context);
+            }
         }
 
         // Set the render target as the current render target. This will also apply a viewport that matches the 
         // dimensions of the render target.
         // context: The D3D device context.
-        void RenderTarget::apply(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+        void RenderTarget::apply(const ComPtr<ID3D11DeviceContext>& context)
         {
             D3D11_VIEWPORT viewport;
             viewport.Width = static_cast<float>(_width);
@@ -62,14 +88,28 @@ namespace trview
             viewport.TopLeftX = 0;
             viewport.TopLeftY = 0;
             context->RSSetViewports(1, &viewport);
-            context->OMSetRenderTargets(1, _view.GetAddressOf(), nullptr);
+            context->OMSetRenderTargets(1, _view.GetAddressOf(), get_depth_stencil(_depth_stencil));
+        }
+
+        // Get the texture for the render target.
+        // Returns: The texture.
+        ComPtr<ID3D11Texture2D> RenderTarget::texture() const
+        {
+            return _texture.texture;
         }
 
         // Get the shader resource for the render target.
         // Returns: The shader resource view.
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
+        ComPtr<ID3D11ShaderResourceView> RenderTarget::resource() const
         {
-            return _resource;
+            return _texture.view;
+        }
+
+        // Get the render target interface for the render target.
+        // Returns: The render target.
+        ComPtr<ID3D11RenderTargetView> RenderTarget::render_target() const
+        {
+            return _view;
         }
 
         // Get the width of the render target in pixels.

@@ -17,7 +17,7 @@ namespace trview
                 // is called rather than the user clicking on the control.
                 TEST_METHOD(StateChangeEventNotRaised)
                 {
-                    Checkbox checkbox(Point(), Size(20, 20), Texture(), Texture());
+                    Checkbox checkbox(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
                     bool raised = false;
                     checkbox.on_state_changed += [&](bool)
                     {
@@ -33,7 +33,7 @@ namespace trview
                 // Tests that the state change event is raised when the user clicks on the control.
                 TEST_METHOD(StateChangeEventRaised)
                 {
-                    Checkbox checkbox(Point(), Size(20, 20), Texture(), Texture());
+                    Checkbox checkbox(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
                     
                     bool raised = false;
                     uint32_t times = 0;
@@ -56,7 +56,7 @@ namespace trview
                 // an event each time the state changes.
                 TEST_METHOD(StateChangeCycle)
                 {
-                    Checkbox checkbox(Point(), Size(20, 20), Texture(), Texture());
+                    Checkbox checkbox(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
 
                     std::vector<bool> states;
                     checkbox.on_state_changed += [&states](bool state)

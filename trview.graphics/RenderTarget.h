@@ -4,21 +4,43 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <SimpleMath.h>
+#include <memory>
+
+#include "Texture.h"
 
 namespace trview
 {
     namespace graphics
     {
+        class DepthStencil;
+
         // Class to create and manage render target usage.
         class RenderTarget final
         {
         public:
-            // Create a render target of the specified dimensions. The new render target will
-            // have its pixels initialised to zero.
+            // Determines whether the render target should have a depth stencil.
+            enum class DepthStencilMode
+            {
+                // No depth stencil is created.
+                Disabled,
+                // Depth stencil is created.
+                Enabled
+            };
+
+            // Create a render target of the specified dimensions. The new render target will have its pixels initialised to zero.
             // device: The D3D device.
             // width: The width of the new render target.
             // height: The height of the new render target.
-            RenderTarget(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height);
+            // depth_mode: Whether a depth stencil should be created.
+            RenderTarget(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
+
+            // Create a render target using the specfied pre-existing texture.
+            // device: The D3D device.
+            // texture: The texture to use as the render target.
+            // depth_mode: Whether a depth stencil should be created.
+            RenderTarget(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
+
+            ~RenderTarget();
 
             // Clear the render target.
             // context: The D3D device context.
@@ -30,9 +52,17 @@ namespace trview
             // context: The D3D device context.
             void apply(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
+            // Get the texture for the render target.
+            // Returns: The texture.
+            Microsoft::WRL::ComPtr<ID3D11Texture2D> texture() const;
+
             // Get the shader resource for the render target.
             // Returns: The shader resource view.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> resource() const;
+
+            // Get the render target interface for the render target.
+            // Returns: The render target.
+            Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target() const;
 
             // Get the width of the render target in pixels.
             // Returns: The width.
@@ -42,9 +72,9 @@ namespace trview
             // Returns: The height.
             uint32_t height() const;
         private:
-            Microsoft::WRL::ComPtr<ID3D11Texture2D>          _texture;
-            Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _resource;
+            Texture _texture;
             Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _view;
+            std::unique_ptr<DepthStencil> _depth_stencil;
             uint32_t _width;
             uint32_t _height;
         };

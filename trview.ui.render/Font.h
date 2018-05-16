@@ -27,9 +27,6 @@ namespace trview
 
                 FontTexture create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
 
-                // Create a texture that can be used for font rendering.
-                FontTexture create_texture();
-
                 // Render the text to the specified texture.
                 void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);
 

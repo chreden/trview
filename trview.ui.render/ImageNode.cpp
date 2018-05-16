@@ -1,7 +1,9 @@
 #include "ImageNode.h"
 #include <trview.ui/Image.h>
-#include "Sprite.h"
+#include <trview.graphics/Sprite.h>
 #include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/ViewportStore.h>
+#include <trview.graphics/SpriteSizeStore.h>
 
 namespace trview
 {
@@ -18,14 +20,17 @@ namespace trview
             {
             }
 
-            void ImageNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Sprite& sprite)
+            void ImageNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
-                graphics::RenderTargetStore store(context);
-                context->OMSetRenderTargets(1, _render_target_view.GetAddressOf(), nullptr);
                 auto texture = _image->texture();
                 if (texture.view)
                 {
+                    graphics::RenderTargetStore rt_store(context);
+                    graphics::ViewportStore vp_store(context);
+                    graphics::SpriteSizeStore s_store(sprite, _render_target->width(), _render_target->height());
+                    _render_target->apply(context);
+
                     auto size = _image->size();
                     sprite.render(context, texture.view, 0, 0, size.width, size.height);
                 }

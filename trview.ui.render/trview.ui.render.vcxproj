@@ -27,7 +27,6 @@
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />
-    <ClInclude Include="Sprite.h" />
     <ClInclude Include="WindowNode.h" />
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +37,6 @@
     <ClCompile Include="MapRenderer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderNode.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="WindowNode.cpp" />
   </ItemGroup>
   <ItemGroup>

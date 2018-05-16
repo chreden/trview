@@ -67,12 +67,12 @@ namespace trview
         _version->set_texture(get_version_image(version));
     }
 
-    Texture LevelInfo::get_version_image(trlevel::LevelVersion version) const
+    graphics::Texture LevelInfo::get_version_image(trlevel::LevelVersion version) const
     {
         auto found = _version_textures.find(version);
         if (found == _version_textures.end())
         {
-            return Texture();
+            return graphics::Texture();
         }
         return found->second;
     }

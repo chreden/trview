@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Window.h"
-#include <trview.common/Texture.h>
+#include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 
 namespace trview
@@ -17,8 +17,8 @@ namespace trview
                 Point point, 
                 Size size, 
                 Colour background_colour, 
-                Texture up_texture, 
-                Texture down_texture, 
+                graphics::Texture up_texture, 
+                graphics::Texture down_texture, 
                 int32_t minimum,
                 int32_t maximum);
 
