@@ -121,7 +121,7 @@ namespace trview
             previous_mode = run.mode;
 
             auto texture = texture_storage.texture(run.texture);
-            context->PSSetShaderResources(0, 1, texture.view.GetAddressOf());
+            context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
         }

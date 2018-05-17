@@ -34,7 +34,7 @@ namespace trview
 
                 virtual ~RenderNode() = 0;
 
-                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> node_texture_view() const;
+                const graphics::Texture& node_texture() const;
 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite);
 

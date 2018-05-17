@@ -12,13 +12,14 @@ namespace trview
     {
         struct IShader;
         struct IShaderStorage;
+        class Texture;
 
         class Sprite
         {
         public:
             Sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const uint32_t width, uint32_t height);
 
-            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
+            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
 
             uint32_t host_width() const;
 

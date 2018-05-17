@@ -32,7 +32,7 @@ namespace trview
 
     graphics::Texture LevelTextureStorage::untextured() const
     {
-        if (!_untextured_texture.texture)
+        if (!_untextured_texture.has_content())
         {
             _untextured_texture = coloured(0xffffffff);
         }

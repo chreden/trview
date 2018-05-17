@@ -1,4 +1,6 @@
 #include "Font.h"
+#include <trview.graphics/Texture.h>
+
 #include <trview.ui/Size.h>
 
 #include <d2d1.h>
@@ -16,10 +18,10 @@ namespace trview
             {
             }
 
-            FontTexture Font::create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture)
+            FontTexture Font::create_texture(const graphics::Texture& texture)
             {
                 ComPtr<IDXGISurface> surface;
-                texture.As(&surface);
+                texture.texture().As(&surface);
 
                 D2D1_RENDER_TARGET_PROPERTIES props =
                     D2D1::RenderTargetProperties(

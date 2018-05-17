@@ -10,6 +10,11 @@
 
 namespace trview
 {
+    namespace graphics
+    {
+        class Texture;
+    }
+
     namespace ui
     {
         struct Size;
@@ -25,7 +30,7 @@ namespace trview
                     const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
                     const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format);
 
-                FontTexture create_texture(const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture);
+                FontTexture create_texture(const graphics::Texture& texture);
 
                 // Render the text to the specified texture.
                 void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);

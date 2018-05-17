@@ -85,10 +85,10 @@ namespace trview
                         _root_node->render(context, *_sprite); 
                     }
 
-                    auto texture_view = _root_node->node_texture_view();
-                    if (texture_view)
+                    auto texture = _root_node->node_texture();
+                    if (texture.can_use_as_resource())
                     {
-                        _sprite->render(context, texture_view, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
+                        _sprite->render(context, texture, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
                     }
                 }
             }

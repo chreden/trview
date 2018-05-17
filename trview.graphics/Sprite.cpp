@@ -5,8 +5,9 @@
 #include <vector>
 
 #include <trview.common/FileLoader.h>
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
+#include "IShaderStorage.h"
+#include "IShader.h"
+#include "Texture.h"
 
 using namespace Microsoft::WRL;
 
@@ -88,13 +89,13 @@ namespace trview
             _host_height = height;
         }
 
-        void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const ComPtr<ID3D11ShaderResourceView>& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
+        void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
         {
             update_matrix(context, x, y, width, height, colour);
 
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
-            context->PSSetShaderResources(0, 1, texture.GetAddressOf());
+            context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
             UINT stride = sizeof(Vertex);
             UINT offset = 0;

@@ -28,9 +28,9 @@ namespace trview
             {
             }
 
-            ComPtr<ID3D11ShaderResourceView> RenderNode::node_texture_view() const
+            const graphics::Texture& RenderNode::node_texture() const
             {
-                return _render_target->resource();
+                return _render_target->texture();
             }
 
             void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
@@ -68,7 +68,7 @@ namespace trview
                     // Render the child in the correct position on the render target.
                     auto pos = child->position();
                     auto size = child->size();
-                    sprite.render(context, child->node_texture_view(), pos.x, pos.y, size.width, size.height);
+                    sprite.render(context, child->node_texture(), pos.x, pos.y, size.width, size.height);
                 }
 
                 _needs_redraw = false;
