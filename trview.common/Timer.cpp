@@ -3,26 +3,17 @@
 
 namespace trview
 {
-    Timer::Timer()
-        : _elapsed(0), _total(0)
+    Timer::Timer(const std::function<float()>& time_source)
+        : _time_source(time_source), _elapsed(0), _total(0), _previous(time_source())
     {
-        LARGE_INTEGER frequency;
-        QueryPerformanceFrequency(&frequency);
-        _frequency = frequency.QuadPart;
-
-        LARGE_INTEGER counter;
-        QueryPerformanceCounter(&counter);
-        _previous = counter.QuadPart;
     }
 
     void Timer::update()
     {
-        LARGE_INTEGER tick;
-        QueryPerformanceCounter(&tick);
-        int64_t diff = tick.QuadPart - _previous;
-        _elapsed = static_cast< float >(diff) / _frequency;
-        _previous = tick.QuadPart;
+        float value = _time_source();
+        _elapsed = value - _previous;
         _total += _elapsed;
+        _previous = value;
     }
 
     float Timer::elapsed() const
@@ -39,5 +30,18 @@ namespace trview
     {
         _elapsed = 0.0f;
         _total = 0.0f;
+    }
+
+    std::function<float()> default_time_source()
+    {
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
+
+        return [frequency]()
+        {
+            LARGE_INTEGER tick;
+            QueryPerformanceCounter(&tick);
+            return static_cast<float>(tick.QuadPart) / frequency.QuadPart;
+        };
     }
 }
