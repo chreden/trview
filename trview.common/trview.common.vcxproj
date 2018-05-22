@@ -22,11 +22,13 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Size.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Size.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
