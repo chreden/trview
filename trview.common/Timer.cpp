@@ -1,7 +1,5 @@
 #include "Timer.h"
-#include "stdafx.h"
 #include <Windows.h>
-#include "Timer.h"
 
 namespace trview
 {

@@ -16,7 +16,7 @@
 #include "TextureWindow.h"
 #include "GoToRoom.h"
 
-#include "Timer.h"
+#include <trview.common/Timer.h>
 #include "Camera.h"
 #include "FreeCamera.h"
 #include "Window.h"
