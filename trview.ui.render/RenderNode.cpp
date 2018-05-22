@@ -7,6 +7,7 @@
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.graphics/SpriteSizeStore.h>
+#include <trview.common/Size.h>
 
 using namespace Microsoft::WRL;
 
@@ -84,7 +85,7 @@ namespace trview
                 return _control->position();
             }
 
-            ui::Size RenderNode::size() const
+            Size RenderNode::size() const
             {
                 return _control->size();
             }

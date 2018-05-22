@@ -3,7 +3,6 @@
 #include "Control.h"
 #include "Colour.h"
 #include "Point.h"
-#include "Size.h"
 
 namespace trview
 {

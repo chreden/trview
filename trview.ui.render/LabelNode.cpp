@@ -1,7 +1,7 @@
 #include "LabelNode.h"
 
 #include <trview.ui/Label.h>
-#include "FontFactory.h"
+#include <trview.graphics/FontFactory.h>
 
 namespace trview
 {
@@ -44,10 +44,9 @@ namespace trview
             }
 
 
-            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, FontFactory& font_factory)
+            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, graphics::FontFactory& font_factory)
                 : WindowNode(device, label), 
-                _font(font_factory.create_font(device, 
-                                               L"Arial", 
+                _font(font_factory.create_font(L"Arial", 
                                                label->text_size(), 
                                                convert_text_alignment(label->text_alignment()), 
                                                convert_paragraph_alignment(label->paragraph_alignment()))), _label(label)

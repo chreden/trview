@@ -3,9 +3,11 @@
   <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="Size.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="Size.cpp" />
   </ItemGroup>
 </Project>

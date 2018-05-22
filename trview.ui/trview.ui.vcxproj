@@ -28,7 +28,6 @@
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="Size.h" />
     <ClInclude Include="SizeMode.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
@@ -45,11 +44,15 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Point.cpp" />
-    <ClCompile Include="Size.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\trview.common\trview.common.vcxproj">
+      <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

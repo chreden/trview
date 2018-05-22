@@ -8,11 +8,12 @@
 #include <vector>
 
 #include <trview.ui/Point.h>
-#include <trview.ui/Size.h>
 #include <trview.graphics/RenderTarget.h>
 
 namespace trview
 {
+    struct Size;
+
     namespace graphics
     {
         class Sprite;
@@ -42,7 +43,7 @@ namespace trview
 
                 ui::Point position() const;
 
-                ui::Size size() const;
+                Size size() const;
 
                 bool visible() const;
             protected:
@@ -62,7 +63,7 @@ namespace trview
                 std::unique_ptr<graphics::RenderTarget>  _render_target;
                 std::vector<std::unique_ptr<RenderNode>> _child_nodes;
                 Control*                                 _control;
-                bool                                             _needs_redraw{ true };
+                bool                                     _needs_redraw{ true };
             };
         }
     }

@@ -7,9 +7,6 @@
     <ClInclude Include="Point.h">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="Size.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Control.h">
       <Filter>Controls</Filter>
     </ClInclude>
@@ -55,9 +52,6 @@
       <Filter>Types</Filter>
     </ClCompile>
     <ClCompile Include="Point.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Size.cpp">
       <Filter>Types</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">

@@ -11,15 +11,6 @@
     <ClInclude Include="LabelNode.h">
       <Filter>Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="Font.h">
-      <Filter>Graphics\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="FontFactory.h">
-      <Filter>Graphics\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="FontTexture.h">
-      <Filter>Graphics\Text</Filter>
-    </ClInclude>
     <ClInclude Include="ImageNode.h">
       <Filter>Nodes</Filter>
     </ClInclude>
@@ -38,12 +29,6 @@
     <ClCompile Include="LabelNode.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="Font.cpp">
-      <Filter>Graphics\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="FontFactory.cpp">
-      <Filter>Graphics\Text</Filter>
-    </ClCompile>
     <ClCompile Include="ImageNode.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
@@ -61,9 +46,6 @@
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{a4d98d00-a685-475a-b9de-eef4d7fc33bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Text">
-      <UniqueIdentifier>{58374a2f-5a73-4ed3-a3d0-55d06ac980b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

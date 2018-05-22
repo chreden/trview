@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "RenderNode.h"
-#include "FontFactory.h"
 
 #include <trview.ui/Control.h>
 
@@ -16,6 +15,7 @@ namespace trview
     {
         struct IShaderStorage;
         class Sprite;
+        class FontFactory;
     }
 
     namespace ui
@@ -26,6 +26,8 @@ namespace trview
             {
             public:
                 explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height);
+
+                ~Renderer();
 
                 // Examine a control heirarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering
@@ -43,12 +45,11 @@ namespace trview
 
                 std::unique_ptr<RenderNode>                     _root_node;
                 std::unique_ptr<graphics::Sprite>               _sprite;
-                std::unique_ptr<FontFactory>                    _font_factory;
+                std::unique_ptr<graphics::FontFactory>          _font_factory;
                 Microsoft::WRL::ComPtr<ID3D11Device>            _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 uint32_t                                        _host_width;
                 uint32_t                                        _host_height;
-                
             };
         }
     }
