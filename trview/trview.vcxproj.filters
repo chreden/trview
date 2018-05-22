@@ -41,6 +41,9 @@
     <Filter Include="View\Entity">
       <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{4c4905f3-010e-4d59-b23f-810136eb84ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -70,9 +73,6 @@
     <ClInclude Include="Timer.h">
       <Filter>Timer</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Program</Filter>
     </ClInclude>
@@ -81,9 +81,6 @@
     </ClInclude>
     <ClInclude Include="GoToRoom.h">
       <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="FreeCamera.h">
-      <Filter>Program</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
@@ -118,9 +115,6 @@
     <ClInclude Include="CameraControls.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="CameraMode.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Neighbours.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
@@ -135,9 +129,6 @@
     </ClInclude>
     <ClInclude Include="MeshVertex.h">
       <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="ICamera.h">
-      <Filter>Program</Filter>
     </ClInclude>
     <ClInclude Include="TransparencyBuffer.h">
       <Filter>View</Filter>
@@ -157,8 +148,20 @@
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMode.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
     <ClInclude Include="CameraInput.h">
-      <Filter>Program</Filter>
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -180,9 +183,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Timer</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Program</Filter>
     </ClCompile>
@@ -191,9 +191,6 @@
     </ClCompile>
     <ClCompile Include="GoToRoom.cpp">
       <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
-      <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>View\Level</Filter>
@@ -240,9 +237,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="ICamera.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
     <ClCompile Include="TransparencyBuffer.cpp">
       <Filter>View</Filter>
     </ClCompile>
@@ -258,8 +252,17 @@
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
     <ClCompile Include="CameraInput.cpp">
-      <Filter>Program</Filter>
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
