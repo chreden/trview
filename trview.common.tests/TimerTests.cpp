@@ -8,6 +8,8 @@ namespace trview
 {
     namespace
     {
+        // Class used to provide a way of setting the time and keeping track
+        // of the number of times that the timer calls the time source function.
         struct TimeSource
         {
             uint32_t times_called;
@@ -112,6 +114,16 @@ namespace trview
 
             Assert::AreEqual(0.0f, timer.elapsed());
             Assert::AreEqual(0.0f, timer.total());
+        }
+
+        // Tests that the update function calls the time source.
+        TEST_METHOD(Update)
+        {
+            TimeSource source;
+            Timer timer(source);
+            Assert::AreEqual(1u, source.times_called);
+            timer.update();
+            Assert::AreEqual(2u, source.times_called);
         }
     };
 }
