@@ -14,11 +14,11 @@ namespace trview
         const float Height = 20.0f;
     }
 
-    GoToRoom::GoToRoom(ui::Control* parent)
+    GoToRoom::GoToRoom(ui::Control& parent)
     {
         using namespace ui;
         
-        auto parent_size = parent->size();
+        auto parent_size = parent.size();
 
         auto window = std::make_unique<Window>(
             Point(parent_size.width / 2.0f - WindowWidth / 2.0f, parent_size.height / 2.0f - WindowHeight / 2.0f),
@@ -48,7 +48,7 @@ namespace trview
 
         box->add_child(std::move(label));
         window->add_child(std::move(box));
-        parent->add_child(std::move(window));
+        parent.add_child(std::move(window));
     }
 
     bool GoToRoom::visible() const
