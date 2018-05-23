@@ -78,5 +78,40 @@ namespace trview
             Assert::AreEqual(1.0f, timer.elapsed());
             Assert::AreEqual(2u, source.times_called);
         }
+
+        // Tests that when the time is advanced and the timer is update the timer correctly
+        // updates the total time property.
+        TEST_METHOD(Total)
+        {
+            TimeSource source;
+            Timer timer(source);
+
+            Assert::AreEqual(0.0f, timer.total());
+            Assert::AreEqual(1u, source.times_called);
+
+            source.time = 10.0f;
+            timer.update();
+
+            Assert::AreEqual(10.0f, timer.total());
+            Assert::AreEqual(2u, source.times_called);
+        }
+
+        // Tests that when the time is reset, the total and elapsed properties are reset.
+        TEST_METHOD(Reset)
+        {
+            TimeSource source;
+            Timer timer(source);
+
+            source.time = 10.0f;
+            timer.update();
+
+            Assert::AreEqual(10.0f, timer.elapsed());
+            Assert::AreEqual(10.0f, timer.total());
+
+            timer.reset();
+
+            Assert::AreEqual(0.0f, timer.elapsed());
+            Assert::AreEqual(0.0f, timer.total());
+        }
     };
 }
