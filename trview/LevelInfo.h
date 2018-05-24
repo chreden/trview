@@ -1,3 +1,9 @@
+/// @file LevelInfo.h
+/// @brief UI element that shows the name of the currently loaded level as well as which game it is made for.
+/// 
+/// Adds a small window to the top of the screen that show the icon of the game that the level is made for 
+/// as well as the final part of the level filename.
+
 #pragma once
 
 #include <string>
@@ -17,19 +23,24 @@ namespace trview
 
     struct ITextureStorage;
 
-    // The level info display shows the name of the current level as well
-    // as the game that the level was built for.
+    /// The level info display shows the name of the current level as well
+    /// as the game that the level was built for.
     class LevelInfo
     {
     public:
+        /// Creates an instance of the LevelInfo class. This will add UI elements to the 
+        /// control provided.
+        /// @param parent The control to which the instance will be added as a child.
+        /// @param texture_storage Texture storage instance to use.
         LevelInfo(ui::Control& parent, const ITextureStorage& texture_storage);
 
-        // Set the name of the level.
-        // name: The level name.
+        /// Sets the name of the level.
+        /// @param name The level name.
         void set_level(const std::wstring& name);
 
-        // Set the version of the game that level was created for.
-        // version: The version of the game.
+        /// Set the version of the game that level was created for.
+        /// @param version The version of the game.
+        /// @see trlevel::LevelVersion.
         void set_level_version(trlevel::LevelVersion version);
     private:
         graphics::Texture get_version_image(trlevel::LevelVersion version) const;

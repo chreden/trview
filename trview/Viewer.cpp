@@ -25,7 +25,8 @@
 namespace trview
 {
     Viewer::Viewer(Window window)
-        : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height())
+        : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
+        _timer(default_time_source())
     {
         _settings = load_user_settings();
 
@@ -63,7 +64,7 @@ namespace trview
         _texture_window = std::make_unique<TextureWindow>(_control.get());
         _texture_window->set_visible(false);
 
-        _go_to_room = std::make_unique<GoToRoom>(_control.get());
+        _go_to_room = std::make_unique<GoToRoom>(*_control.get());
         _go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
