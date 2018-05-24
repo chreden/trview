@@ -10,6 +10,16 @@ namespace trview
     {
     public:
         Event<Args...>&
+        operator += (Event<Args...>& listener)
+        {
+            listeners_.push_back([&](auto args)
+            {
+                listener(args);
+            });
+            return *this;
+        }
+
+        Event<Args...>&
         operator += (std::function<void(Args...)> listener)
         {
             listeners_.push_back(listener);
