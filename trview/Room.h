@@ -126,7 +126,7 @@ namespace trview
 
 
     private:
-        void generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
+        void generate_geometry(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
         void render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
@@ -138,7 +138,6 @@ namespace trview
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
-        Microsoft::WRL::ComPtr<ID3D11Device>       _device;
         std::unique_ptr<Mesh>       _mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 

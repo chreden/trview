@@ -17,7 +17,7 @@ using namespace Microsoft::WRL;
 namespace trview
 {
     Level::Level(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
-        : _device(device), _level(level)
+        : _level(level)
     {
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
@@ -34,14 +34,14 @@ namespace trview
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
 
         // Create the texture sampler state.
-        _device->CreateSamplerState(&sampler_desc, &_sampler_state);
+        device->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<LevelTextureStorage>(_device, *_level);
-        _mesh_storage = std::make_unique<MeshStorage>(_device, *_level, *_texture_storage.get());
-        generate_rooms();
-        generate_entities();
+        _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
+        _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
+        generate_rooms(device);
+        generate_entities(device);
 
-        _transparency = std::make_unique<TransparencyBuffer>(_device);
+        _transparency = std::make_unique<TransparencyBuffer>(device);
     }
 
     Level::~Level()
@@ -227,13 +227,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms()
+    void Level::generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
     {
         const uint16_t num_rooms = _level->num_rooms();
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
             auto room = _level->get_room(i);
-            _rooms.push_back(std::make_unique<Room>(_device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
+            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
         }
 
         // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
@@ -252,13 +252,13 @@ namespace trview
         }
     }
 
-    void Level::generate_entities()
+    void Level::generate_entities(const ComPtr<ID3D11Device>& device)
     {
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             auto level_entity = _level->get_entity(i);
-            auto entity = std::make_unique<Entity>(_device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
+            auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
         }
