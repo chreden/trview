@@ -21,7 +21,7 @@ namespace trview
         auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 152), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("button_up"), texture_storage.lookup("button_up"));
-        reset_camera->on_click += [&]() { on_reset(); };
+        reset_camera->on_click += on_reset;
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
@@ -47,15 +47,8 @@ namespace trview
         auto movement_speed_box = std::make_unique<GroupBox>(Point(12, 104), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Movement Speed");
         auto movement_speed = std::make_unique<ui::Slider>(Point(6, 12), Size(108, 16));
 
-        camera_sensitivity->on_value_changed += [&](float value)
-        {
-            on_sensitivity_changed(value);
-        };
-
-        movement_speed->on_value_changed += [&](float value)
-        {
-            on_movement_speed_changed(value);
-        };
+        camera_sensitivity->on_value_changed += on_sensitivity_changed;
+        movement_speed->on_value_changed += on_movement_speed_changed;
 
         // Take a copy of buttons that need to be tracked.
         _orbit = orbit_camera.get();

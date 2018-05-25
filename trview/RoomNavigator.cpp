@@ -21,10 +21,10 @@ namespace trview
         auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
         auto flip_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Flip", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        highlight->on_state_changed += [&](bool state) { on_highlight(state); };
+        highlight->on_state_changed += on_highlight;
         _highlight = highlight.get();
 
-        flip->on_state_changed += [&](bool state) { on_flip(state); };
+        flip->on_state_changed += on_flip;
         _flip = flip.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
@@ -34,10 +34,7 @@ namespace trview
         auto room_number_label = std::make_unique<Label>(Point(),Size(8, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"/", 16.f, TextAlignment::Left, ParagraphAlignment::Centre);
         auto room_max_label = std::make_unique<Label>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), L"0", 10.f, TextAlignment::Centre, ParagraphAlignment::Centre);
 
-        room_number->on_value_changed += [&](int32_t value)
-        {
-            on_room_selected(value);
-        };
+        room_number->on_value_changed += on_room_selected;
         _current = room_number.get();
         _max = room_max_label.get();
 
