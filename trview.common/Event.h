@@ -9,30 +9,17 @@ namespace trview
     class Event
     {
     public:
-        Event<Args...>&
-        operator += (Event<Args...>& listener)
-        {
-            listeners_.push_back([&](auto args)
-            {
-                listener(args);
-            });
-            return *this;
-        }
+        /// Add an event as a listener to this event.
+        /// @param listener The event that will be raised when the event is raised.
+        Event<Args...>& operator += (Event<Args...>& listener);
 
-        Event<Args...>&
-        operator += (std::function<void(Args...)> listener)
-        {
-            listeners_.push_back(listener);
-            return *this;
-        }
+        /// Add a function as a listener to this event.
+        /// @param listener The function that will be called when the event is raised.
+        Event<Args...>& operator += (std::function<void(Args...)> listener);
 
-        void operator()(Args... arguments)
-        {
-            for (auto& func : listeners_)
-            {
-                func(arguments...);
-            }
-        }
+        /// Raise the event with the provided arguments.
+        /// @param arguments The arguments to pass to the listeners.
+        void operator()(Args... arguments);
     private:
         std::vector<std::function<void(Args...)>> listeners_;
     };
@@ -41,21 +28,19 @@ namespace trview
     class Event<void>
     {
     public:
-        Event<void>&
-        operator += (std::function<void()> listener)
-        {
-            listeners_.push_back(listener);
-            return *this;
-        }
+        /// Add an event as a listener to this event.
+        /// @param listener The event that will be raised when the event is raised.
+        Event<void>& operator += (Event<void>& listener);
 
-        void operator()()
-        {
-            for (auto& func : listeners_)
-            {
-                func();
-            }
-        }
+        /// Add a function as a listener to this event.
+        /// @param listener The function that will be called when the event is raised.
+        Event<void>& operator += (std::function<void()> listener);
+
+        /// Raise the event with the provided arguments.
+        void operator()();
     private:
         std::vector<std::function<void()>> listeners_;
     };
 }
+
+#include "Event.inl"

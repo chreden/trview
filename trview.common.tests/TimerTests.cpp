@@ -12,7 +12,7 @@ namespace trview
         // of the number of times that the timer calls the time source function.
         struct TimeSource
         {
-            uint32_t times_called;
+            uint32_t times_called{ 0u };
             float time;
 
             float poll()
