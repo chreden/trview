@@ -35,7 +35,7 @@ namespace trview
         /// Event raised when the user selects a different room. The room that the user has selected is passed as
         /// a parameter when this event is raised.
         /// @remarks This event is not raised by the set_selected_room function.
-        Event<uint32_t> on_room_selected;
+        Event<int32_t> on_room_selected;
 
         /// Event raised when the user toggles the highlight mode. The boolean passed as a parameter when this
         /// event is raised indicates whether highlight mode is enabled.

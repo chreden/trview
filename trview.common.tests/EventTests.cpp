@@ -67,5 +67,24 @@ namespace trview
 
             Assert::AreEqual(1, times_called);
         }
+
+        TEST_METHOD(DeletedChain)
+        {
+            int times_called = 0;
+
+            Event<int> first, second;
+
+            // Register a callback on 'second'
+            second += [&](auto) { ++times_called; };
+            // Chain second to first.
+            first += second;
+            // Move second to third.
+            Event<int> third(std::move(second));
+            // Raise first - this should call the callback that was registered
+            // on second and moved to third.
+            first(100);
+
+            Assert::AreEqual(1, times_called);
+        }
     };
 }

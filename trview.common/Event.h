@@ -20,8 +20,16 @@ namespace trview
         /// Raise the event with the provided arguments.
         /// @param arguments The arguments to pass to the listeners.
         void operator()(Args... arguments);
+
+        Event<Args...>() = default;
+
+        Event<Args...>(Event<Args...>&& other);
+
+        ~Event();
     private:
-        std::vector<std::function<void(Args...)>> listeners_;
+        std::vector<std::function<void(Args...)>> _listeners;
+        std::vector<Event<Args...>*> _listener_events;
+        std::vector<Event<Args...>*> _subscriptions;
     };
 
     template < >
@@ -39,7 +47,7 @@ namespace trview
         /// Raise the event with the provided arguments.
         void operator()();
     private:
-        std::vector<std::function<void()>> listeners_;
+        std::vector<std::function<void()>> _listeners;
     };
 }
 
