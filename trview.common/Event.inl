@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 namespace trview
 {
     template <typename... Args>
@@ -37,28 +39,20 @@ namespace trview
         _listener_events = std::move(other._listener_events);
         _subscriptions = std::move(other._subscriptions);
 
-        // Tell listener events that we have moved.
         for (auto& listener : _listener_events)
         {
-            for (std::size_t i = 0; i < listener->_subscriptions.size(); ++i)
-            {
-                if (listener->_subscriptions[i] == &other)
-                {
-                    listener->_subscriptions[i] = this;
-                }
-            }
+            std::replace(listener->_subscriptions.begin(),
+                listener->_subscriptions.end(),
+                &other,
+                this);
         }
 
-        // Tell subscriptions that we have moved
         for (auto& sub : _subscriptions)
         {
-            for (std::size_t i = 0; i < sub->_listener_events.size(); ++i)
-            {
-                if (sub->_listener_events[i] == &other)
-                {
-                    sub->_listener_events[i] = this;
-                }
-            }
+            std::replace(sub->_listener_events.begin(),
+                sub->_listener_events.end(),
+                &other,
+                this);
         }
     }
 
@@ -67,25 +61,20 @@ namespace trview
     {
         for (auto& listener : _listener_events)
         {
-            for (int i = listener->_subscriptions.size() - 1; i >= 0; --i)
-            {
-                if (listener->_subscriptions[i] == this)
-                {
-                    listener->_subscriptions.erase(listener->_subscriptions.begin() + i);
-                }
-            }
+            listener->_subscriptions.erase(
+                std::remove(listener->_subscriptions.begin(),
+                            listener->_subscriptions.end(),
+                            this),
+                listener->_subscriptions.end());
         }
 
-        // Tell subscriptions that we have moved
         for (auto& sub : _subscriptions)
         {
-            for (int i = sub->_listener_events.size() - 1; i >= 0; --i)
-            {
-                if (sub->_listener_events[i] == this)
-                {
-                    sub->_listener_events.erase(sub->_listener_events.begin() + i);
-                }
-            }
+            sub->_listener_events.erase(
+                std::remove(sub->_listener_events.begin(),
+                            sub->_listener_events.end(),
+                            this),
+                sub->_listener_events.end());
         }
     }
 
