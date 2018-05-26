@@ -46,8 +46,16 @@ namespace trview
 
         /// Raise the event with the provided arguments.
         void operator()();
+
+        Event() = default;
+
+        Event(Event<void>&& other);
+
+        ~Event();
     private:
         std::vector<std::function<void()>> _listeners;
+        std::vector<Event<void>*> _listener_events;
+        std::vector<Event<void>*> _subscriptions;
     };
 }
 
