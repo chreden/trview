@@ -78,13 +78,14 @@ namespace trview
             second += [&](auto) { ++times_called; };
             // Chain second to first.
             first += second;
+            first(100);
             // Move second to third.
             Event<int> third(std::move(second));
             // Raise first - this should call the callback that was registered
             // on second and moved to third.
             first(100);
 
-            Assert::AreEqual(1, times_called);
+            Assert::AreEqual(2, times_called);
         }
     };
 }

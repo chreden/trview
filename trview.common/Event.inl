@@ -65,7 +65,28 @@ namespace trview
     template <typename... Args>
     Event<Args...>::~Event()
     {
-        // Tell up and downstream we're gone.
+        for (auto& listener : _listener_events)
+        {
+            for (int i = listener->_subscriptions.size() - 1; i >= 0; --i)
+            {
+                if (listener->_subscriptions[i] == this)
+                {
+                    listener->_subscriptions.erase(listener->_subscriptions.begin() + i);
+                }
+            }
+        }
+
+        // Tell subscriptions that we have moved
+        for (auto& sub : _subscriptions)
+        {
+            for (int i = sub->_listener_events.size() - 1; i >= 0; --i)
+            {
+                if (sub->_listener_events[i] == this)
+                {
+                    sub->_listener_events.erase(sub->_listener_events.begin() + i);
+                }
+            }
+        }
     }
 
     inline Event<void>& Event<void>::operator += (Event<void>& listener)
