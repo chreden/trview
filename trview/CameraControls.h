@@ -46,7 +46,7 @@ namespace trview
         Event<float> on_movement_speed_changed;
 
         /// Event raised when the user clicks the reset button.
-        Event<void> on_reset;
+        Event<> on_reset;
 
         /// Set the sensitivity slider to the specified value.
         /// @param value The sensitivity value between 0 and 1.

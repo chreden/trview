@@ -61,7 +61,7 @@ namespace trview
         {
             int times_called = 0;
 
-            Event<void> event;
+            Event<> event;
             event += [&]() {++times_called; };
             event();
 
