@@ -35,6 +35,20 @@ namespace trview
     template <typename... Args>
     Event<Args...>::Event(Event<Args...>&& other)
     {
+        *this = std::move(other);
+    }
+
+    template <typename... Args>
+    Event<Args...>::~Event()
+    {
+        remove_from_chain();
+    }
+
+    template <typename... Args>
+    Event<Args...>& Event<Args...>::operator =(Event<Args...>&& other)
+    {
+        remove_from_chain();
+
         _listeners = std::move(other._listeners);
         _listener_events = std::move(other._listener_events);
         _subscriptions = std::move(other._subscriptions);
@@ -54,17 +68,18 @@ namespace trview
                 &other,
                 this);
         }
+        return *this;
     }
 
     template <typename... Args>
-    Event<Args...>::~Event()
+    void Event<Args...>::remove_from_chain()
     {
         for (auto& listener : _listener_events)
         {
             listener->_subscriptions.erase(
                 std::remove(listener->_subscriptions.begin(),
-                            listener->_subscriptions.end(),
-                            this),
+                    listener->_subscriptions.end(),
+                    this),
                 listener->_subscriptions.end());
         }
 
@@ -72,8 +87,8 @@ namespace trview
         {
             sub->_listener_events.erase(
                 std::remove(sub->_listener_events.begin(),
-                            sub->_listener_events.end(),
-                            this),
+                    sub->_listener_events.end(),
+                    this),
                 sub->_listener_events.end());
         }
     }
