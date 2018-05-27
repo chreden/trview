@@ -1,3 +1,8 @@
+/// @file Event.inl
+/// @brief Class that others can register with to be called back when something happens.
+/// 
+/// Implementation of the functions defined in Event.h
+
 #pragma once
 
 #include <algorithm>
