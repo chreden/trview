@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -11,17 +12,10 @@ namespace trview
         class Keyboard
         {
         public:
-            void on_char(uint16_t character);
-            void on_key_down(uint16_t key);
-            void on_key_up(uint16_t key);
-            void register_key_down(const std::function<void(uint16_t)>& key);
-            void register_key_up(const std::function<void(uint16_t)>& key);
-            void register_char(const std::function<void(uint16_t)>& key);
             bool control() const;
-        private:
-            std::vector<std::function<void(uint16_t)>> _key_down_listeners;
-            std::vector<std::function<void(uint16_t)>> _key_up_listeners;
-            std::vector<std::function<void(uint16_t)>> _char_listeners;
+            Event<uint16_t> on_key_down;
+            Event<uint16_t> on_key_up;
+            Event<uint16_t> on_char;
         };
     }
 }

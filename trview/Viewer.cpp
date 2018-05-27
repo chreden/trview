@@ -218,13 +218,13 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
-        _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
+        _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
+        _keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1);
 
-        _keyboard.register_key_down([&](auto key) {_camera_input.key_down(key); });
-        _keyboard.register_key_up([&](auto key) {_camera_input.key_up(key); });
+        _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
+        _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
 
-        _keyboard.register_key_down([&](uint16_t key)
+        _keyboard.on_key_down += [&](uint16_t key)
         {
             switch (key)
             {
@@ -237,7 +237,7 @@ namespace trview
                     break;
                 }
             }
-        });
+        };
 
         setup_camera_input();
 
