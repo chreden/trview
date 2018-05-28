@@ -1,11 +1,66 @@
 #include "Mouse.h"
-#include <Windows.h>
+#include <unordered_map>
+#include <vector>
 
 namespace trview
 {
     namespace input
     {
-        Mouse::Mouse()
+        namespace
+        {
+            WNDPROC old_procedure;
+            std::unordered_map<HWND, std::vector<Mouse*>> all_mice;
+
+            LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+            {
+                // Get the mice for the current window.
+                auto iter = all_mice.find(hWnd);
+                if (iter != all_mice.end())
+                {
+                    const auto& mice = iter->second;
+                    switch (message)
+                    {
+                        case WM_MOUSEWHEEL:
+                        {
+                            std::for_each(mice.begin(), mice.end(), [wParam](auto& m) { m->mouse_wheel(static_cast<int16_t>(GET_WHEEL_DELTA_WPARAM(wParam))); });
+                            break;
+                        }
+                        case WM_INPUT:
+                        {
+                            HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(lParam);
+
+                            uint32_t size = 0;
+                            if (GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER))
+                                != static_cast<uint32_t>(-1))
+                            {
+                                std::vector<uint8_t> data_buffer(size);
+                                GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
+                                RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
+                                std::for_each(mice.begin(), mice.end(), [data](auto& m) { m->process_input(data); });
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                return CallWindowProc(old_procedure, hWnd, message, wParam, lParam);
+            }
+
+            // Subclass the window if it hasn't already been done. Allows for us to get the window
+            // messages and look for ones related to keyboard input. The messages are then passed
+            // on to the original window procedure.
+            void subclass_window(HWND window)
+            {
+                if (old_procedure == nullptr)
+                {
+                    old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
+                    SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
+                }
+            }
+        }
+
+        Mouse::Mouse(HWND window)
+            : _window(window)
         {
             // Register raw input devices so that the window
             // will receive the raw input messages.
@@ -18,6 +73,18 @@ namespace trview
             devices[0].hwndTarget = 0;
 
             RegisterRawInputDevices(devices, sizeof(devices) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE));
+
+            subclass_window(window);
+            all_mice[window].push_back(this);
+        }
+
+        Mouse::~Mouse()
+        {
+            // Remove the mouse from the collection so the window procedure doesn't try
+            // to keep sending messages to it after it has been destroyed.
+            auto x = all_mice.find(_window);
+            auto& mice = all_mice[_window];
+            mice.erase(std::remove(mice.begin(), mice.end(), this), mice.end());
         }
 
         void Mouse::process_input(const RAWINPUT& input)

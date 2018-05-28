@@ -26,7 +26,7 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source()), _keyboard(window.window())
+        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window())
     {
         _settings = load_user_settings();
 
@@ -397,16 +397,6 @@ namespace trview
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _level_info->set_level(name);
         _level_info->set_level_version(_current_level->get_version());
-    }
-
-    void Viewer::on_input(const RAWINPUT& input)
-    {
-        _mouse.process_input(input);
-    }
-
-    void Viewer::on_scroll(int16_t delta)
-    {
-        _mouse.process_scroll(delta);
     }
 
     void Viewer::render()

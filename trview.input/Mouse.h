@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <trview.common/Event.h>
+#include <cstdint>
 
 namespace trview
 {
@@ -16,7 +17,8 @@ namespace trview
                 Right
             };
 
-            Mouse();
+            explicit Mouse(HWND window);
+            ~Mouse();
             void process_input(const RAWINPUT& input);
             void process_scroll(int16_t delta);
 
@@ -33,6 +35,7 @@ namespace trview
             bool _any_absolute_previous{ false };
             long _absolute_x;
             long _absolute_y;
+            HWND _window;
         };
     }
 }

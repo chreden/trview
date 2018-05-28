@@ -61,9 +61,6 @@ namespace trview
 
         void open(const std::wstring filename);
 
-        void on_input(const RAWINPUT& input);
-        void on_scroll(int16_t delta);
-
         // Old ways of doing things - will be mapped.
         void toggle_texture_window();
 
