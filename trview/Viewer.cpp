@@ -26,7 +26,7 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source())
+        _timer(default_time_source()), _keyboard(window.window())
     {
         _settings = load_user_settings();
 
