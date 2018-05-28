@@ -399,21 +399,6 @@ namespace trview
         _level_info->set_level_version(_current_level->get_version());
     }
 
-    void Viewer::on_char(uint16_t character)
-    {
-        _keyboard.on_char(character);
-    }
-
-    void Viewer::on_key_down(uint16_t key)
-    {
-        _keyboard.on_key_down(key);
-    }
-
-    void Viewer::on_key_up(uint16_t key)
-    {
-        _keyboard.on_key_up(key);
-    }
-
     void Viewer::on_input(const RAWINPUT& input)
     {
         _mouse.process_input(input);

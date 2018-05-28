@@ -194,21 +194,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
             switch (msg.message)
             {
-                case WM_KEYDOWN:
-                {
-                    viewer->on_key_down(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
-                case WM_CHAR:
-                {
-                    viewer->on_char(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
-                case WM_KEYUP:
-                {
-                    viewer->on_key_up(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
                 case WM_INPUT:
                 {
                     HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(msg.lParam);

@@ -61,9 +61,6 @@ namespace trview
 
         void open(const std::wstring filename);
 
-        void on_char(uint16_t character);
-        void on_key_down(uint16_t key);
-        void on_key_up(uint16_t key);
         void on_input(const RAWINPUT& input);
         void on_scroll(int16_t delta);
 
