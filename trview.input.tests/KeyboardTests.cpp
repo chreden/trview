@@ -21,7 +21,7 @@ namespace trview
                 uint16_t key_received = 0;
 
                 HWND window = create_test_window();
-                input::Keyboard keyboard(window);
+                Keyboard keyboard(window);
                 keyboard.on_key_down += 
                     [&times_called, &key_received](uint16_t key) 
                 {
@@ -43,7 +43,7 @@ namespace trview
                 uint16_t key_received = 0;
 
                 HWND window = create_test_window();
-                input::Keyboard keyboard(window);
+                Keyboard keyboard(window);
                 keyboard.on_key_up +=
                     [&times_called, &key_received](uint16_t key)
                 {
@@ -65,7 +65,7 @@ namespace trview
                 uint16_t char_received = 0;
 
                 HWND window = create_test_window();
-                input::Keyboard keyboard(window);
+                Keyboard keyboard(window);
                 keyboard.on_char +=
                     [&times_called, &char_received](uint16_t key)
                 {

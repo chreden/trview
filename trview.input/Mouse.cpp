@@ -84,7 +84,6 @@ namespace trview
 
             RegisterRawInputDevices(devices, sizeof(devices) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE));
 
-            subclass_window(window);
             _all_mice = register_mouse(window, this);
         }
 
