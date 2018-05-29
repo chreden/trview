@@ -21,6 +21,15 @@
   <ItemGroup>
     <ClCompile Include="KeyboardTests.cpp" />
     <ClCompile Include="MouseTests.cpp" />
+    <ClCompile Include="WindowHelper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\trview.input\trview.input.vcxproj">
+      <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WindowHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
