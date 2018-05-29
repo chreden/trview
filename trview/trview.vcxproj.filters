@@ -115,9 +115,6 @@
     <ClInclude Include="LevelInfo.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="DefaultTextures.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
@@ -156,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="CameraInput.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultTextures.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -222,9 +222,6 @@
     <ClCompile Include="LevelInfo.cpp">
       <Filter>Program\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="DefaultTextures.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
     </ClCompile>
@@ -254,6 +251,9 @@
     </ClCompile>
     <ClCompile Include="CameraInput.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultTextures.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

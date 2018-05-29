@@ -17,7 +17,7 @@ using namespace Microsoft::WRL;
 namespace trview
 {
     Entity::Entity(const ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage)
-        : _device(device), _room(entity.Room)
+        : _room(entity.Room)
     {
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
@@ -36,7 +36,7 @@ namespace trview
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
             _world = Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
-            load_sprite(sprite, level, texture_storage);
+            load_sprite(device, sprite, level, texture_storage);
             _position = Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
     }
@@ -102,7 +102,7 @@ namespace trview
         }
     }
 
-    void Entity::load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
+    void Entity::load_sprite(const ComPtr<ID3D11Device>& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
     {
         // Get the first sprite image.
         auto sprite = level.get_sprite_texture(sprite_sequence.Offset);
@@ -130,7 +130,7 @@ namespace trview
             { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
         };
 
-        _sprite_mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles);
+        _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles);
 
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;

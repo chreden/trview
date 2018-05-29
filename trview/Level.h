@@ -91,8 +91,8 @@ namespace trview
         // Get the current state of the alternate mode (flipmap).
         bool alternate_mode() const;
     private:
-        void generate_rooms();
-        void generate_entities();
+        void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+        void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
@@ -130,7 +130,6 @@ namespace trview
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Entity>> _entities;
 
-        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;

@@ -17,13 +17,13 @@ namespace trview
 
         auto group = std::make_unique<GroupBox>(Point(), Size(140, 50), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Neighbours");
         auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
-        enabled->on_state_changed += [&](bool value) { on_enabled_changed(value); };
+        enabled->on_state_changed += on_enabled_changed;
         _enabled = enabled.get();
 
         auto depth_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Depth", 10.f, TextAlignment::Left, ParagraphAlignment::Centre);
         auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 10);
         depth->set_value(1);
-        depth->on_value_changed += [&](int value) { on_depth_changed(value); };
+        depth->on_value_changed += on_depth_changed;
 
         group->add_child(std::move(enabled));
         group->add_child(std::move(depth_label));

@@ -35,9 +35,8 @@ namespace trview
         void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
     private:
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage);
-        void load_sprite(const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        void load_sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
-        Microsoft::WRL::ComPtr<ID3D11Device>      _device;
         DirectX::SimpleMath::Matrix               _world;
         std::vector<Mesh*>                        _meshes;
         std::unique_ptr<Mesh>                     _sprite_mesh;

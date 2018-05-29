@@ -24,7 +24,7 @@ namespace trview
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage)
-        : _device(device), _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
+        : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _num_x_sectors(room.num_x_sectors),
         _num_z_sectors(room.num_z_sectors)
@@ -35,7 +35,7 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
-        generate_geometry(room, texture_storage);
+        generate_geometry(device, room, texture_storage);
         generate_sectors(level, room);
         generate_adjacency();
         generate_static_meshes(level, room, mesh_storage);
@@ -139,7 +139,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(const ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -154,7 +154,7 @@ namespace trview
         process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(_device, vertices, indices, std::vector<uint32_t>(), transparent_triangles);
+        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);

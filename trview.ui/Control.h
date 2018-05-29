@@ -81,7 +81,7 @@ namespace trview
             Event<Size> on_size_changed;
 
             // The control has changed and needs to be redrawn.
-            Event<void> on_invalidate;
+            Event<> on_invalidate;
         protected:
             // To be called when the user interface element has been clicked.
             // This should be overriden by child elements to handle a click.

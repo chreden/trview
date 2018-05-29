@@ -36,7 +36,7 @@ namespace trview
 
         /// Event raised when the user has changed the depth of neighbour to display. The newly selected depth is passed
         /// when the event is raised.
-        Event<uint32_t> on_depth_changed;
+        Event<int32_t> on_depth_changed;
 
         /// Set whether neighbours are enabled. This will not raise the on_enabled_changed event.
         /// @param value Whether neighbours are enabled.
