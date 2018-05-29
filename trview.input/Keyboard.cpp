@@ -40,17 +40,29 @@ namespace trview
 
                 return CallWindowProc(old_procedure, hWnd, message, wParam, lParam);
             }
-        }
 
-        // Subclass the window if it hasn't already been done. Allows for us to get the window
-        // messages and look for ones related to keyboard input. The messages are then passed
-        // on to the original window procedure.
-        void subclass_window(HWND window)
-        {
-            if (old_procedure == nullptr)
+            // Subclass the window if it hasn't already been done. Allows for us to get the window
+            // messages and look for ones related to keyboard input. The messages are then passed
+            // on to the original window procedure.
+            void subclass_window(HWND window)
             {
-                old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
-                SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
+                if (old_procedure == nullptr)
+                {
+                    old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
+                    SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
+                }
+            }
+
+            // Add the keyboard to the keyboard map so that messages can be sent to it.
+            // Returns a shared pointer to the map that the keyboard should use to interact with the map.
+            std::shared_ptr<Keyboard::KeyboardMap> register_keyboard(HWND window, Keyboard* keyboard)
+            {
+                if (!all_keyboards)
+                {
+                    all_keyboards = std::make_shared<Keyboard::KeyboardMap>();
+                }
+                (*all_keyboards)[window].push_back(keyboard);
+                return all_keyboards;
             }
         }
 
@@ -58,12 +70,7 @@ namespace trview
             : _window(window)
         {
             subclass_window(window);
-            if (!all_keyboards)
-            {
-                all_keyboards = std::make_shared<KeyboardMap>();
-            }
-            _all_keyboards = all_keyboards;
-            (*_all_keyboards)[window].push_back(this);
+            _all_keyboards = register_keyboard(window, this);
         }
 
         Keyboard::~Keyboard()

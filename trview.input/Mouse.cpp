@@ -55,6 +55,18 @@ namespace trview
                     SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
                 }
             }
+
+            // Add the mouse to the mouse map so that messages can be sent to it.
+            // Returns a shared pointer to the map that the mouse should use to interact with the map.
+            std::shared_ptr<Mouse::MouseMap> register_mouse(HWND window, Mouse* mouse)
+            {
+                if (!all_mice)
+                {
+                    all_mice = std::make_shared<Mouse::MouseMap>();
+                }
+                (*all_mice)[window].push_back(mouse);
+                return all_mice;
+            }
         }
 
         Mouse::Mouse(HWND window)
@@ -73,12 +85,7 @@ namespace trview
             RegisterRawInputDevices(devices, sizeof(devices) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE));
 
             subclass_window(window);
-            if (!all_mice)
-            {
-                all_mice = std::make_shared<MouseMap>();
-            }
-            _all_mice = all_mice;
-            (*_all_mice)[window].push_back(this);
+            _all_mice = register_mouse(window, this);
         }
 
         Mouse::~Mouse()
