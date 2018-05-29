@@ -39,6 +39,7 @@ namespace trview
 
             /// Process the specified raw input data. This will raise any appropriate events.
             /// @param input The mouse raw input data.
+            /// @remarks This is called internally and does not need to be called from external sources.
             void process_input(const RAWINPUT& input);
 
             /// Event raised when a mouse button is pressed. The button that was pressed is passed
