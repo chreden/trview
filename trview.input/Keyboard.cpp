@@ -1,8 +1,5 @@
 #include "Keyboard.h"
-#include <Windows.h>
 #include <algorithm>
-#include <unordered_map>
-#include <vector>
 
 namespace trview
 {
@@ -12,13 +9,13 @@ namespace trview
         {
             WNDPROC old_procedure;
 
-            std::unordered_map<HWND, std::vector<Keyboard*>> all_keyboards;
+            std::shared_ptr<Keyboard::KeyboardMap> all_keyboards;
 
             LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 // Get the keyboard (s) for the current window.
-                auto iter = all_keyboards.find(hWnd);
-                if (iter != all_keyboards.end())
+                auto iter = all_keyboards->find(hWnd);
+                if (iter != all_keyboards->end())
                 {
                     const auto& kbs = iter->second;
                     switch (message)
@@ -61,14 +58,19 @@ namespace trview
             : _window(window)
         {
             subclass_window(window);
-            all_keyboards[window].push_back(this);
+            if (!all_keyboards)
+            {
+                all_keyboards = std::make_shared<KeyboardMap>();
+            }
+            _all_keyboards = all_keyboards;
+            (*_all_keyboards)[window].push_back(this);
         }
 
         Keyboard::~Keyboard()
         {
             // Remove the keyboard from the collection so the window procedure doesn't try
             // to keep sending messages to it after it has been destroyed.
-            auto& kbs = all_keyboards[_window];
+            auto& kbs = (*_all_keyboards)[_window];
             kbs.erase(std::remove(kbs.begin(), kbs.end(), this), kbs.end());
         }
 

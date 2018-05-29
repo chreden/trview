@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <trview.common/Event.h>
 #include <cstdint>
+#include <memory>
+#include <unordered_map>
 
 namespace trview
 {
@@ -29,6 +31,11 @@ namespace trview
 
             long x() const;
             long y() const;
+
+            /// Type definition for the static all mice map. The mouse should refer to
+            /// the member variable to access the mouse map as the static instance may have
+            /// been destroyed at the time that the mouse is destroyed.
+            using MouseMap = std::unordered_map<HWND, std::vector<Mouse*>>;
         private:
             void raise_absolute_mouse_move(long x, long y);
 
@@ -36,6 +43,8 @@ namespace trview
             long _absolute_x;
             long _absolute_y;
             HWND _window;
+
+            std::shared_ptr<MouseMap> _all_mice;
         };
     }
 }

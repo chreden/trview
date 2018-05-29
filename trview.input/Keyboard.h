@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
+#include <unordered_map>
+#include <memory>
 #include <trview.common/Event.h>
 #include <Windows.h>
 
@@ -24,6 +26,8 @@ namespace trview
             /// @param window The window to listen to.
             explicit Keyboard(HWND window);
 
+            /// Destructor for Keyboard. This will remove the keyboard from the all keyboard
+            /// map. This will stop messages being sent to this keyboard.
             ~Keyboard();
 
             /// Determines whether the control key is currently pressed.
@@ -41,8 +45,14 @@ namespace trview
             /// Event raised when the user enters a text character. The character is passed as
             /// a parameter to the event listener.
             Event<uint16_t> on_char;
+
+            /// Type definition for the static all keyboards map. The keyboard should refer to
+            /// the member variable to access the keyboard map as the static instance may have
+            /// been destroyed at the time that the keyboard is destroyed.
+            using KeyboardMap = std::unordered_map<HWND, std::vector<Keyboard*>>;
         private:
             HWND _window;
+            std::shared_ptr<KeyboardMap> _all_keyboards;
         };
     }
 }

@@ -1,6 +1,4 @@
 #include "Mouse.h"
-#include <unordered_map>
-#include <vector>
 
 namespace trview
 {
@@ -9,13 +7,13 @@ namespace trview
         namespace
         {
             WNDPROC old_procedure;
-            std::unordered_map<HWND, std::vector<Mouse*>> all_mice;
+            std::shared_ptr<Mouse::MouseMap> all_mice;
 
             LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 // Get the mice for the current window.
-                auto iter = all_mice.find(hWnd);
-                if (iter != all_mice.end())
+                auto iter = all_mice->find(hWnd);
+                if (iter != all_mice->end())
                 {
                     const auto& mice = iter->second;
                     switch (message)
@@ -75,15 +73,20 @@ namespace trview
             RegisterRawInputDevices(devices, sizeof(devices) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE));
 
             subclass_window(window);
-            all_mice[window].push_back(this);
+            if (!all_mice)
+            {
+                all_mice = std::make_shared<MouseMap>();
+            }
+            _all_mice = all_mice;
+            (*_all_mice)[window].push_back(this);
         }
 
         Mouse::~Mouse()
         {
             // Remove the mouse from the collection so the window procedure doesn't try
             // to keep sending messages to it after it has been destroyed.
-            auto x = all_mice.find(_window);
-            auto& mice = all_mice[_window];
+            auto x = _all_mice->find(_window);
+            auto& mice = (*_all_mice)[_window];
             mice.erase(std::remove(mice.begin(), mice.end(), this), mice.end());
         }
 
