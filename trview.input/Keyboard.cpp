@@ -7,8 +7,6 @@ namespace trview
     {
         namespace
         {
-            WNDPROC old_procedure;
-
             std::shared_ptr<Keyboard::KeyboardMap> all_keyboards;
 
             LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -17,7 +15,7 @@ namespace trview
                 auto iter = all_keyboards->find(hWnd);
                 if (iter != all_keyboards->end())
                 {
-                    const auto& kbs = iter->second;
+                    const auto& kbs = iter->second.keyboards;
                     switch (message)
                     {
                         case WM_KEYDOWN:
@@ -36,9 +34,9 @@ namespace trview
                             break;
                         }
                     }
+                    return CallWindowProc(iter->second.old_procedure, hWnd, message, wParam, lParam);
                 }
-
-                return CallWindowProc(old_procedure, hWnd, message, wParam, lParam);
+                return 0;
             }
 
             // Subclass the window if it hasn't already been done. Allows for us to get the window
@@ -46,9 +44,9 @@ namespace trview
             // on to the original window procedure.
             void subclass_window(HWND window)
             {
-                if (old_procedure == nullptr)
+                if ((*all_keyboards)[window].old_procedure == nullptr)
                 {
-                    old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
+                    (*all_keyboards)[window].old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
                     SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
                 }
             }
@@ -61,7 +59,8 @@ namespace trview
                 {
                     all_keyboards = std::make_shared<Keyboard::KeyboardMap>();
                 }
-                (*all_keyboards)[window].push_back(keyboard);
+                subclass_window(window);
+                (*all_keyboards)[window].keyboards.push_back(keyboard);
                 return all_keyboards;
             }
         }
@@ -69,7 +68,6 @@ namespace trview
         Keyboard::Keyboard(HWND window)
             : _window(window)
         {
-            subclass_window(window);
             _all_keyboards = register_keyboard(window, this);
         }
 
@@ -77,7 +75,7 @@ namespace trview
         {
             // Remove the keyboard from the collection so the window procedure doesn't try
             // to keep sending messages to it after it has been destroyed.
-            auto& kbs = (*_all_keyboards)[_window];
+            auto& kbs = (*_all_keyboards)[_window].keyboards;
             kbs.erase(std::remove(kbs.begin(), kbs.end(), this), kbs.end());
         }
 

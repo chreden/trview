@@ -46,10 +46,20 @@ namespace trview
             /// a parameter to the event listener.
             Event<uint16_t> on_char;
 
+            /// Defines information required to correctly subclass the window and send messages
+            /// to all relevant keyboards.
+            struct KeyboardEntry
+            {
+                /// The window procedure to forward messages to once they have been processed.
+                WNDPROC old_procedure{ nullptr };
+                /// The keyboards associated with this window.
+                std::vector<Keyboard*> keyboards;
+            };
+
             /// Type definition for the static all keyboards map. The keyboard should refer to
             /// the member variable to access the keyboard map as the static instance may have
             /// been destroyed at the time that the keyboard is destroyed.
-            using KeyboardMap = std::unordered_map<HWND, std::vector<Keyboard*>>;
+            using KeyboardMap = std::unordered_map<HWND, KeyboardEntry>;
         private:
             HWND _window;
             std::shared_ptr<KeyboardMap> _all_keyboards;

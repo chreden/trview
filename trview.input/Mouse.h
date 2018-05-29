@@ -64,10 +64,20 @@ namespace trview
             /// Get the current Y coordinate of the mouse.
             long y() const;
 
+            /// Defines information required to correctly subclass the window and send messages
+            /// to all relevant mice.
+            struct MouseEntry
+            {
+                /// The window procedure to forward messages to once they have been processed.
+                WNDPROC old_procedure{ nullptr };
+                /// The mice associated with this window.
+                std::vector<Mouse*> mice;
+            };
+
             /// Type definition for the static all mice map. The mouse should refer to
             /// the member variable to access the mouse map as the static instance may have
             /// been destroyed at the time that the mouse is destroyed.
-            using MouseMap = std::unordered_map<HWND, std::vector<Mouse*>>;
+            using MouseMap = std::unordered_map<HWND, MouseEntry>;
         private:
             void raise_absolute_mouse_move(long x, long y);
 

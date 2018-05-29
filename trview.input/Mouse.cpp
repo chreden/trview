@@ -6,7 +6,6 @@ namespace trview
     {
         namespace
         {
-            WNDPROC old_procedure;
             std::shared_ptr<Mouse::MouseMap> all_mice;
 
             LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -15,7 +14,7 @@ namespace trview
                 auto iter = all_mice->find(hWnd);
                 if (iter != all_mice->end())
                 {
-                    const auto& mice = iter->second;
+                    const auto& mice = iter->second.mice;
                     switch (message)
                     {
                         case WM_MOUSEWHEEL:
@@ -39,9 +38,9 @@ namespace trview
                             break;
                         }
                     }
+                    return CallWindowProc(iter->second.old_procedure, hWnd, message, wParam, lParam);
                 }
-
-                return CallWindowProc(old_procedure, hWnd, message, wParam, lParam);
+                return 0;
             }
 
             // Subclass the window if it hasn't already been done. Allows for us to get the window
@@ -49,9 +48,9 @@ namespace trview
             // on to the original window procedure.
             void subclass_window(HWND window)
             {
-                if (old_procedure == nullptr)
+                if ((*all_mice)[window].old_procedure == nullptr)
                 {
-                    old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
+                    (*all_mice)[window].old_procedure = (WNDPROC)GetWindowLongPtr(window, GWLP_WNDPROC);
                     SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
                 }
             }
@@ -64,7 +63,8 @@ namespace trview
                 {
                     all_mice = std::make_shared<Mouse::MouseMap>();
                 }
-                (*all_mice)[window].push_back(mouse);
+                subclass_window(window);
+                (*all_mice)[window].mice.push_back(mouse);
                 return all_mice;
             }
         }
@@ -93,7 +93,7 @@ namespace trview
             // Remove the mouse from the collection so the window procedure doesn't try
             // to keep sending messages to it after it has been destroyed.
             auto x = _all_mice->find(_window);
-            auto& mice = (*_all_mice)[_window];
+            auto& mice = (*_all_mice)[_window].mice;
             mice.erase(std::remove(mice.begin(), mice.end(), this), mice.end());
         }
 
