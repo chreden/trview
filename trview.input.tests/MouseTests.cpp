@@ -88,7 +88,23 @@ namespace trview
 
             TEST_METHOD(MouseWheel)
             {
-                Assert::Fail();
+                int times_called = 0;
+                int16_t scroll_received = 0;
+
+                HWND window = create_test_window();
+                Mouse mouse(window);
+
+                mouse.mouse_wheel +=
+                    [&times_called, &scroll_received](auto scroll)
+                {
+                    ++times_called;
+                    scroll_received = scroll;
+                };
+
+                SendMessage(window, WM_MOUSEWHEEL, MAKEWPARAM(0, 100), 0);
+
+                Assert::AreEqual(1, times_called);
+                Assert::AreEqual(static_cast<int>(100), static_cast<int>(scroll_received));
             }
 
             TEST_METHOD(MouseMove)
