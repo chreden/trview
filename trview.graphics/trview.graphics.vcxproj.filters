@@ -46,6 +46,9 @@
     <ClInclude Include="FontTexture.h">
       <Filter>Font</Filter>
     </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="FontFactory.cpp">
       <Filter>Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
