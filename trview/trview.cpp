@@ -194,36 +194,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
             switch (msg.message)
             {
-                case WM_KEYDOWN:
-                {
-                    viewer->on_key_down(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
-                case WM_CHAR:
-                {
-                    viewer->on_char(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
-                case WM_KEYUP:
-                {
-                    viewer->on_key_up(static_cast<uint16_t>(msg.wParam));
-                    break;
-                }
-                case WM_INPUT:
-                {
-                    HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(msg.lParam);
-
-                    uint32_t size = 0;
-                    if (GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER))
-                        != static_cast<uint32_t>(-1))
-                    {
-                        std::vector<uint8_t> data_buffer(size);
-                        GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
-                        RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
-                        viewer->on_input(data);
-                    }
-                    break;
-                }
                 case WM_DROPFILES:
                 {
                     wchar_t filename[MAX_PATH];
@@ -309,11 +279,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-    case WM_MOUSEWHEEL:
-    {
-        viewer->on_scroll(static_cast<int16_t>(GET_WHEEL_DELTA_WPARAM(wParam)));
-        break;
-    }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);

@@ -26,7 +26,7 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source())
+        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window())
     {
         _settings = load_user_settings();
 
@@ -218,13 +218,13 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _keyboard.register_key_up(std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
-        _keyboard.register_char(std::bind(&Viewer::process_char, this, std::placeholders::_1));
+        _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
+        _keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1);
 
-        _keyboard.register_key_down([&](auto key) {_camera_input.key_down(key); });
-        _keyboard.register_key_up([&](auto key) {_camera_input.key_up(key); });
+        _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
+        _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
 
-        _keyboard.register_key_down([&](uint16_t key)
+        _keyboard.on_key_down += [&](uint16_t key)
         {
             switch (key)
             {
@@ -237,7 +237,7 @@ namespace trview
                     break;
                 }
             }
-        });
+        };
 
         setup_camera_input();
 
@@ -397,31 +397,6 @@ namespace trview
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _level_info->set_level(name);
         _level_info->set_level_version(_current_level->get_version());
-    }
-
-    void Viewer::on_char(uint16_t character)
-    {
-        _keyboard.on_char(character);
-    }
-
-    void Viewer::on_key_down(uint16_t key)
-    {
-        _keyboard.on_key_down(key);
-    }
-
-    void Viewer::on_key_up(uint16_t key)
-    {
-        _keyboard.on_key_up(key);
-    }
-
-    void Viewer::on_input(const RAWINPUT& input)
-    {
-        _mouse.process_input(input);
-    }
-
-    void Viewer::on_scroll(int16_t delta)
-    {
-        _mouse.process_scroll(delta);
     }
 
     void Viewer::render()
