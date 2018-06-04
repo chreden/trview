@@ -110,5 +110,8 @@
     <Filter Include="Font">
       <UniqueIdentifier>{c637d862-3e5c-4ef3-895f-190ad90bb456}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Device">
+      <UniqueIdentifier>{45b46918-ce4b-4159-9455-6026761d8fc5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
