@@ -19,7 +19,7 @@
 #include <trview.common/Timer.h>
 #include "Camera.h"
 #include "FreeCamera.h"
-#include "Window.h"
+#include <trview.common/Window.h>
 #include "UserSettings.h"
 #include "CameraMode.h"
 
@@ -49,6 +49,7 @@ namespace trview
     {
         struct IShaderStorage;
         class RenderTarget;
+        class Device;
     }
 
     class Viewer
@@ -117,10 +118,7 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
 
-        Microsoft::WRL::ComPtr<IDXGISwapChain>          _swap_chain;
-        Microsoft::WRL::ComPtr<ID3D11Device>            _device;
-        Microsoft::WRL::ComPtr<ID3D11DeviceContext>     _context;
-        std::unique_ptr<graphics::RenderTarget>         _render_target;
+        std::unique_ptr<graphics::Device> _device;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
 
         std::unique_ptr<TextureWindow>   _texture_window;

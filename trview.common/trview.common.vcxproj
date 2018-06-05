@@ -21,13 +21,17 @@
   <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />

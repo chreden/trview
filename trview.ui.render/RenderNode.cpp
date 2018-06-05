@@ -80,7 +80,7 @@ namespace trview
                 _child_nodes.push_back(std::move(child));
             }
 
-            ui::Point RenderNode::position() const
+            Point RenderNode::position() const
             {
                 return _control->position();
             }

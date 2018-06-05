@@ -30,12 +30,12 @@ namespace trview
     // Get the position of the cursor in client coordinates.
     // window: The client window.
     // Returns: The point in client coordinates.
-    ui::Point client_cursor_position(const Window& window) noexcept
+    Point client_cursor_position(const Window& window) noexcept
     {
         POINT cursor_pos;
         GetCursorPos(&cursor_pos);
         ScreenToClient(window.window(), &cursor_pos);
-        return ui::Point(static_cast<float>(cursor_pos.x), static_cast<float>(cursor_pos.y));
+        return Point(static_cast<float>(cursor_pos.x), static_cast<float>(cursor_pos.y));
     }
 
     // Determines whether the cursor is outside the bounds of the window.
@@ -43,7 +43,7 @@ namespace trview
     // Returns: True if the cursor is outside the bounds of the window.
     bool cursor_outside_window(const Window& window) noexcept
     {
-        const ui::Point cursor_pos = client_cursor_position(window);
+        const Point cursor_pos = client_cursor_position(window);
         return cursor_pos.x < 0 || cursor_pos.y < 0 || cursor_pos.x > window.width() || cursor_pos.y > window.height();
     }
 
@@ -55,4 +55,3 @@ namespace trview
         return IsIconic(window.window());
     }
 }
-

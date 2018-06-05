@@ -5,11 +5,15 @@
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Point.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />

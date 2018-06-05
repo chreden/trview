@@ -13,6 +13,7 @@
 
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.graphics/RenderTarget.h>
+#include <trview.graphics/Device.h>
 
 #include "RoomNavigator.h"
 #include "CameraControls.h"
@@ -33,11 +34,11 @@ namespace trview
         initialise_d3d();
         initialise_input();
 
-        _texture_storage = std::make_unique<TextureStorage>(_device);
-        load_default_textures(_device, *_texture_storage.get());
+        _texture_storage = std::make_unique<TextureStorage>(_device->device());
+        load_default_textures(_device->device(), *_texture_storage.get());
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device, *_shader_storage.get());
+        load_default_shaders(_device->device(), *_shader_storage.get());
 
         generate_ui();
     }
@@ -56,7 +57,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(ui::Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -71,7 +72,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(ui::Point(500, 0), Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();
@@ -80,10 +81,10 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, *_shader_storage.get(), _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device->device(), *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, *_shader_storage.get(), _window.width(), _window.height());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device->device(), *_shader_storage.get(), _window.width(), _window.height());
         
     }
 
@@ -143,36 +144,7 @@ namespace trview
 
     void Viewer::initialise_d3d()
     {
-        // Swap chain description.
-        DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
-        swap_chain_desc.BufferCount = 1;
-        swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        swap_chain_desc.BufferDesc.Height = _window.height();
-        swap_chain_desc.BufferDesc.Width = _window.width();
-        swap_chain_desc.BufferDesc.RefreshRate.Numerator = 1;
-        swap_chain_desc.BufferDesc.RefreshRate.Denominator = 60;
-        swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swap_chain_desc.OutputWindow = _window.window();
-        swap_chain_desc.Windowed = TRUE;
-        swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-        swap_chain_desc.SampleDesc.Count = 1;
-        swap_chain_desc.SampleDesc.Quality = 0;
-
-        D3D11CreateDeviceAndSwapChain(
-            nullptr,
-            D3D_DRIVER_TYPE_HARDWARE,
-            nullptr,
-            D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-            nullptr,
-            0,
-            D3D11_SDK_VERSION,
-            &swap_chain_desc,
-            &_swap_chain,
-            &_device,
-            nullptr,
-            &_context);
-
-        create_render_target();
+        _device = std::make_unique<graphics::Device>(_window);
 
         D3D11_BLEND_DESC desc;
         memset(&desc, 0, sizeof(desc));
@@ -184,7 +156,7 @@ namespace trview
         desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
         desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        _device->CreateBlendState(&desc, &_blend_state);
+        _device->device()->CreateBlendState(&desc, &_blend_state);
 
         // Initialize the description of the stencil state.
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
@@ -211,9 +183,9 @@ namespace trview
         depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
         depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-        _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
+        _device->device()->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
 
-        _context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
+        _device->context()->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
     }
 
     void Viewer::initialise_input()
@@ -375,7 +347,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
+        _level = std::make_unique<Level>(_device->device(), *_shader_storage.get(), _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 
@@ -407,18 +379,18 @@ namespace trview
 
         pick();
 
-        _render_target->apply(_context);
-        _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
-        _render_target->clear(_context, DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+        _device->begin();
+        _device->context()->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
+        _device->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
 
-        _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
+        _device->context()->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
         render_ui();
 
         render_map();
 
-        _swap_chain->Present(1, 0);
+        _device->present();
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -445,7 +417,7 @@ namespace trview
         auto projection = camera.projection();
         auto view = camera.view();
 
-        ui::Point mouse_pos = client_cursor_position(_window);
+        Point mouse_pos = client_cursor_position(_window);
 
         Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, world);
         direction.Normalize();
@@ -456,7 +428,7 @@ namespace trview
         if (result.hit)
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, XMMatrixIdentity());
-            _picking->set_position(ui::Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
+            _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
         }
         _current_pick = result;
@@ -464,7 +436,7 @@ namespace trview
 
     void Viewer::render_scene()
     {
-        _context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
+        _device->context()->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
         if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
@@ -479,7 +451,7 @@ namespace trview
 
                 _camera.set_target(target_position);
             }
-            _level->render(_context, current_camera());
+            _level->render(_device->context(), current_camera());
         }
     }
 
@@ -525,14 +497,14 @@ namespace trview
 
     void Viewer::render_ui()
     {
-        _ui_renderer->render(_context);
+        _ui_renderer->render(_device->context());
     }
 
     void Viewer::render_map()
     {
-        ui::Point point = client_cursor_position(_window);
+        Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
-        _map_renderer->render(_context);
+        _map_renderer->render(_device->context());
     }
 
     void Viewer::cycle()
@@ -605,21 +577,8 @@ namespace trview
 
         // Refresh the window so that the new size is known.
         _window = Window(_window.window());
-
-        _context->ClearState();
-        _render_target.reset();
-
-        _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
-        create_render_target();
+        _device->resize();
         resize_elements();
-    }
-
-    // Create the render target view from the swap chain that has been created.
-    void Viewer::create_render_target()
-    {
-        Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer;
-        _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(back_buffer.GetAddressOf()));
-        _render_target = std::make_unique<graphics::RenderTarget>(_device, back_buffer, graphics::RenderTarget::DepthStencilMode::Enabled);
     }
 
     void Viewer::resize_elements()

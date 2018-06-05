@@ -4,9 +4,6 @@
     <ClInclude Include="Colour.h">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Control.h">
       <Filter>Controls</Filter>
     </ClInclude>
@@ -49,9 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">
-      <Filter>Types</Filter>
-    </ClCompile>
-    <ClCompile Include="Point.cpp">
       <Filter>Types</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">

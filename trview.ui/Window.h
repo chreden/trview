@@ -2,7 +2,7 @@
 
 #include "Control.h"
 #include "Colour.h"
-#include "Point.h"
+#include <trview.common/Point.h>
 
 namespace trview
 {
