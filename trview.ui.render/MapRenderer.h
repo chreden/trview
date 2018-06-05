@@ -13,7 +13,7 @@
 #include "trview\Types.h"
 #include "trview\TextureStorage.h"
 #include <trview.graphics/Texture.h>
-#include <trview.ui/Point.h>
+#include <trview.common/Point.h>
 #include <trview.common/Size.h>
 #include "trview\Room.h"
 #include <trview.graphics/RenderTarget.h>
@@ -38,7 +38,7 @@ namespace trview
                         : sector(p_sector), position(p_position), size(p_size) {}
 
                     std::shared_ptr<Sector> sector; 
-                    ui::Point position; 
+                    Point position; 
                     Size size; 
                 };
 
@@ -90,7 +90,7 @@ namespace trview
                 void set_window_size(int width, int height);
             private:
                 // Determines the position (on screen) to draw a sector 
-                ui::Point get_position(const Sector& sector); 
+                Point get_position(const Sector& sector); 
 
                 // Determines the size of a sector 
                 Size get_size() const;

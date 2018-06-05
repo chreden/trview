@@ -27,7 +27,6 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="ParagraphAlignment.h" />
-    <ClInclude Include="Point.h" />
     <ClInclude Include="SizeMode.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
@@ -43,7 +42,6 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="NumericUpDown.cpp" />
-    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Checkbox.cpp" />

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <d3d11.h>
-#include <wrl/client.h>
 #include <cstdint>
 
 #include <string>
@@ -19,7 +17,7 @@
 #include <trview.common/Timer.h>
 #include "Camera.h"
 #include "FreeCamera.h"
-#include "Window.h"
+#include <trview.common/Window.h>
 #include "UserSettings.h"
 #include "CameraMode.h"
 
@@ -28,6 +26,8 @@
 
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/MapRenderer.h>
+
+#include <trview.graphics/Device.h>
 
 #include "CameraInput.h"
 
@@ -77,8 +77,6 @@ namespace trview
     private:
         void generate_ui();
         void generate_tool_window();
-
-        void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
         void process_char(uint16_t character);
@@ -108,24 +106,15 @@ namespace trview
 
         void set_alternate_mode(bool enabled);
 
-        // Create the render target view from the swap chain that has been created.
-        void create_render_target();
-
         // Tell things that need to be resized that they should resize.
         void resize_elements();
 
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
 
-        Microsoft::WRL::ComPtr<IDXGISwapChain>          _swap_chain;
-        Microsoft::WRL::ComPtr<ID3D11Device>            _device;
-        Microsoft::WRL::ComPtr<ID3D11DeviceContext>     _context;
-        std::unique_ptr<graphics::RenderTarget>         _render_target;
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
+        graphics::Device _device;
 
         std::unique_ptr<TextureWindow>   _texture_window;
-
-        Microsoft::WRL::ComPtr<ID3D11BlendState> _blend_state;
 
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;

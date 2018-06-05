@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-#include <trview.ui/Point.h>
+#include <trview.common/Point.h>
 #include <trview.graphics/RenderTarget.h>
 
 namespace trview
@@ -41,7 +41,7 @@ namespace trview
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
-                ui::Point position() const;
+                Point position() const;
 
                 Size size() const;
 

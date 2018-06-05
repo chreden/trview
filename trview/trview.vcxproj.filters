@@ -67,9 +67,6 @@
     <ClInclude Include="RoomInfo.h">
       <Filter>View\Room</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="RoomNavigator.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
@@ -173,9 +170,6 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>View\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="RoomNavigator.cpp">
       <Filter>Program\Windows</Filter>
