@@ -22,21 +22,35 @@ namespace trview
         class Device final
         {
         public:
+            /// Create a new device to render to the specified window.
+            /// @param window The window to render to.
             Device(const Window& window);
+
+            /// Destructor for the Device class.
             ~Device();
 
+            /// Begin rendering to the main render target.
             void begin();
 
+            /// Clear the render target with the specified colour.
+            /// @param colour The colour to with which to clear the render target.
             void clear(const DirectX::SimpleMath::Color& colour);
 
+            /// Gets the D3D device interface.
+            /// @returns The D3D device interface.
             const Microsoft::WRL::ComPtr<ID3D11Device>& device() const;
 
+            /// Gets the D3D device context for the device.
+            /// @returns The D3D device context.
             const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context() const;
 
+            /// Presents the rendered output to the swap chain.
             void present();
 
+            /// Resizes the device and any associated resources.
             void resize();
         private:
+            /// Create the render target based on the current swap chain.
             void create_render_target();
 
             Microsoft::WRL::ComPtr<IDXGISwapChain>      _swap_chain;
