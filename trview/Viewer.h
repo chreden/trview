@@ -109,9 +109,6 @@ namespace trview
 
         void set_alternate_mode(bool enabled);
 
-        // Create the render target view from the swap chain that has been created.
-        void create_render_target();
-
         // Tell things that need to be resized that they should resize.
         void resize_elements();
 
