@@ -27,18 +27,17 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window())
+        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window)
     {
         _settings = load_user_settings();
 
-        initialise_d3d();
         initialise_input();
 
-        _texture_storage = std::make_unique<TextureStorage>(_device->device());
-        load_default_textures(_device->device(), *_texture_storage.get());
+        _texture_storage = std::make_unique<TextureStorage>(_device.device());
+        load_default_textures(_device.device(), *_texture_storage.get());
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device->device(), *_shader_storage.get());
+        load_default_shaders(_device.device(), *_shader_storage.get());
 
         generate_ui();
     }
@@ -81,10 +80,10 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device->device(), *_shader_storage.get(), _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device->device(), *_shader_storage.get(), _window.width(), _window.height());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
         
     }
 
@@ -140,40 +139,6 @@ namespace trview
         );
 
         _control->add_child(std::move(tool_window));
-    }
-
-    void Viewer::initialise_d3d()
-    {
-        _device = std::make_unique<graphics::Device>(_window);
-
-        // Initialize the description of the stencil state.
-        D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-        memset(&depthStencilDesc, 0, sizeof(depthStencilDesc));
-
-        // Set up the description of the stencil state.
-        depthStencilDesc.DepthEnable = true;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-        depthStencilDesc.StencilEnable = true;
-        depthStencilDesc.StencilReadMask = 0xFF;
-        depthStencilDesc.StencilWriteMask = 0xFF;
-
-        // Stencil operations if pixel is front-facing.
-        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        // Stencil operations if pixel is back-facing.
-        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        _device->device()->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
-
-        _device->context()->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
     }
 
     void Viewer::initialise_input()
@@ -335,7 +300,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device->device(), *_shader_storage.get(), _current_level.get());
+        _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
         _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
 
@@ -367,14 +332,14 @@ namespace trview
 
         pick();
 
-        _device->begin();
-        _device->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+        _device.begin();
+        _device.clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
         render_ui();
         render_map();
 
-        _device->present();
+        _device.present();
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -420,7 +385,6 @@ namespace trview
 
     void Viewer::render_scene()
     {
-        _device->context()->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
         if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
@@ -435,7 +399,7 @@ namespace trview
 
                 _camera.set_target(target_position);
             }
-            _level->render(_device->context(), current_camera());
+            _level->render(_device.context(), current_camera());
         }
     }
 
@@ -481,14 +445,14 @@ namespace trview
 
     void Viewer::render_ui()
     {
-        _ui_renderer->render(_device->context());
+        _ui_renderer->render(_device.context());
     }
 
     void Viewer::render_map()
     {
         Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
-        _map_renderer->render(_device->context());
+        _map_renderer->render(_device.context());
     }
 
     void Viewer::cycle()
@@ -561,7 +525,7 @@ namespace trview
 
         // Refresh the window so that the new size is known.
         _window = Window(_window.window());
-        _device->resize();
+        _device.resize();
         resize_elements();
     }
 

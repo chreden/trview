@@ -29,6 +29,8 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/MapRenderer.h>
 
+#include <trview.graphics/Device.h>
+
 #include "CameraInput.h"
 
 namespace trview
@@ -49,7 +51,6 @@ namespace trview
     {
         struct IShaderStorage;
         class RenderTarget;
-        class Device;
     }
 
     class Viewer
@@ -78,8 +79,6 @@ namespace trview
     private:
         void generate_ui();
         void generate_tool_window();
-
-        void initialise_d3d();
         void initialise_input();
         void process_input_key(uint16_t key);
         void process_char(uint16_t character);
@@ -115,8 +114,7 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
 
-        std::unique_ptr<graphics::Device> _device;
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
+        graphics::Device _device;
 
         std::unique_ptr<TextureWindow>   _texture_window;
 

@@ -40,6 +40,25 @@ namespace trview
             desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
             desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
             _device->CreateBlendState(&desc, &_blend_state);
+
+            D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+            memset(&depthStencilDesc, 0, sizeof(depthStencilDesc));
+            depthStencilDesc.DepthEnable = true;
+            depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+            depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+            depthStencilDesc.StencilEnable = true;
+            depthStencilDesc.StencilReadMask = 0xFF;
+            depthStencilDesc.StencilWriteMask = 0xFF;
+            depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+            depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+            depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+            depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+            depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+            _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
         }
 
         Device::~Device()
@@ -50,6 +69,7 @@ namespace trview
         {
             _render_target->apply(_context);
             _context->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
+            _context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
         }
 
         void Device::clear(const DirectX::SimpleMath::Color& colour)
