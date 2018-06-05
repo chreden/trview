@@ -83,8 +83,10 @@ namespace trview
             return;
         }
 
-        ComPtr<ID3D11DepthStencilState> old_state;
-        context->OMGetDepthStencilState(&old_state, nullptr);
+        ComPtr<ID3D11DepthStencilState> old_depth_state;
+        ComPtr<ID3D11BlendState> old_blend_state;
+        context->OMGetDepthStencilState(&old_depth_state, nullptr);
+        context->OMGetBlendState(&old_blend_state, nullptr, nullptr);
 
         context->OMSetDepthStencilState(_transparency_depth_state.Get(), 1);
 
@@ -126,7 +128,8 @@ namespace trview
             sum += run.count * 3;
         }
 
-        context->OMSetDepthStencilState(old_state.Get(), 1);
+        context->OMSetDepthStencilState(old_depth_state.Get(), 1);
+        context->OMSetBlendState(old_blend_state.Get(), nullptr, 0xffffffff);
     }
 
     void TransparencyBuffer::reset()

@@ -120,8 +120,6 @@ namespace trview
 
         std::unique_ptr<TextureWindow>   _texture_window;
 
-        Microsoft::WRL::ComPtr<ID3D11BlendState> _blend_state;
-
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
 

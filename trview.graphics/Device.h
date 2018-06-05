@@ -56,6 +56,7 @@ namespace trview
             Microsoft::WRL::ComPtr<IDXGISwapChain>      _swap_chain;
             Microsoft::WRL::ComPtr<ID3D11Device>        _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
+            Microsoft::WRL::ComPtr<ID3D11BlendState>    _blend_state;
             std::unique_ptr<graphics::RenderTarget>     _render_target;
         };
     }

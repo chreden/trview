@@ -146,18 +146,6 @@ namespace trview
     {
         _device = std::make_unique<graphics::Device>(_window);
 
-        D3D11_BLEND_DESC desc;
-        memset(&desc, 0, sizeof(desc));
-        desc.RenderTarget[0].BlendEnable = true;
-        desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
-        desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-        desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
-        desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-        desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        _device->device()->CreateBlendState(&desc, &_blend_state);
-
         // Initialize the description of the stencil state.
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
         memset(&depthStencilDesc, 0, sizeof(depthStencilDesc));
@@ -380,14 +368,10 @@ namespace trview
         pick();
 
         _device->begin();
-        _device->context()->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
         _device->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
-
-        _device->context()->OMSetBlendState(_blend_state.Get(), 0, 0xffffffff);
         render_ui();
-
         render_map();
 
         _device->present();
