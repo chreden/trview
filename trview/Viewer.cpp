@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "Viewer.h"
-#include <trlevel/trlevel.h>
 
-#include <string>
 #include <algorithm>
+#include <string>
 #include <directxmath.h>
 
+#include <trlevel/trlevel.h>
+#include <trview.graphics/ShaderStorage.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
@@ -13,15 +14,15 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/MapRenderer.h>
 
-#include <trview.graphics/ShaderStorage.h>
-
-#include "RoomNavigator.h"
 #include "CameraControls.h"
-#include "Neighbours.h"
-#include "TextureStorage.h"
-#include "LevelInfo.h"
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
+#include "GoToRoom.h"
+#include "LevelInfo.h"
+#include "Neighbours.h"
+#include "RoomNavigator.h"
+#include "TextureStorage.h"
+#include "TextureWindow.h"
 
 namespace trview
 {

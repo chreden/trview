@@ -7,30 +7,22 @@
 
 #include <Windows.h>
 #include <cstdint>
-
-#include <string>
 #include <memory>
+#include <string>
 
 #include <trlevel/ILevel.h>
-
-#include "Level.h"
-#include "Room.h"
-
-#include "TextureWindow.h"
-#include "GoToRoom.h"
-
 #include <trview.common/Timer.h>
-#include "Camera.h"
-#include "FreeCamera.h"
 #include <trview.common/Window.h>
-#include "UserSettings.h"
-#include "CameraMode.h"
-
+#include <trview.graphics/Device.h>
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
-#include <trview.graphics/Device.h>
 
+#include "Camera.h"
 #include "CameraInput.h"
+#include "CameraMode.h"
+#include "FreeCamera.h"
+#include "Level.h"
+#include "UserSettings.h"
 
 namespace trview
 {
@@ -46,11 +38,13 @@ namespace trview
         }
     }
 
-    class RoomNavigator;
     class CameraControls;
-    class Neighbours;
-    class LevelInfo;
+    class GoToRoom;
     struct ITextureStorage;
+    class LevelInfo;
+    class Neighbours;
+    class RoomNavigator;
+    class TextureWindow;
 
     namespace graphics
     {
