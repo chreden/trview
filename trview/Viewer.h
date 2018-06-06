@@ -1,3 +1,8 @@
+/// @file Viewer.h
+/// @brief Class that brings together the component parts of the application.
+/// 
+/// Class that coordinates all the parts of the application.
+
 #pragma once
 
 #include <Windows.h>
@@ -52,23 +57,37 @@ namespace trview
         struct IShaderStorage;
     }
 
+    /// Class that coordinates all the parts of the application.
     class Viewer
     {
     public:
+        /// Create a new viewer.
+        /// @param window The window that the viewer should use.
         explicit Viewer(Window window);
+
+        /// Destructor for the viewer.
         ~Viewer();
 
+        /// Render the viewer.
         void render();
 
+        /// Attempt to open the specified level file.
+        /// @param filename The level file to open.
         void open(const std::wstring filename);
 
+        /// Get the current user settings.
+        /// @returns The current settings.
         UserSettings settings() const;
 
+        /// Event raised when a level file is successfully opened.
+        /// @remarks The filename is passed as a parameter to the listener functions.
         Event<std::wstring> on_file_loaded;
 
+        /// Event raised when the recent files list is updated.
+        /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::wstring>> on_recent_files_changed;
 
-        // Resize the window and the rendering system.
+        /// Update the viewer and the rendering system after a window has changed size.
         void resize();
     private:
         void generate_ui();
