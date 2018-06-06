@@ -10,10 +10,10 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
+#include <trview.ui.render/Renderer.h>
+#include <trview.ui.render/MapRenderer.h>
 
 #include <trview.graphics/ShaderStorage.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Device.h>
 
 #include "RoomNavigator.h"
 #include "CameraControls.h"
@@ -238,13 +238,13 @@ namespace trview
                     break;
                 }
                 case VK_PRIOR:
-                    cycle_back();
+                    _texture_window->cycle_back();
                     break;
                 case VK_NEXT:
-                    cycle();
+                    _texture_window->cycle();
                     break;
                 case VK_F2:
-                    toggle_texture_window();
+                    _texture_window->toggle_visibility();
                     break;
                 case VK_RETURN:
                     toggle_highlight();
@@ -336,7 +336,7 @@ namespace trview
         _device.clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
-        render_ui();
+        _ui_renderer->render(_device.context());
         render_map();
 
         _device.present();
@@ -347,6 +347,11 @@ namespace trview
     bool Viewer::over_ui() const
     {
         return _control->is_mouse_over(client_cursor_position(_window));
+    }
+
+    bool Viewer::over_map() const 
+    {
+        return _map_renderer->loaded() && _map_renderer->cursor_is_over_control();
     }
 
     void Viewer::pick()
@@ -443,31 +448,11 @@ namespace trview
         _camera_controls->set_mode(camera_mode);
     }
 
-    void Viewer::render_ui()
-    {
-        _ui_renderer->render(_device.context());
-    }
-
     void Viewer::render_map()
     {
         Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
         _map_renderer->render(_device.context());
-    }
-
-    void Viewer::cycle()
-    {
-        _texture_window->cycle();
-    }
-
-    void Viewer::cycle_back()
-    {
-        _texture_window->cycle_back();
-    }
-
-    void Viewer::toggle_texture_window()
-    {
-        _texture_window->toggle_visibility();
     }
 
     void Viewer::toggle_highlight()

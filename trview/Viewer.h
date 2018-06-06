@@ -23,10 +23,6 @@
 
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
-
-#include <trview.ui.render/Renderer.h>
-#include <trview.ui.render/MapRenderer.h>
-
 #include <trview.graphics/Device.h>
 
 #include "CameraInput.h"
@@ -37,6 +33,12 @@ namespace trview
     {
         class Control;
         class Label;
+
+        namespace render
+        {
+            class Renderer;
+            class MapRenderer;
+        }
     }
 
     class RoomNavigator;
@@ -48,7 +50,6 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
-        class RenderTarget;
     }
 
     class Viewer
@@ -61,15 +62,10 @@ namespace trview
 
         void open(const std::wstring filename);
 
-        // Old ways of doing things - will be mapped.
-        void toggle_texture_window();
-
-        void cycle();
-        void cycle_back();
-        void toggle_highlight();
-
         UserSettings settings() const;
+
         Event<std::wstring> on_file_loaded;
+
         Event<std::list<std::wstring>> on_recent_files_changed;
 
         // Resize the window and the rendering system.
@@ -80,13 +76,12 @@ namespace trview
         void initialise_input();
         void process_input_key(uint16_t key);
         void process_char(uint16_t character);
+        void toggle_highlight();
 
         void update_camera();
 
         // Draw the 3d elements of the scene.
         void render_scene();
-        // Draw the user interface elements of the scene.
-        void render_ui();
         // Draws a minimap 
         void render_map(); 
 
@@ -95,8 +90,7 @@ namespace trview
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
-
-        inline bool over_map() const { return _map_renderer->loaded() && _map_renderer->cursor_is_over_control(); }
+        bool over_map() const;
 
         void pick();
 
@@ -140,7 +134,6 @@ namespace trview
         // New user interface control structure.
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
-
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
 
         CameraMode _camera_mode{ CameraMode::Orbit };
