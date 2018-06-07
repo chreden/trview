@@ -109,7 +109,7 @@ namespace trview
         void setup_camera_input();
 
         graphics::Device _device;
-        std::unique_ptr<TextureWindow>   _texture_window;
+        std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
         Window _window;
@@ -135,7 +135,7 @@ namespace trview
         std::unique_ptr<ITextureStorage> _texture_storage;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
         UserSettings _settings;
-        ui::Label*        _picking;
+        ui::Label* _picking;
         Level::PickResult _current_pick;
     };
 }

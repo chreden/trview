@@ -396,14 +396,7 @@ namespace trview
             // Update the view matrix based on the room selected in the room window.
             if (_current_level->num_rooms() > 0)
             {
-                auto room = _current_level->get_room(_level->selected_room());
-
-                DirectX::SimpleMath::Vector3 target_position(
-                    (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
-                    (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
-                    (room.info.z / 1024.f) + room.num_z_sectors / 2.f);
-
-                _camera.set_target(target_position);
+                _camera.set_target(_level->room(_level->selected_room())->centre());
             }
             _level->render(_device.context(), current_camera());
         }
