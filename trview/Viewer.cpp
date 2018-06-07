@@ -184,9 +184,13 @@ namespace trview
                     if (sector != nullptr)
                     {
                         if (sector->flags & SectorFlag::Portal)
+                        {
                             select_room(sector->portal());
+                        }
                         else if (sector->flags & SectorFlag::RoomBelow)
-                            select_room(sector->room_below()); 
+                        {
+                            select_room(sector->room_below());
+                        }
                     }
                 }
             }
@@ -196,7 +200,9 @@ namespace trview
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
                     if (sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
-                        select_room(sector->room_above()); 
+                    {
+                        select_room(sector->room_above());
+                    }
                 }
             }
         };
