@@ -154,6 +154,9 @@
     <ClInclude Include="DefaultTextures.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="SettingsWindow.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -248,6 +251,9 @@
     </ClCompile>
     <ClCompile Include="DefaultTextures.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsWindow.cpp">
+      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
