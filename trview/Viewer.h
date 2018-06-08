@@ -45,6 +45,7 @@ namespace trview
     class Neighbours;
     class RoomNavigator;
     class TextureWindow;
+    class SettingsWindow;
 
     namespace graphics
     {
@@ -134,6 +135,7 @@ namespace trview
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
+        std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
         ui::Label* _picking;
         Level::PickResult _current_pick;

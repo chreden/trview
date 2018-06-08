@@ -23,6 +23,7 @@
 #include "RoomNavigator.h"
 #include "TextureStorage.h"
 #include "TextureWindow.h"
+#include "SettingsWindow.h"
 
 namespace trview
 {
@@ -80,12 +81,13 @@ namespace trview
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
+        _settings_window = std::make_unique<SettingsWindow>(*_control.get());
+
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
-        
     }
 
     void Viewer::generate_tool_window()
