@@ -1,15 +1,35 @@
 #pragma once
 
-#include "Image.h"
+#include <trview.graphics/Texture.h>
+
+#include "StackPanel.h"
 
 namespace trview
 {
     namespace ui
     {
-        class Checkbox : public Image
+        class Image;
+
+        class Checkbox : public StackPanel
         {
         public:
-            Checkbox(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image);
+            Checkbox(const Point& position, 
+                     const Size& size, 
+                     const graphics::Texture& up_image, 
+                     const graphics::Texture& down_image);
+
+            /// Creates a checkox with an associated label.
+            /// @param position The position of the checkbox.
+            /// @param size The size of the checkbox.
+            /// @param up_image The texture to use when the checkbox isn't checked.
+            /// @param down_image The texture to use when the checkbox is checked.
+            /// @param label_text The text for the associated label.
+            Checkbox(const Point& position,
+                     const Size& size,
+                     const graphics::Texture& up_image,
+                     const graphics::Texture& down_image,
+                     const std::wstring& label_text);
+
             virtual ~Checkbox() = default;
 
             // This event is raised when the user changes the state of the checkbox.
@@ -26,6 +46,9 @@ namespace trview
         protected:
             virtual bool clicked(Point position) override;
         private:
+            void create_image(const Size& size);
+
+            ui::Image* _image;
             graphics::Texture _up_image;
             graphics::Texture _down_image;
             bool    _state{ false };

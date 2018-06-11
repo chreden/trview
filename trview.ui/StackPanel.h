@@ -7,7 +7,7 @@ namespace trview
 {
     namespace ui
     {
-        class StackPanel final : public Window
+        class StackPanel : public Window
         {
         public:
             enum class Direction

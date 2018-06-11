@@ -14,6 +14,7 @@ namespace trview
             child_element->set_position(get_next_position());
             child_element->on_size_changed += [&](auto) { recalculate_layout(); };
             Window::add_child(std::move(child_element));
+            recalculate_layout();
         }
 
         Point StackPanel::get_next_position() const
@@ -40,6 +41,8 @@ namespace trview
         {
             Point previous_position(_padding.width, _padding.height);
             Size previous_size(0,0);
+            float max_height = 0;
+            float max_width = 0;
 
             for (const auto& element : child_elements())
             {
@@ -47,13 +50,15 @@ namespace trview
                 element->set_position(position);
                 previous_position = position;
                 previous_size = element->size();
+
+                max_width = std::max(previous_size.width, max_width);
+                max_height = std::max(previous_size.height, max_height);
             }
 
             if (_size_mode == SizeMode::Auto)
             {
-                set_size(
-                    Size(previous_position.x + previous_size.width + _padding.width,
-                         previous_position.y + previous_size.height + _padding.height));
+                set_size(Size(previous_position.x + previous_size.width + _padding.width + (_direction == Direction::Horizontal ? 0.0f : max_width),
+                    previous_position.y + previous_size.height + _padding.height + (_direction == Direction::Vertical ? 0.0f : max_height)));
             }
         }
     }
