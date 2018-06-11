@@ -9,6 +9,7 @@ namespace trview
     {
         class Control;
     }
+    struct ITextureStorage;
 
     /// UI window for program level settings.
     class SettingsWindow final
@@ -16,7 +17,8 @@ namespace trview
     public:
         /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
         /// @param parent The control to which the instance will add elements.
-        explicit SettingsWindow(ui::Control& parent);
+        /// @param texture_storage The texture storage instance to use.
+        explicit SettingsWindow(ui::Control& parent, const ITextureStorage& texture_storage);
     private:
 
     };
