@@ -19,15 +19,13 @@ namespace trview
 
             virtual ~Control() = 0;
 
-            /// Get the horizontal alignment value. This will affect how the control is
-            /// placed in the parent control.
-            /// @returns The horizontal alignment mode.
-            Align horizontal_alignment() const;
+            /// Get the vertical alignment value. This will affect how the control is placed in the parent control.
+            /// @returns The vertical alignment mode.
+            Align vertical_alignment() const;
 
-            /// Set the horizontal alignment value. This will affect how the control is
-            /// placed in the parent control.
-            /// @param mode The horizontal alignment mode.
-            void set_horizontal_alignment(Align mode);
+            /// Set the vertical alignment value. This will affect how the control is placed in the parent control.
+            /// @param mode The vertical alignment mode.
+            void set_vertical_alignment(Align mode);
 
             // Get the X and Y position of the control relative to the parent window.
             // To change the position of the control, call set_position.
@@ -112,7 +110,7 @@ namespace trview
             Size     _size;
             bool     _visible;
             bool     _handles_input{ true };
-            Align    _horizontal_alignment{ Align::Left };
+            Align    _vertical_alignment{ Align::Left };
         };
     }
 }
