@@ -43,6 +43,9 @@
     <ClInclude Include="Checkbox.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Align.h">
+      <Filter>Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">

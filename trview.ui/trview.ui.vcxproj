@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Align.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Control.h" />
