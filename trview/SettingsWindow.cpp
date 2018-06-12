@@ -27,17 +27,29 @@ namespace trview
 
         auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Vsync");
         vsync->on_state_changed += on_vsync;
+        _vsync = vsync.get();
         panel->add_child(std::move(vsync));
 
         panel->add_child(std::make_unique<Window>(Point(), Size(1, 5), background_colour));
 
         auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Go to Lara");
         go_to_lara->on_state_changed += on_go_to_lara;
+        _go_to_lara = go_to_lara.get();
         panel->add_child(std::move(go_to_lara));
 
         group->add_child(std::move(panel));
         window->add_child(std::move(group));
 
         parent.add_child(std::move(window));
+    }
+
+    void SettingsWindow::set_vsync(bool value)
+    {
+        _vsync->set_state(value);
+    }
+
+    void SettingsWindow::set_go_to_lara(bool value)
+    {
+        _go_to_lara->set_state(value);
     }
 }

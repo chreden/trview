@@ -53,6 +53,9 @@
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Control.inl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{160BD1C8-42C1-46E6-A232-B980B9B6D57E}</ProjectGuid>

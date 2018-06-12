@@ -208,5 +208,15 @@ namespace trview
             on_size_changed(size);
             on_invalidate();
         }
+
+        const std::string& Control::name() const
+        {
+            return _name;
+        }
+
+        void Control::set_name(const std::string& name)
+        {
+            _name = name;
+        }
     }
 }

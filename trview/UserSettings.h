@@ -12,6 +12,8 @@ namespace trview
         std::list<std::wstring> recent_files;
         float                   camera_sensitivity{ 0 };
         float                   camera_movement_speed{ 0 };
+        bool                    vsync{ true };
+        bool                    go_to_lara{ true };
     };
 
     // Load the user settings from the settings file.

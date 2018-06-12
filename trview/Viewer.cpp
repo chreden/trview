@@ -82,6 +82,18 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
 
         _settings_window = std::make_unique<SettingsWindow>(*_control.get(), *_texture_storage.get());
+        _settings_window->on_vsync += [&](bool value) 
+        { 
+            _settings.vsync = value; 
+            save_user_settings(_settings);
+        };
+        _settings_window->on_go_to_lara += [&](bool value) 
+        { 
+            _settings.go_to_lara = value; 
+            save_user_settings(_settings); 
+        };
+        _settings_window->set_vsync(_settings.vsync);
+        _settings_window->set_go_to_lara(_settings.go_to_lara);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
@@ -348,7 +360,7 @@ namespace trview
         _ui_renderer->render(_device.context());
         render_map();
 
-        _device.present();
+        _device.present(_settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.

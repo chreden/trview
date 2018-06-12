@@ -45,7 +45,8 @@ namespace trview
             const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context() const;
 
             /// Presents the rendered output to the swap chain.
-            void present();
+            /// @param vsync Whether vsync is enabled.
+            void present(bool vsync);
 
             /// Resizes the device and any associated resources.
             void resize();

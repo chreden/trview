@@ -85,6 +85,13 @@ namespace trview
             // size: The new size of the control.
             void set_size(Size size);
 
+            const std::string& name() const;
+
+            void set_name(const std::string& name);
+
+            template <typename T>
+            T* find(const std::string& name) const;
+
             // Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
 
@@ -111,6 +118,7 @@ namespace trview
             bool     _visible;
             bool     _handles_input{ true };
             Align    _vertical_alignment{ Align::Left };
+            std::string _name;
         };
     }
 }

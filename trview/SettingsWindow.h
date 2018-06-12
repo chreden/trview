@@ -10,6 +10,7 @@ namespace trview
     namespace ui
     {
         class Control;
+        class Checkbox;
     }
     struct ITextureStorage;
 
@@ -27,5 +28,16 @@ namespace trview
 
         /// Event raised when the 'go to lara' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_go_to_lara;
+
+        /// Set the new value of the vsync setting. This will not raise the on_vsync event.
+        /// @param value The new vsync setting.
+        void set_vsync(bool value);
+
+        /// Set the new value of the 'go to lara' setting. This will not raise the on_go_to_lara event.
+        /// @param value The new 'go to lara' setting.
+        void set_go_to_lara(bool value);
+    private:
+        ui::Checkbox* _vsync;
+        ui::Checkbox* _go_to_lara;
     };
 }
