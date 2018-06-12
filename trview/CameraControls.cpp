@@ -25,20 +25,14 @@ namespace trview
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
-        auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), up, down);
+        auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), up, down, L"Orbit");
         orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
 
-        auto orbit_camera_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Orbit", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), up, down);
+        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), up, down, L"Free");
         free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); };
 
-        auto free_camera_label = std::make_unique<Label>(Point(32, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Free", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-
-        auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), up, down);
+        auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), up, down, L"Axis");
         axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
-
-        auto axis_camera_label = std::make_unique<Label>(Point(96, 42), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Axis", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
 
         // Camera section for the menu bar.
         auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
@@ -63,11 +57,8 @@ namespace trview
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
         camera_window->add_child(std::move(orbit_camera));
-        camera_window->add_child(std::move(orbit_camera_label));
         camera_window->add_child(std::move(free_camera));
-        camera_window->add_child(std::move(free_camera_label));
         camera_window->add_child(std::move(axis_camera));
-        camera_window->add_child(std::move(axis_camera_label));
         camera_window->add_child(std::move(camera_sensitivity_box));
         camera_window->add_child(std::move(movement_speed_box));
 

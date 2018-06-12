@@ -16,7 +16,7 @@ namespace trview
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size, const Texture& up_image, const Texture& down_image, const std::wstring& label_text)
-            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(5,0), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
+            : StackPanel(position, size, Colour(0.3f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
         {
             create_image(size);
             _image->set_texture(_up_image);

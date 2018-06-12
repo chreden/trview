@@ -16,10 +16,8 @@ namespace trview
         using namespace ui;
 
         auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 130), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
-        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
-        auto highlight_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Highlight", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
-        auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"));
-        auto flip_label = std::make_unique<Label>(Point(96, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Flip", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);
+        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"), L"Highlight");
+        auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"), L"Flip");
 
         highlight->on_state_changed += on_highlight;
         _highlight = highlight.get();
@@ -58,9 +56,7 @@ namespace trview
         room_box->add_child(std::move(room_controls));
 
         rooms_groups->add_child(std::move(highlight));
-        rooms_groups->add_child(std::move(highlight_label));
         rooms_groups->add_child(std::move(flip));
-        rooms_groups->add_child(std::move(flip_label));
         rooms_groups->add_child(std::move(room_box));
 
         parent.add_child(std::move(rooms_groups));
