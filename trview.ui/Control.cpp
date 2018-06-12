@@ -24,6 +24,7 @@ namespace trview
         void Control::set_vertical_alignment(Align mode)
         {
             _vertical_alignment = mode;
+            on_size_changed(_size);
         }
 
         Point Control::position() const

@@ -70,6 +70,19 @@ namespace trview
 
                 set_size(size);
             }
+
+            // Now that the size has been updated, update for alignment.
+            if (_direction == Direction::Horizontal)
+            {
+                for (const auto& element : child_elements())
+                {
+                    if (element->vertical_alignment() == Align::Centre)
+                    {
+                        const auto difference = (size().height - element->size().height) / 2.0f;
+                        element->set_position(Point(element->position().x, difference));
+                    }
+                }
+            }
         }
     }
 }

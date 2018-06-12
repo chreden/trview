@@ -16,7 +16,7 @@ namespace trview
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size, const Texture& up_image, const Texture& down_image, const std::wstring& label_text)
-            : StackPanel(position, size, Colour(0.3f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
+            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
         {
             create_image(size);
             _image->set_texture(_up_image);
@@ -24,6 +24,7 @@ namespace trview
             add_child(std::make_unique<Window>(Point(), Size(5, size.height), Colour(1.0f, 0.5f, 0.5f, 0.5f)));
 
             auto label = std::make_unique<Label>(Point(), Size(1, 1), Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text, 10.0f, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
+            label->set_vertical_alignment(Align::Centre);
             add_child(std::move(label));
         }
 
