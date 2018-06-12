@@ -26,11 +26,13 @@ namespace trview
         const auto check_on = texture_storage.lookup("check_on");
 
         auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Vsync");
+        vsync->on_state_changed += on_vsync;
         panel->add_child(std::move(vsync));
 
         panel->add_child(std::make_unique<Window>(Point(), Size(1, 5), background_colour));
 
         auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Go to Lara");
+        go_to_lara->on_state_changed += on_go_to_lara;
         panel->add_child(std::move(go_to_lara));
 
         group->add_child(std::move(panel));
