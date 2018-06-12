@@ -57,8 +57,18 @@ namespace trview
 
             if (_size_mode == SizeMode::Auto)
             {
-                set_size(Size(previous_position.x + previous_size.width + _padding.width + (_direction == Direction::Horizontal ? 0.0f : max_width),
-                    previous_position.y + previous_size.height + _padding.height + (_direction == Direction::Vertical ? 0.0f : max_height)));
+                auto size = Size(previous_position.x + _padding.width, previous_position.y + _padding.height);
+
+                if (_direction == Direction::Horizontal)
+                {
+                    size += Size(previous_size.width, max_height);
+                }
+                else if (_direction == Direction::Vertical)
+                {
+                    size += Size(max_width, previous_size.height);
+                }
+
+                set_size(size);
             }
         }
     }

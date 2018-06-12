@@ -18,6 +18,11 @@ namespace trview
         /// @param height The height dimension.
         Size(float width, float height);
 
+        /// Add another size to this size.
+        /// @param other The size to add to this size.
+        /// @returns The resultant size.
+        Size& operator+=(const Size& other);
+
         float width, height;
     };
 }
