@@ -16,6 +16,22 @@ namespace trview
         {
         }
 
+        /// Get the horizontal alignment value. This will affect how the control is
+        /// placed in the parent control.
+        /// @returns The horizontal alignment mode.
+        Align Control::horizontal_alignment() const
+        {
+            return _horizontal_alignment;
+        }
+
+        /// Set the horizontal alignment value. This will affect how the control is
+        /// placed in the parent control.
+        /// @param mode The horizontal alignment mode.
+        void Control::set_horizontal_alignment(Align mode)
+        {
+            _horizontal_alignment = mode;
+        }
+
         Point Control::position() const
         {
             return _position;

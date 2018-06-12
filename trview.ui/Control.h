@@ -5,6 +5,7 @@
 #include <trview.common/Event.h>
 #include <trview.common/Size.h>
 #include <trview.common/Point.h>
+#include "Align.h"
 
 namespace trview
 {
@@ -17,6 +18,16 @@ namespace trview
             Control(Point position, Size size);
 
             virtual ~Control() = 0;
+
+            /// Get the horizontal alignment value. This will affect how the control is
+            /// placed in the parent control.
+            /// @returns The horizontal alignment mode.
+            Align horizontal_alignment() const;
+
+            /// Set the horizontal alignment value. This will affect how the control is
+            /// placed in the parent control.
+            /// @param mode The horizontal alignment mode.
+            void set_horizontal_alignment(Align mode);
 
             // Get the X and Y position of the control relative to the parent window.
             // To change the position of the control, call set_position.
@@ -101,6 +112,7 @@ namespace trview
             Size     _size;
             bool     _visible;
             bool     _handles_input{ true };
+            Align    _horizontal_alignment{ Align::Left };
         };
     }
 }
