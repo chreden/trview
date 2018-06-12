@@ -21,6 +21,8 @@ namespace trview
             create_image(size);
             _image->set_texture(_up_image);
 
+            add_child(std::make_unique<Window>(Point(), Size(5, size.height), Colour(1.0f, 0.5f, 0.5f, 0.5f)));
+
             auto label = std::make_unique<Label>(Point(), Size(1, 1), Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text, 10.0f, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
             add_child(std::move(label));
         }
