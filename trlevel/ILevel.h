@@ -139,5 +139,11 @@ namespace trlevel
         // index: The index of the sprite texture to get.
         // Returns: The sprite texture.
         virtual tr_sprite_texture get_sprite_texture(uint32_t index) const = 0;
+
+        /// Find the first entity with the specified type.
+        /// @param type The type ID of the entity.
+        /// @param entity The output entity.
+        /// @returns Whether the entity was found.
+        virtual bool find_first_entity_by_type(int16_t type, tr2_entity& entity) const = 0;
     };
 }

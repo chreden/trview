@@ -334,7 +334,16 @@ namespace trview
         _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
         _room_navigator->set_flip(false);
-        select_room(0);
+
+        trlevel::tr2_entity lara_entity;
+        if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
+        {
+            select_room(lara_entity.Room);
+        }
+        else
+        {
+            select_room(0);
+        }
 
         _neighbours->set_enabled(false);
 
