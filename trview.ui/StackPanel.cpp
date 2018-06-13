@@ -68,6 +68,15 @@ namespace trview
                     size += Size(max_width, previous_size.height);
                 }
 
+                if (_size_dimension == SizeDimension::Width)
+                {
+                    size.height = this->size().height;
+                }
+                else if (_size_dimension == SizeDimension::Height)
+                {
+                    size.width = this->size().width;
+                }
+
                 set_size(size);
             }
 
@@ -94,6 +103,12 @@ namespace trview
                     }
                 }
             }
+        }
+
+        void StackPanel::set_auto_size_dimension(SizeDimension dimension)
+        {
+            _size_dimension = dimension;
+            recalculate_layout();
         }
     }
 }

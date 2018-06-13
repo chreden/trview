@@ -23,6 +23,11 @@ namespace trview
         /// @returns The resultant size.
         Size& operator+=(const Size& other);
 
+        /// Add another size to this size.
+        /// @param other The size to add to this size.
+        /// @returns The new size.
+        Size operator+(const Size& other) const;
+
         float width, height;
     };
 }

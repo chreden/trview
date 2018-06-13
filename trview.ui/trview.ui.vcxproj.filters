@@ -46,6 +46,9 @@
     <ClInclude Include="Align.h">
       <Filter>Types</Filter>
     </ClInclude>
+    <ClInclude Include="SizeDimension.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">

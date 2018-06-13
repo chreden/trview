@@ -28,6 +28,7 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="ParagraphAlignment.h" />
+    <ClInclude Include="SizeDimension.h" />
     <ClInclude Include="SizeMode.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
