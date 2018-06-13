@@ -83,6 +83,17 @@ namespace trview
                     }
                 }
             }
+            else if (_direction == Direction::Vertical)
+            {
+                for (const auto& element : child_elements())
+                {
+                    if (element->horizontal_alignment() == Align::Centre)
+                    {
+                        const auto difference = (size().width - element->size().width) / 2.0f;
+                        element->set_position(Point(difference, element->position().y));
+                    }
+                }
+            }
         }
     }
 }

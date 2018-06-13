@@ -16,6 +16,11 @@ namespace trview
         {
         }
 
+        Align Control::horizontal_alignment() const
+        {
+            return _horizontal_alignment;
+        }
+
         Align Control::vertical_alignment() const
         {
             return _vertical_alignment;
@@ -24,6 +29,12 @@ namespace trview
         void Control::set_vertical_alignment(Align mode)
         {
             _vertical_alignment = mode;
+            on_size_changed(_size);
+        }
+
+        void Control::set_horizontal_alignment(Align mode)
+        {
+            _horizontal_alignment = mode;
             on_size_changed(_size);
         }
 
