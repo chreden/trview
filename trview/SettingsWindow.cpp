@@ -20,6 +20,7 @@ namespace trview
         const auto title_colour = Colour(1.0f, 0.3f, 0.3f, 0.3f);
 
         auto window = std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size());
+        window->set_visible(false);
         _window = window.get();
 
         // Create the title bar.
@@ -63,5 +64,10 @@ namespace trview
     void SettingsWindow::set_go_to_lara(bool value)
     {
         _go_to_lara->set_state(value);
+    }
+
+    void SettingsWindow::toggle_visibility()
+    {
+        _window->set_visible(!_window->visible());
     }
 }

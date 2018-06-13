@@ -36,6 +36,9 @@ namespace trview
         /// Set the new value of the 'go to lara' setting. This will not raise the on_go_to_lara event.
         /// @param value The new 'go to lara' setting.
         void set_go_to_lara(bool value);
+
+        /// Toggle the visibility of the settings window.
+        void toggle_visibility();
     private:
         ui::Checkbox* _vsync;
         ui::Checkbox* _go_to_lara;

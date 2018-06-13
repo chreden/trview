@@ -264,6 +264,9 @@ namespace trview
                 case VK_NEXT:
                     _texture_window->cycle();
                     break;
+                case VK_F1:
+                    _settings_window->toggle_visibility();
+                    break;
                 case VK_F2:
                     _texture_window->toggle_visibility();
                     break;
