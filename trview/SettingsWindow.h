@@ -39,5 +39,6 @@ namespace trview
     private:
         ui::Checkbox* _vsync;
         ui::Checkbox* _go_to_lara;
+        ui::Control* _window;
     };
 }

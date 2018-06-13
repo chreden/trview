@@ -88,7 +88,7 @@ namespace trview
         bool Control::mouse_down(Point position)
         {
             // Bounds check - before child elements are checked.
-            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!visible() || !(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
             {
                 return false;
             }
