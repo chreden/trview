@@ -25,5 +25,15 @@ namespace trview
             on_click();
             return true;
         }
+
+        uint32_t Button::border_thickness() const
+        {
+            return _border_thickness;
+        }
+
+        void Button::set_border_thickness(uint32_t thickness)
+        {
+            _border_thickness = thickness;
+        }
     }
 }

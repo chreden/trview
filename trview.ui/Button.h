@@ -18,11 +18,16 @@ namespace trview
 
             // This event is raised when the user clicks on the button.
             Event<> on_click;
+
+            uint32_t border_thickness() const;
+
+            void set_border_thickness(uint32_t thickness);
         protected:
             virtual bool clicked(Point position) override;
         private:
             graphics::Texture _up_image;
             graphics::Texture _down_image;
+            uint32_t _border_thickness{ 1u };
         };
     }
 }
