@@ -126,7 +126,7 @@ namespace trview
             bool     _visible;
             bool     _handles_input{ true };
             Align    _horizontal_alignment{ Align::Left };
-            Align    _vertical_alignment{ Align::Left };
+            Align    _vertical_alignment{ Align::Near };
             std::string _name;
         };
     }

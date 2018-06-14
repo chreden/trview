@@ -29,7 +29,7 @@ namespace trview
                 const uint32_t thickness = _button->border_thickness();
                 if (thickness)
                 {
-                    _render_target->clear(context, Color(0.0f, 0.0f, 0.0f));
+                    _render_target->clear(context, Color());
                 }
 
                 graphics::RenderTargetStore rt_store(context);
