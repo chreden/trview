@@ -55,7 +55,12 @@ namespace trview
         // Have the control move itself when the parent control resizes.
         control.on_size_changed += [&](const Size& size)
         {
-            _panel->set_position(Point(size.width / 2.0f - 50, 0));
+            _panel->set_position(Point(size.width / 2.0f - _panel->size().width / 2.0f, 0));
+        };
+        _panel->on_size_changed += [&](const Size& size)
+        {
+            auto parent = _panel->parent();
+            _panel->set_position(Point(parent->size().width / 2.0f - _panel->size().width / 2.0f, 0));
         };
     }
 
