@@ -80,6 +80,7 @@ namespace trview
         _control->add_child(std::move(picking));
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
+        _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window = std::make_unique<SettingsWindow>(*_control.get(), *_texture_storage.get());
         _settings_window->on_vsync += [&](bool value) 

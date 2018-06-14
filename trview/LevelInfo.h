@@ -11,6 +11,7 @@
 
 #include <trlevel/LevelVersion.h>
 #include <trview.graphics/Texture.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -42,6 +43,9 @@ namespace trview
         /// @param version The version of the game.
         /// @see trlevel::LevelVersion.
         void set_level_version(trlevel::LevelVersion version);
+
+        /// Event raised when the settings button is pressed.
+        Event<> on_toggle_settings;
     private:
         graphics::Texture get_version_image(trlevel::LevelVersion version) const;
 

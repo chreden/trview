@@ -223,6 +223,7 @@ IDB_CHECK_ON            PNG                     "resources\\checkon.png"
 
 IDB_BUTTON_UP           PNG                     "resources\\buttonup.png"
 
+IDB_SETTINGS            PNG                     "resources\\settings.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //
