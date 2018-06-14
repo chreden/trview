@@ -47,7 +47,7 @@ namespace trview
         _go_to_lara = go_to_lara.get();
         panel->add_child(std::move(go_to_lara));
 
-        auto ok = std::make_unique<Button>(Point(), Size(100, 30), texture_storage.lookup("button_up"), texture_storage.lookup("button_down"));
+        auto ok = std::make_unique<Button>(Point(), Size(100, 30), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
         ok->on_click += [&]() { _window->set_visible(!_window->visible()); };
         panel->add_child(std::move(ok));

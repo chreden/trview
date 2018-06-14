@@ -13,6 +13,7 @@ namespace trview
         {
         public:
             Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image);
+            Button(Point position, Size size, const std::wstring& text);
             virtual ~Button() = default;
 
             // This event is raised when the user clicks on the button.
