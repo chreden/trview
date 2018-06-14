@@ -3,10 +3,12 @@
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Image.h>
+#include <trview.ui/Button.h>
 
 #include "WindowNode.h"
 #include "LabelNode.h"
 #include "ImageNode.h"
+#include "ButtonNode.h"
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/FontFactory.h>
@@ -54,6 +56,10 @@ namespace trview
                 if (auto label = dynamic_cast<Label*>(control))
                 {
                     node = std::make_unique<LabelNode>(_device, label, *_font_factory);
+                }
+                else if (auto button = dynamic_cast<Button*>(control))
+                {
+                    node = std::make_unique<ButtonNode>(_device, button);
                 }
                 else if (auto image = dynamic_cast<Image*>(control))
                 {

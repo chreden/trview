@@ -17,6 +17,9 @@
     <ClInclude Include="MapRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ButtonNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -34,6 +37,9 @@
     </ClCompile>
     <ClCompile Include="MapRenderer.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonNode.cpp">
+      <Filter>Nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

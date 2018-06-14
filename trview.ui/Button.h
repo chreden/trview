@@ -3,13 +3,13 @@
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 
-#include "Image.h"
+#include "Control.h"
 
 namespace trview
 {
     namespace ui
     {
-        class Button : public Image
+        class Button : public Control
         {
         public:
             Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image);
