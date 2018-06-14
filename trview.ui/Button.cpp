@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "Label.h"
+#include "Image.h"
 
 namespace trview
 {
@@ -8,6 +9,9 @@ namespace trview
         Button::Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
             : Control(position, size), _up_image(up_image), _down_image(down_image)
         {
+            auto image = std::make_unique<Image>(Point(), size);
+            image->set_texture(up_image);
+            add_child(std::move(image));
         }
 
         Button::Button(Point position, Size size, const std::wstring& text)
