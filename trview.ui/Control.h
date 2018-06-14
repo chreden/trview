@@ -125,7 +125,7 @@ namespace trview
             Size     _size;
             bool     _visible;
             bool     _handles_input{ true };
-            Align    _horizontal_alignment{ Align::Left };
+            Align    _horizontal_alignment{ Align::Near };
             Align    _vertical_alignment{ Align::Near };
             std::string _name;
         };
