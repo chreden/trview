@@ -13,7 +13,7 @@ namespace trview
         Button::Button(Point position, Size size, const std::wstring& text)
             : Control(position, size)
         {
-            add_child(std::make_unique<Label>(Point(), size, Colour(1.0f, 0.4f, 0.4f, 0.4f), text, 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre));
+            add_child(std::make_unique<Label>(Point(2,2), size - Size(4,4), Colour(1.0f, 0.4f, 0.4f, 0.4f), text, 10.0f, TextAlignment::Centre, ParagraphAlignment::Centre));
         }
 
         bool Button::clicked(Point)

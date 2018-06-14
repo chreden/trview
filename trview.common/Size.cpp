@@ -19,6 +19,11 @@ namespace trview
         return *this;
     }
 
+    Size Size::operator-(const Size& other) const
+    {
+        return Size(width - other.width, height - other.height);
+    }
+
     Size Size::operator+(const Size& other) const
     {
         return Size(width + other.width, height + other.height);
