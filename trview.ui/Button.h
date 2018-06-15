@@ -29,6 +29,11 @@ namespace trview
             /// @param text The text to display on the button.
             Button(Point position, Size size, const std::wstring& text);
 
+            /// Creates a new button.
+            /// @param positio The position of the new element.
+            /// @param size The size of the new element.
+            Button(Point position, Size size);
+
             /// Destructor for the button.
             virtual ~Button() = default;
 

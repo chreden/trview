@@ -20,7 +20,7 @@ namespace trview
 
         auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 152), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
 
-        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16), texture_storage.lookup("button_up"), texture_storage.lookup("button_up"));
+        auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16));
         reset_camera->on_click += on_reset;
 
         auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, TextAlignment::Left, ParagraphAlignment::Centre);

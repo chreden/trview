@@ -24,7 +24,6 @@
 #define IDB_NUMERIC_DOWN                138
 #define IDB_CHECK_OFF                   139
 #define IDB_CHECK_ON                    140
-#define IDB_BUTTON_UP                   141
 #define IDB_SETTINGS                    142
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              32772
