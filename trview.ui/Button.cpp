@@ -34,6 +34,7 @@ namespace trview
         void Button::set_border_thickness(uint32_t thickness)
         {
             _border_thickness = thickness;
+            on_invalidate();
         }
     }
 }
