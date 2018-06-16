@@ -31,12 +31,12 @@ namespace trview
             return true;
         }
 
-        uint32_t Button::border_thickness() const
+        float Button::border_thickness() const
         {
             return _border_thickness;
         }
 
-        void Button::set_border_thickness(uint32_t thickness)
+        void Button::set_border_thickness(float thickness)
         {
             _border_thickness = thickness;
             on_invalidate();

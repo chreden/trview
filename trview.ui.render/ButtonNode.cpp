@@ -26,7 +26,7 @@ namespace trview
 
             void ButtonNode::render_self(const ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
-                const uint32_t thickness = _button->border_thickness();
+                const float thickness = _button->border_thickness();
                 if (thickness)
                 {
                     _render_target->clear(context, Color());
@@ -37,7 +37,7 @@ namespace trview
                 graphics::SpriteSizeStore s_store(sprite, _render_target->width(), _render_target->height());
                 _render_target->apply(context);
 
-                sprite.render(context, _blank, thickness, thickness, _button->size().width - 2 * thickness, _button->size().height - 2 * thickness,
+                sprite.render(context, _blank, thickness, thickness, _button->size().width - 2.0f * thickness, _button->size().height - 2.0f * thickness,
                     Color(0.4f, 0.4f, 0.4f));
             }
         }

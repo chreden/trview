@@ -41,17 +41,18 @@ namespace trview
             Event<> on_click;
 
             /// Gets the thickness of the border that will be applied when the element is rendered.
-            uint32_t border_thickness() const;
+            /// @returns The thickness of the border.s
+            float border_thickness() const;
 
             /// Set the thickness of the border that will be applied when the element is rendered.
             /// @param thickness The new thickness.
-            void set_border_thickness(uint32_t thickness);
+            void set_border_thickness(float thickness);
         protected:
             virtual bool clicked(Point position) override;
         private:
             graphics::Texture _up_image;
             graphics::Texture _down_image;
-            uint32_t _border_thickness{ 1u };
+            float _border_thickness{ 1.0f };
         };
     }
 }
