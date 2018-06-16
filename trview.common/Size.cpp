@@ -28,4 +28,9 @@ namespace trview
     {
         return Size(width + other.width, height + other.height);
     }
+
+    Size Size::operator/(float divisor) const
+    {
+        return Size(width / divisor, height / divisor);
+    }
 }

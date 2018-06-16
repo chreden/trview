@@ -33,6 +33,11 @@ namespace trview
         /// @returns The new size.
         Size operator+(const Size& other) const;
 
+        /// Divide the size by a divisor.
+        /// @param The divisor.
+        /// @returns The new size.
+        Size operator/(float divisor) const;
+
         float width, height;
     };
 }

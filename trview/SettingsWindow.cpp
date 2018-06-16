@@ -54,6 +54,16 @@ namespace trview
 
         window->add_child(std::move(panel));
         parent.add_child(std::move(window));
+
+        // Register for control resizes on the parent so that the window will always
+        // be in the middle of the screen.
+        parent.on_size_changed += [&](const Size& parent_size)
+        {
+            const auto half_size = _window->size() / 2.0f;
+            _window->set_position(
+                Point(parent_size.width / 2.0f - half_size.width,
+                      parent_size.height / 2.0f - half_size.height));
+        };
     }
 
     void SettingsWindow::set_vsync(bool value)
