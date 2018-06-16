@@ -85,7 +85,7 @@ namespace trview
             return output;
         }
 
-        bool Control::mouse_down(Point position)
+        bool Control::mouse_down(const Point& position)
         {
             // Bounds check - before child elements are checked.
             if (!visible() || !(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
@@ -121,7 +121,7 @@ namespace trview
             return handled_by_self;
         }
 
-        bool Control::mouse_move(Point position)
+        bool Control::mouse_move(const Point& position)
         {
             if (_focus_control && _focus_control != this)
             {
@@ -150,7 +150,7 @@ namespace trview
             return handled | move(position);
         }
 
-        bool Control::mouse_up(Point)
+        bool Control::mouse_up(const Point&)
         {
             set_focus_control(nullptr);
             return true;
@@ -194,7 +194,7 @@ namespace trview
             _handles_input = value;
         }
 
-        bool Control::is_mouse_over(Point position) const
+        bool Control::is_mouse_over(const Point& position) const
         {
             if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
             {
