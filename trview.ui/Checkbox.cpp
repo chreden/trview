@@ -1,13 +1,42 @@
 #include "Checkbox.h"
+#include "Image.h"
+#include "Label.h"
 
 namespace trview
 {
+    using namespace graphics;
+
     namespace ui
     {
-        Checkbox::Checkbox(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
-            : Image(position, size), _up_image(up_image), _down_image(down_image)
+        Checkbox::Checkbox(const Point& position, const Size& size, const Texture& up_image, const Texture& down_image)
+            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
         {
-            set_texture(_up_image);
+            create_image(size);
+            _image->set_texture(_up_image);
+        }
+
+        Checkbox::Checkbox(const Point& position, const Size& size, const Texture& up_image, const Texture& down_image, const std::wstring& label_text)
+            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal), _up_image(up_image), _down_image(down_image)
+        {
+            create_image(size);
+            _image->set_texture(_up_image);
+
+            add_child(std::make_unique<Window>(Point(), Size(5, size.height), Colour(1.0f, 0.5f, 0.5f, 0.5f)));
+
+            auto label = std::make_unique<Label>(Point(), Size(1, 1), Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text, 10.0f, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
+            label->set_vertical_alignment(Align::Centre);
+            add_child(std::move(label));
+        }
+
+        void Checkbox::create_image(const Size& size)
+        {
+            auto image = std::make_unique<Image>(Point(), size);
+            
+            // Store local copies so that the image can be updated.
+            _image = image.get();
+
+            // Add the image and the label to the control.
+            add_child(std::move(image));
         }
 
         bool Checkbox::clicked(Point)
@@ -29,7 +58,7 @@ namespace trview
         void Checkbox::set_state(bool state)
         {
             _state = state;
-            set_texture(_state ? _down_image : _up_image);
+            _image->set_texture(_state ? _down_image : _up_image);
         }
     }
 }

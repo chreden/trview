@@ -252,4 +252,11 @@ namespace trview
         _alternate_room = number;
         _alternate_mode = AlternateMode::IsAlternate;
     }
+
+    Vector3 Room::centre() const
+    {
+        return Vector3(_info.x / 1024.f + _num_x_sectors / 2.f,
+                 _info.yBottom / -1024.f + (_info.yTop - _info.yBottom) / -1024.f / 2.0f,
+                 (_info.z / 1024.f) + _num_z_sectors / 2.f);
+    }
 }

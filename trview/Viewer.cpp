@@ -1,27 +1,29 @@
 #include "stdafx.h"
 #include "Viewer.h"
-#include <trlevel/trlevel.h>
 
-#include <string>
 #include <algorithm>
+#include <string>
 #include <directxmath.h>
 
+#include <trlevel/trlevel.h>
+#include <trview.graphics/ShaderStorage.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
+#include <trview.ui.render/Renderer.h>
+#include <trview.ui.render/MapRenderer.h>
 
-#include <trview.graphics/ShaderStorage.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Device.h>
-
-#include "RoomNavigator.h"
 #include "CameraControls.h"
-#include "Neighbours.h"
-#include "TextureStorage.h"
-#include "LevelInfo.h"
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
+#include "GoToRoom.h"
+#include "LevelInfo.h"
+#include "Neighbours.h"
+#include "RoomNavigator.h"
+#include "TextureStorage.h"
+#include "TextureWindow.h"
+#include "SettingsWindow.h"
 
 namespace trview
 {
@@ -78,13 +80,27 @@ namespace trview
         _control->add_child(std::move(picking));
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
+        _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
+
+        _settings_window = std::make_unique<SettingsWindow>(*_control.get(), *_texture_storage.get());
+        _settings_window->on_vsync += [&](bool value) 
+        { 
+            _settings.vsync = value; 
+            save_user_settings(_settings);
+        };
+        _settings_window->on_go_to_lara += [&](bool value) 
+        { 
+            _settings.go_to_lara = value; 
+            save_user_settings(_settings); 
+        };
+        _settings_window->set_vsync(_settings.vsync);
+        _settings_window->set_go_to_lara(_settings.go_to_lara);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
-        
     }
 
     void Viewer::generate_tool_window()
@@ -183,9 +199,13 @@ namespace trview
                     if (sector != nullptr)
                     {
                         if (sector->flags & SectorFlag::Portal)
+                        {
                             select_room(sector->portal());
+                        }
                         else if (sector->flags & SectorFlag::RoomBelow)
-                            select_room(sector->room_below()); 
+                        {
+                            select_room(sector->room_below());
+                        }
                     }
                 }
             }
@@ -195,7 +215,9 @@ namespace trview
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
                     if (sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
-                        select_room(sector->room_above()); 
+                    {
+                        select_room(sector->room_above());
+                    }
                 }
             }
         };
@@ -238,13 +260,16 @@ namespace trview
                     break;
                 }
                 case VK_PRIOR:
-                    cycle_back();
+                    _texture_window->cycle_back();
                     break;
                 case VK_NEXT:
-                    cycle();
+                    _texture_window->cycle();
+                    break;
+                case VK_F1:
+                    _settings_window->toggle_visibility();
                     break;
                 case VK_F2:
-                    toggle_texture_window();
+                    _texture_window->toggle_visibility();
                     break;
                 case VK_RETURN:
                     toggle_highlight();
@@ -313,7 +338,16 @@ namespace trview
         _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
         _room_navigator->set_flip(false);
-        select_room(0);
+
+        trlevel::tr2_entity lara_entity;
+        if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
+        {
+            select_room(lara_entity.Room);
+        }
+        else
+        {
+            select_room(0);
+        }
 
         _neighbours->set_enabled(false);
 
@@ -336,10 +370,10 @@ namespace trview
         _device.clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
-        render_ui();
+        _ui_renderer->render(_device.context());
         render_map();
 
-        _device.present();
+        _device.present(_settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -347,6 +381,11 @@ namespace trview
     bool Viewer::over_ui() const
     {
         return _control->is_mouse_over(client_cursor_position(_window));
+    }
+
+    bool Viewer::over_map() const 
+    {
+        return _map_renderer->loaded() && _map_renderer->cursor_is_over_control();
     }
 
     void Viewer::pick()
@@ -390,14 +429,7 @@ namespace trview
             // Update the view matrix based on the room selected in the room window.
             if (_current_level->num_rooms() > 0)
             {
-                auto room = _current_level->get_room(_level->selected_room());
-
-                DirectX::SimpleMath::Vector3 target_position(
-                    (room.info.x / 1024.f) + room.num_x_sectors / 2.f,
-                    (room.info.yBottom / -1024.f) + (room.info.yTop - room.info.yBottom) / -1024.f / 2.0f,
-                    (room.info.z / 1024.f) + room.num_z_sectors / 2.f);
-
-                _camera.set_target(target_position);
+                _camera.set_target(_level->room(_level->selected_room())->centre());
             }
             _level->render(_device.context(), current_camera());
         }
@@ -443,31 +475,11 @@ namespace trview
         _camera_controls->set_mode(camera_mode);
     }
 
-    void Viewer::render_ui()
-    {
-        _ui_renderer->render(_device.context());
-    }
-
     void Viewer::render_map()
     {
         Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
         _map_renderer->render(_device.context());
-    }
-
-    void Viewer::cycle()
-    {
-        _texture_window->cycle();
-    }
-
-    void Viewer::cycle_back()
-    {
-        _texture_window->cycle_back();
-    }
-
-    void Viewer::toggle_texture_window()
-    {
-        _texture_window->toggle_visibility();
     }
 
     void Viewer::toggle_highlight()

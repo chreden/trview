@@ -17,6 +17,9 @@ namespace trview
             auto up = std::make_unique<Button>(Point(size.width - 16, 0), Size(16, size.height / 2), up_texture, up_texture);
             auto down = std::make_unique<Button>(Point(size.width - 16, size.height / 2), Size(16, size.height / 2), down_texture, down_texture);
 
+            up->set_border_thickness(0u);
+            down->set_border_thickness(0u);
+
             up->on_click += [&]() { set_value(_value + 1); };
             down->on_click += [&]() { set_value(_value - 1); };
 

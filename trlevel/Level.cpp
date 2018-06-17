@@ -719,4 +719,15 @@ namespace trlevel
 
         std::vector<uint32_t> sample_indices = read_vector<uint32_t, uint32_t>(file);
     }
+
+    bool Level::find_first_entity_by_type(int16_t type, tr2_entity& entity) const
+    {
+        auto found = std::find_if(_entities.begin(), _entities.end(), [type](const auto& e) { return e.TypeID == type; });
+        if (found == _entities.end())
+        {
+            return false;
+        }
+        entity = *found;
+        return true;
+    }
 }

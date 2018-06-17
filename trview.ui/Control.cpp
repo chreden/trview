@@ -16,6 +16,28 @@ namespace trview
         {
         }
 
+        Align Control::horizontal_alignment() const
+        {
+            return _horizontal_alignment;
+        }
+
+        Align Control::vertical_alignment() const
+        {
+            return _vertical_alignment;
+        }
+
+        void Control::set_vertical_alignment(Align mode)
+        {
+            _vertical_alignment = mode;
+            on_size_changed(_size);
+        }
+
+        void Control::set_horizontal_alignment(Align mode)
+        {
+            _horizontal_alignment = mode;
+            on_size_changed(_size);
+        }
+
         Point Control::position() const
         {
             return _position;
@@ -63,10 +85,10 @@ namespace trview
             return output;
         }
 
-        bool Control::mouse_down(Point position)
+        bool Control::mouse_down(const Point& position)
         {
             // Bounds check - before child elements are checked.
-            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!visible() || !(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
             {
                 return false;
             }
@@ -99,7 +121,7 @@ namespace trview
             return handled_by_self;
         }
 
-        bool Control::mouse_move(Point position)
+        bool Control::mouse_move(const Point& position)
         {
             if (_focus_control && _focus_control != this)
             {
@@ -128,7 +150,7 @@ namespace trview
             return handled | move(position);
         }
 
-        bool Control::mouse_up(Point)
+        bool Control::mouse_up(const Point&)
         {
             set_focus_control(nullptr);
             return true;
@@ -172,7 +194,7 @@ namespace trview
             _handles_input = value;
         }
 
-        bool Control::is_mouse_over(Point position) const
+        bool Control::is_mouse_over(const Point& position) const
         {
             if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
             {
@@ -196,6 +218,16 @@ namespace trview
             _size = size;
             on_size_changed(size);
             on_invalidate();
+        }
+
+        const std::string& Control::name() const
+        {
+            return _name;
+        }
+
+        void Control::set_name(const std::string& name)
+        {
+            _name = name;
         }
     }
 }

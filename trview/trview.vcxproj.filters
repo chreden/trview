@@ -154,6 +154,9 @@
     <ClInclude Include="DefaultTextures.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="SettingsWindow.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -249,6 +252,9 @@
     <ClCompile Include="DefaultTextures.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsWindow.cpp">
+      <Filter>Program\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -286,13 +292,13 @@
     <Image Include="resources\numericup.png">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="resources\buttonup.png">
-      <Filter>Resources</Filter>
-    </Image>
     <Image Include="resources\checkon.png">
       <Filter>Resources</Filter>
     </Image>
     <Image Include="resources\checkoff.png">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="resources\settings.png">
       <Filter>Resources</Filter>
     </Image>
   </ItemGroup>

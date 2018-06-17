@@ -124,6 +124,9 @@ namespace trview
         // Returns the number of z sectors in the room 
         inline std::uint16_t num_z_sectors() const { return _num_z_sectors; }
 
+        /// Get the centre point of the room.#
+        /// @returns The centre position of the room.
+        DirectX::SimpleMath::Vector3 centre() const;
 
     private:
         void generate_geometry(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);

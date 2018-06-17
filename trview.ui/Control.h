@@ -1,3 +1,6 @@
+/// @file Control.h
+/// @brief Base class for user interface windows and controls.
+
 #pragma once
 
 #include <vector>
@@ -5,93 +8,147 @@
 #include <trview.common/Event.h>
 #include <trview.common/Size.h>
 #include <trview.common/Point.h>
+#include "Align.h"
 
 namespace trview
 {
     namespace ui
     {
-        // Control is the base class for all user interface windows and controls.
+        /// Control is the base class for all user interface windows and controls.
         class Control
         {
         public:
+            /// Create a new control.
+            /// @param position The position in the parent control.
+            /// @param size The size of the control.
             Control(Point position, Size size);
 
+            /// Destructor for control.
             virtual ~Control() = 0;
 
-            // Get the X and Y position of the control relative to the parent window.
-            // To change the position of the control, call set_position.
+            /// Get the horizontal alignment value. This will affect how the control is placed in the parent control.
+            /// @returns The horizontal alignment mode.
+            Align horizontal_alignment() const;
+
+            /// Get the vertical alignment value. This will affect how the control is placed in the parent control.
+            /// @returns The vertical alignment mode.
+            Align vertical_alignment() const;
+
+            /// Set the vertical alignment value. This will affect how the control is placed in the parent control.
+            /// @param mode The vertical alignment mode.
+            void set_vertical_alignment(Align mode);
+
+            /// Set the horizontal alignment value. This will affect how the control is placed in the parent control.
+            /// @param mode The horizontal alignment mode.
+            void set_horizontal_alignment(Align mode);
+
+            /// Get the X and Y position of the control relative to the parent window.
+            /// To change the position of the control, call set_position.
+            /// @returns The position of the control relative to the parent.
             Point position() const;
 
-            // Set the X and Y position of the control relative to the parent window.
-            // To get the position of the control, call position.
+            /// Set the X and Y position of the control relative to the parent window.
+            /// To get the position of the control, call position.
+            /// @param position The position of the control in the parent window.
             void set_position(Point position);
 
-            // Get the width and height of the control.
+            /// Get the width and height of the control.
+            /// @returns The size of the control.
             Size size() const;
 
-            // Gets whether the control and its child controls are visible. Invisible
-            // controls will not be rendered and will not accept input.
-            // To set the visibility state of a control, use set_visible(bool);
+            /// Gets whether the control and its child controls are visible. Invisible
+            /// controls will not be rendered and will not accept input.
+            /// To set the visibility state of a control, use set_visible(bool);
+            /// @returns Whether the control is visible.
             bool visible() const;
 
-            // Sets whether the control and its child controls are visible. Invisible
-            // controls will not be rendered and will not accept input.
-            // To query the current state, use visible().
+            /// Sets whether the control and its child controls are visible. Invisible
+            /// controls will not be rendered and will not accept input.
+            /// @remarks To query the current state, use visible().
+            /// @param value Whether the control is visible.
             void set_visible(bool value);
 
-            // Get the parent control of this control. This is a non-owning pointer
-            // to the parent and can be null in the case of this being a top-level
-            // control.
+            /// Get the parent control of this control. This is a non-owning pointer
+            /// to the parent and can be null in the case of this being a top-level control.
+            /// @returns The parent control.
             Control* parent() const;
 
-            // Add the specified control as a child element of this control.
-            // Sets the parent element of the child to be this element.
+            /// Add the specified control as a child element of this control.
+            /// Sets the parent element of the child to be this element.
+            /// @param child_element The element to add to the control.
             virtual void add_child(std::unique_ptr<Control>&& child_element);
 
-            // Get the elements that are direct children of this element.
-            // To add a new child, use add_child.
+            /// Get the elements that are direct children of this element.
+            /// @remarks To add a new child, use add_child.
+            /// @returns The child elements.
             std::vector<Control*> child_elements() const;
 
-            // Process a mouse_down event at the position specified.
-            // Returns whether the mouse click was within the bounds of the control element and was handled.
-            bool mouse_down(Point position);
+            /// Process a mouse_down event at the position specified.
+            /// @param position The position of the mouse relative to the control.
+            /// @returns Whether the mouse down event was handled by the control.
+            bool mouse_down(const Point& position);
 
-            bool mouse_up(Point position);
+            /// Process a mouse_up event a tthe position specified.
+            /// @param position The position of the mouse relative to the control.
+            /// @returns Whether the mouse up event was handled by the control.
+            bool mouse_up(const Point& position);
 
-            // Process a mouse_move event at the position specified.
-            // Returns whether the mouse move was handled.
-            bool mouse_move(Point position);
+            /// Process a mouse_move event at the position specified.
+            /// @param position The position of the mouse relative to the control.
+            /// @returns Whether the mouse move was handled by the control.
+            bool mouse_move(const Point& position);
 
-            // Determines whether the mouse is over the element or any child elements that are interested
-            // in taking input.
-            // position: The mouse position.
-            // Returns: True if the control or any child elements are under the cursor.
-            bool is_mouse_over(Point position) const;
+            /// Determines whether the mouse is over the element or any child elements that are
+            /// interested in taking input.
+            /// @param position The mouse position.
+            /// @returns True if the control or any child elements are under the cursor and the control handles the event.
+            bool is_mouse_over(const Point& position) const;
 
-            // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
-            // value: Whether the control handles input.
+            /// Set whether this control handles input when tested in is_mouse_over. Defaults to true.
+            /// @param value Whether the control handles input.
             void set_handles_input(bool value);
 
-            // Set the size of the control.
-            // size: The new size of the control.
+            /// Set the size of the control.
+            /// @param size The new size of the control.
             void set_size(Size size);
 
-            // Event raised when the size of the control has changed.
+            /// Gets the name of the control.
+            /// @returs The name of the control.
+            const std::string& name() const;
+
+            /// Set the new name of the control.
+            /// @param name The new name of the control.
+            void set_name(const std::string& name);
+
+            /// Find the first control with the specified name and type.
+            /// @param name The name to search for.
+            /// @returns The control with the given name as the specified type. If there is
+            ///          no control found, this returns null.
+            template <typename T>
+            T* find(const std::string& name) const;
+
+            /// Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
 
-            // The control has changed and needs to be redrawn.
+            /// Event raised when the control has changed and needs to be redrawn.
             Event<> on_invalidate;
         protected:
-            // To be called when the user interface element has been clicked.
-            // This should be overriden by child elements to handle a click.
+            /// To be called when the user interface element has been clicked.
+            /// This should be overriden by child elements to handle a click.
+            /// @param position The position of the click relative to the control.
             virtual bool clicked(Point position);
 
-            // To be called when the mouse was moved over the element.
-            // This should be overriden by child elements to handle a move.
+            /// To be called when the mouse was moved over the element.
+            /// This should be overriden by child elements to handle a move.
+            /// @param position The mouse position relative to the control.
             virtual bool move(Point position);
 
+            /// Set the control in the tree that has focus.
+            /// @param control The current focus control
             void set_focus_control(Control* control);
 
+            /// Get the currently focused control.
+            /// @returns The currently focused control.
             Control* focus_control() const;
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
@@ -101,6 +158,9 @@ namespace trview
             Size     _size;
             bool     _visible;
             bool     _handles_input{ true };
+            Align    _horizontal_alignment{ Align::Near };
+            Align    _vertical_alignment{ Align::Near };
+            std::string _name;
         };
     }
 }

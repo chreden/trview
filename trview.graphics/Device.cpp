@@ -87,9 +87,9 @@ namespace trview
             return _context;
         }
 
-        void Device::present()
+        void Device::present(bool vsync)
         {
-            _swap_chain->Present(1, 0);
+            _swap_chain->Present(vsync ? 1 : 0, 0);
         }
 
         void Device::resize()

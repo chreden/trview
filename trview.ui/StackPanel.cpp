@@ -14,6 +14,7 @@ namespace trview
             child_element->set_position(get_next_position());
             child_element->on_size_changed += [&](auto) { recalculate_layout(); };
             Window::add_child(std::move(child_element));
+            recalculate_layout();
         }
 
         Point StackPanel::get_next_position() const
@@ -40,6 +41,8 @@ namespace trview
         {
             Point previous_position(_padding.width, _padding.height);
             Size previous_size(0,0);
+            float max_height = 0;
+            float max_width = 0;
 
             for (const auto& element : child_elements())
             {
@@ -47,14 +50,65 @@ namespace trview
                 element->set_position(position);
                 previous_position = position;
                 previous_size = element->size();
+
+                max_width = std::max(previous_size.width, max_width);
+                max_height = std::max(previous_size.height, max_height);
             }
 
             if (_size_mode == SizeMode::Auto)
             {
-                set_size(
-                    Size(previous_position.x + previous_size.width + _padding.width,
-                         previous_position.y + previous_size.height + _padding.height));
+                auto size = Size(previous_position.x + _padding.width, previous_position.y + _padding.height);
+
+                if (_direction == Direction::Horizontal)
+                {
+                    size += Size(previous_size.width, max_height);
+                }
+                else if (_direction == Direction::Vertical)
+                {
+                    size += Size(max_width, previous_size.height);
+                }
+
+                if (_size_dimension == SizeDimension::Width)
+                {
+                    size.height = this->size().height;
+                }
+                else if (_size_dimension == SizeDimension::Height)
+                {
+                    size.width = this->size().width;
+                }
+
+                set_size(size);
             }
+
+            // Now that the size has been updated, update for alignment.
+            if (_direction == Direction::Horizontal)
+            {
+                for (const auto& element : child_elements())
+                {
+                    if (element->vertical_alignment() == Align::Centre)
+                    {
+                        const auto difference = (size().height - element->size().height) / 2.0f;
+                        element->set_position(Point(element->position().x, difference));
+                    }
+                }
+            }
+            else if (_direction == Direction::Vertical)
+            {
+                for (const auto& element : child_elements())
+                {
+                    if (element->horizontal_alignment() == Align::Centre)
+                    {
+                        const auto difference = (size().width - element->size().width) / 2.0f;
+                        element->set_position(Point(difference, element->position().y));
+                    }
+                }
+            }
+        }
+
+        void StackPanel::set_auto_size_dimension(SizeDimension dimension)
+        {
+            _size_dimension = dimension;
+            recalculate_layout();
         }
     }
 }

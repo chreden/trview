@@ -43,6 +43,12 @@
     <ClInclude Include="Checkbox.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Align.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SizeDimension.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp">
@@ -86,5 +92,10 @@
     <Filter Include="Controls">
       <UniqueIdentifier>{a78c4281-0488-4328-8bf1-060d8cbdd71d}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Control.inl">
+      <Filter>Controls</Filter>
+    </None>
   </ItemGroup>
 </Project>
