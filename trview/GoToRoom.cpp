@@ -90,8 +90,16 @@ namespace trview
 
         if (key == VK_RETURN)
         {
-            room_selected(std::stoul(_input));
-            toggle_visible();
+            try
+            {
+                auto room = std::stoul(_input);
+                room_selected(room);
+                toggle_visible();
+            }
+            catch(...)
+            {
+                // Couldn't convert the number.
+            }
         }
         else if (key == VK_ESCAPE)
         {
