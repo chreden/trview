@@ -59,6 +59,12 @@ namespace trview
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
             _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
+
+            D3D11_RASTERIZER_DESC rasterizer_desc;
+            memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
+            rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+            rasterizer_desc.AntialiasedLineEnable = true;
+            _device->CreateRasterizerState(&rasterizer_desc, &_rasterizer_state);
         }
 
         Device::~Device()
