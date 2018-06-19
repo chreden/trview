@@ -57,14 +57,19 @@ namespace trview
             depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
             depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
             _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
 
             D3D11_RASTERIZER_DESC rasterizer_desc;
             memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
             rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+            rasterizer_desc.CullMode = D3D11_CULL_BACK;
+            rasterizer_desc.FrontCounterClockwise = false;
+            rasterizer_desc.DepthClipEnable = true;
+            rasterizer_desc.MultisampleEnable = true;
             rasterizer_desc.AntialiasedLineEnable = true;
             _device->CreateRasterizerState(&rasterizer_desc, &_rasterizer_state);
+
+            _context->RSSetState(_rasterizer_state.Get());
         }
 
         Device::~Device()

@@ -59,7 +59,7 @@ namespace trview
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<ID3D11BlendState>    _blend_state;
             Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-            Microsoft::WRL::ComPtr<IID_ID3D11RasterizerState> _rasterizer_state;
+            Microsoft::WRL::ComPtr<ID3D11RasterizerState> _rasterizer_state;
             std::unique_ptr<graphics::RenderTarget>     _render_target;
         };
     }
