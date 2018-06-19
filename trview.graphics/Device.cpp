@@ -57,6 +57,7 @@ namespace trview
             depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
             depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
             depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
             _device->CreateDepthStencilState(&depthStencilDesc, &_depth_stencil_state);
         }
 
