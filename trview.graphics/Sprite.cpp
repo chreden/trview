@@ -3,6 +3,7 @@
 #include <SimpleMath.h>
 
 #include <vector>
+#include <cmath>
 
 #include <trview.common/FileLoader.h>
 #include "IShaderStorage.h"
@@ -91,7 +92,7 @@ namespace trview
 
         void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
         {
-            update_matrix(context, std::roundf(x), std::roundf(y), std::roundf(width), std::roundf(height), colour);
+            update_matrix(context, std::round(x), std::round(y), std::round(width), std::round(height), colour);
 
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
