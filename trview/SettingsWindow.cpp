@@ -20,8 +20,7 @@ namespace trview
         const auto title_colour = Colour(1.0f, 0.3f, 0.3f, 0.3f);
 
         auto window = std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size());
-        window->set_visible(true);
-        window->set_name("Settings");
+        window->set_visible(false);
         _window = window.get();
 
         // Create the title bar.
@@ -30,7 +29,7 @@ namespace trview
         title->set_horizontal_alignment(Align::Centre);
         title_bar->add_child(std::move(title));
         window->add_child(std::move(title_bar));
-        
+
         // Create the rest of the window contents.
         auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), background_colour, Size(5,5));
         panel->set_auto_size_dimension(SizeDimension::Height);
@@ -62,8 +61,8 @@ namespace trview
         {
             const auto half_size = _window->size() / 2.0f;
             _window->set_position(
-                Point(std::roundf(parent_size.width / 2.0f - half_size.width),
-                      std::roundf(parent_size.height / 2.0f - half_size.height)));
+                Point(parent_size.width / 2.0f - half_size.width,
+                      parent_size.height / 2.0f - half_size.height));
         };
         parent.on_size_changed += centre_window;
         centre_window(parent.size());

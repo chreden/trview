@@ -91,7 +91,7 @@ namespace trview
 
         void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
         {
-            update_matrix(context, x, y, width, height, colour);
+            update_matrix(context, std::roundf(x), std::roundf(y), std::roundf(width), std::roundf(height), colour);
 
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
