@@ -60,7 +60,7 @@ namespace trview
         _panel->on_size_changed += [&](const Size& size)
         {
             auto parent = _panel->parent();
-            _panel->set_position(Point(parent->size().width / 2.0f - _panel->size().width / 2.0f, 0));
+            _panel->set_position(Point(parent->size().width / 2.0f - size.width / 2.0f, 0));
         };
     }
 

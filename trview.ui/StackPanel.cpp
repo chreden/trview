@@ -103,6 +103,8 @@ namespace trview
                     }
                 }
             }
+
+            on_invalidate();
         }
 
         void StackPanel::set_auto_size_dimension(SizeDimension dimension)

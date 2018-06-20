@@ -31,7 +31,7 @@ namespace trview
         window->add_child(std::move(title_bar));
 
         // Create the rest of the window contents.
-        auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), background_colour, Size(5,5), StackPanel::Direction::Vertical, SizeMode::Auto);
+        auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), background_colour, Size(5,5));
         panel->set_auto_size_dimension(SizeDimension::Height);
 
         const auto check_off = texture_storage.lookup("check_off");
@@ -57,13 +57,15 @@ namespace trview
 
         // Register for control resizes on the parent so that the window will always
         // be in the middle of the screen.
-        parent.on_size_changed += [&](const Size& parent_size)
+        auto centre_window = [&](const Size& parent_size)
         {
             const auto half_size = _window->size() / 2.0f;
             _window->set_position(
                 Point(parent_size.width / 2.0f - half_size.width,
                       parent_size.height / 2.0f - half_size.height));
         };
+        parent.on_size_changed += centre_window;
+        centre_window(parent.size());
     }
 
     void SettingsWindow::set_vsync(bool value)
