@@ -37,11 +37,14 @@ namespace trview
         LARGE_INTEGER frequency;
         QueryPerformanceFrequency(&frequency);
 
-        return [frequency]()
+        LARGE_INTEGER start;
+        QueryPerformanceCounter(&start);
+
+        return [frequency, start]()
         {
             LARGE_INTEGER tick;
             QueryPerformanceCounter(&tick);
-            return static_cast<float>(tick.QuadPart) / frequency.QuadPart;
+            return static_cast<float>(tick.QuadPart - start.QuadPart) / static_cast<float>(frequency.QuadPart);
         };
     }
 }
