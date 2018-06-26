@@ -12,6 +12,7 @@ namespace trview
     namespace ui
     {
         class Image;
+        class Label;
 
         /// UI element that provides a toggleable checkbox and an optional label.
         class Checkbox : public StackPanel
@@ -53,15 +54,21 @@ namespace trview
             /// Set the state of the checkbox. This will not raise the state changed event.
             /// @param state The new state of the checkbox.
             void set_state(bool state);
+
+            /// Set whether the checkbox is enabled.
+            /// @param enabled Whether the checkbox is enabled.
+            void set_enabled(bool enabled);
         protected:
             virtual bool clicked(Point position) override;
         private:
             void create_image(const Size& size);
 
             ui::Image* _image;
+            ui::Label* _label;
             graphics::Texture _up_image;
             graphics::Texture _down_image;
             bool    _state{ false };
+            bool    _enabled{ true };
         };
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Control.h"
-#include "Colour.h"
+#include <trview.common/Colour.h>
 #include <trview.common/Point.h>
 
 namespace trview

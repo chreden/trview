@@ -58,7 +58,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -73,7 +73,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();

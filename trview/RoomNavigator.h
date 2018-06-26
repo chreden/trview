@@ -66,6 +66,10 @@ namespace trview
         /// Set the current flip mode. This will not raise the on_flip event but will update the user interface appropriately.
         /// @param flip The new flip mode.
         void set_flip(bool flip);
+
+        /// Set whether the flip control is enabled or disabled.
+        /// @param enabled Whether the control is enabled.
+        void set_flip_enabled(bool enabled);
     private:
         ui::Checkbox*      _highlight;
         ui::Checkbox*      _flip;

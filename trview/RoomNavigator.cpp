@@ -89,4 +89,9 @@ namespace trview
     {
         _flip->set_state(flip);
     }
+
+    void RoomNavigator::set_flip_enabled(bool enabled)
+    {
+        _flip->set_enabled(enabled);
+    }
 }

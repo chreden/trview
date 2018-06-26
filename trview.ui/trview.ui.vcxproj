@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="Align.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="Colour.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="GroupBox.h" />
     <ClInclude Include="Image.h" />
@@ -38,7 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="Colour.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="Image.cpp" />
