@@ -171,7 +171,7 @@ namespace trview
             {
                 case 'P':
                 {
-                    if (_level)
+                    if (_level && _level->any_alternates())
                     {
                         set_alternate_mode(!_level->alternate_mode());
                     }
