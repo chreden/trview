@@ -17,6 +17,7 @@
 namespace trview
 {
     struct Size;
+    struct Colour;
 
     namespace graphics
     {
@@ -37,10 +38,11 @@ namespace trview
 
             /// Create a texture that fonts can be rendered to based on the texture that is passed in.
             /// @param texture The texture that fonts will be rendered to.
+            /// @param colour The font colour.
             /// @returns A FontTexture that can be used with the render method.
             /// @see Font::render()
             /// @see FontTexture
-            FontTexture create_texture(const graphics::Texture& texture);
+            FontTexture create_texture(const graphics::Texture& texture, const Colour& colour);
 
             /// Renders the text to the specified font texture.
             /// @param texture The font texture to render to.

@@ -59,6 +59,7 @@ namespace trview
                         generate_font_texture();
                     };
                 }
+                
             }
 
             LabelNode::~LabelNode()
@@ -83,7 +84,7 @@ namespace trview
                     regenerate_texture();
                 }
 
-                _font_texture = _font->create_texture(_render_target->texture());
+                _font_texture = _font->create_texture(_render_target->texture(), _label->text_colour());
             }
         }
     }

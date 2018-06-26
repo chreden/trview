@@ -7,6 +7,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Colour.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -14,6 +15,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Colour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />

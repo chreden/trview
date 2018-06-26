@@ -1,6 +1,7 @@
 #include "Font.h"
 #include "Texture.h"
 #include <trview.common/Size.h>
+#include <trview.common/Colour.h>
 
 using namespace Microsoft::WRL;
 
@@ -13,7 +14,7 @@ namespace trview
         {
         }
 
-        FontTexture Font::create_texture(const graphics::Texture& texture)
+        FontTexture Font::create_texture(const graphics::Texture& texture, const Colour& colour)
         {
             ComPtr<IDXGISurface> surface;
             texture.texture().As(&surface);
@@ -28,7 +29,7 @@ namespace trview
 
             FontTexture new_texture;
             _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
-            new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &new_texture.brush);
+            new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(colour.r, colour.g, colour.b, colour.a), &new_texture.brush);
             return new_texture;
         }
 

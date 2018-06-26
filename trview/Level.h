@@ -87,9 +87,12 @@ namespace trview
         // Returns the room with ID provided 
         inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
 
-
         // Get the current state of the alternate mode (flipmap).
         bool alternate_mode() const;
+
+        /// Determines if there are any flipmaps in the level.
+        /// @returns True if there are flipmaps.
+        bool any_alternates() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);

@@ -58,7 +58,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), ui::Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -73,7 +73,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), ui::Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();
@@ -171,7 +171,7 @@ namespace trview
             {
                 case 'P':
                 {
-                    if (_level)
+                    if (_level && _level->any_alternates())
                     {
                         set_alternate_mode(!_level->alternate_mode());
                     }
@@ -338,6 +338,7 @@ namespace trview
         _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
         _room_navigator->set_flip(false);
+        _room_navigator->set_flip_enabled(_level->any_alternates());
 
         trlevel::tr2_entity lara_entity;
         if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
