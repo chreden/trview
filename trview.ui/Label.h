@@ -36,6 +36,8 @@ namespace trview
             // Event raised when the text in the label has changed.
             Event<std::wstring> on_text_changed;
 
+            /// Get the colour to use for the text.
+            /// @returns The text colour.
             Colour text_colour() const;
 
             /// Set the text colour for the label.
