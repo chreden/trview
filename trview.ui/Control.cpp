@@ -109,7 +109,7 @@ namespace trview
 
             // Promote controls to focus control, or clear if there are no controls that 
             // accepted the event.
-            bool handled_by_self = clicked(position);
+            bool handled_by_self = _handles_input && clicked(position);
             if (handled_by_self)
             {
                 set_focus_control(this);

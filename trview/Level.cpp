@@ -362,4 +362,12 @@ namespace trview
     {
         return _alternate_mode;
     }
+
+    bool Level::any_alternates() const
+    {
+        return std::any_of(_rooms.begin(), _rooms.end(), [](const std::unique_ptr<Room>& room)
+        {
+            return room->alternate_mode() != Room::AlternateMode::None;
+        });
+    }
 }

@@ -25,6 +25,7 @@ namespace trview
 
             auto label = std::make_unique<Label>(Point(), Size(1, 1), Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text, 10.0f, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
             label->set_vertical_alignment(Align::Centre);
+            _label = label.get();
             add_child(std::move(label));
         }
 
@@ -64,8 +65,8 @@ namespace trview
         void Checkbox::set_enabled(bool enabled)
         {
             _enabled = enabled;
+            set_handles_input(enabled);
             _label->set_text_colour(enabled ? Colour(1.0f, 1.0f, 1.0f, 1.0f) : Colour(1.0f, 0.7f, 0.7f, 0.7f));
-            on_invalidate();
         }
     }
 }
