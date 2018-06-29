@@ -190,17 +190,6 @@ namespace trview
 
         using namespace input;
 
-        /*
-        if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
-        {
-            select_room(lara_entity.Room);
-        }
-        else
-        {
-            select_room(0);
-        }
-        */
-
         _mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
@@ -213,7 +202,7 @@ namespace trview
                 else if (over_map())
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
-                    if (sector != nullptr)
+                    if (sector)
                     {
                         if (sector->flags & SectorFlag::Portal)
                         {
@@ -223,7 +212,7 @@ namespace trview
                         {
                             select_room(sector->room_below());
                         }
-                        else if (_settings.invert_map_controls && sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
+                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
                         {
                             select_room(sector->room_above());
                         }
@@ -235,13 +224,15 @@ namespace trview
                 if (over_map())
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
-                    if (!_settings.invert_map_controls && sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
-                    {
-                        select_room(sector->room_above());
-                    }
-                    else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
-                    {
-                        select_room(sector->room_below());
+                    if (sector) {
+                        if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                        {
+                            select_room(sector->room_above());
+                        }
+                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                        {
+                            select_room(sector->room_below());
+                        }
                     }
                 }
             }
