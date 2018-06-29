@@ -76,6 +76,14 @@ namespace trview
                 {
                     file >> settings.camera_movement_speed;
                 }
+                else if (setting == L"vsync")
+                {
+                    file >> settings.vsync;
+                }
+                else if (setting == L"gotolara")
+                {
+                    file >> settings.go_to_lara;
+                }
                 else if (setting == L"recent")
                 {
                     uint32_t recent_count = 0;
@@ -126,6 +134,8 @@ namespace trview
 
         file << L"camera "  << settings.camera_sensitivity      << '\n';
         file << L"movement "<< settings.camera_movement_speed   << '\n';
+        file << L"vsync " << settings.vsync << '\n';
+        file << L"gotolara " << settings.go_to_lara << '\n';
         file << L"recent "  << settings.recent_files.size()     << '\n';
         for (const auto& file_name : settings.recent_files)
         {
