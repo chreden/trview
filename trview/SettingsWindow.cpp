@@ -47,6 +47,11 @@ namespace trview
         _go_to_lara = go_to_lara.get();
         panel->add_child(std::move(go_to_lara));
 
+        auto invert_map_controls = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Invert map controls");
+        invert_map_controls->on_state_changed += on_invert_map_controls;
+        _invert_map_controls = invert_map_controls.get();
+        panel->add_child(std::move(invert_map_controls));
+
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
         ok->on_click += [&]() { _window->set_visible(!_window->visible()); };
@@ -76,6 +81,11 @@ namespace trview
     void SettingsWindow::set_go_to_lara(bool value)
     {
         _go_to_lara->set_state(value);
+    }
+
+    void SettingsWindow::set_invert_map_controls(bool value)
+    {
+        _invert_map_controls->set_state(value);
     }
 
     void SettingsWindow::toggle_visibility()
