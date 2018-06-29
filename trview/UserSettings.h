@@ -14,6 +14,7 @@ namespace trview
         float                   camera_movement_speed{ 0 };
         bool                    vsync{ true };
         bool                    go_to_lara{ true };
+        bool                    invert_map_controls{ false };
     };
 
     // Load the user settings from the settings file.

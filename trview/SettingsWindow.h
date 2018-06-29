@@ -29,6 +29,9 @@ namespace trview
         /// Event raised when the 'go to lara' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_go_to_lara;
 
+        /// Event raised when the inverted map controls setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_invert_map_controls;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -37,11 +40,16 @@ namespace trview
         /// @param value The new 'go to lara' setting.
         void set_go_to_lara(bool value);
 
+        /// Set the new value of the inverted map controls setting. This will not raise the on_invert_map_controls event.
+        /// @param value The new inverted map controls setting.
+        void set_invert_map_controls(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
         ui::Checkbox* _vsync;
         ui::Checkbox* _go_to_lara;
+        ui::Checkbox* _invert_map_controls;
         ui::Control* _window;
     };
 }

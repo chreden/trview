@@ -93,8 +93,14 @@ namespace trview
             _settings.go_to_lara = value; 
             save_user_settings(_settings); 
         };
+        _settings_window->on_invert_map_controls += [&](bool value)
+        {
+            _settings.invert_map_controls = value;
+            save_user_settings(_settings);
+        };
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
+        _settings_window->set_invert_map_controls(_settings.invert_map_controls);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
@@ -184,6 +190,17 @@ namespace trview
 
         using namespace input;
 
+        /*
+        if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
+        {
+            select_room(lara_entity.Room);
+        }
+        else
+        {
+            select_room(0);
+        }
+        */
+
         _mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
@@ -202,9 +219,13 @@ namespace trview
                         {
                             select_room(sector->portal());
                         }
-                        else if (sector->flags & SectorFlag::RoomBelow)
+                        else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
                         {
                             select_room(sector->room_below());
+                        }
+                        else if (_settings.invert_map_controls && sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
+                        {
+                            select_room(sector->room_above());
                         }
                     }
                 }
@@ -214,9 +235,13 @@ namespace trview
                 if (over_map())
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
-                    if (sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
+                    if (!_settings.invert_map_controls && sector != nullptr && (sector->flags & SectorFlag::RoomAbove))
                     {
                         select_room(sector->room_above());
+                    }
+                    else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                    {
+                        select_room(sector->room_below());
                     }
                 }
             }
