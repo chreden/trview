@@ -1,4 +1,5 @@
 #include "Mouse.h"
+#include <CommCtrl.h>
 
 namespace trview
 {
@@ -8,8 +9,36 @@ namespace trview
         {
             std::shared_ptr<Mouse::MouseMap> all_mice;
 
-            LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+            LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
             {
+                Mouse* mouse = reinterpret_cast<Mouse*>(dwRefData);
+
+                switch (message)
+                {
+                case WM_MOUSEWHEEL:
+                {
+                    mouse->mouse_wheel(static_cast<int16_t>(GET_WHEEL_DELTA_WPARAM(wParam)));
+                    break;
+                }
+                case WM_INPUT:
+                {
+                    HRAWINPUT input_handle = reinterpret_cast<HRAWINPUT>(lParam);
+
+                    uint32_t size = 0;
+                    if (GetRawInputData(input_handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER))
+                        != static_cast<uint32_t>(-1))
+                    {
+                        std::vector<uint8_t> data_buffer(size);
+                        GetRawInputData(input_handle, RID_INPUT, &data_buffer[0], &size, sizeof(RAWINPUTHEADER));
+                        RAWINPUT& data = *reinterpret_cast<RAWINPUT*>(&data_buffer[0]);
+                        mouse->process_input(data);
+                    }
+                    break;
+                }
+                }
+
+                return DefSubclassProc(hWnd, message, wParam, lParam);
+
                 // Get the mice for the current window.
                 auto iter = all_mice->find(hWnd);
                 if (iter != all_mice->end())
@@ -84,7 +113,11 @@ namespace trview
 
             RegisterRawInputDevices(devices, sizeof(devices) / sizeof(RAWINPUTDEVICE), sizeof(RAWINPUTDEVICE));
 
-            _all_mice = register_mouse(window, this);
+            // Generate an ID...
+            uint32_t subclass_id = 1234;
+            bool subclassed = SetWindowSubclass(window, WndProc, subclass_id, reinterpret_cast<DWORD_PTR>(this));
+
+            // _all_mice = register_mouse(window, this);
         }
 
         Mouse::~Mouse()
