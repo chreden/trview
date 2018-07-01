@@ -22,6 +22,7 @@
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
+    <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
@@ -30,6 +31,7 @@
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="FileLoader.cpp" />
+    <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="Timer.cpp" />

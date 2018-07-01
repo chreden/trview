@@ -8,16 +8,15 @@
 
 #include <windows.h>
 #include <trview.common/Event.h>
+#include <trview.common/MessageHandler.h>
 #include <cstdint>
-#include <memory>
-#include <unordered_map>
 
 namespace trview
 {
     namespace input
     {
         /// Receives mouse input on a specific window.
-        class Mouse
+        class Mouse : public MessageHandler
         {
         public:
             /// The mouse button that was pressed.
@@ -35,7 +34,7 @@ namespace trview
 
             /// Destructor for Mouse. This will remove the mouse from the all mice
             /// map. This will stop messages being sent to this mouse.
-            ~Mouse();
+            virtual ~Mouse();
 
             /// Process the specified raw input data. This will raise any appropriate events.
             /// @param input The mouse raw input data.
@@ -64,28 +63,18 @@ namespace trview
             /// Get the current Y coordinate of the mouse.
             long y() const;
 
-            /// Defines information required to correctly subclass the window and send messages
-            /// to all relevant mice.
-            struct MouseEntry
-            {
-                /// The window procedure to forward messages to once they have been processed.
-                WNDPROC old_procedure{ nullptr };
-                /// The mice associated with this window.
-                std::vector<Mouse*> mice;
-            };
-
-            /// Type definition for the static all mice map. The mouse should refer to
-            /// the member variable to access the mouse map as the static instance may have
-            /// been destroyed at the time that the mouse is destroyed.
-            using MouseMap = std::unordered_map<HWND, MouseEntry>;
+            /// Handles a window message.
+            /// @param window The window that received the message.
+            /// @param message The message that was received.
+            /// @param wParam The WPARAM for the message.
+            /// @param lParam The LPARAM for the message.
+            virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
         private:
             void raise_absolute_mouse_move(long x, long y);
 
             bool _any_absolute_previous{ false };
             long _absolute_x;
             long _absolute_y;
-            HWND _window;
-            std::shared_ptr<MouseMap> _all_mice;
         };
     }
 }
