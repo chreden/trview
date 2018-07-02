@@ -16,6 +16,22 @@ namespace trview
         /// @param window The window to listen to.
         explicit MessageHandler(HWND window);
 
+        /// Copy constructor for MessageHandler.
+        /// @param other The handler to copy.
+        MessageHandler(const MessageHandler& other);
+
+        /// Move constructor for MessageHandler.
+        /// @param other The handler to move from.
+        MessageHandler(MessageHandler&& other);
+
+        /// Copy assignment operator for MessageHandler.
+        /// @param other The handler to copy.
+        MessageHandler& operator=(const MessageHandler& other);
+
+        /// Move assignment operator for MessageHandler.
+        /// @param other The handler to move from.
+        MessageHandler& operator=(MessageHandler&& other);
+
         /// Destructor for MessageHandler.
         virtual ~MessageHandler();
 
@@ -27,6 +43,6 @@ namespace trview
         virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) = 0;
     private:
         HWND     _window;
-        uint32_t _id;
+        uint32_t _subclass_id;
     };
 }

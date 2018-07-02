@@ -88,7 +88,7 @@ namespace trview
             _absolute_y = y;
         }
 
-        void Mouse::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+        void Mouse::process_message(HWND, UINT message, WPARAM wParam, LPARAM lParam)
         {
             switch (message)
             {
