@@ -23,6 +23,7 @@
 #include "FreeCamera.h"
 #include "Level.h"
 #include "UserSettings.h"
+#include "LevelSwitcher.h"
 
 namespace trview
 {
@@ -139,6 +140,7 @@ namespace trview
         UserSettings _settings;
         ui::Label* _picking;
         Level::PickResult _current_pick;
+        LevelSwitcher _level_switcher;
     };
 }
 

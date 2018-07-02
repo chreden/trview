@@ -41,6 +41,10 @@ namespace trview
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
         virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) = 0;
+
+        /// Gets the window that the handler is listening to.
+        /// @returns The window handle.
+        HWND window() const;
     private:
         HWND     _window;
         uint32_t _subclass_id;

@@ -36,64 +36,7 @@ std::unique_ptr<trview::Viewer> viewer;
 HWND window;
 std::vector<std::wstring> recent_files;
 
-// helper object to list all of the files in a directory 
-trview::DirectoryListing dir_lister;
-// list of files in directory, updated by dir_lister
-std::vector<trview::File> file_switcher_list;
-
-HMENU directory_listing_menu;
-
 bool resizing = false;
-
-void create_directory_listing_menu()
-{
-    HMENU menu = GetMenu(window);
-    directory_listing_menu = CreatePopupMenu(); 
-
-    MENUITEMINFO info;
-    memset(&info, 0, sizeof(info));
-
-    info.cbSize = sizeof(info);
-    info.fMask = MIIM_SUBMENU;
-    info.hSubMenu = directory_listing_menu;
-
-    // Set up the popup menu and grey it out initially - only when it's populated do we enable it
-    SetMenuItemInfo(menu, ID_FILE_SWITCHLEVEL, FALSE, &info);
-    EnableMenuItem(menu, ID_FILE_SWITCHLEVEL, MF_GRAYED);
-
-    SetMenu(window, menu);
-
-    DrawMenuBar(window);
-}
-
-void reset_menu(HMENU menu)
-{
-    int count = GetMenuItemCount(menu);
-
-    while ((count = GetMenuItemCount(menu)) > 0)
-        RemoveMenu(menu, 0, MF_BYPOSITION);
-
-    DrawMenuBar(window);
-}
-
-void populate_directory_listing_menu(const std::wstring& filepath)
-{
-    const std::size_t pos = filepath.find_last_of(L"\\/");
-    const std::wstring folder = filepath.substr(0, pos);
-
-    dir_lister.SetDirectory(folder);
-    file_switcher_list = dir_lister.GetFiles();
-
-    // Enable menu when populating in case it's not enabled
-    EnableMenuItem(GetMenu(window), ID_FILE_SWITCHLEVEL, MF_ENABLED);
-
-    // Clear all items from menu and repopulate
-    reset_menu(directory_listing_menu);
-    for (int i = 0; i < file_switcher_list.size(); ++i)
-        AppendMenuW(directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + i, file_switcher_list.at(i).friendly_name.c_str());
-
-    DrawMenuBar(window);
-}
 
 void update_menu(std::list<std::wstring> files)
 {
@@ -155,14 +98,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     SetCurrentDirectory(get_exe_directory().c_str());
 
     viewer = std::make_unique<trview::Viewer>(window);
-    // Register to know when a file has been succesfully loaded by the viewer.
-    viewer->on_file_loaded += populate_directory_listing_menu;
     // Register for future updates to the recent files list.
     viewer->on_recent_files_changed += update_menu;
     // Make sure the menu has the values loaded from the settings file.
     update_menu(viewer->settings().recent_files);
-    // Create current directory files menu entry.
-    create_directory_listing_menu();
     // Makes this window accept dropped files.
     DragAcceptFiles(window, TRUE);
 
@@ -293,14 +232,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     viewer->open(file);
                 }
                 break;
-            }
-            else if (wmId >= ID_SWITCHFILE_BASE 
-                && wmId <= (ID_SWITCHFILE_BASE + GetMenuItemCount(directory_listing_menu)))
-            {
-                const trview::File& f = file_switcher_list.at(wmId - ID_SWITCHFILE_BASE);
-                viewer->open(f.path);
-                
-                break; // We don't need to refresh the file switcher as it should be the same directory
             }
 
             // Parse the menu selections:

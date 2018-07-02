@@ -167,6 +167,7 @@
     <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelInfo.h" />
+    <ClInclude Include="LevelSwitcher.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelInfo.cpp" />
+    <ClCompile Include="LevelSwitcher.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="Neighbours.cpp" />
