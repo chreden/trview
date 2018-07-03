@@ -1,5 +1,5 @@
 /// @file MessageHandler.h
-/// @brief Class that recieves Windows messages.
+/// @brief Class that receives Windows messages.
 
 #pragma once
 
