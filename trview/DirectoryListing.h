@@ -15,24 +15,19 @@ struct File
 class DirectoryListing
 {
 public:
-    DirectoryListing() = default;
+    /// Create a new directory listing.
+    /// @param path The directory to get the file listing from.
+    explicit DirectoryListing(const std::wstring& path);
 
-    // Gets a list of files in the directory.
-    // pattern: Comma separated list of file filters.
-    // Returns an empty vector if no path has been set.
+    /// Gets a list of files in the directory.
+    /// @pattern Comma separated list of file filters.
+    /// @returns An empty vector if no path has been set, otherwise 
+    ///          the files in the directory.
     std::vector<File> GetFiles(const std::wstring& pattern=L"\\*.TR*,\\*.PHD") const; 
-
-    // Sets the directory to get the file listing from.
-    void SetDirectory(const std::wstring& path);
-
 private:
     std::vector<File> GetFiles(const std::vector<std::wstring>& patterns) const;
 
-    // Returns true if the given path is a directory, false otherwise.
-    bool IsDirectory(const std::wstring& path) const;
-
     std::wstring _path; 
-    bool _is_path_set = false;
 };
 
 }

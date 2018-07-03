@@ -8,6 +8,9 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Colour.h" />
+    <ClInclude Include="MessageHandler.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -16,8 +19,16 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Colour.cpp" />
+    <ClCompile Include="MessageHandler.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{c0670590-a23a-4748-953c-f3f13b06cf2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

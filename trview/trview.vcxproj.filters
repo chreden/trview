@@ -157,6 +157,9 @@
     <ClInclude Include="SettingsWindow.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="LevelSwitcher.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -254,6 +257,9 @@
     </ClCompile>
     <ClCompile Include="SettingsWindow.cpp">
       <Filter>Program\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelSwitcher.cpp">
+      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

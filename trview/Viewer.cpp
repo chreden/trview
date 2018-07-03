@@ -29,9 +29,11 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window)
+        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window),
+        _level_switcher(window.window())
     {
         _settings = load_user_settings();
+        _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
 
         initialise_input();
 
@@ -339,6 +341,7 @@ namespace trview
         on_file_loaded(filename);
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
+        _level_switcher.open_file(filename);
         save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
