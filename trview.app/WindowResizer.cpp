@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "WindowResizer.h"
 
 namespace trview

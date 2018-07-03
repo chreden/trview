@@ -24,7 +24,7 @@
 #include "Level.h"
 #include "UserSettings.h"
 #include "LevelSwitcher.h"
-#include "WindowResizer.h"
+#include <trview.app/WindowResizer.h>
 
 namespace trview
 {
