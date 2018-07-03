@@ -160,6 +160,9 @@
     <ClInclude Include="LevelSwitcher.h">
       <Filter>Program</Filter>
     </ClInclude>
+    <ClInclude Include="WindowResizer.h">
+      <Filter>Program</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -259,6 +262,9 @@
       <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="LevelSwitcher.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowResizer.cpp">
       <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>

@@ -190,6 +190,7 @@
     <ClInclude Include="Types.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Viewer.h" />
+    <ClInclude Include="WindowResizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -230,6 +231,7 @@
     <ClCompile Include="TextureWindow.cpp" />
     <ClCompile Include="trview.cpp" />
     <ClCompile Include="Viewer.cpp" />
+    <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc" />
