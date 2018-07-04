@@ -24,6 +24,7 @@
 #include "Level.h"
 #include "UserSettings.h"
 #include "LevelSwitcher.h"
+#include <trview.app/WindowResizer.h>
 
 namespace trview
 {
@@ -141,6 +142,7 @@ namespace trview
         ui::Label* _picking;
         Level::PickResult _current_pick;
         LevelSwitcher _level_switcher;
+        WindowResizer _window_resizer;
     };
 }
 

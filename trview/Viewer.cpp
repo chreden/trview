@@ -30,10 +30,11 @@ namespace trview
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
         _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window),
-        _level_switcher(window.window())
+        _level_switcher(window.window()), _window_resizer(window.window())
     {
         _settings = load_user_settings();
         _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
+        _window_resizer.on_resize += [=]() { resize(); };
 
         initialise_input();
 
