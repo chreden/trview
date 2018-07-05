@@ -30,11 +30,18 @@ namespace trview
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
         _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window),
-        _level_switcher(window.window()), _window_resizer(window.window())
+        _level_switcher(window.window()), _window_resizer(window.window()), _recent_files(window.window())
     {
         _settings = load_user_settings();
+
         _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
+        on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
+
         _window_resizer.on_resize += [=]() { resize(); };
+
+        _recent_files.on_file_open += [=](const auto& file) { open(file); };
+        _recent_files.set_recent_files(_settings.recent_files);
+        on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
 
         initialise_input();
 
@@ -342,7 +349,6 @@ namespace trview
         on_file_loaded(filename);
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
-        _level_switcher.open_file(filename);
         save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());

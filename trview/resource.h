@@ -2,6 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by trview.rc
 //
+#include <trview.app/WindowIDs.h>
+
 #define IDC_MYICON                      2
 #define IDD_TRVIEW_DIALOG               102
 #define IDS_APP_TITLE                   103
@@ -26,7 +28,7 @@
 #define IDB_CHECK_ON                    140
 #define IDB_SETTINGS                    142
 #define ID_FILE_OPEN                    32771
-#define ID_FILE_OPENRECENT              32772
+#define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773
 #define ID_FILE_SWITCHLEVEL             32774
 #define IDC_STATIC                      -1

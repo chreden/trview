@@ -2,8 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="WindowResizer.cpp" />
+    <ClCompile Include="RecentFiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
+    <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="WindowIDs.h" />
   </ItemGroup>
 </Project>
