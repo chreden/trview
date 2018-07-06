@@ -6,7 +6,6 @@ namespace trview
     namespace
     {
         const int ID_RECENT_FILE_BASE = 5000;
-        const int ID_SWITCHFILE_BASE = 10000;
 
         void update_menu(HWND window, const std::vector<std::wstring>& recent_files)
         {

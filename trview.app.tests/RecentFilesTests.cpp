@@ -43,7 +43,8 @@ namespace trview
     {
         TEST_CLASS(RecentFilesTests)
         {
-            TEST_METHOD(SizeMove)
+            /// Tests that opening the first file triggers the event.
+            TEST_METHOD(OpenFile)
             {
                 HWND window = create_test_window();
                 RecentFiles recent_files(window);
@@ -51,8 +52,17 @@ namespace trview
                 const std::list<std::wstring> files{ L"test.tr2", L"test2.tr2" };
                 recent_files.set_recent_files(files);
 
-                recent_files.process_message(window, WM_COMMAND, MAKEWPARAM(5000, 0), 0);
+                uint32_t times_called{ 0 };
+                std::wstring raised_file;
+                recent_files.on_file_open += [&](const auto& file)
+                {
+                    ++times_called;
+                    raised_file = file;
+                };
 
+                recent_files.process_message(window, WM_COMMAND, MAKEWPARAM(5000, 0), 0);
+                Assert::AreEqual(1u, times_called);
+                Assert::AreEqual(std::wstring(L"test2.tr2"), files.back());
             }
         };
     }
