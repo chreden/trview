@@ -3,9 +3,5 @@
   <ItemGroup>
     <ClCompile Include="KeyboardTests.cpp" />
     <ClCompile Include="MouseTests.cpp" />
-    <ClCompile Include="WindowHelper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="WindowHelper.h" />
   </ItemGroup>
 </Project>
