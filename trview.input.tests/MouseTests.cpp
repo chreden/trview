@@ -1,9 +1,10 @@
 #include "CppUnitTest.h"
 
 #include <trview.input/Mouse.h>
-#include "WindowHelper.h"
+#include <trview.tests.common/Window.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace trview::tests;
 
 namespace Microsoft 
 {
@@ -41,7 +42,7 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
                 mouse.mouse_down += 
@@ -69,7 +70,7 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
                 mouse.mouse_up +=
@@ -97,7 +98,7 @@ namespace trview
                 int times_called = 0;
                 int16_t scroll_received = 0;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
                 mouse.mouse_wheel +=
@@ -120,7 +121,7 @@ namespace trview
                 int times_called = 0;
                 long x_received, y_received = 0;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
                 mouse.mouse_move +=
@@ -153,7 +154,7 @@ namespace trview
             /// is sent to the window.
             TEST_METHOD(MousePosition)
             {
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
                 RAWINPUT input;
