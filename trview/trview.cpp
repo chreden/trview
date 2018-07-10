@@ -64,8 +64,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     SetCurrentDirectory(get_exe_directory().c_str());
 
     viewer = std::make_unique<trview::Viewer>(window);
-    // Makes this window accept dropped files.
-    DragAcceptFiles(window, TRUE);
 
     // Open the level passed in on the command line, if there is one.
     int number_of_arguments = 0;
@@ -91,18 +89,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
-            }
-
-            switch (msg.message)
-            {
-                case WM_DROPFILES:
-                {
-                    wchar_t filename[MAX_PATH];
-                    memset(&filename, 0, sizeof(filename));
-                    DragQueryFile((HDROP)msg.wParam, 0, filename, MAX_PATH);
-                    viewer->open(filename);
-                    break;
-                }
             }
         }
 

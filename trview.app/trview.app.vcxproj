@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileDropper.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />

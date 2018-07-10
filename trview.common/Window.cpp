@@ -27,6 +27,11 @@ namespace trview
         return _window;
     }
 
+    Window::operator HWND () const
+    {
+        return _window;
+    }
+
     // Get the position of the cursor in client coordinates.
     // window: The client window.
     // Returns: The point in client coordinates.

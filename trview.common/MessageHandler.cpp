@@ -58,6 +58,7 @@ namespace trview
         _window = other._window;
         _subclass_id = next_subclass_id(_window);
         SetWindowSubclass(_window, HandlerProc, _subclass_id, reinterpret_cast<DWORD_PTR>(this));
+        return *this;
     }
 
     MessageHandler& MessageHandler::operator=(MessageHandler&& other)
@@ -65,6 +66,7 @@ namespace trview
         _window = other._window;
         _subclass_id = other._subclass_id;
         SetWindowSubclass(_window, HandlerProc, _subclass_id, reinterpret_cast<DWORD_PTR>(this));
+        return *this;
     }
 
     MessageHandler::~MessageHandler()

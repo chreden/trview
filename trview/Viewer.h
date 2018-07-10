@@ -26,6 +26,7 @@
 #include "LevelSwitcher.h"
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>
+#include <trview.app/FileDropper.h>
 
 namespace trview
 {
@@ -145,6 +146,7 @@ namespace trview
         LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
         RecentFiles _recent_files;
+        FileDropper _file_dropper;
     };
 }
 

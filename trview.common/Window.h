@@ -14,6 +14,7 @@ namespace trview
         uint32_t width() const;
         uint32_t height() const;
         HWND window() const;
+        operator HWND () const;
     private:
         HWND        _window;
         uint32_t    _width;
