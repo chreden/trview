@@ -25,6 +25,7 @@
 #include "UserSettings.h"
 #include "LevelSwitcher.h"
 #include <trview.app/WindowResizer.h>
+#include <trview.app/RecentFiles.h>
 
 namespace trview
 {
@@ -143,6 +144,7 @@ namespace trview
         Level::PickResult _current_pick;
         LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
+        RecentFiles _recent_files;
     };
 }
 

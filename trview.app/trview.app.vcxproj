@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />
   </ItemGroup>
   <ItemGroup>

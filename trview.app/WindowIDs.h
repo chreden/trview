@@ -1,0 +1,7 @@
+/// @file WindowIds.h
+/// @brief IDs used by the resource editor and by the files in the app project
+///        Here so both can use them.
+
+#pragma once
+
+#define ID_APP_FILE_OPENRECENT 32772

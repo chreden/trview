@@ -1,10 +1,10 @@
 #include "CppUnitTest.h"
 
 #include <trview.input/Keyboard.h>
-
-#include "WindowHelper.h"
+#include <trview.tests.common/Window.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace trview::tests;
 
 namespace trview
 {
@@ -20,7 +20,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t key_received = 0;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
                 keyboard.on_key_down += 
                     [&times_called, &key_received](uint16_t key) 
@@ -42,7 +42,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t key_received = 0;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
                 keyboard.on_key_up +=
                     [&times_called, &key_received](uint16_t key)
@@ -64,7 +64,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t char_received = 0;
 
-                HWND window = create_test_window();
+                HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
                 keyboard.on_char +=
                     [&times_called, &char_received](uint16_t key)

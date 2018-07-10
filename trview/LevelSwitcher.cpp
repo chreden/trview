@@ -7,7 +7,6 @@ namespace trview
 {
     namespace
     {
-        const int ID_RECENT_FILE_BASE = 5000;
         const int ID_SWITCHFILE_BASE = 10000;
 
         /// Reset the menu to have no items in it.

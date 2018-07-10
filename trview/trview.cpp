@@ -11,15 +11,7 @@
 #include <shellapi.h>
 #include <Shlwapi.h>
 
-#include "DirectoryListing.h"
-
 #define MAX_LOADSTRING 100
-
-namespace
-{
-    const int ID_RECENT_FILE_BASE = 5000;
-    const int ID_SWITCHFILE_BASE = 10000;
-}
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -34,30 +26,6 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 std::unique_ptr<trview::Viewer> viewer;
 HWND window;
-std::vector<std::wstring> recent_files;
-
-void update_menu(std::list<std::wstring> files)
-{
-    // Copy recent files locally
-    recent_files.assign(files.begin(), files.end());
-
-    // Set up the recently used files menu.
-    HMENU menu = GetMenu(window);
-    HMENU popup = CreatePopupMenu();
-
-    for(int i = 0; i < recent_files.size(); ++i)
-    {
-        AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, recent_files[i].c_str());
-    }
-
-    MENUITEMINFO info;
-    memset(&info, 0, sizeof(info));
-    info.cbSize = sizeof(info);
-    info.fMask = MIIM_SUBMENU;
-    info.hSubMenu = popup;
-    SetMenuItemInfo(menu, ID_FILE_OPENRECENT, FALSE, &info);
-    SetMenu(window, menu);
-}
 
 std::wstring get_exe_directory()
 {
@@ -96,10 +64,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     SetCurrentDirectory(get_exe_directory().c_str());
 
     viewer = std::make_unique<trview::Viewer>(window);
-    // Register for future updates to the recent files list.
-    viewer->on_recent_files_changed += update_menu;
-    // Make sure the menu has the values loaded from the settings file.
-    update_menu(viewer->settings().recent_files);
     // Makes this window accept dropped files.
     DragAcceptFiles(window, TRUE);
 
@@ -219,18 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
-
-            // Handle recent files.
-            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + recent_files.size())
-            {
-                int index = wmId - ID_RECENT_FILE_BASE;
-                if (index >= 0 && index < recent_files.size())
-                {
-                    const auto file = recent_files[index];
-                    viewer->open(file);
-                }
-                break;
-            }
 
             // Parse the menu selections:
             switch (wmId)
