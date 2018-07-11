@@ -29,8 +29,8 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source()), _keyboard(window.window()), _mouse(window.window()), _device(window),
-        _level_switcher(window.window()), _window_resizer(window.window()), _recent_files(window.window())
+        _timer(default_time_source()), _keyboard(window), _mouse(window), _device(window), _level_switcher(window),
+        _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
         _settings = load_user_settings();
 
@@ -42,6 +42,8 @@ namespace trview
         _recent_files.on_file_open += [=](const auto& file) { open(file); };
         _recent_files.set_recent_files(_settings.recent_files);
         on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
+
+        _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
         initialise_input();
 

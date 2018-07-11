@@ -3,5 +3,6 @@
   <ItemGroup>
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
+    <ClCompile Include="FileDropperTests.cpp" />
   </ItemGroup>
 </Project>

@@ -3,10 +3,12 @@
   <ItemGroup>
     <ClCompile Include="WindowResizer.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="FileDropper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />
+    <ClInclude Include="FileDropper.h" />
   </ItemGroup>
 </Project>

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
   </ItemGroup>
