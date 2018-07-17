@@ -3,6 +3,7 @@
 #include "resource.h"
 
 #include "ITextureStorage.h"
+#include "ResourceHelper.h"
 
 #include <external/DirectXTK/Inc/WICTextureLoader.h>
 #include <sstream>
@@ -13,26 +14,6 @@ namespace trview
 {
     namespace
     {
-        struct Resource
-        {
-            uint8_t* data;
-            uint32_t size;
-        };
-
-        // Get the data for the specified resource.
-        // resource_id: The integer identifier of the resource to load.
-        // resource_type: The type of resource to load.
-        // Returns: The resource.
-        Resource get_resource_memory(int resource_id, const wchar_t* resource_type)
-        {
-            HMODULE module = GetModuleHandle(NULL);
-            HRSRC resource = FindResource(module, MAKEINTRESOURCE(resource_id), resource_type);
-            HGLOBAL memory = LoadResource(module, resource);
-            DWORD size = SizeofResource(module, resource);
-            LPVOID data = LockResource(memory);
-            return Resource{ static_cast<uint8_t*>(data), static_cast<uint32_t>(size) };
-        }
-
         // Load a specific texture with the specified ID from the embedded resource file.
         // device: The Direct3D device to use to load the textures.
         // resource_id: The integer ID of the texture in the resource file.

@@ -27,6 +27,10 @@
 #define IDB_CHECK_OFF                   139
 #define IDB_CHECK_ON                    140
 #define IDB_SETTINGS                    142
+#define IDR_LEVEL_VERTEX_SHADER         143
+#define IDR_LEVEL_PIXEL_SHADER          144
+#define IDR_UI_VERTEX_SHADER            145
+#define IDR_UI_PIXEL_SHADER             146
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773
@@ -38,8 +42,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        143
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_RESOURCE_VALUE        149
+#define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
