@@ -223,6 +223,7 @@ IDB_CHECK_ON            PNG                     "resources\\checkon.png"
 
 IDB_SETTINGS            PNG                     "resources\\settings.png"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXT
@@ -233,7 +234,15 @@ IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// SHADER
+//
 
+IDR_LEVEL_VERTEX_SHADER         SHADER          "resources\\level_vertex_shader.cso"
+IDR_LEVEL_PIXEL_SHADER          SHADER          "resources\\level_pixel_shader.cso"
+IDR_UI_VERTEX_SHADER            SHADER          "resources\\ui_vertex_shader.cso"
+IDR_UI_PIXEL_SHADER             SHADER          "resources\\ui_pixel_shader.cso"
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

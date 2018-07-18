@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "DefaultShaders.h"
+#include "ResourceHelper.h"
+#include "resource.h"
 
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/VertexShader.h>
 #include <trview.graphics/PixelShader.h>
-#include <trview.common/FileLoader.h>
 
 #include <vector>
 
@@ -14,6 +15,12 @@ namespace trview
 {
     namespace
     {
+        std::vector<uint8_t> get_shader_resource(int id)
+        {
+            auto resource = get_resource_memory(id, L"SHADER");
+            return std::vector<uint8_t>(resource.data, resource.data + resource.size);
+        }
+
         void load_level_shaders(const ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
         {
             std::vector<D3D11_INPUT_ELEMENT_DESC> input_desc(3);
@@ -33,8 +40,8 @@ namespace trview
             input_desc[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
             input_desc[2].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-            storage.add("level_vertex_shader", std::make_unique<graphics::VertexShader>(device, load_file(L"level_vertex_shader.cso"), input_desc));
-            storage.add("level_pixel_shader", std::make_unique<graphics::PixelShader>(device, load_file(L"level_pixel_shader.cso")));
+            storage.add("level_vertex_shader", std::make_unique<graphics::VertexShader>(device, get_shader_resource(IDR_LEVEL_VERTEX_SHADER), input_desc));
+            storage.add("level_pixel_shader", std::make_unique<graphics::PixelShader>(device, get_shader_resource(IDR_LEVEL_PIXEL_SHADER)));
         }
 
         void load_ui_shaders(const ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)
@@ -50,8 +57,8 @@ namespace trview
             input_desc[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
             input_desc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 
-            storage.add("ui_vertex_shader", std::make_unique<graphics::VertexShader>(device, load_file(L"ui_vertex_shader.cso"), input_desc));
-            storage.add("ui_pixel_shader", std::make_unique<graphics::PixelShader>(device, load_file(L"ui_pixel_shader.cso")));
+            storage.add("ui_vertex_shader", std::make_unique<graphics::VertexShader>(device, get_shader_resource(IDR_UI_VERTEX_SHADER), input_desc));
+            storage.add("ui_pixel_shader", std::make_unique<graphics::PixelShader>(device, get_shader_resource(IDR_UI_PIXEL_SHADER)));
         }
     }
 

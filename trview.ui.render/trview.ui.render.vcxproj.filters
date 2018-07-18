@@ -43,10 +43,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="ui_pixel_shader.hlsl" />
-    <FxCompile Include="ui_vertex_shader.hlsl" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Nodes">
       <UniqueIdentifier>{58873368-7ee2-434d-94c9-81fbc1c828a5}</UniqueIdentifier>
     </Filter>
