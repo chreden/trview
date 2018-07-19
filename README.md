@@ -24,3 +24,9 @@ https://github.com/chreden/trview/releases
 
 Open the project file (.sln) with Visual Studio Community 2017 and click on
 Build > Build Solution.
+
+## Running
+
+Double click a level file (.TR2 or .PHD) present in the game's data folder and
+choose to open it with trview.exe. You can also open trview by itself and choose
+a level file using the File menu or drag and drop a level file onto the window.
