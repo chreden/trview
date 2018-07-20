@@ -9,9 +9,9 @@ possibilities.
 
 ## License
 
-This program is licensed under the <license>. Please read the <license>.txt text
+This program is licensed under the MIT license. Please read the LICENSE text
 document included with the source code if you would like to read the terms of 
-the license. The license can also be found online at <link>.
+the license. The license can also be found online at https://opensource.org/licenses/MIT.
 
 ## Download
 
@@ -27,6 +27,6 @@ Build > Build Solution.
 
 ## Running
 
-Double click a level file (.TR2 or .PHD) present in the game's data folder and
+Double click a level file (.TR2, .TR4 or .PHD) present in the game's data folder and
 choose to open it with trview.exe. You can also open trview by itself and choose
 a level file using the File menu or drag and drop a level file onto the window.
