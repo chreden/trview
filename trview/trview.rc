@@ -85,7 +85,7 @@ BEGIN
     LTEXT           "Copyright (C) 2018 trview team",IDC_STATIC,42,26,127,17
     DEFPUSHBUTTON   "OK",IDOK,186,117,50,14,WS_GROUP
     LTEXT           "Licensed under the MIT license",IDC_STATIC,42,38,127,17
-    LTEXT           "Uses DirectXTex (MIT license)",IDC_STATIC,42,49,136,13
+    LTEXT           "Uses DirectXTK (MIT license)",IDC_STATIC,42,49,136,13
     LTEXT           "Based on the information in TRosettaStone3 - https://trwiki.earvillage.net. TRosettaStone3 uses the CC BY-SA 4.0 license. https://creativecommons.org/licenses/by-sa/4.0/#",IDC_STATIC,41,72,174,39
     LTEXT           "Uses zlib (zlib license)",IDC_STATIC,42,60,136,13
 END
