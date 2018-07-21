@@ -201,6 +201,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
                 break;
             } 
+            case ID_HELP_GITHUB:
+            {
+                ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
+                break;
+            }
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
