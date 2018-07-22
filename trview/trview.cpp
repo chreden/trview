@@ -63,6 +63,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // so that the shaders can be found.
     SetCurrentDirectory(get_exe_directory().c_str());
 
+    MessageBox(window, L"One", L"Debug", MB_OK);
+
     try
     {
         viewer = std::make_unique<trview::Viewer>(window);
@@ -72,6 +74,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         MessageBoxA(0, e.what(), "Error - failed to initialise trview", MB_OK);
         return 0;
     }
+
+    MessageBox(window, L"Two", L"Debug", MB_OK);
 
     // Open the level passed in on the command line, if there is one.
     int number_of_arguments = 0;

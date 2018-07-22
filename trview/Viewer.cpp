@@ -32,6 +32,8 @@ namespace trview
         _timer(default_time_source()), _keyboard(window), _mouse(window), _device(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
+        MessageBox(window, L"One.A", L"Debug", MB_OK);
+
         _settings = load_user_settings();
 
         _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
@@ -45,15 +47,25 @@ namespace trview
 
         _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
+        MessageBox(window, L"One.B", L"Debug", MB_OK);
+
         initialise_input();
+
+        MessageBox(window, L"One.C", L"Debug", MB_OK);
 
         _texture_storage = std::make_unique<TextureStorage>(_device.device());
         load_default_textures(_device.device(), *_texture_storage.get());
 
+        MessageBox(window, L"One.D", L"Debug", MB_OK);
+
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device.device(), *_shader_storage.get());
 
+        MessageBox(window, L"One.E", L"Debug", MB_OK);
+
         generate_ui();
+
+        MessageBox(window, L"One.F", L"Debug", MB_OK);
     }
 
     Viewer::~Viewer()
