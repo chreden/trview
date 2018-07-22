@@ -1,5 +1,6 @@
 #include "Device.h"
 #include "RenderTarget.h"
+#include <sstream>
 
 using namespace Microsoft::WRL;
 
@@ -7,9 +8,22 @@ namespace trview
 {
     namespace graphics
     {
+        namespace
+        {
+            /// Create an error message and throw an exception.
+            /// @param error The message to show to the user.
+            /// @param error_code The hresult for the failure.
+            /// @remarks This will throw an exception.
+            void create_error(const std::string& error, HRESULT error_code)
+            {
+                std::stringstream message;
+                message << error << ": " << std::hex << std::showbase << static_cast<long>(error_code);
+                throw std::exception(message.str().c_str());
+            }
+        }
+
         Device::Device(const Window& window)
         {
-            // Swap chain description.
             DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
             swap_chain_desc.BufferCount = 1;
             swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -24,8 +38,12 @@ namespace trview
             swap_chain_desc.SampleDesc.Count = 1;
             swap_chain_desc.SampleDesc.Quality = 0;
 
-            D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0,
+            HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0,
                 D3D11_SDK_VERSION, &swap_chain_desc, &_swap_chain, &_device, nullptr, &_context);
+            if (hr != S_OK)
+            {
+                create_error("Failed to create device and swap chain", hr);
+            }
 
             create_render_target();
 
