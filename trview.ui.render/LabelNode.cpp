@@ -9,12 +9,11 @@ namespace trview
     {
         namespace render
         {
-            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, graphics::FontFactory& font_factory)
+            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label)
                 : WindowNode(device, label), 
-                _font(font_factory.create_font(L"Arial", 
-                                               label->text_size(), 
-                                               label->text_alignment(),
-                                               label->paragraph_alignment())), _label(label)
+                _font(std::make_unique<graphics::Font>(device, label->text_size(), 
+                                             label->text_alignment(),
+                                             label->paragraph_alignment())), _label(label)
             {
                 generate_font_texture();
                 if (label->size_mode() == SizeMode::Auto)
@@ -35,7 +34,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 const auto size = _label->size();
-                _font->render(_font_texture, _label->text(), 0, 0, size.width, size.height);
+                _font->render(context, _label->text(), 0, 0, size.width, size.height);
             }
 
             // Generate the font texture and other textures required to render the label. This will also
@@ -48,8 +47,6 @@ namespace trview
                     _label->set_size(new_size);
                     regenerate_texture();
                 }
-
-                _font_texture = _font->create_texture(_render_target->texture(), _label->text_colour());
             }
         }
     }

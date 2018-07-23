@@ -23,7 +23,6 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
-    <ClInclude Include="FontTexture.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="ParagraphAlignment.h" />

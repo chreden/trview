@@ -19,7 +19,6 @@ namespace trview
 
         std::unique_ptr<Font> FontFactory::create_font(const std::wstring& font_face, float size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment)
         {
-            
             return nullptr;
         }
     }

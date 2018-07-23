@@ -9,10 +9,10 @@
 
 #include <string>
 #include <wrl/client.h>
-#include <d2d1.h>
-#include <dwrite.h>
 
-#include "FontTexture.h"
+#include <external/DirectXTK/Inc/SpriteFont.h>
+#include "TextAlignment.h"
+#include "ParagraphAlignment.h"
 
 namespace trview
 {
@@ -28,41 +28,25 @@ namespace trview
         {
         public:
             /// Create a new font.
-            /// @param dwrite_factory: The DirectWrite factory to use to create DirectWrite resources.
-            /// @param d2d_factory: The Direct2D factory to use to create Direct2D resources.
-            /// @param text_format: The DirectWrite text format to use for the font.
-            explicit Font(
-                const Microsoft::WRL::ComPtr<IDWriteFactory>& dwrite_factory,
-                const Microsoft::WRL::ComPtr<ID2D1Factory>& d2d_factory,
-                const Microsoft::WRL::ComPtr<IDWriteTextFormat>& text_format);
-
-            /// Create a texture that fonts can be rendered to based on the texture that is passed in.
-            /// @param texture The texture that fonts will be rendered to.
-            /// @param colour The font colour.
-            /// @returns A FontTexture that can be used with the render method.
-            /// @see Font::render()
-            /// @see FontTexture
-            FontTexture create_texture(const graphics::Texture& texture, const Colour& colour);
+            /// @param size: The size of the font to use.
+            /// @param text_alignment: Text alignment for the font.
+            /// @param paragraph_alignment: Paragraph alignment for the font.
+            explicit Font(const Microsoft::WRL::ComPtr<ID3D11Device>& device, float size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment);
 
             /// Renders the text to the specified font texture.
-            /// @param texture The font texture to render to.
             /// @param text The text to render on to the font texture.
             /// @param x The x position on the texture at which to render the text.
             /// @param y The y position on the texture at which to render the text.
             /// @param width The optional width of the rectangle in which to render text. Defaults to 256.
             /// @param height The optional height of the rectangle in which to render text. Defaults to 256.
-            /// @see create_texture
-            /// @see FontTexture
-            void render(FontTexture& texture, const std::wstring& text, float x, float y, float width = 256, float height = 256);
+            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float x, float y, float width = 256, float height = 256);
 
             /// Determines the size in pixels that the text specified will be when rendered.
             /// @param text The text to measure.
             /// @returns The size in pixels required to render the specified text.
             Size measure(const std::wstring& text) const;
         private:
-            Microsoft::WRL::ComPtr<IDWriteFactory>    _dwrite_factory;
-            Microsoft::WRL::ComPtr<ID2D1Factory>      _d2d_factory;
-            Microsoft::WRL::ComPtr<IDWriteTextFormat> _text_format;
+            DirectX::SpriteFont _font;
         };
     }
 }
