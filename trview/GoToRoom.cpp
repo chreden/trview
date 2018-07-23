@@ -40,8 +40,8 @@ namespace trview
             Colour(1.0f, 0.4f, 0.4f, 0.4f),
             L"",
             15.f,
-            TextAlignment::Centre,
-            ParagraphAlignment::Centre);
+            graphics::TextAlignment::Centre,
+            graphics::ParagraphAlignment::Centre);
 
         _label = label.get();
         _window = window.get();

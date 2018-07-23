@@ -9,47 +9,12 @@ namespace trview
     {
         namespace render
         {
-            namespace
-            {
-                // Conversion functions for text and paragraph alignment.
-                DWRITE_TEXT_ALIGNMENT convert_text_alignment(TextAlignment text_alignment)
-                {
-                    switch (text_alignment)
-                    {
-                    case TextAlignment::Left:
-                        return DWRITE_TEXT_ALIGNMENT_LEADING;
-                    case TextAlignment::Right:
-                        return DWRITE_TEXT_ALIGNMENT_TRAILING;
-                    case TextAlignment::Centre:
-                        return DWRITE_TEXT_ALIGNMENT_CENTER;
-                    case TextAlignment::Justified:
-                        return DWRITE_TEXT_ALIGNMENT_JUSTIFIED;
-                    }
-                    return DWRITE_TEXT_ALIGNMENT_LEADING;
-                }
-
-                DWRITE_PARAGRAPH_ALIGNMENT convert_paragraph_alignment(ParagraphAlignment paragraph_alignment)
-                {
-                    switch (paragraph_alignment)
-                    {
-                    case ParagraphAlignment::Near:
-                        return DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-                    case ParagraphAlignment::Far:
-                        return DWRITE_PARAGRAPH_ALIGNMENT_FAR;
-                    case ParagraphAlignment::Centre:
-                        return DWRITE_PARAGRAPH_ALIGNMENT_CENTER;
-                    }
-                    return DWRITE_PARAGRAPH_ALIGNMENT_NEAR;
-                }
-            }
-
-
             LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, graphics::FontFactory& font_factory)
                 : WindowNode(device, label), 
                 _font(font_factory.create_font(L"Arial", 
                                                label->text_size(), 
-                                               convert_text_alignment(label->text_alignment()), 
-                                               convert_paragraph_alignment(label->paragraph_alignment()))), _label(label)
+                                               label->text_alignment(),
+                                               label->paragraph_alignment())), _label(label)
             {
                 generate_font_texture();
                 if (label->size_mode() == SizeMode::Auto)

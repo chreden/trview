@@ -13,12 +13,6 @@
     <ClInclude Include="Image.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="TextAlignment.h">
-      <Filter>Types</Filter>
-    </ClInclude>
-    <ClInclude Include="ParagraphAlignment.h">
-      <Filter>Types</Filter>
-    </ClInclude>
     <ClInclude Include="Button.h">
       <Filter>Controls</Filter>
     </ClInclude>

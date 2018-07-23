@@ -85,7 +85,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();

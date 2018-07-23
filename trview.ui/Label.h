@@ -5,8 +5,8 @@
 
 #include "Window.h"
 
-#include "TextAlignment.h"
-#include "ParagraphAlignment.h"
+#include <trview.graphics/TextAlignment.h>
+#include <trview.graphics/ParagraphAlignment.h>
 #include "SizeMode.h"
 
 namespace trview
@@ -21,16 +21,16 @@ namespace trview
                 Colour background_colour, 
                 std::wstring text, 
                 float text_size = 20.0f,
-                TextAlignment text_alignment = TextAlignment::Left,
-                ParagraphAlignment paragraph_alignment = ParagraphAlignment::Near,
+                graphics::TextAlignment text_alignment = graphics::TextAlignment::Left,
+                graphics::ParagraphAlignment paragraph_alignment = graphics::ParagraphAlignment::Near,
                 SizeMode mode = SizeMode::Manual);
 
             virtual      ~Label() = default;
             std::wstring text() const;
             float        text_size() const;
             void         set_text(std::wstring text);
-            TextAlignment      text_alignment() const;
-            ParagraphAlignment paragraph_alignment() const;
+            graphics::TextAlignment      text_alignment() const;
+            graphics::ParagraphAlignment paragraph_alignment() const;
             SizeMode size_mode() const;
 
             // Event raised when the text in the label has changed.
@@ -44,12 +44,12 @@ namespace trview
             /// @param colour The new text colour.
             void set_text_colour(const Colour& colour);
         private:
-            std::wstring       _text;
-            float              _text_size;
-            TextAlignment      _text_alignment;
-            ParagraphAlignment _paragraph_alignment;
-            SizeMode           _size_mode;
-            Colour             _text_colour;
+            std::wstring                 _text;
+            float                        _text_size;
+            graphics::TextAlignment      _text_alignment;
+            graphics::ParagraphAlignment _paragraph_alignment;
+            SizeMode                     _size_mode;
+            Colour                       _text_colour;
         };
     }
 }

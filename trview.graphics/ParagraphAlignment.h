@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    namespace ui
+    namespace graphics
     {
         enum class ParagraphAlignment
         {

@@ -49,6 +49,10 @@ namespace trview
             vertex_data.pSysMem = vertices;
 
             HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+            if (hr != S_OK)
+            {
+                create_error("Failed to create sprite vertex buffer", hr);
+            }
 
             uint32_t indices[] = { 0, 1, 2, 3 };
 
