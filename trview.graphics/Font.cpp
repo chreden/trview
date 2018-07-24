@@ -1,6 +1,7 @@
 #include "Font.h"
 #include "Texture.h"
 #include <trview.common/Size.h>
+#include <trview.common/Colour.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;
@@ -14,7 +15,7 @@ namespace trview
         {
         }
 
-        void Font::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height)
+        void Font::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour)
         {
             if (!_batch)
             {
@@ -41,7 +42,7 @@ namespace trview
             }
 
             _batch->Begin(SpriteSortMode_Deferred, blend_state.Get());
-            _font->DrawString(_batch.get(), text.c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(1, 1, 1, 1), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
+            _font->DrawString(_batch.get(), text.c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.b, colour.g, colour.r, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
             _batch->End();
         }
 

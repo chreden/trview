@@ -33,7 +33,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 const auto size = _label->size();
-                _font->render(context, _label->text(), size.width, size.height);
+                _font->render(context, _label->text(), size.width, size.height, _label->text_colour());
             }
 
             // Generate the font texture and other textures required to render the label. This will also
