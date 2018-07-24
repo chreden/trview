@@ -20,7 +20,7 @@ namespace trview
         /// @returns The font loaded from the resource.
         std::shared_ptr<SpriteFont> load_font_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
         {
-            auto resource_memory = get_resource_memory(resource_id, L"FONT");
+            auto resource_memory = get_resource_memory(resource_id, L"SPRITEFONT");
             return std::make_shared<SpriteFont>(device.Get(), resource_memory.data, resource_memory.size);
         }
     }
@@ -32,7 +32,7 @@ namespace trview
     {
         // Load some sort of manifest that contains the files to load.
         // For each font, load it with the given key.
-        Resource texture_list = get_resource_memory(IDR_FONTS_LIST, L"TEXT");
+        Resource texture_list = get_resource_memory(IDR_FONT_LIST, L"TEXT");
 
         auto contents = std::string(texture_list.data, texture_list.data + texture_list.size);
         std::stringstream stream(contents);

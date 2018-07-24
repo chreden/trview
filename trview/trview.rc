@@ -236,6 +236,8 @@ IDB_SETTINGS            PNG                     "resources\\settings.png"
 
 IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
 
+IDR_FONT_LIST           TEXT                    "fontlist.txt"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -253,7 +255,12 @@ IDR_UI_PIXEL_SHADER     SHADER                  "resources\\ui_pixel_shader.cso"
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// FONT
+//
 
+IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

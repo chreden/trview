@@ -23,7 +23,7 @@ namespace trview
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16));
         reset_camera->on_click += on_reset;
 
-        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 10.0f, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
+        auto reset_camera_label = std::make_unique<Label>(Point(32, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 8.0f, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
 
         auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), up, down, L"Orbit");
         orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
