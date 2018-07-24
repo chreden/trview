@@ -10,6 +10,12 @@
     <Filter Include="Src\Shared">
       <UniqueIdentifier>{28e934ed-a6d7-4c30-b064-c72c50c99626}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Shaders">
+      <UniqueIdentifier>{1b39fa59-c814-49a0-a819-2610581637a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Shaders\Compiled">
+      <UniqueIdentifier>{ce500b04-dfb4-4696-b9da-89263dda2361}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h">
@@ -36,6 +42,33 @@
     <ClInclude Include="Inc\SimpleMath.h">
       <Filter>Inc</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\SpriteFont.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\SpriteBatch.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\CommonStates.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\VertexTypes.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ConstantBuffer.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\AlignedNew.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\SharedResourcePool.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\BinaryReader.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\GraphicsMemory.h">
+      <Filter>Inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\pch.cpp">
@@ -50,11 +83,29 @@
     <ClCompile Include="Src\SimpleMath.cpp">
       <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="Src\SpriteBatch.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\SpriteFont.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\BinaryReader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\GraphicsMemory.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.txt" />
     <None Include="Inc\SimpleMath.inl">
       <Filter>Inc</Filter>
+    </None>
+    <None Include="Src\Shaders\Compiled\SpriteEffect_SpritePixelShader.inc">
+      <Filter>Src\Shaders\Compiled</Filter>
+    </None>
+    <None Include="Src\Shaders\Compiled\SpriteEffect_SpriteVertexShader.inc">
+      <Filter>Src\Shaders\Compiled</Filter>
     </None>
   </ItemGroup>
 </Project>
