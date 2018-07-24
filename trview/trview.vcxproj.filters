@@ -163,6 +163,9 @@
     <ClInclude Include="ResourceHelper.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultFonts.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -265,6 +268,9 @@
       <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="ResourceHelper.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultFonts.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>

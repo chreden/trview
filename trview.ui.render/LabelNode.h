@@ -1,10 +1,15 @@
 #pragma once
 
 #include "WindowNode.h"
-#include <trview.graphics/Font.h>
 
 namespace trview
 {
+    namespace graphics
+    {
+        class Font;
+        class FontFactory;
+    }
+
     namespace ui
     {
         class Label;
@@ -14,7 +19,7 @@ namespace trview
             class LabelNode : public WindowNode
             {
             public:
-                LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label);
+                LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, const graphics::FontFactory& font_factory);
                 virtual ~LabelNode();
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;

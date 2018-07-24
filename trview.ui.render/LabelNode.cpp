@@ -2,6 +2,7 @@
 
 #include <trview.ui/Label.h>
 #include <trview.graphics/FontFactory.h>
+#include <trview.graphics/Font.h>
 
 namespace trview
 {
@@ -9,11 +10,9 @@ namespace trview
     {
         namespace render
         {
-            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label)
+            LabelNode::LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, const graphics::FontFactory& font_factory)
                 : WindowNode(device, label), 
-                _font(std::make_unique<graphics::Font>(device, label->text_size(), 
-                                             label->text_alignment(),
-                                             label->paragraph_alignment())), _label(label)
+                _font(font_factory.create_font("Arial", label->text_size(), label->text_alignment(), label->paragraph_alignment())), _label(label)
             {
                 generate_font_texture();
                 if (label->size_mode() == SizeMode::Auto)
@@ -34,7 +33,7 @@ namespace trview
             {
                 WindowNode::render_self(context, sprite);
                 const auto size = _label->size();
-                _font->render(context, _label->text(), 0, 0, size.width, size.height);
+                _font->render(context, _label->text(), size.width, size.height);
             }
 
             // Generate the font texture and other textures required to render the label. This will also

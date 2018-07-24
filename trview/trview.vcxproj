@@ -179,6 +179,7 @@
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraInput.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="DirectoryListing.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="CameraInput.cpp" />
+    <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />

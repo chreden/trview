@@ -17,9 +17,23 @@ namespace trview
         {
         }
 
-        std::unique_ptr<Font> FontFactory::create_font(const std::wstring& font_face, float size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment)
+        void FontFactory::store(const std::string& key, const std::shared_ptr<DirectX::SpriteFont>& font)
         {
-            return nullptr;
+            _cache.insert({ key, font });
+        }
+
+        std::unique_ptr<Font> FontFactory::create_font(const std::string& font_face, int size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment) const
+        {
+            // Look for the font in the cache....
+            const auto key = font_face + std::to_string(size);
+            auto found = _cache.find(key);
+            if (found == _cache.end())
+            {
+                throw std::exception((std::string("Couldn't find font '") + key + "' in the cache").c_str());
+            }
+
+            // Create the font holder.
+            return std::make_unique<Font>(found->second, text_alignment, paragraph_alignment);
         }
     }
 }

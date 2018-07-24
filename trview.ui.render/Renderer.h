@@ -14,6 +14,7 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
+        class FontFactory;
         class Sprite;
     }
 
@@ -24,7 +25,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t host_width, uint32_t host_height);
+                explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, uint32_t host_width, uint32_t host_height);
 
                 ~Renderer();
 
@@ -46,6 +47,7 @@ namespace trview
                 std::unique_ptr<graphics::Sprite>               _sprite;
                 Microsoft::WRL::ComPtr<ID3D11Device>            _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
+                const graphics::FontFactory&                    _font_factory;
                 uint32_t                                        _host_width;
                 uint32_t                                        _host_height;
             };
