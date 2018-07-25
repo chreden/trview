@@ -49,6 +49,12 @@ namespace trview
         box->add_child(std::move(label));
         window->add_child(std::move(box));
         parent.add_child(std::move(window));
+
+        parent.on_size_changed += [&](const Size& size)
+        {
+            _window->set_position(Point(size.width / 2.0f - _window->size().width / 2.0f, size.height / 2.0f - WindowHeight / 2.0f));
+        };
+
     }
 
     bool GoToRoom::visible() const
