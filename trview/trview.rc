@@ -169,8 +169,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,6,0
- PRODUCTVERSION 1,0,6,0
+ FILEVERSION 1,0,7,0
+ PRODUCTVERSION 1,0,7,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -252,15 +252,18 @@ IDR_UI_VERTEX_SHADER    SHADER                  "resources\\ui_vertex_shader.cso
 
 IDR_UI_PIXEL_SHADER     SHADER                  "resources\\ui_pixel_shader.cso"
 
-#endif    // English (United Kingdom) resources
-/////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// FONT
+// SPRITEFONT
 //
 
 IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
+
+#endif    // English (United Kingdom) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
