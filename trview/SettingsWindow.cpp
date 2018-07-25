@@ -25,7 +25,7 @@ namespace trview
 
         // Create the title bar.
         auto title_bar = std::make_unique<StackPanel>(Point(), Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto title = std::make_unique<Label>(Point(), Size(400, 20), title_colour, L"Settings", 8.0f, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        auto title = std::make_unique<Label>(Point(), Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         title->set_horizontal_alignment(Align::Centre);
         title_bar->add_child(std::move(title));
         window->add_child(std::move(title_bar));

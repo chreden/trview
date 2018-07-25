@@ -20,15 +20,15 @@ namespace trview
                 Size size, 
                 Colour background_colour, 
                 std::wstring text, 
-                float text_size = 20.0f,
+                int text_size,
                 graphics::TextAlignment text_alignment = graphics::TextAlignment::Left,
                 graphics::ParagraphAlignment paragraph_alignment = graphics::ParagraphAlignment::Near,
                 SizeMode mode = SizeMode::Manual);
 
             virtual      ~Label() = default;
             std::wstring text() const;
-            float        text_size() const;
-            void         set_text(std::wstring text);
+            int          text_size() const;
+            void         set_text(const std::wstring& text);
             graphics::TextAlignment      text_alignment() const;
             graphics::ParagraphAlignment paragraph_alignment() const;
             SizeMode size_mode() const;
@@ -45,7 +45,7 @@ namespace trview
             void set_text_colour(const Colour& colour);
         private:
             std::wstring                 _text;
-            float                        _text_size;
+            int                          _text_size;
             graphics::TextAlignment      _text_alignment;
             graphics::ParagraphAlignment _paragraph_alignment;
             SizeMode                     _size_mode;

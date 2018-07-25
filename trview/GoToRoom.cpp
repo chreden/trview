@@ -39,7 +39,7 @@ namespace trview
             Size(Width, Height),
             Colour(1.0f, 0.4f, 0.4f, 0.4f),
             L"",
-            8.0f,
+            8,
             graphics::TextAlignment::Centre,
             graphics::ParagraphAlignment::Centre);
 

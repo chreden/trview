@@ -24,7 +24,7 @@ namespace trview
             Size(260, 40),
             Colour(1.0f, 0.1f, 0.1f, 0.1f),
             L"No level loaded",
-            8.0f);
+            8);
 
         _image = image.get();
         _label = label.get();

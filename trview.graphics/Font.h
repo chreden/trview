@@ -38,6 +38,7 @@ namespace trview
             /// @param text The text to render on to the font texture.
             /// @param width The optional width of the rectangle in which to render text.
             /// @param height The optional height of the rectangle in which to render text.
+            /// @param colour The colour to render the text.
             void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour);
 
             /// Determines the size in pixels that the text specified will be when rendered.
