@@ -8,7 +8,7 @@ namespace trview
 {
     namespace
     {
-        const float WindowWidth = 80.0f;
+        const float WindowWidth = 87.0f;
         const float WindowHeight = 50.0f;
         const float Width = 50.0f;
         const float Height = 20.0f;
