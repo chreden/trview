@@ -4,7 +4,7 @@ namespace trview
 {
     namespace ui
     {
-        Label::Label(Point position, Size size, Colour background_colour, std::wstring text, float text_size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment, SizeMode mode)
+        Label::Label(Point position, Size size, Colour background_colour, std::wstring text, int text_size, graphics::TextAlignment text_alignment, graphics::ParagraphAlignment paragraph_alignment, SizeMode mode)
             : Window(position, size, background_colour), _text(text), _text_size(text_size), _text_alignment(text_alignment), _paragraph_alignment(paragraph_alignment), _size_mode(mode), _text_colour(1.0f, 1.0f, 1.0f, 1.0f)
         {
         }
@@ -14,24 +14,24 @@ namespace trview
             return _text;
         }
 
-        float Label::text_size() const
+        int Label::text_size() const
         {
             return _text_size;
         }
 
-        void Label::set_text(std::wstring text)
+        void Label::set_text(const std::wstring& text)
         {
             _text = text;
             on_text_changed(text);
             on_invalidate();
         }
 
-        TextAlignment Label::text_alignment() const
+        graphics::TextAlignment Label::text_alignment() const
         {
             return _text_alignment;
         }
 
-        ParagraphAlignment Label::paragraph_alignment() const
+        graphics::ParagraphAlignment Label::paragraph_alignment() const
         {
             return _paragraph_alignment;
         }

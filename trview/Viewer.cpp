@@ -7,6 +7,7 @@
 
 #include <trlevel/trlevel.h>
 #include <trview.graphics/ShaderStorage.h>
+#include <trview.graphics/FontFactory.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
@@ -17,6 +18,7 @@
 #include "CameraControls.h"
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
+#include "DefaultFonts.h"
 #include "GoToRoom.h"
 #include "LevelInfo.h"
 #include "Neighbours.h"
@@ -53,6 +55,9 @@ namespace trview
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device.device(), *_shader_storage.get());
 
+        _font_factory = std::make_unique<graphics::FontFactory>(_device.device());
+        load_default_fonts(_device.device(), *_font_factory.get());
+
         generate_ui();
     }
 
@@ -85,7 +90,7 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"", 20.0f, ui::TextAlignment::Centre, ui::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(30, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = picking.get();
@@ -115,7 +120,7 @@ namespace trview
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.width(), _window.height());
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());

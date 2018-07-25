@@ -163,6 +163,9 @@
     <ClInclude Include="ResourceHelper.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultFonts.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -267,6 +270,9 @@
     <ClCompile Include="ResourceHelper.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="DefaultFonts.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
@@ -316,6 +322,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Controls.txt" />
+    <Text Include="fontlist.txt">
+      <Filter>Win\Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="texturelist.txt">
@@ -331,6 +340,9 @@
       <Filter>Resources</Filter>
     </None>
     <None Include="resources\ui_vertex_shader.cso">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="resources\arial8.bin">
       <Filter>Resources</Filter>
     </None>
   </ItemGroup>

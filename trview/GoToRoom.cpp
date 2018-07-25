@@ -8,7 +8,7 @@ namespace trview
 {
     namespace
     {
-        const float WindowWidth = 80.0f;
+        const float WindowWidth = 87.0f;
         const float WindowHeight = 50.0f;
         const float Width = 50.0f;
         const float Height = 20.0f;
@@ -39,9 +39,9 @@ namespace trview
             Size(Width, Height),
             Colour(1.0f, 0.4f, 0.4f, 0.4f),
             L"",
-            15.f,
-            TextAlignment::Centre,
-            ParagraphAlignment::Centre);
+            8,
+            graphics::TextAlignment::Centre,
+            graphics::ParagraphAlignment::Centre);
 
         _label = label.get();
         _window = window.get();

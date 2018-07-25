@@ -23,15 +23,16 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
-    <ClInclude Include="FontTexture.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
+    <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetStore.h" />
     <ClInclude Include="ShaderStorage.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteSizeStore.h" />
+    <ClInclude Include="TextAlignment.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="ViewportStore.h" />

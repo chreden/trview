@@ -4,43 +4,46 @@
 #include <trview.common/Colour.h>
 
 using namespace Microsoft::WRL;
+using namespace DirectX;
 
 namespace trview
 {
     namespace graphics
     {
-        Font::Font(const ComPtr<IDWriteFactory>& dwrite_factory, const ComPtr<ID2D1Factory>& d2d_factory, const ComPtr<IDWriteTextFormat>& text_format)
-            : _dwrite_factory(dwrite_factory), _d2d_factory(d2d_factory), _text_format(text_format)
+        Font::Font(const std::shared_ptr<SpriteFont>& font, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment)
+            : _font(font), _text_alignment(text_alignment), _paragraph_alignment(paragraph_alignment)
         {
         }
 
-        FontTexture Font::create_texture(const graphics::Texture& texture, const Colour& colour)
+        void Font::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour)
         {
-            ComPtr<IDXGISurface> surface;
-            texture.texture().As(&surface);
+            if (!_batch)
+            {
+                _batch = std::make_unique<SpriteBatch>(context.Get());
+            }
 
-            D2D1_RENDER_TARGET_PROPERTIES props =
-                D2D1::RenderTargetProperties(
-                    D2D1_RENDER_TARGET_TYPE_DEFAULT,
-                    D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED),
-                    96,
-                    96
-                );
+            // Make sure the sprite batch uses our blend state instead of setting its own.
+            ComPtr<ID3D11BlendState> blend_state;
+            context->OMGetBlendState(&blend_state, nullptr, nullptr);
 
-            FontTexture new_texture;
-            _d2d_factory->CreateDxgiSurfaceRenderTarget(surface.Get(), &props, &new_texture.render_target);
-            new_texture.render_target->CreateSolidColorBrush(D2D1::ColorF(colour.r, colour.g, colour.b, colour.a), &new_texture.brush);
-            return new_texture;
-        }
+            // Calculate the position at which to render the text based on the alignment settings.
+            const auto size = measure(text);
+            float x = 0;
+            float y = 0;
 
-        void Font::render(FontTexture& texture, const std::wstring& text, float x, float y, float width, float height)
-        {
-            D2D1_RECT_F layoutRect = D2D1::RectF(0, 0, width, height);
+            if (_text_alignment == TextAlignment::Centre)
+            {
+                x = width * 0.5f - size.width * 0.5f;
+            }
 
-            texture.render_target->BeginDraw();
-            texture.render_target->SetTransform(D2D1::Matrix3x2F::Translation(x, y));
-            texture.render_target->DrawText(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), layoutRect, texture.brush.Get());
-            texture.render_target->EndDraw();
+            if (_paragraph_alignment == ParagraphAlignment::Centre)
+            {
+                y = height * 0.5f - size.height * 0.5f;
+            }
+
+            _batch->Begin(SpriteSortMode_Deferred, blend_state.Get());
+            _font->DrawString(_batch.get(), text.c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.b, colour.g, colour.r, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
+            _batch->End();
         }
 
         // Determines the size in pixels that the text specified will be when rendered.
@@ -48,12 +51,9 @@ namespace trview
         // Returns: The size in pixels required.
         Size Font::measure(const std::wstring& text) const
         {
-            // Create a text layout from the factory (which we don't have...)
-            ComPtr<IDWriteTextLayout> text_layout;
-            _dwrite_factory->CreateTextLayout(text.c_str(), static_cast<uint32_t>(text.size()), _text_format.Get(), 10000, 10000, &text_layout);
-            DWRITE_TEXT_METRICS metrics;
-            text_layout->GetMetrics(&metrics);
-            return Size(std::ceil(metrics.width), std::ceil(metrics.height));
+            XMFLOAT2 size;
+            XMStoreFloat2(&size, _font->MeasureString(text.c_str()));
+            return Size(size.x, size.y);
         }
     }
 }

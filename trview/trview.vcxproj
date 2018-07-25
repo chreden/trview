@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
@@ -115,7 +115,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
@@ -140,7 +140,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
@@ -165,7 +165,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d2d1.lib;dwrite.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
@@ -179,6 +179,7 @@
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraInput.h" />
     <ClInclude Include="CameraMode.h" />
+    <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="DirectoryListing.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="CameraInput.cpp" />
+    <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
@@ -309,8 +311,10 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Text>
+    <Text Include="fontlist.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\arial8.bin" />
     <None Include="resources\level_pixel_shader.cso" />
     <None Include="resources\level_vertex_shader.cso" />
     <None Include="resources\ui_pixel_shader.cso" />

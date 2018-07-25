@@ -43,11 +43,14 @@
     <ClInclude Include="FontFactory.h">
       <Filter>Font</Filter>
     </ClInclude>
-    <ClInclude Include="FontTexture.h">
-      <Filter>Font</Filter>
-    </ClInclude>
     <ClInclude Include="Device.h">
       <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="ParagraphAlignment.h">
+      <Filter>Font</Filter>
+    </ClInclude>
+    <ClInclude Include="TextAlignment.h">
+      <Filter>Font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

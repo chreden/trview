@@ -31,6 +31,8 @@
 #define IDR_LEVEL_PIXEL_SHADER          144
 #define IDR_UI_VERTEX_SHADER            145
 #define IDR_UI_PIXEL_SHADER             146
+#define IDR_FONT_LIST                   147
+#define IDF_ARIAL8                      148
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773

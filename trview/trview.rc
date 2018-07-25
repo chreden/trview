@@ -81,7 +81,7 @@ CAPTION "About trview"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_TRVIEW,IDC_STATIC,14,14,20,20
-    LTEXT           "trview, Version 1.0.6",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "trview, Version 1.0.7",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2018 trview team",IDC_STATIC,42,26,127,17
     DEFPUSHBUTTON   "OK",IDOK,186,117,50,14,WS_GROUP
     LTEXT           "Licensed under the MIT license",IDC_STATIC,42,38,127,17
@@ -186,12 +186,12 @@ BEGIN
         BLOCK "080904b0"
         BEGIN
             VALUE "FileDescription", "TRView"
-            VALUE "FileVersion", "1.0.6.0"
+            VALUE "FileVersion", "1.0.7.0"
             VALUE "InternalName", "trview.exe"
             VALUE "LegalCopyright", "Copyright (C) chreden 2018"
             VALUE "OriginalFilename", "trview.exe"
             VALUE "ProductName", "TRView"
-            VALUE "ProductVersion", "1.0.6.0"
+            VALUE "ProductVersion", "1.0.7.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -236,6 +236,8 @@ IDB_SETTINGS            PNG                     "resources\\settings.png"
 
 IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
 
+IDR_FONT_LIST           TEXT                    "fontlist.txt"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -253,7 +255,12 @@ IDR_UI_PIXEL_SHADER     SHADER                  "resources\\ui_pixel_shader.cso"
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// FONT
+//
 
+IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

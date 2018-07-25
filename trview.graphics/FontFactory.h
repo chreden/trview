@@ -6,11 +6,16 @@
 #pragma once
 
 #include <string>
-
 #include <wrl/client.h>
-#include <d2d1.h>
-#include <dwrite.h>
 #include <memory>
+#include <d3d11.h>
+#include <vector>
+#include <unordered_map>
+
+#include <external/DirectXTK/Inc/SpriteFont.h>
+
+#include "TextAlignment.h"
+#include "ParagraphAlignment.h"
 
 namespace trview
 {
@@ -23,28 +28,27 @@ namespace trview
         {
         public:
             /// Creates a new instace of the FontFactory class.
-            FontFactory();
+            explicit FontFactory(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
 
             ~FontFactory();
 
             FontFactory(const FontFactory&) = delete;
 
+            /// Store the given data in the font factory with the specfied key. The key should be 'fontX' - so 'Arial8' for example.
+            void store(const std::string& key, const std::shared_ptr<DirectX::SpriteFont>& font);
+
             /// Create a new font with the specified settings and alignment options.
             /// @param font_face The font face to use (eg Arial).
-            /// @param size Optional size of the font. Defaults to 20.0f.
+            /// @param size Size of the font.
             /// @param text_alignment Optional alignment of the text, describes how the text will be rendered
-            ///        with respect to the layout rectangle in the horizontal axis. Defaults to DWRITE_TEXT_ALIGNMENT_LEADING.
+            ///        with respect to the layout rectangle in the horizontal axis. Defaults to TextAlignment::Left.
             /// @param paragraph_alignment Optional alignment of the text, describes how the text will be rendered
-            ///        with respect to the layout rectangle in the vertical axis. Defaults to DWRITE_PARAGRAPH_ALIGNMENT_NEAR.
+            ///        with respect to the layout rectangle in the vertical axis. Defaults to ParagraphAlignment::Near.
             /// @returns The new font instance.
-            std::unique_ptr<Font> create_font(
-                const std::wstring& font_face,
-                float size = 20.f,
-                DWRITE_TEXT_ALIGNMENT text_alignment = DWRITE_TEXT_ALIGNMENT_LEADING,
-                DWRITE_PARAGRAPH_ALIGNMENT paragraph_alignment = DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+            std::unique_ptr<Font> create_font(const std::string& font_face, int size, TextAlignment text_alignment = TextAlignment::Left, ParagraphAlignment paragraph_alignment = ParagraphAlignment::Near) const;
         private:
-            Microsoft::WRL::ComPtr<ID2D1Factory>   _d2d_factory;
-            Microsoft::WRL::ComPtr<IDWriteFactory> _dwrite_factory;
+            Microsoft::WRL::ComPtr<ID3D11Device> _device;
+            mutable std::unordered_map<std::string, std::shared_ptr<DirectX::SpriteFont>> _cache;
         };
     }
 }
