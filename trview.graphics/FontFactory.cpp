@@ -3,6 +3,7 @@
 #include <external/DirectXTK/Inc/SpriteFont.h>
 
 using namespace Microsoft::WRL;
+using namespace std::string_literals;
 
 namespace trview
 {
@@ -29,7 +30,7 @@ namespace trview
             auto found = _cache.find(key);
             if (found == _cache.end())
             {
-                throw std::exception((std::string("Couldn't find font '") + key + "' in the cache").c_str());
+                throw std::exception(("Couldn't find font '"s + key + "' in the cache"s).c_str());
             }
 
             // Create the font holder.
