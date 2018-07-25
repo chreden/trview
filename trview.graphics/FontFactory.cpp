@@ -30,7 +30,7 @@ namespace trview
             auto found = _cache.find(key);
             if (found == _cache.end())
             {
-                throw std::exception(("Couldn't find font '"s + key + "' in the cache"s).c_str());
+                throw std::runtime_error("Couldn't find font '"s + key + "' in the cache"s);
             }
 
             // Create the font holder.
