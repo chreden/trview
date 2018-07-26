@@ -177,6 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case ID_FILE_OPEN:
+            case ID_ACCEL_FILE_OPEN:
             {
                 wchar_t cd[MAX_PATH];
                 GetCurrentDirectoryW(MAX_PATH, cd);
