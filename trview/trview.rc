@@ -45,7 +45,7 @@ IDC_TRVIEW MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "Open",                        ID_FILE_OPEN
+        MENUITEM "Open\tCtrl+O",                ID_FILE_OPEN
         MENUITEM "Open Recent",                 ID_FILE_OPENRECENT
         MENUITEM "Switch &Level",               ID_FILE_SWITCHLEVEL
         MENUITEM "E&xit",                       IDM_EXIT
@@ -65,8 +65,9 @@ END
 
 IDC_TRVIEW ACCELERATORS
 BEGIN
-    "?",            IDM_ABOUT,              ASCII,  ALT
-    "/",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
+    "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
+    "^O",           ID_ACCEL_FILE_OPEN,     ASCII,  NOINVERT
 END
 
 
