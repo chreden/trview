@@ -55,6 +55,7 @@ namespace trview
     {
         struct IShaderStorage;
         class FontFactory;
+        class DeviceWindow;
     }
 
     /// Class that coordinates all the parts of the application.
@@ -115,6 +116,8 @@ namespace trview
         void setup_camera_input();
 
         graphics::Device _device;
+        std::unique_ptr<graphics::DeviceWindow> _main_window;
+
         std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;

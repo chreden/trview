@@ -8,6 +8,7 @@
 #include <trlevel/trlevel.h>
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
+#include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
@@ -31,9 +32,11 @@ namespace trview
 {
     Viewer::Viewer(Window window)
         : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
-        _timer(default_time_source()), _keyboard(window), _mouse(window), _device(window), _level_switcher(window),
+        _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
+        _main_window = _device.create_for_window(window);
+
         _settings = load_user_settings();
 
         _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
@@ -401,13 +404,14 @@ namespace trview
         pick();
 
         _device.begin();
-        _device.clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+        _main_window->begin();
+        _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
         render_scene();
         _ui_renderer->render(_device.context());
         render_map();
 
-        _device.present(_settings.vsync);
+        _main_window->present(_settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -571,7 +575,7 @@ namespace trview
 
         // Refresh the window so that the new size is known.
         _window = Window(_window.window());
-        _device.resize();
+        _main_window->resize();
         resize_elements();
     }
 
