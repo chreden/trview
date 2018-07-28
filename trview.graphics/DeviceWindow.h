@@ -8,12 +8,12 @@
 #include <d3d11.h>
 #include <trview.common/Window.h>
 #include <trview.common/Colour.h>
+#include "RenderTarget.h"
 
 namespace trview
 {
     namespace graphics
     {
-        class RenderTarget;
         class Device;
 
         /// Wraps the D3D resources for rendering to a window.

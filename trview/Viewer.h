@@ -27,6 +27,7 @@
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>
 #include <trview.app/FileDropper.h>
+#include <trview.app/ItemsWindow.h>
 
 namespace trview
 {
@@ -114,6 +115,7 @@ namespace trview
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
+        std::unique_ptr<ItemsWindow> _items_window;
 
         std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
