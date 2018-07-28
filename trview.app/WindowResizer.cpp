@@ -3,7 +3,7 @@
 namespace trview
 {
     WindowResizer::WindowResizer(HWND window)
-        : MessageHandler(window)
+        : MessageHandler(window), _previous_size(window)
     {
     }
 
@@ -18,7 +18,7 @@ namespace trview
             }
             case WM_SIZE:
             {
-                if (!_resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED))
+                if (!_resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED) && has_size_changed())
                 {
                     on_resize();
                 }
@@ -27,9 +27,23 @@ namespace trview
             case WM_EXITSIZEMOVE:
             {
                 _resizing = false;
-                on_resize();
+                if (has_size_changed())
+                {
+                    on_resize();
+                }
                 break;
             }
         }
+    }
+
+    bool WindowResizer::has_size_changed()
+    {
+        Window new_size{ window() };
+        if (new_size.width() == _previous_size.width() && new_size.height() == _previous_size.height())
+        {
+            return false;
+        }
+        _previous_size = new_size;
+        return true;
     }
 }
