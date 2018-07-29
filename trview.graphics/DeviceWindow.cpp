@@ -15,8 +15,8 @@ namespace trview
             DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
             swap_chain_desc.BufferCount = 1;
             swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            swap_chain_desc.BufferDesc.Height = window.height();
-            swap_chain_desc.BufferDesc.Width = window.width();
+            swap_chain_desc.BufferDesc.Height = static_cast<uint32_t>(window.size().height);
+            swap_chain_desc.BufferDesc.Width = static_cast<uint32_t>(window.size().width);
             swap_chain_desc.BufferDesc.RefreshRate.Numerator = 1;
             swap_chain_desc.BufferDesc.RefreshRate.Denominator = 60;
             swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;

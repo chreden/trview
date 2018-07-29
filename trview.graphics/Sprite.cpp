@@ -25,8 +25,8 @@ namespace trview
             };
         }
 
-        Sprite::Sprite(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, uint32_t width, uint32_t height)
-            : _host_width(width), _host_height(height)
+        Sprite::Sprite(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& host_size)
+            : _host_size(host_size)
         {
             using namespace DirectX::SimpleMath;
 
@@ -84,10 +84,9 @@ namespace trview
             create_matrix(device);
         }
 
-        void Sprite::set_host_size(uint32_t width, uint32_t height)
+        void Sprite::set_host_size(const Size& size)
         {
-            _host_width = width;
-            _host_height = height;
+            _host_size = size;
         }
 
         void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
@@ -137,10 +136,10 @@ namespace trview
             // Need to scale the quad so that it is a certain size. Will need to know the 
             // size of the host window as well as the size that we want the texture window
             // to be. Then create a scaling matrix and throw it in to the shader.
-            auto scaling = Matrix::CreateScale(width / _host_width, height / _host_height, 1);
+            auto scaling = Matrix::CreateScale(width / _host_size.width, height / _host_size.height, 1);
 
             // Try to make the appropriate translation matrix to move it to the top left of the screen.
-            auto translation = Matrix::CreateTranslation(-1.f + width / _host_width + (x * 2) / _host_width, 1.f - height / _host_height - (y * 2) / _host_height, 0);
+            auto translation = Matrix::CreateTranslation(-1.f + width / _host_size.width + (x * 2) / _host_size.width, 1.f - height / _host_size.height - (y * 2) / _host_size.height, 0);
 
             Data data{ scaling * translation, colour };
 
@@ -149,14 +148,9 @@ namespace trview
             context->Unmap(_matrix_buffer.Get(), 0);
         }
 
-        uint32_t Sprite::host_width() const
+        Size Sprite::host_size() const
         {
-            return _host_width;
-        }
-
-        uint32_t Sprite::host_height() const 
-        {
-            return _host_height;
+            return _host_size;
         }
     }
 }

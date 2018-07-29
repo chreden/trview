@@ -34,7 +34,7 @@ namespace trview
 
                 graphics::RenderTargetStore rt_store(context);
                 graphics::ViewportStore vp_store(context);
-                graphics::SpriteSizeStore s_store(sprite, _render_target->width(), _render_target->height());
+                graphics::SpriteSizeStore s_store(sprite, _render_target->size());
                 _render_target->apply(context);
 
                 sprite.render(context, _blank, thickness, thickness, _button->size().width - 2.0f * thickness, _button->size().height - 2.0f * thickness,

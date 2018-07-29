@@ -25,7 +25,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, uint32_t host_width, uint32_t host_height);
+                explicit Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& host_size);
 
                 ~Renderer();
 
@@ -37,9 +37,8 @@ namespace trview
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
 
                 // Set the size of the host render area.
-                // width: The width of the render area.
-                // height: The height of the render area.
-                void set_host_size(uint32_t width, uint32_t height);
+                // width: The size of the render area.
+                void set_host_size(const Size& size);
             private:
                 std::unique_ptr<RenderNode> process_control(Control* control);
 
@@ -48,8 +47,7 @@ namespace trview
                 Microsoft::WRL::ComPtr<ID3D11Device>            _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 const graphics::FontFactory&                    _font_factory;
-                uint32_t                                        _host_width;
-                uint32_t                                        _host_height;
+                Size                                            _host_size;
             };
         }
     }

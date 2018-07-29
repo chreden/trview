@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trview.common/Size.h>
+
 #include "ICamera.h"
 
 namespace trview
@@ -7,7 +9,7 @@ namespace trview
     class Camera : public ICamera
     {
     public:
-        Camera(uint32_t width, uint32_t height);
+        explicit Camera(const Size& size);
         virtual ~Camera() = default;
         float rotation_yaw() const override;
         float rotation_pitch() const override;
@@ -26,11 +28,10 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 forward() const override;
 
         // Set the dimensions of the render target for the camera.
-        // width: The width in pixels of the render target.
-        // height: The width in height of the render target.
-        void set_view_size(uint32_t width, uint32_t height);
+        // size: The size in pixels of the render target.
+        void set_view_size(const Size& size);
     private:
-        void calculate_projection_matrix(uint32_t width, uint32_t height);
+        void calculate_projection_matrix(const Size& size);
         void calculate_view_matrix();
 
         const float default_pitch = 0.78539f;

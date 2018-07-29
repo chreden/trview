@@ -1,9 +1,10 @@
 #include "WindowResizer.h"
+#include <trview.common/Window.h>
 
 namespace trview
 {
     WindowResizer::WindowResizer(HWND window)
-        : MessageHandler(window), _previous_size(window)
+        : MessageHandler(window), _previous_size(Window(window).size())
     {
     }
 
@@ -38,8 +39,8 @@ namespace trview
 
     bool WindowResizer::has_size_changed()
     {
-        Window new_size{ window() };
-        if (new_size.width() == _previous_size.width() && new_size.height() == _previous_size.height())
+        Size new_size = Window(window()).size();
+        if (new_size.width == _previous_size.width && new_size.height == _previous_size.height)
         {
             return false;
         }

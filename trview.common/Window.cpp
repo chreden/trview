@@ -6,20 +6,13 @@ namespace trview
     Window::Window(HWND window)
         : _window(window)
     {
+    }
+
+    Size Window::size() const
+    {
         RECT rectangle;
         GetClientRect(_window, &rectangle);
-        _width = rectangle.right - rectangle.left;
-        _height = rectangle.bottom - rectangle.top;
-    }
-
-    uint32_t Window::width() const
-    {
-        return _width;
-    }
-
-    uint32_t Window::height() const
-    {
-        return _height;
+        return Size(rectangle.right - rectangle.left, rectangle.bottom - rectangle.top);
     }
 
     HWND Window::window() const
@@ -49,7 +42,8 @@ namespace trview
     bool cursor_outside_window(const Window& window) noexcept
     {
         const Point cursor_pos = client_cursor_position(window);
-        return cursor_pos.x < 0 || cursor_pos.y < 0 || cursor_pos.x > window.width() || cursor_pos.y > window.height();
+        const Size size = window.size();
+        return cursor_pos.x < 0 || cursor_pos.y < 0 || cursor_pos.x > size.width || cursor_pos.y > size.height;
     }
 
     // Determines whether the window is minimsed.

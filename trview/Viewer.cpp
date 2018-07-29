@@ -30,8 +30,8 @@
 
 namespace trview
 {
-    Viewer::Viewer(Window window)
-        : _window(window), _camera(window.width(), window.height()), _free_camera(window.width(), window.height()),
+    Viewer::Viewer(const Window& window)
+        : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
@@ -42,7 +42,11 @@ namespace trview
         _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
-        _window_resizer.on_resize += [=]() { resize(); };
+        _window_resizer.on_resize += [=]()
+        {
+            _main_window->resize();
+            resize_elements();
+        };
 
         _recent_files.on_file_open += [=](const auto& file) { open(file); };
         _recent_files.set_recent_files(_settings.recent_files);
@@ -78,7 +82,7 @@ namespace trview
     {
         // Create the user interface window. At the moment this is going to be a bar on the side, 
         // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(Point(), Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())), Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(Point(), _window.size(), Colour(0.f, 0.f, 0.f, 0.f)); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -123,10 +127,10 @@ namespace trview
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.width(), _window.height());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.size());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.width(), _window.height());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.size());
     }
 
     void Viewer::generate_tool_window()
@@ -444,8 +448,9 @@ namespace trview
         auto view = camera.view();
 
         Point mouse_pos = client_cursor_position(_window);
+        const auto window_size = _window.size();
 
-        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, world);
+        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
         direction.Normalize();
 
         auto result = _level->pick(position, direction);
@@ -453,7 +458,7 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, static_cast<float>(_window.width()), static_cast<float>(_window.height()), 0, 1.0f, projection, view, XMMatrixIdentity());
+            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
         }
@@ -563,30 +568,15 @@ namespace trview
         }
     }
 
-    // Resize the window and the rendering system.
-    void Viewer::resize()
-    {
-        // If the window is the same size as before, do nothing.
-        Window window{ _window.window() };
-        if (window.width() == _window.width() && window.height() == _window.height())
-        {
-            return;
-        }
-
-        // Refresh the window so that the new size is known.
-        _window = Window(_window.window());
-        _main_window->resize();
-        resize_elements();
-    }
-
     void Viewer::resize_elements()
     {
+        const auto size = _window.size();
         // Inform elements that need to know that the device has been resized.
-        _camera.set_view_size(_window.width(), _window.height());
-        _free_camera.set_view_size(_window.width(), _window.height());
-        _control->set_size(Size(static_cast<float>(_window.width()), static_cast<float>(_window.height())));
-        _ui_renderer->set_host_size(_window.width(), _window.height());
-        _map_renderer->set_window_size(_window.width(), _window.height());
+        _camera.set_view_size(size);
+        _free_camera.set_view_size(size);
+        _control->set_size(size);
+        _ui_renderer->set_host_size(size);
+        _map_renderer->set_window_size(size);
     }
 
     // Set up keyboard and mouse input for the camera.

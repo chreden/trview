@@ -60,7 +60,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height);
+                MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& window_size);
 
                 // Renders the map 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
@@ -87,7 +87,7 @@ namespace trview
                 inline bool loaded() const { return _loaded; }
 
                 // Set the size of the host window.
-                void set_window_size(int width, int height);
+                void set_window_size(const Size& size);
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 
