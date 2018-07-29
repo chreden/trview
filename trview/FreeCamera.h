@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trview.common/Size.h>
+
 #include <cstdint>
 #include "ICamera.h"
 #include "CameraMode.h"
@@ -15,7 +17,7 @@ namespace trview
             Axis
         };
 
-        FreeCamera(uint32_t width, uint32_t height);
+        explicit FreeCamera(const Size& size);
         virtual ~FreeCamera() = default;
         void move(DirectX::SimpleMath::Vector3 movement);
         virtual DirectX::SimpleMath::Matrix   view() const override;
@@ -38,11 +40,10 @@ namespace trview
         void set_alignment(Alignment alignment);
 
         // Set the dimensions of the render target for the camera.
-        // width: The width in pixels of the render target.
-        // height: The width in height of the render target.
-        void set_view_size(uint32_t width, uint32_t height);
+        // size: The size in pixels of the render target.
+        void set_view_size(const Size& size);
     private:
-        void calculate_projection_matrix(uint32_t width, uint32_t height);
+        void calculate_projection_matrix(const Size& size);
         void calculate_view_matrix();
 
         DirectX::SimpleMath::Matrix _view;

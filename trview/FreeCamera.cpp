@@ -5,16 +5,16 @@
 
 namespace trview
 {
-    FreeCamera::FreeCamera(uint32_t width, uint32_t height)
+    FreeCamera::FreeCamera(const Size& size)
     {
         calculate_view_matrix();
-        calculate_projection_matrix(width, height);
+        calculate_projection_matrix(size);
     }
 
-    void FreeCamera::calculate_projection_matrix(uint32_t width, uint32_t height)
+    void FreeCamera::calculate_projection_matrix(const Size& size)
     {
         using namespace DirectX;
-        float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+        float aspect_ratio = size.width / size.height;
         _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
     }
@@ -131,10 +131,9 @@ namespace trview
     }
 
     // Set the dimensions of the render target for the camera.
-    // width: The width in pixels of the render target.
-    // height: The width in height of the render target.
-    void FreeCamera::set_view_size(uint32_t width, uint32_t height)
+    // size: The size in pixels of the render target.
+    void FreeCamera::set_view_size(const Size& size)
     {
-        calculate_projection_matrix(width, height);
+        calculate_projection_matrix(size);
     }
 }

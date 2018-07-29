@@ -52,6 +52,9 @@
     <ClInclude Include="TextAlignment.h">
       <Filter>Font</Filter>
     </ClInclude>
+    <ClInclude Include="DeviceWindow.h">
+      <Filter>Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -97,6 +100,9 @@
       <Filter>Font</Filter>
     </ClCompile>
     <ClCompile Include="Device.cpp">
+      <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceWindow.cpp">
       <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>

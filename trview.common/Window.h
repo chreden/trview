@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <cstdint>
-
+#include "Size.h"
 #include "Point.h"
 
 namespace trview
@@ -11,8 +11,7 @@ namespace trview
     {
     public:
         Window(HWND window);
-        uint32_t width() const;
-        uint32_t height() const;
+        Size size() const;
         HWND window() const;
         operator HWND () const;
     private:

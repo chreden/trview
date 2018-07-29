@@ -55,6 +55,7 @@ namespace trview
     {
         struct IShaderStorage;
         class FontFactory;
+        class DeviceWindow;
     }
 
     /// Class that coordinates all the parts of the application.
@@ -63,7 +64,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(Window window);
+        explicit Viewer(const Window& window);
 
         /// Destructor for the viewer.
         ~Viewer();
@@ -86,9 +87,6 @@ namespace trview
         /// Event raised when the recent files list is updated.
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::wstring>> on_recent_files_changed;
-
-        /// Update the viewer and the rendering system after a window has changed size.
-        void resize();
     private:
         void generate_ui();
         void generate_tool_window();
@@ -115,6 +113,8 @@ namespace trview
         void setup_camera_input();
 
         graphics::Device _device;
+        std::unique_ptr<graphics::DeviceWindow> _main_window;
+
         std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;

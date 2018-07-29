@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <SimpleMath.h>
+#include <trview.common/Size.h>
 #include <memory>
 
 #include "Texture.h"
@@ -67,6 +68,10 @@ namespace trview
             // Get the height of the render target in pixels.
             // Returns: The height.
             uint32_t height() const;
+
+            // Get the size of the render target in pixels.
+            // Returns: The size of the render target.
+            Size size() const;
         private:
             Texture _texture;
             Microsoft::WRL::ComPtr<ID3D11RenderTargetView>   _view;

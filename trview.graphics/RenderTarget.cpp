@@ -118,5 +118,10 @@ namespace trview
         {
             return _height;
         }
+
+        Size RenderTarget::size() const
+        {
+            return Size(static_cast<float>(_width), static_cast<float>(_height));
+        }
     }
 }

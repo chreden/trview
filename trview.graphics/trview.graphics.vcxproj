@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="DeviceWindow.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
     <ClInclude Include="IShader.h" />
@@ -40,6 +41,7 @@
   <ItemGroup>
     <ClCompile Include="DepthStencil.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="DeviceWindow.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />

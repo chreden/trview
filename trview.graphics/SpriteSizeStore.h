@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <trview.common/Size.h>
 
 namespace trview
 {
@@ -16,17 +17,15 @@ namespace trview
             // Begin a sprite size store operation, setting the sprite to the new size specified
             // after storing the old host size for later restoration.
             // sprite: The sprite to operate on.
-            // new_width: The new host width of the sprite.
-            // new_height: The new host height of the sprite.
-            explicit SpriteSizeStore(Sprite& sprite, uint32_t new_width, uint32_t new_height);
+            // new_size: The new host size of the sprite.
+            explicit SpriteSizeStore(Sprite& sprite, const Size& new_size);
 
             // When this executes it will restore the host size of the sprite to what it was when
             // the SpriteSizeStore was created.
             ~SpriteSizeStore();
         private:
             Sprite& _sprite;
-            uint32_t _width;
-            uint32_t _height;
+            Size _size;
         };
     }
 }

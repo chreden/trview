@@ -54,7 +54,7 @@ namespace trview
 
                 graphics::RenderTargetStore render_target_store(context);
                 graphics::ViewportStore vp_store(context);
-                graphics::SpriteSizeStore s_store(sprite, _render_target->width(), _render_target->height());
+                graphics::SpriteSizeStore s_store(sprite, _render_target->size());
                 _render_target->apply(context);
 
                 render_self(context, sprite);

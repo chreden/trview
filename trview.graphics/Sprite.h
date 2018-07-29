@@ -3,6 +3,7 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <cstdint>
+#include <trview.common/Size.h>
 
 #include <SimpleMath.h>
 
@@ -17,15 +18,13 @@ namespace trview
         class Sprite
         {
         public:
-            Sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const uint32_t width, uint32_t height);
+            Sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& host_size);
 
             void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
 
-            uint32_t host_width() const;
+            Size host_size() const;
 
-            uint32_t host_height() const;
-
-            void set_host_size(uint32_t width, uint32_t height);
+            void set_host_size(const Size& size);
 
             Sprite(const Sprite&) = delete;
             Sprite& operator=(const Sprite&) = delete;
@@ -40,8 +39,7 @@ namespace trview
             Microsoft::WRL::ComPtr<ID3D11Buffer>       _matrix_buffer;
             graphics::IShader*          _vertex_shader;
             graphics::IShader*          _pixel_shader;
-            uint32_t                    _host_width;
-            uint32_t                    _host_height;
+            Size                        _host_size;
         };
     }
 }

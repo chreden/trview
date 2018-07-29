@@ -6,6 +6,7 @@
 
 #include <trview.common/MessageHandler.h>
 #include <trview.common/Event.h>
+#include <trview.common/Size.h>
 
 namespace trview
 {
@@ -30,6 +31,9 @@ namespace trview
         /// Event that is raised when the window has resized.
         Event<> on_resize;
     private:
+        bool has_size_changed();
+
         bool _resizing{ false };
+        Size _previous_size;
     };
 }

@@ -11,9 +11,9 @@ namespace trview
         const float min_zoom = 0.1f;
     }
 
-    Camera::Camera(uint32_t width, uint32_t height)
+    Camera::Camera(const Size& size)
     {
-        calculate_projection_matrix(width, height);
+        calculate_projection_matrix(size);
     }
 
     DirectX::SimpleMath::Vector3 Camera::target() const
@@ -36,10 +36,10 @@ namespace trview
         return _zoom;
     }
 
-    void Camera::calculate_projection_matrix(uint32_t width, uint32_t height)
+    void Camera::calculate_projection_matrix(const Size& size)
     {
         using namespace DirectX;
-        float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+        float aspect_ratio = size.width / size.height;
         _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
     }
@@ -128,8 +128,8 @@ namespace trview
         return to;
     }
 
-    void Camera::set_view_size(uint32_t width, uint32_t height)
+    void Camera::set_view_size(const Size& size)
     {
-        calculate_projection_matrix(width, height);
+        calculate_projection_matrix(size);
     }
 }

@@ -18,12 +18,11 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, uint32_t host_width, uint32_t host_height)
+            Renderer::Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& host_size)
                 : _device(device), 
                 _font_factory(font_factory),
-                _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_width, host_height)),
-                _host_width(host_width), 
-                _host_height(host_height)
+                _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_size)),
+                _host_size(host_size)
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
@@ -98,19 +97,17 @@ namespace trview
                     auto texture = _root_node->node_texture();
                     if (texture.can_use_as_resource())
                     {
-                        _sprite->render(context, texture, 0, 0, static_cast<float>(_host_width), static_cast<float>(_host_height));
+                        _sprite->render(context, texture, 0, 0, _host_size.width, _host_size.height);
                     }
                 }
             }
 
             // Set the size of the host render area.
-            // width: The width of the render area.
-            // height: The height of the render area.
-            void Renderer::set_host_size(uint32_t width, uint32_t height)
+            // size: The size of the render area
+            void Renderer::set_host_size(const Size& size)
             {
-                _host_width = width;
-                _host_height = height;
-                _sprite->set_host_size(width, height);
+                _host_size = size;
+                _sprite->set_host_size(size);
             }
         }
     }

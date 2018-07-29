@@ -12,11 +12,11 @@ namespace trview
     {
         namespace render
         {
-            MapRenderer::MapRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, int width, int height)
+            MapRenderer::MapRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& window_size)
                 : _device(device),
-                _window_width(width), 
-                _window_height(height),
-                _sprite(device, shader_storage, width, height)
+                _window_width(static_cast<int>(window_size.width)), 
+                _window_height(static_cast<int>(window_size.height)),
+                _sprite(device, shader_storage, window_size)
             {
                 TextureStorage texture_storage{ device };
                 _texture = texture_storage.coloured(0xFFFFFFFF);
@@ -38,7 +38,7 @@ namespace trview
                     graphics::RenderTargetStore rs_store(context);
                     graphics::ViewportStore vp_store(context);
                     // Set the host size to match the render target as we will have adjusted the viewport.
-                    graphics::SpriteSizeStore s_store(_sprite, _render_target->width(), _render_target->height());
+                    graphics::SpriteSizeStore s_store(_sprite, _render_target->size());
 
                     _render_target->apply(context);
                     render_internal(context);
@@ -171,11 +171,11 @@ namespace trview
             }
 
             void 
-            MapRenderer::set_window_size(int width, int height)
+            MapRenderer::set_window_size(const Size& size)
             {
-                _window_width = width;
-                _window_height = height;
-                _sprite.set_host_size(width, height);
+                _window_width = static_cast<int>(size.width);
+                _window_height = static_cast<int>(size.height);
+                _sprite.set_host_size(size);
                 update_map_position();
             }
 
