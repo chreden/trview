@@ -38,6 +38,10 @@ namespace trview
         /// @returns The new size.
         Size operator/(float divisor) const;
 
+        /// Determines whether two sizes are equal.
+        /// @param size The size to compare.
+        bool operator==(const Size& size) const;
+
         float width, height;
     };
 }

@@ -40,7 +40,7 @@ namespace trview
     bool WindowResizer::has_size_changed()
     {
         Size new_size = Window(window()).size();
-        if (new_size.width == _previous_size.width && new_size.height == _previous_size.height)
+        if (new_size == _previous_size)
         {
             return false;
         }
