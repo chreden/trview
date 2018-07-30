@@ -605,10 +605,14 @@ namespace trview
 
         _camera_input.on_zoom += [&](float zoom)
         {
-            _camera.set_zoom(_camera.zoom() + zoom);
-            if (_level)
+            // Zoom only affects Orbit mode.
+            if (_camera_mode == CameraMode::Orbit)
             {
-                _level->on_camera_moved();
+                _camera.set_zoom(_camera.zoom() + zoom);
+                if (_level)
+                {
+                    _level->on_camera_moved();
+                }
             }
         };
 
