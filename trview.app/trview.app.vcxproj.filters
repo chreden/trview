@@ -4,11 +4,13 @@
     <ClCompile Include="WindowResizer.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="FileDropper.cpp" />
+    <ClCompile Include="ItemsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="FileDropper.h" />
+    <ClInclude Include="ItemsWindow.h" />
   </ItemGroup>
 </Project>

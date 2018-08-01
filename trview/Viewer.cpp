@@ -36,6 +36,7 @@ namespace trview
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
         _main_window = _device.create_for_window(window);
+        _items_window = std::make_unique<ItemsWindow>(_device, window);
 
         _settings = load_user_settings();
 
@@ -416,6 +417,8 @@ namespace trview
         render_map();
 
         _main_window->present(_settings.vsync);
+
+        _items_window->render(_settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.

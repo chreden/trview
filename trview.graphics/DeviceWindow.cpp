@@ -1,5 +1,4 @@
 #include "DeviceWindow.h"
-#include "RenderTarget.h"
 #include "Device.h"
 
 using namespace Microsoft::WRL;
