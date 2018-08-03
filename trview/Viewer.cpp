@@ -35,8 +35,14 @@ namespace trview
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
+        _shader_storage = std::make_unique<graphics::ShaderStorage>();
+        load_default_shaders(_device.device(), *_shader_storage.get());
+
+        _font_factory = std::make_unique<graphics::FontFactory>(_device.device());
+        load_default_fonts(_device.device(), *_font_factory.get());
+
         _main_window = _device.create_for_window(window);
-        _items_window = std::make_unique<ItemsWindow>(_device, window);
+        _items_window = std::make_unique<ItemsWindow>(_device, *_shader_storage.get(), *_font_factory.get(), window);
 
         _settings = load_user_settings();
 
@@ -59,12 +65,6 @@ namespace trview
 
         _texture_storage = std::make_unique<TextureStorage>(_device.device());
         load_default_textures(_device.device(), *_texture_storage.get());
-
-        _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device.device(), *_shader_storage.get());
-
-        _font_factory = std::make_unique<graphics::FontFactory>(_device.device());
-        load_default_fonts(_device.device(), *_font_factory.get());
 
         generate_ui();
     }
@@ -418,7 +418,7 @@ namespace trview
 
         _main_window->present(_settings.vsync);
 
-        _items_window->render(_settings.vsync);
+        _items_window->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.

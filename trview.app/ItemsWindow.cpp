@@ -1,7 +1,14 @@
 #include "ItemsWindow.h"
 #include <Windows.h>
+#include <random>
 #include <trview/resource.h>
 #include <trview.graphics/DeviceWindow.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/FontFactory.h>
+#include <trview.ui/Control.h>
+#include <trview.ui/Window.h>
+#include <trview.ui/Button.h>
+#include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
 
 using namespace trview::graphics;
@@ -53,20 +60,47 @@ namespace trview
         }
     }
 
-    ItemsWindow::ItemsWindow(const Device& device, HWND parent)
-        : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window()))
+    ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
+        : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window())),
+        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, Window(window()).size())),
+        _mouse(window())
     {
-        _window_resizer.on_resize += [=]() { _device_window->resize(); };
+        _window_resizer.on_resize += [=]()
+        {
+            _device_window->resize();
+            _ui->set_size(window().size());
+        };
+        generate_ui();
+
+        _mouse.mouse_up += [&](auto) { _ui->mouse_up(client_cursor_position(window())); };
+        _mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); };
+        _mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); };
     }
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
     }
 
-    void ItemsWindow::render(bool vsync)
+    void ItemsWindow::render(const Device& device, bool vsync)
     {
         _device_window->begin();
         _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+        _ui_renderer->render(device.context());
         _device_window->present(vsync);
+    }
+
+    void ItemsWindow::generate_ui()
+    {
+        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        auto button = std::make_unique<ui::Button>(Point(5, 5), Size(100, 30), L"Test button");
+        button->on_click += [&]()
+        {
+            std::random_device device;
+            std::default_random_engine engine(device());
+            std::uniform_real_distribution<float> random;
+            _ui->set_background_colour(Colour(1.0f, random(engine), random(engine), random(engine)));
+        };
+        _ui->add_child(std::move(button));
+        _ui_renderer->load(_ui.get());
     }
 }
