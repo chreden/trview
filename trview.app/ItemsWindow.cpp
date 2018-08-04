@@ -85,12 +85,12 @@ namespace trview
         _device_window->present(vsync);
     }
 
-    void ItemsWindow::generate_ui(const std::vector<Item>& items)
+    void ItemsWindow::generate_ui()
     {
         _ui = std::make_unique<ui::Listbox>(Point(), window().size());
         _ui->set_headers({ L"#", L"Room", L"Type" });
         std::vector<ui::ListboxItem> list_items;
-        for (const auto& item : items)
+        for (const auto& item : _items)
         {
             list_items.push_back(ui::ListboxItem(
                 { 
@@ -105,6 +105,7 @@ namespace trview
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
-        generate_ui(items);
+        _items = items;
+        generate_ui();
     }
 }

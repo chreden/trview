@@ -39,6 +39,7 @@ namespace trview
                 }
                 add_child(std::move(row));
             }
+            _items = items;
         }
     }
 }

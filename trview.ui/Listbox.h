@@ -28,6 +28,7 @@ namespace trview
         private:
             StackPanel*               _headers_element;
             std::vector<std::wstring> _headers;
+            std::vector<ListboxItem>  _items;
         };
     }
 }
