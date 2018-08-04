@@ -1,13 +1,9 @@
 #include "ItemsWindow.h"
 #include <Windows.h>
-#include <random>
 #include <trview/resource.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Button.h>
 #include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
 
@@ -91,16 +87,8 @@ namespace trview
 
     void ItemsWindow::generate_ui()
     {
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
-        auto button = std::make_unique<ui::Button>(Point(5, 5), Size(100, 30), L"Test button");
-        _token_store.add(button->on_click += [&]()
-        {
-            std::random_device device;
-            std::default_random_engine engine(device());
-            std::uniform_real_distribution<float> random;
-            _ui->set_background_colour(Colour(1.0f, random(engine), random(engine), random(engine)));
-        });
-        _ui->add_child(std::move(button));
+        _ui = std::make_unique<ui::Listbox>(Point(), window().size());
+        _ui->set_headers({ L"#", L"Room", L"Type" });
         _ui_renderer->load(_ui.get());
     }
 }
