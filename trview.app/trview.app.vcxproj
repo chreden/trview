@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileDropper.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileDropper.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />

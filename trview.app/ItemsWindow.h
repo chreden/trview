@@ -9,6 +9,7 @@
 #include <trview.common/TokenStore.h>
 #include <trview.ui/Listbox.h>
 #include "WindowResizer.h"
+#include "Item.h"
 
 namespace trview
 {
@@ -51,8 +52,12 @@ namespace trview
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync when rendering.
         void render(const graphics::Device& device, bool vsync);
+
+        /// Set the items to display in the window.
+        /// @param items The items to show.
+        void set_items(const std::vector<Item>& items);
     private:
-        void generate_ui();
+        void generate_ui(const std::vector<Item>& items);
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
