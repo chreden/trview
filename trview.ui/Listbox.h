@@ -29,6 +29,8 @@ namespace trview
             StackPanel*               _headers_element;
             std::vector<std::wstring> _headers;
             std::vector<ListboxItem>  _items;
+            std::wstring              _current_sort;
+            bool                      _current_sort_direction;
         };
     }
 }
