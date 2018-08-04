@@ -74,7 +74,7 @@ namespace trview
         RemoveWindowSubclass(_window, HandlerProc, _subclass_id);
     }
 
-    HWND MessageHandler::window() const
+    Window MessageHandler::window() const
     {
         return _window;
     }

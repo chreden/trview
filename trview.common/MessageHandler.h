@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <Windows.h>
+#include "Window.h"
 
 namespace trview
 {
@@ -44,7 +45,7 @@ namespace trview
 
         /// Gets the window that the handler is listening to.
         /// @returns The window handle.
-        HWND window() const;
+        Window window() const;
     private:
         HWND     _window;
         uint32_t _subclass_id;
