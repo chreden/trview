@@ -366,6 +366,15 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
+        // Pass entities on to the items window.
+        std::vector<Item> items;
+        for (auto i = 0; i < _current_level->num_entities(); ++i)
+        {
+            auto item = _current_level->get_entity(i);
+            items.emplace_back(i, item.Room, std::to_wstring(item.TypeID));
+        }
+        _items_window->set_items(items);
+
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
         _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
