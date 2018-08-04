@@ -89,6 +89,9 @@ namespace trview
     {
         _ui = std::make_unique<ui::Listbox>(Point(), window().size());
         _ui->set_headers({ L"#", L"Room", L"Type" });
+        // Add some test items.
+        auto item = ui::ListboxItem({ { L"#", L"1" },{ L"Room",L"4" },{ L"Type",L"Lara" } });
+        _ui->set_items({ item });
         _ui_renderer->load(_ui.get());
     }
 }

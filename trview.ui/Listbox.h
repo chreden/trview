@@ -5,6 +5,7 @@
 #include <string>
 
 #include "StackPanel.h"
+#include "ListboxItem.h"
 
 namespace trview
 {
@@ -20,8 +21,13 @@ namespace trview
             /// Set the headers that will be used for sorting and filtering items.
             /// @param headers The header names.
             void set_headers(const std::vector<std::wstring>& headers);
+
+            /// Set the items for the list box.
+            /// @param items The items to add to the list box.
+            void set_items(const std::vector<ListboxItem>& items);
         private:
-            StackPanel * _headers;
+            StackPanel*               _headers_element;
+            std::vector<std::wstring> _headers;
         };
     }
 }

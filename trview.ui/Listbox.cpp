@@ -22,8 +22,23 @@ namespace trview
                 auto header_element = std::make_unique<Button>(Point(), Size(30, 20), header);
                 headers_element->add_child(std::move(header_element));
             }
-            _headers = headers_element.get();
+            _headers_element = headers_element.get();
             add_child(std::move(headers_element));
+            _headers = headers;
+        }
+
+        void Listbox::set_items(const std::vector<ListboxItem>& items)
+        {
+            for (const auto& item : items)
+            {
+                auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
+                for (const auto& header : _headers)
+                {
+                    auto button = std::make_unique<Button>(Point(), Size(30, 20), item.value(header));
+                    row->add_child(std::move(button));
+                }
+                add_child(std::move(row));
+            }
         }
     }
 }
