@@ -83,8 +83,6 @@ namespace trview
                     // This is the index into the child elements list - it indicates where it used
                     // to be. We can then take the element from there and move it to the new location.
                     uint32_t old_index = _items[i].first;
-                    // This is where the element needs to go.
-                    uint32_t new_index = i + 1;
 
                     add_child(std::move(child_store[old_index]));
 
