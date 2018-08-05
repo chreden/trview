@@ -132,6 +132,9 @@ namespace trview
 
             /// Event raised when the control has changed and needs to be redrawn.
             Event<> on_invalidate;
+
+            /// Event raised when there has been a change to the children of this control.
+            Event<> on_heirarchy_changed;
         protected:
             /// To be called when the user interface element has been clicked.
             /// This should be overriden by child elements to handle a click.
@@ -150,8 +153,9 @@ namespace trview
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
-        private:
+
             std::vector<std::unique_ptr<Control>> _child_elements;
+        private:
             Control* _parent{ nullptr };
             Control* _focus_control{ nullptr };
             Point    _position;

@@ -74,6 +74,18 @@ namespace trview
                 {
                     node->add_child(process_control(child));
                 }
+
+                auto* node_ptr = node.get();
+                control->on_heirarchy_changed += [this, control, node_ptr]()
+                {
+                    node_ptr->clear_children();
+                    auto children = control->child_elements();
+                    for (auto child : children)
+                    {
+                        node_ptr->add_child(process_control(child));
+                    }
+                };
+
                 return node;
             }
 

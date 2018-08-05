@@ -31,7 +31,7 @@ namespace trview
                         _current_sort = header;
                         _current_sort_direction = false;
                     }
-                    set_items(_items);
+                    sort_items();
                 };
                 headers_element->add_child(std::move(header_element));
             }
@@ -42,30 +42,57 @@ namespace trview
 
         void Listbox::set_items(const std::vector<ListboxItem>& items)
         {
-            // Sort the items.
-            std::vector<ListboxItem> sorted_items = items;
-            if (!_current_sort.empty())
+            std::vector<std::pair<uint32_t, ListboxItem>> new_items;
+            for(auto i = 0; i < items.size(); ++i)
             {
-                std::sort(
-                    sorted_items.begin(),
-                    sorted_items.end(),
-                    [&](const auto& l, const auto& r)
-                {
-                    return l.value(_current_sort) < r.value(_current_sort);
-                });
+                new_items.emplace_back(i, items[i]);
             }
 
-            for (const auto& item : sorted_items)
+            for (const auto& item : new_items)
             {
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
                 for (const auto& header : _headers)
                 {
-                    auto button = std::make_unique<Button>(Point(), Size(30, 20), item.value(header));
+                    auto button = std::make_unique<Button>(Point(), Size(30, 20), item.second.value(header));
                     row->add_child(std::move(button));
                 }
                 add_child(std::move(row));
             }
-            _items = sorted_items;
+            _items = new_items;
+        }
+
+        void Listbox::sort_items()
+        {
+            if (!_current_sort.empty())
+            {
+                // Sort the items list by the specified key.
+                std::sort(
+                    _items.begin(),
+                    _items.end(),
+                    [&](const auto& l, const auto& r)
+                {
+                    return l.second.value(_current_sort) < r.second.value(_current_sort);
+                });
+
+                std::vector<std::unique_ptr<Control>> child_store;
+                std::move(_child_elements.begin() + 1, _child_elements.end(), std::back_inserter(child_store));
+                _child_elements.erase(_child_elements.begin() + 1, _child_elements.end());
+
+                for(auto i = 0; i < _items.size(); ++i)
+                {
+                    // This is the index into the child elements list - it indicates where it used
+                    // to be. We can then take the element from there and move it to the new location.
+                    uint32_t old_index = _items[i].first;
+                    // This is where the element needs to go.
+                    uint32_t new_index = i + 1;
+
+                    add_child(std::move(child_store[old_index]));
+
+                    _items[i].first = i;
+                }
+
+                on_heirarchy_changed();
+            }
         }
     }
 }

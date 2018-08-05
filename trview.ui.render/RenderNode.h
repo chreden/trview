@@ -42,6 +42,8 @@ namespace trview
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
+                void clear_children();
+
                 Point position() const;
 
                 Size size() const;
