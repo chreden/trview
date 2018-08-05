@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
+    <ClCompile Include="EventToken.cpp" />
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />

@@ -22,6 +22,7 @@
     <ClCompile Include="MessageHandler.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="EventToken.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />

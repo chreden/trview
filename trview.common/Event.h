@@ -12,9 +12,32 @@
 
 namespace trview
 {
+    class EventBase
+    {
+    public:
+        class Token
+        {
+        public:
+            /// Create
+            explicit Token(EventBase* event);
+            /// Move
+            Token(Token&& token);
+            /// Move assign.
+            Token& operator=(Token&& other);
+            /// Destructor.
+            ~Token();
+        private:
+            EventBase* _event;
+        };
+    protected:
+        virtual ~EventBase() = 0;
+        virtual void remove_token(Token* token) = 0;
+        virtual void replace_token(Token* old_token, Token* new_token) = 0;
+    };
+
     /// Class that others can register with to be called back when something happens.
     template < typename... Args >
-    class Event
+    class Event : public EventBase
     {
     public:
         /// Add an event as a listener to this event.
@@ -23,7 +46,7 @@ namespace trview
 
         /// Add a function as a listener to this event.
         /// @param listener The function that will be called when the event is raised.
-        Event<Args...>& operator += (std::function<void(Args...)> listener);
+        Token operator += (std::function<void(Args...)> listener);
 
         /// Raise the event with the provided arguments.
         /// @param arguments The arguments to pass to the listeners.
@@ -41,7 +64,7 @@ namespace trview
         /// Destructor for Event. This will inform all events that are listening to this event
         /// that this event has been deleted and will also remove this event from any events that
         /// is has been subscribed to.
-        ~Event();
+        virtual ~Event();
 
         /// Move assign an event. Any listeners that are registered on the old event will
         /// be moved to this event and any events that the old event was subscribed to will be
@@ -50,10 +73,13 @@ namespace trview
         /// anything it is subscribed to.
         /// @param other The event to move construct from.
         Event<Args...>& operator =(Event<Args...>&& other);
+    protected:
+        virtual void remove_token(Token* token) override;
+        virtual void replace_token(Token* old_token, Token* new_token) override;
     private:
         void remove_from_chain();
 
-        std::vector<std::function<void(Args...)>> _listeners;
+        std::vector<std::pair<Token*, std::function<void(Args...)>>> _listeners;
         std::vector<Event<Args...>*> _listener_events;
         std::vector<Event<Args...>*> _subscriptions;
     };
