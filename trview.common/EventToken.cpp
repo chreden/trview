@@ -12,16 +12,20 @@ namespace trview
     }
 
     EventBase::Token::Token(Token&& other)
-        : _event(std::move(other._event))
+        : _event(nullptr)
     {
-        _event->replace_token(&other, this);
+        *this = std::move(other);
     }
 
     EventBase::Token& EventBase::Token::operator=(Token&& other)
     {
-        _event->remove_token(this);
+        if (_event)
+        {
+            _event->remove_token(this);
+        }
         _event = std::move(other._event);
         _event->replace_token(&other, this);
+        other._event = nullptr;
         return *this;
     }
 

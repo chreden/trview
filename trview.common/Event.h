@@ -12,28 +12,46 @@
 
 namespace trview
 {
+    /// Base class for all Events so that the Token system can track events.
     class EventBase
     {
     public:
-        class Token
+        /// Event tokens are stored in order to keep function callbacks alive and so the
+        /// event does not try to call something that has expired.
+        class Token final
         {
         public:
-            /// Create
+            /// Create a token.
+            /// @param event The event to pair with.
             explicit Token(EventBase* event);
-            /// Move
+            
+            /// Move construct a token.
+            /// @param token The token to move from.
             Token(Token&& token);
-            /// Move assign.
+
+            /// Move assign a token.
+            /// @param other The token to move assign from.
             Token& operator=(Token&& other);
-            /// Destructor.
+
+            /// Destructor for token.
             ~Token();
 
+            /// Replace the currently paired event with another event.
+            /// @param event The new event to pair with.
             void replace_event(EventBase* event);
         private:
             EventBase* _event;
         };
     protected:
         virtual ~EventBase() = 0;
+
+        /// Remove a registered token.
+        /// @param token The token to remove.
         virtual void remove_token(Token* token) = 0;
+
+        /// Replace a registered token with another token.
+        /// @param The pointer to the old token.
+        /// @param The pointer to the new token.
         virtual void replace_token(Token* old_token, Token* new_token) = 0;
     };
 
