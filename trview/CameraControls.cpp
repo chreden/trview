@@ -26,13 +26,13 @@ namespace trview
         auto reset_camera_label = std::make_unique<Label>(Point(30, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
 
         auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), up, down, L"Orbit");
-        orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
+        _token_store.add(orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); });
 
         auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), up, down, L"Free");
-        free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); };
+        _token_store.add(free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); });
 
         auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), up, down, L"Axis");
-        axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
+        _token_store.add(axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); });
 
         // Camera section for the menu bar.
         auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(120, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");

@@ -30,6 +30,9 @@
     <ClCompile Include="EventToken.cpp">
       <Filter>Events</Filter>
     </ClCompile>
+    <ClCompile Include="TokenStore.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -41,9 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl">
-      <Filter>Events</Filter>
-    </None>
-    <None Include="TokenStore.inl">
       <Filter>Events</Filter>
     </None>
   </ItemGroup>

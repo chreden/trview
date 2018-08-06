@@ -16,6 +16,7 @@
 #include <trview.graphics/Device.h>
 #include <trview.input/Keyboard.h>
 #include <trview.input/Mouse.h>
+#include <trview.common/TokenStore.h>
 
 #include "Camera.h"
 #include "CameraInput.h"
@@ -151,6 +152,7 @@ namespace trview
         WindowResizer _window_resizer;
         RecentFiles _recent_files;
         FileDropper _file_dropper;
+        TokenStore _token_store;
     };
 }
 

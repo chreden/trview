@@ -12,6 +12,7 @@
 #include <trlevel/LevelVersion.h>
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -53,5 +54,6 @@ namespace trview
         ui::Label* _name;
         ui::Image* _version;
         std::unordered_map<trlevel::LevelVersion, graphics::Texture> _version_textures;
+        TokenStore _token_store;
     };
 }

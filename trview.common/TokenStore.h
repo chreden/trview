@@ -8,11 +8,8 @@ namespace trview
     class TokenStore
     {
     public:
-        template <typename... Args>
-        void add(Event<Args...>& event, const std::function<void(Args...)>& function);
+        void add(EventBase::Token&& token);
     private:
         std::vector<EventBase::Token> _tokens;
     };
 }
-
-#include "TokenStore.inl"

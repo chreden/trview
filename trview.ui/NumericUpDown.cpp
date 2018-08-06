@@ -20,8 +20,8 @@ namespace trview
             up->set_border_thickness(0u);
             down->set_border_thickness(0u);
 
-            up->on_click += [&]() { set_value(_value + 1); };
-            down->on_click += [&]() { set_value(_value - 1); };
+            _token_store.add(up->on_click += [&]() { set_value(_value + 1); });
+            _token_store.add(down->on_click += [&]() { set_value(_value - 1); });
 
             _label = label.get();
 
