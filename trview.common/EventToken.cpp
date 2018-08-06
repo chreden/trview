@@ -31,7 +31,6 @@ namespace trview
 
     EventBase::Token::~Token()
     {
-        // Remove this event token from the event.
         if (_event)
         {
             _event->remove_token(this);
