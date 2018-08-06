@@ -48,6 +48,7 @@ namespace trview
     Event<Args...>::~Event()
     {
         remove_from_chain();
+        remove_listeners();
     }
 
     template <typename... Args>
@@ -58,6 +59,11 @@ namespace trview
         _listeners = std::move(other._listeners);
         _listener_events = std::move(other._listener_events);
         _subscriptions = std::move(other._subscriptions);
+
+        for (auto& listener : _listeners)
+        {
+            listener.first->replace_event(this);
+        }
 
         for (auto& listener : _listener_events)
         {
@@ -97,6 +103,16 @@ namespace trview
                     this),
                 sub->_listener_events.end());
         }
+    }
+
+    template <typename... Args>
+    void Event<Args...>::remove_listeners()
+    {
+        for (auto& listener : _listeners)
+        {
+            listener.first->replace_event(nullptr);
+        }
+        _listeners.clear();
     }
 
     template <typename... Args>

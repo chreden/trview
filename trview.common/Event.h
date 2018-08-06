@@ -26,6 +26,8 @@ namespace trview
             Token& operator=(Token&& other);
             /// Destructor.
             ~Token();
+
+            void replace_event(EventBase* event);
         private:
             EventBase* _event;
         };
@@ -78,6 +80,7 @@ namespace trview
         virtual void replace_token(Token* old_token, Token* new_token) override;
     private:
         void remove_from_chain();
+        void remove_listeners();
 
         std::vector<std::pair<Token*, std::function<void(Args...)>>> _listeners;
         std::vector<Event<Args...>*> _listener_events;

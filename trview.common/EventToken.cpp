@@ -33,4 +33,9 @@ namespace trview
             _event->remove_token(this);
         }
     }
+
+    void EventBase::Token::replace_event(EventBase* event)
+    {
+        _event = event;
+    }
 }
