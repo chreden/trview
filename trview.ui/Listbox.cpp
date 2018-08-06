@@ -73,9 +73,9 @@ namespace trview
                 {
                     if (!_current_sort_direction)
                     {
-                        return l.second.value(_current_sort) < r.second.value(_current_sort);
+                        return std::stoi(l.second.value(_current_sort)) < std::stoi(r.second.value(_current_sort));
                     }
-                    return l.second.value(_current_sort) > r.second.value(_current_sort);
+                    return std::stoi(l.second.value(_current_sort)) > std::stoi(r.second.value(_current_sort));
                 });
 
                 std::vector<std::unique_ptr<Control>> child_store;
