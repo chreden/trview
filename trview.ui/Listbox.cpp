@@ -71,7 +71,11 @@ namespace trview
                     _items.end(),
                     [&](const auto& l, const auto& r)
                 {
-                    return l.second.value(_current_sort) < r.second.value(_current_sort);
+                    if (!_current_sort_direction)
+                    {
+                        return l.second.value(_current_sort) < r.second.value(_current_sort);
+                    }
+                    return l.second.value(_current_sort) > r.second.value(_current_sort);
                 });
 
                 std::vector<std::unique_ptr<Control>> child_store;
