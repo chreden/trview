@@ -26,6 +26,7 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TokenStore.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />
+    <None Include="TokenStore.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
