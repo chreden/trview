@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include <trview.common/TokenStore.h>
+
 #include "StackPanel.h"
 #include "ListboxItem.h"
 
@@ -33,6 +35,7 @@ namespace trview
             std::vector<std::pair<uint32_t, ListboxItem>>  _items;
             std::wstring              _current_sort;
             bool                      _current_sort_direction;
+            TokenStore                _token_store;
         };
     }
 }

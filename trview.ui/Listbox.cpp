@@ -20,7 +20,7 @@ namespace trview
             for (const auto header : headers)
             {
                 auto header_element = std::make_unique<Button>(Point(), Size(30, 20), header);
-                header_element->on_click += [this, header]()
+                _token_store.add(header_element->on_click += [this, header]()
                 {
                     if (_current_sort == header)
                     {
@@ -32,7 +32,7 @@ namespace trview
                         _current_sort_direction = false;
                     }
                     sort_items();
-                };
+                });
                 headers_element->add_child(std::move(header_element));
             }
             _headers_element = headers_element.get();
