@@ -23,7 +23,7 @@ namespace trview
         {
             _event->remove_token(this);
         }
-        _event = std::move(other._event);
+        _event = other._event;
         _event->replace_token(&other, this);
         other._event = nullptr;
         return *this;
