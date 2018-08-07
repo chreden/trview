@@ -22,7 +22,7 @@ namespace trview
 
                 HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
-                keyboard.on_key_down += 
+                auto token = keyboard.on_key_down +=
                     [&times_called, &key_received](uint16_t key) 
                 {
                     ++times_called; 
@@ -44,7 +44,7 @@ namespace trview
 
                 HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
-                keyboard.on_key_up +=
+                auto token = keyboard.on_key_up +=
                     [&times_called, &key_received](uint16_t key)
                 {
                     ++times_called;
@@ -66,7 +66,7 @@ namespace trview
 
                 HWND window = create_test_window(L"TRViewInputTests");
                 Keyboard keyboard(window);
-                keyboard.on_char +=
+                auto token = keyboard.on_char +=
                     [&times_called, &char_received](uint16_t key)
                 {
                     ++times_called;

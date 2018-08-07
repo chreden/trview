@@ -35,7 +35,7 @@ namespace trview
 
                 uint32_t times_called = 0;
                 std::wstring file_opened;
-                dropper.on_file_dropped += [&](const auto& file)
+                auto token = dropper.on_file_dropped += [&](const auto& file)
                 {
                     ++times_called;
                     file_opened = file;

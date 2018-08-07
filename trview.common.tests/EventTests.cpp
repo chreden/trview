@@ -17,7 +17,7 @@ namespace trview
 
             Event<int> first, second;
             first += second;
-            second += [&](int parameter)
+            auto token = second += [&](int parameter)
             {
                 ++times_called;
                 value = parameter;
@@ -35,7 +35,7 @@ namespace trview
             int value = 0;
 
             Event<int> event;
-            event += [&](auto v) {++times_called; value = v; };
+            auto token = event += [&](auto v) {++times_called; value = v; };
             event(125);
 
             Assert::AreEqual(1, times_called);
@@ -49,7 +49,7 @@ namespace trview
             std::string value_two;
 
             Event<int, std::string> event;
-            event += [&](int v, std::string v2) { ++times_called; value_one = v; value_two = v2; };
+            auto token = event += [&](int v, std::string v2) { ++times_called; value_one = v; value_two = v2; };
             event(100, "Test");
 
             Assert::AreEqual(1, times_called);
@@ -62,7 +62,7 @@ namespace trview
             int times_called = 0;
 
             Event<> event;
-            event += [&]() {++times_called; };
+            auto token = event += [&]() {++times_called; };
             event();
 
             Assert::AreEqual(1, times_called);
@@ -73,7 +73,7 @@ namespace trview
             int times_called = 0;
             Event<int> first, second;
             
-            second += [&](auto) { ++times_called; };
+            auto token = second += [&](auto) { ++times_called; };
             first += second;
             first(100);
             Event<int> third(std::move(second));
@@ -88,11 +88,11 @@ namespace trview
             int third_called = 0;
             Event<int> first, second;
 
-            second += [&](auto) { ++times_called; };
+            auto token = second += [&](auto) { ++times_called; };
             first += second;
             first(100);
             Event<int> third;
-            third += [&](auto) { ++third_called; };
+            auto token2 = third += [&](auto) { ++third_called; };
             third(100);
             Assert::AreEqual(1, third_called);
 
@@ -101,6 +101,19 @@ namespace trview
 
             Assert::AreEqual(1, third_called);
             Assert::AreEqual(2, times_called);
+        }
+
+        TEST_METHOD(TokenExpiry)
+        {
+            int times_called = 0;
+            Event<> event;
+            {
+                auto token = event += [&]() { ++times_called; };
+                event();
+                Assert::AreEqual(1, times_called);
+            }
+            event();
+            Assert::AreEqual(1, times_called);
         }
     };
 }

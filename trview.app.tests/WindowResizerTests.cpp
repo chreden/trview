@@ -18,7 +18,7 @@ namespace trview
                 WindowResizer resizer(window);
 
                 uint32_t times_called = 0;
-                resizer.on_resize += [&]() { ++times_called; };
+                auto token = resizer.on_resize += [&]() { ++times_called; };
 
                 resizer.process_message(window, WM_ENTERSIZEMOVE, 0, 0);
                 resizer.process_message(window, WM_EXITSIZEMOVE, 0, 0);
@@ -33,7 +33,7 @@ namespace trview
                 WindowResizer resizer(window);
 
                 uint32_t times_called = 0;
-                resizer.on_resize += [&]() { ++times_called; };
+                auto token = resizer.on_resize += [&]() { ++times_called; };
 
                 resizer.process_message(window, WM_SIZE, SIZE_MAXIMIZED, 0);
 
@@ -47,7 +47,7 @@ namespace trview
                 WindowResizer resizer(window);
 
                 uint32_t times_called = 0;
-                resizer.on_resize += [&]() { ++times_called; };
+                auto token = resizer.on_resize += [&]() { ++times_called; };
 
                 resizer.process_message(window, WM_SIZE, SIZE_RESTORED, 0);
 
@@ -61,7 +61,7 @@ namespace trview
                 WindowResizer resizer(window);
 
                 uint32_t times_called = 0;
-                resizer.on_resize += [&]() { ++times_called; };
+                auto token = resizer.on_resize += [&]() { ++times_called; };
 
                 resizer.process_message(window, WM_ENTERSIZEMOVE, 0, 0);
                 Assert::AreEqual(0u, times_called);

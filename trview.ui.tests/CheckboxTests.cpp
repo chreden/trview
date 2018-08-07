@@ -19,7 +19,7 @@ namespace trview
                 {
                     Checkbox checkbox(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
                     bool raised = false;
-                    checkbox.on_state_changed += [&](bool)
+                    auto token = checkbox.on_state_changed += [&](bool)
                     {
                         raised = true;
                     };
@@ -38,7 +38,7 @@ namespace trview
                     bool raised = false;
                     uint32_t times = 0;
                     bool raised_state = false;
-                    checkbox.on_state_changed += [&raised, &times, &raised_state](bool state)
+                    auto token = checkbox.on_state_changed += [&raised, &times, &raised_state](bool state)
                     {
                         raised = true;
                         raised_state = state;
@@ -59,7 +59,7 @@ namespace trview
                     Checkbox checkbox(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
 
                     std::vector<bool> states;
-                    checkbox.on_state_changed += [&states](bool state)
+                    auto token = checkbox.on_state_changed += [&states](bool state)
                     {
                         states.push_back(state);
                     };

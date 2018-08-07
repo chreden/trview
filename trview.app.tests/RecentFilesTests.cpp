@@ -22,7 +22,7 @@ namespace trview
 
                 uint32_t times_called{ 0 };
                 std::wstring raised_file;
-                recent_files.on_file_open += [&](const auto& file)
+                auto token = recent_files.on_file_open += [&](const auto& file)
                 {
                     ++times_called;
                     raised_file = file;
