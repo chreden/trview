@@ -24,7 +24,10 @@ namespace trview
             _event->remove_token(this);
         }
         _event = other._event;
-        _event->replace_token(&other, this);
+        if (_event)
+        {
+            _event->replace_token(&other, this);
+        }
         other._event = nullptr;
         return *this;
     }
