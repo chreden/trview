@@ -4,6 +4,7 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -51,5 +52,6 @@ namespace trview
         ui::Checkbox* _go_to_lara;
         ui::Checkbox* _invert_map_controls;
         ui::Control* _window;
+        TokenStore _token_store;
     };
 }

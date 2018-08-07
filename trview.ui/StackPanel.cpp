@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "StackPanel.h"
 
 namespace trview
@@ -12,7 +13,7 @@ namespace trview
         void StackPanel::add_child(std::unique_ptr<Control>&& child_element)
         {
             child_element->set_position(get_next_position());
-            child_element->on_size_changed += [&](auto) { recalculate_layout(); };
+            _token_store.add(child_element->on_size_changed += [&](auto) { recalculate_layout(); });
             Window::add_child(std::move(child_element));
             recalculate_layout();
         }

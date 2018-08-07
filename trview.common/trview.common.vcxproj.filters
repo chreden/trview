@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
@@ -10,6 +9,12 @@
     <ClInclude Include="Colour.h" />
     <ClInclude Include="MessageHandler.h">
       <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="TokenStore.h">
+      <Filter>Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -22,13 +27,24 @@
     <ClCompile Include="MessageHandler.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Event.inl" />
+    <ClCompile Include="EventToken.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="TokenStore.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
       <UniqueIdentifier>{c0670590-a23a-4748-953c-f3f13b06cf2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{f9a72a9b-c9a0-4dcb-af51-1009cd50dec1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Event.inl">
+      <Filter>Events</Filter>
+    </None>
   </ItemGroup>
 </Project>

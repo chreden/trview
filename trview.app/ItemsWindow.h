@@ -6,6 +6,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
 #include <trview.input/Mouse.h>
+#include <trview.common/TokenStore.h>
 #include "WindowResizer.h"
 
 namespace trview
@@ -58,5 +59,6 @@ namespace trview
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
+        TokenStore _token_store;
     };
 }

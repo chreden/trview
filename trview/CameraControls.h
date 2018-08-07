@@ -7,6 +7,7 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include <trview.common/TokenStore.h>
 #include "CameraMode.h"
 
 namespace trview
@@ -73,5 +74,6 @@ namespace trview
         ui::Checkbox* _axis;
         ui::Slider* _sensitivity;
         ui::Slider* _movement_speed;
+        TokenStore _token_store;
     };
 }

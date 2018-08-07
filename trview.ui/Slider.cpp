@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Slider.h"
 #include <algorithm>
 

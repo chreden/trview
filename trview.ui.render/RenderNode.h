@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 
+#include <trview.common/TokenStore.h>
 #include <trview.common/Point.h>
 #include <trview.graphics/RenderTarget.h>
 
@@ -49,6 +50,7 @@ namespace trview
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) = 0;
 
+                TokenStore _token_store;
             public:
                 // Determines if the control itself needs to redraw.
                 bool needs_redraw() const;

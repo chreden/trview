@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <string>
 #include <trview.common/Event.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -52,5 +53,6 @@ namespace trview
         std::wstring _input;
         ui::Control* _window;
         ui::Label*   _label;
+        TokenStore _token_store;
     };
 }

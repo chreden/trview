@@ -17,10 +17,10 @@ namespace trview
                 generate_font_texture();
                 if (label->size_mode() == SizeMode::Auto)
                 {
-                    label->on_text_changed += [&](auto)
+                    _token_store.add(label->on_text_changed += [&](auto)
                     {
                         generate_font_texture();
-                    };
+                    });
                 }
                 
             }

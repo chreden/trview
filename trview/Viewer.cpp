@@ -46,20 +46,20 @@ namespace trview
 
         _settings = load_user_settings();
 
-        _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
-        on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
+        _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
+        _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
 
-        _window_resizer.on_resize += [=]()
+        _token_store.add(_window_resizer.on_resize += [=]()
         {
             _main_window->resize();
             resize_elements();
-        };
+        });
 
-        _recent_files.on_file_open += [=](const auto& file) { open(file); };
+        _token_store.add(_recent_files.on_file_open += [=](const auto& file) { open(file); });
         _recent_files.set_recent_files(_settings.recent_files);
-        on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
+        _token_store.add(on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); });
 
-        _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
+        _token_store.add(_file_dropper.on_file_dropped += [&](const auto& file) { open(file); });
 
         initialise_input();
 
@@ -92,11 +92,11 @@ namespace trview
         _texture_window->set_visible(false);
 
         _go_to_room = std::make_unique<GoToRoom>(*_control.get());
-        _go_to_room->room_selected += [&](uint32_t room)
+        _token_store.add(_go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
             set_camera_mode(CameraMode::Orbit);
-        };
+        });
 
         auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(30, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
@@ -105,24 +105,24 @@ namespace trview
         _control->add_child(std::move(picking));
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
-        _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
+        _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
 
         _settings_window = std::make_unique<SettingsWindow>(*_control.get(), *_texture_storage.get());
-        _settings_window->on_vsync += [&](bool value) 
+        _token_store.add(_settings_window->on_vsync += [&](bool value)
         { 
             _settings.vsync = value; 
             save_user_settings(_settings);
-        };
-        _settings_window->on_go_to_lara += [&](bool value) 
+        });
+        _token_store.add(_settings_window->on_go_to_lara += [&](bool value)
         { 
             _settings.go_to_lara = value; 
             save_user_settings(_settings); 
-        };
-        _settings_window->on_invert_map_controls += [&](bool value)
+        });
+        _token_store.add(_settings_window->on_invert_map_controls += [&](bool value)
         {
             _settings.invert_map_controls = value;
             save_user_settings(_settings);
-        };
+        });
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
@@ -142,41 +142,41 @@ namespace trview
         auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 348.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
-        _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
-        _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
-        _room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); };
+        _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });
+        _token_store.add(_room_navigator->on_highlight += [&](bool) { toggle_highlight(); });
+        _token_store.add(_room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); });
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
-        _neighbours->on_depth_changed += [&](int32_t value)
+        _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
         {
             if (_level)
             {
                 _level->set_neighbour_depth(value);
             }
-        };
-        _neighbours->on_enabled_changed += [&](bool enabled)
+        });
+        _token_store.add(_neighbours->on_enabled_changed += [&](bool enabled)
         {
             if (_level)
             {
                 _level->set_highlight_mode(enabled ? Level::RoomHighlightMode::Neighbours : Level::RoomHighlightMode::None);
                 _room_navigator->set_highlight(false);
             }
-        };
+        });
 
         _camera_controls = std::make_unique<CameraControls>(*tool_window.get(), *_texture_storage.get());
-        _camera_controls->on_reset += [&]() { _camera.reset(); };
-        _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
-        _camera_controls->on_sensitivity_changed += [&](float value)
+        _token_store.add(_camera_controls->on_reset += [&]() { _camera.reset(); });
+        _token_store.add(_camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); });
+        _token_store.add(_camera_controls->on_sensitivity_changed += [&](float value)
         {
             _camera_sensitivity = value;
             _settings.camera_sensitivity = value;
-        };
+        });
 
-        _camera_controls->on_movement_speed_changed += [&](float value)
+        _token_store.add(_camera_controls->on_movement_speed_changed += [&](float value)
         {
             _camera_movement_speed = value; 
             _settings.camera_movement_speed = value;
-        };
+        });
 
         _camera_controls->set_sensitivity(_settings.camera_sensitivity);
         _camera_controls->set_mode(CameraMode::Orbit);
@@ -190,13 +190,13 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
-        _keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1);
+        _token_store.add(_keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
+        _token_store.add(_keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1));
 
-        _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
-        _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
+        _token_store.add(_keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); });
+        _token_store.add(_keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); });
 
-        _keyboard.on_key_down += [&](uint16_t key)
+        _token_store.add(_keyboard.on_key_down += [&](uint16_t key)
         {
             switch (key)
             {
@@ -209,13 +209,13 @@ namespace trview
                     break;
                 }
             }
-        };
+        });
 
         setup_camera_input();
 
         using namespace input;
 
-        _mouse.mouse_down += [&](Mouse::Button button)
+        _token_store.add(_mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
@@ -261,18 +261,18 @@ namespace trview
                     }
                 }
             }
-        };
+        });
 
-        _mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); };
-        _mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); };
+        _token_store.add(_mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); });
+        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); });
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
-        _mouse.mouse_down += [&](Mouse::Button)
+        _token_store.add(_mouse.mouse_down += [&](Mouse::Button)
         {
             // The client mouse coordinate is already relative to the root window (at present).
             _control->mouse_down(client_cursor_position(_window));
-        };
+        });
     }
 
     void Viewer::process_input_key(uint16_t key)
@@ -367,8 +367,8 @@ namespace trview
         save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
-        _level->on_room_selected += [&](uint16_t room) { select_room(room); };
-        _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
+        _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
+        _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -587,12 +587,12 @@ namespace trview
     {
         using namespace input;
 
-        _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
-        _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
-        _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
-        _mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); };
+        _token_store.add(_mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); });
+        _token_store.add(_mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); });
+        _token_store.add(_mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); });
+        _token_store.add(_mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); });
 
-        _camera_input.on_rotate += [&](float x, float y)
+        _token_store.add(_camera_input.on_rotate += [&](float x, float y)
         {
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
@@ -604,9 +604,9 @@ namespace trview
             {
                 _level->on_camera_moved();
             }
-        };
+        });
 
-        _camera_input.on_zoom += [&](float zoom)
+        _token_store.add(_camera_input.on_zoom += [&](float zoom)
         {
             // Zoom only affects Orbit mode.
             if (_camera_mode == CameraMode::Orbit)
@@ -617,8 +617,8 @@ namespace trview
                     _level->on_camera_moved();
                 }
             }
-        };
+        });
 
-        _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store.add(_camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); });
     }
 }

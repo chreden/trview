@@ -10,10 +10,11 @@
 namespace trview
 {
     template <typename... Args>
-    Event<Args...>& Event<Args...>::operator += (std::function<void(Args...)> listener)
+    EventBase::Token Event<Args...>::operator += (std::function<void(Args...)> listener)
     {
-        _listeners.push_back(listener);
-        return *this;
+        Token token(this);
+        _listeners.emplace_back(&token, listener);
+        return token;
     }
 
     template <typename... Args>
@@ -27,9 +28,9 @@ namespace trview
     template <typename... Args>
     void Event<Args...>::operator()(Args... arguments)
     {
-        for (const auto& func : _listeners)
+        for (const auto& listener : _listeners)
         {
-            func(arguments...);
+            listener.second(arguments...);
         }
         for (const auto& func : _listener_events)
         {
@@ -47,6 +48,7 @@ namespace trview
     Event<Args...>::~Event()
     {
         remove_from_chain();
+        remove_listeners();
     }
 
     template <typename... Args>
@@ -57,6 +59,11 @@ namespace trview
         _listeners = std::move(other._listeners);
         _listener_events = std::move(other._listener_events);
         _subscriptions = std::move(other._subscriptions);
+
+        for (auto& listener : _listeners)
+        {
+            listener.first->replace_event(this);
+        }
 
         for (auto& listener : _listener_events)
         {
@@ -95,6 +102,36 @@ namespace trview
                     sub->_listener_events.end(),
                     this),
                 sub->_listener_events.end());
+        }
+    }
+
+    template <typename... Args>
+    void Event<Args...>::remove_listeners()
+    {
+        for (auto& listener : _listeners)
+        {
+            listener.first->replace_event(nullptr);
+        }
+        _listeners.clear();
+    }
+
+    template <typename... Args>
+    void Event<Args...>::remove_token(Token* token) 
+    {
+        _listeners.erase(
+            std::remove_if(_listeners.begin(), _listeners.end(),
+                [token](const auto& l) { return l.first == token; }), _listeners.end());
+    }
+
+    template <typename... Args>
+    void Event<Args...>::replace_token(Token* old_token, Token* new_token)
+    {
+        for (auto& listener : _listeners)
+        {
+            if (listener.first == old_token)
+            {
+                listener.first = new_token;
+            }
         }
     }
 }

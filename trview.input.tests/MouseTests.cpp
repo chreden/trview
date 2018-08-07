@@ -45,7 +45,7 @@ namespace trview
                 HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
-                mouse.mouse_down += 
+                auto token = mouse.mouse_down += 
                     [&times_called, &button_received](auto button)
                 {
                     ++times_called;
@@ -73,7 +73,7 @@ namespace trview
                 HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
-                mouse.mouse_up +=
+                auto token = mouse.mouse_up +=
                     [&times_called, &button_received](auto button)
                 {
                     ++times_called;
@@ -101,7 +101,7 @@ namespace trview
                 HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
-                mouse.mouse_wheel +=
+                auto token = mouse.mouse_wheel +=
                     [&times_called, &scroll_received](auto scroll)
                 {
                     ++times_called;
@@ -124,7 +124,7 @@ namespace trview
                 HWND window = create_test_window(L"TRViewInputTests");
                 Mouse mouse(window);
 
-                mouse.mouse_move +=
+                auto token = mouse.mouse_move +=
                     [&times_called, &x_received, &y_received](long x, long y)
                 {
                     ++times_called;

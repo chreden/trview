@@ -65,16 +65,16 @@ namespace trview
         _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, Window(window()).size())),
         _mouse(window())
     {
-        _window_resizer.on_resize += [=]()
+        _token_store.add(_window_resizer.on_resize += [=]()
         {
             _device_window->resize();
             _ui->set_size(window().size());
-        };
+        });
         generate_ui();
 
-        _mouse.mouse_up += [&](auto) { _ui->mouse_up(client_cursor_position(window())); };
-        _mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); };
-        _mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); };
+        _token_store.add(_mouse.mouse_up += [&](auto) { _ui->mouse_up(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); });
     }
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -93,13 +93,13 @@ namespace trview
     {
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
         auto button = std::make_unique<ui::Button>(Point(5, 5), Size(100, 30), L"Test button");
-        button->on_click += [&]()
+        _token_store.add(button->on_click += [&]()
         {
             std::random_device device;
             std::default_random_engine engine(device());
             std::uniform_real_distribution<float> random;
             _ui->set_background_colour(Colour(1.0f, random(engine), random(engine), random(engine)));
-        };
+        });
         _ui->add_child(std::move(button));
         _ui_renderer->load(_ui.get());
     }
