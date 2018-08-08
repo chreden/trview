@@ -46,6 +46,9 @@
     <ClInclude Include="ListboxItem.h">
       <Filter>Controls\Listbox</Filter>
     </ClInclude>
+    <ClInclude Include="ListboxItemPanel.h">
+      <Filter>Controls\Listbox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -82,6 +85,9 @@
       <Filter>Controls\Listbox</Filter>
     </ClCompile>
     <ClCompile Include="ListboxItem.cpp">
+      <Filter>Controls\Listbox</Filter>
+    </ClCompile>
+    <ClCompile Include="ListboxItemPanel.cpp">
       <Filter>Controls\Listbox</Filter>
     </ClCompile>
   </ItemGroup>

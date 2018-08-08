@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <vector>
 #include <string>
 
@@ -13,14 +12,10 @@ namespace trview
 {
     namespace ui
     {
-        class ListboxItemPanel;
-
-        class Listbox : public StackPanel
+        class ListboxItemPanel final : public StackPanel
         {
         public:
-            Listbox(const Point& position, const Size& size);
-
-            virtual ~Listbox();
+            ListboxItemPanel(const Point& position, const Size& size);
 
             /// Set the headers that will be used for sorting and filtering items.
             /// @param headers The header names.
@@ -30,7 +25,13 @@ namespace trview
             /// @param items The items to add to the list box.
             void set_items(const std::vector<ListboxItem>& items);
         private:
-            ListboxItemPanel*         _item_panel;
+            void sort_items();
+
+            StackPanel*               _headers_element;
+            std::vector<std::wstring> _headers;
+            std::vector<std::pair<uint32_t, ListboxItem>>  _items;
+            std::wstring              _current_sort;
+            bool                      _current_sort_direction;
             TokenStore                _token_store;
         };
     }

@@ -27,6 +27,7 @@
     <ClInclude Include="Label.h" />
     <ClInclude Include="Listbox.h" />
     <ClInclude Include="ListboxItem.h" />
+    <ClInclude Include="ListboxItemPanel.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="SizeDimension.h" />
     <ClInclude Include="SizeMode.h" />
@@ -43,6 +44,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Listbox.cpp" />
     <ClCompile Include="ListboxItem.cpp" />
+    <ClCompile Include="ListboxItemPanel.cpp" />
     <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
