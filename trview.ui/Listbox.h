@@ -29,6 +29,9 @@ namespace trview
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<ListboxItem>& items);
+        protected:
+            virtual bool scroll(int delta) override;
+
         private:
             ListboxItemPanel*         _item_panel;
             TokenStore                _token_store;

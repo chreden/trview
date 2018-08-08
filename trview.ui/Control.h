@@ -98,6 +98,12 @@ namespace trview
             /// @returns Whether the mouse move was handled by the control.
             bool mouse_move(const Point& position);
 
+            /// Process a mouse_scroll event.
+            /// @param position The position of the mouse relative to the control.
+            /// @param delta The mouse wheel movement.
+            /// @returns Whether the mouse scroll was handled by the control.
+            bool mouse_scroll(const Point& position, int16_t delta);
+
             /// Determines whether the mouse is over the element or any child elements that are
             /// interested in taking input.
             /// @param position The mouse position.
@@ -145,6 +151,11 @@ namespace trview
             /// This should be overriden by child elements to handle a move.
             /// @param position The mouse position relative to the control.
             virtual bool move(Point position);
+
+            /// To be called when the mouse was scrolled over the element.
+            /// This should be overiden by child elements to handle a scroll.
+            /// @param delta The mouse scroll delta.
+            virtual bool scroll(int delta);
 
             /// Set the control in the tree that has focus.
             /// @param control The current focus control

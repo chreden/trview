@@ -13,7 +13,6 @@ namespace trview
             _item_panel = panel.get();
             add_child(std::move(panel));
 
-            // Temporary scrollbar.
             add_child(std::make_unique<Window>(Point(), Size(20, size.height), Colour(1.0f, 1.0f, 0.0f, 0.0f)));
         }
 
@@ -29,6 +28,11 @@ namespace trview
         void Listbox::set_items(const std::vector<ListboxItem>& items)
         {
             _item_panel->set_items(items);
+        }
+
+        bool Listbox::scroll(int delta)
+        {
+            return false;
         }
     }
 }
