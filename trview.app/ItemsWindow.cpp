@@ -58,7 +58,7 @@ namespace trview
 
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
         : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, Window(window()).size())),
+        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
         _mouse(window())
     {
         _token_store.add(_window_resizer.on_resize += [=]()
@@ -87,8 +87,10 @@ namespace trview
 
     void ItemsWindow::generate_ui()
     {
-        _ui = std::make_unique<ui::Listbox>(Point(), window().size());
-        _ui->set_headers({ L"#", L"Room", L"Type" });
+        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
+
+        auto items_list = std::make_unique<ui::Listbox>(Point(), window().size());
+        items_list->set_headers({ L"#", L"Room", L"Type" });
         std::vector<ui::ListboxItem> list_items;
         for (const auto& item : _items)
         {
@@ -99,7 +101,10 @@ namespace trview
                     { L"Type", item.type() } 
                 }));
         }
-        _ui->set_items(list_items);
+        items_list->set_items(list_items);
+        _items_list = items_list.get();
+
+        _ui->add_child(std::move(items_list));
         _ui_renderer->load(_ui.get());
     }
 

@@ -6,7 +6,7 @@ namespace trview
     namespace ui
     {
         ListboxItemPanel::ListboxItemPanel(const Point& position, const Size& size)
-            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Manual)
+            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Auto)
         {
 
         }

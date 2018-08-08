@@ -61,7 +61,8 @@ namespace trview
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
-        std::unique_ptr<ui::Listbox> _ui;
+        std::unique_ptr<ui::Window> _ui;
+        ui::Listbox* _items_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         TokenStore _token_store;

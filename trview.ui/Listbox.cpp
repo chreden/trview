@@ -7,11 +7,14 @@ namespace trview
     namespace ui
     {
         Listbox::Listbox(const Point& position, const Size& size)
-            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Horizontal, SizeMode::Manual)
+            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Horizontal, SizeMode::Auto)
         {
             auto panel = std::make_unique<ListboxItemPanel>(position, size);
             _item_panel = panel.get();
             add_child(std::move(panel));
+
+            // Temporary scrollbar.
+            add_child(std::make_unique<Window>(Point(), Size(20, size.height), Colour(1.0f, 1.0f, 0.0f, 0.0f)));
         }
 
         Listbox::~Listbox()
