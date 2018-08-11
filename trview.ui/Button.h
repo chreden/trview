@@ -12,6 +12,8 @@ namespace trview
 {
     namespace ui
     {
+        class Label;
+
         /// UI element that provides a clickable area.
         class Button : public Control
         {
@@ -47,12 +49,17 @@ namespace trview
             /// Set the thickness of the border that will be applied when the element is rendered.
             /// @param thickness The new thickness.
             void set_border_thickness(float thickness);
+
+            /// Set the text of the button, if it has a label for text.
+            /// @param text The new text for the button.
+            void set_text(const std::wstring& text);
         protected:
             virtual bool clicked(Point position) override;
         private:
             graphics::Texture _up_image;
             graphics::Texture _down_image;
             float _border_thickness{ 1.0f };
+            Label* _text;
         };
     }
 }

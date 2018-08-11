@@ -1,12 +1,14 @@
+#define NOMINMAX
 #include "ListboxItemPanel.h"
 #include "Button.h"
+#include <algorithm>
 
 namespace trview
 {
     namespace ui
     {
         ListboxItemPanel::ListboxItemPanel(const Point& position, const Size& size)
-            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Auto)
+            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Manual)
         {
 
         }
@@ -39,23 +41,54 @@ namespace trview
 
         void ListboxItemPanel::set_items(const std::vector<ListboxItem>& items)
         {
-            std::vector<std::pair<uint32_t, ListboxItem>> new_items;
-            for (auto i = 0; i < items.size(); ++i)
+            // Calculate how many items can be seen on-screen at once.
+            const auto remaining_height = size().height - (_headers_element->size().height);
+
+            // Clear the rows element so new elements can be added (this to be changed at some point to create less rows,
+            // when perhaps some rows can be re-used).
+            if (_rows_element)
             {
-                new_items.emplace_back(i, items[i]);
+                _rows_element->clear_child_elements();
+            }
+            else
+            {
+                auto rows_element = std::make_unique<StackPanel>(Point(), Size(size().width, remaining_height), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Vertical, SizeMode::Manual);
+                _rows_element = rows_element.get();
+                add_child(std::move(rows_element));
             }
 
-            for (const auto& item : new_items)
+            // Add as many rows as can be seen.
+            const float row_height = 20;
+            const auto required_rows = std::min<uint32_t>(remaining_height / row_height, items.size());
+
+            for (auto i = 0; i < required_rows; ++i)
             {
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
                 for (const auto& header : _headers)
                 {
-                    auto button = std::make_unique<Button>(Point(), Size(30, 20), item.second.value(header));
+                    auto button = std::make_unique<Button>(Point(), Size(30, 20), L"Test");
                     row->add_child(std::move(button));
                 }
-                add_child(std::move(row));
+                _rows_element->add_child(std::move(row));
             }
-            _items = new_items;
+
+            // Store the items for later.
+            _items = items;
+            populate_rows();
+        }
+
+        void ListboxItemPanel::populate_rows()
+        {
+            const auto rows = _rows_element->child_elements();
+            for (auto r = 0; r < rows.size(); ++r)
+            {
+                const auto& item = _items[r];
+                const auto columns = rows[r]->child_elements();
+                for (auto c = 0; c < _headers.size(); ++c)
+                {
+                    static_cast<Button*>(columns[c])->set_text(item.value(_headers[c]));
+                }
+            }
         }
 
         void ListboxItemPanel::sort_items()
@@ -63,35 +96,17 @@ namespace trview
             if (!_current_sort.empty())
             {
                 // Sort the items list by the specified key.
-                std::sort(
-                    _items.begin(),
-                    _items.end(),
+                std::sort(_items.begin(), _items.end(),
                     [&](const auto& l, const auto& r)
                 {
                     if (!_current_sort_direction)
                     {
-                        return std::stoi(l.second.value(_current_sort)) < std::stoi(r.second.value(_current_sort));
+                        return std::stoi(l.value(_current_sort)) < std::stoi(r.value(_current_sort));
                     }
-                    return std::stoi(l.second.value(_current_sort)) > std::stoi(r.second.value(_current_sort));
+                    return std::stoi(l.value(_current_sort)) > std::stoi(r.value(_current_sort));
                 });
-
-                std::vector<std::unique_ptr<Control>> child_store;
-                std::move(_child_elements.begin() + 1, _child_elements.end(), std::back_inserter(child_store));
-                _child_elements.erase(_child_elements.begin() + 1, _child_elements.end());
-
-                for (auto i = 0; i < _items.size(); ++i)
-                {
-                    // This is the index into the child elements list - it indicates where it used
-                    // to be. We can then take the element from there and move it to the new location.
-                    uint32_t old_index = _items[i].first;
-
-                    add_child(std::move(child_store[old_index]));
-
-                    _items[i].first = i;
-                }
-
-                on_heirarchy_changed();
             }
+            populate_rows();
         }
     }
 }

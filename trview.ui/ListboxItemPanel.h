@@ -25,11 +25,18 @@ namespace trview
             /// @param items The items to add to the list box.
             void set_items(const std::vector<ListboxItem>& items);
         private:
+            /// Populate the row UI elements with the values from the current listbox item sort.
+            void populate_rows();
+
             void sort_items();
 
             StackPanel*               _headers_element;
             std::vector<std::wstring> _headers;
-            std::vector<std::pair<uint32_t, ListboxItem>>  _items;
+
+            StackPanel*               _rows_element;
+
+            std::vector<ListboxItem> _items;
+
             std::wstring              _current_sort;
             bool                      _current_sort_direction;
             TokenStore                _token_store;

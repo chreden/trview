@@ -78,6 +78,9 @@ namespace trview
             /// @param child_element The element to add to the control.
             virtual void add_child(std::unique_ptr<Control>&& child_element);
 
+            /// Remove all child elements from the control.
+            virtual void clear_child_elements();
+
             /// Get the elements that are direct children of this element.
             /// @remarks To add a new child, use add_child.
             /// @returns The child elements.

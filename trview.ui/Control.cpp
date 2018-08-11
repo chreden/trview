@@ -77,6 +77,13 @@ namespace trview
             on_invalidate();
         }
 
+        void Control::clear_child_elements()
+        {
+            _child_elements.clear();
+            on_heirarchy_changed();
+            on_invalidate();
+        }
+
         std::vector<Control*> Control::child_elements() const
         {
             std::vector<Control*> output;
