@@ -17,6 +17,8 @@ namespace trview
         public:
             ListboxItemPanel(const Point& position, const Size& size);
 
+            virtual ~ListboxItemPanel() = default;
+
             /// Set the headers that will be used for sorting and filtering items.
             /// @param headers The header names.
             void set_headers(const std::vector<std::wstring>& headers);
@@ -24,11 +26,15 @@ namespace trview
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<ListboxItem>& items);
+        protected:
+            virtual bool scroll(int delta) override;
         private:
+
+            void generate_rows();
             /// Populate the row UI elements with the values from the current listbox item sort.
             void populate_rows();
-
             void sort_items();
+            void update_scroll();
 
             StackPanel*               _headers_element;
             std::vector<std::wstring> _headers;
@@ -36,7 +42,9 @@ namespace trview
             StackPanel*               _rows_element;
 
             std::vector<ListboxItem> _items;
+            int32_t                  _current_top{ 0 };
 
+            // Sorting options.
             std::wstring              _current_sort;
             bool                      _current_sort_direction;
             TokenStore                _token_store;

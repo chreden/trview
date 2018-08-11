@@ -10,7 +10,11 @@ namespace trview
         ListboxItemPanel::ListboxItemPanel(const Point& position, const Size& size)
             : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Manual)
         {
-
+            _token_store.add(on_size_changed += [&](const auto& new_size)
+            {
+                generate_rows();
+                populate_rows();
+            });
         }
 
         void ListboxItemPanel::set_headers(const std::vector<std::wstring>& headers)
@@ -41,14 +45,26 @@ namespace trview
 
         void ListboxItemPanel::set_items(const std::vector<ListboxItem>& items)
         {
+            // Reset the index for scrolling.
+            _current_top = 0;
+
+            // Store the items for later.
+            _items = items;
+
+            generate_rows();
+            populate_rows();
+        }
+
+        void ListboxItemPanel::generate_rows()
+        {
             // Calculate how many items can be seen on-screen at once.
             const auto remaining_height = size().height - (_headers_element->size().height);
 
-            // Clear the rows element so new elements can be added (this to be changed at some point to create less rows,
-            // when perhaps some rows can be re-used).
+            // Clear the rows element so new elements can be added.
             if (_rows_element)
             {
                 _rows_element->clear_child_elements();
+                _rows_element->set_size(Size(size().width, remaining_height));
             }
             else
             {
@@ -59,7 +75,7 @@ namespace trview
 
             // Add as many rows as can be seen.
             const float row_height = 20;
-            const auto required_rows = std::min<uint32_t>(remaining_height / row_height, items.size());
+            const auto required_rows = std::min<uint32_t>(std::ceil(remaining_height / row_height), _items.size());
 
             for (auto i = 0; i < required_rows; ++i)
             {
@@ -71,10 +87,6 @@ namespace trview
                 }
                 _rows_element->add_child(std::move(row));
             }
-
-            // Store the items for later.
-            _items = items;
-            populate_rows();
         }
 
         void ListboxItemPanel::populate_rows()
@@ -82,11 +94,23 @@ namespace trview
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
-                const auto& item = _items[r];
-                const auto columns = rows[r]->child_elements();
-                for (auto c = 0; c < _headers.size(); ++c)
+                if (r + _current_top < _items.size())
                 {
-                    static_cast<Button*>(columns[c])->set_text(item.value(_headers[c]));
+                    if (!rows[r]->visible())
+                    {
+                        rows[r]->set_visible(true);
+                    }
+
+                    const auto& item = _items[r + _current_top];
+                    const auto columns = rows[r]->child_elements();
+                    for (auto c = 0; c < _headers.size(); ++c)
+                    {
+                        static_cast<Button*>(columns[c])->set_text(item.value(_headers[c]));
+                    }
+                }
+                else
+                {
+                    rows[r]->set_visible(false);
                 }
             }
         }
@@ -107,6 +131,35 @@ namespace trview
                 });
             }
             populate_rows();
+        }
+
+        bool ListboxItemPanel::scroll(int delta)
+        {
+            int32_t direction = delta > 0 ? -1 : 1;
+            if (direction > 0)
+            {
+                // If any of the rows are invisible (they are being hidden because we are at the end
+                // of the list of items) then do not do any more scrolling down.
+                const auto rows = _rows_element->child_elements();
+                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible(); }))
+                {
+                    return true;
+                }
+
+                // If the bottom of the list is already visible, then don't scroll down any more.
+                if (!rows.empty())
+                {
+                    const auto& last = rows.back();
+                    if (last->position().y + last->size().height < _rows_element->size().height)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            _current_top = std::max(0, _current_top + direction);
+            populate_rows();
+            return true;
         }
     }
 }

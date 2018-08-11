@@ -21,7 +21,7 @@ namespace trview
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
             HWND items_window = CreateWindowW(L"trview.items", L"trview", WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, 400, 300, parent, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -65,6 +65,7 @@ namespace trview
         {
             _device_window->resize();
             _ui->set_size(window().size());
+            _items_list->set_size(window().size());
         });
         generate_ui();
 
