@@ -7,6 +7,41 @@ namespace trview
 {
     namespace ui
     {
+        Listbox::Column::Column()
+            : _type(Type::String)
+        {
+        }
+
+        Listbox::Column::Column(Type type, const std::wstring& name)
+            : _type(type), _name(name)
+        {
+        }
+        
+        Listbox::Column::Type Listbox::Column::type() const
+        {
+            return _type;
+        }
+
+        const std::wstring& Listbox::Column::name() const
+        {
+            return _name;
+        }
+
+        Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values)
+            : _values(values)
+        {
+        }
+
+        std::wstring Listbox::Item::value(const std::wstring& key) const
+        {
+            auto item = _values.find(key);
+            if (item == _values.end())
+            {
+                return std::wstring();
+            }
+            return item->second;
+        }
+
         Listbox::Listbox(const Point& position, const Size& size)
             : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Manual)
         {
@@ -21,21 +56,21 @@ namespace trview
         {
         }
 
-        void Listbox::set_headers(const std::vector<std::wstring>& headers)
+        void Listbox::set_columns(const std::vector<Column>& columns)
         {
             auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
-            for (const auto header : headers)
+            for (const auto column : columns)
             {
-                auto header_element = std::make_unique<Button>(Point(), Size(30, 20), header);
-                _token_store.add(header_element->on_click += [this, header]()
+                auto header_element = std::make_unique<Button>(Point(), Size(30, 20), column.name());
+                _token_store.add(header_element->on_click += [this, column]()
                 {
-                    if (_current_sort == header)
+                    if (_current_sort.name() == column.name())
                     {
                         _current_sort_direction = !_current_sort_direction;
                     }
                     else
                     {
-                        _current_sort = header;
+                        _current_sort = column;
                         _current_sort_direction = false;
                     }
                     sort_items();
@@ -44,10 +79,10 @@ namespace trview
             }
             _headers_element = headers_element.get();
             add_child(std::move(headers_element));
-            _headers = headers;
+            _columns = columns;
         }
 
-        void Listbox::set_items(const std::vector<ListboxItem>& items)
+        void Listbox::set_items(const std::vector<Item>& items)
         {
             // Reset the index for scrolling.
             _current_top = 0;
@@ -90,7 +125,7 @@ namespace trview
             for (auto i = 0; i < required_rows; ++i)
             {
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
-                for (const auto& header : _headers)
+                for (const auto& column : _columns)
                 {
                     auto button = std::make_unique<Button>(Point(), Size(30, 20), L"Test");
                     row->add_child(std::move(button));
@@ -113,9 +148,9 @@ namespace trview
 
                     const auto& item = _items[r + _current_top];
                     const auto columns = rows[r]->child_elements();
-                    for (auto c = 0; c < _headers.size(); ++c)
+                    for (auto c = 0; c < _columns.size(); ++c)
                     {
-                        static_cast<Button*>(columns[c])->set_text(item.value(_headers[c]));
+                        static_cast<Button*>(columns[c])->set_text(item.value(_columns[c].name()));
                     }
                 }
                 else
@@ -127,17 +162,26 @@ namespace trview
 
         void Listbox::sort_items()
         {
-            if (!_current_sort.empty())
+            if (!_current_sort.name().empty())
             {
                 // Sort the items list by the specified key.
                 std::sort(_items.begin(), _items.end(),
                     [&](const auto& l, const auto& r)
                 {
+                    if (_current_sort.type() == Column::Type::Number)
+                    {
+                        if (!_current_sort_direction)
+                        {
+                            return std::stoi(l.value(_current_sort.name())) < std::stoi(r.value(_current_sort.name()));
+                        }
+                        return std::stoi(l.value(_current_sort.name())) > std::stoi(r.value(_current_sort.name()));
+                    }
+
                     if (!_current_sort_direction)
                     {
-                        return std::stoi(l.value(_current_sort)) < std::stoi(r.value(_current_sort));
+                        return l.value(_current_sort.name()) < r.value(_current_sort.name());
                     }
-                    return std::stoi(l.value(_current_sort)) > std::stoi(r.value(_current_sort));
+                    return l.value(_current_sort.name()) > r.value(_current_sort.name());
                 });
             }
             populate_rows();

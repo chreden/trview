@@ -97,19 +97,27 @@ namespace trview
 
     void ItemsWindow::generate_ui()
     {
+        using namespace ui;
+
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
 
-        auto items_list = std::make_unique<ui::Listbox>(Point(), window().size());
-        items_list->set_headers({ L"#", L"Room", L"Type" });
-        std::vector<ui::ListboxItem> list_items;
+        auto items_list = std::make_unique<Listbox>(Point(), window().size());
+        items_list->set_columns(
+            { 
+                { Listbox::Column::Type::Number, L"#" }, 
+                { Listbox::Column::Type::Number, L"Room"},
+                { Listbox::Column::Type::Number, L"Type"} }
+            );
+
+        std::vector<Listbox::Item> list_items;
         for (const auto& item : _items)
         {
-            list_items.push_back(ui::ListboxItem(
-                { 
+            list_items.push_back({
+                {
                     { L"#", std::to_wstring(item.number()) },
                     { L"Room", std::to_wstring(item.room()) },
-                    { L"Type", item.type() } 
-                }));
+                    { L"Type", item.type() }
+                }});
         }
         items_list->set_items(list_items);
         _items_list = items_list.get();
