@@ -599,7 +599,13 @@ namespace trview
         _token_store.add(_mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); });
         _token_store.add(_mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); });
         _token_store.add(_mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); });
-        _token_store.add(_mouse.mouse_wheel += [&](int16_t scroll) { _camera_input.mouse_scroll(scroll); });
+        _token_store.add(_mouse.mouse_wheel += [&](int16_t scroll) 
+        {
+            if (window_under_cursor() == _window)
+            {
+                _camera_input.mouse_scroll(scroll);
+            }
+        });
 
         _token_store.add(_camera_input.on_rotate += [&](float x, float y)
         {
