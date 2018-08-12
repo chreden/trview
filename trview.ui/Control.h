@@ -167,9 +167,9 @@ namespace trview
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
-
-            std::vector<std::unique_ptr<Control>> _child_elements;
         private:
+            std::vector<std::unique_ptr<Control>> _child_elements;
+
             Control* _parent{ nullptr };
             Control* _focus_control{ nullptr };
             Point    _position;
