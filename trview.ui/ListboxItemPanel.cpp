@@ -60,6 +60,12 @@ namespace trview
             // Calculate how many items can be seen on-screen at once.
             const auto remaining_height = size().height - (_headers_element->size().height);
 
+            // If negative height, this is a bad thing to try and set the size of the rows to, so abort.
+            if (static_cast<int32_t>(remaining_height) <= 0)
+            {
+                return;
+            }
+
             // Clear the rows element so new elements can be added.
             if (_rows_element)
             {

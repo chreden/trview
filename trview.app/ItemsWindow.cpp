@@ -15,6 +15,14 @@ namespace trview
     {
         LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
+            if (message == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
+                info->ptMinTrackSize.x = 400;
+                info->ptMinTrackSize.y = 200;
+                return 0;
+            }
+
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
