@@ -100,7 +100,6 @@ namespace trview
         using namespace ui;
 
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
-
         auto items_list = std::make_unique<Listbox>(Point(), window().size());
         items_list->set_columns(
             { 
@@ -108,7 +107,16 @@ namespace trview
                 { Listbox::Column::Type::Number, L"Room"},
                 { Listbox::Column::Type::Number, L"Type"} }
             );
+        _items_list = items_list.get();
+        _ui->add_child(std::move(items_list));
+        _ui_renderer->load(_ui.get());
+    }
 
+    void ItemsWindow::set_items(const std::vector<Item>& items)
+    {
+        _items = items;
+
+        using namespace ui;
         std::vector<Listbox::Item> list_items;
         for (const auto& item : _items)
         {
@@ -117,18 +125,8 @@ namespace trview
                     { L"#", std::to_wstring(item.number()) },
                     { L"Room", std::to_wstring(item.room()) },
                     { L"Type", item.type() }
-                }});
+                } });
         }
-        items_list->set_items(list_items);
-        _items_list = items_list.get();
-
-        _ui->add_child(std::move(items_list));
-        _ui_renderer->load(_ui.get());
-    }
-
-    void ItemsWindow::set_items(const std::vector<Item>& items)
-    {
-        _items = items;
-        generate_ui();
+        _items_list->set_items(list_items);
     }
 }
