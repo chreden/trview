@@ -1,5 +1,7 @@
-#pragma once
+/// @file Listbox.h
+/// @brief UI element that displays a number of rows in a grid with column headers.
 
+#pragma once
 
 #include <vector>
 #include <string>
@@ -13,6 +15,7 @@ namespace trview
 {
     namespace ui
     {
+        /// Displays a number of rows in a grid with column headers.
         class Listbox : public StackPanel
         {
         public:
@@ -30,9 +33,11 @@ namespace trview
         protected:
             virtual bool scroll(int delta) override;
         private:
+            /// Create the row UI elements to be populated.
             void generate_rows();
             /// Populate the row UI elements with the values from the current listbox item sort.
             void populate_rows();
+            /// Sort the items according to the current sort method.
             void sort_items();
 
             StackPanel*               _headers_element;
