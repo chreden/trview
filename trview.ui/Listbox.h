@@ -13,8 +13,6 @@ namespace trview
 {
     namespace ui
     {
-        class ListboxItemPanel;
-
         class Listbox : public StackPanel
         {
         public:
@@ -29,8 +27,25 @@ namespace trview
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<ListboxItem>& items);
+        protected:
+            virtual bool scroll(int delta) override;
         private:
-            ListboxItemPanel*         _item_panel;
+            void generate_rows();
+            /// Populate the row UI elements with the values from the current listbox item sort.
+            void populate_rows();
+            void sort_items();
+
+            StackPanel*               _headers_element;
+            std::vector<std::wstring> _headers;
+
+            StackPanel*               _rows_element;
+
+            std::vector<ListboxItem> _items;
+            int32_t                  _current_top{ 0 };
+
+            // Sorting options.
+            std::wstring              _current_sort;
+            bool                      _current_sort_direction;
             TokenStore                _token_store;
         };
     }
