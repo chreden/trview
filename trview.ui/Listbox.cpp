@@ -128,6 +128,10 @@ namespace trview
                 for (const auto& column : _columns)
                 {
                     auto button = std::make_unique<Button>(Point(), Size(30, 20), L"Test");
+                    _token_store.add(button->on_click += [this, i]()
+                    {
+                        on_item_selected(_items[i + _current_top]);
+                    });
                     row->add_child(std::move(button));
                 }
                 _rows_element->add_child(std::move(row));

@@ -83,6 +83,9 @@ namespace trview
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<Item>& items);
+
+            /// Event raised when an item is selected
+            Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
         private:

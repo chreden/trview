@@ -107,6 +107,12 @@ namespace trview
                 { Listbox::Column::Type::Number, L"Room"},
                 { Listbox::Column::Type::Number, L"Type"} }
             );
+        _token_store.add(items_list->on_item_selected += [this](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_item_selected(_items[index]);
+        });
+
         _items_list = items_list.get();
         _ui->add_child(std::move(items_list));
         _ui_renderer->load(_ui.get());

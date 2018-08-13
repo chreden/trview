@@ -56,6 +56,9 @@ namespace trview
         /// Set the items to display in the window.
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
+
+        /// Event raised when an item is selected in the list.
+        Event<Item> on_item_selected;
     private:
         void generate_ui();
 

@@ -100,6 +100,7 @@ namespace trview
         void render_scene();
         void render_map(); 
         void select_room(uint32_t room);
+        void select_item(const Item& item);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
@@ -153,6 +154,7 @@ namespace trview
         RecentFiles _recent_files;
         FileDropper _file_dropper;
         TokenStore _token_store;
+        DirectX::SimpleMath::Vector3 _target;
     };
 }
 
