@@ -143,7 +143,7 @@ namespace trview
             Event<> on_invalidate;
 
             /// Event raised when there has been a change to the children of this control.
-            Event<> on_heirarchy_changed;
+            Event<> on_hierarchy_changed;
         protected:
             /// To be called when the user interface element has been clicked.
             /// This should be overriden by child elements to handle a click.

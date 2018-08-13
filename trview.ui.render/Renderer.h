@@ -30,7 +30,7 @@ namespace trview
 
                 ~Renderer();
 
-                // Examine a control heirarchy and create the appropriate structures
+                // Examine a control hierarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering
                 // structures.
                 void load(Control* control);

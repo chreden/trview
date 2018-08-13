@@ -75,13 +75,13 @@ namespace trview
             child_element->_parent = this;
             _child_elements.push_back(std::move(child_element));
             on_invalidate();
-            on_heirarchy_changed();
+            on_hierarchy_changed();
         }
 
         void Control::clear_child_elements()
         {
             _child_elements.clear();
-            on_heirarchy_changed();
+            on_hierarchy_changed();
             on_invalidate();
         }
 
