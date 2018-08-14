@@ -7,7 +7,9 @@
 #include <trview.graphics/Device.h>
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
+#include <trview.ui/Listbox.h>
 #include "WindowResizer.h"
+#include "Item.h"
 
 namespace trview
 {
@@ -19,7 +21,6 @@ namespace trview
 
     namespace ui
     {
-        class Window;
         namespace render
         {
             class Renderer;
@@ -51,14 +52,20 @@ namespace trview
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync when rendering.
         void render(const graphics::Device& device, bool vsync);
+
+        /// Set the items to display in the window.
+        /// @param items The items to show.
+        void set_items(const std::vector<Item>& items);
     private:
         void generate_ui();
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::Window> _ui;
+        ui::Listbox* _items_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         TokenStore _token_store;
+        std::vector<Item> _items;
     };
 }

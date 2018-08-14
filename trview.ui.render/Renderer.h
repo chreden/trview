@@ -8,6 +8,7 @@
 #include "RenderNode.h"
 
 #include <trview.ui/Control.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -29,7 +30,7 @@ namespace trview
 
                 ~Renderer();
 
-                // Examine a control heirarchy and create the appropriate structures
+                // Examine a control hierarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering
                 // structures.
                 void load(Control* control);
@@ -48,6 +49,7 @@ namespace trview
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 const graphics::FontFactory&                    _font_factory;
                 Size                                            _host_size;
+                TokenStore                                      _token_store;
             };
         }
     }

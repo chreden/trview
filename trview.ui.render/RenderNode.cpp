@@ -78,6 +78,13 @@ namespace trview
             void RenderNode::add_child(std::unique_ptr<RenderNode>&& child)
             {
                 _child_nodes.push_back(std::move(child));
+                _needs_redraw = true;
+            }
+
+            void RenderNode::clear_children()
+            {
+                _child_nodes.clear();
+                _needs_redraw = true;
             }
 
             Point RenderNode::position() const

@@ -34,5 +34,9 @@ namespace trview
     // window: The window to test.
     // Returns: True if the window is minimised.
     bool window_is_minimised(const Window& window) noexcept;
+
+    /// Determines which window is under the cursor.
+    /// @returns The window under the cursor.
+    Window window_under_cursor() noexcept;
 }
 

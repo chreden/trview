@@ -40,8 +40,8 @@ namespace trview
                     return;
                 }
 
-                // Attempt to find the correct type for each control in the heirarchy.
-                // Create a duplicate heirarchy in the renderer.
+                // Attempt to find the correct type for each control in the hierarchy.
+                // Create a duplicate hierarchy in the renderer.
                 _root_node = process_control(control);
             }
 
@@ -74,6 +74,18 @@ namespace trview
                 {
                     node->add_child(process_control(child));
                 }
+
+                auto* node_ptr = node.get();
+                _token_store.add(control->on_hierarchy_changed += [this, control, node_ptr]()
+                {
+                    node_ptr->clear_children();
+                    auto children = control->child_elements();
+                    for (auto child : children)
+                    {
+                        node_ptr->add_child(process_control(child));
+                    }
+                });
+
                 return node;
             }
 

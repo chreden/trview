@@ -78,6 +78,9 @@ namespace trview
             /// @param child_element The element to add to the control.
             virtual void add_child(std::unique_ptr<Control>&& child_element);
 
+            /// Remove all child elements from the control.
+            virtual void clear_child_elements();
+
             /// Get the elements that are direct children of this element.
             /// @remarks To add a new child, use add_child.
             /// @returns The child elements.
@@ -97,6 +100,12 @@ namespace trview
             /// @param position The position of the mouse relative to the control.
             /// @returns Whether the mouse move was handled by the control.
             bool mouse_move(const Point& position);
+
+            /// Process a mouse_scroll event.
+            /// @param position The position of the mouse relative to the control.
+            /// @param delta The mouse wheel movement.
+            /// @returns Whether the mouse scroll was handled by the control.
+            bool mouse_scroll(const Point& position, int16_t delta);
 
             /// Determines whether the mouse is over the element or any child elements that are
             /// interested in taking input.
@@ -132,6 +141,9 @@ namespace trview
 
             /// Event raised when the control has changed and needs to be redrawn.
             Event<> on_invalidate;
+
+            /// Event raised when there has been a change to the children of this control.
+            Event<> on_hierarchy_changed;
         protected:
             /// To be called when the user interface element has been clicked.
             /// This should be overriden by child elements to handle a click.
@@ -143,6 +155,11 @@ namespace trview
             /// @param position The mouse position relative to the control.
             virtual bool move(Point position);
 
+            /// To be called when the mouse was scrolled over the element.
+            /// This should be overiden by child elements to handle a scroll.
+            /// @param delta The mouse scroll delta.
+            virtual bool scroll(int delta);
+
             /// Set the control in the tree that has focus.
             /// @param control The current focus control
             void set_focus_control(Control* control);
@@ -152,6 +169,7 @@ namespace trview
             Control* focus_control() const;
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
+
             Control* _parent{ nullptr };
             Control* _focus_control{ nullptr };
             Point    _position;

@@ -40,6 +40,9 @@
     <ClInclude Include="SizeDimension.h">
       <Filter>Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Listbox.h">
+      <Filter>Controls\Listbox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -72,6 +75,9 @@
     <ClCompile Include="Checkbox.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
+    <ClCompile Include="Listbox.cpp">
+      <Filter>Controls\Listbox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -79,6 +85,9 @@
     </Filter>
     <Filter Include="Controls">
       <UniqueIdentifier>{a78c4281-0488-4328-8bf1-060d8cbdd71d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Listbox">
+      <UniqueIdentifier>{8ef9cc29-a53e-412b-b035-4006b32635c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

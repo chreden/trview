@@ -53,4 +53,11 @@ namespace trview
     {
         return IsIconic(window.window());
     }
+
+    Window window_under_cursor() noexcept
+    {
+        POINT cursor_pos;
+        GetCursorPos(&cursor_pos);
+        return WindowFromPoint(cursor_pos);
+    }
 }

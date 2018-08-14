@@ -1,13 +1,9 @@
 #include "ItemsWindow.h"
 #include <Windows.h>
-#include <random>
 #include <trview/resource.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Button.h>
 #include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
 
@@ -19,13 +15,21 @@ namespace trview
     {
         LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
+            if (message == WM_GETMINMAXINFO)
+            {
+                MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
+                info->ptMinTrackSize.x = 400;
+                info->ptMinTrackSize.y = 200;
+                return 0;
+            }
+
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
             HWND items_window = CreateWindowW(L"trview.items", L"trview", WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, 400, 300, parent, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -62,19 +66,21 @@ namespace trview
 
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
         : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, Window(window()).size())),
+        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
         _mouse(window())
     {
         _token_store.add(_window_resizer.on_resize += [=]()
         {
             _device_window->resize();
             _ui->set_size(window().size());
+            _items_list->set_size(window().size());
         });
         generate_ui();
 
         _token_store.add(_mouse.mouse_up += [&](auto) { _ui->mouse_up(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
     }
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -91,16 +97,36 @@ namespace trview
 
     void ItemsWindow::generate_ui()
     {
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
-        auto button = std::make_unique<ui::Button>(Point(5, 5), Size(100, 30), L"Test button");
-        _token_store.add(button->on_click += [&]()
-        {
-            std::random_device device;
-            std::default_random_engine engine(device());
-            std::uniform_real_distribution<float> random;
-            _ui->set_background_colour(Colour(1.0f, random(engine), random(engine), random(engine)));
-        });
-        _ui->add_child(std::move(button));
+        using namespace ui;
+
+        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
+        auto items_list = std::make_unique<Listbox>(Point(), window().size());
+        items_list->set_columns(
+            { 
+                { Listbox::Column::Type::Number, L"#" }, 
+                { Listbox::Column::Type::Number, L"Room"},
+                { Listbox::Column::Type::Number, L"Type"} }
+            );
+        _items_list = items_list.get();
+        _ui->add_child(std::move(items_list));
         _ui_renderer->load(_ui.get());
+    }
+
+    void ItemsWindow::set_items(const std::vector<Item>& items)
+    {
+        _items = items;
+
+        using namespace ui;
+        std::vector<Listbox::Item> list_items;
+        for (const auto& item : _items)
+        {
+            list_items.push_back({
+                {
+                    { L"#", std::to_wstring(item.number()) },
+                    { L"Room", std::to_wstring(item.room()) },
+                    { L"Type", item.type() }
+                } });
+        }
+        _items_list->set_items(list_items);
     }
 }
