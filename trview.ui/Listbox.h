@@ -57,7 +57,7 @@ namespace trview
             {
             public:
                 /// Create an item.
-                /// @param values The column indexex values for the item.
+                /// @param values The column index values for the item.
                 Item(const std::unordered_map<std::wstring, std::wstring>& values);
 
                 /// Get the value that the item has for the specified key.
