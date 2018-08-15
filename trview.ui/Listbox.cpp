@@ -140,6 +140,11 @@ namespace trview
 
         void Listbox::populate_rows()
         {
+            if (!_rows_element)
+            {
+                return;
+            }
+
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
