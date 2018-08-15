@@ -105,7 +105,7 @@ namespace trview
             { 
                 { Listbox::Column::Type::Number, L"#" }, 
                 { Listbox::Column::Type::Number, L"Room"},
-                { Listbox::Column::Type::Number, L"Type"} }
+                { Listbox::Column::Type::String, L"Type"} }
             );
         _token_store.add(items_list->on_item_selected += [this](const auto& item)
         {

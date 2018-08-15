@@ -319,6 +319,9 @@
     <Text Include="fontlist.txt">
       <Filter>Win\Resource Files</Filter>
     </Text>
+    <Text Include="resources\type_names_tr3.txt">
+      <Filter>Win\Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="texturelist.txt">

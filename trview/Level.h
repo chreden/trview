@@ -134,6 +134,9 @@ namespace trview
         // the alternate mode flag.
         bool is_alternate_mismatch(Room::AlternateMode mode) const;
 
+        /// Load the type name lookup table from resources.
+        void load_type_name_lookup();
+
         /// Look up the type name of the specified type id.
         /// @param type_id The type id to look up.
         /// @returns The type name of the item.
@@ -160,5 +163,7 @@ namespace trview
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
+
+        std::unordered_map<uint32_t, std::wstring> _type_names;
     };
 }

@@ -1,16 +1,18 @@
 #include "stdafx.h"
 #include "Level.h"
 
+#include <sstream>
+
 #include <trview.common/FileLoader.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/IShader.h>
 
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
-
 #include "ICamera.h"
 #include "TransparencyBuffer.h"
-
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
+#include "ResourceHelper.h"
+#include "resource.h"
 
 using namespace Microsoft::WRL;
 
@@ -19,6 +21,8 @@ namespace trview
     Level::Level(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _level(level)
     {
+        load_type_name_lookup();
+
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
@@ -380,8 +384,43 @@ namespace trview
         });
     }
 
+    void Level::load_type_name_lookup()
+    {
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES_TR3, L"TEXT");
+
+        auto contents = std::wstring(type_list.data, type_list.data + type_list.size);
+        std::wstringstream stream(contents);
+
+        while (!stream.eof())
+        {
+            uint32_t key = 0;
+            if (!(stream >> key))
+            {
+                break;
+            }
+
+            std::wstring name;
+            if (!std::getline(stream, name))
+            {
+                break;
+            }
+
+            _type_names.insert({ key, name });
+            
+            if (!std::getline(stream, name))
+            {
+                break;
+            }
+        }
+    }
+
     std::wstring Level::lookup_type_name(uint32_t type_id) const
     {
-        return std::to_wstring(type_id);
+        const auto found = _type_names.find(type_id);
+        if (found == _type_names.end())
+        {
+            return std::to_wstring(type_id);
+        }
+        return found->second;
     }
 }

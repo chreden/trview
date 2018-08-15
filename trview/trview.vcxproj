@@ -310,6 +310,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </Text>
     <Text Include="fontlist.txt" />
+    <Text Include="resources\type_names_tr3.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\arial8.bin" />
