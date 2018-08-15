@@ -2,8 +2,8 @@
 
 namespace trview
 {
-    Item::Item(uint32_t number, uint32_t room, const std::wstring& type)
-        : _number(number), _room(room), _type(type)
+    Item::Item(uint32_t number, uint32_t room, uint32_t type_id, const std::wstring& type)
+        : _number(number), _room(room), _type_id(type_id), _type(type)
     {
     }
 
@@ -17,8 +17,14 @@ namespace trview
         return _room;
     }
 
-    std::wstring Item::type() const
+    uint32_t Item::type_id() const
+    {
+        return _type_id;
+    }
+
+    const std::wstring& Item::type() const
     {
         return _type;
     }
+
 }

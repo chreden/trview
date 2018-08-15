@@ -12,8 +12,9 @@ namespace trview
         /// Create an item.
         /// @param number The item number in the level.
         /// @param room The room number the item is in.
+        /// @param type_id The type number of the item.
         /// @param type The type name of the item.
-        explicit Item(uint32_t number, uint32_t room, const std::wstring& type);
+        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type);
 
         /// Get the item number.
         /// @returns The item number.
@@ -23,12 +24,17 @@ namespace trview
         /// @returns The room the item is in.
         uint32_t room() const;
 
-        /// Get the type name of the item.
+        /// Get the type id of the item.
         /// @returns The type of the item.
-        std::wstring type() const;
+        uint32_t type_id() const;
+
+        /// Get the type name of the item.
+        /// @returns The type name of the item.
+        const std::wstring& type() const;
     private:
         uint32_t _number;
         uint32_t _room;
+        uint32_t _type_id;
         std::wstring _type;
     };
 }

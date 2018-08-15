@@ -78,6 +78,11 @@ namespace trview
         return _selected_room;
     }
 
+    const std::vector<Item>& Level::items() const
+    {
+        return _items;
+    }
+
     Level::RoomHighlightMode Level::highlight_mode() const
     {
         return _room_highlight_mode;
@@ -257,10 +262,14 @@ namespace trview
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
+            // Entity for rendering.
             auto level_entity = _level->get_entity(i);
             auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
+
+            // Item for item information.
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID));
         }
     }
 
@@ -369,5 +378,10 @@ namespace trview
         {
             return room->alternate_mode() != Room::AlternateMode::None;
         });
+    }
+
+    std::wstring Level::lookup_type_name(uint32_t type_id) const
+    {
+        return std::to_wstring(type_id);
     }
 }
