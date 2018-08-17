@@ -14,6 +14,8 @@
 #include "ResourceHelper.h"
 #include "resource.h"
 
+#include <external/nlohmann/json.hpp>
+
 using namespace Microsoft::WRL;
 
 namespace trview
@@ -388,29 +390,12 @@ namespace trview
     {
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES_TR3, L"TEXT");
 
-        auto contents = std::wstring(type_list.data, type_list.data + type_list.size);
-        std::wstringstream stream(contents);
-
-        while (!stream.eof())
+        auto contents = std::string(type_list.data, type_list.data + type_list.size);
+        auto json = nlohmann::json::parse(contents.begin(), contents.end());
+        for (const auto& element : json["names"])
         {
-            uint32_t key = 0;
-            if (!(stream >> key))
-            {
-                break;
-            }
-
-            std::wstring name;
-            if (!std::getline(stream, name))
-            {
-                break;
-            }
-
-            _type_names.insert({ key, name });
-            
-            if (!std::getline(stream, name))
-            {
-                break;
-            }
+            auto name = element.at("name").get<std::string>();
+            _type_names.insert({ element.at("id").get<uint32_t>(), std::wstring(name.begin(), name.end()) });
         }
     }
 

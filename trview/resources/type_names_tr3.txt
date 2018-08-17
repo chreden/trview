@@ -1,1 +1,36 @@
-0 Lara
+{
+	"names":[
+		{
+			"id": 0,
+			"name": "Lara"
+		},
+		{
+			"id": 71,
+			"name": "Monkey"
+		},
+		{
+			"id": 87,
+			"name": "Spikes"
+		},
+		{
+			"id": 88,
+			"name": "Boulder"
+		},
+		{
+			"id": 169,
+			"name": "Shotgun shells"
+		},
+		{
+			"id": 176,
+			"name": "Small medipack"
+		},
+		{
+			"id": 177,
+			"name": "Large medipack"
+		},
+		{
+			"id": 180,
+			"name": "Savegame Crystal"
+		}
+	]
+}
