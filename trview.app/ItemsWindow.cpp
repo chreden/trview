@@ -75,6 +75,7 @@ namespace trview
             _device_window->resize();
             _ui->set_size(window().size());
             _items_list->set_size(window().size());
+            _ui_renderer->set_host_size(window().size());
         });
         generate_ui();
 
@@ -100,7 +101,7 @@ namespace trview
     {
         using namespace ui;
 
-        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Vertical, SizeMode::Auto);
+        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0,3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
