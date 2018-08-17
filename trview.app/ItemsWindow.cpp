@@ -106,6 +106,18 @@ namespace trview
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
+        _token_store.add(track_room->on_state_changed += [this](bool value)
+        {
+            _track_room = value;
+            if (_track_room)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                set_items(_all_items);
+            }
+        });
 
         controls->add_child(std::move(track_room));
         _ui->add_child(std::move(controls));
@@ -120,7 +132,7 @@ namespace trview
         _token_store.add(items_list->on_item_selected += [this](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            on_item_selected(_items[index]);
+            on_item_selected(_filtered_items[index]);
         });
 
         _items_list = items_list.get();
@@ -130,19 +142,41 @@ namespace trview
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
-        _items = items;
+        _all_items = items;
+        populate_items(items);
+    }
 
+    void ItemsWindow::populate_items(const std::vector<Item>& items)
+    {
+        _filtered_items = items;
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        for (const auto& item : _items)
+        for (const auto& item : _filtered_items)
         {
             list_items.push_back({
                 {
                     { L"#", std::to_wstring(item.number()) },
-                    { L"Room", std::to_wstring(item.room()) },
-                    { L"Type", item.type() }
+                { L"Room", std::to_wstring(item.room()) },
+                { L"Type", item.type() }
                 } });
         }
         _items_list->set_items(list_items);
+    }
+
+    void ItemsWindow::set_current_room(uint32_t room)
+    {
+        _current_room = room;
+        if (_track_room)
+        {
+            std::vector<Item> filtered_items;
+            for (const auto& item : _all_items)
+            {
+                if (item.room() == room)
+                {
+                    filtered_items.push_back(item);
+                }
+            }
+            populate_items(filtered_items);
+        }
     }
 }

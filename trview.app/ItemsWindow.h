@@ -59,8 +59,13 @@ namespace trview
 
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
+
+        /// Set the current room. This will be used when the track room setting is on.
+        /// @param room The current room number.
+        void set_current_room(uint32_t room);
     private:
         void generate_ui();
+        void populate_items(const std::vector<Item>& items);
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
@@ -69,6 +74,10 @@ namespace trview
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         TokenStore _token_store;
-        std::vector<Item> _items;
+
+        std::vector<Item> _all_items;
+        std::vector<Item> _filtered_items;
+        bool _track_room{ false };
+        uint32_t _current_room{ 0u };
     };
 }

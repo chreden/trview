@@ -566,6 +566,8 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
 
             _target = _level->room(_level->selected_room())->centre();
+
+            _items_window->set_current_room(room);
         }
     }
 
