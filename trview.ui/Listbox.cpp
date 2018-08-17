@@ -12,8 +12,8 @@ namespace trview
         {
         }
 
-        Listbox::Column::Column(Type type, const std::wstring& name)
-            : _type(type), _name(name)
+        Listbox::Column::Column(Type type, const std::wstring& name, uint32_t width)
+            : _type(type), _name(name), _width(width)
         {
         }
         
@@ -25,6 +25,11 @@ namespace trview
         const std::wstring& Listbox::Column::name() const
         {
             return _name;
+        }
+
+        uint32_t Listbox::Column::width() const
+        {
+            return _width;
         }
 
         Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values)
@@ -61,7 +66,7 @@ namespace trview
             auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
             for (const auto column : columns)
             {
-                auto header_element = std::make_unique<Button>(Point(), Size(30, 20), column.name());
+                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
                 _token_store.add(header_element->on_click += [this, column]()
                 {
                     if (_current_sort.name() == column.name())
@@ -127,7 +132,7 @@ namespace trview
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
                 for (const auto& column : _columns)
                 {
-                    auto button = std::make_unique<Button>(Point(), Size(30, 20), L"Test");
+                    auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
                     _token_store.add(button->on_click += [this, i]()
                     {
                         on_item_selected(_items[i + _current_top]);

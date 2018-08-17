@@ -5,6 +5,22 @@
 			"name": "Lara"
 		},
 		{
+			"id": 16,
+			"name": "Quadbike"
+		},
+		{
+			"id": 28,
+			"name": "Tiger"
+		},
+		{
+			"id": 29,
+			"name": "Vulture"
+		},
+		{
+			"id": 69,
+			"name": "Snake"
+		},
+		{
 			"id": 71,
 			"name": "Monkey"
 		},
@@ -17,8 +33,68 @@
 			"name": "Boulder"
 		},
 		{
+			"id": 97,
+			"name": "Moveable block"
+		},
+		{
+			"id": 114,
+			"name": "Spike wall"
+		},
+		{
+			"id": 127,
+			"name": "Zipline handle"
+		},
+		{
+			"id": 128,
+			"name": "Button"
+		},
+		{
+			"id": 129,
+			"name": "Wall lever"
+		},
+		{
+			"id": 131,
+			"name": "Door (1x1)"
+		},
+		{
+			"id": 138,
+			"name": "Door (1x2)"
+		},
+		{
+			"id": 139,
+			"name": "Trapdoor (1x1)"
+		},
+		{
+			"id": 161,
+			"name": "Shotgun"
+		},
+		{
 			"id": 169,
 			"name": "Shotgun shells"
+		},
+		{
+			"id": 170,
+			"name": "Desert Eagle clips"
+		},
+		{
+			"id": 171,
+			"name": "Uzi clips"
+		},
+		{
+			"id": 172,
+			"name": "Harpoons"
+		},
+		{
+			"id": 173,
+			"name": "MP5 clips"
+		},
+		{
+			"id": 174,
+			"name": "Rocket"
+		},
+		{
+			"id": 175,
+			"name": "Grenades"
 		},
 		{
 			"id": 176,
@@ -27,6 +103,10 @@
 		{
 			"id": 177,
 			"name": "Large medipack"
+		},
+		{
+			"id": 178,
+			"name": "Flares"
 		},
 		{
 			"id": 180,

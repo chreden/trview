@@ -103,9 +103,9 @@ namespace trview
         auto items_list = std::make_unique<Listbox>(Point(), window().size());
         items_list->set_columns(
             { 
-                { Listbox::Column::Type::Number, L"#" }, 
-                { Listbox::Column::Type::Number, L"Room"},
-                { Listbox::Column::Type::String, L"Type"} }
+                { Listbox::Column::Type::Number, L"#", 30 }, 
+                { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::String, L"Type", 100 } }
             );
         _token_store.add(items_list->on_item_selected += [this](const auto& item)
         {
