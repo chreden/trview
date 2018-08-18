@@ -156,8 +156,8 @@ namespace trview
             list_items.push_back({
                 {
                     { L"#", std::to_wstring(item.number()) },
-                { L"Room", std::to_wstring(item.room()) },
-                { L"Type", item.type() }
+                    { L"Room", std::to_wstring(item.room()) },
+                    { L"Type", item.type() }
                 } });
         }
         _items_list->set_items(list_items);
