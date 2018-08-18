@@ -235,7 +235,7 @@ IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
 
 IDR_FONT_LIST           TEXT                    "fontlist.txt"
 
-IDR_TYPE_NAMES_TR3      TEXT                    "resources\\type_names_tr3.txt"
+IDR_TYPE_NAMES          TEXT                    "resources\\type_names.txt"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -388,11 +388,33 @@ namespace trview
 
     void Level::load_type_name_lookup()
     {
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES_TR3, L"TEXT");
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
 
         auto contents = std::string(type_list.data, type_list.data + type_list.size);
         auto json = nlohmann::json::parse(contents.begin(), contents.end());
-        for (const auto& element : json["names"])
+
+        // Get game name...
+        std::string game_name;
+        switch (_level->get_version())
+        {
+        case trlevel::LevelVersion::Tomb1:
+            game_name = "tr1";
+            break;
+        case trlevel::LevelVersion::Tomb2:
+            game_name = "tr2";
+            break;
+        case trlevel::LevelVersion::Tomb3:
+            game_name = "tr3";
+            break;
+        case trlevel::LevelVersion::Tomb4:
+            game_name = "tr4";
+            break;
+        case trlevel::LevelVersion::Tomb5:
+            game_name = "tr5";
+            break;
+        }
+
+        for (const auto& element : json["games"][game_name])
         {
             auto name = element.at("name").get<std::string>();
             _type_names.insert({ element.at("id").get<uint32_t>(), std::wstring(name.begin(), name.end()) });

@@ -319,7 +319,7 @@
     <Text Include="fontlist.txt">
       <Filter>Win\Resource Files</Filter>
     </Text>
-    <Text Include="resources\type_names_tr3.txt">
+    <Text Include="resources\type_names.txt">
       <Filter>Win\Resource Files</Filter>
     </Text>
   </ItemGroup>
