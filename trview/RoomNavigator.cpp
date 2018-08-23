@@ -16,8 +16,8 @@ namespace trview
         using namespace ui;
 
         auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 130), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
-        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"), L"Highlight");
-        auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), texture_storage.lookup("check_off"), texture_storage.lookup("check_on"), L"Flip");
+        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), L"Highlight");
+        auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), L"Flip");
 
         highlight->on_state_changed += on_highlight;
         _highlight = highlight.get();

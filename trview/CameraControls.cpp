@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "CameraControls.h"
 
-#include "ITextureStorage.h"
-
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
@@ -11,12 +9,9 @@
 
 namespace trview
 {
-    CameraControls::CameraControls(ui::Control& parent, const ITextureStorage& texture_storage)
+    CameraControls::CameraControls(ui::Control& parent)
     {
         using namespace ui;
-
-        auto up = texture_storage.lookup("check_off");
-        auto down = texture_storage.lookup("check_on");
 
         auto camera_window = std::make_unique<GroupBox>(Point(), Size(140, 152), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
 
@@ -25,13 +20,13 @@ namespace trview
 
         auto reset_camera_label = std::make_unique<Label>(Point(30, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
 
-        auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), up, down, L"Orbit");
+        auto orbit_camera = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), L"Orbit");
         _token_store.add(orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); });
 
-        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), up, down, L"Free");
+        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), L"Free");
         _token_store.add(free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); });
 
-        auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), up, down, L"Axis");
+        auto axis_camera = std::make_unique<Checkbox>(Point(76, 42), Size(16, 16), L"Axis");
         _token_store.add(axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); });
 
         // Camera section for the menu bar.

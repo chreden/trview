@@ -310,12 +310,6 @@
     <Image Include="resources\numericup.png">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="resources\checkon.png">
-      <Filter>Resources</Filter>
-    </Image>
-    <Image Include="resources\checkoff.png">
-      <Filter>Resources</Filter>
-    </Image>
     <Image Include="resources\settings.png">
       <Filter>Resources</Filter>
     </Image>

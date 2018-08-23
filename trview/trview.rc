@@ -223,10 +223,6 @@ IDB_NUMERIC_UP          PNG                     "resources\\numericup.png"
 
 IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
 
-IDB_CHECK_OFF           PNG                     "resources\\checkoff.png"
-
-IDB_CHECK_ON            PNG                     "resources\\checkon.png"
-
 IDB_SETTINGS            PNG                     "resources\\settings.png"
 
 
