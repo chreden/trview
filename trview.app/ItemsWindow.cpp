@@ -127,6 +127,7 @@ namespace trview
             { 
                 { Listbox::Column::Type::Number, L"#", 30 }, 
                 { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::Number, L"ID", 30 },
                 { Listbox::Column::Type::String, L"Type", 100 } }
             );
         _token_store.add(items_list->on_item_selected += [this](const auto& item)
@@ -156,6 +157,7 @@ namespace trview
             list_items.push_back({
                 {
                     { L"#", std::to_wstring(item.number()) },
+                    { L"ID", std::to_wstring(item.type_id()) },
                     { L"Room", std::to_wstring(item.room()) },
                     { L"Type", item.type() }
                 } });
