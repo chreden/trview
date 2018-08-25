@@ -29,7 +29,9 @@ namespace trview
         {
             if (input.header.dwType == RIM_TYPEMOUSE)
             {
-                if (input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
+                auto active_window = window_under_cursor();
+
+                if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
                     mouse_down(Button::Left);
                 }
@@ -39,7 +41,7 @@ namespace trview
                     mouse_up(Button::Left);
                 }
 
-                if (input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
+                if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
                     mouse_down(Button::Right);
                 }
@@ -92,6 +94,19 @@ namespace trview
         {
             switch (message)
             {
+                case WM_MOUSEACTIVATE:
+                {
+                    const auto mouse_message = HIWORD(lParam);
+                    if (mouse_message == WM_LBUTTONDOWN)
+                    {
+                        mouse_down(Mouse::Button::Left);
+                    }
+                    else if(mouse_message == WM_RBUTTONDOWN)
+                    {
+                        mouse_down(Mouse::Button::Right);
+                    }
+                    break;
+                }
                 case WM_MOUSEWHEEL:
                 {
                     mouse_wheel(static_cast<int16_t>(GET_WHEEL_DELTA_WPARAM(wParam)));
