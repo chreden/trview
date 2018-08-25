@@ -19,8 +19,6 @@ namespace trview
         class Slider;
     }
 
-    struct ITextureStorage;
-
     /// The camera controls control has settings for the operation mode of the camera and
     /// other camera related settings.
     class CameraControls
@@ -28,8 +26,7 @@ namespace trview
     public:
         /// Creates an instance of the CameraControls class.
         /// @param parent The control to which the instance will be added as a child.
-        /// @param texture_storage The texture storage instance to use.
-        CameraControls(ui::Control& parent, const ITextureStorage& texture_storage);
+        explicit CameraControls(ui::Control& parent);
 
         /// Event raised when the camera mode has been selected by the user. The newly selected
         /// camera mode is passed as a parameter when the event is raised.

@@ -263,8 +263,6 @@
     <ResourceCompile Include="trview.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\checkoff.png" />
-    <Image Include="resources\checkon.png" />
     <Image Include="resources\numericdown.png" />
     <Image Include="resources\numericup.png" />
     <Image Include="resources\settings.png" />

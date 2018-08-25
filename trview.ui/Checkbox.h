@@ -3,15 +3,12 @@
 
 #pragma once
 
-#include <trview.graphics/Texture.h>
-
 #include "StackPanel.h"
 
 namespace trview
 {
     namespace ui
     {
-        class Image;
         class Label;
 
         /// UI element that provides a toggleable checkbox and an optional label.
@@ -21,24 +18,13 @@ namespace trview
             /// Creates a checkbox.
             /// @param position The position of the checkbox.
             /// @param size The size of the checkbox.
-            /// @param up_image The texture to use when the checkbox isn't checked.
-            /// @param down_image The texture to use when the checkbox is checked.
-            Checkbox(const Point& position, 
-                     const Size& size, 
-                     const graphics::Texture& up_image, 
-                     const graphics::Texture& down_image);
+            Checkbox(const Point& position, const Size& size);
 
             /// Creates a checkox with an associated label.
             /// @param position The position of the checkbox.
             /// @param size The size of the checkbox.
-            /// @param up_image The texture to use when the checkbox isn't checked.
-            /// @param down_image The texture to use when the checkbox is checked.
             /// @param label_text The text for the associated label.
-            Checkbox(const Point& position,
-                     const Size& size,
-                     const graphics::Texture& up_image,
-                     const graphics::Texture& down_image,
-                     const std::wstring& label_text);
+            Checkbox(const Point& position, const Size& size, const std::wstring& label_text);
 
             /// Destructor for the checkbox.
             virtual ~Checkbox() = default;
@@ -63,12 +49,10 @@ namespace trview
         private:
             void create_image(const Size& size);
 
-            ui::Image* _image;
-            ui::Label* _label;
-            graphics::Texture _up_image;
-            graphics::Texture _down_image;
-            bool    _state{ false };
-            bool    _enabled{ true };
+            ui::Label*  _label;
+            ui::Window* _fill;
+            bool        _state{ false };
+            bool        _enabled{ true };
         };
     }
 }

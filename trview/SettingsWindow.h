@@ -21,8 +21,7 @@ namespace trview
     public:
         /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
         /// @param parent The control to which the instance will add elements.
-        /// @param texture_storage The texture storage instance to use.
-        explicit SettingsWindow(ui::Control& parent, const ITextureStorage& texture_storage);
+        explicit SettingsWindow(ui::Control& parent);
 
         /// Event raised when the vsync settings has been changed. The new vsync setting is passed as the parameter.
         Event<bool> on_vsync;

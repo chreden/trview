@@ -8,13 +8,11 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
 
-#include "ITextureStorage.h"
-
 using namespace trview::ui;
 
 namespace trview
 {
-    SettingsWindow::SettingsWindow(Control& parent, const ITextureStorage& texture_storage)
+    SettingsWindow::SettingsWindow(Control& parent)
     {
         const auto background_colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
         const auto title_colour = Colour(1.0f, 0.3f, 0.3f, 0.3f);
@@ -34,20 +32,17 @@ namespace trview
         auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), background_colour, Size(5,5));
         panel->set_auto_size_dimension(SizeDimension::Height);
 
-        const auto check_off = texture_storage.lookup("check_off");
-        const auto check_on = texture_storage.lookup("check_on");
-
-        auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Vsync");
+        auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Vsync");
         vsync->on_state_changed += on_vsync;
         _vsync = vsync.get();
         panel->add_child(std::move(vsync));
 
-        auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Go to Lara");
+        auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Go to Lara");
         go_to_lara->on_state_changed += on_go_to_lara;
         _go_to_lara = go_to_lara.get();
         panel->add_child(std::move(go_to_lara));
 
-        auto invert_map_controls = std::make_unique<Checkbox>(Point(), Size(16, 16), check_off, check_on, L"Invert map controls");
+        auto invert_map_controls = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Invert map controls");
         invert_map_controls->on_state_changed += on_invert_map_controls;
         _invert_map_controls = invert_map_controls.get();
         panel->add_child(std::move(invert_map_controls));
