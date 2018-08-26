@@ -6,6 +6,7 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace trview::graphics;
 
@@ -99,7 +100,15 @@ namespace trview
     {
         using namespace ui;
 
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
+        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Vertical, SizeMode::Auto);
+
+        // Control modes:.
+        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
+
+        controls->add_child(std::move(track_room));
+        _ui->add_child(std::move(controls));
+
         auto items_list = std::make_unique<Listbox>(Point(), window().size());
         items_list->set_columns(
             { 
