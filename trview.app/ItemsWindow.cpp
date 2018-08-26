@@ -19,7 +19,7 @@ namespace trview
             if (message == WM_GETMINMAXINFO)
             {
                 MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-                info->ptMinTrackSize.x = 400;
+                info->ptMinTrackSize.x = 206;
                 info->ptMinTrackSize.y = 200;
                 return 0;
             }
@@ -29,8 +29,8 @@ namespace trview
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
-            HWND items_window = CreateWindowW(L"trview.items", L"trview", WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
+            HWND items_window = CreateWindowW(L"trview.items", L"Items", WS_OVERLAPPEDWINDOW & ~WS_SYSMENU,
+                CW_USEDEFAULT, 0, 206, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
