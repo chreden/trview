@@ -29,7 +29,7 @@ namespace trview
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
-            HWND items_window = CreateWindowW(L"trview.items", L"Items", WS_OVERLAPPEDWINDOW & ~WS_SYSMENU,
+            HWND items_window = CreateWindowW(L"trview.items", L"Items", WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX),
                 CW_USEDEFAULT, 0, 206, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);

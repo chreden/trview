@@ -42,10 +42,10 @@ namespace trview
         load_default_fonts(_device.device(), *_font_factory.get());
 
         _main_window = _device.create_for_window(window);
-        _items_window = std::make_unique<ItemsWindow>(_device, *_shader_storage.get(), *_font_factory.get(), window);
-        _token_store.add(_items_window->on_item_selected += [&](auto selected) 
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _token_store.add(_items_windows->on_item_selected += [this](const auto& item)
         {
-            select_item(selected);
+            select_item(item);
         });
 
         _settings = load_user_settings();
@@ -373,7 +373,7 @@ namespace trview
         _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
 
-        _items_window->set_items(_level->items());
+        _items_windows->set_items(_level->items());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -423,7 +423,7 @@ namespace trview
 
         _main_window->present(_settings.vsync);
 
-        _items_window->render(_device, _settings.vsync);
+        _items_windows->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -567,7 +567,7 @@ namespace trview
 
             _target = _level->room(_level->selected_room())->centre();
 
-            _items_window->set_current_room(room);
+            _items_windows->set_room(room);
         }
     }
 
