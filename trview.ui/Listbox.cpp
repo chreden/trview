@@ -102,7 +102,7 @@ namespace trview
         void Listbox::generate_rows()
         {
             // Calculate how many items can be seen on-screen at once.
-            const auto remaining_height = size().height - (_headers_element->size().height);
+            const auto remaining_height = size().height - _headers_element->size().height;
 
             // If negative height, this is a bad thing to try and set the size of the rows to, so abort.
             if (static_cast<int32_t>(remaining_height) <= 0)
@@ -207,9 +207,10 @@ namespace trview
             if (direction > 0)
             {
                 // If any of the rows are invisible (they are being hidden because we are at the end
-                // of the list of items) then do not do any more scrolling down.
+                // of the list of items) then do not do any more scrolling down. Only elements that are
+                // invisible and fully in the client area count towards this.
                 const auto rows = _rows_element->child_elements();
-                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible(); }))
+                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height < r->parent()->size().height; }))
                 {
                     return true;
                 }
