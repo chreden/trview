@@ -393,7 +393,6 @@ namespace trview
         auto contents = std::string(type_list.data, type_list.data + type_list.size);
         auto json = nlohmann::json::parse(contents.begin(), contents.end());
 
-        // Get game name...
         std::string game_name;
         switch (_level->get_version())
         {
@@ -412,6 +411,8 @@ namespace trview
         case trlevel::LevelVersion::Tomb5:
             game_name = "tr5";
             break;
+        default:
+            return;
         }
 
         for (const auto& element : json["games"][game_name])
