@@ -79,7 +79,6 @@ namespace trview
         TokenStore _token_store;
 
         std::vector<Item> _all_items;
-        std::vector<Item> _filtered_items;
         bool _track_room{ false };
         uint32_t _current_room{ 0u };
     };

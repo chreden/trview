@@ -153,10 +153,9 @@ namespace trview
 
     void ItemsWindow::populate_items(const std::vector<Item>& items)
     {
-        _filtered_items = items;
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        for (const auto& item : _filtered_items)
+        for (const auto& item : items)
         {
             list_items.push_back({
                 {
