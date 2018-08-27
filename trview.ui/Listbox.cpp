@@ -110,10 +110,8 @@ namespace trview
                 return;
             }
 
-            // Clear the rows element so new elements can be added.
             if (_rows_element)
             {
-                _rows_element->clear_child_elements();
                 _rows_element->set_size(Size(size().width, remaining_height));
             }
             else
@@ -125,17 +123,21 @@ namespace trview
 
             // Add as many rows as can be seen.
             const float row_height = 20;
-            const auto required_rows = std::min<uint32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t total_required_rows = std::min<int32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t existing_rows = _rows_element->child_elements().size();
+            const int32_t remaining_rows = total_required_rows - existing_rows;
 
-            for (auto i = 0; i < required_rows; ++i)
+            for (auto i = 0; i < remaining_rows; ++i)
             {
+                auto index = i + existing_rows;
+
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
                 for (const auto& column : _columns)
                 {
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
-                    _token_store.add(button->on_click += [this, i]()
+                    _token_store.add(button->on_click += [this, index]()
                     {
-                        on_item_selected(_items[i + _current_top]);
+                        on_item_selected(_items[index + _current_top]);
                     });
                     row->add_child(std::move(button));
                 }
