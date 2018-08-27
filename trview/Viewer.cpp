@@ -43,6 +43,7 @@ namespace trview
 
         _main_window = _device.create_for_window(window);
         _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _items_windows->create_window();
         _token_store.add(_items_windows->on_item_selected += [this](const auto& item)
         {
             select_item(item);

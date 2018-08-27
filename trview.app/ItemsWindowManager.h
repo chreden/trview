@@ -51,9 +51,10 @@ namespace trview
         /// Set the current room to filter item windows.
         /// @param room The current room.
         void set_room(uint32_t room);
-    private:
-        void create_window();
 
+        /// Create a new items window.
+        void create_window();
+    private:
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
         std::vector<ItemsWindow*> _closing_windows;
         std::vector<Item> _items;
