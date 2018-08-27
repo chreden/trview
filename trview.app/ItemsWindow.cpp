@@ -130,10 +130,10 @@ namespace trview
                 { Listbox::Column::Type::Number, L"ID", 30 },
                 { Listbox::Column::Type::String, L"Type", 100 } }
             );
-        _token_store.add(items_list->on_item_selected += [this](const auto& item)
+        _token_store.add(items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            on_item_selected(_filtered_items[index]);
+            on_item_selected(_all_items[index]);
         });
 
         _items_list = items_list.get();
