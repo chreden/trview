@@ -60,6 +60,9 @@ namespace trview
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
 
+        /// Event raised when the items window is closed.
+        Event<> on_window_closed;
+
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
         void set_current_room(uint32_t room);

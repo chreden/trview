@@ -31,6 +31,9 @@ namespace trview
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
+        std::vector<ItemsWindow*> _closing_windows;
+        std::vector<Item> _items;
+        uint32_t _current_room{ 0u };
         TokenStore _token_store;
     };
 }

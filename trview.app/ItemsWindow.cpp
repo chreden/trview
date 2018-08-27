@@ -87,6 +87,10 @@ namespace trview
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
+        if (message == WM_CLOSE)
+        {
+            on_window_closed();
+        }
     }
 
     void ItemsWindow::render(const Device& device, bool vsync)
