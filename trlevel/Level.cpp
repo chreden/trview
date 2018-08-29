@@ -12,6 +12,9 @@ namespace trlevel
     namespace
     {
         const float PiMul2 = 6.283185307179586476925286766559f;
+        const int16_t Lara = 0;
+        const int16_t LaraSkinTR3 = 315;
+        const int16_t LaraSkinPostTR3 = 8;
     }
 
     namespace
@@ -729,5 +732,19 @@ namespace trlevel
         }
         entity = *found;
         return true;
+    }
+
+    int16_t Level::get_mesh_from_type_id(int16_t type) const
+    {
+        if (type != 0 || _version < LevelVersion::Tomb3)
+        {
+            return type;
+        }
+
+        if (_version > trlevel::LevelVersion::Tomb3)
+        {
+            return LaraSkinPostTR3;
+        }
+        return LaraSkinTR3;
     }
 }
