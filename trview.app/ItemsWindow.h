@@ -69,10 +69,13 @@ namespace trview
     private:
         void generate_ui();
         void populate_items(const std::vector<Item>& items);
+        /// After the window has been resized, adjust the sizes of the child elements.
+        void update_layout();
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::Window> _ui;
+        ui::Window*  _controls;
         ui::Listbox* _items_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;

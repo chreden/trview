@@ -43,6 +43,9 @@
     <ClInclude Include="Listbox.h">
       <Filter>Controls\Listbox</Filter>
     </ClInclude>
+    <ClInclude Include="Scrollbar.h">
+      <Filter>Controls\Scrollbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -78,6 +81,9 @@
     <ClCompile Include="Listbox.cpp">
       <Filter>Controls\Listbox</Filter>
     </ClCompile>
+    <ClCompile Include="Scrollbar.cpp">
+      <Filter>Controls\Scrollbar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -88,6 +94,9 @@
     </Filter>
     <Filter Include="Controls\Listbox">
       <UniqueIdentifier>{8ef9cc29-a53e-412b-b035-4006b32635c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Scrollbar">
+      <UniqueIdentifier>{148c0414-eb8e-4d27-8c1c-8b53340436dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
