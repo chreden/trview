@@ -32,6 +32,9 @@ namespace trview
         /// Event raised when the inverted map controls setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_invert_map_controls;
 
+        /// Event raised when the 'items window at startup' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_items_startup;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -44,12 +47,17 @@ namespace trview
         /// @param value The new inverted map controls setting.
         void set_invert_map_controls(bool value);
 
+        /// Set the new value of the 'items window at startup' setting. This will not raise the on_items_startup event.
+        /// @param value The new 'items window at startup' setting.
+        void set_items_startup(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
         ui::Checkbox* _vsync;
         ui::Checkbox* _go_to_lara;
         ui::Checkbox* _invert_map_controls;
+        ui::Checkbox* _items_startup;
         ui::Control* _window;
         TokenStore _token_store;
     };
