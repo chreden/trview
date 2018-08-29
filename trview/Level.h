@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "Mesh.h"
 #include "StaticMesh.h"
+#include <trview.app/Item.h>
 
 #include "IMeshStorage.h"
 
@@ -57,6 +58,10 @@ namespace trview
         std::vector<graphics::Texture> level_textures() const;
 
         uint16_t selected_room() const;
+
+        /// Get the items in this level.
+        /// @returns All items in the level.
+        const std::vector<Item>& items() const;
 
         // Determine whether the specified ray hits any of the triangles in any of the room geometry.
         // position: The world space position of the source of the ray.
@@ -129,9 +134,19 @@ namespace trview
         // the alternate mode flag.
         bool is_alternate_mismatch(Room::AlternateMode mode) const;
 
+        /// Load the type name lookup table from resources.
+        void load_type_name_lookup();
+
+        /// Look up the type name of the specified type id.
+        /// @param type_id The type id to look up.
+        /// @returns The type name of the item.
+        /// @remarks If the type id is not found, this will return the string version of the type id.
+        std::wstring lookup_type_name(uint32_t type_id) const;
+
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Entity>> _entities;
+        std::vector<Item> _items;
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
@@ -148,5 +163,7 @@ namespace trview
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
+
+        std::unordered_map<uint32_t, std::wstring> _type_names;
     };
 }

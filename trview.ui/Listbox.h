@@ -37,8 +37,9 @@ namespace trview
 
                 /// Create a column.
                 /// @param type The type of the column.
-                /// @parm name The column name. This is displayed as a header.
-                Column(Type type, const std::wstring& name);
+                /// @param name The column name. This is displayed as a header.
+                /// @param width The width of the column.
+                Column(Type type, const std::wstring& name, uint32_t width);
 
                 /// Get the name of the column. This is displayed as a header.
                 /// @returns The name of the column.
@@ -47,9 +48,14 @@ namespace trview
                 /// Get the type of the column data.
                 /// @returns The data type of the column.
                 Type type() const;
+
+                /// Get the width of the column.
+                /// @returns The width of the column.
+                uint32_t width() const;
             private:
                 std::wstring _name;
                 Type _type;
+                uint32_t _width;
             };
 
             /// An entry in the list box.
@@ -83,6 +89,9 @@ namespace trview
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<Item>& items);
+
+            /// Event raised when an item is selected
+            Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
         private:

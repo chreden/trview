@@ -50,6 +50,10 @@ BEGIN
         MENUITEM "Switch &Level",               ID_FILE_SWITCHLEVEL
         MENUITEM "E&xit",                       IDM_EXIT
     END
+    POPUP "Windows"
+    BEGIN
+        MENUITEM "Items",                       ID_WINDOWS_ITEMS
+    END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About ...",                  IDM_ABOUT
@@ -234,6 +238,8 @@ IDB_SETTINGS            PNG                     "resources\\settings.png"
 IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
 
 IDR_FONT_LIST           TEXT                    "fontlist.txt"
+
+IDR_TYPE_NAMES          TEXT                    "resources\\type_names.txt"
 
 
 /////////////////////////////////////////////////////////////////////////////

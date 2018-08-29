@@ -6,6 +6,7 @@
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemsWindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -14,5 +15,6 @@
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemsWindowManager.h" />
   </ItemGroup>
 </Project>

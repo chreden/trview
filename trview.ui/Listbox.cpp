@@ -12,8 +12,8 @@ namespace trview
         {
         }
 
-        Listbox::Column::Column(Type type, const std::wstring& name)
-            : _type(type), _name(name)
+        Listbox::Column::Column(Type type, const std::wstring& name, uint32_t width)
+            : _type(type), _name(name), _width(width)
         {
         }
         
@@ -25,6 +25,11 @@ namespace trview
         const std::wstring& Listbox::Column::name() const
         {
             return _name;
+        }
+
+        uint32_t Listbox::Column::width() const
+        {
+            return _width;
         }
 
         Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values)
@@ -61,7 +66,7 @@ namespace trview
             auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
             for (const auto column : columns)
             {
-                auto header_element = std::make_unique<Button>(Point(), Size(30, 20), column.name());
+                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
                 _token_store.add(header_element->on_click += [this, column]()
                 {
                     if (_current_sort.name() == column.name())
@@ -97,7 +102,7 @@ namespace trview
         void Listbox::generate_rows()
         {
             // Calculate how many items can be seen on-screen at once.
-            const auto remaining_height = size().height - (_headers_element->size().height);
+            const auto remaining_height = size().height - _headers_element->size().height;
 
             // If negative height, this is a bad thing to try and set the size of the rows to, so abort.
             if (static_cast<int32_t>(remaining_height) <= 0)
@@ -105,10 +110,8 @@ namespace trview
                 return;
             }
 
-            // Clear the rows element so new elements can be added.
             if (_rows_element)
             {
-                _rows_element->clear_child_elements();
                 _rows_element->set_size(Size(size().width, remaining_height));
             }
             else
@@ -120,14 +123,22 @@ namespace trview
 
             // Add as many rows as can be seen.
             const float row_height = 20;
-            const auto required_rows = std::min<uint32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t total_required_rows = std::min<int32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t existing_rows = _rows_element->child_elements().size();
+            const int32_t remaining_rows = total_required_rows - existing_rows;
 
-            for (auto i = 0; i < required_rows; ++i)
+            for (auto i = 0; i < remaining_rows; ++i)
             {
+                auto index = i + existing_rows;
+
                 auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
                 for (const auto& column : _columns)
                 {
-                    auto button = std::make_unique<Button>(Point(), Size(30, 20), L"Test");
+                    auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
+                    _token_store.add(button->on_click += [this, index]()
+                    {
+                        on_item_selected(_items[index + _current_top]);
+                    });
                     row->add_child(std::move(button));
                 }
                 _rows_element->add_child(std::move(row));
@@ -136,6 +147,11 @@ namespace trview
 
         void Listbox::populate_rows()
         {
+            if (!_rows_element)
+            {
+                return;
+            }
+
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
@@ -193,9 +209,10 @@ namespace trview
             if (direction > 0)
             {
                 // If any of the rows are invisible (they are being hidden because we are at the end
-                // of the list of items) then do not do any more scrolling down.
+                // of the list of items) then do not do any more scrolling down. Only elements that are
+                // invisible and fully in the client area count towards this.
                 const auto rows = _rows_element->child_elements();
-                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible(); }))
+                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height < r->parent()->size().height; }))
                 {
                     return true;
                 }

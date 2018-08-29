@@ -29,6 +29,7 @@
 #include <trview.app/RecentFiles.h>
 #include <trview.app/FileDropper.h>
 #include <trview.app/ItemsWindow.h>
+#include <trview.app/ItemsWindowManager.h>
 
 namespace trview
 {
@@ -100,6 +101,7 @@ namespace trview
         void render_scene();
         void render_map(); 
         void select_room(uint32_t room);
+        void select_item(const Item& item);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
@@ -116,8 +118,7 @@ namespace trview
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        std::unique_ptr<ItemsWindow> _items_window;
-
+        std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
@@ -153,6 +154,7 @@ namespace trview
         RecentFiles _recent_files;
         FileDropper _file_dropper;
         TokenStore _token_store;
+        DirectX::SimpleMath::Vector3 _target;
     };
 }
 

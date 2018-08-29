@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "Level.h"
 
+#include <sstream>
+
 #include <trview.common/FileLoader.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/IShader.h>
 
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
-
 #include "ICamera.h"
 #include "TransparencyBuffer.h"
+#include "ResourceHelper.h"
+#include "resource.h"
 
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
+#include <external/nlohmann/json.hpp>
 
 using namespace Microsoft::WRL;
 
@@ -19,6 +23,8 @@ namespace trview
     Level::Level(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _level(level)
     {
+        load_type_name_lookup();
+
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
@@ -76,6 +82,11 @@ namespace trview
     uint16_t Level::selected_room() const
     {
         return _selected_room;
+    }
+
+    const std::vector<Item>& Level::items() const
+    {
+        return _items;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -257,10 +268,14 @@ namespace trview
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
+            // Entity for rendering.
             auto level_entity = _level->get_entity(i);
             auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
+
+            // Item for item information.
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID));
         }
     }
 
@@ -369,5 +384,51 @@ namespace trview
         {
             return room->alternate_mode() != Room::AlternateMode::None;
         });
+    }
+
+    void Level::load_type_name_lookup()
+    {
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+
+        auto contents = std::string(type_list.data, type_list.data + type_list.size);
+        auto json = nlohmann::json::parse(contents.begin(), contents.end());
+
+        std::string game_name;
+        switch (_level->get_version())
+        {
+        case trlevel::LevelVersion::Tomb1:
+            game_name = "tr1";
+            break;
+        case trlevel::LevelVersion::Tomb2:
+            game_name = "tr2";
+            break;
+        case trlevel::LevelVersion::Tomb3:
+            game_name = "tr3";
+            break;
+        case trlevel::LevelVersion::Tomb4:
+            game_name = "tr4";
+            break;
+        case trlevel::LevelVersion::Tomb5:
+            game_name = "tr5";
+            break;
+        default:
+            return;
+        }
+
+        for (const auto& element : json["games"][game_name])
+        {
+            auto name = element.at("name").get<std::string>();
+            _type_names.insert({ element.at("id").get<uint32_t>(), std::wstring(name.begin(), name.end()) });
+        }
+    }
+
+    std::wstring Level::lookup_type_name(uint32_t type_id) const
+    {
+        const auto found = _type_names.find(type_id);
+        if (found == _type_names.end())
+        {
+            return std::to_wstring(type_id);
+        }
+        return found->second;
     }
 }

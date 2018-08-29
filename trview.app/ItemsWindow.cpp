@@ -6,6 +6,7 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace trview::graphics;
 
@@ -18,7 +19,7 @@ namespace trview
             if (message == WM_GETMINMAXINFO)
             {
                 MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-                info->ptMinTrackSize.x = 400;
+                info->ptMinTrackSize.x = 206;
                 info->ptMinTrackSize.y = 200;
                 return 0;
             }
@@ -28,8 +29,8 @@ namespace trview
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
-            HWND items_window = CreateWindowW(L"trview.items", L"trview", WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
+            HWND items_window = CreateWindowW(L"trview.items", L"Items", WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX),
+                CW_USEDEFAULT, 0, 206, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -74,6 +75,7 @@ namespace trview
             _device_window->resize();
             _ui->set_size(window().size());
             _items_list->set_size(window().size());
+            _ui_renderer->set_host_size(window().size());
         });
         generate_ui();
 
@@ -85,6 +87,10 @@ namespace trview
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
+        if (message == WM_CLOSE)
+        {
+            on_window_closed();
+        }
     }
 
     void ItemsWindow::render(const Device& device, bool vsync)
@@ -99,14 +105,41 @@ namespace trview
     {
         using namespace ui;
 
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(0.0f, 0.5f, 0.5f, 0.5f));
+        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0,3), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        // Control modes:.
+        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
+        _token_store.add(track_room->on_state_changed += [this](bool value)
+        {
+            _track_room = value;
+            if (_track_room)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                set_items(_all_items);
+            }
+        });
+
+        controls->add_child(std::move(track_room));
+        _ui->add_child(std::move(controls));
+
         auto items_list = std::make_unique<Listbox>(Point(), window().size());
         items_list->set_columns(
             { 
-                { Listbox::Column::Type::Number, L"#" }, 
-                { Listbox::Column::Type::Number, L"Room"},
-                { Listbox::Column::Type::Number, L"Type"} }
+                { Listbox::Column::Type::Number, L"#", 30 }, 
+                { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::Number, L"ID", 30 },
+                { Listbox::Column::Type::String, L"Type", 100 } }
             );
+        _token_store.add(items_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_item_selected(_all_items[index]);
+        });
+
         _items_list = items_list.get();
         _ui->add_child(std::move(items_list));
         _ui_renderer->load(_ui.get());
@@ -114,19 +147,41 @@ namespace trview
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
-        _items = items;
+        _all_items = items;
+        populate_items(items);
+    }
 
+    void ItemsWindow::populate_items(const std::vector<Item>& items)
+    {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        for (const auto& item : _items)
+        for (const auto& item : items)
         {
             list_items.push_back({
                 {
                     { L"#", std::to_wstring(item.number()) },
+                    { L"ID", std::to_wstring(item.type_id()) },
                     { L"Room", std::to_wstring(item.room()) },
                     { L"Type", item.type() }
                 } });
         }
         _items_list->set_items(list_items);
+    }
+
+    void ItemsWindow::set_current_room(uint32_t room)
+    {
+        _current_room = room;
+        if (_track_room)
+        {
+            std::vector<Item> filtered_items;
+            for (const auto& item : _all_items)
+            {
+                if (item.room() == room)
+                {
+                    filtered_items.push_back(item);
+                }
+            }
+            populate_items(filtered_items);
+        }
     }
 }

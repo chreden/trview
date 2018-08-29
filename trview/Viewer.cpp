@@ -42,7 +42,12 @@ namespace trview
         load_default_fonts(_device.device(), *_font_factory.get());
 
         _main_window = _device.create_for_window(window);
-        _items_window = std::make_unique<ItemsWindow>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _items_windows->create_window();
+        _token_store.add(_items_windows->on_item_selected += [this](const auto& item)
+        {
+            select_item(item);
+        });
 
         _settings = load_user_settings();
 
@@ -95,7 +100,6 @@ namespace trview
         _token_store.add(_go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
-            set_camera_mode(CameraMode::Orbit);
         });
 
         auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(30, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
@@ -366,18 +370,11 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        // Pass entities on to the items window.
-        std::vector<Item> items;
-        for (auto i = 0; i < _current_level->num_entities(); ++i)
-        {
-            auto item = _current_level->get_entity(i);
-            items.emplace_back(i, item.Room, std::to_wstring(item.TypeID));
-        }
-        _items_window->set_items(items);
-
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
         _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
+
+        _items_windows->set_items(_level->items());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -427,7 +424,7 @@ namespace trview
 
         _main_window->present(_settings.vsync);
 
-        _items_window->render(_device, _settings.vsync);
+        _items_windows->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -484,7 +481,7 @@ namespace trview
             // Update the view matrix based on the room selected in the room window.
             if (_current_level->num_rooms() > 0)
             {
-                _camera.set_target(_level->room(_level->selected_room())->centre());
+                _camera.set_target(_target);
             }
             _level->render(_device.context(), current_camera());
         }
@@ -568,6 +565,20 @@ namespace trview
             _map_renderer->load(_level->room(_level->selected_room()));
 
             set_camera_mode(CameraMode::Orbit);
+
+            _target = _level->room(_level->selected_room())->centre();
+
+            _items_windows->set_room(room);
+        }
+    }
+
+    void Viewer::select_item(const Item& item)
+    {
+        if (_current_level && item.number() < _current_level->num_entities())
+        {
+            select_room(item.room());
+            auto entity = _current_level->get_entity(item.number());
+            _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
     }
 
