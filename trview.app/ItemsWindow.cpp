@@ -20,7 +20,7 @@ namespace trview
         {
             if (message == WM_GETMINMAXINFO)
             {
-                RECT rect{ 0, 0, 200, 200 };
+                RECT rect{ 0, 0, 400, 200 };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
                 MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
@@ -36,7 +36,7 @@ namespace trview
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
             HWND items_window = CreateWindowW(L"trview.items", L"Items", window_style,
-                CW_USEDEFAULT, 0, 200, 310, parent, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -110,7 +110,9 @@ namespace trview
     {
         using namespace ui;
 
-        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0,3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 3), StackPanel::Direction::Horizontal, SizeMode::Manual);
+
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0,3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
@@ -130,7 +132,7 @@ namespace trview
 
         controls->add_child(std::move(track_room));
         _controls = controls.get();
-        _ui->add_child(std::move(controls));
+        left_panel->add_child(std::move(controls));
 
         auto items_list = std::make_unique<Listbox>(Point(), window().size() - Size(0, _controls->size().height));
         items_list->set_columns(
@@ -146,8 +148,16 @@ namespace trview
             on_item_selected(_all_items[index]);
         });
 
+        auto right_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.3f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+
         _items_list = items_list.get();
-        _ui->add_child(std::move(items_list));
+        left_panel->add_child(std::move(items_list));
+
+        _left_panel = left_panel.get();
+        _ui->add_child(std::move(left_panel));
+
+        _right_panel = right_panel.get();
+        _ui->add_child(std::move(right_panel));
         _ui_renderer->load(_ui.get());
     }
 
@@ -194,6 +204,8 @@ namespace trview
     void ItemsWindow::update_layout()
     {
         _ui->set_size(window().size());
-        _items_list->set_size(window().size() - Size(0, _controls->size().height));
+        _left_panel->set_size(Size(200, window().size().height));
+        _right_panel->set_size(Size(200, window().size().height));
+        _items_list->set_size(Size(200, window().size().height - _controls->size().height));
     }
 }
