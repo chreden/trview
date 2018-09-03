@@ -10,6 +10,8 @@
 
 namespace trview
 {
+    struct Colour;
+
     namespace ui
     {
         class Label;
@@ -53,6 +55,10 @@ namespace trview
             /// Set the text of the button, if it has a label for text.
             /// @param text The new text for the button.
             void set_text(const std::wstring& text);
+
+            /// Set the background colour of the text, if present.
+            /// @param colour The background colour.
+            void set_text_background_colour(const Colour& colour);
         protected:
             virtual bool clicked(Point position) override;
         private:

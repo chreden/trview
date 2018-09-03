@@ -117,6 +117,8 @@ namespace trview
             /// Sort the items according to the current sort method.
             void sort_items();
 
+            void highlight_item();
+
             std::vector<Column> _columns;
             std::vector<Item> _items;
             StackPanel* _headers_element;
@@ -129,6 +131,7 @@ namespace trview
             bool _show_scrollbar{ true };
             bool _show_headers{ true };
             TokenStore _token_store;
+            int32_t _selected_item{ -1 };
         };
     }
 }

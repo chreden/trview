@@ -17,7 +17,7 @@ namespace trview
             : _type(type), _name(name), _width(width)
         {
         }
-        
+
         Listbox::Column::Type Listbox::Column::type() const
         {
             return _type;
@@ -143,6 +143,8 @@ namespace trview
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
                     _token_store.add(button->on_click += [this, index]()
                     {
+                        _selected_item = index + _current_top;
+                        highlight_item();
                         on_item_selected(_items[index + _current_top]);
                     });
                     row->add_child(std::move(button));
@@ -191,6 +193,8 @@ namespace trview
             {
                 _rows_scrollbar->set_range(_current_top, _current_top + fully_visible_rows, _items.size());
             }
+
+            highlight_item();
         }
 
         void Listbox::sort_items()
@@ -307,6 +311,20 @@ namespace trview
 
             _headers_element = headers_element.get();
             add_child(std::move(headers_element));
+        }
+
+        void Listbox::highlight_item()
+        {
+            const auto rows = _rows_element->child_elements();
+            for (uint32_t i = 0; i < rows.size(); ++i)
+            {
+                const auto columns = rows[i]->child_elements();
+                for (auto& cell : columns)
+                {
+                    Button* button_cell = static_cast<Button*>(cell);
+                    button_cell->set_text_background_colour(i + _current_top == _selected_item ? Colour(1.0f, 0.5f, 0.5f, 0.5f) : Colour(1.0f, 0.4f, 0.4f, 0.4f));
+                }
+            }
         }
     }
 }
