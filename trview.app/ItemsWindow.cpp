@@ -110,53 +110,12 @@ namespace trview
     void ItemsWindow::generate_ui()
     {
         using namespace ui;
-
-        _ui = std::make_unique<ui::StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 3), StackPanel::Direction::Horizontal, SizeMode::Manual);
-
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0,3), StackPanel::Direction::Vertical, SizeMode::Manual);
-
-        // Control modes:.
-        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2,2), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
-        _token_store.add(track_room->on_state_changed += [this](bool value)
-        {
-            _track_room = value;
-            if (_track_room)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                set_items(_all_items);
-            }
-        });
-
-        controls->add_child(std::move(track_room));
-        _controls = controls.get();
-        left_panel->add_child(std::move(controls));
-
-        auto items_list = std::make_unique<Listbox>(Point(), window().size() - Size(0, _controls->size().height));
-        items_list->set_columns(
-            { 
-                { Listbox::Column::Type::Number, L"#", 30 }, 
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::Type::String, L"Type", 100 } }
-            );
-        _token_store.add(items_list->on_item_selected += [&](const auto& item)
-        {
-            auto index = std::stoi(item.value(L"#"));
-            on_item_selected(_all_items[index]);
-        });
-
-        _items_list = items_list.get();
-        left_panel->add_child(std::move(items_list));
-
-        _left_panel = left_panel.get();
-        _ui->add_child(std::move(left_panel));
-
+        _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        _ui->add_child(create_items_panel());
+        auto divider = std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colour(1.0f, 0.0f, 0.0f, 0.0f));
+        _divider = divider.get();
+        _ui->add_child(std::move(divider));
         _ui->add_child(create_details_panel());
-
         _ui_renderer->load(_ui.get());
     }
 
@@ -204,8 +163,56 @@ namespace trview
     {
         _ui->set_size(window().size());
         _left_panel->set_size(Size(200, window().size().height));
+        _divider->set_size(Size(1, window().size().height));
         _right_panel->set_size(Size(200, window().size().height));
         _items_list->set_size(Size(200, window().size().height - _controls->size().height));
+    }
+
+    std::unique_ptr<ui::StackPanel> ItemsWindow::create_items_panel()
+    {
+        using namespace ui;
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        // Control modes:.
+        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
+        _token_store.add(track_room->on_state_changed += [this](bool value)
+        {
+            _track_room = value;
+            if (_track_room)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                set_items(_all_items);
+            }
+        });
+
+        controls->add_child(std::move(track_room));
+        _controls = controls.get();
+        left_panel->add_child(std::move(controls));
+
+        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height));
+        items_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::Number, L"ID", 30 },
+                { Listbox::Column::Type::String, L"Type", 100 } 
+            }
+        );
+        _token_store.add(items_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_item_selected(_all_items[index]);
+        });
+
+        _items_list = items_list.get();
+        left_panel->add_child(std::move(items_list));
+
+        _left_panel = left_panel.get();
+        return left_panel;
     }
 
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_details_panel()
@@ -214,9 +221,9 @@ namespace trview
 
         const float height = window().size().height;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.5f, 0.3f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Item Details");
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Colour(0.0f, 0.0f, 0.0f, 0.0f), L"Item Details");
         right_panel->add_child(std::move(group_box));
 
         // Store the right panel for later use.

@@ -71,12 +71,14 @@ namespace trview
         void populate_items(const std::vector<Item>& items);
         /// After the window has been resized, adjust the sizes of the child elements.
         void update_layout();
+        std::unique_ptr<ui::StackPanel> create_items_panel();
         std::unique_ptr<ui::StackPanel> create_details_panel();
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::Window> _ui;
         ui::Window* _left_panel;
+        ui::Window* _divider;
         ui::Window* _right_panel;
         ui::Window*  _controls;
         ui::Listbox* _items_list;
