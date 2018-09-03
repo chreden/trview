@@ -205,6 +205,7 @@ namespace trview
         _token_store.add(items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
+            load_item_details(_all_items[index]);
             on_item_selected(_all_items[index]);
         });
 
@@ -221,9 +222,9 @@ namespace trview
 
         const float height = window().size().height;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 4), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Colour(0.0f, 0.0f, 0.0f, 0.0f), L"Item Details");
-        auto controls = std::make_unique<StackPanel>(Point(10, 12), group_box->size(), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Point(10, 11), group_box->size(), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
         auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 100), Colour(1.0f, 0.35f, 0.35f, 0.35f));
@@ -236,11 +237,7 @@ namespace trview
         stats_list->set_show_headers(false);
         stats_list->set_show_scrollbar(false);
 
-        std::vector<Listbox::Item> stats;
-        stats.push_back({ { { L"Name", L"Room" }, { L"Value", L"100" } } });
-        stats.push_back({ { { L"Name", L"Flags" }, { L"Value", L"111111-11" } } });
-        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", L"0" } } });
-        stats_list->set_items(stats);
+        _stats_list = stats_list.get();
 
         controls->add_child(std::move(stats_list));
         group_box->add_child(std::move(controls));
@@ -249,5 +246,17 @@ namespace trview
         // Store the right panel for later use.
         _right_panel = right_panel.get();
         return right_panel;
+    }
+
+    void ItemsWindow::load_item_details(const Item& item)
+    {
+        using namespace ui;
+        std::vector<Listbox::Item> stats;
+        stats.push_back({ { { L"Name", L"Type" },{ L"Value", item.type() } } });
+        stats.push_back({ { { L"Name", L"Type ID" },{ L"Value", std::to_wstring(item.type_id()) } } });
+        stats.push_back({ { { L"Name", L"Room" },{ L"Value", std::to_wstring(item.room()) } } });
+        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", L"111111-11" } } });
+        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", L"0" } } });
+        _stats_list->set_items(stats);
     }
 }
