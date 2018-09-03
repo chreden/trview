@@ -73,6 +73,9 @@ namespace trview
             // Reset the index for scrolling.
             _current_top = 0;
 
+            // Reset highlight
+            _selected_item = -1;
+
             // Store the items for later.
             _items = items;
 
