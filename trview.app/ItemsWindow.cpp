@@ -227,11 +227,11 @@ namespace trview
         auto controls = std::make_unique<StackPanel>(Point(10, 11), group_box->size(), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 100), Colour(1.0f, 0.35f, 0.35f, 0.35f));
+        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 160), Colour(1.0f, 0.35f, 0.35f, 0.35f));
         stats_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"Name", 50 },
-                { Listbox::Column::Type::Number, L"Value", 130 },
+                { Listbox::Column::Type::Number, L"Name", 60 },
+                { Listbox::Column::Type::Number, L"Value", 120 },
             }
         );
         stats_list->set_show_headers(false);
@@ -255,8 +255,10 @@ namespace trview
         stats.push_back({ { { L"Name", L"Type" },{ L"Value", item.type() } } });
         stats.push_back({ { { L"Name", L"Type ID" },{ L"Value", std::to_wstring(item.type_id()) } } });
         stats.push_back({ { { L"Name", L"Room" },{ L"Value", std::to_wstring(item.room()) } } });
-        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", L"111111-11" } } });
-        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", L"0" } } });
+        stats.push_back({ { { L"Name", L"Clear Body" },{ L"Value", std::to_wstring(item.clear_body_flag()) } } });
+        stats.push_back({ { { L"Name", L"Invisible" },{ L"Value", std::to_wstring(item.invisible_flag()) } } });
+        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", std::to_wstring(item.activation_flags()) } } });
+        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", std::to_wstring(item.ocb()) } } });
         _stats_list->set_items(stats);
     }
 }
