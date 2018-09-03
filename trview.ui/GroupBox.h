@@ -9,7 +9,7 @@ namespace trview
         class GroupBox : public Window
         {
         public:
-            GroupBox(Point point, Size size, Colour background_colour, Colour border_colour, const std::wstring& text);
+            GroupBox(const Point& point, const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text);
         private:
             Colour       _border_colour;
             std::wstring _text;

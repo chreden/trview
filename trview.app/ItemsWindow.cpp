@@ -7,6 +7,7 @@
 #include <trview.ui.render/Renderer.h>
 #include <SimpleMath.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/GroupBox.h>
 
 using namespace trview::graphics;
 
@@ -148,16 +149,14 @@ namespace trview
             on_item_selected(_all_items[index]);
         });
 
-        auto right_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.3f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
-
         _items_list = items_list.get();
         left_panel->add_child(std::move(items_list));
 
         _left_panel = left_panel.get();
         _ui->add_child(std::move(left_panel));
 
-        _right_panel = right_panel.get();
-        _ui->add_child(std::move(right_panel));
+        _ui->add_child(create_details_panel());
+
         _ui_renderer->load(_ui.get());
     }
 
@@ -207,5 +206,21 @@ namespace trview
         _left_panel->set_size(Size(200, window().size().height));
         _right_panel->set_size(Size(200, window().size().height));
         _items_list->set_size(Size(200, window().size().height - _controls->size().height));
+    }
+
+    std::unique_ptr<ui::StackPanel> ItemsWindow::create_details_panel()
+    {
+        using namespace ui;
+
+        const float height = window().size().height;
+
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.5f, 0.3f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Item Details");
+        right_panel->add_child(std::move(group_box));
+
+        // Store the right panel for later use.
+        _right_panel = right_panel.get();
+        return right_panel;
     }
 }
