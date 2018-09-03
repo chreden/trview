@@ -48,8 +48,8 @@ namespace trview
             return item->second;
         }
 
-        Listbox::Listbox(const Point& position, const Size& size)
-            : StackPanel(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), Direction::Vertical, SizeMode::Manual)
+        Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
+            : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {
             _token_store.add(on_size_changed += [=](auto)
             {
@@ -64,32 +64,8 @@ namespace trview
 
         void Listbox::set_columns(const std::vector<Column>& columns)
         {
-            auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
-            for (const auto column : columns)
-            {
-                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
-                _token_store.add(header_element->on_click += [this, column]()
-                {
-                    if (_current_sort.name() == column.name())
-                    {
-                        _current_sort_direction = !_current_sort_direction;
-                    }
-                    else
-                    {
-                        _current_sort = column;
-                        _current_sort_direction = false;
-                    }
-                    sort_items();
-                });
-                headers_element->add_child(std::move(header_element));
-            }
-
-            // Add the spacer to make the scrollbar look ok.
-            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f)));
-
-            _headers_element = headers_element.get();
-            add_child(std::move(headers_element));
             _columns = columns;
+            generate_ui();
         }
 
         void Listbox::set_items(const std::vector<Item>& items)
@@ -107,7 +83,8 @@ namespace trview
         void Listbox::generate_rows()
         {
             // Calculate how many items can be seen on-screen at once.
-            const auto remaining_height = size().height - _headers_element->size().height;
+            const auto header_height = _headers_element ? _headers_element->size().height : 0.0f;
+            const auto remaining_height = size().height - header_height;
 
             // If negative height, this is a bad thing to try and set the size of the rows to, so abort.
             if (static_cast<int32_t>(remaining_height) <= 0)
@@ -115,28 +92,36 @@ namespace trview
                 return;
             }
 
+            const auto scrollbar_width = _show_scrollbar ? 10.0f : 0.0f;
+
             if (_rows_container)
             {
                 _rows_container->set_size(Size(size().width, remaining_height));
-                _rows_element->set_size(Size(size().width - 10, remaining_height));
-                _rows_scrollbar->set_size(Size(10, remaining_height));
+                _rows_element->set_size(Size(size().width - scrollbar_width, remaining_height));
+                if (_rows_scrollbar)
+                {
+                    _rows_scrollbar->set_size(Size(scrollbar_width, remaining_height));
+                }
             }
             else
             {
-                auto rows_container = std::make_unique<StackPanel>(Point(), Size(size().width, remaining_height), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal, SizeMode::Manual);
+                auto rows_container = std::make_unique<StackPanel>(Point(), Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
 
-                auto rows_element = std::make_unique<StackPanel>(Point(), Size(size().width - 10, remaining_height), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Vertical, SizeMode::Manual);
+                auto rows_element = std::make_unique<StackPanel>(Point(), Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
                 _rows_element = rows_element.get();
                 rows_container->add_child(std::move(rows_element));
 
-                auto rows_scrollbar = std::make_unique<Scrollbar>(Point(), Size(10, remaining_height));
-                _token_store.add(rows_scrollbar->on_scroll += [&](float value)
+                if (_show_scrollbar)
                 {
-                    _current_top = value * _items.size();
-                    populate_rows();
-                });
-                _rows_scrollbar = rows_scrollbar.get();
-                rows_container->add_child(std::move(rows_scrollbar));
+                    auto rows_scrollbar = std::make_unique<Scrollbar>(Point(), Size(scrollbar_width, remaining_height), background_colour());
+                    _token_store.add(rows_scrollbar->on_scroll += [&](float value)
+                    {
+                        _current_top = value * _items.size();
+                        populate_rows();
+                    });
+                    _rows_scrollbar = rows_scrollbar.get();
+                    rows_container->add_child(std::move(rows_scrollbar));
+                }
 
                 _rows_container = rows_container.get();
                 add_child(std::move(rows_container));
@@ -152,7 +137,7 @@ namespace trview
             {
                 auto index = i + existing_rows;
 
-                auto row = std::make_unique<StackPanel>(Point(), Size(), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(), Direction::Horizontal);
+                auto row = std::make_unique<StackPanel>(Point(), Size(), background_colour(), Size(), Direction::Horizontal);
                 for (const auto& column : _columns)
                 {
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
@@ -202,7 +187,7 @@ namespace trview
                 }
             }
 
-            if (!_items.empty())
+            if (!_items.empty() && _rows_scrollbar)
             {
                 _rows_scrollbar->set_range(_current_top, _current_top + fully_visible_rows, _items.size());
             }
@@ -263,6 +248,65 @@ namespace trview
             _current_top = std::max(0, _current_top + direction);
             populate_rows();
             return true;
+        }
+
+        void Listbox::set_show_scrollbar(bool value)
+        {
+            _show_scrollbar = value;
+            generate_ui();
+        }
+
+        void Listbox::set_show_headers(bool value)
+        {
+            _show_headers = value;
+            generate_ui();
+        }
+
+        void Listbox::generate_ui()
+        {
+            _headers_element = nullptr;
+            _rows_container = nullptr;
+            _rows_element = nullptr;
+            _rows_scrollbar = nullptr;
+
+            clear_child_elements();
+            generate_headers();
+            generate_rows();
+            populate_rows();
+        }
+
+        void Listbox::generate_headers()
+        {
+            if (!_show_headers)
+            {
+                return;
+            }
+
+            auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
+            for (const auto column : _columns)
+            {
+                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
+                _token_store.add(header_element->on_click += [this, column]()
+                {
+                    if (_current_sort.name() == column.name())
+                    {
+                        _current_sort_direction = !_current_sort_direction;
+                    }
+                    else
+                    {
+                        _current_sort = column;
+                        _current_sort_direction = false;
+                    }
+                    sort_items();
+                });
+                headers_element->add_child(std::move(header_element));
+            }
+
+            // Add the spacer to make the scrollbar look ok.
+            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f)));
+
+            _headers_element = headers_element.get();
+            add_child(std::move(headers_element));
         }
     }
 }

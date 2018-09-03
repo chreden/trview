@@ -16,7 +16,8 @@ namespace trview
             /// Create a new scrollbar.
             /// @param position The position for the scrollbar.
             /// @param size The size of the new scrollbar.
-            Scrollbar(const Point& position, const Size& size);
+            /// @param background_colour The background colour of the scrollbar.
+            Scrollbar(const Point& position, const Size& size, const Colour& background_colour);
 
             /// Destructor for scrollbar.
             virtual ~Scrollbar() = default;

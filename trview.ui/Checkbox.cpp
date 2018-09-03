@@ -16,26 +16,31 @@ namespace trview
         Checkbox::Checkbox(const Point& position, const Size& size)
             : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal)
         {
-            create_image(size);
+            create_image(size, Colour(1.0f, 0.5f, 0.5f, 0.5f));
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size, const std::wstring& label_text)
+            : Checkbox(position, size, Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text)
+        {
+        }
+
+        Checkbox::Checkbox(const Point& position, const Size& size, const Colour& background_colour, const std::wstring& label_text)
             : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal)
         {
-            create_image(size);
+            create_image(size, background_colour);
 
-            add_child(std::make_unique<Window>(Point(), Size(3, size.height), Colour(1.0f, 0.5f, 0.5f, 0.5f)));
+            add_child(std::make_unique<Window>(Point(), Size(3, size.height), background_colour));
 
-            auto label = std::make_unique<Label>(Point(), Size(1, 1), Colour(1.0f, 0.5f, 0.5f, 0.5f), label_text, 8, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
+            auto label = std::make_unique<Label>(Point(), Size(1, 1), background_colour, label_text, 8, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
             label->set_vertical_alignment(Align::Centre);
             _label = label.get();
             add_child(std::move(label));
         }
 
-        void Checkbox::create_image(const Size& size)
+        void Checkbox::create_image(const Size& size, const Colour& colour)
         {
             auto outer = std::make_unique<Window>(Point(), size, Colour(1.0f, 0.0f, 0.0f, 0.0f));
-            auto inner = std::make_unique<Window>(Point(1, 1), size - Size(2, 2), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+            auto inner = std::make_unique<Window>(Point(1, 1), size - Size(2, 2), colour);
             auto fill = std::make_unique<Window>(Point(1, 1), size - Size(4, 4), off_colour);
 
             _fill = fill.get();

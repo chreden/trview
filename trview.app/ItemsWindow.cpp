@@ -171,11 +171,11 @@ namespace trview
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_items_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
-        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Track Room");
+        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour(1.0f, 0.4f, 0.4f, 0.4f), L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
         {
             _track_room = value;
@@ -193,7 +193,7 @@ namespace trview
         _controls = controls.get();
         left_panel->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height));
+        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colour(1.0f, 0.4f, 0.4f, 0.4f));
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -222,8 +222,28 @@ namespace trview
         const float height = window().size().height;
 
         auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
-
         auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colour(1.0f, 0.35f, 0.35f, 0.35f), Colour(0.0f, 0.0f, 0.0f, 0.0f), L"Item Details");
+        auto controls = std::make_unique<StackPanel>(Point(10, 12), group_box->size(), Colour(1.0f, 0.35f, 0.35f, 0.35f), Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        // Add some information about the selected item.
+        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 100), Colour(1.0f, 0.35f, 0.35f, 0.35f));
+        stats_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"Name", 50 },
+                { Listbox::Column::Type::Number, L"Value", 130 },
+            }
+        );
+        stats_list->set_show_headers(false);
+        stats_list->set_show_scrollbar(false);
+
+        std::vector<Listbox::Item> stats;
+        stats.push_back({ { { L"Name", L"Room" }, { L"Value", L"100" } } });
+        stats.push_back({ { { L"Name", L"Flags" }, { L"Value", L"111111-11" } } });
+        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", L"0" } } });
+        stats_list->set_items(stats);
+
+        controls->add_child(std::move(stats_list));
+        group_box->add_child(std::move(controls));
         right_panel->add_child(std::move(group_box));
 
         // Store the right panel for later use.

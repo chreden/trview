@@ -79,7 +79,8 @@ namespace trview
             /// Create a new Listbox.
             /// @param position The position of the listbox.
             /// @param size The size of the listbox.
-            Listbox(const Point& position, const Size& size);
+            /// @param background_colour The background colour for the list box.
+            Listbox(const Point& position, const Size& size, const Colour& background_colour);
 
             /// Destructor for Listbox.
             virtual ~Listbox();
@@ -92,11 +93,23 @@ namespace trview
             /// @param items The items to add to the list box.
             void set_items(const std::vector<Item>& items);
 
+            /// Set whether to show a scrollbar.
+            /// @param value Whether to show the scrollbar.
+            void set_show_scrollbar(bool value);
+
+            /// Set whether to show column headers.
+            /// @param value Whether to show column headers.
+            void set_show_headers(bool value);
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
         private:
+            /// Generate all child UI elements.
+            void generate_ui();
+            /// Generate the header element.
+            void generate_headers();
             /// Create the row UI elements to be populated.
             void generate_rows();
             /// Populate the row UI elements with the values from the current listbox item sort.
@@ -113,6 +126,8 @@ namespace trview
             int32_t _current_top{ 0 };
             Column _current_sort;
             bool _current_sort_direction;
+            bool _show_scrollbar{ true };
+            bool _show_headers{ true };
             TokenStore _token_store;
         };
     }
