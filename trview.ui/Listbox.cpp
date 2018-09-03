@@ -282,7 +282,7 @@ namespace trview
                 return;
             }
 
-            auto headers_element = std::make_unique<StackPanel>(Point(), size(), Colour(1.0f, 0.3f, 0.3f, 0.3f), Size(), Direction::Horizontal);
+            auto headers_element = std::make_unique<StackPanel>(Point(), size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
                 auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
@@ -303,7 +303,7 @@ namespace trview
             }
 
             // Add the spacer to make the scrollbar look ok.
-            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f)));
+            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), background_colour()));
 
             _headers_element = headers_element.get();
             add_child(std::move(headers_element));
