@@ -1,4 +1,6 @@
 #include "ItemsWindow.h"
+#include <sstream>
+#include <bitset>
 #include <Windows.h>
 #include <trview/resource.h>
 #include <trview.graphics/DeviceWindow.h>
@@ -250,14 +252,28 @@ namespace trview
 
     void ItemsWindow::load_item_details(const Item& item)
     {
+        auto format_bool = [](bool value)
+        {
+            std::wstringstream stream;
+            stream << std::boolalpha << value;
+            return stream.str();
+        };
+
+        auto format_binary = [](uint16_t value)
+        {
+            std::wstringstream stream;
+            stream << std::bitset<5>(value);
+            return stream.str();
+        };
+
         using namespace ui;
         std::vector<Listbox::Item> stats;
         stats.push_back({ { { L"Name", L"Type" },{ L"Value", item.type() } } });
         stats.push_back({ { { L"Name", L"Type ID" },{ L"Value", std::to_wstring(item.type_id()) } } });
         stats.push_back({ { { L"Name", L"Room" },{ L"Value", std::to_wstring(item.room()) } } });
-        stats.push_back({ { { L"Name", L"Clear Body" },{ L"Value", std::to_wstring(item.clear_body_flag()) } } });
-        stats.push_back({ { { L"Name", L"Invisible" },{ L"Value", std::to_wstring(item.invisible_flag()) } } });
-        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", std::to_wstring(item.activation_flags()) } } });
+        stats.push_back({ { { L"Name", L"Clear Body" },{ L"Value", format_bool(item.clear_body_flag()) } } });
+        stats.push_back({ { { L"Name", L"Invisible" },{ L"Value", format_bool(item.invisible_flag()) } } });
+        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", format_binary(item.activation_flags()) } } });
         stats.push_back({ { { L"Name", L"OCB" },{ L"Value", std::to_wstring(item.ocb()) } } });
         _stats_list->set_items(stats);
     }
