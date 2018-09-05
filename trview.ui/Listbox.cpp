@@ -48,6 +48,11 @@ namespace trview
             return item->second;
         }
 
+        bool Listbox::Item::operator == (const Item& other) const
+        {
+            return _values == other._values;
+        }
+
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
             : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {
@@ -72,9 +77,6 @@ namespace trview
         {
             // Reset the index for scrolling.
             _current_top = 0;
-
-            // Reset highlight
-            _selected_item = -1;
 
             // Store the items for later.
             _items = items;
@@ -146,9 +148,9 @@ namespace trview
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
                     _token_store.add(button->on_click += [this, index]()
                     {
-                        _selected_item = index + _current_top;
+                        _selected_item = _items[index + _current_top];
                         highlight_item();
-                        on_item_selected(_items[index + _current_top]);
+                        on_item_selected(_selected_item.value());
                     });
                     row->add_child(std::move(button));
                 }
@@ -321,11 +323,23 @@ namespace trview
             const auto rows = _rows_element->child_elements();
             for (uint32_t i = 0; i < rows.size(); ++i)
             {
+                // Default colour - not highlighted.
+                Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
+
+                const auto index = i + _current_top;
+                if (index < _items.size() && _selected_item.has_value())
+                {
+                    if (_items[index] == _selected_item.value())
+                    {
+                        colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
+                    }
+                }
+
                 const auto columns = rows[i]->child_elements();
                 for (auto& cell : columns)
                 {
                     Button* button_cell = static_cast<Button*>(cell);
-                    button_cell->set_text_background_colour(i + _current_top == _selected_item ? Colour(1.0f, 0.5f, 0.5f, 0.5f) : Colour(1.0f, 0.4f, 0.4f, 0.4f));
+                    button_cell->set_text_background_colour(colour);
                 }
             }
         }

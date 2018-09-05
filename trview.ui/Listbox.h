@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <optional>
 
 #include <trview.common/TokenStore.h>
 
@@ -72,6 +73,11 @@ namespace trview
                 /// @param key The key to search for.
                 /// @returns The value for the key.
                 std::wstring value(const std::wstring& key) const;
+
+                /// Determines whether two items are equal.
+                /// @param other The item to compare.
+                /// @returns Whether the items are equal.
+                bool operator == (const Item& other) const;
             private:
                 std::unordered_map<std::wstring, std::wstring> _values;
             };
@@ -131,7 +137,7 @@ namespace trview
             bool _show_scrollbar{ true };
             bool _show_headers{ true };
             TokenStore _token_store;
-            int32_t _selected_item{ -1 };
+            std::optional<Item> _selected_item;
         };
     }
 }
