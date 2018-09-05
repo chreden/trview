@@ -333,7 +333,7 @@ namespace trview
                 Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
 
                 const auto index = i + _current_top;
-                if (index < _items.size() && _selected_item.has_value())
+                if (_show_highlight && index < _items.size() && _selected_item.has_value())
                 {
                     if (_items[index] == _selected_item.value())
                     {
