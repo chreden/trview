@@ -115,9 +115,7 @@ namespace trview
         using namespace ui;
         _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _ui->add_child(create_items_panel());
-        auto divider = std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colour(1.0f, 0.0f, 0.0f, 0.0f));
-        _divider = divider.get();
-        _ui->add_child(std::move(divider));
+        _ui->add_child(create_divider());
         _ui->add_child(create_details_panel());
         _ui_renderer->load(_ui.get());
     }
@@ -173,10 +171,10 @@ namespace trview
     void ItemsWindow::update_layout()
     {
         _ui->set_size(window().size());
-        _left_panel->set_size(Size(200, window().size().height));
-        _divider->set_size(Size(1, window().size().height));
-        _right_panel->set_size(Size(200, window().size().height));
-        _items_list->set_size(Size(200, window().size().height - _controls->size().height));
+        _left_panel->set_size(Size(_left_panel->size().width, window().size().height));
+        _divider->set_size(Size(_divider->size().width, window().size().height));
+        _right_panel->set_size(Size(_right_panel->size().width, window().size().height));
+        _items_list->set_size(Size(_items_list->size().width, window().size().height - _items_list->position().y));
     }
 
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_items_panel()
@@ -228,6 +226,13 @@ namespace trview
         return left_panel;
     }
 
+    std::unique_ptr<ui::Control> ItemsWindow::create_divider()
+    {
+        auto divider = std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colour(1.0f, 0.0f, 0.0f, 0.0f));
+        _divider = divider.get();
+        return divider;
+    }
+
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_details_panel()
     {
         using namespace ui;
@@ -277,15 +282,21 @@ namespace trview
             return stream.str();
         };
 
+        auto make_item = [](const auto& name, const auto& value)
+        {
+            return Listbox::Item { { { L"Name", name }, { L"Value", value } } };
+        };
+
         using namespace ui;
         std::vector<Listbox::Item> stats;
-        stats.push_back({ { { L"Name", L"Type" },{ L"Value", item.type() } } });
-        stats.push_back({ { { L"Name", L"Type ID" },{ L"Value", std::to_wstring(item.type_id()) } } });
-        stats.push_back({ { { L"Name", L"Room" },{ L"Value", std::to_wstring(item.room()) } } });
-        stats.push_back({ { { L"Name", L"Clear Body" },{ L"Value", format_bool(item.clear_body_flag()) } } });
-        stats.push_back({ { { L"Name", L"Invisible" },{ L"Value", format_bool(item.invisible_flag()) } } });
-        stats.push_back({ { { L"Name", L"Flags" },{ L"Value", format_binary(item.activation_flags()) } } });
-        stats.push_back({ { { L"Name", L"OCB" },{ L"Value", std::to_wstring(item.ocb()) } } });
+        stats.push_back(make_item(L"Type", item.type()));
+        stats.push_back(make_item(L"#", std::to_wstring(item.number())));
+        stats.push_back(make_item(L"Type ID", std::to_wstring(item.type_id())));
+        stats.push_back(make_item(L"Room", std::to_wstring(item.room())));
+        stats.push_back(make_item(L"Clear Body", format_bool(item.clear_body_flag())));
+        stats.push_back(make_item(L"Invisible", format_bool(item.invisible_flag())));
+        stats.push_back(make_item(L"Flags", format_binary(item.activation_flags())));
+        stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
     }
 }

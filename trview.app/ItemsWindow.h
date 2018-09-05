@@ -75,6 +75,7 @@ namespace trview
         /// After the window has been resized, adjust the sizes of the child elements.
         void update_layout();
         std::unique_ptr<ui::StackPanel> create_items_panel();
+        std::unique_ptr<ui::Control> create_divider();
         std::unique_ptr<ui::StackPanel> create_details_panel();
         void load_item_details(const Item& item);
 
