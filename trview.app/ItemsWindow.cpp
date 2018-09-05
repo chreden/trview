@@ -146,9 +146,11 @@ namespace trview
 
     void ItemsWindow::set_current_room(uint32_t room)
     {
-        _current_room = room;
-        if (_track_room)
+        if (_track_room && (!_filter_applied || _current_room != room))
         {
+            _current_room = room;
+            _filter_applied = true;
+
             std::vector<Item> filtered_items;
             for (const auto& item : _all_items)
             {
@@ -188,6 +190,7 @@ namespace trview
             else
             {
                 set_items(_all_items);
+                _filter_applied = false;
             }
         });
 

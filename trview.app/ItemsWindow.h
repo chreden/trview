@@ -89,7 +89,11 @@ namespace trview
         TokenStore _token_store;
 
         std::vector<Item> _all_items;
+        /// Whether the item window is tracking the current room.
         bool _track_room{ false };
+        /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
+        /// Whether the room tracking filter has been applied.
+        bool _filter_applied{ false };
     };
 }
