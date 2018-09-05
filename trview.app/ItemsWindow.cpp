@@ -21,25 +21,16 @@ namespace trview
 
         LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
-            if (message == WM_GETMINMAXINFO)
-            {
-                RECT rect{ 0, 0, 400, 200 };
-                AdjustWindowRect(&rect, window_style, FALSE);
-
-                MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-                info->ptMinTrackSize.x = rect.right - rect.left;
-                info->ptMaxTrackSize.x = rect.right - rect.left;
-                info->ptMinTrackSize.y = 200;
-                return 0;
-            }
-
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
+            RECT rect{ 0, 0, 400, 200 };
+            AdjustWindowRect(&rect, window_style, FALSE);
+
             HWND items_window = CreateWindowW(L"trview.items", L"Items", window_style,
-                CW_USEDEFAULT, 0, 400, 310, parent, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, rect.right - rect.left, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -99,6 +90,16 @@ namespace trview
         {
             on_window_closed();
         }
+        else if (message == WM_GETMINMAXINFO)
+        {
+            RECT rect{ 0, 0, _ui->size().width, 200 };
+            AdjustWindowRect(&rect, window_style, FALSE);
+
+            MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
+            info->ptMinTrackSize.x = rect.right - rect.left;
+            info->ptMaxTrackSize.x = rect.right - rect.left;
+            info->ptMinTrackSize.y = 200;
+        }
     }
 
     void ItemsWindow::render(const Device& device, bool vsync)
@@ -148,7 +149,6 @@ namespace trview
     {
         if (_track_room && (!_filter_applied || _current_room != room))
         {
-            _current_room = room;
             _filter_applied = true;
 
             std::vector<Item> filtered_items;
@@ -161,6 +161,8 @@ namespace trview
             }
             populate_items(filtered_items);
         }
+
+        _current_room = room;
     }
 
     void ItemsWindow::update_layout()
