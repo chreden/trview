@@ -57,6 +57,9 @@ namespace trview
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
 
+        /// Clear the currently selected item from the details panel.
+        void clear_selected_item();
+
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
 

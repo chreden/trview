@@ -128,6 +128,11 @@ namespace trview
         populate_items(items);
     }
 
+    void ItemsWindow::clear_selected_item()
+    {
+        _stats_list->set_items({});
+    }
+
     void ItemsWindow::populate_items(const std::vector<Item>& items)
     {
         using namespace ui;
