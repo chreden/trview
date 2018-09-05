@@ -14,12 +14,18 @@ namespace trview
 {
     namespace
     {
+        const DWORD window_style = WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+
         LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             if (message == WM_GETMINMAXINFO)
             {
+                RECT rect{ 0, 0, 200, 200 };
+                AdjustWindowRect(&rect, window_style, FALSE);
+
                 MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-                info->ptMinTrackSize.x = 206;
+                info->ptMinTrackSize.x = rect.right - rect.left;
+                info->ptMaxTrackSize.x = rect.right - rect.left;
                 info->ptMinTrackSize.y = 200;
                 return 0;
             }
@@ -29,8 +35,8 @@ namespace trview
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
-            HWND items_window = CreateWindowW(L"trview.items", L"Items", WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX),
-                CW_USEDEFAULT, 0, 206, 310, parent, nullptr, hInstance, nullptr);
+            HWND items_window = CreateWindowW(L"trview.items", L"Items", window_style,
+                CW_USEDEFAULT, 0, 200, 310, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -73,8 +79,7 @@ namespace trview
         _token_store.add(_window_resizer.on_resize += [=]()
         {
             _device_window->resize();
-            _ui->set_size(window().size());
-            _items_list->set_size(window().size());
+            update_layout();
             _ui_renderer->set_host_size(window().size());
         });
         generate_ui();
@@ -124,9 +129,10 @@ namespace trview
         });
 
         controls->add_child(std::move(track_room));
+        _controls = controls.get();
         _ui->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Point(), window().size());
+        auto items_list = std::make_unique<Listbox>(Point(), window().size() - Size(0, _controls->size().height));
         items_list->set_columns(
             { 
                 { Listbox::Column::Type::Number, L"#", 30 }, 
@@ -183,5 +189,11 @@ namespace trview
             }
             populate_items(filtered_items);
         }
+    }
+
+    void ItemsWindow::update_layout()
+    {
+        _ui->set_size(window().size());
+        _items_list->set_size(window().size() - Size(0, _controls->size().height));
     }
 }

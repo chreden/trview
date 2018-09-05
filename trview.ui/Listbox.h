@@ -15,6 +15,8 @@ namespace trview
 {
     namespace ui
     {
+        class Scrollbar;
+
         /// Displays a number of rows in a grid with column headers.
         class Listbox : public StackPanel
         {
@@ -105,7 +107,9 @@ namespace trview
             std::vector<Column> _columns;
             std::vector<Item> _items;
             StackPanel* _headers_element;
+            StackPanel* _rows_container;
             StackPanel* _rows_element;
+            Scrollbar* _rows_scrollbar;
             int32_t _current_top{ 0 };
             Column _current_sort;
             bool _current_sort_direction;
