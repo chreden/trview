@@ -271,6 +271,12 @@ namespace trview
             generate_ui();
         }
 
+        void Listbox::set_show_highlight(bool value)
+        {
+            _show_highlight = value;
+            generate_ui();
+        }
+
         void Listbox::generate_ui()
         {
             _headers_element = nullptr;

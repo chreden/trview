@@ -107,6 +107,10 @@ namespace trview
             /// @param value Whether to show column headers.
             void set_show_headers(bool value);
 
+            /// Set whether to highlight rows.
+            /// @param value Whether to highlight rows.
+            void set_show_highlight(bool value);
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
         protected:
@@ -136,6 +140,7 @@ namespace trview
             bool _current_sort_direction;
             bool _show_scrollbar{ true };
             bool _show_headers{ true };
+            bool _show_highlight{ true };
             TokenStore _token_store;
             std::optional<Item> _selected_item;
         };

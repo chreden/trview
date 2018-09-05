@@ -243,6 +243,7 @@ namespace trview
         );
         stats_list->set_show_headers(false);
         stats_list->set_show_scrollbar(false);
+        stats_list->set_show_highlight(false);
 
         _stats_list = stats_list.get();
 
