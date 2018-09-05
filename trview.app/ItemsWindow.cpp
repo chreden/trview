@@ -180,10 +180,11 @@ namespace trview
     void ItemsWindow::update_layout()
     {
         _ui->set_size(window().size());
-        _left_panel->set_size(Size(_left_panel->size().width, window().size().height));
-        _divider->set_size(Size(_divider->size().width, window().size().height));
-        _right_panel->set_size(Size(_right_panel->size().width, window().size().height));
-        _items_list->set_size(Size(_items_list->size().width, window().size().height - _items_list->position().y));
+        const auto new_height = window().size().height;
+        _left_panel->set_size(Size(_left_panel->size().width, new_height));
+        _divider->set_size(Size(_divider->size().width, new_height));
+        _right_panel->set_size(Size(_right_panel->size().width, new_height));
+        _items_list->set_size(Size(_items_list->size().width, new_height - _items_list->position().y));
     }
 
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_items_panel()
@@ -192,7 +193,7 @@ namespace trview
         auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
-        auto controls = std::make_unique<StackPanel>(Point(), Size(window().size().width, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
         {
