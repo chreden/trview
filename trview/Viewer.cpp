@@ -35,6 +35,8 @@ namespace trview
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window)
     {
+        _settings = load_user_settings();
+
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device.device(), *_shader_storage.get());
 
@@ -43,13 +45,14 @@ namespace trview
 
         _main_window = _device.create_for_window(window);
         _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
-        _items_windows->create_window();
+        if (_settings.items_startup)
+        {
+            _items_windows->create_window();
+        }
         _token_store.add(_items_windows->on_item_selected += [this](const auto& item)
         {
             select_item(item);
         });
-
-        _settings = load_user_settings();
 
         _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
         _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
@@ -127,9 +130,15 @@ namespace trview
             _settings.invert_map_controls = value;
             save_user_settings(_settings);
         });
+        _token_store.add(_settings_window->on_items_startup += [&](bool value)
+        {
+            _settings.items_startup = value;
+            save_user_settings(_settings);
+        });
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
+        _settings_window->set_items_startup(_settings.items_startup);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.size());

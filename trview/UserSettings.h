@@ -15,6 +15,7 @@ namespace trview
         bool                    vsync{ true };
         bool                    go_to_lara{ true };
         bool                    invert_map_controls{ false };
+        bool                    items_startup{ true };
     };
 
     // Load the user settings from the settings file.
