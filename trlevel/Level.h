@@ -151,6 +151,11 @@ namespace trlevel
         /// @param entity The output entity.
         /// @returns Whether the entity was found.
         virtual bool find_first_entity_by_type(int16_t type, tr2_entity& entity) const override;
+
+        /// Get the true mesh from a type id. For example Lara's skin.
+        /// @param type The type id to check.
+        /// @returns The mesh index for the type.
+        virtual int16_t get_mesh_from_type_id(int16_t type) const override;
     private:
         void generate_meshes(const std::vector<uint16_t>& mesh_data);
 

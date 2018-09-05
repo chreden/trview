@@ -23,6 +23,8 @@ namespace trview
         using namespace DirectX::SimpleMath;
 
         // Extract the meshes required from the model.
+        load_meshes(level, entity.TypeID, mesh_storage);
+
         trlevel::tr_model model;
         trlevel::tr_sprite_sequence sprite;
 
@@ -31,7 +33,7 @@ namespace trview
             // Set up world matrix.
             _world = Matrix::CreateRotationY((entity.Angle / 16384.0f) * XM_PIDIV2) * 
                      Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
-            load_model(model, level, mesh_storage);
+            load_model(model, level);
         }
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
@@ -41,16 +43,23 @@ namespace trview
         }
     }
 
-    void Entity::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level, const IMeshStorage& mesh_storage)
+    void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
+    {
+        trlevel::tr_model model;
+        if (level.get_model_by_id(level.get_mesh_from_type_id(type_id), model))
+        {
+            const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
+            for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
+            {
+                _meshes.push_back(mesh_storage.mesh(mesh_pointer));
+            }
+        }
+    }
+
+    void Entity::load_model(const trlevel::tr_model& model, const trlevel::ILevel& level)
     {
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
-
-        const uint32_t end_pointer = static_cast<uint32_t>(model.StartingMesh + model.NumMeshes);
-        for (uint32_t mesh_pointer = model.StartingMesh; mesh_pointer < end_pointer; ++mesh_pointer)
-        {
-            _meshes.push_back(mesh_storage.mesh(mesh_pointer));
-        }
 
         if (model.NumMeshes > 0)
         {
