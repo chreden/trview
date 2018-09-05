@@ -238,7 +238,7 @@ namespace trview
                 // of the list of items) then do not do any more scrolling down. Only elements that are
                 // invisible and fully in the client area count towards this.
                 const auto rows = _rows_element->child_elements();
-                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height < r->parent()->size().height; }))
+                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height <= r->parent()->size().height; }))
                 {
                     return true;
                 }
@@ -247,7 +247,7 @@ namespace trview
                 if (!rows.empty())
                 {
                     const auto& last = rows.back();
-                    if (last->position().y + last->size().height < _rows_element->size().height)
+                    if (last->position().y + last->size().height <= _rows_element->size().height)
                     {
                         return true;
                     }
