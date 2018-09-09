@@ -146,6 +146,7 @@ namespace trview
             bool _show_highlight{ true };
             TokenStore _token_store;
             std::optional<Item> _selected_item;
+            uint32_t _fully_visible_rows;
         };
     }
 }

@@ -163,7 +163,7 @@ namespace trview
                 return;
             }
 
-            int32_t fully_visible_rows = 0;
+            _fully_visible_rows = 0;
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
@@ -176,7 +176,7 @@ namespace trview
 
                     if (rows[r]->position().y + rows[r]->size().height <= _rows_element->size().height)
                     {
-                        ++fully_visible_rows;
+                        ++_fully_visible_rows;
                     }
 
                     const auto& item = _items[r + _current_top];
@@ -194,7 +194,7 @@ namespace trview
 
             if (!_items.empty() && _rows_scrollbar)
             {
-                _rows_scrollbar->set_range(_current_top, _current_top + fully_visible_rows, _items.size());
+                _rows_scrollbar->set_range(_current_top, _current_top + _fully_visible_rows, _items.size());
             }
 
             highlight_item();
@@ -366,7 +366,20 @@ namespace trview
         void Listbox::select_item(const Item& item)
         {
             _selected_item = item;
-            highlight_item();
+
+            // Scroll the list so that the selected item is visible. If it is already on the 
+            // same page, then no need to scroll.
+            auto index = std::find(_items.begin(), _items.end(), item) - _items.begin();
+            if (index < _current_top)
+            {
+                _current_top = index;
+            }
+            else if (index >= _current_top + _fully_visible_rows)
+            {
+                _current_top = index - _fully_visible_rows + 1;
+            }
+
+            populate_rows();
             on_item_selected(_selected_item.value());
         }
 
