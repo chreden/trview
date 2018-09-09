@@ -208,6 +208,11 @@ namespace trview
             return false;
         }
 
+        bool Control::key_down(uint16_t key)
+        {
+            return false;
+        }
+
         void Control::set_focus_control(Control* control)
         {
             if (_parent)
@@ -234,6 +239,28 @@ namespace trview
         void Control::set_handles_input(bool value)
         {
             _handles_input = value;
+        }
+
+        bool Control::keyboard_down(uint16_t key)
+        {
+            if (_focus_control && _focus_control != this)
+            {
+                bool focus_handled = _focus_control->keyboard_down(key);
+                if (focus_handled)
+                {
+                    return true;
+                }
+            }
+
+            bool handled = false;
+            for (auto& child : _child_elements)
+            {
+                handled |= child->keyboard_down(key);
+            }
+
+            // If none of the child elements have handled this event themselves, call the key_down
+            // event of the control.
+            return handled | key_down(key);
         }
 
         bool Control::is_mouse_over(const Point& position) const
