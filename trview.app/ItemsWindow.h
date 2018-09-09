@@ -57,6 +57,9 @@ namespace trview
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
 
+        /// Clear the currently selected item from the details panel.
+        void clear_selected_item();
+
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
 
@@ -71,18 +74,30 @@ namespace trview
         void populate_items(const std::vector<Item>& items);
         /// After the window has been resized, adjust the sizes of the child elements.
         void update_layout();
+        std::unique_ptr<ui::StackPanel> create_items_panel();
+        std::unique_ptr<ui::Control> create_divider();
+        std::unique_ptr<ui::StackPanel> create_details_panel();
+        void load_item_details(const Item& item);
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::Window> _ui;
+        ui::Window* _left_panel;
+        ui::Window* _divider;
+        ui::Window* _right_panel;
         ui::Window*  _controls;
         ui::Listbox* _items_list;
+        ui::Listbox* _stats_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         TokenStore _token_store;
 
         std::vector<Item> _all_items;
+        /// Whether the item window is tracking the current room.
         bool _track_room{ false };
+        /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
+        /// Whether the room tracking filter has been applied.
+        bool _filter_applied{ false };
     };
 }

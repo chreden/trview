@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <optional>
 
 #include <trview.common/TokenStore.h>
 
@@ -72,6 +73,11 @@ namespace trview
                 /// @param key The key to search for.
                 /// @returns The value for the key.
                 std::wstring value(const std::wstring& key) const;
+
+                /// Determines whether two items are equal.
+                /// @param other The item to compare.
+                /// @returns Whether the items are equal.
+                bool operator == (const Item& other) const;
             private:
                 std::unordered_map<std::wstring, std::wstring> _values;
             };
@@ -79,7 +85,8 @@ namespace trview
             /// Create a new Listbox.
             /// @param position The position of the listbox.
             /// @param size The size of the listbox.
-            Listbox(const Point& position, const Size& size);
+            /// @param background_colour The background colour for the list box.
+            Listbox(const Point& position, const Size& size, const Colour& background_colour);
 
             /// Destructor for Listbox.
             virtual ~Listbox();
@@ -92,17 +99,35 @@ namespace trview
             /// @param items The items to add to the list box.
             void set_items(const std::vector<Item>& items);
 
+            /// Set whether to show a scrollbar.
+            /// @param value Whether to show the scrollbar.
+            void set_show_scrollbar(bool value);
+
+            /// Set whether to show column headers.
+            /// @param value Whether to show column headers.
+            void set_show_headers(bool value);
+
+            /// Set whether to highlight rows.
+            /// @param value Whether to highlight rows.
+            void set_show_highlight(bool value);
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
         private:
+            /// Generate all child UI elements.
+            void generate_ui();
+            /// Generate the header element.
+            void generate_headers();
             /// Create the row UI elements to be populated.
             void generate_rows();
             /// Populate the row UI elements with the values from the current listbox item sort.
             void populate_rows();
             /// Sort the items according to the current sort method.
             void sort_items();
+
+            void highlight_item();
 
             std::vector<Column> _columns;
             std::vector<Item> _items;
@@ -113,7 +138,11 @@ namespace trview
             int32_t _current_top{ 0 };
             Column _current_sort;
             bool _current_sort_direction;
+            bool _show_scrollbar{ true };
+            bool _show_headers{ true };
+            bool _show_highlight{ true };
             TokenStore _token_store;
+            std::optional<Item> _selected_item;
         };
     }
 }

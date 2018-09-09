@@ -53,5 +53,13 @@ namespace trview
                 _text->set_text(text);
             }
         }
+
+        void Button::set_text_background_colour(const Colour& colour)
+        {
+            if (_text)
+            {
+                _text->set_background_colour(colour);
+            }
+        }
     }
 }

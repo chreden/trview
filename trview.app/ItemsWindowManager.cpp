@@ -54,6 +54,7 @@ namespace trview
         _items = items;
         for (auto& window : _windows)
         {
+            window->clear_selected_item();
             window->set_items(items);
         }
     }

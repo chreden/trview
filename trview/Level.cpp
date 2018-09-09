@@ -275,7 +275,7 @@ namespace trview
             _entities.push_back(std::move(entity));
 
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID));
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags);
         }
     }
 

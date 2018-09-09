@@ -4,8 +4,8 @@ namespace trview
 {
     namespace ui
     {
-        Scrollbar::Scrollbar(const Point& position, const Size& size)
-            : Window(position, size, Colour(1.0f, 0.4f, 0.4f, 0.4f))
+        Scrollbar::Scrollbar(const Point& position, const Size& size, const Colour& background_colour)
+            : Window(position, size, background_colour)
         {
             auto blob = std::make_unique<Window>(Point(), Size(size.width, 10), Colour(1.0f, 0.2f, 0.2f, 0.2f));
             _blob = blob.get();
