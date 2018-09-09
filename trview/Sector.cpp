@@ -57,6 +57,8 @@ namespace trview
         if (cur_index == 0x0)
             return true; 
 
+        const auto max_floordata = _level.num_floor_data();
+
         for (;;)
         {
             std::uint16_t floor = _level.get_floor_data(cur_index);
@@ -93,12 +95,14 @@ namespace trview
                 _trigger.type = (TriggerType) subfunction;
 
                 // Parse actions 
-                while ((command = _level.get_floor_data(++cur_index)) & 0x8000)
+                ++cur_index;
+                while (cur_index < max_floordata && ((command = _level.get_floor_data(cur_index)) & 0x8000))
                 {
                     _trigger.commands.emplace_back (
                         (TriggerCommandType) ((command & 0x7C00) >> 10),
                         command & 0x3FF
                     ); 
+                    ++cur_index;
                 }
 
                 flags |= SectorFlag::Trigger; 
