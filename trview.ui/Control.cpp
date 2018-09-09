@@ -7,6 +7,14 @@ namespace trview
 {
     namespace ui
     {
+        namespace
+        {
+            bool in_bounds(const Point& position, const Size& size)
+            {
+                return position.x >= 0 && position.y >= 0 && position.x <= size.width && position.y <= size.height;
+            }
+        }
+
         Control::Control(Point position, Size size)
             : _position(position), _size(size), _visible(true)
         {
@@ -40,6 +48,15 @@ namespace trview
 
         Point Control::position() const
         {
+            return _position;
+        }
+
+        Point Control::absolute_position() const
+        {
+            if (_parent)
+            {
+                return _position + _parent->absolute_position();
+            }
             return _position;
         }
 
@@ -93,10 +110,10 @@ namespace trview
             return output;
         }
 
-        bool Control::mouse_down(const Point& position)
+        bool Control::process_mouse_down(const Point& position)
         {
             // Bounds check - before child elements are checked.
-            if (!visible() || !(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!visible() || !in_bounds(position, _size))
             {
                 return false;
             }
@@ -105,11 +122,11 @@ namespace trview
             for (auto& child : _child_elements)
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->mouse_down(position - child->position());
+                handled |= child->process_mouse_down(position - child->position());
             }
 
             // If none of the child elements have handled this event themselves, call the 
-            // clicked function of this control.
+            // mouse_down function of this control.
             if (handled)
             {
                 return true;
@@ -117,7 +134,7 @@ namespace trview
 
             // Promote controls to focus control, or clear if there are no controls that 
             // accepted the event.
-            bool handled_by_self = _handles_input && clicked(position);
+            bool handled_by_self = _handles_input && mouse_down(position);
             if (handled_by_self)
             {
                 set_focus_control(this);
@@ -129,19 +146,23 @@ namespace trview
             return handled_by_self;
         }
 
-        bool Control::mouse_move(const Point& position)
+        bool Control::process_mouse_move(const Point& position)
         {
             if (_focus_control && _focus_control != this)
             {
-                bool focus_handled = _focus_control->mouse_move(position);
+                bool focus_handled = _focus_control->move(position - _focus_control->absolute_position());
                 if (focus_handled)
                 {
                     return true;
                 }
             }
+            return inner_process_mouse_move(position);
+        }
 
+        bool Control::inner_process_mouse_move(const Point& position)
+        {
             // Bounds check - before child elements are checked.
-            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!in_bounds(position, _size))
             {
                 return false;
             }
@@ -150,7 +171,7 @@ namespace trview
             for (auto& child : _child_elements)
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->mouse_move(position - child->position());
+                handled |= child->inner_process_mouse_move(position - child->position());
             }
 
             // If none of the child elements have handled this event themselves, call the 
@@ -158,10 +179,44 @@ namespace trview
             return handled | move(position);
         }
 
-        bool Control::mouse_up(const Point&)
+        bool Control::process_mouse_up(const Point& position)
         {
-            set_focus_control(nullptr);
-            return true;
+            if (_focus_control && _focus_control != this)
+            {
+                const auto control_space_position = position - _focus_control->absolute_position();
+                bool focus_handled = _focus_control->mouse_up(control_space_position);
+                if (focus_handled && in_bounds(control_space_position, _focus_control->size()))
+                {
+                    _focus_control->clicked(control_space_position);
+                }
+
+                set_focus_control(nullptr);
+
+                if (focus_handled)
+                {
+                    return true;
+                }
+            }
+            return inner_process_mouse_up(position);
+        }
+
+        bool Control::inner_process_mouse_up(const Point& position)
+        {
+            // Bounds check - before child elements are checked.
+            if (!in_bounds(position, _size))
+            {
+                return false;
+            }
+
+            bool handled = false;
+            for (auto& child : _child_elements)
+            {
+                // Convert the position into the coordinate space of the child element.
+                handled |= child->inner_process_mouse_up(position - child->position());
+            }
+
+            // If none of the child elements have handled this event themselves, call the up of the control.
+            return handled | mouse_up(position);
         }
 
         bool Control::mouse_scroll(const Point& position, int16_t delta)
@@ -176,7 +231,7 @@ namespace trview
             }
 
             // Bounds check - before child elements are checked.
-            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!in_bounds(position, _size))
             {
                 return false;
             }
@@ -193,6 +248,16 @@ namespace trview
             return handled | scroll(delta);
         }
 
+        bool Control::mouse_down(const Point&)
+        {
+            return false;
+        }
+
+        bool Control::mouse_up(const Point&)
+        {
+            return false;
+        }
+
         bool Control::clicked(Point)
         {
             return false;
@@ -203,12 +268,12 @@ namespace trview
             return false;
         }
 
-        bool Control::scroll(int delta)
+        bool Control::scroll(int)
         {
             return false;
         }
 
-        bool Control::key_down(uint16_t key)
+        bool Control::key_down(uint16_t)
         {
             return false;
         }
@@ -221,7 +286,16 @@ namespace trview
             }
             else
             {
-                _focus_control = control;
+                inner_set_focus_control(control);
+            }
+        }
+
+        void Control::inner_set_focus_control(Control* control)
+        {
+            _focus_control = control;
+            for (const auto& child : _child_elements)
+            {
+                child->inner_set_focus_control(control);
             }
         }
 
@@ -241,21 +315,26 @@ namespace trview
             _handles_input = value;
         }
 
-        bool Control::keyboard_down(uint16_t key)
+        bool Control::process_key_down(uint16_t key)
         {
             if (_focus_control && _focus_control != this)
             {
-                bool focus_handled = _focus_control->keyboard_down(key);
+                bool focus_handled = _focus_control->key_down(key);
                 if (focus_handled)
                 {
                     return true;
                 }
             }
 
+            return inner_process_key_down(key);
+        }
+
+        bool Control::inner_process_key_down(uint16_t key)
+        {
             bool handled = false;
             for (auto& child : _child_elements)
             {
-                handled |= child->keyboard_down(key);
+                handled |= child->inner_process_key_down(key);
             }
 
             // If none of the child elements have handled this event themselves, call the key_down
@@ -265,7 +344,7 @@ namespace trview
 
         bool Control::is_mouse_over(const Point& position) const
         {
-            if (!(position.x >= 0 && position.y >= 0 && position.x <= _size.width && position.y <= _size.height))
+            if (!in_bounds(position, _size))
             {
                 return false;
             }
