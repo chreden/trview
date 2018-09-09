@@ -292,6 +292,11 @@ namespace trlevel
         return _object_textures[index];
     }
 
+    uint32_t Level::num_floor_data() const
+    {
+        return _floor_data.size();
+    }
+
     uint16_t Level::get_floor_data(uint32_t index) const
     {
         return _floor_data[index];

@@ -72,6 +72,10 @@ namespace trlevel
         // Returns: The object texture.
         virtual tr_object_texture get_object_texture(uint32_t index) const override;
 
+        /// Get the number of floordata values in the level.
+        /// @returns The number of floordata values.
+        virtual uint32_t num_floor_data() const override;
+
         // Get the floor data at the specified index.
         // index: The index of the floor data to get.
         // Returns: The floor data.
