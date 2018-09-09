@@ -333,12 +333,9 @@ namespace trview
                 Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
 
                 const auto index = i + _current_top;
-                if (_show_highlight && index < _items.size() && _selected_item.has_value())
+                if (_show_highlight && index < _items.size() && _selected_item == _items[index])
                 {
-                    if (_items[index] == _selected_item.value())
-                    {
-                        colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
-                    }
+                    colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
                 }
 
                 const auto columns = rows[i]->child_elements();
