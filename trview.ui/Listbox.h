@@ -127,7 +127,7 @@ namespace trview
             void populate_rows();
             /// Sort the items according to the current sort method.
             void sort_items();
-
+            /// Select the given item and scroll to make it visible.
             void select_item(const Item& item);
 
             void highlight_item();
