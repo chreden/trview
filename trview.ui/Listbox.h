@@ -115,6 +115,7 @@ namespace trview
             Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
+            virtual bool key_down(uint16_t key) override;
         private:
             /// Generate all child UI elements.
             void generate_ui();
@@ -126,6 +127,8 @@ namespace trview
             void populate_rows();
             /// Sort the items according to the current sort method.
             void sort_items();
+
+            void select_item(const Item& item);
 
             void highlight_item();
 

@@ -148,9 +148,7 @@ namespace trview
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
                     _token_store.add(button->on_click += [this, index]()
                     {
-                        _selected_item = _items[index + _current_top];
-                        highlight_item();
-                        on_item_selected(_selected_item.value());
+                        select_item(_items[index + _current_top]);
                     });
                     row->add_child(std::move(button));
                 }
@@ -259,6 +257,47 @@ namespace trview
             return true;
         }
 
+        bool Listbox::key_down(uint16_t key)
+        {
+            if (key != VK_UP && key != VK_DOWN)
+            {
+                return false;
+            }
+
+            // Find the selected item in the list.
+            auto item = std::find(_items.begin(), _items.end(), _selected_item);
+
+            // If the item isn't in the list but there are items in the list, select the first item in the list.
+            if (item == _items.end())
+            {
+                if (!_items.empty())
+                {
+                    select_item(_items.front());
+                }
+            }
+            else 
+            {
+                // Go up if possible (not already at the start of the list)
+                if (key == VK_UP)
+                {
+                    if (item == _items.begin())
+                    {
+                        return false;
+                    }
+                    select_item(*--item);
+                    return true;
+                }
+
+                // Go down if possible (not at the end of the list).
+                if (key == VK_DOWN && ++item != _items.end())
+                {
+                    select_item(*item);
+                    return true;
+                }
+            }
+            return true;
+        }
+
         void Listbox::set_show_scrollbar(bool value)
         {
             _show_scrollbar = value;
@@ -322,6 +361,13 @@ namespace trview
 
             _headers_element = headers_element.get();
             add_child(std::move(headers_element));
+        }
+
+        void Listbox::select_item(const Item& item)
+        {
+            _selected_item = item;
+            highlight_item();
+            on_item_selected(_selected_item.value());
         }
 
         void Listbox::highlight_item()
