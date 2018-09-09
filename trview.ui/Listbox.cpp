@@ -327,7 +327,7 @@ namespace trview
         void Listbox::highlight_item()
         {
             const auto rows = _rows_element->child_elements();
-            for (uint32_t i = 0; i < rows.size(); ++i)
+            for (auto i = 0; i < rows.size(); ++i)
             {
                 // Default colour - not highlighted.
                 Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
