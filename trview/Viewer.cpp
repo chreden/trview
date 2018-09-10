@@ -276,15 +276,15 @@ namespace trview
             }
         });
 
-        _token_store.add(_mouse.mouse_up += [&](auto) { _control->mouse_up(client_cursor_position(_window)); });
-        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _control->mouse_move(client_cursor_position(_window)); });
+        _token_store.add(_mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(_window)); });
+        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(_window)); });
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
         _token_store.add(_mouse.mouse_down += [&](Mouse::Button)
         {
             // The client mouse coordinate is already relative to the root window (at present).
-            _control->mouse_down(client_cursor_position(_window));
+            _control->process_mouse_down(client_cursor_position(_window));
         });
     }
 

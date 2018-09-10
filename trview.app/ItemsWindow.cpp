@@ -87,11 +87,11 @@ namespace trview
         });
         generate_ui();
 
-        _token_store.add(_mouse.mouse_up += [&](auto) { _ui->mouse_up(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); });
+        _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
-        _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->keyboard_down(key); });
+        _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); });
     }
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -185,7 +185,7 @@ namespace trview
         _left_panel->set_size(Size(_left_panel->size().width, new_height));
         _divider->set_size(Size(_divider->size().width, new_height));
         _right_panel->set_size(Size(_right_panel->size().width, new_height));
-        _items_list->set_size(Size(_items_list->size().width, new_height - _items_list->position().y));
+        _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
     std::unique_ptr<ui::StackPanel> ItemsWindow::create_items_panel()
@@ -232,6 +232,9 @@ namespace trview
 
         _items_list = items_list.get();
         left_panel->add_child(std::move(items_list));
+
+        // Fix items list size now that it has been added to the panel.
+        _items_list->set_size(Size(200, left_panel->size().height - _items_list->position().y));
 
         _left_panel = left_panel.get();
         return left_panel;
