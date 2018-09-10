@@ -52,6 +52,8 @@ namespace trview
             /// @param enabled Whether the checkbox is enabled.
             void set_enabled(bool enabled);
         protected:
+            virtual bool mouse_down(const Point& position) override;
+            virtual bool mouse_up(const Point& position) override;
             virtual bool clicked(Point position) override;
         private:
             void create_image(const Size& size, const Colour& colour);

@@ -60,6 +60,8 @@ namespace trview
             /// @param colour The background colour.
             void set_text_background_colour(const Colour& colour);
         protected:
+            virtual bool mouse_down(const Point& position) override;
+            virtual bool mouse_up(const Point& position) override;
             virtual bool clicked(Point position) override;
         private:
             graphics::Texture _up_image;

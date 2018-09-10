@@ -39,6 +39,16 @@ namespace trview
             set_blob_position(value);
         }
 
+        bool Slider::mouse_down(const Point&)
+        {
+            return true;
+        }
+
+        bool Slider::mouse_up(const Point&)
+        {
+            return true;
+        }
+
         bool Slider::clicked(Point position)
         {
             set_blob_position(position);
