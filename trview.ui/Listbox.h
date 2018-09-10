@@ -115,6 +115,7 @@ namespace trview
             Event<Item> on_item_selected;
         protected:
             virtual bool scroll(int delta) override;
+            virtual bool key_down(uint16_t key) override;
         private:
             /// Generate all child UI elements.
             void generate_ui();
@@ -126,6 +127,8 @@ namespace trview
             void populate_rows();
             /// Sort the items according to the current sort method.
             void sort_items();
+            /// Select the given item and scroll to make it visible.
+            void select_item(const Item& item);
 
             void highlight_item();
 
@@ -143,6 +146,7 @@ namespace trview
             bool _show_highlight{ true };
             TokenStore _token_store;
             std::optional<Item> _selected_item;
+            uint32_t _fully_visible_rows{ 0u };
         };
     }
 }

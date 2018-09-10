@@ -77,7 +77,7 @@ namespace trview
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
         : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
-        _mouse(window())
+        _mouse(window()), _keyboard(window())
     {
         _token_store.add(_window_resizer.on_resize += [=]()
         {
@@ -91,6 +91,7 @@ namespace trview
         _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->mouse_move(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->mouse_down(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
+        _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->keyboard_down(key); });
     }
 
     void ItemsWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)

@@ -148,9 +148,7 @@ namespace trview
                     auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
                     _token_store.add(button->on_click += [this, index]()
                     {
-                        _selected_item = _items[index + _current_top];
-                        highlight_item();
-                        on_item_selected(_selected_item.value());
+                        select_item(_items[index + _current_top]);
                     });
                     row->add_child(std::move(button));
                 }
@@ -165,7 +163,7 @@ namespace trview
                 return;
             }
 
-            int32_t fully_visible_rows = 0;
+            _fully_visible_rows = 0;
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
@@ -178,7 +176,7 @@ namespace trview
 
                     if (rows[r]->position().y + rows[r]->size().height <= _rows_element->size().height)
                     {
-                        ++fully_visible_rows;
+                        ++_fully_visible_rows;
                     }
 
                     const auto& item = _items[r + _current_top];
@@ -196,7 +194,7 @@ namespace trview
 
             if (!_items.empty() && _rows_scrollbar)
             {
-                _rows_scrollbar->set_range(_current_top, _current_top + fully_visible_rows, _items.size());
+                _rows_scrollbar->set_range(_current_top, _current_top + _fully_visible_rows, _items.size());
             }
 
             highlight_item();
@@ -256,6 +254,47 @@ namespace trview
 
             _current_top = std::max(0, _current_top + direction);
             populate_rows();
+            return true;
+        }
+
+        bool Listbox::key_down(uint16_t key)
+        {
+            if (key != VK_UP && key != VK_DOWN)
+            {
+                return false;
+            }
+
+            // Find the selected item in the list.
+            auto item = std::find(_items.begin(), _items.end(), _selected_item);
+
+            // If the item isn't in the list but there are items in the list, select the first item in the list.
+            if (item == _items.end())
+            {
+                if (!_items.empty())
+                {
+                    select_item(_items.front());
+                }
+            }
+            else 
+            {
+                // Go up if possible (not already at the start of the list)
+                if (key == VK_UP)
+                {
+                    if (item == _items.begin())
+                    {
+                        return false;
+                    }
+                    select_item(*--item);
+                    return true;
+                }
+
+                // Go down if possible (not at the end of the list).
+                if (key == VK_DOWN && ++item != _items.end())
+                {
+                    select_item(*item);
+                    return true;
+                }
+            }
             return true;
         }
 
@@ -322,6 +361,26 @@ namespace trview
 
             _headers_element = headers_element.get();
             add_child(std::move(headers_element));
+        }
+
+        void Listbox::select_item(const Item& item)
+        {
+            _selected_item = item;
+
+            // Scroll the list so that the selected item is visible. If it is already on the 
+            // same page, then no need to scroll.
+            auto index = std::find(_items.begin(), _items.end(), item) - _items.begin();
+            if (index < _current_top)
+            {
+                _current_top = index;
+            }
+            else if (index >= _current_top + _fully_visible_rows)
+            {
+                _current_top = index - _fully_visible_rows + 1;
+            }
+
+            populate_rows();
+            on_item_selected(_selected_item.value());
         }
 
         void Listbox::highlight_item()

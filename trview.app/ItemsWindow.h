@@ -6,6 +6,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
 #include <trview.input/Mouse.h>
+#include <trview.input/Keyboard.h>
 #include <trview.common/TokenStore.h>
 #include <trview.ui/Listbox.h>
 #include "WindowResizer.h"
@@ -90,6 +91,7 @@ namespace trview
         ui::Listbox* _stats_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
+        input::Keyboard _keyboard;
         TokenStore _token_store;
 
         std::vector<Item> _all_items;

@@ -117,6 +117,11 @@ namespace trview
             /// @param value Whether the control handles input.
             void set_handles_input(bool value);
 
+            /// Process a key down event.
+            /// @param key The key that was pressed down.
+            /// @returns True if the event was processed by the control.
+            bool keyboard_down(uint16_t key);
+
             /// Set the size of the control.
             /// @param size The new size of the control.
             void set_size(Size size);
@@ -159,6 +164,12 @@ namespace trview
             /// This should be overiden by child elements to handle a scroll.
             /// @param delta The mouse scroll delta.
             virtual bool scroll(int delta);
+
+            /// To be called when a key was pressed.
+            /// This should be overidden by child elements to handle a key down event.
+            /// @param key The key that was pressed.
+            /// @returns True if the key event was handled.
+            virtual bool key_down(uint16_t key);
 
             /// Set the control in the tree that has focus.
             /// @param control The current focus control
