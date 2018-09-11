@@ -27,6 +27,16 @@ namespace trview
         {
         }
 
+        bool Button::mouse_down(const Point&)
+        {
+            return true;
+        }
+
+        bool Button::mouse_up(const Point&)
+        {
+            return true;
+        }
+
         bool Button::clicked(Point)
         {
             on_click();

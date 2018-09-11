@@ -25,9 +25,28 @@ namespace trview
             _blob->set_position(Point(0, range_start_percentage * current_size.height));
         }
 
+        bool Scrollbar::mouse_down(const Point&)
+        {
+            return true;
+        }
+
+        bool Scrollbar::mouse_up(const Point&)
+        {
+            return true;
+        }
+
+        bool Scrollbar::move(Point position)
+        {
+            if (focus_control() == this)
+            {
+                return clicked(position);
+            }
+            return false;
+        }
+
         bool Scrollbar::clicked(Point position)
         {
-            on_scroll(position.y / size().height);
+            on_scroll(std::clamp(position.y / size().height, 0.0f, 1.0f));
             return true;
         }
     }

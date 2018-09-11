@@ -50,6 +50,16 @@ namespace trview
             add_child(std::move(outer));
         }
 
+        bool Checkbox::mouse_down(const Point&)
+        {
+            return true;
+        }
+
+        bool Checkbox::mouse_up(const Point&)
+        {
+            return true;
+        }
+
         bool Checkbox::clicked(Point)
         {
             set_state(!_state);
