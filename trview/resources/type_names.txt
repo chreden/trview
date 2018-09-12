@@ -2212,6 +2212,9 @@
 				"id": 39,
 				"name": "Von Croy"
 			}, {
+				"id": 47,
+				"name": "Mummy"
+			}, {
 				"id": 73,
 				"name": "Boar"
 			}, {
@@ -2248,6 +2251,9 @@
 				"id": 134,
 				"name": "Rolling Spikes"
 			}, {
+				"id": 136,
+				"name": "Rotating blade"
+			}, {
 				"id": 143,
 				"name": "Flame emitter"
 			}, {
@@ -2263,6 +2269,12 @@
 				"id": 151,
 				"name": "Raising block"
 			}, {
+				"id": 152,
+				"name": "Raising block"
+			}, {
+				"id": 156,
+				"name": "Pushable 1"
+			}, {
 				"id": 172,
 				"name": "Blade"
 			}, {
@@ -2271,6 +2283,12 @@
 			}, {
 				"id": 176,
 				"name": "Puzzle 2"
+			}, {
+				"id": 177,
+				"name": "Puzzle 3"
+			}, {
+				"id": 178,
+				"name": "Puzzle 4"
 			}, {
 				"id": 187,
 				"name": "Puzzle 1 Combo 1"
@@ -2283,6 +2301,12 @@
 			}, {
 				"id": 261,
 				"name": "Slot 2"
+			}, {
+				"id": 262,
+				"name": "Slot 3"
+			}, {
+				"id": 263,
+				"name": "Slot 4"
 			}, {
 				"id": 306,
 				"name": "Switch 1"
@@ -2326,6 +2350,9 @@
 				"id": 336,
 				"name": "Bridge (flat)"
 			}, {
+				"id": 344,
+				"name": "Cutscene"
+			}, {
 				"id": 349,
 				"name": "Pistols"
 			}, {
@@ -2358,6 +2385,9 @@
 			}, {
 				"id": 375,
 				"name": "Compass"
+			}, {
+				"id": 383,
+				"name": "Earthquake"
 			}, {
 				"id": 385,
 				"name": "Waterfall Mist"
