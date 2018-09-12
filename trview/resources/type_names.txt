@@ -2221,6 +2221,9 @@
 				"id": 41,
 				"name": "Enemy 1"
 			}, {
+				"id": 43,
+				"name": "Enemy 2"
+			}, {
 				"id": 47,
 				"name": "Mummy"
 			}, {
@@ -2269,6 +2272,9 @@
 				"id": 136,
 				"name": "Rotating blade"
 			}, {
+				"id": 138,
+				"name": "Hammer"
+			}, {
 				"id": 143,
 				"name": "Flame emitter"
 			}, {
@@ -2292,6 +2298,9 @@
 			}, {
 				"id": 156,
 				"name": "Pushable 1"
+			}, {
+				"id": 165,
+				"name": "Obelisk"
 			}, {
 				"id": 172,
 				"name": "Blade"
@@ -2329,14 +2338,38 @@
 				"id": 263,
 				"name": "Slot 4"
 			}, {
+				"id": 285,
+				"name": "Lock 2"
+			}, {
 				"id": 306,
 				"name": "Switch 1"
 			}, {
 				"id": 307,
 				"name": "Switch 2"
 			}, {
+				"id": 308,
+				"name": "Switch 3"
+			}, {
+				"id": 309,
+				"name": "Switch 4"
+			}, {
+				"id": 310,
+				"name": "Switch 5"
+			}, {
+				"id": 311,
+				"name": "Switch 6"
+			}, {
+				"id": 312,
+				"name": "Switch 7"
+			}, {
+				"id": 313,
+				"name": "Switch 8"
+			}, {
 				"id": 315,
 				"name": "Lever (underwater)"
+			}, {
+				"id": 316,
+				"name": "Turn lever"
 			}, {
 				"id": 317,
 				"name": "Wheel lever"
