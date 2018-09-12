@@ -2251,6 +2251,9 @@
 				"id": 87,
 				"name": "Wraith 2"
 			}, {
+				"id": 88,
+				"name": "Wraith 3"
+			}, {
 				"id": 90,
 				"name": "Bat"
 			}, {
@@ -2346,6 +2349,9 @@
 			}, {
 				"id": 152,
 				"name": "Raising block"
+			}, {
+				"id": 153,
+				"name": "Expanding platform"
 			}, {
 				"id": 156,
 				"name": "Pushable 1"
