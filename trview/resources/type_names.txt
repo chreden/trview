@@ -2236,8 +2236,14 @@
 				"id": 51,
 				"name": "Crocodile"
 			}, {
+				"id": 53,
+				"name": "Horseman"
+			}, {
 				"id": 57,
 				"name": "Jean Yves"
+			}, {
+				"id": 65,
+				"name": "Horse"
 			}, {
 				"id": 73,
 				"name": "Boar"
@@ -2302,6 +2308,9 @@
 				"id": 124,
 				"name": "Trapdoor 3"
 			}, {
+				"id": 125,
+				"name": "Trapdoor 4"
+			}, {
 				"id": 130,
 				"name": "Boulder"
 			}, {
@@ -2311,6 +2320,9 @@
 				"id": 134,
 				"name": "Rolling Spikes"
 			}, {
+				"id": 135,
+				"name": "Flame emitter"
+			}, {
 				"id": 136,
 				"name": "Rotating blade"
 			}, {
@@ -2319,6 +2331,12 @@
 			}, {
 				"id": 138,
 				"name": "Hammer"
+			}, {
+				"id": 139,
+				"name": "Burning floor"
+			}, {
+				"id": 140,
+				"name": "Cog"
 			}, {
 				"id": 141,
 				"name": "Spike ball"
@@ -2365,6 +2383,9 @@
 				"id": 159,
 				"name": "Pushable 4"
 			}, {
+				"id": 160,
+				"name": "Pushable 5"
+			}, {
 				"id": 164,
 				"name": "Mapper"
 			}, {
@@ -2403,6 +2424,18 @@
 			}, {
 				"id": 181,
 				"name": "Puzzle 7"
+			}, {
+				"id": 182,
+				"name": "Puzzle 8"
+			}, {
+				"id": 183,
+				"name": "Puzzle 9"
+			}, {
+				"id": 184,
+				"name": "Puzzle 10"
+			}, {
+				"id": 185,
+				"name": "Puzzle 11"
 			}, {
 				"id": 187,
 				"name": "Puzzle 1 Combo 1"
@@ -2454,6 +2487,9 @@
 			}, {
 				"id": 244,
 				"name": "Examine 2"
+			}, {
+				"id": 245,
+				"name": "Examine 3"
 			}, {
 				"id": 246,
 				"name": "Crowbar"
@@ -2700,6 +2736,9 @@
 			}, {
 				"id": 425,
 				"name": "Waterfall"
+			}, {
+				"id": 426,
+				"name": "Planet effect"
 			}, {
 				"id": 427,
 				"name": "Animating 1"
