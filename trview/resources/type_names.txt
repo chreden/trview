@@ -2245,6 +2245,9 @@
 				"id": 118,
 				"name": "Breakable Tile"
 			}, {
+				"id": 120,
+				"name": "Breakable wall"
+			}, {
 				"id": 122,
 				"name": "Trapdoor 1"
 			}, {
@@ -2329,6 +2332,9 @@
 				"id": 318,
 				"name": "Lever"
 			}, {
+				"id": 319,
+				"name": "Jump lever"
+			}, {
 				"id": 321,
 				"name": "Pulley"
 			}, {
@@ -2366,13 +2372,13 @@
 				"name": "Pistols"
 			}, {
 				"id": 350,
-				"name": "PistolAmmo"
+				"name": "Pistol Ammo"
 			}, {
 				"id": 351,
 				"name": "Uzis"
 			}, {
 				"id": 352,
-				"name": "UziAmmo"
+				"name": "Uzi Ammo"
 			}, {
 				"id": 353,
 				"name": "Shotgun"
@@ -2382,6 +2388,12 @@
 			}, {
 				"id": 355,
 				"name": "Shotgun ammo (blue)"
+			}, {
+				"id": 357,
+				"name": "Crossbow ammo"
+			}, {
+				"id": 362,
+				"name": "Grenades"
 			}, {
 				"id": 363,
 				"name": "Grenades (super)"
