@@ -2233,6 +2233,15 @@
 				"id": 73,
 				"name": "Boar"
 			}, {
+				"id": 83,
+				"name": "Scarab"
+			}, {
+				"id": 86,
+				"name": "Wraith 1"
+			}, {
+				"id": 87,
+				"name": "Wraith 2"
+			}, {
 				"id": 90,
 				"name": "Bat"
 			}, {
@@ -2241,6 +2250,21 @@
 			}, {
 				"id": 106,
 				"name": "Scorpion"
+			}, {
+				"id": 108,
+				"name": "Senet (red)"
+			}, {
+				"id": 109,
+				"name": "Senet (green)"
+			}, {
+				"id": 110,
+				"name": "Senet (blue)"
+			}, {
+				"id": 111,
+				"name": "Senet (enemy)"
+			}, {
+				"id": 112,
+				"name": "Tile spinner"
 			}, {
 				"id": 114,
 				"name": "Dart"
@@ -2278,6 +2302,9 @@
 				"id": 136,
 				"name": "Rotating blade"
 			}, {
+				"id": 137,
+				"name": "Blade ring"
+			}, {
 				"id": 138,
 				"name": "Hammer"
 			}, {
@@ -2308,6 +2335,15 @@
 				"id": 156,
 				"name": "Pushable 1"
 			}, {
+				"id": 157,
+				"name": "Pushable 2"
+			}, {
+				"id": 158,
+				"name": "Pushable 3"
+			}, {
+				"id": 159,
+				"name": "Pushable 4"
+			}, {
 				"id": 165,
 				"name": "Obelisk"
 			}, {
@@ -2326,14 +2362,32 @@
 				"id": 178,
 				"name": "Puzzle 4"
 			}, {
+				"id": 179,
+				"name": "Puzzle 5"
+			}, {
 				"id": 187,
 				"name": "Puzzle 1 Combo 1"
 			}, {
 				"id": 188,
 				"name": "Puzzle 1 Combo 2"
 			}, {
+				"id": 193,
+				"name": "Puzzle 4 Combo 1"
+			}, {
+				"id": 194,
+				"name": "Puzzle 4 Combo 2"
+			}, {
 				"id": 204,
 				"name": "Key 2"
+			}, {
+				"id": 243,
+				"name": "Examine 1"
+			}, {
+				"id": 244,
+				"name": "Examine 2"
+			}, {
+				"id": 247,
+				"name": "Torch"
 			}, {
 				"id": 260,
 				"name": "Slot 1"
@@ -2346,6 +2400,9 @@
 			}, {
 				"id": 263,
 				"name": "Slot 4"
+			}, {
+				"id": 264,
+				"name": "Slot 5"
 			}, {
 				"id": 285,
 				"name": "Lock 2"
@@ -2419,11 +2476,17 @@
 				"id": 334,
 				"name": "Underwater door"
 			}, {
+				"id": 335,
+				"name": "Double doors"
+			}, {
 				"id": 336,
 				"name": "Bridge (flat)"
 			}, {
 				"id": 344,
 				"name": "Cutscene"
+			}, {
+				"id": 346,
+				"name": "Face"
 			}, {
 				"id": 349,
 				"name": "Pistols"
@@ -2461,8 +2524,14 @@
 				"id": 363,
 				"name": "Grenades (super)"
 			}, {
+				"id": 364,
+				"name": "Grenades (flash)"
+			}, {
 				"id": 368,
 				"name": "Large medipack"
+			}, {
+				"id": 367,
+				"name": "Revolver ammo"
 			}, {
 				"id": 369,
 				"name": "Small medipack"
