@@ -2206,11 +2206,20 @@
 				"id": 3,
 				"name": "LaraShotgunAnim"
 			}, {
+				"id": 32,
+				"name": "Jeep"
+			}, {
+				"id": 34,
+				"name": "Enemy jeep"
+			}, {
 				"id": 37,
 				"name": "Guide"
 			}, {
 				"id": 39,
 				"name": "Von Croy"
+			}, {
+				"id": 41,
+				"name": "Enemy 1"
 			}, {
 				"id": 47,
 				"name": "Mummy"
@@ -2373,6 +2382,9 @@
 			}, {
 				"id": 355,
 				"name": "Shotgun ammo (blue)"
+			}, {
+				"id": 363,
+				"name": "Grenades (super)"
 			}, {
 				"id": 368,
 				"name": "Large medipack"
