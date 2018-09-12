@@ -1467,13 +1467,13 @@
 				"name": "Flamethrower Guy"
 			}, {
 				"id": 51,
-				"name": "London Guard (Handgun)"
+				"name": "Guard (MP5)"
 			}, {
 				"id": 53,
 				"name": "Punk"
 			}, {
 				"id": 56,
-				"name": "London Guard (MP5)"
+				"name": "Guard (Handgun)"
 			}, {
 				"id": 57,
 				"name": "Sophia Leigh"
