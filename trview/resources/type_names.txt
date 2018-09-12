@@ -2233,6 +2233,9 @@
 				"id": 51,
 				"name": "Crocodile"
 			}, {
+				"id": 57,
+				"name": "Jean Yves"
+			}, {
 				"id": 73,
 				"name": "Boar"
 			}, {
@@ -2580,6 +2583,9 @@
 			}, {
 				"id": 369,
 				"name": "Small medipack"
+			}, {
+				"id": 370,
+				"name": "Lasersight"
 			}, {
 				"id": 373,
 				"name": "Flares"
