@@ -2410,6 +2410,9 @@
 				"id": 244,
 				"name": "Examine 2"
 			}, {
+				"id": 246,
+				"name": "Crowbar"
+			}, {
 				"id": 247,
 				"name": "Torch"
 			}, {
@@ -2476,6 +2479,9 @@
 				"id": 319,
 				"name": "Jump lever"
 			}, {
+				"id": 320,
+				"name": "Crowbar lever"
+			}, {
 				"id": 321,
 				"name": "Pulley"
 			}, {
@@ -2502,6 +2508,12 @@
 			}, {
 				"id": 329,
 				"name": "Door 8"
+			}, {
+				"id": 330,
+				"name": "Push/pull door 1"
+			}, {
+				"id": 332,
+				"name": "Kick door 1"
 			}, {
 				"id": 334,
 				"name": "Underwater door"
@@ -2547,6 +2559,9 @@
 			}, {
 				"id": 359,
 				"name": "Bolts (explosive)"
+			}, {
+				"id": 361,
+				"name": "Grenade Launcher"
 			}, {
 				"id": 362,
 				"name": "Grenades"
