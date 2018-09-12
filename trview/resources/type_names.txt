@@ -2461,6 +2461,9 @@
 				"id": 247,
 				"name": "Torch"
 			}, {
+				"id": 256,
+				"name": "Quest Item 5"
+			}, {
 				"id": 260,
 				"name": "Slot 1"
 			}, {
@@ -2595,6 +2598,9 @@
 			}, {
 				"id": 336,
 				"name": "Bridge (flat)"
+			}, {
+				"id": 339,
+				"name": "Sarcophagus"
 			}, {
 				"id": 344,
 				"name": "Cutscene"
