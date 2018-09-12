@@ -2233,6 +2233,9 @@
 				"id": 73,
 				"name": "Boar"
 			}, {
+				"id": 90,
+				"name": "Bat"
+			}, {
 				"id": 91,
 				"name": "Dog"
 			}, {
@@ -2260,6 +2263,9 @@
 				"id": 123,
 				"name": "Trapdoor 2"
 			}, {
+				"id": 124,
+				"name": "Trapdoor 3"
+			}, {
 				"id": 130,
 				"name": "Boulder"
 			}, {
@@ -2286,6 +2292,9 @@
 			}, {
 				"id": 146,
 				"name": "Rope"
+			}, {
+				"id": 148,
+				"name": "Pole"
 			}, {
 				"id": 150,
 				"name": "Platform"
@@ -2438,10 +2447,13 @@
 				"name": "Shotgun ammo (blue)"
 			}, {
 				"id": 357,
-				"name": "Crossbow ammo"
+				"name": "Bolts"
 			}, {
 				"id": 358,
-				"name": "Crossbow ammo (poison)"
+				"name": "Bolts (poison)"
+			}, {
+				"id": 359,
+				"name": "Bolts (explosive)"
 			}, {
 				"id": 362,
 				"name": "Grenades"
