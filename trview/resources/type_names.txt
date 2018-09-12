@@ -2206,6 +2206,12 @@
 				"id": 3,
 				"name": "LaraShotgunAnim"
 			}, {
+				"id": 39,
+				"name": "Von Croy"
+			}, {
+				"id": 73,
+				"name": "Boar"
+			}, {
 				"id": 114,
 				"name": "Dart"
 			}, {
@@ -2229,6 +2235,18 @@
 			}, {
 				"id": 132,
 				"name": "Spikes"
+			}, {
+				"id": 144,
+				"name": "Flame emitter 2"
+			}, {
+				"id": 146,
+				"name": "Rope"
+			}, {
+				"id": 175,
+				"name": "Puzzle 1"
+			}, {
+				"id": 318,
+				"name": "Lever"
 			}, {
 				"id": 322,
 				"name": "Door 1"
@@ -2254,6 +2272,9 @@
 				"id": 329,
 				"name": "Door 8"
 			}, {
+				"id": 336,
+				"name": "Bridge (flat)"
+			}, {
 				"id": 349,
 				"name": "Pistols"
 			}, {
@@ -2270,10 +2291,10 @@
 				"name": "Shotgun"
 			}, {
 				"id": 368,
-				"name": "LargeMedipack"
+				"name": "Large Medipack"
 			}, {
 				"id": 369,
-				"name": "SmallMedipack"
+				"name": "Small Medipack"
 			}, {
 				"id": 375,
 				"name": "Compass"
@@ -2281,9 +2302,51 @@
 				"id": 385,
 				"name": "Waterfall Mist"
 			}, {
+				"id": 397,
+				"name": "Lens flare"
+			}, {
+				"id": 402,
+				"name": "AI Follow"
+			}, {
+				"id": 408,
+				"name": "Trigger triggerer"
+			}, {
 				"id": 422,
 				"name": "Camera Target"
-			}
+			}, {
+				"id": 425,
+				"name": "Waterfall"
+			}, {
+				"id": 427,
+				"name": "Animating 1"
+			}, {
+				"id": 429,
+				"name": "Animating 2"
+			}, {
+				"id": 431,
+				"name": "Animating 3"
+			}, {
+				"id": 433,
+				"name": "Animating 4"
+			}, {
+				"id": 435,
+				"name": "Animating 5"
+			}, {
+				"id": 437,
+				"name": "Animating 6"
+			}, {
+				"id": 451,
+				"name": "Animating 13"
+			}, {
+				"id": 453,
+				"name": "Animating 14"
+			}, {
+				"id": 455,
+				"name": "Animating 15"
+			}, {
+                "id": 457,
+                "name" : "Animating 16"
+            }
 		],
 		"tr5": [{
 				"id": 0,
