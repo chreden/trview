@@ -2224,6 +2224,9 @@
 				"id": 47,
 				"name": "Mummy"
 			}, {
+				"id": 51,
+				"name": "Crocodile"
+			}, {
 				"id": 73,
 				"name": "Boar"
 			}, {
@@ -2272,6 +2275,9 @@
 				"id": 144,
 				"name": "Flame emitter"
 			}, {
+				"id": 145,
+				"name": "Flame emitter"
+			}, {
 				"id": 146,
 				"name": "Rope"
 			}, {
@@ -2308,6 +2314,9 @@
 				"id": 188,
 				"name": "Puzzle 1 Combo 2"
 			}, {
+				"id": 204,
+				"name": "Key 2"
+			}, {
 				"id": 260,
 				"name": "Slot 1"
 			}, {
@@ -2322,6 +2331,9 @@
 			}, {
 				"id": 306,
 				"name": "Switch 1"
+			}, {
+				"id": 307,
+				"name": "Switch 2"
 			}, {
 				"id": 315,
 				"name": "Lever (underwater)"
@@ -2362,6 +2374,9 @@
 				"id": 329,
 				"name": "Door 8"
 			}, {
+				"id": 334,
+				"name": "Underwater door"
+			}, {
 				"id": 336,
 				"name": "Bridge (flat)"
 			}, {
@@ -2391,6 +2406,9 @@
 			}, {
 				"id": 357,
 				"name": "Crossbow ammo"
+			}, {
+				"id": 358,
+				"name": "Crossbow ammo (poison)"
 			}, {
 				"id": 362,
 				"name": "Grenades"
