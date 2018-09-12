@@ -2227,6 +2227,9 @@
 				"id": 47,
 				"name": "Mummy"
 			}, {
+				"id": 49,
+				"name": "Guardian"
+			}, {
 				"id": 51,
 				"name": "Crocodile"
 			}, {
@@ -2308,6 +2311,9 @@
 				"id": 138,
 				"name": "Hammer"
 			}, {
+				"id": 141,
+				"name": "Spike ball"
+			}, {
 				"id": 143,
 				"name": "Flame emitter"
 			}, {
@@ -2344,8 +2350,20 @@
 				"id": 159,
 				"name": "Pushable 4"
 			}, {
+				"id": 164,
+				"name": "Mapper"
+			}, {
 				"id": 165,
 				"name": "Obelisk"
+			}, {
+				"id": 166,
+				"name": "Blade trap"
+			}, {
+				"id": 169,
+				"name": "Blade trap"
+			}, {
+				"id": 171,
+				"name": "Pedestal blades"
 			}, {
 				"id": 172,
 				"name": "Blade"
@@ -2364,6 +2382,12 @@
 			}, {
 				"id": 179,
 				"name": "Puzzle 5"
+			}, {
+				"id": 180,
+				"name": "Puzzle 6"
+			}, {
+				"id": 181,
+				"name": "Puzzle 7"
 			}, {
 				"id": 187,
 				"name": "Puzzle 1 Combo 1"
@@ -2403,6 +2427,12 @@
 			}, {
 				"id": 264,
 				"name": "Slot 5"
+			}, {
+				"id": 265,
+				"name": "Slot 6"
+			}, {
+				"id": 266,
+				"name": "Slot 7"
 			}, {
 				"id": 285,
 				"name": "Lock 2"
