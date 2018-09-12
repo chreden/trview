@@ -2206,11 +2206,20 @@
 				"id": 3,
 				"name": "LaraShotgunAnim"
 			}, {
+				"id": 37,
+				"name": "Guide"
+			}, {
 				"id": 39,
 				"name": "Von Croy"
 			}, {
 				"id": 73,
 				"name": "Boar"
+			}, {
+				"id": 91,
+				"name": "Dog"
+			}, {
+				"id": 106,
+				"name": "Scorpion"
 			}, {
 				"id": 114,
 				"name": "Dart"
@@ -2236,26 +2245,59 @@
 				"id": 132,
 				"name": "Spikes"
 			}, {
+				"id": 134,
+				"name": "Rolling Spikes"
+			}, {
+				"id": 143,
+				"name": "Flame emitter"
+			}, {
 				"id": 144,
-				"name": "Flame emitter 2"
+				"name": "Flame emitter"
 			}, {
 				"id": 146,
 				"name": "Rope"
 			}, {
+				"id": 150,
+				"name": "Platform"
+			}, {
+				"id": 151,
+				"name": "Raising block"
+			}, {
+				"id": 172,
+				"name": "Blade"
+			}, {
 				"id": 175,
 				"name": "Puzzle 1"
+			}, {
+				"id": 176,
+				"name": "Puzzle 2"
+			}, {
+				"id": 187,
+				"name": "Puzzle 1 Combo 1"
+			}, {
+				"id": 188,
+				"name": "Puzzle 1 Combo 2"
+			}, {
+				"id": 260,
+				"name": "Slot 1"
+			}, {
+				"id": 261,
+				"name": "Slot 2"
 			}, {
 				"id": 306,
 				"name": "Switch 1"
 			}, {
 				"id": 315,
-				"name": "Switch (underwater)"
+				"name": "Lever (underwater)"
 			}, {
 				"id": 317,
 				"name": "Wheel lever"
 			}, {
 				"id": 318,
 				"name": "Lever"
+			}, {
+				"id": 321,
+				"name": "Pulley"
 			}, {
 				"id": 322,
 				"name": "Door 1"
@@ -2299,11 +2341,20 @@
 				"id": 353,
 				"name": "Shotgun"
 			}, {
+				"id": 354,
+				"name": "Shotgun ammo (red)"
+			}, {
+				"id": 355,
+				"name": "Shotgun ammo (blue)"
+			}, {
 				"id": 368,
-				"name": "Large Medipack"
+				"name": "Large medipack"
 			}, {
 				"id": 369,
-				"name": "Small Medipack"
+				"name": "Small medipack"
+			}, {
+				"id": 373,
+				"name": "Flares"
 			}, {
 				"id": 375,
 				"name": "Compass"
@@ -2322,6 +2373,12 @@
 			}, {
 				"id": 422,
 				"name": "Camera Target"
+			}, {
+				"id": 423,
+				"name": "Waterfall"
+			}, {
+				"id": 424,
+				"name": "Waterfall"
 			}, {
 				"id": 425,
 				"name": "Waterfall"
