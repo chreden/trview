@@ -2242,8 +2242,14 @@
 				"id": 53,
 				"name": "Horseman"
 			}, {
+				"id": 55,
+				"name": "Giant Scorpion"
+			}, {
 				"id": 57,
 				"name": "Jean Yves"
+			}, {
+				"id": 59,
+				"name": "Soldier"
 			}, {
 				"id": 61,
 				"name": "Knight Templar"
