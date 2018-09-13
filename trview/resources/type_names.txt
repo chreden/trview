@@ -2230,6 +2230,9 @@
 				"id": 43,
 				"name": "Enemy 2"
 			}, {
+				"id": 45,
+				"name": "Horus"
+			}, {
 				"id": 47,
 				"name": "Mummy"
 			}, {
@@ -2445,6 +2448,9 @@
 			}, {
 				"id": 154,
 				"name": "Sliding block"
+			}, {
+				"id": 155,
+				"name": "Falling block"
 			}, {
 				"id": 156,
 				"name": "Pushable 1"
@@ -2840,7 +2846,7 @@
 				"name": "Cutscene"
 			}, {
 				"id": 345,
-				"name": "Horus"
+				"name": "Horus Statue"
 			}, {
 				"id": 346,
 				"name": "Face"
