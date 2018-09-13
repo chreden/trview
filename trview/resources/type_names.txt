@@ -2347,6 +2347,9 @@
 				"id": 125,
 				"name": "Trapdoor 4"
 			}, {
+				"id": 127,
+				"name": "Ceiling trapdoor"
+			}, {
 				"id": 130,
 				"name": "Boulder"
 			}, {
