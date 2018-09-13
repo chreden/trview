@@ -2452,6 +2452,9 @@
 				"id": 172,
 				"name": "Blade"
 			}, {
+				"id": 173,
+				"name": "Lightning conductor"
+			}, {
 				"id": 175,
 				"name": "Puzzle 1"
 			}, {
@@ -2494,6 +2497,12 @@
 				"id": 188,
 				"name": "Puzzle 1 Combo 2"
 			}, {
+				"id": 189,
+				"name": "Puzzle 2 Combo 1"
+			}, {
+				"id": 190,
+				"name": "Puzzle 2 Combo 2"
+			}, {
 				"id": 193,
 				"name": "Puzzle 4 Combo 1"
 			}, {
@@ -2505,6 +2514,24 @@
 			}, {
 				"id": 196,
 				"name": "Puzzle 5 Combo 2"
+			}, {
+				"id": 197,
+				"name": "Puzzle 6 Combo 1"
+			}, {
+				"id": 198,
+				"name": "Puzzle 6 Combo 2"
+			}, {
+				"id": 199,
+				"name": "Puzzle 7 Combo 1"
+			}, {
+				"id": 200,
+				"name": "Puzzle 7 Combo 2"
+			}, {
+				"id": 201,
+				"name": "Puzzle 8 Combo 1"
+			}, {
+				"id": 202,
+				"name": "Puzzle 8 Combo 2"
 			}, {
 				"id": 203,
 				"name": "Key 1"
