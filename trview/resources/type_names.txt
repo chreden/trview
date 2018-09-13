@@ -2437,6 +2437,9 @@
 				"id": 153,
 				"name": "Expanding platform"
 			}, {
+				"id": 154,
+				"name": "Sliding block"
+			}, {
 				"id": 156,
 				"name": "Pushable 1"
 			}, {
