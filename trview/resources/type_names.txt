@@ -2314,6 +2314,9 @@
 				"id": 101,
 				"name": "Dead soldier"
 			}, {
+				"id": 102,
+				"name": "Ammit"
+			}, {
 				"id": 104,
 				"name": "Lara double"
 			}, {
@@ -2337,6 +2340,9 @@
 			}, {
 				"id": 112,
 				"name": "Tile spinner"
+			}, {
+				"id": 113,
+				"name": "Scales"
 			}, {
 				"id": 114,
 				"name": "Dart"
@@ -2725,6 +2731,9 @@
 				"id": 296,
 				"name": "Waterskin 1"
 			}, {
+				"id": 300,
+				"name": "Waterskin 2"
+			}, {
 				"id": 306,
 				"name": "Switch 1"
 			}, {
@@ -2830,8 +2839,14 @@
 				"id": 344,
 				"name": "Cutscene"
 			}, {
+				"id": 345,
+				"name": "Horus"
+			}, {
 				"id": 346,
 				"name": "Face"
+			}, {
+				"id": 348,
+				"name": "Plinth"
 			}, {
 				"id": 349,
 				"name": "Pistols"
