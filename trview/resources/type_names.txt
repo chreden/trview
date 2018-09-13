@@ -2245,6 +2245,9 @@
 				"id": 57,
 				"name": "Jean Yves"
 			}, {
+				"id": 61,
+				"name": "Knight Templar"
+			}, {
 				"id": 63,
 				"name": "Dragon"
 			}, {
@@ -2850,6 +2853,9 @@
 			}, {
 				"id": 390,
 				"name": "Sprinkler"
+			}, {
+				"id": 394,
+				"name": "Amber light"
 			}, {
 				"id": 397,
 				"name": "Lens flare"
