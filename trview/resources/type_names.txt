@@ -2245,6 +2245,9 @@
 				"id": 57,
 				"name": "Jean Yves"
 			}, {
+				"id": 63,
+				"name": "Dragon"
+			}, {
 				"id": 65,
 				"name": "Horse"
 			}, {
@@ -2724,6 +2727,9 @@
 			}, {
 				"id": 336,
 				"name": "Bridge (flat)"
+			}, {
+				"id": 337,
+				"name": "Bridge (tilt)"
 			}, {
 				"id": 339,
 				"name": "Sarcophagus"
