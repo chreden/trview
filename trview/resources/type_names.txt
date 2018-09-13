@@ -2260,6 +2260,15 @@
 				"id": 65,
 				"name": "Horse"
 			}, {
+				"id": 67,
+				"name": "Monkey"
+			}, {
+				"id": 69,
+				"name": "Monkey (invisible)"
+			}, {
+				"id": 71,
+				"name": "Monkey (black)"
+			}, {
 				"id": 73,
 				"name": "Boar"
 			}, {
@@ -2357,7 +2366,10 @@
 				"name": "Trapdoor 3"
 			}, {
 				"id": 125,
-				"name": "Trapdoor 4"
+				"name": "Floor Trapdoor 1"
+			}, {
+				"id": 126,
+				"name": "Floor Trapdoor 2"
 			}, {
 				"id": 127,
 				"name": "Ceiling trapdoor"
@@ -2472,6 +2484,9 @@
 			}, {
 				"id": 173,
 				"name": "Lightning conductor"
+			}, {
+				"id": 174,
+				"name": "Element Puzzle"
 			}, {
 				"id": 175,
 				"name": "Puzzle 1"
@@ -2703,6 +2718,9 @@
 			}, {
 				"id": 295,
 				"name": "Lock 12"
+			}, {
+				"id": 296,
+				"name": "Waterskin 1"
 			}, {
 				"id": 306,
 				"name": "Switch 1"
