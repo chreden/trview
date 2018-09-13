@@ -2254,11 +2254,17 @@
 				"id": 75,
 				"name": "Harpy"
 			}, {
+				"id": 77,
+				"name": "Demigod 1"
+			}, {
 				"id": 81,
 				"name": "Demigod 3"
 			}, {
 				"id": 83,
 				"name": "Scarab"
+			}, {
+				"id": 84,
+				"name": "Giant Beetle"
 			}, {
 				"id": 86,
 				"name": "Wraith 1"
@@ -2805,6 +2811,9 @@
 			}, {
 				"id": 385,
 				"name": "Waterfall Mist"
+			}, {
+				"id": 390,
+				"name": "Sprinkler"
 			}, {
 				"id": 397,
 				"name": "Lens flare"
