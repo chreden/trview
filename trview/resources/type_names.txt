@@ -2206,6 +2206,9 @@
 				"id": 3,
 				"name": "LaraShotgunAnim"
 			}, {
+				"id": 31,
+				"name": "Motorbike"
+			}, {
 				"id": 32,
 				"name": "Jeep"
 			}, {
@@ -2275,11 +2278,20 @@
 				"id": 93,
 				"name": "Hammerhead"
 			}, {
+				"id": 95,
+				"name": "Soldier"
+			}, {
+				"id": 101,
+				"name": "Dead soldier"
+			}, {
 				"id": 104,
 				"name": "Lara double"
 			}, {
 				"id": 106,
 				"name": "Scorpion"
+			}, {
+				"id": 107,
+				"name": "Fish"
 			}, {
 				"id": 108,
 				"name": "Senet (red)"
@@ -2310,6 +2322,9 @@
 			}, {
 				"id": 120,
 				"name": "Breakable wall"
+			}, {
+				"id": 121,
+				"name": "Breakable floor"
 			}, {
 				"id": 122,
 				"name": "Trapdoor 1"
@@ -2397,6 +2412,12 @@
 			}, {
 				"id": 160,
 				"name": "Pushable 5"
+			}, {
+				"id": 162,
+				"name": "Sentry Gun"
+			}, {
+				"id": 163,
+				"name": "Helicopter"
 			}, {
 				"id": 164,
 				"name": "Mapper"
@@ -2755,6 +2776,9 @@
 				"id": 368,
 				"name": "Large medipack"
 			}, {
+				"id": 366,
+				"name": "Revolver"
+			}, {
 				"id": 367,
 				"name": "Revolver ammo"
 			}, {
@@ -2769,6 +2793,9 @@
 			}, {
 				"id": 375,
 				"name": "Compass"
+			}, {
+				"id": 381,
+				"name": "Smoke emitter"
 			}, {
 				"id": 382,
 				"name": "Steam emitter"
