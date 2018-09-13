@@ -2251,6 +2251,9 @@
 				"id": 75,
 				"name": "Harpy"
 			}, {
+				"id": 81,
+				"name": "Demigod 3"
+			}, {
 				"id": 83,
 				"name": "Scarab"
 			}, {
@@ -2271,6 +2274,9 @@
 			}, {
 				"id": 93,
 				"name": "Hammerhead"
+			}, {
+				"id": 104,
+				"name": "Lara double"
 			}, {
 				"id": 106,
 				"name": "Scorpion"
@@ -2401,6 +2407,9 @@
 				"id": 166,
 				"name": "Blade trap"
 			}, {
+				"id": 168,
+				"name": "Bird blade"
+			}, {
 				"id": 169,
 				"name": "Blade trap"
 			}, {
@@ -2457,6 +2466,12 @@
 			}, {
 				"id": 194,
 				"name": "Puzzle 4 Combo 2"
+			}, {
+				"id": 195,
+				"name": "Puzzle 5 Combo 1"
+			}, {
+				"id": 196,
+				"name": "Puzzle 5 Combo 2"
 			}, {
 				"id": 203,
 				"name": "Key 1"
@@ -2515,8 +2530,23 @@
 				"id": 250,
 				"name": "Mechanical Scarab"
 			}, {
+				"id": 252,
+				"name": "Quest Item 1"
+			}, {
+				"id": 253,
+				"name": "Quest Item 2"
+			}, {
+				"id": 254,
+				"name": "Quest Item 3"
+			}, {
+				"id": 255,
+				"name": "Quest Item 4"
+			}, {
 				"id": 256,
 				"name": "Quest Item 5"
+			}, {
+				"id": 257,
+				"name": "Quest Item 6"
 			}, {
 				"id": 260,
 				"name": "Slot 1"
