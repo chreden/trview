@@ -2359,6 +2359,9 @@
 				"id": 132,
 				"name": "Spikes"
 			}, {
+				"id": 133,
+				"name": "Drill blades"
+			}, {
 				"id": 134,
 				"name": "Rolling Spikes"
 			}, {
@@ -2448,6 +2451,9 @@
 			}, {
 				"id": 169,
 				"name": "Blade trap"
+			}, {
+				"id": 170,
+				"name": "Wall blade"
 			}, {
 				"id": 171,
 				"name": "Pedestal blades"
@@ -2778,6 +2784,18 @@
 			}, {
 				"id": 339,
 				"name": "Sarcophagus"
+			}, {
+				"id": 340,
+				"name": "Sequence Door 1"
+			}, {
+				"id": 341,
+				"name": "Sequence Button 3"
+			}, {
+				"id": 342,
+				"name": "Sequence Button 1"
+			}, {
+				"id": 343,
+				"name": "Sequence Button 2"
 			}, {
 				"id": 344,
 				"name": "Cutscene"
