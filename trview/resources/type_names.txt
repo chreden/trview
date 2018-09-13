@@ -2269,6 +2269,9 @@
 				"id": 77,
 				"name": "Demigod 1"
 			}, {
+				"id": 79,
+				"name": "Demigod 2"
+			}, {
 				"id": 81,
 				"name": "Demigod 3"
 			}, {
