@@ -51,7 +51,6 @@ namespace trview
     class LevelInfo;
     class Neighbours;
     class RoomNavigator;
-    class TextureWindow;
     class SettingsWindow;
 
     namespace graphics
@@ -119,7 +118,6 @@ namespace trview
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
-        std::unique_ptr<TextureWindow> _texture_window;
         std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
         Window _window;
@@ -128,10 +126,6 @@ namespace trview
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
-        float _camera_sensitivity{ 0.0f };
-        float _camera_movement_speed{ 0.0f };
-        const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
-        const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
         std::unique_ptr<GoToRoom> _go_to_room;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;

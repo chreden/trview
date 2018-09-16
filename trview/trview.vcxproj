@@ -213,7 +213,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="LevelTextureStorage.h" />
     <ClInclude Include="TextureStorage.h" />
-    <ClInclude Include="TextureWindow.h" />
     <ClInclude Include="TransparencyBuffer.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="trview.h" />
@@ -259,7 +258,6 @@
     </ClCompile>
     <ClCompile Include="LevelTextureStorage.cpp" />
     <ClCompile Include="TextureStorage.cpp" />
-    <ClCompile Include="TextureWindow.cpp" />
     <ClCompile Include="trview.cpp" />
     <ClCompile Include="Viewer.cpp" />
   </ItemGroup>

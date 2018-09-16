@@ -25,11 +25,16 @@
 #include "Neighbours.h"
 #include "RoomNavigator.h"
 #include "TextureStorage.h"
-#include "TextureWindow.h"
 #include "SettingsWindow.h"
 
 namespace trview
 {
+    namespace
+    {
+        const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
+        const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
+    }
+
     Viewer::Viewer(const Window& window)
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
@@ -95,9 +100,6 @@ namespace trview
         _control->set_handles_input(false);
 
         generate_tool_window();
-
-        _texture_window = std::make_unique<TextureWindow>(_control.get());
-        _texture_window->set_visible(false);
 
         _go_to_room = std::make_unique<GoToRoom>(*_control.get());
         _token_store.add(_go_to_room->room_selected += [&](uint32_t room)
@@ -181,13 +183,11 @@ namespace trview
         _token_store.add(_camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); });
         _token_store.add(_camera_controls->on_sensitivity_changed += [&](float value)
         {
-            _camera_sensitivity = value;
             _settings.camera_sensitivity = value;
         });
 
         _token_store.add(_camera_controls->on_movement_speed_changed += [&](float value)
         {
-            _camera_movement_speed = value; 
             _settings.camera_movement_speed = value;
         });
 
@@ -313,17 +313,8 @@ namespace trview
                     }
                     break;
                 }
-                case VK_PRIOR:
-                    _texture_window->cycle_back();
-                    break;
-                case VK_NEXT:
-                    _texture_window->cycle();
-                    break;
                 case VK_F1:
                     _settings_window->toggle_visibility();
-                    break;
-                case VK_F2:
-                    _texture_window->toggle_visibility();
                     break;
                 case VK_RETURN:
                     toggle_highlight();
@@ -352,7 +343,7 @@ namespace trview
     {
         if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
-            const float Speed = std::max(0.01f, _camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
+            const float Speed = std::max(0.01f, _settings.camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
             _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
 
             if (_level)
@@ -387,7 +378,6 @@ namespace trview
 
         // Set up the views.
         auto rooms = _level->room_info();
-        _texture_window->set_textures(_level->level_textures());
         _camera.reset();
 
         // Reset UI buttons
@@ -632,7 +622,7 @@ namespace trview
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
             const float high_sensitivity = 25.0f;
-            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _camera_sensitivity;
+            const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _settings.camera_sensitivity;
             camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
             camera.set_rotation_pitch(camera.rotation_pitch() + y / sensitivity);
             if (_level)
