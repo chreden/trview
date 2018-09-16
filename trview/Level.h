@@ -64,6 +64,10 @@ namespace trview
         /// @returns All items in the level.
         const std::vector<Item>& items() const;
 
+        /// Get the triggers in this level.
+        /// @returns All triggers in the level.
+        const std::vector<Trigger>& triggers() const;
+
         // Determine whether the specified ray hits any of the triangles in any of the room geometry.
         // position: The world space position of the source of the ray.
         // direction: The direction of the ray.

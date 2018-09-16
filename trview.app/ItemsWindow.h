@@ -58,11 +58,18 @@ namespace trview
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
 
+        /// Set the triggers to display in the window.
+        /// @param triggers The triggers.
+        void set_triggers(const std::vector<Trigger>& triggers);
+
         /// Clear the currently selected item from the details panel.
         void clear_selected_item();
 
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
+
+        /// Event raised when a trigger is selected in the list.
+        Event<Trigger> on_trigger_selected;
 
         /// Event raised when the items window is closed.
         Event<> on_window_closed;
@@ -96,6 +103,7 @@ namespace trview
         TokenStore _token_store;
 
         std::vector<Item> _all_items;
+        std::vector<Trigger> _all_triggers;
         /// Whether the item window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.

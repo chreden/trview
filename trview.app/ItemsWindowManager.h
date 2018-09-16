@@ -48,6 +48,10 @@ namespace trview
         /// @param items The items in the level.
         void set_items(const std::vector<Item>& items);
 
+        /// Set the triggers to use in the windows.
+        /// @param triggers The triggers in the level.
+        void set_triggers(const std::vector<Trigger>& triggers);
+
         /// Set the current room to filter item windows.
         /// @param room The current room.
         void set_room(uint32_t room);
@@ -58,6 +62,7 @@ namespace trview
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
         std::vector<ItemsWindow*> _closing_windows;
         std::vector<Item> _items;
+        std::vector<Trigger> _triggers;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;

@@ -59,6 +59,15 @@ namespace trview
         }
     }
 
+    void ItemsWindowManager::set_triggers(const std::vector<Trigger>& triggers)
+    {
+        _triggers = triggers;
+        for (auto& window : _windows)
+        {
+            window->set_triggers(triggers);
+        }
+    }
+
     void ItemsWindowManager::set_room(uint32_t room)
     {
         _current_room = room;

@@ -90,6 +90,11 @@ namespace trview
         return _items;
     }
 
+    const std::vector<Trigger>& Level::triggers() const
+    {
+        return _triggers;
+    }
+
     Level::RoomHighlightMode Level::highlight_mode() const
     {
         return _room_highlight_mode;
@@ -273,7 +278,7 @@ namespace trview
             {
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(i, sector.second->x(), sector.second->z(), sector.second->trigger());
+                    _triggers.emplace_back(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger());
                 }
             }
         }

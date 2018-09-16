@@ -137,6 +137,11 @@ namespace trview
         populate_items(items);
     }
 
+    void ItemsWindow::set_triggers(const std::vector<Trigger>& triggers)
+    {
+        _all_triggers = triggers;
+    }
+
     void ItemsWindow::clear_selected_item()
     {
         _stats_list->set_items({});
@@ -291,6 +296,12 @@ namespace trview
         trigger_list->set_show_scrollbar(false);
         trigger_list->set_show_highlight(false);
 
+        _token_store.add(trigger_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_trigger_selected(_all_triggers[index]);
+        });
+
         _trigger_list = trigger_group_box->add_child(std::move(trigger_list));
         right_panel->add_child(std::move(trigger_group_box));
 
@@ -338,6 +349,7 @@ namespace trview
             triggers.push_back(
                 {
                     {
+                        { L"#", std::to_wstring(trigger.number()) },
                         { L"Room", std::to_wstring(trigger.room()) },
                         { L"X", std::to_wstring(trigger.x()) },
                         { L"Z", std::to_wstring(trigger.z()) }
