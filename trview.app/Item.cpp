@@ -46,4 +46,9 @@ namespace trview
     {
         return (_flags & 0x100) != 0;
     }
+
+    const std::vector<Trigger>& Item::triggers() const
+    {
+        return _triggers;
+    }
 }

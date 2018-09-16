@@ -51,6 +51,10 @@ namespace trview
         /// Get whether the invisible_flag is set.
         /// @returns Whether invisible flag is set.
         bool invisible_flag() const;
+
+        /// Get the triggers that affect this object.
+        /// @returns The triggers.
+        const std::vector<Trigger>& triggers() const;
     private:
         std::vector<Trigger> _triggers;
         uint32_t _number;

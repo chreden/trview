@@ -291,9 +291,14 @@ namespace trview
             _entities.push_back(std::move(entity));
 
             // Relevant triggers.
-            std::vector<Trigger> relevant_triggers(
-                std::find_if(_triggers.begin(), _triggers.end(), [=](const auto& t) { return t.triggers_item(i); }),
-                _triggers.end());
+            std::vector<Trigger> relevant_triggers;
+            for (const auto& trigger : _triggers)
+            {
+                if (trigger.triggers_item(i))
+                {
+                    relevant_triggers.push_back(trigger);
+                }
+            }
 
             // Item for item information.
             _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers);

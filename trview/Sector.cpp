@@ -83,7 +83,7 @@ namespace trview
 
             case 0x4:
             {
-                std::uint16_t command; 
+                std::uint16_t command = 0; 
                 std::uint16_t setup = _level.get_floor_data(++cur_index);
 
                 // Basic trigger setup 

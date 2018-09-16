@@ -287,7 +287,7 @@ namespace trview
             }
         );
         trigger_list->set_show_headers(false);
-        trigger_list->set_show_scrollbar(false);
+        trigger_list->set_show_scrollbar(true);
         trigger_list->set_show_highlight(false);
 
         _trigger_list = trigger_group_box->add_child(std::move(trigger_list));
@@ -330,5 +330,12 @@ namespace trview
         stats.push_back(make_item(L"Flags", format_binary(item.activation_flags())));
         stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
+
+        std::vector<Listbox::Item> triggers;
+        for (auto& trigger : item.triggers())
+        {
+            triggers.push_back(make_item(std::wstring(L"Type"), std::wstring(L"Trigger")));
+        }
+        _trigger_list->set_items(triggers);
     }
 }
