@@ -24,7 +24,8 @@ namespace trview
         {
             const Colour Divider { 1.0f, 0.0f, 0.0f, 0.0f };
             const Colour LeftPanel { 1.0f, 0.4f, 0.4f, 0.4f };
-            const Colour RightPanel { 1.0f, 0.35f, 0.35f, 0.35f };
+            const Colour ItemDetails { 1.0f, 0.35f, 0.35f, 0.35f };
+            const Colour Triggers { 1.0f, 0.375f, 0.375f, 0.375f };
             const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
@@ -35,11 +36,11 @@ namespace trview
 
         HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
         {
-            RECT rect{ 0, 0, 400, 200 };
+            RECT rect{ 0, 0, 400, 400 };
             AdjustWindowRect(&rect, window_style, FALSE);
 
             HWND items_window = CreateWindowW(L"trview.items", L"Items", window_style,
-                CW_USEDEFAULT, 0, rect.right - rect.left, 310, parent, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
 
             ShowWindow(items_window, nCmdShow);
             UpdateWindow(items_window);
@@ -102,13 +103,13 @@ namespace trview
         }
         else if (message == WM_GETMINMAXINFO)
         {
-            RECT rect{ 0, 0, _ui->size().width, 200 };
+            RECT rect{ 0, 0, _ui->size().width, 400 };
             AdjustWindowRect(&rect, window_style, FALSE);
 
             MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
             info->ptMinTrackSize.x = rect.right - rect.left;
             info->ptMaxTrackSize.x = rect.right - rect.left;
-            info->ptMinTrackSize.y = 200;
+            info->ptMinTrackSize.y = rect.bottom - rect.top;
         }
     }
 
@@ -252,12 +253,11 @@ namespace trview
 
         const float height = window().size().height;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::RightPanel, Size(0, 4), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colours::RightPanel, Colours::DetailsBorder, L"Item Details");
-        auto controls = std::make_unique<StackPanel>(Point(10, 11), group_box->size(), Colours::RightPanel, Size(0, 5), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(0, 4), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 160), Colours::RightPanel);
+        auto stats_list = std::make_unique<Listbox>(Point(10,21), Size(180, 160), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
@@ -268,8 +268,7 @@ namespace trview
         stats_list->set_show_scrollbar(false);
         stats_list->set_show_highlight(false);
 
-        _stats_list = controls->add_child(std::move(stats_list));
-        group_box->add_child(std::move(controls));
+        _stats_list = group_box->add_child(std::move(stats_list));
         right_panel->add_child(std::move(group_box));
 
         // Store the right panel for later use.
