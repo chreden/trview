@@ -10,6 +10,23 @@ namespace trview
 {
     namespace ui
     {
+        namespace
+        {
+            std::map<uint16_t, DirectX::SimpleMath::Color> default_colours = {
+                { SectorFlag::Portal, { 0.0f, 0.0f, 0.0f } },
+                { SectorFlag::Wall, { 0.4f, 0.4f, 0.4f } },
+                { SectorFlag::Trigger, { 1.0f, 0.3f, 0.7f } },
+                { SectorFlag::Death, { 0.9f, 0.1f, 0.1f } },
+                { SectorFlag::MinecartLeft, { 0.0f, 0.9f, 0.9f } },
+                { SectorFlag::MinecartRight, { 0.0f, 0.9f, 0.9f } },
+                { SectorFlag::MonkeySwing, { 0.9f, 0.9f, 0.4f } },
+                { SectorFlag::ClimbableUp, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                { SectorFlag::ClimbableDown, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                { SectorFlag::ClimbableRight, { 0.0f, 0.9f, 0.0f, 0.6f } },
+                { SectorFlag::ClimbableLeft, { 0.0f, 0.9f, 0.0f, 0.6f } },
+            };
+        }
+
         namespace render
         {
             MapRenderer::MapRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& window_size)

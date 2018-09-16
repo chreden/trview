@@ -150,5 +150,10 @@ namespace trview
 
         return true; 
     }
+
+    const TriggerInfo& Sector::trigger() const
+    {
+        return _trigger;
+    }
 }
 

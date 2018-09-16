@@ -37,6 +37,8 @@ namespace trview
         // Holds "Function" enum bitwise values 
         std::uint16_t flags = 0;
 
+        /// Get trigger information for the sector.
+        const TriggerInfo& trigger() const;
     private:
         bool parse(); 
 
@@ -47,7 +49,7 @@ namespace trview
         std::uint16_t _floor_slant, _ceiling_slant; 
 
         // Holds trigger data 
-        struct Trigger _trigger; 
+        TriggerInfo _trigger;
 
         // ID of the sector 
         int _sector_id; 

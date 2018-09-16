@@ -41,20 +41,6 @@ namespace trview
                     Point position; 
                     Size size; 
                 };
-
-                std::map<SectorFlag, DirectX::SimpleMath::Color> default_colours = {
-                    { Portal, { 0.0f, 0.0f, 0.0f } }, 
-                    { Wall, { 0.4f, 0.4f, 0.4f } }, 
-                    { Trigger, { 1.0f, 0.3f, 0.7f } },
-                    { Death, { 0.9f, 0.1f, 0.1f } },
-                    { MinecartLeft, { 0.0f, 0.9f, 0.9f } },
-                    { MinecartRight, { 0.0f, 0.9f, 0.9f } },
-                    { MonkeySwing, { 0.9f, 0.9f, 0.4f } },
-                    { ClimbableUp, { 0.0f, 0.9f, 0.0f, 0.6f } },
-                    { ClimbableDown, { 0.0f, 0.9f, 0.0f, 0.6f } },
-                    { ClimbableRight, { 0.0f, 0.9f, 0.0f, 0.6f } },
-                    { ClimbableLeft, { 0.0f, 0.9f, 0.0f, 0.6f } },
-                };
             }
 
             class MapRenderer
