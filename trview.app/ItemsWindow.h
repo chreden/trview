@@ -89,6 +89,7 @@ namespace trview
         ui::Window*  _controls;
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
+        ui::Listbox* _trigger_list;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         input::Keyboard _keyboard;

@@ -253,7 +253,7 @@ namespace trview
 
         const float height = window().size().height;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(0, 0), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
         // Add some information about the selected item.
@@ -277,8 +277,20 @@ namespace trview
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Trigger Details");
+        auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
 
+        auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 160), Colours::Triggers);
+        trigger_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"Name", 60 },
+                { Listbox::Column::Type::Number, L"Value", 120 },
+            }
+        );
+        trigger_list->set_show_headers(false);
+        trigger_list->set_show_scrollbar(false);
+        trigger_list->set_show_highlight(false);
+
+        _trigger_list = trigger_group_box->add_child(std::move(trigger_list));
         right_panel->add_child(std::move(trigger_group_box));
 
         // Store the right panel for later use.
