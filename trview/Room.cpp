@@ -192,7 +192,7 @@ namespace trview
         {
             const trlevel::tr_room_sector &sector = room.sector_list.at(i);
             _sectors.emplace(std::make_pair(
-                i, std::make_shared<Sector>(level, sector, i)
+                i, std::make_shared<Sector>(level, room, sector, i)
             ));
         }
     }

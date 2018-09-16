@@ -3,7 +3,8 @@
 
 namespace trview
 {
-    Trigger::Trigger(const TriggerInfo& trigger_info)
+    Trigger::Trigger(uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
+        : _room(room), _x(x), _z(z)
     {
         for (auto action : trigger_info.commands)
         {
@@ -12,6 +13,21 @@ namespace trview
                 _objects.push_back(action.second);
             }
         }
+    }
+
+    uint16_t Trigger::room() const
+    {
+        return _room;
+    }
+
+    uint16_t Trigger::x() const
+    {
+        return _x;
+    }
+
+    uint16_t Trigger::z() const
+    {
+        return _z;
     }
 
     bool Trigger::triggers_item(uint16_t index) const

@@ -282,12 +282,13 @@ namespace trview
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 160), Colours::Triggers);
         trigger_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"Name", 60 },
-                { Listbox::Column::Type::Number, L"Value", 120 },
+                { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::Number, L"X", 75 },
+                { Listbox::Column::Type::Number, L"Z", 75 },
             }
         );
-        trigger_list->set_show_headers(false);
-        trigger_list->set_show_scrollbar(true);
+        trigger_list->set_show_headers(true);
+        trigger_list->set_show_scrollbar(false);
         trigger_list->set_show_highlight(false);
 
         _trigger_list = trigger_group_box->add_child(std::move(trigger_list));
@@ -334,7 +335,14 @@ namespace trview
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
-            triggers.push_back(make_item(std::wstring(L"Type"), std::wstring(L"Trigger")));
+            triggers.push_back(
+                {
+                    {
+                        { L"Room", std::to_wstring(trigger.room()) },
+                        { L"X", std::to_wstring(trigger.x()) },
+                        { L"Z", std::to_wstring(trigger.z()) }
+                    }
+                });
         }
         _trigger_list->set_items(triggers);
     }

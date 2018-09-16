@@ -149,8 +149,8 @@ namespace trview
             Point MapRenderer::get_position(const Sector& sector)
             {
                 return Point {
-                    /* X */ _DRAW_SCALE * (sector.id() / _rows),
-                    /* Y */ _DRAW_SCALE * (_rows - (sector.id() % _rows) - 1)
+                    /* X */ _DRAW_SCALE * sector.x(),
+                    /* Y */ _DRAW_SCALE * sector.z()
                 } + Point(1,1); 
             }
 
