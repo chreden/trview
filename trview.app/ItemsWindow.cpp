@@ -25,7 +25,7 @@ namespace trview
             const Colour Divider { 1.0f, 0.0f, 0.0f, 0.0f };
             const Colour LeftPanel { 1.0f, 0.4f, 0.4f, 0.4f };
             const Colour ItemDetails { 1.0f, 0.35f, 0.35f, 0.35f };
-            const Colour Triggers { 1.0f, 0.375f, 0.375f, 0.375f };
+            const Colour Triggers { 1.0f, 0.3f, 0.3f, 0.3f };
             const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
@@ -253,8 +253,8 @@ namespace trview
 
         const float height = window().size().height;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(0, 4), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, height), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(0, 0), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
         // Add some information about the selected item.
         auto stats_list = std::make_unique<Listbox>(Point(10,21), Size(180, 160), Colours::ItemDetails);
@@ -269,7 +269,17 @@ namespace trview
         stats_list->set_show_highlight(false);
 
         _stats_list = group_box->add_child(std::move(stats_list));
+
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
         right_panel->add_child(std::move(group_box));
+
+        // Spacer element.
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
+
+        // Add the trigger details group box.
+        auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Trigger Details");
+
+        right_panel->add_child(std::move(trigger_group_box));
 
         // Store the right panel for later use.
         _right_panel = right_panel.get();
