@@ -45,6 +45,7 @@ namespace trview
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
         generate_rooms(device);
+        generate_triggers();
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
@@ -263,6 +264,21 @@ namespace trview
         }
     }
 
+    void Level::generate_triggers()
+    {
+        for (auto i = 0; i < _rooms.size(); ++i)
+        {
+            const auto& room = _rooms[i];
+            for (auto sector : room->sectors())
+            {
+                if (sector.second->flags & SectorFlag::Trigger)
+                {
+                    _triggers.emplace_back(sector.second->trigger());
+                }
+            }
+        }
+    }
+
     void Level::generate_entities(const ComPtr<ID3D11Device>& device)
     {
         const uint32_t num_entities = _level->num_entities();
@@ -274,8 +290,13 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 
+            // Relevant triggers.
+            std::vector<Trigger> relevant_triggers(
+                std::find_if(_triggers.begin(), _triggers.end(), [=](const auto& t) { return t.triggers_item(i); }),
+                _triggers.end());
+
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags);
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers);
         }
     }
 
