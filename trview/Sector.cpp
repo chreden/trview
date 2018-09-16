@@ -94,16 +94,28 @@ namespace trview
                 // Type of the trigger, e.g. Pad, Switch, etc.
                 _trigger.type = (TriggerType) subfunction;
 
-                // Parse actions 
-                ++cur_index;
-                while (cur_index < max_floordata && ((command = _level.get_floor_data(cur_index)) & 0x8000))
+                if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
                 {
-                    _trigger.commands.emplace_back (
-                        (TriggerCommandType) ((command & 0x7C00) >> 10),
-                        command & 0x3FF
-                    ); 
+                    // The next element is the lock or switch - ignore.
                     ++cur_index;
                 }
+
+                // Parse actions 
+                do
+                {
+                    if (++cur_index < max_floordata)
+                    {
+                        command = _level.get_floor_data(cur_index);
+                        auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
+                        _trigger.commands.emplace_back(action, command & 0x3FF);
+                        if (action == TriggerCommandType::Camera)
+                        {
+                            // Camera has another uint16_t - skip for now.
+                            command = _level.get_floor_data(++cur_index);
+                        }
+                    }
+
+                } while (cur_index < max_floordata && !(command & 0x8000));
 
                 flags |= SectorFlag::Trigger; 
                 break; 
