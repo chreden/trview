@@ -87,14 +87,6 @@ namespace trview
             return _parent;
         }
 
-        void Control::add_child(std::unique_ptr<Control>&& child_element)
-        {
-            child_element->_parent = this;
-            _child_elements.push_back(std::move(child_element));
-            on_invalidate();
-            on_hierarchy_changed();
-        }
-
         void Control::clear_child_elements()
         {
             _child_elements.clear();
@@ -376,6 +368,10 @@ namespace trview
         void Control::set_name(const std::string& name)
         {
             _name = name;
+        }
+
+        void Control::inner_add_child(Control*)
+        {
         }
     }
 }

@@ -211,8 +211,7 @@ namespace trview
         });
 
         controls->add_child(std::move(track_room));
-        _controls = controls.get();
-        left_panel->add_child(std::move(controls));
+        _controls = left_panel->add_child(std::move(controls));
 
         auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
@@ -269,9 +268,7 @@ namespace trview
         stats_list->set_show_scrollbar(false);
         stats_list->set_show_highlight(false);
 
-        _stats_list = stats_list.get();
-
-        controls->add_child(std::move(stats_list));
+        _stats_list = controls->add_child(std::move(stats_list));
         group_box->add_child(std::move(controls));
         right_panel->add_child(std::move(group_box));
 

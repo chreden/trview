@@ -108,8 +108,7 @@ namespace trview
         auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(30, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
-        _picking = picking.get();
-        _control->add_child(std::move(picking));
+        _picking = _control->add_child(std::move(picking));
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });

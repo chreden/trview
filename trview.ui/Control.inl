@@ -7,7 +7,7 @@ namespace trview
         template <typename T>
         T* Control::find(const std::string& name) const
         {
-            if (name == name())
+            if (name == this->name())
             {
                 return dynamic_cast<T*>(this);
             }
@@ -22,6 +22,22 @@ namespace trview
             }
 
             return nullptr;
+        }
+
+        template <typename T>
+        T* Control::add_child(std::unique_ptr<T>&& child_element)
+        {
+            static_assert(std::is_base_of<Control, T>::value, "Element must be derived from Control");
+
+            child_element->_parent = this;
+            T* element = static_cast<T*>(child_element.get());
+            _child_elements.push_back(std::move(child_element));
+
+            inner_add_child(element);
+            on_invalidate();
+            on_hierarchy_changed();
+
+            return element;
         }
     }
 }

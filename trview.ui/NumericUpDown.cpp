@@ -23,9 +23,7 @@ namespace trview
             _token_store.add(up->on_click += [&]() { set_value(_value + 1); });
             _token_store.add(down->on_click += [&]() { set_value(_value - 1); });
 
-            _label = label.get();
-
-            add_child(std::move(label));
+            _label = add_child(std::move(label));
             add_child(std::move(up));
             add_child(std::move(down));
 

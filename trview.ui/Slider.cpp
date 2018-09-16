@@ -25,10 +25,8 @@ namespace trview
                 Size(BlobWidth, size.height),
                 Colour(1.0f, 0.2f, 0.2f, 0.2f));
 
-            _blob = blob.get();
-
             add_child(std::move(line));
-            add_child(std::move(blob));
+            _blob = add_child(std::move(blob));
 
             set_blob_position(Point(0, 0));
         }

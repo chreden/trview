@@ -43,14 +43,10 @@ namespace trview
         auto settings = std::make_unique<Button>(Point(), Size(16, 16), texture_storage.lookup("settings"), texture_storage.lookup("settings"));
         settings->on_click += on_toggle_settings;
 
-        _panel = panel.get();
-        _version = version.get();
-        _name = name.get();
-
-        panel->add_child(std::move(version));
-        panel->add_child(std::move(name));
+        _version = panel->add_child(std::move(version));
+        _name = panel->add_child(std::move(name));
         panel->add_child(std::move(settings));
-        control.add_child(std::move(panel));
+        _panel = control.add_child(std::move(panel));
 
         // Have the control move itself when the parent control resizes.
         _token_store.add(control.on_size_changed += [&](const Size& size)

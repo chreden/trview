@@ -39,21 +39,14 @@ namespace trview
         camera_sensitivity->on_value_changed += on_sensitivity_changed;
         movement_speed->on_value_changed += on_movement_speed_changed;
 
-        // Take a copy of buttons that need to be tracked.
-        _orbit = orbit_camera.get();
-        _free = free_camera.get();
-        _axis = axis_camera.get();
-        _sensitivity = camera_sensitivity.get();
-        _movement_speed = movement_speed.get();
-
-        camera_sensitivity_box->add_child(std::move(camera_sensitivity));
-        movement_speed_box->add_child(std::move(movement_speed));
+        _sensitivity = camera_sensitivity_box->add_child(std::move(camera_sensitivity));
+        _movement_speed = movement_speed_box->add_child(std::move(movement_speed));
 
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
-        camera_window->add_child(std::move(orbit_camera));
-        camera_window->add_child(std::move(free_camera));
-        camera_window->add_child(std::move(axis_camera));
+        _orbit = camera_window->add_child(std::move(orbit_camera));
+        _free = camera_window->add_child(std::move(free_camera));
+        _axis = camera_window->add_child(std::move(axis_camera));
         camera_window->add_child(std::move(camera_sensitivity_box));
         camera_window->add_child(std::move(movement_speed_box));
 

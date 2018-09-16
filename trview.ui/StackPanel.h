@@ -34,17 +34,17 @@ namespace trview
             /// @param size_mode Whether or not to resize the panel automatically.
             StackPanel(Point position, Size size, Colour colour, Size padding, Direction direction = Direction::Vertical, SizeMode size_mode = SizeMode::Auto);
 
-            /// Add a child to this element. This will place the new element in the appropriate
-            /// position based on the layout direction and the elements already in the control.
-            /// @param child_element The element to add as a child.
-            virtual void add_child(std::unique_ptr<Control>&& child_element) override;
-
             /// Destructor for StackPanel.
             virtual ~StackPanel() = default;
 
             /// Set which dimensions in which the stack panel will automatically expand.
             /// @param dimension The dimension in which to expand.
             void set_auto_size_dimension(SizeDimension dimension);
+        protected:
+            /// Add a child to this element. This will place the new element in the appropriate
+            /// position based on the layout direction and the elements already in the control.
+            /// @param child_element The element to add as a child.
+            virtual void inner_add_child(Control* child_element) override;
         private:
             Point get_next_position() const;
             Point get_next_position(Point previous_position, Size previous_size) const;
