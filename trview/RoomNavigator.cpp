@@ -20,10 +20,7 @@ namespace trview
         auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), L"Flip");
 
         highlight->on_state_changed += on_highlight;
-        _highlight = highlight.get();
-
         flip->on_state_changed += on_flip;
-        _flip = flip.get();
 
         auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(),StackPanel::Direction::Vertical);
@@ -33,30 +30,25 @@ namespace trview
         auto room_max_label = std::make_unique<Label>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
 
         room_number->on_value_changed += on_room_selected;
-        _current = room_number.get();
-        _max = room_max_label.get();
 
-        room_number_labels->add_child(std::move(room_number));
+        _current = room_number_labels->add_child(std::move(room_number));
         room_number_labels->add_child(std::move(room_number_label));
-        room_number_labels->add_child(std::move(room_max_label));
+        _max = room_number_labels->add_child(std::move(room_max_label));
 
         auto info_labels = std::make_unique<StackPanel>(Point(), Size(96, 36), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5), StackPanel::Direction::Horizontal);
         auto x_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"X:", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
         auto z_label = std::make_unique<Label>(Point(), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Z:", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
 
-        _x = x_label.get();
-        _z = z_label.get();
-
-        info_labels->add_child(std::move(x_label));
-        info_labels->add_child(std::move(z_label));
+        _x = info_labels->add_child(std::move(x_label));
+        _z = info_labels->add_child(std::move(z_label));
 
         room_controls->add_child(std::move(room_number_labels));
         room_controls->add_child(std::move(info_labels));
 
         room_box->add_child(std::move(room_controls));
 
-        rooms_groups->add_child(std::move(highlight));
-        rooms_groups->add_child(std::move(flip));
+        _highlight = rooms_groups->add_child(std::move(highlight));
+        _flip = rooms_groups->add_child(std::move(flip));
         rooms_groups->add_child(std::move(room_box));
 
         parent.add_child(std::move(rooms_groups));

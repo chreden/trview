@@ -10,11 +10,10 @@ namespace trview
         {
         }
 
-        void StackPanel::add_child(std::unique_ptr<Control>&& child_element)
+        void StackPanel::inner_add_child(Control* child_element)
         {
             child_element->set_position(get_next_position());
             _token_store.add(child_element->on_size_changed += [&](auto) { recalculate_layout(); });
-            Window::add_child(std::move(child_element));
             recalculate_layout();
         }
 

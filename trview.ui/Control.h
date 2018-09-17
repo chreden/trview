@@ -80,7 +80,8 @@ namespace trview
             /// Add the specified control as a child element of this control.
             /// Sets the parent element of the child to be this element.
             /// @param child_element The element to add to the control.
-            virtual void add_child(std::unique_ptr<Control>&& child_element);
+            template <typename T>
+            T* add_child(std::unique_ptr<T>&& child_element);
 
             /// Remove all child elements from the control.
             virtual void clear_child_elements();
@@ -154,6 +155,10 @@ namespace trview
             /// Event raised when there has been a change to the children of this control.
             Event<> on_hierarchy_changed;
         protected:
+            /// To be called after a child element has been added to the control.
+            /// @param child_element The element that was added.
+            virtual void inner_add_child(Control* child_element);
+
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.
             /// @return True if the event was handled by the element.
@@ -223,3 +228,5 @@ namespace trview
         };
     }
 }
+
+#include "Control.inl"

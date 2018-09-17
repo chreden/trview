@@ -43,12 +43,9 @@ namespace trview
             graphics::TextAlignment::Centre,
             graphics::ParagraphAlignment::Centre);
 
-        _label = label.get();
-        _window = window.get();
-
-        box->add_child(std::move(label));
+        _label = box->add_child(std::move(label));
         window->add_child(std::move(box));
-        parent.add_child(std::move(window));
+        _window = parent.add_child(std::move(window));
 
         _token_store.add(parent.on_size_changed += [&](const Size& size)
         {

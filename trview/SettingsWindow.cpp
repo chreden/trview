@@ -19,7 +19,6 @@ namespace trview
 
         auto window = std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size());
         window->set_visible(false);
-        _window = window.get();
 
         // Create the title bar.
         auto title_bar = std::make_unique<StackPanel>(Point(), Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
@@ -34,23 +33,19 @@ namespace trview
 
         auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Vsync");
         vsync->on_state_changed += on_vsync;
-        _vsync = vsync.get();
-        panel->add_child(std::move(vsync));
+        _vsync = panel->add_child(std::move(vsync));
 
         auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Go to Lara");
         go_to_lara->on_state_changed += on_go_to_lara;
-        _go_to_lara = go_to_lara.get();
-        panel->add_child(std::move(go_to_lara));
+        _go_to_lara = panel->add_child(std::move(go_to_lara));
 
         auto invert_map_controls = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Invert map controls");
         invert_map_controls->on_state_changed += on_invert_map_controls;
-        _invert_map_controls = invert_map_controls.get();
-        panel->add_child(std::move(invert_map_controls));
+        _invert_map_controls = panel->add_child(std::move(invert_map_controls));
 
         auto items_startup = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Open Items Window at startup");
         items_startup->on_state_changed += on_items_startup;
-        _items_startup = items_startup.get();
-        panel->add_child(std::move(items_startup));
+        _items_startup = panel->add_child(std::move(items_startup));
 
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
@@ -58,7 +53,7 @@ namespace trview
         panel->add_child(std::move(ok));
 
         window->add_child(std::move(panel));
-        parent.add_child(std::move(window));
+        _window = parent.add_child(std::move(window));
 
         // Register for control resizes on the parent so that the window will always
         // be in the middle of the screen.
