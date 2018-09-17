@@ -8,8 +8,6 @@
 #include <unordered_map>
 #include <optional>
 
-#include <trview.common/TokenStore.h>
-
 #include "StackPanel.h"
 
 namespace trview
@@ -144,7 +142,6 @@ namespace trview
             bool _show_scrollbar{ true };
             bool _show_headers{ true };
             bool _show_highlight{ true };
-            TokenStore _token_store;
             std::optional<Item> _selected_item;
             uint32_t _fully_visible_rows{ 0u };
         };

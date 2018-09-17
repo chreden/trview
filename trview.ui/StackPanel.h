@@ -6,7 +6,6 @@
 #include "Window.h"
 #include "SizeMode.h"
 #include "SizeDimension.h"
-#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -53,7 +52,6 @@ namespace trview
             const Direction _direction;
             SizeMode _size_mode;
             SizeDimension _size_dimension{ SizeDimension::All };
-            TokenStore _token_store;
         };
     }
 }

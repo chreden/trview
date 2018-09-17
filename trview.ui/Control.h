@@ -8,6 +8,7 @@
 #include <trview.common/Event.h>
 #include <trview.common/Size.h>
 #include <trview.common/Point.h>
+#include <trview.common/TokenStore.h>
 #include "Align.h"
 
 namespace trview
@@ -197,6 +198,8 @@ namespace trview
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
+
+            TokenStore _token_store;
         private:
             /// Set the focus control and recurse to child controls.
             /// @param control The new focus control.

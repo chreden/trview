@@ -3,7 +3,6 @@
 #include "Window.h"
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
-#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -33,7 +32,6 @@ namespace trview
             int32_t _value{ 0 };
 
             ui::Label* _label;
-            TokenStore _token_store;
         };
     }
 }
