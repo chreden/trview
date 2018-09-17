@@ -46,9 +46,6 @@
     <ClInclude Include="Viewer.h">
       <Filter>Program</Filter>
     </ClInclude>
-    <ClInclude Include="TextureWindow.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Win</Filter>
     </ClInclude>
@@ -170,9 +167,6 @@
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
       <Filter>Program</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureWindow.cpp">
-      <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win</Filter>
