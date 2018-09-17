@@ -285,15 +285,16 @@ namespace trview
         // Add the trigger details group box.
         auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
 
-        auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 160), Colours::Triggers);
+        auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
         trigger_list->set_columns(
             {
+                { Listbox::Column::Type::Number, L"#", 20 },
                 { Listbox::Column::Type::Number, L"Room", 40 },
-                { Listbox::Column::Type::Number, L"Type", 140 },
+                { Listbox::Column::Type::String, L"Type", 120 },
             }
         );
         trigger_list->set_show_headers(true);
-        trigger_list->set_show_scrollbar(false);
+        trigger_list->set_show_scrollbar(true);
         trigger_list->set_show_highlight(false);
 
         _token_store.add(trigger_list->on_item_selected += [&](const auto& item)
@@ -343,13 +344,14 @@ namespace trview
         stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
 
+        uint32_t i = 0u;
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
             triggers.push_back(
                 {
                     {
-                        { L"#", std::to_wstring(trigger.number()) },
+                        { L"#", std::to_wstring(i++) },
                         { L"Room", std::to_wstring(trigger.room()) },
                         { L"Type", trigger_type_name(trigger.type()) },
                     }
