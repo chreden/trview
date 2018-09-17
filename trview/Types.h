@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <trview.app/Trigger.h>
 
 namespace trview
 {
@@ -39,12 +40,6 @@ namespace trview
     {
         Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
         EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies
-    };
-
-    enum class TriggerType
-    {
-        Trigger, Pad, Switch, Key, Pickup, HeavyTrigger, Antipad, Combat, Dummy, 
-        AntiTrigger, HeavySwitch, HeavyAntiTrigger, Monkey, Skeleton, Tightrope, Crawl, Climb
     };
 
     struct TriggerInfo

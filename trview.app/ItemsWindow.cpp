@@ -289,8 +289,7 @@ namespace trview
         trigger_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Room", 40 },
-                { Listbox::Column::Type::Number, L"X", 70 },
-                { Listbox::Column::Type::Number, L"Z", 70 },
+                { Listbox::Column::Type::Number, L"Type", 140 },
             }
         );
         trigger_list->set_show_headers(true);
@@ -352,8 +351,7 @@ namespace trview
                     {
                         { L"#", std::to_wstring(trigger.number()) },
                         { L"Room", std::to_wstring(trigger.room()) },
-                        { L"X", std::to_wstring(trigger.x()) },
-                        { L"Z", std::to_wstring(trigger.z()) }
+                        { L"Type", trigger_type_name(trigger.type()) },
                     }
                 });
         }
