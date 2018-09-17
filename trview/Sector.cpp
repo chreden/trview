@@ -3,9 +3,11 @@
 
 namespace trview
 {
-    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr_room_sector &sector, int sector_id)
+    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id)
         : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below)
     {
+        _x = sector_id / room.num_z_sectors;
+        _z = room.num_z_sectors - (sector_id % room.num_z_sectors) - 1;
         parse();
     }
 
@@ -83,7 +85,7 @@ namespace trview
 
             case 0x4:
             {
-                std::uint16_t command; 
+                std::uint16_t command = 0; 
                 std::uint16_t setup = _level.get_floor_data(++cur_index);
 
                 // Basic trigger setup 
@@ -94,16 +96,28 @@ namespace trview
                 // Type of the trigger, e.g. Pad, Switch, etc.
                 _trigger.type = (TriggerType) subfunction;
 
-                // Parse actions 
-                ++cur_index;
-                while (cur_index < max_floordata && ((command = _level.get_floor_data(cur_index)) & 0x8000))
+                if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
                 {
-                    _trigger.commands.emplace_back (
-                        (TriggerCommandType) ((command & 0x7C00) >> 10),
-                        command & 0x3FF
-                    ); 
+                    // The next element is the lock or switch - ignore.
                     ++cur_index;
                 }
+
+                // Parse actions 
+                do
+                {
+                    if (++cur_index < max_floordata)
+                    {
+                        command = _level.get_floor_data(cur_index);
+                        auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
+                        _trigger.commands.emplace_back(action, command & 0x3FF);
+                        if (action == TriggerCommandType::Camera)
+                        {
+                            // Camera has another uint16_t - skip for now.
+                            command = _level.get_floor_data(++cur_index);
+                        }
+                    }
+
+                } while (cur_index < max_floordata && !(command & 0x8000));
 
                 flags |= SectorFlag::Trigger; 
                 break; 
@@ -149,6 +163,21 @@ namespace trview
         }
 
         return true; 
+    }
+
+    const TriggerInfo& Sector::trigger() const
+    {
+        return _trigger;
+    }
+
+    uint16_t Sector::x() const
+    {
+        return _x;
+    }
+
+    uint16_t Sector::z() const
+    {
+        return _z;
     }
 }
 

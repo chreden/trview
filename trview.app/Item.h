@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include "Trigger.h"
 
 namespace trview
 {
@@ -16,7 +17,8 @@ namespace trview
         /// @param type The type name of the item.
         /// @param ocb The OCB value of the item.
         /// @param flags The flags for the entity.
-        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, uint32_t ocb, uint16_t flags);
+        /// @param triggers The triggers that affect this entity.
+        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, uint32_t ocb, uint16_t flags, const std::vector<Trigger>& triggers);
 
         /// Get the item number.
         /// @returns The item number.
@@ -49,7 +51,12 @@ namespace trview
         /// Get whether the invisible_flag is set.
         /// @returns Whether invisible flag is set.
         bool invisible_flag() const;
+
+        /// Get the triggers that affect this object.
+        /// @returns The triggers.
+        const std::vector<Trigger>& triggers() const;
     private:
+        std::vector<Trigger> _triggers;
         uint32_t _number;
         uint32_t _room;
         uint32_t _type_id;

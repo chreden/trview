@@ -16,6 +16,7 @@
 #include "Mesh.h"
 #include "StaticMesh.h"
 #include <trview.app/Item.h>
+#include <trview.app/Trigger.h>
 
 #include "IMeshStorage.h"
 
@@ -63,6 +64,10 @@ namespace trview
         /// @returns All items in the level.
         const std::vector<Item>& items() const;
 
+        /// Get the triggers in this level.
+        /// @returns All triggers in the level.
+        const std::vector<Trigger>& triggers() const;
+
         // Determine whether the specified ray hits any of the triangles in any of the room geometry.
         // position: The world space position of the source of the ray.
         // direction: The direction of the ray.
@@ -100,6 +105,7 @@ namespace trview
         bool any_alternates() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+        void generate_triggers();
         void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
@@ -145,6 +151,7 @@ namespace trview
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
+        std::vector<Trigger>                 _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;
         std::vector<Item> _items;
 

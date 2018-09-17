@@ -374,6 +374,7 @@ namespace trview
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
 
         _items_windows->set_items(_level->items());
+        _items_windows->set_triggers(_level->triggers());
 
         // Set up the views.
         auto rooms = _level->room_info();

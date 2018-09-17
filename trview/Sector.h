@@ -17,7 +17,7 @@ namespace trview
     {
     public:
         // Constructs sector object and parses floor data automatically 
-        Sector(const trlevel::ILevel &level, const trlevel::tr_room_sector &sector, int sector_id);
+        Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id);
 
         // Returns the id of the room that this floor data points to 
         std::uint16_t portal() const; 
@@ -37,6 +37,12 @@ namespace trview
         // Holds "Function" enum bitwise values 
         std::uint16_t flags = 0;
 
+        /// Get trigger information for the sector.
+        const TriggerInfo& trigger() const;
+
+        uint16_t x() const;
+
+        uint16_t z() const;
     private:
         bool parse(); 
 
@@ -47,7 +53,7 @@ namespace trview
         std::uint16_t _floor_slant, _ceiling_slant; 
 
         // Holds trigger data 
-        struct Trigger _trigger; 
+        TriggerInfo _trigger;
 
         // ID of the sector 
         int _sector_id; 
@@ -57,5 +63,11 @@ namespace trview
 
         // Reference to the base sector structure 
         const trlevel::tr_room_sector &_sector;
+
+        // X position of the sector in the room.
+        uint16_t _x;
+
+        // Z position of the sector in the room.
+        uint16_t _z;
     };
 }

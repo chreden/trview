@@ -45,6 +45,7 @@ namespace trview
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
         generate_rooms(device);
+        generate_triggers();
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
@@ -87,6 +88,11 @@ namespace trview
     const std::vector<Item>& Level::items() const
     {
         return _items;
+    }
+
+    const std::vector<Trigger>& Level::triggers() const
+    {
+        return _triggers;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -263,6 +269,21 @@ namespace trview
         }
     }
 
+    void Level::generate_triggers()
+    {
+        for (auto i = 0; i < _rooms.size(); ++i)
+        {
+            const auto& room = _rooms[i];
+            for (auto sector : room->sectors())
+            {
+                if (sector.second->flags & SectorFlag::Trigger)
+                {
+                    _triggers.emplace_back(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger());
+                }
+            }
+        }
+    }
+
     void Level::generate_entities(const ComPtr<ID3D11Device>& device)
     {
         const uint32_t num_entities = _level->num_entities();
@@ -274,8 +295,18 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 
+            // Relevant triggers.
+            std::vector<Trigger> relevant_triggers;
+            for (const auto& trigger : _triggers)
+            {
+                if (trigger.triggers_item(i))
+                {
+                    relevant_triggers.push_back(trigger);
+                }
+            }
+
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags);
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers);
         }
     }
 

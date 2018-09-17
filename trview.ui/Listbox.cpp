@@ -241,8 +241,7 @@ namespace trview
                 // If the bottom of the list is already visible, then don't scroll down any more.
                 if (!rows.empty())
                 {
-                    const auto& last = rows.back();
-                    if (last->position().y + last->size().height <= _rows_element->size().height)
+                    if (_current_top + _fully_visible_rows >= _items.size())
                     {
                         return true;
                     }
