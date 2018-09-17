@@ -140,6 +140,7 @@ namespace trview
     void ItemsWindow::set_triggers(const std::vector<Trigger>& triggers)
     {
         _all_triggers = triggers;
+        _trigger_list->set_items({});
     }
 
     void ItemsWindow::clear_selected_item()
@@ -287,9 +288,9 @@ namespace trview
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 160), Colours::Triggers);
         trigger_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::Number, L"X", 75 },
-                { Listbox::Column::Type::Number, L"Z", 75 },
+                { Listbox::Column::Type::Number, L"Room", 40 },
+                { Listbox::Column::Type::Number, L"X", 70 },
+                { Listbox::Column::Type::Number, L"Z", 70 },
             }
         );
         trigger_list->set_show_headers(true);
