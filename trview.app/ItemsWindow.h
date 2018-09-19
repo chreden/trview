@@ -27,6 +27,7 @@ namespace trview
             class Renderer;
         }
 
+        class Button;
         class Checkbox;
     }
 
@@ -101,6 +102,7 @@ namespace trview
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
+        ui::Button* _expander;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         input::Keyboard _keyboard;
@@ -114,5 +116,7 @@ namespace trview
         uint32_t _current_room{ 0u };
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
+
+        bool _expanded{ true };
     };
 }

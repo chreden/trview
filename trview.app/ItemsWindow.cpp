@@ -10,6 +10,7 @@
 #include <SimpleMath.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/GroupBox.h>
+#include <trview.ui/Button.h>
 
 using namespace trview::graphics;
 
@@ -209,6 +210,15 @@ namespace trview
         });
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
+
+        auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
+        _token_store.add(expander->on_click += [this]()
+        {
+            _expanded = !_expanded;
+            _expander->set_text(_expanded ? L"<<" : L">>");
+        });
+        _expander = controls->add_child(std::move(expander));
+
         _controls = left_panel->add_child(std::move(controls));
 
         auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
