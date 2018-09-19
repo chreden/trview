@@ -39,6 +39,7 @@ namespace trview
         items_window->on_item_selected += on_item_selected;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->set_items(_items);
+        items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
 
         const auto window = items_window.get();
