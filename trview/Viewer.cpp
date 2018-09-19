@@ -58,6 +58,10 @@ namespace trview
         {
             select_item(item);
         });
+        _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger)
+        {
+            select_trigger(trigger);
+        });
 
         _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
         _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
@@ -579,6 +583,10 @@ namespace trview
             auto entity = _current_level->get_entity(item.number());
             _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
+    }
+
+    void Viewer::select_trigger(const Trigger& trigger)
+    {
     }
 
     void Viewer::set_alternate_mode(bool enabled)

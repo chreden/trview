@@ -37,6 +37,7 @@ namespace trview
     {
         auto items_window = std::make_unique<ItemsWindow>(_device, _shader_storage, _font_factory, window());
         items_window->on_item_selected += on_item_selected;
+        items_window->on_trigger_selected += on_trigger_selected;
         items_window->set_items(_items);
         items_window->set_current_room(_current_room);
 
