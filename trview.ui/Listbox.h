@@ -127,6 +127,10 @@ namespace trview
             void sort_items();
             /// Select the given item and scroll to make it visible.
             void select_item(const Item& item);
+            /// Scroll the listbox so that the specified item index is visible.
+            void scroll_to(uint32_t item);
+            /// Scroll the listbox so that the specified item is visible.
+            void scroll_to_show(const Item& item);
 
             void highlight_item();
 
