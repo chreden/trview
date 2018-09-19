@@ -590,16 +590,20 @@ namespace trview
         if (_level)
         {
             select_room(trigger.room());
+
             const auto room = _level->room(trigger.room());
             const auto room_info = room->info();
 
-            // Calculate the X/Z position - the Y must be determined by casting
-            // a ray from above directly down, to see what it hits.
+            // Calculate the X/Z position - the Y must be determined by casting a ray from above 
+            // directly down, to see what it hits. If it hits nothing, use the centre of the room.
+            const float x = room_info.x / 1024.0f + trigger.x() + 0.5f;
+            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger.z()) + 0.5f;
 
-            const float x = (room_info.x + trigger.x() * 1024.0f) / 1024.0f + 0.5f;
-            const float z = (room_info.z + (room->num_z_sectors() - 1 - trigger.z()) * 1024.0f) / 1024.0f + 0.5f;
+            using namespace DirectX::SimpleMath;
+            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0));
+            const float y = pick.hit ? pick.position.y : room->centre().y;
 
-            _target = DirectX::SimpleMath::Vector3(x, room_info.yBottom / 1024.0f, z);
+            _target = DirectX::SimpleMath::Vector3(x, y, z);
         }
     }
 
