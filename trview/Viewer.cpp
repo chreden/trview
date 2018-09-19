@@ -587,6 +587,20 @@ namespace trview
 
     void Viewer::select_trigger(const Trigger& trigger)
     {
+        if (_level)
+        {
+            select_room(trigger.room());
+            const auto room = _level->room(trigger.room());
+            const auto room_info = room->info();
+
+            // Calculate the X/Z position - the Y must be determined by casting
+            // a ray from above directly down, to see what it hits.
+
+            const float x = (room_info.x + trigger.x() * 1024.0f) / 1024.0f + 0.5f;
+            const float z = (room_info.z + (room->num_z_sectors() - 1 - trigger.z()) * 1024.0f) / 1024.0f + 0.5f;
+
+            _target = DirectX::SimpleMath::Vector3(x, room_info.yBottom / 1024.0f, z);
+        }
     }
 
     void Viewer::set_alternate_mode(bool enabled)

@@ -288,8 +288,8 @@ namespace trview
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
         trigger_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 20 },
-                { Listbox::Column::Type::Number, L"Room", 40 },
+                { Listbox::Column::Type::Number, L"#", 25 },
+                { Listbox::Column::Type::Number, L"Room", 35 },
                 { Listbox::Column::Type::String, L"Type", 120 },
             }
         );
@@ -344,14 +344,13 @@ namespace trview
         stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
 
-        uint32_t i = 0u;
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
             triggers.push_back(
                 {
                     {
-                        { L"#", std::to_wstring(i++) },
+                        { L"#", std::to_wstring(trigger.number()) },
                         { L"Room", std::to_wstring(trigger.room()) },
                         { L"Type", trigger_type_name(trigger.type()) },
                     }
