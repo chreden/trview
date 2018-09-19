@@ -440,7 +440,7 @@ namespace trview
 
     void Viewer::pick()
     {
-        if (!_level || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window))
+        if (!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window))
         {
             _picking->set_visible(false);
             return;

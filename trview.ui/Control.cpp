@@ -78,6 +78,10 @@ namespace trview
 
         void Control::set_visible(bool value)
         {
+            if (_visible == value)
+            {
+                return;
+            }
             _visible = value;
             on_invalidate();
         }
