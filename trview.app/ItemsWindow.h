@@ -90,6 +90,7 @@ namespace trview
         std::unique_ptr<ui::StackPanel> create_details_panel();
         void load_item_details(const Item& item);
         void set_track_room(bool value);
+        void toggle_expand();
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;

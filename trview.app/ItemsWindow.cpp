@@ -211,11 +211,13 @@ namespace trview
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
+        // Space out the button
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(90, 20), Colours::LeftPanel));
+
         auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
         _token_store.add(expander->on_click += [this]()
         {
-            _expanded = !_expanded;
-            _expander->set_text(_expanded ? L"<<" : L">>");
+            toggle_expand();
         });
         _expander = controls->add_child(std::move(expander));
 
@@ -378,5 +380,17 @@ namespace trview
         {
             _track_room_checkbox->set_state(_track_room);
         }
+    }
+
+    void ItemsWindow::toggle_expand()
+    {
+        _expanded = !_expanded;
+        _expander->set_text(_expanded ? L"<<" : L">>");
+        _ui->set_size(Size(_expanded ? 400 : 200, _ui->size().height));
+
+        // Force resize the window.
+        RECT rect{ 0, 0, _ui->size().width, _ui->size().height };
+        AdjustWindowRect(&rect, window_style, FALSE);
+        SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
     }
 }
