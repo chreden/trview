@@ -208,7 +208,7 @@ namespace trview
             set_track_room(value);
         });
 
-        controls->add_child(std::move(track_room));
+        _track_room_checkbox = controls->add_child(std::move(track_room));
         _controls = left_panel->add_child(std::move(controls));
 
         auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
@@ -362,6 +362,11 @@ namespace trview
         {
             set_items(_all_items);
             _filter_applied = false;
+        }
+
+        if (_track_room_checkbox->state() != _track_room)
+        {
+            _track_room_checkbox->set_state(_track_room);
         }
     }
 }

@@ -26,6 +26,8 @@ namespace trview
         {
             class Renderer;
         }
+
+        class Checkbox;
     }
 
     /// Used to show and filter the items in the level.
@@ -98,6 +100,7 @@ namespace trview
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
+        ui::Checkbox* _track_room_checkbox;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         input::Mouse _mouse;
         input::Keyboard _keyboard;
