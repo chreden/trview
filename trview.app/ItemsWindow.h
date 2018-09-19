@@ -86,6 +86,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_divider();
         std::unique_ptr<ui::StackPanel> create_details_panel();
         void load_item_details(const Item& item);
+        void set_track_room(bool value);
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;

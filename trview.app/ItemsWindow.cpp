@@ -205,16 +205,7 @@ namespace trview
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
         {
-            _track_room = value;
-            if (_track_room)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                set_items(_all_items);
-                _filter_applied = false;
-            }
+            set_track_room(value);
         });
 
         controls->add_child(std::move(track_room));
@@ -300,6 +291,7 @@ namespace trview
         _token_store.add(trigger_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
+            set_track_room(false);
             on_trigger_selected(_all_triggers[index]);
         });
 
@@ -357,5 +349,19 @@ namespace trview
                 });
         }
         _trigger_list->set_items(triggers);
+    }
+
+    void ItemsWindow::set_track_room(bool value)
+    {
+        _track_room = value;
+        if (_track_room)
+        {
+            set_current_room(_current_room);
+        }
+        else
+        {
+            set_items(_all_items);
+            _filter_applied = false;
+        }
     }
 }
