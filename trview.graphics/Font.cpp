@@ -2,6 +2,8 @@
 #include "Texture.h"
 #include <trview.common/Size.h>
 #include <trview.common/Colour.h>
+#include <algorithm>
+#include <iterator>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;
@@ -10,6 +12,24 @@ namespace trview
 {
     namespace graphics
     {
+        namespace
+        {
+            /// Convert any characters that aren't in the sprite sheet to a safe character.
+            /// @param text The text to convert.
+            /// @result The santised string.
+            std::wstring sanitise(const SpriteFont& font, const std::wstring& text)
+            {
+                std::wstring converted;
+                std::transform(text.begin(), text.end(), std::back_inserter(converted),
+                    [&](auto character)
+                {
+                    return font.ContainsCharacter(character) ? character : L'?';
+                });
+                return converted;
+            }
+        }
+
+
         Font::Font(const std::shared_ptr<SpriteFont>& font, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment)
             : _font(font), _text_alignment(text_alignment), _paragraph_alignment(paragraph_alignment)
         {
@@ -42,7 +62,7 @@ namespace trview
             }
 
             _batch->Begin(SpriteSortMode_Deferred, blend_state.Get());
-            _font->DrawString(_batch.get(), text.c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.b, colour.g, colour.r, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
+            _font->DrawString(_batch.get(), sanitise(*_font, text).c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.b, colour.g, colour.r, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
             _batch->End();
         }
 
@@ -52,7 +72,7 @@ namespace trview
         Size Font::measure(const std::wstring& text) const
         {
             XMFLOAT2 size;
-            XMStoreFloat2(&size, _font->MeasureString(text.c_str()));
+            XMStoreFloat2(&size, _font->MeasureString(sanitise(*_font, text).c_str()));
             return Size(size.x, size.y);
         }
     }
