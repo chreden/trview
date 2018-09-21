@@ -38,6 +38,7 @@
 #define ID_FILE_SWITCHLEVEL             32774
 #define ID_HELP_GITHUB                  32776
 #define ID_ACCEL_FILE_OPEN              32777
+#define ID_HELP_DISCORD                 32778
 #define ID_WINDOWS_ITEMS                ID_APP_WINDOWS_ITEMS
 #define IDC_STATIC                      -1
 

@@ -207,6 +207,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
                 break;
             }
+            case ID_HELP_DISCORD:
+            {
+                ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
+                break;
+            }
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
