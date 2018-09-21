@@ -28,7 +28,6 @@
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>
 #include <trview.app/FileDropper.h>
-#include <trview.app/ItemsWindow.h>
 #include <trview.app/ItemsWindowManager.h>
 
 namespace trview
@@ -101,6 +100,7 @@ namespace trview
         void render_map(); 
         void select_room(uint32_t room);
         void select_item(const Item& item);
+        void select_trigger(const Trigger& trigger);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;

@@ -58,6 +58,10 @@ namespace trview
         {
             select_item(item);
         });
+        _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger)
+        {
+            select_trigger(trigger);
+        });
 
         _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
         _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
@@ -578,6 +582,28 @@ namespace trview
             select_room(item.room());
             auto entity = _current_level->get_entity(item.number());
             _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+        }
+    }
+
+    void Viewer::select_trigger(const Trigger& trigger)
+    {
+        if (_level)
+        {
+            select_room(trigger.room());
+
+            const auto room = _level->room(trigger.room());
+            const auto room_info = room->info();
+
+            // Calculate the X/Z position - the Y must be determined by casting a ray from above 
+            // directly down, to see what it hits. If it hits nothing, use the centre of the room.
+            const float x = room_info.x / 1024.0f + trigger.x() + 0.5f;
+            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger.z()) + 0.5f;
+
+            using namespace DirectX::SimpleMath;
+            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0));
+            const float y = pick.hit ? pick.position.y : room->centre().y;
+
+            _target = DirectX::SimpleMath::Vector3(x, y, z);
         }
     }
 

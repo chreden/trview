@@ -205,19 +205,10 @@ namespace trview
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
         {
-            _track_room = value;
-            if (_track_room)
-            {
-                set_current_room(_current_room);
-            }
-            else
-            {
-                set_items(_all_items);
-                _filter_applied = false;
-            }
+            set_track_room(value);
         });
 
-        controls->add_child(std::move(track_room));
+        _track_room_checkbox = controls->add_child(std::move(track_room));
         _controls = left_panel->add_child(std::move(controls));
 
         auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
@@ -288,8 +279,8 @@ namespace trview
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
         trigger_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 20 },
-                { Listbox::Column::Type::Number, L"Room", 40 },
+                { Listbox::Column::Type::Number, L"#", 25 },
+                { Listbox::Column::Type::Number, L"Room", 35 },
                 { Listbox::Column::Type::String, L"Type", 120 },
             }
         );
@@ -300,6 +291,7 @@ namespace trview
         _token_store.add(trigger_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
+            set_track_room(false);
             on_trigger_selected(_all_triggers[index]);
         });
 
@@ -344,19 +336,37 @@ namespace trview
         stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
 
-        uint32_t i = 0u;
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
             triggers.push_back(
                 {
                     {
-                        { L"#", std::to_wstring(i++) },
+                        { L"#", std::to_wstring(trigger.number()) },
                         { L"Room", std::to_wstring(trigger.room()) },
                         { L"Type", trigger_type_name(trigger.type()) },
                     }
                 });
         }
         _trigger_list->set_items(triggers);
+    }
+
+    void ItemsWindow::set_track_room(bool value)
+    {
+        _track_room = value;
+        if (_track_room)
+        {
+            set_current_room(_current_room);
+        }
+        else
+        {
+            set_items(_all_items);
+            _filter_applied = false;
+        }
+
+        if (_track_room_checkbox->state() != _track_room)
+        {
+            _track_room_checkbox->set_state(_track_room);
+        }
     }
 }

@@ -39,6 +39,9 @@ namespace trview
         /// Event raised when an item is selected in one of the item windows.
         Event<Item> on_item_selected;
 
+        /// Event raised when a trigger is selected in one of the item windows.
+        Event<Trigger> on_trigger_selected;
+
         /// Render all of the item windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.

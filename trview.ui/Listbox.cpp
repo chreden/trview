@@ -83,6 +83,12 @@ namespace trview
 
             generate_rows();
             populate_rows();
+
+            // Scroll to the highlighted item (if present in the list).
+            if (_show_highlight && _selected_item.has_value())
+            {
+                scroll_to_show(_selected_item.value());
+            }
         }
 
         void Listbox::generate_rows()
@@ -120,8 +126,7 @@ namespace trview
                     auto rows_scrollbar = std::make_unique<Scrollbar>(Point(), Size(scrollbar_width, remaining_height), background_colour());
                     _token_store.add(rows_scrollbar->on_scroll += [&](float value)
                     {
-                        _current_top = std::clamp<int32_t>(value * _items.size(), 0, _items.size() - _fully_visible_rows);
-                        populate_rows();
+                        scroll_to(value * _items.size());
                     });
                     _rows_scrollbar = rows_container->add_child(std::move(rows_scrollbar));
                 }
@@ -271,7 +276,7 @@ namespace trview
                     select_item(_items.front());
                 }
             }
-            else 
+            else
             {
                 // Go up if possible (not already at the start of the list)
                 if (key == VK_UP)
@@ -360,20 +365,7 @@ namespace trview
         void Listbox::select_item(const Item& item)
         {
             _selected_item = item;
-
-            // Scroll the list so that the selected item is visible. If it is already on the 
-            // same page, then no need to scroll.
-            auto index = std::find(_items.begin(), _items.end(), item) - _items.begin();
-            if (index < _current_top)
-            {
-                _current_top = index;
-            }
-            else if (index >= _current_top + _fully_visible_rows)
-            {
-                _current_top = index - _fully_visible_rows + 1;
-            }
-
-            populate_rows();
+            scroll_to_show(item);
             on_item_selected(_selected_item.value());
         }
 
@@ -398,6 +390,35 @@ namespace trview
                     button_cell->set_text_background_colour(colour);
                 }
             }
+        }
+
+        void Listbox::scroll_to(uint32_t item)
+        {
+            _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+            populate_rows();
+        }
+
+        void Listbox::scroll_to_show(const Item& item)
+        {
+            auto iter = std::find(_items.begin(), _items.end(), item);
+            if (iter == _items.end())
+            {
+                return;
+            }
+
+            // Scroll the list so that the selected item is visible. If it is already on the 
+            // same page, then no need to scroll.
+            auto index = iter - _items.begin();
+            if (index < _current_top)
+            {
+                _current_top = index;
+            }
+            else if (index >= _current_top + _fully_visible_rows)
+            {
+                _current_top = index - _fully_visible_rows + 1;
+            }
+
+            scroll_to(iter - _items.begin());
         }
     }
 }
