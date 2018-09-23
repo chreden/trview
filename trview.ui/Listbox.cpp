@@ -259,6 +259,7 @@ namespace trview
             for (const auto column : _columns)
             {
                 auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
+                header_element->set_text_background_colour(background_colour());
                 _token_store.add(header_element->on_click += [this, column]()
                 {
                     if (_current_sort.name() == column.name())
