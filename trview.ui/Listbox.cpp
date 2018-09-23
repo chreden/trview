@@ -406,9 +406,16 @@ namespace trview
                 return;
             }
 
+            auto index = iter - _items.begin();
+
             // Scroll the list so that the selected item is visible. If it is already on the 
             // same page, then no need to scroll.
-            auto index = iter - _items.begin();
+            if (index >= _current_top && index < _current_top + _fully_visible_rows)
+            {
+                highlight_item();
+                return;
+            }
+
             if (index < _current_top)
             {
                 _current_top = index;
