@@ -13,7 +13,6 @@
 #include <trlevel/trtypes.h>
 
 using namespace Microsoft::WRL;
-using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -151,20 +150,16 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
     }
 
-    void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour, float scale)
     {
         using namespace DirectX::SimpleMath;
 
-        Color final_colour = colour;
-        if (_selected)
-        {
-            final_colour -= Color(0.0f, 1.0f, 0.0f, 0.0f);
-        }
+        auto scaling = Matrix::CreateScale(scale);
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto wvp = _world_transforms[i] * _world * camera.view_projection();
-            _meshes[i]->render(context, wvp, texture_storage, final_colour);
+            auto wvp = _world_transforms[i] * scaling * _world *  camera.view_projection();
+            _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
@@ -173,7 +168,7 @@ namespace trview
             auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
             auto world = _scale * billboard * _offset;
             auto wvp = world * camera.view_projection();
-            _sprite_mesh->render(context, wvp, texture_storage, final_colour);
+            _sprite_mesh->render(context, wvp, texture_storage, colour);
         }
     }
 
@@ -184,17 +179,11 @@ namespace trview
 
     void Entity::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
-        Color final_colour = colour;
-        if (_selected)
-        {
-            final_colour -= Color(0.0f, 1.0f, 0.0f, 0.0f);
-        }
-
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             for (const auto& triangle : _meshes[i]->transparent_triangles())
             {
-                transparency.add(triangle.transform(_world_transforms[i] * _world, final_colour));
+                transparency.add(triangle.transform(_world_transforms[i] * _world, colour));
             }
         }
 
@@ -206,7 +195,7 @@ namespace trview
                 Vector3 forward = camera.forward();
                 auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
                 auto world = _scale * billboard * _offset;
-                transparency.add(triangle.transform(world, final_colour));
+                transparency.add(triangle.transform(world, colour));
             }
         }
     }

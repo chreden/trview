@@ -318,6 +318,7 @@
     <None Include="resources\arial8.bin" />
     <None Include="resources\level_pixel_shader.cso" />
     <None Include="resources\level_vertex_shader.cso" />
+    <None Include="resources\selection_pixel_shader.cso" />
     <None Include="resources\ui_pixel_shader.cso" />
     <None Include="resources\ui_vertex_shader.cso" />
     <None Include="texturelist.txt" />

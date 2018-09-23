@@ -16,7 +16,11 @@
 
 #include <external/nlohmann/json.hpp>
 
+#include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/ViewportStore.h>
+
 using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -27,6 +31,7 @@ namespace trview
 
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
+        _selection_shader = shader_storage.get("selection_pixel_shader");
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;
@@ -156,6 +161,7 @@ namespace trview
         _pixel_shader->apply(context);
 
         render_rooms(context, camera);
+        render_selected_item(context, camera);
     }
 
     // Render the rooms in the level.
@@ -203,6 +209,46 @@ namespace trview
 
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(context, camera, *_texture_storage.get());
+    }
+
+    void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    {
+        // Assume for now that the selected item is currently being rendered.
+        if (!_selected_item)
+        {
+            return;
+        }
+
+        using namespace graphics;
+        using namespace DirectX::SimpleMath;
+
+        // Make the texture to render the selected item highlight to.
+        if (!_selection_texture)
+        {
+            ComPtr<ID3D11Device> device;
+            context->GetDevice(&device);
+
+            uint32_t num_viewports = 1;
+            D3D11_VIEWPORT viewport;
+            context->RSGetViewports(&num_viewports, &viewport);
+
+            _selection_texture = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height, RenderTarget::DepthStencilMode::Enabled);
+            _selection_texture_final = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height);
+        }
+
+        // Steps:
+        // Get all polygons for the the item (transparent or not).
+
+        // Render all of the polygons to some sort of surface. They should be filled as a single colour.
+        graphics::RenderTargetStore store(context);
+        _selection_texture->clear(context, Color(1.0f, 0.0f, 0.0f));
+        _selection_texture->apply(context);
+
+        // Draw item (in black)
+        _selected_item->render(context, camera, *_texture_storage.get(), Color(1.0f, 1.0f, 1.0f), 1.0f);
+
+        // Take the selection texture as an input to a pixel shader.
+        
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

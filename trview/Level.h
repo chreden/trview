@@ -20,6 +20,8 @@
 
 #include "IMeshStorage.h"
 
+#include <trview.graphics/RenderTarget.h>
+
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -116,6 +118,8 @@ namespace trview
         // camera: The current camera to render the level with.
         void render_rooms(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
 
+        void render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
+
         struct RoomToRender
         {
             RoomToRender(Room& room, Room::SelectionMode selection_mode, uint16_t number)
@@ -158,6 +162,7 @@ namespace trview
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
+        graphics::IShader*          _selection_shader;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
@@ -174,5 +179,9 @@ namespace trview
         bool _alternate_mode{ false };
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
+
+        // Item selection bits.
+        std::unique_ptr<graphics::RenderTarget> _selection_texture;
+        std::unique_ptr<graphics::RenderTarget> _selection_texture_final;
     };
 }

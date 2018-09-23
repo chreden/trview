@@ -336,5 +336,8 @@
     <None Include="resources\arial8.bin">
       <Filter>Resources</Filter>
     </None>
+    <None Include="resources\selection_pixel_shader.cso">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
 </Project>
