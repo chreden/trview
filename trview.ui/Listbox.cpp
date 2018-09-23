@@ -231,26 +231,12 @@ namespace trview
 
         bool Listbox::scroll(int delta)
         {
-            int32_t direction = delta > 0 ? -1 : 1;
-            if (direction > 0)
-            {
-                // If any of the rows are invisible (they are being hidden because we are at the end
-                // of the list of items) then do not do any more scrolling down. Only elements that are
-                // invisible and fully in the client area count towards this.
-                const auto rows = _rows_element->child_elements();
-                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height <= r->parent()->size().height; }))
-                {
-                    return true;
-                }
+            const int32_t direction = delta > 0 ? -1 : 1;
 
-                // If the bottom of the list is already visible, then don't scroll down any more.
-                if (!rows.empty())
-                {
-                    if (_current_top + _fully_visible_rows >= _items.size())
-                    {
-                        return true;
-                    }
-                }
+            // If we are at the bottom of the list, don't scroll down any more.
+            if (direction > 0 && _current_top + _fully_visible_rows >= _items.size())
+            {
+                return true;
             }
 
             _current_top = std::max(0, _current_top + direction);
@@ -394,7 +380,14 @@ namespace trview
 
         void Listbox::scroll_to(uint32_t item)
         {
-            _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+            if (item == _current_top + _fully_visible_rows)
+            {
+                _current_top = std::clamp<int32_t>(_current_top + 1, 0, _items.size() - _fully_visible_rows);
+            }
+            else
+            {
+                _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+            }
             populate_rows();
         }
 
@@ -416,16 +409,7 @@ namespace trview
                 return;
             }
 
-            if (index < _current_top)
-            {
-                _current_top = index;
-            }
-            else if (index >= _current_top + _fully_visible_rows)
-            {
-                _current_top = index - _fully_visible_rows + 1;
-            }
-
-            scroll_to(iter - _items.begin());
+            scroll_to(index);
         }
     }
 }
