@@ -81,6 +81,7 @@ namespace trview
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
         void set_selected_room(uint16_t index);
+        void set_selected_item(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
 
@@ -161,6 +162,7 @@ namespace trview
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
         uint16_t           _selected_room{ 0u };
+        Entity*            _selected_item{ nullptr };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
