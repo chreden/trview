@@ -86,6 +86,8 @@ namespace trview
             public:
                 explicit Row(const Colour& colour, const std::vector<Column>& columns);
 
+                virtual ~Row() = default;
+
                 /// Set the current item for the row.
                 /// @param item The item for the row.
                 void set_item(const Item& item);
@@ -99,11 +101,17 @@ namespace trview
                 /// Event raised when a row is clicked.
                 Event<Item> on_click;
 
-                /// Set the background colour of the row.
-                void set_row_colour(const Colour& colour);
+                void set_highlighted(bool value);
+            protected:
+                virtual void mouse_enter() override;
+                virtual void mouse_leave() override;
             private:
+                void update_row_colour();
+
                 std::optional<Item> _item;
                 std::vector<Column> _columns;
+                bool _highlighted{ false };
+                bool _hovered{ false };
             };
 
             /// Create a new Listbox.

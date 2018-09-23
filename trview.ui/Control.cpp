@@ -144,15 +144,6 @@ namespace trview
 
         bool Control::process_mouse_move(const Point& position)
         {
-            if (_focus_control && _focus_control != this)
-            {
-                bool focus_handled = _focus_control->move(position - _focus_control->absolute_position());
-                if (focus_handled)
-                {
-                    return true;
-                }
-            }
-
             // Get the control at the current mouse position.
             Control* control = hover_control_at_position(position);
             if (control != _hover_control)
@@ -161,8 +152,20 @@ namespace trview
                 {
                     _hover_control->mouse_leave();
                 }
-                _hover_control = control;
-                _hover_control->mouse_enter();
+                set_hover_control(control);
+                if (_hover_control)
+                {
+                    _hover_control->mouse_enter();
+                }
+            }
+
+            if (_focus_control && _focus_control != this)
+            {
+                bool focus_handled = _focus_control->move(position - _focus_control->absolute_position());
+                if (focus_handled)
+                {
+                    return true;
+                }
             }
 
             return inner_process_mouse_move(position);
@@ -418,14 +421,12 @@ namespace trview
             return nullptr;
         }
 
-        bool Control::mouse_enter()
+        void Control::mouse_enter()
         {
-            return false;
         }
 
-        bool Control::mouse_leave()
+        void Control::mouse_leave()
         {
-            return false;
         }
 
         void Control::set_hover_control(Control* control)

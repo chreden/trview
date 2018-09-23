@@ -175,12 +175,10 @@ namespace trview
             virtual bool mouse_up(const Point& position);
 
             /// To be called when the mouse has hovered over the element.
-            /// @return True if the control handles this event.
-            virtual bool mouse_enter();
+            virtual void mouse_enter();
 
             /// To be called when the mouse has stopped hovering over the element.
-            /// @return True if the control handles this event.
-            virtual bool mouse_leave();
+            virtual void mouse_leave();
 
             /// To be called when the user interface element has been clicked.
             /// This should be overriden by child elements to handle a click.

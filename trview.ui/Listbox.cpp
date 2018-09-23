@@ -293,13 +293,7 @@ namespace trview
             for (auto i = 0; i < rows.size(); ++i)
             {
                 auto row = static_cast<Row*>(rows[i]);
-
-                Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
-                if (_show_highlight && row->item() == _selected_item)
-                {
-                    colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
-                }
-                row->set_row_colour(colour);
+                row->set_highlighted(_show_highlight && row->item() == _selected_item);
             }
         }
 
