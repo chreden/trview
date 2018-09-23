@@ -84,6 +84,15 @@
     <ClCompile Include="Scrollbar.cpp">
       <Filter>Controls\Scrollbar</Filter>
     </ClCompile>
+    <ClCompile Include="ListboxRow.cpp">
+      <Filter>Controls\Listbox</Filter>
+    </ClCompile>
+    <ClCompile Include="ListboxItem.cpp">
+      <Filter>Controls\Listbox</Filter>
+    </ClCompile>
+    <ClCompile Include="ListboxColumn.cpp">
+      <Filter>Controls\Listbox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">

@@ -80,6 +80,32 @@ namespace trview
                 std::unordered_map<std::wstring, std::wstring> _values;
             };
 
+            /// A row in the list box.
+            class Row final : public StackPanel
+            {
+            public:
+                explicit Row(const Colour& colour, const std::vector<Column>& columns);
+
+                /// Set the current item for the row.
+                /// @param item The item for the row.
+                void set_item(const Item& item);
+
+                /// Set the row to have no associated item.
+                void clear_item();
+
+                /// Get the item for this row.
+                const std::optional<Item>& item() const;
+
+                /// Event raised when a row is clicked.
+                Event<Item> on_click;
+
+                /// Set the background colour of the row.
+                void set_row_colour(const Colour& colour);
+            private:
+                std::optional<Item> _item;
+                std::vector<Column> _columns;
+            };
+
             /// Create a new Listbox.
             /// @param position The position of the listbox.
             /// @param size The size of the listbox.

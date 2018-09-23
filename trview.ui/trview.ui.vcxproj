@@ -42,6 +42,9 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Listbox.cpp" />
+    <ClCompile Include="ListboxColumn.cpp" />
+    <ClCompile Include="ListboxItem.cpp" />
+    <ClCompile Include="ListboxRow.cpp" />
     <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Scrollbar.cpp" />
     <ClCompile Include="Slider.cpp" />
