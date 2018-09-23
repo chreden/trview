@@ -264,22 +264,15 @@ namespace trview
             }
             else
             {
-                // Go up if possible (not already at the start of the list)
-                if (key == VK_UP)
+                if (key == VK_UP && item != _items.begin())
                 {
-                    if (item == _items.begin())
-                    {
-                        return false;
-                    }
+                    // Go up if possible (not already at the start of the list)
                     select_item(*--item);
-                    return true;
                 }
-
-                // Go down if possible (not at the end of the list).
-                if (key == VK_DOWN && ++item != _items.end())
+                else if (key == VK_DOWN && ++item != _items.end())
                 {
+                    // Go down if possible (not at the end of the list).
                     select_item(*item);
-                    return true;
                 }
             }
             return true;
