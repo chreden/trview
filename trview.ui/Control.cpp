@@ -152,6 +152,19 @@ namespace trview
                     return true;
                 }
             }
+
+            // Get the control at the current mouse position.
+            Control* control = hover_control_at_position(position);
+            if (control != _hover_control)
+            {
+                if (_hover_control)
+                {
+                    _hover_control->mouse_leave();
+                }
+                _hover_control = control;
+                _hover_control->mouse_enter();
+            }
+
             return inner_process_mouse_move(position);
         }
 
@@ -379,6 +392,66 @@ namespace trview
 
         void Control::inner_add_child(Control*)
         {
+        }
+
+        Control* Control::hover_control_at_position(const Point& position)
+        {
+            if (!in_bounds(position, size()))
+            {
+                return nullptr;
+            }
+
+            for (const auto& control : _child_elements)
+            {
+                auto result = control->hover_control_at_position(position - control->position());
+                if (result && result->_handles_hover)
+                {
+                    return result;
+                }
+            }
+
+            if (_handles_hover)
+            {
+                return this;
+            }
+
+            return nullptr;
+        }
+
+        bool Control::mouse_enter()
+        {
+            return false;
+        }
+
+        bool Control::mouse_leave()
+        {
+            return false;
+        }
+
+        void Control::set_hover_control(Control* control)
+        {
+            if (_parent)
+            {
+                _parent->set_hover_control(control);
+            }
+            else
+            {
+                inner_set_hover_control(control);
+            }
+        }
+
+        void Control::inner_set_hover_control(Control* control)
+        {
+            _hover_control = control;
+            for (const auto& child : _child_elements)
+            {
+                child->inner_set_hover_control(control);
+            }
+        }
+
+        void Control::set_handles_hover(bool value)
+        {
+            _handles_hover = value;
         }
     }
 }
