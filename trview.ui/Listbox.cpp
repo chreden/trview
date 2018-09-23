@@ -114,7 +114,7 @@ namespace trview
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
-                auto index = r + _current_top;
+                const auto index = r + _current_top;
                 auto row = static_cast<Row*>(rows[r]);
                 if (index < _items.size())
                 {
