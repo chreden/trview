@@ -373,12 +373,15 @@ namespace trview
 
         void Listbox::scroll_to(uint32_t item)
         {
+            // If the item is a partially visible row, move the top of the list down by one (move it into view at 
+            // the bottom).
             if (item == _current_top + _fully_visible_rows)
             {
                 _current_top = std::clamp<int32_t>(_current_top + 1, 0, _items.size() - _fully_visible_rows);
             }
             else
             {
+                // Otherwise, just set the new item to be at the top of the list.
                 _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
             }
             populate_rows();
