@@ -330,12 +330,15 @@ namespace trview
             bool handled = false;
             for (auto& child : _child_elements)
             {
-                handled |= child->inner_process_key_down(key);
+                if (child->inner_process_key_down(key))
+                {
+                    return handled;
+                }
             }
 
             // If none of the child elements have handled this event themselves, call the key_down
             // event of the control.
-            return handled | key_down(key);
+            return key_down(key);
         }
 
         bool Control::is_mouse_over(const Point& position) const

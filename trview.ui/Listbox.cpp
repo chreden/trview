@@ -231,26 +231,12 @@ namespace trview
 
         bool Listbox::scroll(int delta)
         {
-            int32_t direction = delta > 0 ? -1 : 1;
-            if (direction > 0)
-            {
-                // If any of the rows are invisible (they are being hidden because we are at the end
-                // of the list of items) then do not do any more scrolling down. Only elements that are
-                // invisible and fully in the client area count towards this.
-                const auto rows = _rows_element->child_elements();
-                if (std::any_of(rows.begin(), rows.end(), [](const auto& r) { return !r->visible() && r->position().y + r->size().height <= r->parent()->size().height; }))
-                {
-                    return true;
-                }
+            const int32_t direction = delta > 0 ? -1 : 1;
 
-                // If the bottom of the list is already visible, then don't scroll down any more.
-                if (!rows.empty())
-                {
-                    if (_current_top + _fully_visible_rows >= _items.size())
-                    {
-                        return true;
-                    }
-                }
+            // If we are at the bottom of the list, don't scroll down any more.
+            if (direction > 0 && _current_top + _fully_visible_rows >= _items.size())
+            {
+                return true;
             }
 
             _current_top = std::max(0, _current_top + direction);
@@ -278,22 +264,15 @@ namespace trview
             }
             else
             {
-                // Go up if possible (not already at the start of the list)
-                if (key == VK_UP)
+                if (key == VK_UP && item != _items.begin())
                 {
-                    if (item == _items.begin())
-                    {
-                        return false;
-                    }
+                    // Go up if possible (not already at the start of the list)
                     select_item(*--item);
-                    return true;
                 }
-
-                // Go down if possible (not at the end of the list).
-                if (key == VK_DOWN && ++item != _items.end())
+                else if (key == VK_DOWN && ++item != _items.end())
                 {
+                    // Go down if possible (not at the end of the list).
                     select_item(*item);
-                    return true;
                 }
             }
             return true;
@@ -394,7 +373,17 @@ namespace trview
 
         void Listbox::scroll_to(uint32_t item)
         {
-            _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+            // If the item is a partially visible row, move the top of the list down by one (move it into view at 
+            // the bottom).
+            if (item == _current_top + _fully_visible_rows)
+            {
+                _current_top = std::clamp<int32_t>(_current_top + 1, 0, _items.size() - _fully_visible_rows);
+            }
+            else
+            {
+                // Otherwise, just set the new item to be at the top of the list.
+                _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+            }
             populate_rows();
         }
 
@@ -406,19 +395,17 @@ namespace trview
                 return;
             }
 
+            auto index = iter - _items.begin();
+
             // Scroll the list so that the selected item is visible. If it is already on the 
             // same page, then no need to scroll.
-            auto index = iter - _items.begin();
-            if (index < _current_top)
+            if (index >= _current_top && index < _current_top + _fully_visible_rows)
             {
-                _current_top = index;
-            }
-            else if (index >= _current_top + _fully_visible_rows)
-            {
-                _current_top = index - _fully_visible_rows + 1;
+                highlight_item();
+                return;
             }
 
-            scroll_to(iter - _items.begin());
+            scroll_to(index);
         }
     }
 }

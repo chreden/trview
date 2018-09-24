@@ -353,15 +353,18 @@ namespace trview
 
     void ItemsWindow::set_track_room(bool value)
     {
-        _track_room = value;
-        if (_track_room)
+        if (_track_room != value)
         {
-            set_current_room(_current_room);
-        }
-        else
-        {
-            set_items(_all_items);
-            _filter_applied = false;
+            _track_room = value;
+            if (_track_room)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                set_items(_all_items);
+                _filter_applied = false;
+            }
         }
 
         if (_track_room_checkbox->state() != _track_room)
