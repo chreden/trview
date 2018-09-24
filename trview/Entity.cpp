@@ -150,15 +150,13 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
     }
 
-    void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour, float scale)
+    void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
 
-        auto scaling = Matrix::CreateScale(scale);
-
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto wvp = _world_transforms[i] * scaling * _world *  camera.view_projection();
+            auto wvp = _world_transforms[i] * _world *  camera.view_projection();
             _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
