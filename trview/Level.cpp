@@ -13,11 +13,9 @@
 #include "TransparencyBuffer.h"
 #include "ResourceHelper.h"
 #include "resource.h"
+#include "SelectionRenderer.h"
 
 #include <external/nlohmann/json.hpp>
-
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ViewportStore.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -31,8 +29,6 @@ namespace trview
 
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
-        _selection_shader = shader_storage.get("selection_pixel_shader");
-        _selection_vertex_shader = shader_storage.get("ui_vertex_shader");
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;
@@ -55,7 +51,8 @@ namespace trview
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
-        _selection_transparency = std::make_unique<TransparencyBuffer>(device);
+
+        _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
 
     Level::~Level()
@@ -213,15 +210,6 @@ namespace trview
         _transparency->render(context, camera, *_texture_storage.get());
     }
 
-    namespace
-    {
-        struct SelectionVertex
-        {
-            DirectX::SimpleMath::Vector3 pos;
-            DirectX::SimpleMath::Vector2 uv;
-        };
-    }
-
     void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         // Assume for now that the selected item is currently being rendered.
@@ -230,148 +218,7 @@ namespace trview
             return;
         }
 
-        using namespace graphics;
-        using namespace DirectX::SimpleMath;
-
-        ComPtr<ID3D11Device> device;
-        context->GetDevice(&device);
-
-        uint32_t num_viewports = 1;
-        D3D11_VIEWPORT viewport;
-        context->RSGetViewports(&num_viewports, &viewport);
-
-        // Make the texture to render the selected item highlight to.
-        if (!_selection_texture)
-        {
-            _selection_texture = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height, RenderTarget::DepthStencilMode::Enabled);
-            _selection_texture_final = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height);
-
-            SelectionVertex vertices[] =
-            {
-                { Vector3(-1.0f, 1.0f, 0.0f), Vector2::Zero },
-                { Vector3(1.0f, 1.0f, 0.0f), Vector2(1,0) },
-                { Vector3(-1.0f, -1.0f, 0.0f), Vector2(0,1) },
-                { Vector3(1.0f, -1.0f, 0.0f), Vector2(1,1) }
-            };
-
-            D3D11_BUFFER_DESC vertex_desc;
-            memset(&vertex_desc, 0, sizeof(vertex_desc));
-            vertex_desc.Usage = D3D11_USAGE_DEFAULT;
-            vertex_desc.ByteWidth = sizeof(SelectionVertex) * 4;
-            vertex_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-            D3D11_SUBRESOURCE_DATA vertex_data;
-            memset(&vertex_data, 0, sizeof(vertex_data));
-            vertex_data.pSysMem = vertices;
-
-            HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &_selection_vertex_buffer);
-
-            uint32_t indices[] = { 0, 1, 2, 3 };
-
-            D3D11_BUFFER_DESC index_desc;
-            memset(&index_desc, 0, sizeof(index_desc));
-            index_desc.Usage = D3D11_USAGE_DEFAULT;
-            index_desc.ByteWidth = sizeof(uint32_t) * 4;
-            index_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-            D3D11_SUBRESOURCE_DATA index_data;
-            memset(&index_data, 0, sizeof(index_data));
-            index_data.pSysMem = indices;
-
-            hr = device->CreateBuffer(&index_desc, &index_data, &_selection_index_buffer);
-
-            using namespace DirectX::SimpleMath;
-            D3D11_BUFFER_DESC desc;
-            memset(&desc, 0, sizeof(desc));
-
-            desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            device->CreateBuffer(&desc, nullptr, _selection_matrix_buffer.GetAddressOf());
-
-            using namespace DirectX::SimpleMath;
-            D3D11_BUFFER_DESC scaley_desc;
-            memset(&scaley_desc, 0, sizeof(scaley_desc));
-
-            scaley_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            scaley_desc.ByteWidth = sizeof(float) * 4;
-            scaley_desc.Usage = D3D11_USAGE_DYNAMIC;
-            scaley_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-            device->CreateBuffer(&scaley_desc, nullptr, _selection_scale_buffer.GetAddressOf());
-        }
-
-        // Steps:
-        // Get all polygons for the the item (transparent or not).
-
-        // Render all of the polygons to some sort of surface. They should be filled as a single colour.
-        {
-            graphics::RenderTargetStore store(context);
-            _selection_texture->clear(context, Color(1.0f, 0.0f, 0.0f, 1.0f));
-            _selection_texture->apply(context);
-
-            // Draw item (in black)
-            _selected_item->render(context, camera, *_texture_storage.get(), Color(0.0f, 0.0f, 0.0f));
-
-            // Also render the transparent parts of the meshes.
-            _selection_transparency->reset();
-            _selected_item->get_transparent_triangles(*_selection_transparency, camera, Color(0.0f, 0.0f, 0.0f));
-            _selection_transparency->sort(camera.position());
-            _selection_transparency->render(context, camera, *_texture_storage.get());
-        }
-
-        // Take the selection texture as an input to a pixel shader.
-        
-        // Set the selection texture as the input.
-
-        {
-            D3D11_MAPPED_SUBRESOURCE mapped_resource;
-            memset(&mapped_resource, 0, sizeof(mapped_resource));
-
-            struct Data
-            {
-                Matrix matrix;
-                Color colour;
-            };
-
-            Data data{ Matrix::Identity, Color(1,1,1,0.5f) };
-            context->Map(_selection_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
-            memcpy(mapped_resource.pData, &data, sizeof(data));
-            context->Unmap(_selection_matrix_buffer.Get(), 0);
-        }
-
-        {
-            D3D11_MAPPED_SUBRESOURCE mapped_resource;
-            memset(&mapped_resource, 0, sizeof(mapped_resource));
-
-            struct Data
-            {
-                float pixel_width;
-                float pixel_height;
-                float unused;
-                float unused2;
-            };
-
-            Data data{ 1.0f / viewport.Width, 1.0f / viewport.Height };
-            context->Map(_selection_scale_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
-            memcpy(mapped_resource.pData, &data, sizeof(data));
-            context->Unmap(_selection_scale_buffer.Get(), 0);
-        }
-
-        _selection_vertex_shader->apply(context);
-        _selection_shader->apply(context);
-        context->PSSetShaderResources(0, 1, _selection_texture->texture().view().GetAddressOf());
-        // context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
-        UINT stride = sizeof(SelectionVertex);
-        UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, _selection_vertex_buffer.GetAddressOf(), &stride, &offset);
-        context->IASetIndexBuffer(_selection_index_buffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-        context->VSSetConstantBuffers(0, 1, _selection_matrix_buffer.GetAddressOf());
-        context->PSSetConstantBuffers(0, 1, _selection_scale_buffer.GetAddressOf());
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-        context->DrawIndexed(4, 0, 0);
+        _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

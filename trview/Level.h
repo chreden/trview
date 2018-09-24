@@ -26,7 +26,8 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
-    
+    class SelectionRenderer;
+
     namespace graphics
     {
         struct IShaderStorage;
@@ -181,15 +182,6 @@ namespace trview
         std::unordered_map<uint32_t, std::wstring> _type_names;
 
         // Item selection bits.
-        std::unique_ptr<graphics::RenderTarget> _selection_texture;
-        std::unique_ptr<graphics::RenderTarget> _selection_texture_final;
-        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_vertex_buffer;
-        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_index_buffer;
-        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_matrix_buffer;
-        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_scale_buffer;
-        graphics::IShader*          _selection_shader;
-        graphics::IShader*          _selection_vertex_shader;
-        std::unique_ptr<TransparencyBuffer> _selection_transparency;
-
+        std::unique_ptr<SelectionRenderer> _selection_renderer;
     };
 }

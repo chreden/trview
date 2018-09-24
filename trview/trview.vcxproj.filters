@@ -41,6 +41,9 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{4c4905f3-010e-4d59-b23f-810136eb84ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="View\Selection">
+      <UniqueIdentifier>{cd2ee4bb-d60e-4395-94ab-34d41fe0f56b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -163,6 +166,9 @@
     <ClInclude Include="DefaultFonts.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="SelectionRenderer.h">
+      <Filter>View\Selection</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -266,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="DefaultFonts.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectionRenderer.cpp">
+      <Filter>View\Selection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
