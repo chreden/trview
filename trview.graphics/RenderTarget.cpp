@@ -69,11 +69,6 @@ namespace trview
         void RenderTarget::clear(const ComPtr<ID3D11DeviceContext>& context, const Color& colour)
         {
             context->ClearRenderTargetView(_view.Get(), colour);
-            clear_depth(context);
-        }
-
-        void RenderTarget::clear_depth(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
-        {
             if (_depth_stencil)
             {
                 _depth_stencil->clear(context);
