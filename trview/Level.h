@@ -162,7 +162,7 @@ namespace trview
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
-        graphics::IShader*          _selection_shader;
+        
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
@@ -183,5 +183,12 @@ namespace trview
         // Item selection bits.
         std::unique_ptr<graphics::RenderTarget> _selection_texture;
         std::unique_ptr<graphics::RenderTarget> _selection_texture_final;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_vertex_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_index_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_matrix_buffer;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_scale_buffer;
+        graphics::IShader*          _selection_shader;
+        graphics::IShader*          _selection_vertex_shader;
+
     };
 }
