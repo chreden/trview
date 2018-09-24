@@ -135,13 +135,7 @@ namespace trview
 
     void Level::set_selected_item(uint16_t index)
     {
-        // Unselect old item.
-        if (_selected_item)
-        {
-            _selected_item->set_selected(false);
-        }
         _selected_item = _entities[index].get();
-        _selected_item->set_selected(true);
     }
 
     void Level::set_neighbour_depth(uint32_t depth)

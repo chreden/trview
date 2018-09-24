@@ -156,7 +156,7 @@ namespace trview
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            auto wvp = _world_transforms[i] * _world *  camera.view_projection();
+            auto wvp = _world_transforms[i] * _world * camera.view_projection();
             _meshes[i]->render(context, wvp, texture_storage, colour);
         }
 
@@ -196,10 +196,5 @@ namespace trview
                 transparency.add(triangle.transform(world, colour));
             }
         }
-    }
-
-    void Entity::set_selected(bool value)
-    {
-        _selected = value;
     }
 }

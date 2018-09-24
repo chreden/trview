@@ -163,7 +163,6 @@ namespace trview
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
-        
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
@@ -181,7 +180,6 @@ namespace trview
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
 
-        // Item selection bits.
         std::unique_ptr<SelectionRenderer> _selection_renderer;
     };
 }

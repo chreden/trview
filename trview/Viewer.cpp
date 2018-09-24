@@ -463,30 +463,30 @@ namespace trview
         const auto window_size = _window.size();
 
         Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
-        direction.Normalize();  
+        direction.Normalize();
 
         auto result = _level->pick(position, direction);
-         
+
         _picking->set_visible(result.hit);
-        if (result.hit) 
+        if (result.hit)
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text(std::to_wstring(result.room));
-        }  
-        _current_pick = result; 
-    }     
+        }
+        _current_pick = result;
+    }
 
     void Viewer::render_scene()
-    {  
-        if (_level) 
+    {
+        if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
             if (_current_level->num_rooms() > 0)
             {
                 _camera.set_target(_target);
             }
-            _level->render(_device.context(), current_camera()); 
+            _level->render(_device.context(), current_camera());
         }
     }
 
