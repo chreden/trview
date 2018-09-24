@@ -18,7 +18,7 @@ float4 main(PixelInput input) : SV_TARGET
 {
     float4 t = tex.Sample(samplerState, input.uv);
 
-    // Should give a left side outline??
+    // If this is a red pixel and there are surrounding pixels that are black, make it a white pixel.
     if (t.r > 0 && 
         (tex.Sample(samplerState, input.uv + float2(width_pixel, 0)).r < 1 ||
         tex.Sample(samplerState, input.uv + float2(width_pixel, height_pixel)).r < 1 ||
@@ -33,6 +33,7 @@ float4 main(PixelInput input) : SV_TARGET
     }
     else
     {
+        // If this is a black pixel, then make this a transparent pixel.
         clip(-1);
     }
 
