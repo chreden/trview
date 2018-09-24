@@ -189,6 +189,7 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11Buffer> _selection_scale_buffer;
         graphics::IShader*          _selection_shader;
         graphics::IShader*          _selection_vertex_shader;
+        std::unique_ptr<TransparencyBuffer> _selection_transparency;
 
     };
 }

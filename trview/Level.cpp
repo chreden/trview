@@ -55,6 +55,7 @@ namespace trview
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
+        _selection_transparency = std::make_unique<TransparencyBuffer>(device);
     }
 
     Level::~Level()
@@ -312,7 +313,13 @@ namespace trview
             _selection_texture->apply(context);
 
             // Draw item (in black)
-            _selected_item->render(context, camera, *_texture_storage.get(), Color(0.0f, 0.0f, 0.0f), 1.0f);
+            _selected_item->render(context, camera, *_texture_storage.get(), Color(0.0f, 0.0f, 0.0f));
+
+            // Also render the transparent parts of the meshes.
+            _selection_transparency->reset();
+            _selected_item->get_transparent_triangles(*_selection_transparency, camera, Color(0.0f, 0.0f, 0.0f));
+            _selection_transparency->sort(camera.position());
+            _selection_transparency->render(context, camera, *_texture_storage.get());
         }
 
         // Take the selection texture as an input to a pixel shader.
