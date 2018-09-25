@@ -8,51 +8,6 @@ namespace trview
 {
     namespace ui
     {
-        Listbox::Column::Column()
-            : _type(Type::String)
-        {
-        }
-
-        Listbox::Column::Column(Type type, const std::wstring& name, uint32_t width)
-            : _type(type), _name(name), _width(width)
-        {
-        }
-
-        Listbox::Column::Type Listbox::Column::type() const
-        {
-            return _type;
-        }
-
-        const std::wstring& Listbox::Column::name() const
-        {
-            return _name;
-        }
-
-        uint32_t Listbox::Column::width() const
-        {
-            return _width;
-        }
-
-        Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values)
-            : _values(values)
-        {
-        }
-
-        std::wstring Listbox::Item::value(const std::wstring& key) const
-        {
-            auto item = _values.find(key);
-            if (item == _values.end())
-            {
-                return std::wstring();
-            }
-            return item->second;
-        }
-
-        bool Listbox::Item::operator == (const Item& other) const
-        {
-            return _values == other._values;
-        }
-
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
             : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {
@@ -142,18 +97,8 @@ namespace trview
 
             for (auto i = 0; i < remaining_rows; ++i)
             {
-                auto index = i + existing_rows;
-
-                auto row = std::make_unique<StackPanel>(Point(), Size(), background_colour(), Size(), Direction::Horizontal);
-                for (const auto& column : _columns)
-                {
-                    auto button = std::make_unique<Button>(Point(), Size(column.width(), 20), L"Test");
-                    _token_store.add(button->on_click += [this, index]()
-                    {
-                        select_item(_items[index + _current_top]);
-                    });
-                    row->add_child(std::move(button));
-                }
+                auto row = std::make_unique<Row>(background_colour(), _columns);
+                _token_store.add(row->on_click += [this](const auto& item) { select_item(item); });
                 _rows_element->add_child(std::move(row));
             }
         }
@@ -169,28 +114,22 @@ namespace trview
             const auto rows = _rows_element->child_elements();
             for (auto r = 0; r < rows.size(); ++r)
             {
-                if (r + _current_top < _items.size())
+                const auto index = r + _current_top;
+                auto row = static_cast<Row*>(rows[r]);
+                if (index < _items.size())
                 {
-                    if (!rows[r]->visible())
-                    {
-                        rows[r]->set_visible(true);
-                    }
-
-                    if (rows[r]->position().y + rows[r]->size().height <= _rows_element->size().height)
+                    if (row->position().y + row->size().height <= _rows_element->size().height)
                     {
                         ++_fully_visible_rows;
                     }
 
-                    const auto& item = _items[r + _current_top];
-                    const auto columns = rows[r]->child_elements();
-                    for (auto c = 0; c < _columns.size(); ++c)
-                    {
-                        static_cast<Button*>(columns[c])->set_text(item.value(_columns[c].name()));
-                    }
+                    row->set_item(_items[index]);
+                    row->set_visible(true);
                 }
                 else
                 {
-                    rows[r]->set_visible(false);
+                    row->set_visible(false);
+                    row->clear_item();
                 }
             }
 
@@ -320,6 +259,7 @@ namespace trview
             for (const auto column : _columns)
             {
                 auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
+                header_element->set_text_background_colour(background_colour());
                 _token_store.add(header_element->on_click += [this, column]()
                 {
                     if (_current_sort.name() == column.name())
@@ -353,21 +293,8 @@ namespace trview
             const auto rows = _rows_element->child_elements();
             for (auto i = 0; i < rows.size(); ++i)
             {
-                // Default colour - not highlighted.
-                Colour colour{ 1.0f, 0.4f, 0.4f, 0.4f };
-
-                const auto index = i + _current_top;
-                if (_show_highlight && index < _items.size() && _selected_item == _items[index])
-                {
-                    colour = Colour(1.0f, 0.5f, 0.5f, 0.5f);
-                }
-
-                const auto columns = rows[i]->child_elements();
-                for (auto& cell : columns)
-                {
-                    Button* button_cell = static_cast<Button*>(cell);
-                    button_cell->set_text_background_colour(colour);
-                }
+                auto row = static_cast<Row*>(rows[i]);
+                row->set_highlighted(_show_highlight && row->item() == _selected_item);
             }
         }
 

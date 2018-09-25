@@ -10,6 +10,8 @@ namespace trview
 
         operator DirectX::SimpleMath::Color() const;
 
+        Colour& operator += (const Colour& other);
+
         float a, r, g, b;
     };
 }

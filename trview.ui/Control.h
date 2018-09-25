@@ -123,6 +123,10 @@ namespace trview
             /// @param value Whether the control handles input.
             void set_handles_input(bool value);
 
+            /// Set whether this control handles mouse hover events. Defaults to false.
+            /// @param value Whether the control handles mouse hover events.
+            void set_handles_hover(bool value);
+
             /// Process a key down event.
             /// @param key The key that was pressed down.
             /// @returns True if the event was processed by the control.
@@ -170,6 +174,12 @@ namespace trview
             /// @return True if the event was handled by the element.
             virtual bool mouse_up(const Point& position);
 
+            /// To be called when the mouse has hovered over the element.
+            virtual void mouse_enter();
+
+            /// To be called when the mouse has stopped hovering over the element.
+            virtual void mouse_leave();
+
             /// To be called when the user interface element has been clicked.
             /// This should be overriden by child elements to handle a click.
             /// @param position The position of the click relative to the control.
@@ -195,6 +205,10 @@ namespace trview
             /// @param control The current focus control
             void set_focus_control(Control* control);
 
+            /// Set the control in the tree that is the hover element.
+            /// @param control The hovered over control.
+            void set_hover_control(Control* control);
+
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
@@ -204,6 +218,10 @@ namespace trview
             /// Set the focus control and recurse to child controls.
             /// @param control The new focus control.
             void inner_set_focus_control(Control* control);
+
+            /// Set the hover control and recurse to child controls.
+            /// @param control The new hover control.
+            void inner_set_hover_control(Control* control);
 
             /// Process a mouse move and recurse to child controls.
             /// @param position The position of the mouse relative to the control.
@@ -217,14 +235,19 @@ namespace trview
             /// @param key The key that was pressed.
             bool inner_process_key_down(uint16_t key);
 
+            /// Get the control at the specified mouse position.
+            Control* hover_control_at_position(const Point& position);
+
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };
             Control* _focus_control{ nullptr };
+            Control* _hover_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;
             bool     _handles_input{ true };
+            bool     _handles_hover{ false };
             Align    _horizontal_alignment{ Align::Near };
             Align    _vertical_alignment{ Align::Near };
             std::string _name;
