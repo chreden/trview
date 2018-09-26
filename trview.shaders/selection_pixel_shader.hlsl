@@ -30,5 +30,5 @@ float4 main(PixelInput input) : SV_TARGET
     };
 
     clip(-1.5 + tex.Sample(samplerState, input.uv).r + any(samples));
-    return float4(1, 1, 1, 1);
+    return float4(0.8f, 0, 1, 1);
 }
