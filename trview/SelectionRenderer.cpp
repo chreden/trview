@@ -125,7 +125,7 @@ namespace trview
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.position());
-            _transparency->render(context, camera, texture_storage);
+            _transparency->render(context, camera, texture_storage, true);
         }
 
         // Set vertex shader parameters. Since we don't require any kind of scaling (we just want to fill the viewport), 
