@@ -16,26 +16,19 @@ SamplerState samplerState;
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    float4 t = tex.Sample(samplerState, input.uv);
-
     // If this is a red pixel and there are surrounding pixels that are black, make it a white pixel.
-    if (t.r > 0 && 
-        (tex.Sample(samplerState, input.uv + float2(width_pixel, 0)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(width_pixel, height_pixel)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(0, height_pixel)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(-width_pixel, height_pixel)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(-width_pixel, 0)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(-width_pixel, -height_pixel)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(0, -height_pixel)).r < 1 ||
-        tex.Sample(samplerState, input.uv + float2(width_pixel, -height_pixel)).r < 1))
+    float2x4 samples = 
     {
-        t = float4(1, 1, 1, 1);
-    }
-    else
-    {
-        // If this is a black pixel, then make this a transparent pixel.
-        clip(-1);
-    }
+        1 - tex.Sample(samplerState, input.uv + float2(width_pixel, 0)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(width_pixel, height_pixel)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(0, height_pixel)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(-width_pixel, height_pixel)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(-width_pixel, 0)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(-width_pixel, -height_pixel)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(0, -height_pixel)).r,
+        1 - tex.Sample(samplerState, input.uv + float2(width_pixel, -height_pixel)).r
+    };
 
-    return t;
+    clip(-1.5 + tex.Sample(samplerState, input.uv).r + any(samples));
+    return float4(1, 1, 1, 1);
 }
