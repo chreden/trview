@@ -465,7 +465,7 @@ namespace trview
         Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
         direction.Normalize();
 
-        auto result = _level->pick(position, direction);
+        auto result = _level->pick(camera, position, direction);
 
         _picking->set_visible(result.hit);
         if (result.hit)

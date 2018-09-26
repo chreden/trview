@@ -77,7 +77,7 @@ namespace trview
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space. The room that was hit
         // is also specified.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
+        PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
 
@@ -135,7 +135,7 @@ namespace trview
 
         // Get the collection of rooms that need to be renderered depending on the current view mode.
         // Returns: The rooms to render and their selection mode.
-        std::vector<RoomToRender> get_rooms_to_render() const;
+        std::vector<RoomToRender> get_rooms_to_render(const ICamera& camera) const;
 
         // Determines whether the room is currently being rendered.
         // room: The room index.
