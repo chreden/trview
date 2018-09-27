@@ -5,5 +5,6 @@
     <FxCompile Include="level_vertex_shader.hlsl" />
     <FxCompile Include="ui_vertex_shader.hlsl" />
     <FxCompile Include="ui_pixel_shader.hlsl" />
+    <FxCompile Include="selection_pixel_shader.hlsl" />
   </ItemGroup>
 </Project>

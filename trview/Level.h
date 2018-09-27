@@ -20,11 +20,14 @@
 
 #include "IMeshStorage.h"
 
+#include <trview.graphics/RenderTarget.h>
+
 namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
-    
+    class SelectionRenderer;
+
     namespace graphics
     {
         struct IShaderStorage;
@@ -81,6 +84,7 @@ namespace trview
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
         void set_selected_room(uint16_t index);
+        void set_selected_item(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
 
@@ -114,6 +118,8 @@ namespace trview
         // context: The device context.
         // camera: The current camera to render the level with.
         void render_rooms(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
+
+        void render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
 
         struct RoomToRender
         {
@@ -161,6 +167,7 @@ namespace trview
 
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
         uint16_t           _selected_room{ 0u };
+        Entity*            _selected_item{ nullptr };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
@@ -172,5 +179,7 @@ namespace trview
         bool _alternate_mode{ false };
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
+
+        std::unique_ptr<SelectionRenderer> _selection_renderer;
     };
 }

@@ -42,6 +42,10 @@ namespace trview
         /// @param size The size to compare.
         bool operator==(const Size& size) const;
 
+        /// Determines whether two sizes are different.
+        /// @param size The size to compare.
+        bool operator!=(const Size& size) const;
+
         float width, height;
     };
 }

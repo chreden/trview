@@ -76,7 +76,7 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend)
     {
         if (!_vertices.size())
         {
@@ -116,7 +116,7 @@ namespace trview
         TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
         for (const auto& run : _texture_run)
         {
-            if (run.mode != previous_mode)
+            if (run.mode != previous_mode && !ignore_blend)
             {
                 set_blend_mode(context, run.mode);
             }

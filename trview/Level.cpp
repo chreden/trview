@@ -13,10 +13,12 @@
 #include "TransparencyBuffer.h"
 #include "ResourceHelper.h"
 #include "resource.h"
+#include "SelectionRenderer.h"
 
 #include <external/nlohmann/json.hpp>
 
 using namespace Microsoft::WRL;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -49,6 +51,8 @@ namespace trview
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
+
+        _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
 
     Level::~Level()
@@ -129,6 +133,11 @@ namespace trview
         }
     }
 
+    void Level::set_selected_item(uint16_t index)
+    {
+        _selected_item = _entities[index].get();
+    }
+
     void Level::set_neighbour_depth(uint32_t depth)
     {
         _neighbour_depth = depth;
@@ -145,6 +154,7 @@ namespace trview
         _pixel_shader->apply(context);
 
         render_rooms(context, camera);
+        render_selected_item(context, camera);
     }
 
     // Render the rooms in the level.
@@ -192,6 +202,17 @@ namespace trview
 
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(context, camera, *_texture_storage.get());
+    }
+
+    void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    {
+        // Assume for now that the selected item is currently being rendered.
+        if (!_selected_item)
+        {
+            return;
+        }
+
+        _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.

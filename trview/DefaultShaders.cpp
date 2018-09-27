@@ -42,6 +42,7 @@ namespace trview
 
             storage.add("level_vertex_shader", std::make_unique<graphics::VertexShader>(device, get_shader_resource(IDR_LEVEL_VERTEX_SHADER), input_desc));
             storage.add("level_pixel_shader", std::make_unique<graphics::PixelShader>(device, get_shader_resource(IDR_LEVEL_PIXEL_SHADER)));
+            storage.add("selection_pixel_shader", std::make_unique<graphics::PixelShader>(device, get_shader_resource(IDR_SELECTION_SHADER)));
         }
 
         void load_ui_shaders(const ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage)

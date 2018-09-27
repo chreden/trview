@@ -31,12 +31,12 @@ namespace trview
         // eye_position: The position of the camera.
         void sort(const DirectX::SimpleMath::Vector3& eye_position);
 
-        // Render the accumulated transparent triangles. Sort should be called before this
-        // function is called.
-        // context: Current device context.
-        // camera: The current camera.
-        // texture_storage: Texture storage for the level.
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        /// Render the accumulated transparent triangles. Sort should be called before this function is called.
+        /// @param context Current device context.
+        /// @param camera The current camera.
+        /// @param texture_storage Texture storage for the level.
+        /// @param ignore_blend Optional. Set to true to render this without transparency.
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false);
 
         // Reset the triangles buffer.
         void reset();

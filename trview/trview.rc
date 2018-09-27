@@ -257,6 +257,8 @@ IDR_UI_VERTEX_SHADER    SHADER                  "resources\\ui_vertex_shader.cso
 
 IDR_UI_PIXEL_SHADER     SHADER                  "resources\\ui_pixel_shader.cso"
 
+IDR_SELECTION_SHADER    SHADER                  "resources\\selection_pixel_shader.cso"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
