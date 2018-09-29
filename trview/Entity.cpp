@@ -217,6 +217,17 @@ namespace trview
             return PickResult();
         }
 
+        if (_sprite_mesh)
+        {
+            PickResult result;
+            result.hit = true;
+            result.type = PickResult::Type::Entity;
+            result.index = _index;
+            result.distance = box_distance;
+            result.position = position + direction * box_distance;
+            return result;
+        }
+
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
 
@@ -273,13 +284,23 @@ namespace trview
 
     void Entity::generate_bounding_box()
     {
+        using namespace DirectX;
+
         // Sprite meshes not yet handled.
         if (_meshes.empty())
         {
+            if (_sprite_mesh)
+            {
+                float width = _scale._11;
+                float height = _scale._22;
+                BoundingSphere sphere(_position, sqrt(width * width + height * height) * 0.5f);
+                sphere.Transform(sphere, _offset);
+                BoundingBox::CreateFromSphere(_bounding_box, sphere);
+            }
+
             return;
         }
 
-        using namespace DirectX;
         using namespace DirectX::SimpleMath;
 
         // The entity bounding box is based on the bounding boxes of the meshes it contains.
