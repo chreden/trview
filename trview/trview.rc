@@ -73,6 +73,7 @@ BEGIN
     "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
     "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
     "^O",           ID_ACCEL_FILE_OPEN,     ASCII,  NOINVERT
+    "^I",           ID_ACCEL_ITEM_WINDOW,   ASCII,  NOINVERT
 END
 
 
