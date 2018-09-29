@@ -237,7 +237,14 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    select_room(_current_pick.index);
+                    if (_current_pick.type == PickResult::Type::Room)
+                    {
+                        select_room(_current_pick.index);
+                    }
+                    else if (_current_pick.type == PickResult::Type::Entity)
+                    {
+                        select_item(_level->items()[_current_pick.index]);
+                    }
                     set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
