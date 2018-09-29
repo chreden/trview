@@ -259,4 +259,11 @@ namespace trview
                  _info.yBottom / -1024.f + (_info.yTop - _info.yBottom) / -1024.f / 2.0f,
                  (_info.z / 1024.f) + _num_z_sectors / 2.f);
     }
+
+    Vector3 Room::extents() const
+    {
+        return Vector3(static_cast<float>(_num_x_sectors) * 0.5f,
+            (_info.yTop - _info.yBottom) / -1024.0f * 0.5f,
+            static_cast<float>(_num_z_sectors) * 0.5f);
+    }
 }

@@ -226,10 +226,10 @@ namespace trview
 
         auto in_view = [&](const Room& room)
         {
+            using namespace DirectX;
             using namespace DirectX::SimpleMath;
-
-            // Check the corners (or the box).
-            return frustum.Contains(room.centre()) != DirectX::DISJOINT;
+            BoundingOrientedBox box(room.centre(), room.extents(), Vector4(0, 0, 0, 1));
+            return frustum.Contains(box) != DirectX::DISJOINT;
         };
 
         switch (_room_highlight_mode)
