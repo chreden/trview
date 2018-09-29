@@ -20,6 +20,7 @@
 #include "TransparencyBuffer.h"
 #include "Mesh.h"
 #include <trview\Sector.h>
+#include "PickResult.h"
 
 namespace trview
 {
@@ -48,13 +49,6 @@ namespace trview
             HasAlternate,
             // This room is an alternate room to another room.
             IsAlternate
-        };
-
-        struct PickResult
-        {
-            bool                         hit{ false };
-            float                        distance;
-            DirectX::SimpleMath::Vector3 position;
         };
 
         explicit Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 

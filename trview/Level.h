@@ -47,16 +47,7 @@ namespace trview
             Neighbours
         };
 
-        struct PickResult
-        {
-            bool                         hit{ false };
-            uint32_t                     room;
-            DirectX::SimpleMath::Vector3 position;
-            float                        distance{ FLT_MAX };
-        };
-
         // Temporary, for the room info and texture window.
-
         std::vector<RoomInfo> room_info() const;
         RoomInfo room_info(uint32_t room) const;
         std::vector<graphics::Texture> level_textures() const;

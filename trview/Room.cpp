@@ -56,22 +56,31 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    Room::PickResult Room::pick(const Vector3& position, const Vector3& direction) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction) const
     {
         using namespace DirectX::TriangleTests;
-
-        PickResult result;
 
         // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
         float box_distance = 0;
         if (!_bounding_box.Intersects(position, direction, box_distance))
         {
-            return result;
+            return PickResult();
         }
 
+        std::vector<PickResult> pick_results;
+
+        // Pick against the entity geometry:
+        for (const auto& entity : _entities)
+        {
+            // Add to some sort of list...
+            pick_results.push_back(entity->pick(position, direction));
+        }
+
+        // Pick against the room geometry:
         auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
         auto transformed_position = Vector3::Transform(position, room_offset);
 
+        PickResult result;
         result.distance = FLT_MAX;
         for (const auto& tri : _collision_triangles)
         {

@@ -197,4 +197,14 @@ namespace trview
             }
         }
     }
+
+    PickResult Entity::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        // Check against some sort of bounding box (based on the mesh?)
+
+        // If it hit the bounding box
+
+        PickResult result;
+        return result;
+    }
 }

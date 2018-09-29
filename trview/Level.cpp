@@ -374,7 +374,7 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    Level::PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
         auto rooms = get_rooms_to_render(camera);
@@ -386,7 +386,8 @@ namespace trview
                 final_result.hit = true;
                 final_result.distance = result.distance;
                 final_result.position = result.position;
-                final_result.room = room.number;
+                final_result.index = room.number;
+                final_result.type = PickResult::Type::Room;
             }
         }
         return final_result;

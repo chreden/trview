@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 
+#include "PickResult.h"
 
 namespace trlevel
 {
@@ -33,6 +34,8 @@ namespace trview
         uint16_t room() const;
 
         void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
+
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);

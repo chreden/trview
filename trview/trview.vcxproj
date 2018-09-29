@@ -201,6 +201,7 @@
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
+    <ClInclude Include="PickResult.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="Room.h" />

@@ -237,7 +237,7 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    select_room(_current_pick.room);
+                    select_room(_current_pick.index);
                     set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
@@ -472,7 +472,7 @@ namespace trview
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text(std::to_wstring(result.room));
+            _picking->set_text(std::to_wstring(result.index));
         }
         _current_pick = result;
     }

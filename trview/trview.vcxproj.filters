@@ -169,6 +169,9 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>View\Selection</Filter>
     </ClInclude>
+    <ClInclude Include="PickResult.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
