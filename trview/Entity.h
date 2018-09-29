@@ -40,6 +40,7 @@ namespace trview
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
         void load_sprite(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        void generate_bounding_box();
 
         DirectX::SimpleMath::Matrix               _world;
         std::vector<Mesh*>                        _meshes;
@@ -51,5 +52,7 @@ namespace trview
         DirectX::SimpleMath::Matrix               _scale;
         DirectX::SimpleMath::Matrix               _offset;
         DirectX::SimpleMath::Vector3              _position;
+
+        DirectX::BoundingBox _bounding_box;
     };
 }

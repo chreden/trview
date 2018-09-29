@@ -172,6 +172,9 @@
     <ClInclude Include="PickResult.h">
       <Filter>View</Filter>
     </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>View</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">

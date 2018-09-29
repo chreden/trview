@@ -41,6 +41,8 @@ namespace trview
             load_sprite(device, sprite, level, texture_storage);
             _position = Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
         }
+
+        generate_bounding_box();
     }
 
     void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -139,7 +141,9 @@ namespace trview
             { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
         };
 
-        _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles);
+        std::vector<Triangle> collision_triangles;
+
+        _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
 
         // Scale is computed from the 'side' values.
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
@@ -201,10 +205,48 @@ namespace trview
     PickResult Entity::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         // Check against some sort of bounding box (based on the mesh?)
-
-        // If it hit the bounding box
+        // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
+        float box_distance = 0;
+        if (!_bounding_box.Intersects(position, direction, box_distance))
+        {
+            return PickResult();
+        }
 
         PickResult result;
+        result.type = PickResult::Type::Entity;
+        result.hit = true;
+        result.distance = box_distance;
+        result.position = position + direction * result.distance;
         return result;
+    }
+
+    void Entity::generate_bounding_box()
+    {
+        // Sprite meshes not yet handled.
+        if (_meshes.empty())
+        {
+            return;
+        }
+
+        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
+
+        // The entity bounding box is based on the bounding boxes of the meshes it contains.
+        // Allocate space for all of the corners.
+        std::vector<Vector3> corners(_meshes.size() * 8);
+
+        for (uint32_t i = 0; i < _meshes.size(); ++i)
+        {
+            // Get the box for the mesh.
+            auto box = _meshes[i]->bounding_box();
+
+            // Transform the box by the model transform.
+            BoundingOrientedBox oriented_box;
+            oriented_box.Transform(oriented_box, _world_transforms[i] * _world);
+            oriented_box.GetCorners(&corners[i * 8]);
+        }
+
+        // Or a sprite mesh...
+        BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(XMFLOAT3));
     }
 }

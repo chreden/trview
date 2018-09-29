@@ -25,8 +25,9 @@ namespace trview
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
-        const std::vector<TransparentTriangle>& transparent_triangles)
-        : _transparent_triangles(transparent_triangles)
+        const std::vector<TransparentTriangle>& transparent_triangles,
+        const std::vector<Triangle>& collision_triangles)
+        : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
     {
         if (!vertices.empty())
         {
@@ -94,6 +95,19 @@ namespace trview
 
             device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
         }
+
+        // Generate the bounding box for use in picking.
+        Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
+        Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        for (const auto& v : vertices)
+        {
+            minimum = Vector3::Min(minimum, v.pos);
+            maximum = Vector3::Max(maximum, v.pos);
+        }
+
+        const Vector3 half_size = (maximum - minimum) * 0.5f;
+        _bounding_box.Extents = half_size;
+        _bounding_box.Center = Vector3::Zero;
     }
 
     void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour)
@@ -150,14 +164,17 @@ namespace trview
         return _transparent_triangles;
     }
 
+    const DirectX::BoundingBox& Mesh::bounding_box() const
+    {
+        return _bounding_box;
+    }
+
     std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
         std::vector<uint32_t> untextured_indices;
         std::vector<TransparentTriangle> transparent_triangles;
-
-        // Collision triangles are currently discarded for non-room geometry, though this may be changed when item picking is implemented.
         std::vector<Triangle> collision_triangles;
 
         process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
@@ -165,7 +182,7 @@ namespace trview
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles);
+        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
     void process_textured_rectangles(

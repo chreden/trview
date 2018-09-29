@@ -73,7 +73,11 @@ namespace trview
         for (const auto& entity : _entities)
         {
             // Add to some sort of list...
-            pick_results.push_back(entity->pick(position, direction));
+            auto entity_result = entity->pick(position, direction);
+            if (entity_result.hit)
+            {
+                pick_results.push_back(entity_result);
+            }
         }
 
         // Pick against the room geometry:
@@ -97,8 +101,18 @@ namespace trview
         if (result.hit)
         {
             result.position = position + direction * result.distance;
+            pick_results.push_back(result);
         }
-        return result;
+
+        if (pick_results.empty())
+        {
+            return PickResult();
+        }
+
+        std::sort(pick_results.begin(), pick_results.end(),
+            [](const auto& l, const auto& r) { return l.distance < r.distance; });
+
+        return pick_results.front();
     }
 
     // Render the level geometry and the objects contained in this room.
@@ -163,7 +177,7 @@ namespace trview
         process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles);
+        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, _collision_triangles);
 
         // Generate the bounding box for use in picking.
         Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);

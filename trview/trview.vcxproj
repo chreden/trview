@@ -217,6 +217,7 @@
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="TransparencyBuffer.h" />
     <ClInclude Include="TransparentTriangle.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UserSettings.h" />
