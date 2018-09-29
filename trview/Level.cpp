@@ -226,9 +226,7 @@ namespace trview
 
         auto in_view = [&](const Room& room)
         {
-            using namespace DirectX;
-            using namespace DirectX::SimpleMath;
-            return frustum.Contains(room.bounding_box()) != DISJOINT;
+            return frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
 
         switch (_room_highlight_mode)
