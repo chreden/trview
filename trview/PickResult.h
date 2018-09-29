@@ -13,7 +13,7 @@ namespace trview
         };
 
         bool                         hit{ false };
-        float                        distance;
+        float                        distance{ FLT_MAX };
         DirectX::SimpleMath::Vector3 position;
         Type                         type{ Type::Room };
         uint32_t                     index{ 0u };
