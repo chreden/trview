@@ -9,6 +9,7 @@
 #include "MeshVertex.h"
 #include "TransparencyBuffer.h"
 #include "Triangle.h"
+#include "PickResult.h"
 
 namespace trview
 {
@@ -35,6 +36,8 @@ namespace trview
         const std::vector<TransparentTriangle>& transparent_triangles() const;
 
         const DirectX::BoundingBox& bounding_box() const;
+
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
         std::vector<uint32_t>                             _index_counts;

@@ -217,12 +217,57 @@ namespace trview
             return PickResult();
         }
 
+        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
+
+        std::vector<uint32_t> pick_meshes;
+
+        // Check each of the meshes in the object.
+        for (uint32_t i = 0; i < _meshes.size(); ++i)
+        {
+            // Get the box for the mesh.
+            auto box = _meshes[i]->bounding_box();
+
+            // Transform the box by the model transform.
+            BoundingOrientedBox oriented_box;
+            BoundingOrientedBox::CreateFromBoundingBox(oriented_box, box);
+            oriented_box.Transform(oriented_box, _world_transforms[i] * _world);
+
+            // Try and pick against the bounding box.
+            float box_distance = 0;
+            if (oriented_box.Intersects(position, direction, box_distance))
+            {
+                // Pick against the triangles in this mesh.
+                pick_meshes.push_back(i);
+            }
+        }
+
+        if (pick_meshes.empty())
+        {
+            return PickResult();
+        }
+
         PickResult result;
         result.type = PickResult::Type::Entity;
         result.index = _index;
-        result.hit = true;
-        result.distance = box_distance;
-        result.position = position + direction * result.distance;
+
+        for (auto i : pick_meshes)
+        {
+            // Transform the position and the direction into mesh space.
+            auto transform = (_world_transforms[i] * _world).Invert();
+            auto transformed_position = Vector3::Transform(position, transform);
+            auto transformed_direction = Vector3::TransformNormal(direction, transform);
+
+            // Pick against mesh.
+            auto mesh_result = _meshes[i]->pick(transformed_position, transformed_direction);
+            if (mesh_result.hit && mesh_result.distance < result.distance)
+            {
+                result.hit = true;
+                result.distance = mesh_result.distance;
+                result.position = position + direction * mesh_result.distance;
+            }
+        }
+
         return result;
     }
 

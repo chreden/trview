@@ -2,6 +2,7 @@
 #include "Mesh.h"
 
 #include <array>
+#include <DirectXCollision.h>
 
 #include "ILevelTextureStorage.h"
 
@@ -167,6 +168,33 @@ namespace trview
     const DirectX::BoundingBox& Mesh::bounding_box() const
     {
         return _bounding_box;
+    }
+
+    PickResult Mesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        using namespace DirectX::TriangleTests;
+
+        PickResult result;
+        result.distance = FLT_MAX;
+        result.type = PickResult::Type::Mesh;
+        for (const auto& tri : _collision_triangles)
+        {
+            float distance = 0;
+            if (direction.Dot(tri.normal) < 0 &&
+                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance))
+            {
+                result.hit = true;
+                result.distance = std::min(distance, result.distance);
+            }
+        }
+
+        // Calculate the world space hit position, if there was a hit.
+        if (result.hit)
+        {
+            result.position = position + direction * result.distance;
+        }
+
+        return result;
     }
 
     std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage)

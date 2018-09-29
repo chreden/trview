@@ -9,7 +9,8 @@ namespace trview
         enum class Type
         {
             Room,
-            Entity
+            Entity,
+            Mesh
         };
 
         bool                         hit{ false };
