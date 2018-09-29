@@ -55,7 +55,8 @@ namespace trview
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
-            const IMeshStorage& mesh_storage);
+            const IMeshStorage& mesh_storage,
+            uint32_t index);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -135,6 +136,7 @@ namespace trview
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
+        uint32_t _index;
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 

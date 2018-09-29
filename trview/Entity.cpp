@@ -16,8 +16,8 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    Entity::Entity(const ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage)
-        : _room(entity.Room)
+    Entity::Entity(const ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
+        : _room(entity.Room), _index(index)
     {
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
@@ -179,6 +179,11 @@ namespace trview
         return _room;
     }
 
+    uint32_t Entity::index() const
+    {
+        return _index;
+    }
+
     void Entity::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
         for (uint32_t i = 0; i < _meshes.size(); ++i)
@@ -214,6 +219,7 @@ namespace trview
 
         PickResult result;
         result.type = PickResult::Type::Entity;
+        result.index = _index;
         result.hit = true;
         result.distance = box_distance;
         result.position = position + direction * result.distance;
@@ -242,6 +248,7 @@ namespace trview
 
             // Transform the box by the model transform.
             BoundingOrientedBox oriented_box;
+            BoundingOrientedBox::CreateFromBoundingBox(oriented_box, box);
             oriented_box.Transform(oriented_box, _world_transforms[i] * _world);
             oriented_box.GetCorners(&corners[i * 8]);
         }

@@ -23,11 +23,13 @@ namespace trview
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
-        const IMeshStorage& mesh_storage)
+        const IMeshStorage& mesh_storage,
+        uint32_t index)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _num_x_sectors(room.num_x_sectors),
-        _num_z_sectors(room.num_z_sectors)
+        _num_z_sectors(room.num_z_sectors),
+        _index(index)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -74,7 +76,7 @@ namespace trview
         {
             // Add to some sort of list...
             auto entity_result = entity->pick(position, direction);
-            if (entity_result.hit)
+            if (entity_result.hit && entity_result.distance > 0)
             {
                 pick_results.push_back(entity_result);
             }
@@ -86,6 +88,7 @@ namespace trview
 
         PickResult result;
         result.distance = FLT_MAX;
+        result.index = _index;
         for (const auto& tri : _collision_triangles)
         {
             float distance = 0;
