@@ -228,8 +228,7 @@ namespace trview
         {
             using namespace DirectX;
             using namespace DirectX::SimpleMath;
-            BoundingOrientedBox box(room.centre(), room.extents(), Vector4(0, 0, 0, 1));
-            return frustum.Contains(box) != DirectX::DISJOINT;
+            return frustum.Contains(room.bounding_box()) != DISJOINT;
         };
 
         switch (_room_highlight_mode)

@@ -128,9 +128,9 @@ namespace trview
         /// @returns The centre position of the room.
         DirectX::SimpleMath::Vector3 centre() const;
 
-        /// Get the extents of the room.
-        /// @retusn The extents of the room.
-        DirectX::SimpleMath::Vector3 extents() const;
+        /// Get the bounding box of the room. The bounding box is pre-transformed to the coordinates of the room.
+        /// @returns The bounding box for the room.
+        const DirectX::BoundingBox& bounding_box() const;
     private:
         void generate_geometry(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
