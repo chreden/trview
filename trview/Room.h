@@ -143,8 +143,6 @@ namespace trview
         std::unique_ptr<Mesh>       _mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
-        // Triangle copy for ray intersection.
-        std::vector<Triangle> _collision_triangles;
         DirectX::BoundingBox  _bounding_box;
 
         std::vector<Entity*> _entities;

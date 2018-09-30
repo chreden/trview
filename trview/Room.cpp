@@ -74,9 +74,8 @@ namespace trview
         // Pick against the entity geometry:
         for (const auto& entity : _entities)
         {
-            // Add to some sort of list...
             auto entity_result = entity->pick(position, direction);
-            if (entity_result.hit && entity_result.distance > 0)
+            if (entity_result.hit)
             {
                 pick_results.push_back(entity_result);
             }
@@ -84,27 +83,14 @@ namespace trview
 
         // Pick against the room geometry:
         auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
-        auto transformed_position = Vector3::Transform(position, room_offset);
-
-        PickResult result;
-        result.distance = FLT_MAX;
-        result.index = _index;
-        for (const auto& tri : _collision_triangles)
+        PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
+        if (geometry_result.hit)
         {
-            float distance = 0;
-            if (direction.Dot(tri.normal) < 0 &&
-                Intersects(transformed_position, direction, tri.v0, tri.v1, tri.v2, distance))
-            {
-                result.hit = true;
-                result.distance = std::min(distance, result.distance);
-            }
-        }
-
-        // Calculate the world space hit position, if there was a hit.
-        if (result.hit)
-        {
-            result.position = position + direction * result.distance;
-            pick_results.push_back(result);
+            // Transform the position back in to world space. Also mark it as a room pick result.
+            geometry_result.type = PickResult::Type::Room;
+            geometry_result.index = _index;
+            geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+            pick_results.push_back(geometry_result);
         }
 
         if (pick_results.empty())
@@ -112,9 +98,9 @@ namespace trview
             return PickResult();
         }
 
+        // Choose the closest pick out of all results.
         std::sort(pick_results.begin(), pick_results.end(),
             [](const auto& l, const auto& r) { return l.distance < r.distance; });
-
         return pick_results.front();
     }
 
@@ -176,23 +162,13 @@ namespace trview
 
         // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
+        std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
-        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, _collision_triangles);
+        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
+        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, _collision_triangles);
-
-        // Generate the bounding box for use in picking.
-        Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
-        Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-        for (const auto& v : vertices)
-        {
-            minimum = Vector3::Min(minimum, v.pos);
-            maximum = Vector3::Max(maximum, v.pos);
-        }
-
-        const Vector3 half_size = (maximum - minimum) * 0.5f;
-        _bounding_box.Extents = half_size;
+        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+        _bounding_box = _mesh->bounding_box();
         _bounding_box.Center = centre();
     }
 
