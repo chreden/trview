@@ -59,6 +59,10 @@ namespace trview
         /// @param room The current room.
         void set_room(uint32_t room);
 
+        /// Set the currently selected item.
+        /// @param item The selected item.
+        void set_selected_item(const Item& item);
+
         /// Create a new items window.
         void create_window();
     private:

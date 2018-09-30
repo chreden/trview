@@ -143,6 +143,10 @@ namespace trview
             /// @param value Whether to highlight rows.
             void set_show_highlight(bool value);
 
+            /// Set the selected item. This will not raise the on_item_selected event.
+            /// @param item The selected item.
+            void set_selected_item(const Item& item);
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
         protected:
@@ -160,7 +164,7 @@ namespace trview
             /// Sort the items according to the current sort method.
             void sort_items();
             /// Select the given item and scroll to make it visible.
-            void select_item(const Item& item);
+            void select_item(const Item& item, bool raise_event = true);
             /// Scroll the listbox so that the specified item index is visible.
             void scroll_to(uint32_t item);
             /// Scroll the listbox so that the specified item is visible.

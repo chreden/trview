@@ -80,6 +80,10 @@ namespace trview
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
         void set_current_room(uint32_t room);
+
+        /// Set the selected item.
+        /// @param item The selected item.
+        void set_selected_item(const Item& item);
     private:
         void generate_ui();
         void populate_items(const std::vector<Item>& items);
@@ -90,6 +94,7 @@ namespace trview
         std::unique_ptr<ui::StackPanel> create_details_panel();
         void load_item_details(const Item& item);
         void set_track_room(bool value);
+        void set_track_item(bool value);
         void toggle_expand();
 
         WindowResizer _window_resizer;
@@ -117,7 +122,7 @@ namespace trview
         uint32_t _current_room{ 0u };
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
-
         bool _expanded{ true };
+        bool _track_item{ false };
     };
 }

@@ -590,6 +590,7 @@ namespace trview
             auto entity = _current_level->get_entity(item.number());
             _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
             _level->set_selected_item(item.number());
+            _items_windows->set_selected_item(item);
         }
     }
 
