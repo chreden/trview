@@ -297,7 +297,6 @@ namespace trview
                 sphere.Transform(sphere, _offset);
                 BoundingBox::CreateFromSphere(_bounding_box, sphere);
             }
-
             return;
         }
 
@@ -319,7 +318,7 @@ namespace trview
             oriented_box.GetCorners(&corners[i * 8]);
         }
 
-        // Or a sprite mesh...
+        // Create an axis-aligned BB from the points of the oriented ones.
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(XMFLOAT3));
     }
 }
