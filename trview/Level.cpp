@@ -163,7 +163,7 @@ namespace trview
     void Level::render_rooms(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         // Only render the rooms that the current view mode includes.
-        auto rooms = get_rooms_to_render();
+        auto rooms = get_rooms_to_render(camera);
 
         if (_regenerate_transparency)
         {
@@ -217,9 +217,18 @@ namespace trview
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.
     // Returns: The rooms to render and their selection mode.
-    std::vector<Level::RoomToRender> Level::get_rooms_to_render() const
+    std::vector<Level::RoomToRender> Level::get_rooms_to_render(const ICamera& camera) const
     {
         std::vector<RoomToRender> rooms;
+
+        DirectX::BoundingFrustum frustum(camera.projection());
+        frustum.Transform(frustum, camera.view().Invert());
+
+        auto in_view = [&](const Room& room)
+        {
+            return frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
+        };
+
         switch (_room_highlight_mode)
         {
             case RoomHighlightMode::None:
@@ -227,7 +236,7 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i].get();
-                    if (is_alternate_mismatch(room->alternate_mode()))
+                    if (is_alternate_mismatch(room->alternate_mode()) || !in_view(*room))
                     {
                         continue;
                     }
@@ -240,7 +249,7 @@ namespace trview
                 for (std::size_t i = 0; i < _rooms.size(); ++i)
                 {
                     const auto& room = _rooms[i];
-                    if (is_alternate_mismatch(room->alternate_mode()))
+                    if (is_alternate_mismatch(room->alternate_mode()) || !in_view(*room))
                     {
                         continue;
                     }
@@ -253,7 +262,7 @@ namespace trview
                 for (uint16_t i : _neighbours)
                 {
                     const auto& room = _rooms[i];
-                    if (is_alternate_mismatch(room->alternate_mode()))
+                    if (is_alternate_mismatch(room->alternate_mode()) || !in_view(*room))
                     {
                         continue;
                     }
@@ -365,10 +374,10 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    Level::PickResult Level::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    Level::PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
-        auto rooms = get_rooms_to_render();
+        auto rooms = get_rooms_to_render(camera);
         for (auto& room : rooms)
         {
             auto result = room.room.pick(position, direction);

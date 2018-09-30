@@ -62,15 +62,15 @@ namespace trview
 
         PickResult result;
 
-        auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
-        auto transformed_position = Vector3::Transform(position, room_offset);
-
         // Test against bounding box for the room first, to avoid more expensive mesh-ray intersection
         float box_distance = 0;
-        if (!_bounding_box.Intersects(transformed_position, direction, box_distance))
+        if (!_bounding_box.Intersects(position, direction, box_distance))
         {
             return result;
         }
+
+        auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto transformed_position = Vector3::Transform(position, room_offset);
 
         result.distance = FLT_MAX;
         for (const auto& tri : _collision_triangles)
@@ -167,7 +167,7 @@ namespace trview
 
         const Vector3 half_size = (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
-        _bounding_box.Center = minimum + half_size;
+        _bounding_box.Center = centre();
     }
 
     void Room::generate_adjacency()
@@ -258,5 +258,10 @@ namespace trview
         return Vector3(_info.x / 1024.f + _num_x_sectors / 2.f,
                  _info.yBottom / -1024.f + (_info.yTop - _info.yBottom) / -1024.f / 2.0f,
                  (_info.z / 1024.f) + _num_z_sectors / 2.f);
+    }
+
+    const DirectX::BoundingBox& Room::bounding_box() const
+    {
+        return _bounding_box;
     }
 }
