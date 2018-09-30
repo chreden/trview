@@ -12,7 +12,9 @@ namespace trview
 
     void ItemsWindowManager::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ITEMS)
+        if (message == WM_COMMAND && 
+            LOWORD(wParam) == ID_APP_WINDOWS_ITEMS || 
+            LOWORD(wParam) == ID_APP_ACCEL_ITEM_WINDOW)
         {
             create_window();
         }
