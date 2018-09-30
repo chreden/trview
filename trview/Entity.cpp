@@ -236,17 +236,9 @@ namespace trview
         // Check each of the meshes in the object.
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
-            // Get the box for the mesh.
-            auto box = _meshes[i]->bounding_box();
-
-            // Transform the box by the model transform.
-            BoundingOrientedBox oriented_box;
-            BoundingOrientedBox::CreateFromBoundingBox(oriented_box, box);
-            oriented_box.Transform(oriented_box, _world_transforms[i] * _world);
-
             // Try and pick against the bounding box.
             float box_distance = 0;
-            if (oriented_box.Intersects(position, direction, box_distance))
+            if (_oriented_boxes[i].Intersects(position, direction, box_distance))
             {
                 // Pick against the triangles in this mesh.
                 pick_meshes.push_back(i);
@@ -302,6 +294,9 @@ namespace trview
 
         using namespace DirectX::SimpleMath;
 
+        // Remove any stored boxes so they can be created.
+        _oriented_boxes.clear();
+
         // The entity bounding box is based on the bounding boxes of the meshes it contains.
         // Allocate space for all of the corners.
         std::vector<Vector3> corners(_meshes.size() * 8);
@@ -311,11 +306,12 @@ namespace trview
             // Get the box for the mesh.
             auto box = _meshes[i]->bounding_box();
 
-            // Transform the box by the model transform.
+            // Transform the box by the model transform. Store this box for later picking.
             BoundingOrientedBox oriented_box;
             BoundingOrientedBox::CreateFromBoundingBox(oriented_box, box);
             oriented_box.Transform(oriented_box, _world_transforms[i] * _world);
             oriented_box.GetCorners(&corners[i * 8]);
+            _oriented_boxes.push_back(oriented_box);
         }
 
         // Create an axis-aligned BB from the points of the oriented ones.

@@ -55,6 +55,7 @@ namespace trview
         DirectX::SimpleMath::Matrix               _offset;
         DirectX::SimpleMath::Vector3              _position;
 
-        DirectX::BoundingBox _bounding_box;
+        DirectX::BoundingBox                      _bounding_box;
+        std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
     };
 }
