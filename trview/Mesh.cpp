@@ -175,7 +175,6 @@ namespace trview
         using namespace DirectX::TriangleTests;
 
         PickResult result;
-        result.distance = FLT_MAX;
         result.type = PickResult::Type::Mesh;
         for (const auto& tri : _collision_triangles)
         {
