@@ -338,9 +338,14 @@ namespace trview
             scroll_to(index);
         }
 
-        void Listbox::set_selected_item(const Item& item)
+        bool Listbox::set_selected_item(const Item& item)
         {
+            if (std::find(_items.begin(), _items.end(), item) == _items.end())
+            {
+                return false;
+            }
             select_item(item, false);
+            return true;
         }
     }
 }

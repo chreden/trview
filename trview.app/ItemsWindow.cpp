@@ -215,15 +215,23 @@ namespace trview
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
-        auto track_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Item");
-        _token_store.add(track_item->on_state_changed += [this](bool value)
+        // Spacing between checkboxes.
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+
+        auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
+        sync_item->set_state(_sync_item);
+        _token_store.add(sync_item->on_state_changed += [this](bool value)
         {
-            set_track_item(value);
+            set_sync_item(value);
+            if (_selected_item.has_value())
+            {
+                set_selected_item(_selected_item.value());
+            }
         });
-        controls->add_child(std::move(track_item));
+        controls->add_child(std::move(sync_item));
 
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(25, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(15, 20), Colours::LeftPanel));
 
         auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
         _token_store.add(expander->on_click += [this]()
@@ -247,7 +255,10 @@ namespace trview
         {
             auto index = std::stoi(item.value(L"#"));
             load_item_details(_all_items[index]);
-            on_item_selected(_all_items[index]);
+            if (_sync_item)
+            {
+                on_item_selected(_all_items[index]);
+            }
         });
 
         _items_list = items_list.get();
@@ -396,9 +407,9 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_track_item(bool value)
+    void ItemsWindow::set_sync_item(bool value)
     {
-        _track_item = value;
+        _sync_item = value;
     }
 
     void ItemsWindow::toggle_expand()
@@ -415,11 +426,18 @@ namespace trview
 
     void ItemsWindow::set_selected_item(const Item& item)
     {
-        if (_track_item)
+        _selected_item = item;
+        if (_sync_item)
         {
             const auto& list_item = create_listbox_item(item);
-            _items_list->set_selected_item(list_item);
-            load_item_details(item);
+            if (_items_list->set_selected_item(list_item))
+            {
+                load_item_details(item);
+            }
+            else
+            {
+                _selected_item.reset();
+            }
         }
     }
 }

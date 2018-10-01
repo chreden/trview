@@ -94,7 +94,7 @@ namespace trview
         std::unique_ptr<ui::StackPanel> create_details_panel();
         void load_item_details(const Item& item);
         void set_track_room(bool value);
-        void set_track_item(bool value);
+        void set_sync_item(bool value);
         void toggle_expand();
 
         WindowResizer _window_resizer;
@@ -123,6 +123,7 @@ namespace trview
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _expanded{ true };
-        bool _track_item{ false };
+        bool _sync_item{ true };
+        std::optional<Item> _selected_item;
     };
 }

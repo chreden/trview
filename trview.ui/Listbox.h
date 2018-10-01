@@ -145,7 +145,8 @@ namespace trview
 
             /// Set the selected item. This will not raise the on_item_selected event.
             /// @param item The selected item.
-            void set_selected_item(const Item& item);
+            /// @returns Whether the item was selected.
+            bool set_selected_item(const Item& item);
 
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
