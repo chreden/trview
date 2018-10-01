@@ -246,10 +246,14 @@ namespace trview
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode);
+                collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
                 if (double_sided)
                 {
                     transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
                     transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode);
+                    collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                    collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
                 }
                 continue;
             }
@@ -319,9 +323,11 @@ namespace trview
             if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
                 if (double_sided)
                 {
                     transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
                 }
                 continue;
             }
