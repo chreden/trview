@@ -108,7 +108,7 @@ namespace trview
 
         const Vector3 half_size = (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
-        _bounding_box.Center = Vector3::Zero;
+        _bounding_box.Center = minimum + half_size;
     }
 
     void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour)
