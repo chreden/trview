@@ -77,12 +77,10 @@ namespace trview
 
         ui::Listbox::Item create_listbox_item(const Item& item)
         {
-            return {{
-                    { L"#", std::to_wstring(item.number()) },
-                    { L"ID", std::to_wstring(item.type_id()) },
-                    { L"Room", std::to_wstring(item.room()) },
-                    { L"Type", item.type() }
-                    }};
+            return {{{ L"#", std::to_wstring(item.number()) },
+                     { L"ID", std::to_wstring(item.type_id()) },
+                     { L"Room", std::to_wstring(item.room()) },
+                     { L"Type", item.type() }}};
         }
     }
 
@@ -163,10 +161,7 @@ namespace trview
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        for (const auto& item : items)
-        {
-            list_items.push_back(create_listbox_item(item));
-        }
+        std::transform(items.begin(), items.end(), std::back_inserter(list_items), create_listbox_item);
         _items_list->set_items(list_items);
     }
 
@@ -220,14 +215,7 @@ namespace trview
 
         auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
         sync_item->set_state(_sync_item);
-        _token_store.add(sync_item->on_state_changed += [this](bool value)
-        {
-            set_sync_item(value);
-            if (_selected_item.has_value())
-            {
-                set_selected_item(_selected_item.value());
-            }
-        });
+        _token_store.add(sync_item->on_state_changed += [this](bool value) { set_sync_item(value); });
         controls->add_child(std::move(sync_item));
 
         // Space out the button
@@ -409,7 +397,14 @@ namespace trview
 
     void ItemsWindow::set_sync_item(bool value)
     {
-        _sync_item = value;
+        if (_sync_item != value)
+        {
+            _sync_item = value;
+            if (_selected_item.has_value())
+            {
+                set_selected_item(_selected_item.value());
+            }
+        }
     }
 
     void ItemsWindow::toggle_expand()
