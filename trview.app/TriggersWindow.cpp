@@ -71,11 +71,9 @@ namespace trview
 
         ui::Listbox::Item create_listbox_item(const Trigger& item)
         {
-            return { {} };
-            //return { {{ L"#", std::to_wstring(item.number()) },
-            //         { L"ID", std::to_wstring(item.type_id()) },
-            //         { L"Room", std::to_wstring(item.room()) },
-            //         { L"Type", item.type() }} };
+            return { {{ L"#", std::to_wstring(item.number()) },
+                     { L"Room", std::to_wstring(item.room()) },
+                     { L"Type", trigger_type_name(item.type()) }} };
         }
     }
 
@@ -153,7 +151,7 @@ namespace trview
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
         // Spacing between checkboxes.
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(5, 20), Colours::LeftPanel));
 
         auto sync_trigger = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Trigger");
         sync_trigger->set_state(_sync_trigger);
@@ -177,7 +175,6 @@ namespace trview
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::Number, L"ID", 30 },
                 { Listbox::Column::Type::String, L"Type", 100 }
             }
         );
