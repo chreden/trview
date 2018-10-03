@@ -24,11 +24,13 @@ namespace trview
 
     namespace ui
     {
-        class Window;
         namespace render
         {
             class Renderer;
         }
+
+        class Button;
+        class Checkbox;
     }
 
     class TriggersWindow final : public MessageHandler
@@ -83,6 +85,10 @@ namespace trview
         void generate_ui();
         void update_layout();
         void populate_triggers(const std::vector<Trigger>& triggers);
+        std::unique_ptr<ui::StackPanel> create_triggers_panel();
+        void set_track_room(bool value);
+        void set_sync_trigger(bool value);
+        void toggle_expand();
 
         WindowResizer _window_resizer;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
@@ -92,8 +98,14 @@ namespace trview
         input::Keyboard _keyboard;
         TokenStore _token_store;
 
-        std::vector<Trigger> _all_triggers;
+        ui::Window* _left_panel;
+        ui::Window*  _controls;
+        ui::Checkbox* _track_room_checkbox;
+        ui::Button* _expander;
         ui::Listbox* _triggers_list;
+
+        std::vector<Trigger> _all_triggers;
+        
         /// Whether the trigger window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.
@@ -102,5 +114,6 @@ namespace trview
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
         std::optional<Trigger> _selected_trigger;
+        bool _expanded{ true };
     };
 }

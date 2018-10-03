@@ -54,14 +54,16 @@ namespace trview
         {
             _items_windows->create_window();
         }
-        _token_store.add(_items_windows->on_item_selected += [this](const auto& item)
+        _token_store.add(_items_windows->on_item_selected += [this](const auto& item) { select_item(item); });
+        _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
+
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        if (_settings.triggers_startup)
         {
-            select_item(item);
-        });
-        _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger)
-        {
-            select_trigger(trigger);
-        });
+            _triggers_windows->create_window();
+        }
+        _token_store.add(_triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); });
+        _token_store.add(_triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
 
         _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
         _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
@@ -386,6 +388,8 @@ namespace trview
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
+        _triggers_windows->set_items(_level->items());
+        _triggers_windows->set_triggers(_level->triggers());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -435,6 +439,7 @@ namespace trview
         _main_window->present(_settings.vsync);
 
         _items_windows->render(_device, _settings.vsync);
+        _triggers_windows->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -579,6 +584,7 @@ namespace trview
             _target = _level->room(_level->selected_room())->centre();
 
             _items_windows->set_room(room);
+            _triggers_windows->set_room(room);
         }
     }
 
@@ -613,6 +619,8 @@ namespace trview
             const float y = pick.hit ? pick.position.y : room->centre().y;
 
             _target = DirectX::SimpleMath::Vector3(x, y, z);
+
+            _triggers_windows->set_selected_trigger(trigger);
         }
     }
 

@@ -52,4 +52,40 @@ namespace trview
 
         _windows.push_back(std::move(items_window));
     }
+
+    void TriggersWindowManager::set_items(const std::vector<Item>& items)
+    {
+        _items = items;
+        for (auto& window : _windows)
+        {
+            // window->set_items(items);
+        }
+    }
+
+    void TriggersWindowManager::set_triggers(const std::vector<Trigger>& triggers)
+    {
+        _triggers = triggers;
+        for (auto& window : _windows)
+        {
+            window->clear_selected_trigger();
+            window->set_triggers(triggers);
+        }
+    }
+
+    void TriggersWindowManager::set_room(uint32_t room)
+    {
+        _current_room = room;
+        for (auto& window : _windows)
+        {
+            window->set_current_room(room);
+        }
+    }
+
+    void TriggersWindowManager::set_selected_trigger(const Trigger& trigger)
+    {
+        for (auto& window : _windows)
+        {
+            window->set_selected_trigger(trigger);
+        }
+    }
 }

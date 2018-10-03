@@ -44,6 +44,22 @@ namespace trview
         /// @param vsync Whether to use vsync.
         void render(graphics::Device& device, bool vsync);
 
+        /// Set the items to use in the windows.
+        /// @param items The items in the level.
+        void set_items(const std::vector<Item>& items);
+
+        /// Set the triggers to use in the windows.
+        /// @param triggers The triggers in the level.
+        void set_triggers(const std::vector<Trigger>& triggers);
+
+        /// Set the current room to filter trigger windows.
+        /// @param room The current room.
+        void set_room(uint32_t room);
+
+        /// Set the currently selected trigger.
+        /// @param item The selected trigger.
+        void set_selected_trigger(const Trigger& trigger);
+
         /// Create a new triggers window.
         void create_window();
     private:

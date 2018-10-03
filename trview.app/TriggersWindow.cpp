@@ -5,6 +5,8 @@
 #include <trview.common/Colour.h>
 #include <trview/resource.h>
 #include <trview.ui.render/Renderer.h>
+#include <trview.ui/Checkbox.h>
+#include <trview.ui/Button.h>
 
 namespace trview
 {
@@ -129,10 +131,74 @@ namespace trview
     {
         using namespace ui;
         _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        // _ui->add_child(create_items_panel());
+        _ui->add_child(create_triggers_panel());
         // _ui->add_child(create_divider());
         // _ui->add_child(create_details_panel());
         _ui_renderer->load(_ui.get());
+    }
+
+    std::unique_ptr<ui::StackPanel> TriggersWindow::create_triggers_panel()
+    {
+        using namespace ui;
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        // Control modes:.
+        auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
+        _token_store.add(track_room->on_state_changed += [this](bool value)
+        {
+            set_track_room(value);
+        });
+
+        _track_room_checkbox = controls->add_child(std::move(track_room));
+
+        // Spacing between checkboxes.
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+
+        auto sync_trigger = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Trigger");
+        sync_trigger->set_state(_sync_trigger);
+        _token_store.add(sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); });
+        controls->add_child(std::move(sync_trigger));
+
+        // Space out the button
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(5, 20), Colours::LeftPanel));
+
+        auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
+        _token_store.add(expander->on_click += [this]()
+        {
+            toggle_expand();
+        });
+        _expander = controls->add_child(std::move(expander));
+
+        _controls = left_panel->add_child(std::move(controls));
+
+        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        triggers_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::Type::Number, L"ID", 30 },
+                { Listbox::Column::Type::String, L"Type", 100 }
+            }
+        );
+        _token_store.add(triggers_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            // load_item_details(_all_items[index]);
+            if (_sync_trigger)
+            {
+                on_trigger_selected(_all_triggers[index]);
+            }
+        });
+
+        _triggers_list = triggers_list.get();
+        left_panel->add_child(std::move(triggers_list));
+
+        // Fix items list size now that it has been added to the panel.
+        _triggers_list->set_size(Size(200, left_panel->size().height - _triggers_list->position().y));
+
+        _left_panel = left_panel.get();
+        return left_panel;
     }
 
     void TriggersWindow::set_triggers(const std::vector<Trigger>& triggers)
@@ -194,9 +260,55 @@ namespace trview
     {
         _ui->set_size(window().size());
         const auto new_height = window().size().height;
-        // _left_panel->set_size(Size(_left_panel->size().width, new_height));
+        _left_panel->set_size(Size(_left_panel->size().width, new_height));
         // _divider->set_size(Size(_divider->size().width, new_height));
         // _right_panel->set_size(Size(_right_panel->size().width, new_height));
-        // _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
+        _triggers_list->set_size(Size(_triggers_list->size().width, _left_panel->size().height - _triggers_list->position().y));
+    }
+
+    void TriggersWindow::set_sync_trigger(bool value)
+    {
+        if (_sync_trigger != value)
+        {
+            _sync_trigger = value;
+            if (_selected_trigger.has_value())
+            {
+                set_selected_trigger(_selected_trigger.value());
+            }
+        }
+    }
+
+    void TriggersWindow::toggle_expand()
+    {
+        _expanded = !_expanded;
+        _expander->set_text(_expanded ? L"<<" : L">>");
+        _ui->set_size(Size(_expanded ? 400 : 200, _ui->size().height));
+
+        // Force resize the window.
+        RECT rect{ 0, 0, _ui->size().width, _ui->size().height };
+        AdjustWindowRect(&rect, window_style, FALSE);
+        SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
+    }
+
+    void TriggersWindow::set_track_room(bool value)
+    {
+        if (_track_room != value)
+        {
+            _track_room = value;
+            if (_track_room)
+            {
+                set_current_room(_current_room);
+            }
+            else
+            {
+                set_triggers(_all_triggers);
+                _filter_applied = false;
+            }
+        }
+
+        if (_track_room_checkbox->state() != _track_room)
+        {
+            _track_room_checkbox->set_state(_track_room);
+        }
     }
 }

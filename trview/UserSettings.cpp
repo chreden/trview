@@ -92,6 +92,10 @@ namespace trview
                 {
                     file >> settings.items_startup;
                 }
+                else if (setting == L"triggerstartup")
+                {
+                    file >> settings.triggers_startup;
+                }
                 else if (setting == L"recent")
                 {
                     uint32_t recent_count = 0;
@@ -146,6 +150,7 @@ namespace trview
         file << L"gotolara " << settings.go_to_lara << '\n';
         file << L"invertmapcontrols " << settings.invert_map_controls << '\n';
         file << L"itemsstartup " << settings.items_startup << '\n';
+        file << L"triggersstartup" << settings.triggers_startup << '\n';
         file << L"recent "  << settings.recent_files.size()     << '\n';
         for (const auto& file_name : settings.recent_files)
         {
