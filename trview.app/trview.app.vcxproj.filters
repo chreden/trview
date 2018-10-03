@@ -4,19 +4,49 @@
     <ClCompile Include="WindowResizer.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="FileDropper.cpp" />
-    <ClCompile Include="ItemsWindow.cpp" />
-    <ClCompile Include="Item.cpp" />
-    <ClCompile Include="ItemsWindowManager.cpp" />
-    <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="Item.cpp">
+      <Filter>Items</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsWindow.cpp">
+      <Filter>Items</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsWindowManager.cpp">
+      <Filter>Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>Triggers</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggersWindow.cpp">
+      <Filter>Triggers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="FileDropper.h" />
-    <ClInclude Include="ItemsWindow.h" />
-    <ClInclude Include="Item.h" />
-    <ClInclude Include="ItemsWindowManager.h" />
-    <ClInclude Include="Trigger.h" />
+    <ClInclude Include="Item.h">
+      <Filter>Items</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemsWindow.h">
+      <Filter>Items</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemsWindowManager.h">
+      <Filter>Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggersWindow.h">
+      <Filter>Triggers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Items">
+      <UniqueIdentifier>{9df8a21c-e6ca-4a3c-a1a2-2522d26ba2a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Triggers">
+      <UniqueIdentifier>{7226702e-a61c-4a0c-b912-71a229863270}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -25,6 +25,7 @@
     <ClCompile Include="ItemsWindowManager.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Trigger.cpp" />
+    <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +35,7 @@
     <ClInclude Include="ItemsWindowManager.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="Trigger.h" />
+    <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />
   </ItemGroup>
