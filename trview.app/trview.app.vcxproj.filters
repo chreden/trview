@@ -19,6 +19,9 @@
     <ClCompile Include="TriggersWindow.cpp">
       <Filter>Triggers</Filter>
     </ClCompile>
+    <ClCompile Include="TriggersWindowManager.cpp">
+      <Filter>Triggers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -38,6 +41,9 @@
       <Filter>Triggers</Filter>
     </ClInclude>
     <ClInclude Include="TriggersWindow.h">
+      <Filter>Triggers</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggersWindowManager.h">
       <Filter>Triggers</Filter>
     </ClInclude>
   </ItemGroup>
