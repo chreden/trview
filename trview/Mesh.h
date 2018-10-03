@@ -50,21 +50,23 @@ namespace trview
         DirectX::BoundingBox                              _bounding_box;
     };
 
-    // Create a new mesh based on the contents of the mesh specified.
-    // mesh: The level mesh to generate.
-    // device: The D3D device to use to create the mesh.
-    // texture_storage: The textures for the level.
-    // Returns: The new mesh.
-    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage);
+    /// Create a new mesh based on the contents of the mesh specified.
+    /// @param mesh The level mesh to generate.
+    /// @param device The D3D device to use to create the mesh.
+    /// @param texture_storage The textures for the level.
+    /// @param transparent_collision Whether to include transparent triangles in collision triangles.
+    /// @returns The new mesh.
+    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
-    // Convert the textured rectangles into collections required to create a mesh.
-    // rectangles: The rectangles from the mesh or room geometry.
-    // input_vertices: The vertices that the rectangle indices refer to.
-    // texture_storage: The texture storage for the level.
-    // output_vertices: The collection to add the new vertices to.
-    // output_indices: The collection to add new indices to.
-    // transparent_triangles: The collection to add transparent triangles to.
-    // collision_triangles: The collection to add collision triangles to.
+    /// Convert the textured rectangles into collections required to create a mesh.
+    /// @param rectangles The rectangles from the mesh or room geometry.
+    /// @param input_vertices The vertices that the rectangle indices refer to.
+    /// @param texture_storage The texture storage for the level.
+    /// @param output_vertices The collection to add the new vertices to.
+    /// @param output_indices The collection to add new indices to.
+    /// @param transparent_triangles The collection to add transparent triangles to.
+    /// @param collision_triangles The collection to add collision triangles to.
+    /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_rectangles(
         const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices, 
@@ -72,16 +74,18 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles);
+        std::vector<Triangle>& collision_triangles,
+        bool transparent_collision = true);
 
-    // Convert the textured triangles into collections required to create a mesh.
-    // triangles: The triangles from the mesh or room geometry.
-    // input_vertices: The vertices that the triangle indices refer to.
-    // texture_storage: The texture storage for the level.
-    // output_vertices: The collection to add the new vertices to.
-    // output_indices: The collection to add new indices to.
-    // transparent_triangles: The collection to add transparent triangles to.
-    // collision_triangles: The collection to add collision triangles to.
+    /// Convert the textured triangles into collections required to create a mesh.
+    /// @param triangles The triangles from the mesh or room geometry.
+    /// @param input_vertices The vertices that the triangle indices refer to.
+    /// @param texture_storage The texture storage for the level.
+    /// @param output_vertices The collection to add the new vertices to.
+    /// @param output_indices The collection to add new indices to.
+    /// @param transparent_triangles The collection to add transparent triangles to.
+    /// @param collision_triangles The collection to add collision triangles to.
+    /// @param transparent_collision Whether to add transparent rectangles as collision triangles.
     void process_textured_triangles(
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
@@ -89,7 +93,8 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles);
+        std::vector<Triangle>& collision_triangles,
+        bool transparent_collision = true);
 
     // Convert the coloured rectangles into collections required to create a mesh.
     // triangles: The rectangles from the mesh or room geometry.

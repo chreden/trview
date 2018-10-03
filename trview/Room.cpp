@@ -164,8 +164,8 @@ namespace trview
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
-        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
+        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
 
         _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, collision_triangles);
         _bounding_box = _mesh->bounding_box();
