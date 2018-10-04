@@ -128,8 +128,7 @@ namespace trview
         auto command_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
         command_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 25 },
-                { Listbox::Column::Type::String, L"Type", 35 },
+                { Listbox::Column::Type::String, L"Type", 60 },
                 { Listbox::Column::Type::String, L"Index", 35 },
                 { Listbox::Column::Type::String, L"Entity", 85 },
             }
