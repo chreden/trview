@@ -30,7 +30,7 @@ namespace trview
 
 
     Trigger::Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
-        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type)
+        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer)
     {
         for (auto action : trigger_info.commands)
         {
@@ -69,6 +69,21 @@ namespace trview
     TriggerType Trigger::type() const
     {
         return _type;
+    }
+
+    bool Trigger::only_once() const
+    {
+        return _only_once;
+    }
+
+    uint16_t Trigger::flags() const
+    {
+        return _flags;
+    }
+
+    uint8_t Trigger::timer() const
+    {
+        return _timer;
     }
 
     std::wstring trigger_type_name(TriggerType type)

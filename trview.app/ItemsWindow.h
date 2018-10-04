@@ -52,10 +52,11 @@ namespace trview
         /// Set the selected item.
         /// @param item The selected item.
         void set_selected_item(const Item& item);
-    private:
-        void populate_items(const std::vector<Item>& items);
+    protected:
         /// After the window has been resized, adjust the sizes of the child elements.
         virtual void update_layout() override;
+    private:
+        void populate_items(const std::vector<Item>& items);
         void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);

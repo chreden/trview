@@ -18,12 +18,15 @@ namespace trview
     public:
         explicit Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
 
-        uint32_t number() const;
-        uint16_t room() const;
-        uint16_t x() const;
-        uint16_t z() const;
-        bool triggers_item(uint16_t index) const;
+        uint32_t    number() const;
+        uint16_t    room() const;
+        uint16_t    x() const;
+        uint16_t    z() const;
+        bool        triggers_item(uint16_t index) const;
         TriggerType type() const;
+        bool        only_once() const;
+        uint16_t    flags() const;
+        uint8_t     timer() const;
     private:
         std::vector<uint16_t> _objects;
         TriggerType _type;
@@ -31,6 +34,9 @@ namespace trview
         uint16_t _room;
         uint16_t _x;
         uint16_t _z;
+        bool _only_once;
+        uint16_t _flags;
+        uint8_t _timer;
     };
 
     /// Get the string representation of the trigger type specified.

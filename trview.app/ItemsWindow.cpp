@@ -92,9 +92,7 @@ namespace trview
     std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
     {
         using namespace ui;
-        const float height = 400;
-
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
@@ -122,7 +120,7 @@ namespace trview
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Point(), Size(200, height - _controls->size().height), Colours::LeftPanel);
+        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -220,7 +218,8 @@ namespace trview
         {
             std::wstringstream stream;
             stream << std::bitset<5>(value);
-            return stream.str();
+            const auto result = stream.str();
+            return std::wstring(result.rbegin(), result.rend());
         };
 
         auto make_item = [](const auto& name, const auto& value)

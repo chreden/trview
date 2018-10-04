@@ -56,10 +56,12 @@ namespace trview
         std::unique_ptr<ui::Control> create_right_panel();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
+        void load_trigger_details(const Trigger& trigger);
 
         ui::Window*   _controls;
         ui::Checkbox* _track_room_checkbox;
         ui::Listbox*  _triggers_list;
+        ui::Listbox*  _stats_list;
 
         std::vector<Trigger> _all_triggers;
 
