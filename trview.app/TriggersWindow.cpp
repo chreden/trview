@@ -138,6 +138,17 @@ namespace trview
         command_list->set_show_scrollbar(true);
         command_list->set_show_highlight(false);
 
+        _token_store.add(command_list->on_item_selected += [&](const auto& trigger_item)
+        {
+            auto index = std::stoi(trigger_item.value(L"#"));
+            auto command = _selected_trigger.value().commands()[index];
+            if (command.type() == TriggerCommandType::Object)
+            {
+                set_track_room(false);
+                on_item_selected(_all_items[command.index()]);
+            }
+        });
+
         _command_list = command_group_box->add_child(std::move(command_list));
         right_panel->add_child(std::move(command_group_box));
 
