@@ -1,10 +1,6 @@
 #include "TriggersWindow.h"
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
-#include <trview.graphics/DeviceWindow.h>
 #include <trview.common/Colour.h>
 #include <trview/resource.h>
-#include <trview.ui.render/Renderer.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
 
@@ -12,8 +8,6 @@ namespace trview
 {
     namespace
     {
-        const DWORD window_style = WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
-
         /// Colours commonly used in this class.
         namespace Colours
         {
@@ -22,51 +16,6 @@ namespace trview
             const Colour ItemDetails{ 1.0f, 0.35f, 0.35f, 0.35f };
             const Colour Triggers{ 1.0f, 0.3f, 0.3f, 0.3f };
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
-        }
-
-        LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-        {
-            return DefWindowProc(hWnd, message, wParam, lParam);
-        }
-
-        HWND init_items_instance(HWND parent, HINSTANCE hInstance, int nCmdShow)
-        {
-            RECT rect{ 0, 0, 400, 400 };
-            AdjustWindowRect(&rect, window_style, FALSE);
-
-            HWND items_window = CreateWindowW(L"trview.triggers", L"Triggers", window_style,
-                CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
-
-            ShowWindow(items_window, nCmdShow);
-            UpdateWindow(items_window);
-
-            return items_window;
-        }
-
-        ATOM register_items_class(HINSTANCE hInstance)
-        {
-            WNDCLASSEXW wcex;
-            wcex.cbSize = sizeof(WNDCLASSEX);
-            wcex.style = CS_HREDRAW | CS_VREDRAW;
-            wcex.lpfnWndProc = items_window_procedure;
-            wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = 0;
-            wcex.hInstance = hInstance;
-            wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRVIEW));
-            wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-            wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-            wcex.lpszMenuName = nullptr;
-            wcex.lpszClassName = L"trview.triggers";
-            wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-            return RegisterClassExW(&wcex);
-        }
-
-        HWND create_items_window(HWND parent)
-        {
-            HINSTANCE hInstance = GetModuleHandle(nullptr);
-            register_items_class(hInstance);
-            return init_items_instance(parent, hInstance, SW_NORMAL);
         }
 
         ui::Listbox::Item create_listbox_item(const Trigger& item)
@@ -80,65 +29,16 @@ namespace trview
     using namespace graphics;
 
     TriggersWindow::TriggersWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : MessageHandler(create_items_window(parent)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<ui::render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
-        _mouse(window()), _keyboard(window())
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", create_left_panel(), create_right_panel())
     {
-        _token_store.add(_window_resizer.on_resize += [=]()
-        {
-            _device_window->resize();
-            update_layout();
-            _ui_renderer->set_host_size(window().size());
-        });
-        generate_ui();
-
-        _token_store.add(_mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
-        _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); });
     }
 
-    void TriggersWindow::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
-    {
-        if (message == WM_CLOSE)
-        {
-            on_window_closed();
-        }
-        else if (message == WM_GETMINMAXINFO)
-        {
-            RECT rect{ 0, 0, _ui->size().width, 400 };
-            AdjustWindowRect(&rect, window_style, FALSE);
-
-            MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
-            info->ptMinTrackSize.x = rect.right - rect.left;
-            info->ptMaxTrackSize.x = rect.right - rect.left;
-            info->ptMinTrackSize.y = rect.bottom - rect.top;
-        }
-    }
-
-    void TriggersWindow::render(const Device& device, bool vsync)
-    {
-        _device_window->begin();
-        _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
-        _ui_renderer->render(device.context());
-        _device_window->present(vsync);
-    }
-
-    void TriggersWindow::generate_ui()
+    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel()
     {
         using namespace ui;
-        _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        _ui->add_child(create_triggers_panel());
-        _ui->add_child(create_divider());
-        // _ui->add_child(create_details_panel());
-        _ui_renderer->load(_ui.get());
-    }
+        const float height = 400;
 
-    std::unique_ptr<ui::StackPanel> TriggersWindow::create_triggers_panel()
-    {
-        using namespace ui;
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
@@ -161,16 +61,12 @@ namespace trview
         // Space out the button
         controls->add_child(std::make_unique<ui::Window>(Point(), Size(5, 20), Colours::LeftPanel));
 
-        auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
-        _token_store.add(expander->on_click += [this]()
-        {
-            toggle_expand();
-        });
-        _expander = controls->add_child(std::move(expander));
+        // Add the expander button at this point.
+        add_expander(*controls);
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, height - _controls->size().height), Colours::LeftPanel);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -194,8 +90,15 @@ namespace trview
         // Fix items list size now that it has been added to the panel.
         _triggers_list->set_size(Size(200, left_panel->size().height - _triggers_list->position().y));
 
-        _left_panel = left_panel.get();
         return left_panel;
+    }
+
+    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel()
+    {
+        using namespace ui;
+        const float height = 400;
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        return right_panel;
     }
 
     void TriggersWindow::set_triggers(const std::vector<Trigger>& triggers)
@@ -255,19 +158,8 @@ namespace trview
 
     void TriggersWindow::update_layout()
     {
-        _ui->set_size(window().size());
-        const auto new_height = window().size().height;
-        _left_panel->set_size(Size(_left_panel->size().width, new_height));
-        _divider->set_size(Size(_divider->size().width, new_height));
-        // _right_panel->set_size(Size(_right_panel->size().width, new_height));
+        CollapsiblePanel::update_layout();
         _triggers_list->set_size(Size(_triggers_list->size().width, _left_panel->size().height - _triggers_list->position().y));
-    }
-
-    std::unique_ptr<ui::Control> TriggersWindow::create_divider()
-    {
-        auto divider = std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colours::Divider);
-        _divider = divider.get();
-        return divider;
     }
 
     void TriggersWindow::set_sync_trigger(bool value)
@@ -280,18 +172,6 @@ namespace trview
                 set_selected_trigger(_selected_trigger.value());
             }
         }
-    }
-
-    void TriggersWindow::toggle_expand()
-    {
-        _expanded = !_expanded;
-        _expander->set_text(_expanded ? L"<<" : L">>");
-        _ui->set_size(Size(_expanded ? 400 : 200, _ui->size().height));
-
-        // Force resize the window.
-        RECT rect{ 0, 0, _ui->size().width, _ui->size().height };
-        AdjustWindowRect(&rect, window_style, FALSE);
-        SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
     }
 
     void TriggersWindow::set_track_room(bool value)

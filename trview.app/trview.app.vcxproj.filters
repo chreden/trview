@@ -22,6 +22,9 @@
     <ClCompile Include="TriggersWindowManager.cpp">
       <Filter>Triggers</Filter>
     </ClCompile>
+    <ClCompile Include="CollapsiblePanel.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -46,6 +49,9 @@
     <ClInclude Include="TriggersWindowManager.h">
       <Filter>Triggers</Filter>
     </ClInclude>
+    <ClInclude Include="CollapsiblePanel.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -53,6 +59,9 @@
     </Filter>
     <Filter Include="Triggers">
       <UniqueIdentifier>{7226702e-a61c-4a0c-b912-71a229863270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{6c308ddd-f5fb-42e0-bc70-b07f3a0c1f1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

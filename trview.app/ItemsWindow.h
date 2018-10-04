@@ -3,36 +3,19 @@
 
 #pragma once
 
-#include <trview.common/MessageHandler.h>
-#include <trview.graphics/Device.h>
-#include <trview.input/Mouse.h>
-#include <trview.input/Keyboard.h>
-#include <trview.common/TokenStore.h>
 #include <trview.ui/Listbox.h>
-#include "WindowResizer.h"
 #include "Item.h"
+#include "CollapsiblePanel.h"
 
 namespace trview
 {
-    namespace graphics
-    {
-        struct IShaderStorage;
-        class FontFactory;
-    }
-
     namespace ui
     {
-        namespace render
-        {
-            class Renderer;
-        }
-
-        class Button;
         class Checkbox;
     }
 
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public MessageHandler
+    class ItemsWindow final : public CollapsiblePanel
     {
     public:
         /// Create an items window as a child of the specified window.
@@ -44,18 +27,6 @@ namespace trview
 
         /// Destructor for items window
         virtual ~ItemsWindow() = default;
-
-        /// Handles a window message.
-        /// @param window The window that received the message.
-        /// @param message The message that was received.
-        /// @param wParam The WPARAM for the message.
-        /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
-
-        /// Render the window and contents.
-        /// @param device The device to render with.
-        /// @param vsync Whether to use vsync when rendering.
-        void render(const graphics::Device& device, bool vsync);
 
         /// Set the items to display in the window.
         /// @param items The items to show.
@@ -74,9 +45,6 @@ namespace trview
         /// Event raised when a trigger is selected in the list.
         Event<Trigger> on_trigger_selected;
 
-        /// Event raised when the items window is closed.
-        Event<> on_window_closed;
-
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
         void set_current_room(uint32_t room);
@@ -85,35 +53,20 @@ namespace trview
         /// @param item The selected item.
         void set_selected_item(const Item& item);
     private:
-        void generate_ui();
         void populate_items(const std::vector<Item>& items);
         /// After the window has been resized, adjust the sizes of the child elements.
-        void update_layout();
-        std::unique_ptr<ui::StackPanel> create_items_panel();
-        std::unique_ptr<ui::Control> create_divider();
-        std::unique_ptr<ui::StackPanel> create_details_panel();
+        virtual void update_layout() override;
         void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);
-        void toggle_expand();
+        std::unique_ptr<ui::Control> create_left_panel();
+        std::unique_ptr<ui::Control> create_right_panel();
 
-        WindowResizer _window_resizer;
-        std::unique_ptr<graphics::DeviceWindow> _device_window;
-        std::unique_ptr<ui::Window> _ui;
-        ui::Window* _left_panel;
-        ui::Window* _divider;
-        ui::Window* _right_panel;
         ui::Window*  _controls;
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
-        ui::Button* _expander;
-        std::unique_ptr<ui::render::Renderer> _ui_renderer;
-        input::Mouse _mouse;
-        input::Keyboard _keyboard;
-        TokenStore _token_store;
-
         std::vector<Item> _all_items;
         std::vector<Trigger> _all_triggers;
         /// Whether the item window is tracking the current room.
@@ -122,7 +75,6 @@ namespace trview
         uint32_t _current_room{ 0u };
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
-        bool _expanded{ true };
         bool _sync_item{ true };
         std::optional<Item> _selected_item;
     };
