@@ -40,14 +40,12 @@ namespace trview
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit CollapsiblePanel(const graphics::Device& device, 
-            const graphics::IShaderStorage& shader_storage, 
-            const graphics::FontFactory& font_factory, 
+        explicit CollapsiblePanel(const graphics::Device& device,
+            const graphics::IShaderStorage& shader_storage,
+            const graphics::FontFactory& font_factory,
             HWND parent,
             const std::wstring& window_class,
-            const std::wstring& title,
-            std::unique_ptr<ui::Control> left_panel,
-            std::unique_ptr<ui::Control> right_panel);
+            const std::wstring& title);
 
         virtual ~CollapsiblePanel() = default;
 
@@ -58,21 +56,31 @@ namespace trview
         /// @param lParam The LPARAM for the message.
         virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
 
+        /// Render the window.
+        /// @param device The device to render with.
+        /// @param vsync Whether to use vsync or not.
         void render(const graphics::Device& device, bool vsync);
 
         /// Event raised when the items window is closed.
         Event<> on_window_closed;
     protected:
         virtual void update_layout();
+
+        /// Add the expander button. This should be called by derived classes when they
+        /// are ready to add the button. It will be added to the control specified as the 
+        /// next child.
+        /// @param parent The control to add the expand button to.
         void add_expander(ui::Control& parent);
+
+        /// Set the left and right panels to use. This should be called before anything is done with the ui
+        /// element as it will also generate the ui.
+        void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
 
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;
     private:
-        void generate_ui(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
         void toggle_expand();
-
         std::unique_ptr<ui::Control> create_divider();
 
         std::unique_ptr<graphics::DeviceWindow> _device_window;
@@ -81,10 +89,8 @@ namespace trview
         WindowResizer   _window_resizer;
         input::Mouse    _mouse;
         input::Keyboard _keyboard;
-
         ui::Control* _divider;
         ui::Button* _expander;
-
-        bool _expanded{ true };
+        bool        _expanded{ true };
     };
 }

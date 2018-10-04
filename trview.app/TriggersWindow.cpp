@@ -29,8 +29,9 @@ namespace trview
     using namespace graphics;
 
     TriggersWindow::TriggersWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : _sync_trigger(true), CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", create_left_panel(), create_right_panel())
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers")
     {
+        set_panels(create_left_panel(), create_right_panel());
     }
 
     std::unique_ptr<ui::Control> TriggersWindow::create_left_panel()
@@ -54,7 +55,7 @@ namespace trview
         controls->add_child(std::make_unique<ui::Window>(Point(), Size(5, 20), Colours::LeftPanel));
 
         auto sync_trigger = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Trigger");
-        sync_trigger->set_state(true);
+        sync_trigger->set_state(_sync_trigger);
         _token_store.add(sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); });
         controls->add_child(std::move(sync_trigger));
 

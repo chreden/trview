@@ -68,7 +68,7 @@ namespace trview
     }
 
 
-    CollapsiblePanel::CollapsiblePanel(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title, std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
+    CollapsiblePanel::CollapsiblePanel(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title)
         : MessageHandler(create_window(parent, window_class, title)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
         _mouse(window()), _keyboard(window())
@@ -79,7 +79,6 @@ namespace trview
             update_layout();
             _ui_renderer->set_host_size(window().size());
         });
-        generate_ui(std::move(left_panel), std::move(right_panel));
 
         _token_store.add(_mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); });
@@ -114,7 +113,7 @@ namespace trview
         _device_window->present(vsync);
     }
 
-    void CollapsiblePanel::generate_ui(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
+    void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
         _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _left_panel = _ui->add_child(std::move(left_panel));
