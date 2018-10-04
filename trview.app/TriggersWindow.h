@@ -48,6 +48,8 @@ namespace trview
         /// Set the selected item.
         /// @param item The selected item.
         void set_selected_trigger(const Trigger& item);
+
+        void set_items(const std::vector<Item>& items);
     protected:
         virtual void update_layout() override;
     private:
@@ -64,6 +66,7 @@ namespace trview
         ui::Listbox*  _stats_list;
         ui::Listbox*  _command_list;
 
+        std::vector<Item> _all_items;
         std::vector<Trigger> _all_triggers;
 
         /// Whether the trigger window is tracking the current room.

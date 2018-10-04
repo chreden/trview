@@ -261,6 +261,15 @@ namespace trview
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
 
+        auto get_command_display = [this](const Command& command)
+        {
+            if (command.type() == TriggerCommandType::Object)
+            {
+                return _all_items[command.index()].type();
+            }
+            return std::wstring();
+        };
+
         using namespace ui;
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", trigger_type_name(trigger.type())));
@@ -280,10 +289,15 @@ namespace trview
                         { L"#", std::to_wstring(command.number()) },
                         { L"Type", command_type_name(command.type()) },
                         { L"Index", std::to_wstring(command.index()) },
-                        { L"Identity", L"---" },
+                        { L"Entity", get_command_display(command) },
                     }
                 });
         }
         _command_list->set_items(commands);
+    }
+
+    void TriggersWindow::set_items(const std::vector<Item>& items)
+    {
+        _all_items = items;
     }
 }
