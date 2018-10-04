@@ -86,6 +86,7 @@ namespace trview
         void update_layout();
         void populate_triggers(const std::vector<Trigger>& triggers);
         std::unique_ptr<ui::StackPanel> create_triggers_panel();
+        std::unique_ptr<ui::Control> create_divider();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
         void toggle_expand();
@@ -103,9 +104,10 @@ namespace trview
         ui::Checkbox* _track_room_checkbox;
         ui::Button* _expander;
         ui::Listbox* _triggers_list;
+        ui::Window* _divider;
 
         std::vector<Trigger> _all_triggers;
-        
+
         /// Whether the trigger window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.

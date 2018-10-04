@@ -130,7 +130,7 @@ namespace trview
         using namespace ui;
         _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _ui->add_child(create_triggers_panel());
-        // _ui->add_child(create_divider());
+        _ui->add_child(create_divider());
         // _ui->add_child(create_details_panel());
         _ui_renderer->load(_ui.get());
     }
@@ -175,7 +175,7 @@ namespace trview
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::String, L"Type", 100 }
+                { Listbox::Column::Type::String, L"Type", 130 }
             }
         );
         _token_store.add(triggers_list->on_item_selected += [&](const auto& item)
@@ -258,9 +258,16 @@ namespace trview
         _ui->set_size(window().size());
         const auto new_height = window().size().height;
         _left_panel->set_size(Size(_left_panel->size().width, new_height));
-        // _divider->set_size(Size(_divider->size().width, new_height));
+        _divider->set_size(Size(_divider->size().width, new_height));
         // _right_panel->set_size(Size(_right_panel->size().width, new_height));
         _triggers_list->set_size(Size(_triggers_list->size().width, _left_panel->size().height - _triggers_list->position().y));
+    }
+
+    std::unique_ptr<ui::Control> TriggersWindow::create_divider()
+    {
+        auto divider = std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colours::Divider);
+        _divider = divider.get();
+        return divider;
     }
 
     void TriggersWindow::set_sync_trigger(bool value)
