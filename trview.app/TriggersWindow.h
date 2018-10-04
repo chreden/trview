@@ -62,6 +62,7 @@ namespace trview
         ui::Checkbox* _track_room_checkbox;
         ui::Listbox*  _triggers_list;
         ui::Listbox*  _stats_list;
+        ui::Listbox*  _command_list;
 
         std::vector<Trigger> _all_triggers;
 

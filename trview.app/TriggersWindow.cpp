@@ -118,6 +118,29 @@ namespace trview
 
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
         right_panel->add_child(std::move(group_box));
+
+        // Spacer element.
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
+
+        // Add the trigger details group box.
+        auto command_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands");
+
+        auto command_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
+        command_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 25 },
+                { Listbox::Column::Type::String, L"Type", 35 },
+                { Listbox::Column::Type::String, L"Index", 35 },
+                { Listbox::Column::Type::String, L"Entity", 85 },
+            }
+        );
+        command_list->set_show_headers(true);
+        command_list->set_show_scrollbar(true);
+        command_list->set_show_highlight(false);
+
+        _command_list = command_group_box->add_child(std::move(command_list));
+        right_panel->add_child(std::move(command_group_box));
+
         return right_panel;
     }
 
@@ -248,18 +271,19 @@ namespace trview
         stats.push_back(make_item(L"Timer", std::to_wstring(trigger.timer())));
         _stats_list->set_items(stats);
 
-        // std::vector<Listbox::Item> triggers;
-        // for (auto& trigger : trigger.triggers())
-        // {
-        //     triggers.push_back(
-        //         {
-        //             {
-        //                 { L"#", std::to_wstring(trigger.number()) },
-        //                 { L"Room", std::to_wstring(trigger.room()) },
-        //                 { L"Type", trigger_type_name(trigger.type()) },
-        //             }
-        //         });
-        // }
-        // _trigger_list->set_items(triggers);
+        std::vector<Listbox::Item> commands;
+        for (auto& command : trigger.commands())
+        {
+            commands.push_back(
+                {
+                    {
+                        { L"#", std::to_wstring(command.number()) },
+                        { L"Type", command_type_name(command.type()) },
+                        { L"Index", std::to_wstring(command.index()) },
+                        { L"Identity", L"---" },
+                    }
+                });
+        }
+        _command_list->set_items(commands);
     }
 }
