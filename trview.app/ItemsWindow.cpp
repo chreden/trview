@@ -33,7 +33,7 @@ namespace trview
     }
 
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", create_left_panel(), create_right_panel())
+        : _sync_item(true), CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", create_left_panel(), create_right_panel())
     {
     }
 
@@ -109,7 +109,7 @@ namespace trview
         controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
 
         auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
-        sync_item->set_state(_sync_item);
+        sync_item->set_state(true);
         _token_store.add(sync_item->on_state_changed += [this](bool value) { set_sync_item(value); });
         controls->add_child(std::move(sync_item));
 
