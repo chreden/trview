@@ -13,8 +13,8 @@ namespace trview
     void TriggersWindowManager::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_COMMAND &&
-            LOWORD(wParam) == ID_APP_WINDOWS_ITEMS ||
-            LOWORD(wParam) == ID_APP_ACCEL_ITEM_WINDOW)
+            LOWORD(wParam) == ID_APP_WINDOWS_TRIGGERS ||
+            LOWORD(wParam) == ID_APP_ACCEL_TRIGGERS_WINDOW)
         {
             create_window();
         }

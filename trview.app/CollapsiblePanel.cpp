@@ -27,7 +27,7 @@ namespace trview
 
             HWND init_instance(HWND parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
             {
-                RECT rect{ 0, 0, size.width, size.height };
+                RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
                 HWND items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
@@ -95,7 +95,7 @@ namespace trview
         }
         else if (message == WM_GETMINMAXINFO)
         {
-            RECT rect{ 0, 0, _ui->size().width, 400 };
+            RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), 400 };
             AdjustWindowRect(&rect, window_style, FALSE);
 
             MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
@@ -143,7 +143,7 @@ namespace trview
         _ui->set_size(Size(_expanded ? _right_panel->position().x + _right_panel->size().width : _left_panel->size().width, _ui->size().height));
 
         // Force resize the window.
-        RECT rect{ 0, 0, _ui->size().width, _ui->size().height };
+        RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), static_cast<LONG>(_ui->size().height) };
         AdjustWindowRect(&rect, window_style, FALSE);
         SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
     }
