@@ -142,10 +142,16 @@ namespace trview
             _settings.items_startup = value;
             save_user_settings(_settings);
         });
+        _token_store.add(_settings_window->on_triggers_startup += [&](bool value)
+        {
+            _settings.triggers_startup = value;
+            save_user_settings(_settings);
+        });
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
         _settings_window->set_items_startup(_settings.items_startup);
+        _settings_window->set_triggers_startup(_settings.triggers_startup);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.size());
