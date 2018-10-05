@@ -25,9 +25,9 @@ namespace trview
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
 
-            HWND init_instance(HWND parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, int nCmdShow)
+            HWND init_instance(HWND parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
             {
-                RECT rect{ 0, 0, 400, 400 };
+                RECT rect{ 0, 0, size.width, size.height };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
                 HWND items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
@@ -58,18 +58,18 @@ namespace trview
                 return RegisterClassExW(&wcex);
             }
 
-            HWND create_window(HWND parent, const std::wstring& window_class, const std::wstring& title)
+            HWND create_window(HWND parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
             {
                 HINSTANCE hInstance = GetModuleHandle(nullptr);
                 register_class(hInstance, window_class);
-                return init_instance(parent, hInstance, window_class, title, SW_NORMAL);
+                return init_instance(parent, hInstance, window_class, title, size, SW_NORMAL);
             }
         }
     }
 
 
-    CollapsiblePanel::CollapsiblePanel(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title)
-        : MessageHandler(create_window(parent, window_class, title)), _window_resizer(window()), _device_window(device.create_for_window(window())),
+    CollapsiblePanel::CollapsiblePanel(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
         _mouse(window()), _keyboard(window())
     {
@@ -140,7 +140,7 @@ namespace trview
     {
         _expanded = !_expanded;
         _expander->set_text(_expanded ? L"<<" : L">>");
-        _ui->set_size(Size(_expanded ? 400 : 200, _ui->size().height));
+        _ui->set_size(Size(_expanded ? _right_panel->position().x + _right_panel->size().width : _left_panel->size().width, _ui->size().height));
 
         // Force resize the window.
         RECT rect{ 0, 0, _ui->size().width, _ui->size().height };

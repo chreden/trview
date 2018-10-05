@@ -45,7 +45,8 @@ namespace trview
             const graphics::FontFactory& font_factory,
             HWND parent,
             const std::wstring& window_class,
-            const std::wstring& title);
+            const std::wstring& title,
+            const Size& size);
 
         virtual ~CollapsiblePanel() = default;
 

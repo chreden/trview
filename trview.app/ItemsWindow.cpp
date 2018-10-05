@@ -33,7 +33,7 @@ namespace trview
     }
 
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items")
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }

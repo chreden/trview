@@ -33,7 +33,7 @@ namespace trview
     using namespace graphics;
 
     TriggersWindow::TriggersWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers")
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(500, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -100,15 +100,16 @@ namespace trview
     std::unique_ptr<ui::Control> TriggersWindow::create_right_panel()
     {
         using namespace ui;
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details");
+        const float panel_width = 300;
+        auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details");
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 160), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 160), Colours::ItemDetails);
         stats_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"Name", 60 },
-                { Listbox::Column::Type::Number, L"Value", 120 },
+                { Listbox::Column::Type::Number, L"Name", 100 },
+                { Listbox::Column::Type::Number, L"Value", 180 },
             }
         );
         stats_list->set_show_headers(false);
@@ -116,21 +117,21 @@ namespace trview
         stats_list->set_show_highlight(false);
         _stats_list = group_box->add_child(std::move(stats_list));
 
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 8), Colours::ItemDetails));
         right_panel->add_child(std::move(group_box));
 
         // Spacer element.
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto command_group_box = std::make_unique<GroupBox>(Point(), Size(200, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands");
+        auto command_group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands");
 
-        auto command_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 160), Colours::Triggers);
+        auto command_list = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 160), Colours::Triggers);
         command_list->set_columns(
             {
-                { Listbox::Column::Type::String, L"Type", 60 },
+                { Listbox::Column::Type::String, L"Type", 110 },
                 { Listbox::Column::Type::String, L"Index", 35 },
-                { Listbox::Column::Type::String, L"Entity", 85 },
+                { Listbox::Column::Type::String, L"Entity", 125 },
             }
         );
         command_list->set_show_headers(true);
