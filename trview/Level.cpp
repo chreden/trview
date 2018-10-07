@@ -280,7 +280,7 @@ namespace trview
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
             auto room = _level->get_room(i);
-            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get()));
+            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get(), i));
         }
 
         // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
@@ -321,7 +321,7 @@ namespace trview
         {
             // Entity for rendering.
             auto level_entity = _level->get_entity(i);
-            auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get());
+            auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 
@@ -374,7 +374,7 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    Level::PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
         auto rooms = get_rooms_to_render(camera);
@@ -386,7 +386,8 @@ namespace trview
                 final_result.hit = true;
                 final_result.distance = result.distance;
                 final_result.position = result.position;
-                final_result.room = room.number;
+                final_result.index = result.index;
+                final_result.type = result.type;
             }
         }
         return final_result;

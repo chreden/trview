@@ -237,7 +237,14 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    select_room(_current_pick.room);
+                    if (_current_pick.type == PickResult::Type::Room)
+                    {
+                        select_room(_current_pick.index);
+                    }
+                    else if (_current_pick.type == PickResult::Type::Entity)
+                    {
+                        select_item(_level->items()[_current_pick.index]);
+                    }
                     set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
@@ -472,7 +479,7 @@ namespace trview
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text(std::to_wstring(result.room));
+            _picking->set_text((result.type == PickResult::Type::Room ? L"R" : L"I") + std::to_wstring(result.index));
         }
         _current_pick = result;
     }
@@ -583,6 +590,7 @@ namespace trview
             auto entity = _current_level->get_entity(item.number());
             _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
             _level->set_selected_item(item.number());
+            _items_windows->set_selected_item(item);
         }
     }
 

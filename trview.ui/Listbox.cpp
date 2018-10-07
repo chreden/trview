@@ -281,11 +281,14 @@ namespace trview
             _headers_element = add_child(std::move(headers_element));
         }
 
-        void Listbox::select_item(const Item& item)
+        void Listbox::select_item(const Item& item, bool raise_event)
         {
             _selected_item = item;
             scroll_to_show(item);
-            on_item_selected(_selected_item.value());
+            if (raise_event)
+            {
+                on_item_selected(_selected_item.value());
+            }
         }
 
         void Listbox::highlight_item()
@@ -333,6 +336,16 @@ namespace trview
             }
 
             scroll_to(index);
+        }
+
+        bool Listbox::set_selected_item(const Item& item)
+        {
+            if (std::find(_items.begin(), _items.end(), item) == _items.end())
+            {
+                return false;
+            }
+            select_item(item, false);
+            return true;
         }
     }
 }

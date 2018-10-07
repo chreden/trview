@@ -201,6 +201,7 @@
     <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
+    <ClInclude Include="PickResult.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="Room.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="TransparencyBuffer.h" />
     <ClInclude Include="TransparentTriangle.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UserSettings.h" />

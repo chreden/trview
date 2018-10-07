@@ -20,6 +20,7 @@
 #include "TransparencyBuffer.h"
 #include "Mesh.h"
 #include <trview\Sector.h>
+#include "PickResult.h"
 
 namespace trview
 {
@@ -50,18 +51,12 @@ namespace trview
             IsAlternate
         };
 
-        struct PickResult
-        {
-            bool                         hit{ false };
-            float                        distance;
-            DirectX::SimpleMath::Vector3 position;
-        };
-
         explicit Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
-            const IMeshStorage& mesh_storage);
+            const IMeshStorage& mesh_storage,
+            uint32_t index);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -141,14 +136,13 @@ namespace trview
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
+        uint32_t _index;
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         std::unique_ptr<Mesh>       _mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
-        // Triangle copy for ray intersection.
-        std::vector<Triangle> _collision_triangles;
         DirectX::BoundingBox  _bounding_box;
 
         std::vector<Entity*> _entities;

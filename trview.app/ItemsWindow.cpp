@@ -74,6 +74,14 @@ namespace trview
             register_items_class(hInstance);
             return init_items_instance(parent, hInstance, SW_NORMAL);
         }
+
+        ui::Listbox::Item create_listbox_item(const Item& item)
+        {
+            return {{{ L"#", std::to_wstring(item.number()) },
+                     { L"ID", std::to_wstring(item.type_id()) },
+                     { L"Room", std::to_wstring(item.room()) },
+                     { L"Type", item.type() }}};
+        }
     }
 
     ItemsWindow::ItemsWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
@@ -153,16 +161,7 @@ namespace trview
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        for (const auto& item : items)
-        {
-            list_items.push_back({
-                {
-                    { L"#", std::to_wstring(item.number()) },
-                    { L"ID", std::to_wstring(item.type_id()) },
-                    { L"Room", std::to_wstring(item.room()) },
-                    { L"Type", item.type() }
-                } });
-        }
+        std::transform(items.begin(), items.end(), std::back_inserter(list_items), create_listbox_item);
         _items_list->set_items(list_items);
     }
 
@@ -211,8 +210,16 @@ namespace trview
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
+        // Spacing between checkboxes.
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+
+        auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
+        sync_item->set_state(_sync_item);
+        _token_store.add(sync_item->on_state_changed += [this](bool value) { set_sync_item(value); });
+        controls->add_child(std::move(sync_item));
+
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(90, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Point(), Size(15, 20), Colours::LeftPanel));
 
         auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
         _token_store.add(expander->on_click += [this]()
@@ -236,7 +243,10 @@ namespace trview
         {
             auto index = std::stoi(item.value(L"#"));
             load_item_details(_all_items[index]);
-            on_item_selected(_all_items[index]);
+            if (_sync_item)
+            {
+                on_item_selected(_all_items[index]);
+            }
         });
 
         _items_list = items_list.get();
@@ -385,6 +395,18 @@ namespace trview
         }
     }
 
+    void ItemsWindow::set_sync_item(bool value)
+    {
+        if (_sync_item != value)
+        {
+            _sync_item = value;
+            if (_selected_item.has_value())
+            {
+                set_selected_item(_selected_item.value());
+            }
+        }
+    }
+
     void ItemsWindow::toggle_expand()
     {
         _expanded = !_expanded;
@@ -395,5 +417,22 @@ namespace trview
         RECT rect{ 0, 0, _ui->size().width, _ui->size().height };
         AdjustWindowRect(&rect, window_style, FALSE);
         SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
+    }
+
+    void ItemsWindow::set_selected_item(const Item& item)
+    {
+        _selected_item = item;
+        if (_sync_item)
+        {
+            const auto& list_item = create_listbox_item(item);
+            if (_items_list->set_selected_item(list_item))
+            {
+                load_item_details(item);
+            }
+            else
+            {
+                _selected_item.reset();
+            }
+        }
     }
 }

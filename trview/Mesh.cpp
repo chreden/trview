@@ -2,6 +2,7 @@
 #include "Mesh.h"
 
 #include <array>
+#include <DirectXCollision.h>
 
 #include "ILevelTextureStorage.h"
 
@@ -25,8 +26,9 @@ namespace trview
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
-        const std::vector<TransparentTriangle>& transparent_triangles)
-        : _transparent_triangles(transparent_triangles)
+        const std::vector<TransparentTriangle>& transparent_triangles,
+        const std::vector<Triangle>& collision_triangles)
+        : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
     {
         if (!vertices.empty())
         {
@@ -94,6 +96,19 @@ namespace trview
 
             device->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
         }
+
+        // Generate the bounding box for use in picking.
+        Vector3 minimum(FLT_MAX, FLT_MAX, FLT_MAX);
+        Vector3 maximum(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        for (const auto& v : vertices)
+        {
+            minimum = Vector3::Min(minimum, v.pos);
+            maximum = Vector3::Max(maximum, v.pos);
+        }
+
+        const Vector3 half_size = (maximum - minimum) * 0.5f;
+        _bounding_box.Extents = half_size;
+        _bounding_box.Center = minimum + half_size;
     }
 
     void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour)
@@ -150,22 +165,51 @@ namespace trview
         return _transparent_triangles;
     }
 
-    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage)
+    const DirectX::BoundingBox& Mesh::bounding_box() const
+    {
+        return _bounding_box;
+    }
+
+    PickResult Mesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        using namespace DirectX::TriangleTests;
+
+        PickResult result;
+        result.type = PickResult::Type::Mesh;
+        for (const auto& tri : _collision_triangles)
+        {
+            float distance = 0;
+            if (direction.Dot(tri.normal) < 0 &&
+                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance))
+            {
+                result.hit = true;
+                result.distance = std::min(distance, result.distance);
+            }
+        }
+
+        // Calculate the world space hit position, if there was a hit.
+        if (result.hit)
+        {
+            result.position = position + direction * result.distance;
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
         std::vector<uint32_t> untextured_indices;
         std::vector<TransparentTriangle> transparent_triangles;
-
-        // Collision triangles are currently discarded for non-room geometry, though this may be changed when item picking is implemented.
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
-        process_textured_triangles(mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles);
+        process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_triangles(mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles);
+        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
     void process_textured_rectangles(
@@ -175,7 +219,8 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        bool transparent_collision)
     {
         using namespace trlevel;
 
@@ -202,10 +247,22 @@ namespace trview
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
                 transparent_triangles.emplace_back(verts[2], verts[3], verts[0], uvs[2], uvs[3], uvs[0], texture_storage.tile(texture), transparency_mode);
+                if (transparent_collision)
+                {
+                    collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                    collision_triangles.emplace_back(verts[2], verts[3], verts[0]);
+                }
+            
                 if (double_sided)
                 {
+                    
                     transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
                     transparent_triangles.emplace_back(verts[0], verts[3], verts[2], uvs[0], uvs[3], uvs[2], texture_storage.tile(texture), transparency_mode);
+                    if (transparent_collision)
+                    {
+                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                        collision_triangles.emplace_back(verts[0], verts[3], verts[2]);
+                    }
                 }
                 continue;
             }
@@ -251,7 +308,8 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<std::vector<uint32_t>>& output_indices,
         std::vector<TransparentTriangle>& transparent_triangles,
-        std::vector<Triangle>& collision_triangles)
+        std::vector<Triangle>& collision_triangles,
+        bool transparent_collision)
     {
         for (const auto& tri : triangles)
         {
@@ -275,9 +333,17 @@ namespace trview
             if (determine_transparency(texture_storage.attribute(texture), tri.effects, transparency_mode))
             {
                 transparent_triangles.emplace_back(verts[0], verts[1], verts[2], uvs[0], uvs[1], uvs[2], texture_storage.tile(texture), transparency_mode);
+                if (transparent_collision)
+                {
+                    collision_triangles.emplace_back(verts[0], verts[1], verts[2]);
+                }
                 if (double_sided)
                 {
                     transparent_triangles.emplace_back(verts[2], verts[1], verts[0], uvs[2], uvs[1], uvs[0], texture_storage.tile(texture), transparency_mode);
+                    if (transparent_collision)
+                    {
+                        collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
+                    }
                 }
                 continue;
             }

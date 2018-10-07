@@ -80,4 +80,12 @@ namespace trview
             window->set_current_room(room);
         }
     }
+
+    void ItemsWindowManager::set_selected_item(const Item& item)
+    {
+        for (auto& window : _windows)
+        {
+            window->set_selected_item(item);
+        }
+    }
 }
