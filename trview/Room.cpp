@@ -233,38 +233,52 @@ namespace trview
             using namespace DirectX::SimpleMath;
             const auto pick = this->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
             const float height = 0.25f;
-            const float y = (pick.hit ? pick.position.y : centre().y);
-            const float y_top = y + height;
-            const float y_bottom = y;
+            // const float y = (pick.hit ? pick.position.y : centre().y);
+            
+            float y_bottom[4] = 
+            {
+                this->pick(Vector3(x - 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false).position.y,
+                this->pick(Vector3(x - 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false).position.y,
+                this->pick(Vector3(x + 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false).position.y,
+                this->pick(Vector3(x + 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false).position.y
+            };
+
+            float y_top[4] = 
+            {
+                y_bottom[0] + height,
+                y_bottom[1] + height,
+                y_bottom[2] + height,
+                y_bottom[3] + height
+            };
 
             // + Y
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top, z + 0.5f), Vector3(x + 0.5f, y_top, z - 0.5f), Vector3(x - 0.5f, y_top, z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top, z - 0.5f), Vector3(x - 0.5f, y_top, z + 0.5f), Vector3(x + 0.5f, y_top, z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
             // + X
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top, z - 0.5f), Vector3(x + 0.5f, y_top, z + 0.5f), Vector3(x + 0.5f, y_bottom, z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top, z - 0.5f), Vector3(x + 0.5f, y_bottom, z + 0.5f), Vector3(x + 0.5f, y_bottom, z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
             // - X
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top, z + 0.5f), Vector3(x - 0.5f, y_top, z - 0.5f), Vector3(x - 0.5f, y_bottom, z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top, z + 0.5f), Vector3(x - 0.5f, y_bottom, z - 0.5f), Vector3(x - 0.5f, y_bottom, z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
             // + Z
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top, z + 0.5f), Vector3(x - 0.5f, y_top, z + 0.5f), Vector3(x - 0.5f, y_bottom, z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top, z + 0.5f), Vector3(x - 0.5f, y_bottom, z + 0.5f), Vector3(x + 0.5f, y_bottom, z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
             // - Z
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top, z - 0.5f), Vector3(x + 0.5f, y_top, z - 0.5f), Vector3(x + 0.5f, y_bottom, z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top, z - 0.5f), Vector3(x + 0.5f, y_bottom, z - 0.5f), Vector3(x - 0.5f, y_bottom, z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                 .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
         }
 
