@@ -20,7 +20,7 @@ namespace trview
                 const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
             }
 
-            LRESULT CALLBACK items_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+            LRESULT CALLBACK panel_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
@@ -44,7 +44,7 @@ namespace trview
                 WNDCLASSEXW wcex;
                 wcex.cbSize = sizeof(WNDCLASSEX);
                 wcex.style = CS_HREDRAW | CS_VREDRAW;
-                wcex.lpfnWndProc = items_window_procedure;
+                wcex.lpfnWndProc = panel_window_procedure;
                 wcex.cbClsExtra = 0;
                 wcex.cbWndExtra = 0;
                 wcex.hInstance = hInstance;

@@ -1,3 +1,5 @@
+/// @file A window with two panels where the right panel can be collapsed.
+
 #pragma once
 
 #include <memory>
@@ -32,6 +34,7 @@ namespace trview
         }
     }
 
+    /// A window with two panels where the right panel can be collapsed.
     class CollapsiblePanel : public MessageHandler
     {
     public:
@@ -62,7 +65,7 @@ namespace trview
         /// @param vsync Whether to use vsync or not.
         void render(const graphics::Device& device, bool vsync);
 
-        /// Event raised when the items window is closed.
+        /// Event raised when the window is closed.
         Event<> on_window_closed;
     protected:
         virtual void update_layout();
