@@ -84,6 +84,10 @@ namespace trview
         // Entity: The entity to add.
         void add_entity(Entity* entity);
 
+        /// Add the specified trigger to the room.
+        /// @paramt trigger The trigger to add.
+        void add_trigger(const Trigger& trigger);
+
         // Returns all sectors 
         const inline std::map<int, std::shared_ptr<Sector>>& sectors() const { return _sectors; }
 
@@ -155,5 +159,7 @@ namespace trview
 
         int16_t              _alternate_room;
         AlternateMode        _alternate_mode;
+
+        std::vector<Trigger> _triggers;
     };
 }

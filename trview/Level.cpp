@@ -309,6 +309,7 @@ namespace trview
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
                     _triggers.emplace_back(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger());
+                    room->add_trigger(_triggers.back());
                 }
             }
         }

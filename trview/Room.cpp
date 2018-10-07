@@ -187,6 +187,11 @@ namespace trview
         _entities.push_back(entity);
     }
 
+    void Room::add_trigger(const Trigger& trigger)
+    {
+        _triggers.push_back(trigger);
+    }
+
     void 
     Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
