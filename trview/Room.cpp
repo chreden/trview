@@ -214,6 +214,10 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
+        // Add trigger cubes.
+        TransparentTriangle triangle(Vector3(2, 1, 2), Vector3(2, 1, 1), Vector3(1, 1, 1), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal);
+        transparency.add(triangle.transform(_room_offset, Color(1, 0, 1, 0.5f)));
+
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
