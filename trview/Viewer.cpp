@@ -621,7 +621,7 @@ namespace trview
             const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger.z()) + 0.5f;
 
             using namespace DirectX::SimpleMath;
-            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0));
+            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
             const float y = pick.hit ? pick.position.y : room->centre().y;
 
             _target = DirectX::SimpleMath::Vector3(x, y, z);
