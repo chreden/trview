@@ -195,14 +195,13 @@ namespace trview
         {
             if (_focus_control && _focus_control != this)
             {
-                const auto control_space_position = position - _focus_control->absolute_position();
-                bool focus_handled = _focus_control->mouse_up(control_space_position);
-                if (focus_handled && in_bounds(control_space_position, _focus_control->size()))
+                const auto focus = _focus_control;
+                const auto control_space_position = position - focus->absolute_position();
+                bool focus_handled = focus->mouse_up(control_space_position);
+                if (focus_handled && in_bounds(control_space_position, focus->size()))
                 {
-                    _focus_control->clicked(control_space_position);
+                    focus->clicked(control_space_position);
                 }
-
-                set_focus_control(nullptr);
 
                 if (focus_handled)
                 {

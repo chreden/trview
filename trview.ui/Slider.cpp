@@ -44,6 +44,7 @@ namespace trview
 
         bool Slider::mouse_up(const Point&)
         {
+            set_focus_control(nullptr);
             return true;
         }
 

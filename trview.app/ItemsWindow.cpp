@@ -190,7 +190,7 @@ namespace trview
         );
         trigger_list->set_show_headers(true);
         trigger_list->set_show_scrollbar(true);
-        trigger_list->set_show_highlight(false);
+        trigger_list->set_show_highlight(true);
 
         _token_store.add(trigger_list->on_item_selected += [&](const auto& item)
         {
