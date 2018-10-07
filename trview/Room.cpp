@@ -222,77 +222,92 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
-        // Add trigger cubes.
-        for (const auto& trigger : _triggers)
+        if (!_trigger_geometry.has_value())
         {
-            // Calculate the X/Z position - the Y must be determined by casting a ray from above 
-            // directly down, to see what it hits. If it hits nothing, use the centre of the room.
-            const float x = _info.x / 1024.0f + trigger.x() + 0.5f;
-            const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger.z()) + 0.5f;
+            std::vector<TransparentTriangle> trigger_geometry;
 
-            using namespace DirectX::SimpleMath;
-            const auto pick = this->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
-            const float height = 0.25f;
-            // const float y = (pick.hit ? pick.position.y : centre().y);
-
-            const std::array<PickResult, 4> picks =
+            // Add trigger cubes.
+            for (const auto& trigger : _triggers)
             {
-                this->pick(Vector3(x - 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
-                this->pick(Vector3(x - 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false),
-                this->pick(Vector3(x + 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
-                this->pick(Vector3(x + 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false)
-            };
+                // Calculate the X/Z position - the Y must be determined by casting a ray from above 
+                // directly down, to see what it hits. If it hits nothing, use the centre of the room.
+                const float x = _info.x / 1024.0f + trigger.x() + 0.5f;
+                const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger.z()) + 0.5f;
 
-            auto first_y_iter = std::find_if(picks.begin(), picks.end(), [](const auto& pr) { return pr.hit; });
-            float first_y = first_y_iter == picks.end() ? centre().y : first_y_iter->position.y;
+                using namespace DirectX::SimpleMath;
+                const auto pick = this->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
+                const float height = 0.25f;
+                // const float y = (pick.hit ? pick.position.y : centre().y);
 
-            std::array<float, 4> y_bottom = 
-            {
-                picks[0].hit ? picks[0].position.y : first_y,
-                picks[1].hit ? picks[1].position.y : first_y,
-                picks[2].hit ? picks[2].position.y : first_y,
-                picks[3].hit ? picks[3].position.y : first_y
-            };
+                const std::array<PickResult, 4> picks =
+                {
+                    this->pick(Vector3(x - 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
+                    this->pick(Vector3(x - 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false),
+                    this->pick(Vector3(x + 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
+                    this->pick(Vector3(x + 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false)
+                };
 
-            std::array<float, 4> y_top = 
-            {
-                y_bottom[0] + height,
-                y_bottom[1] + height,
-                y_bottom[2] + height,
-                y_bottom[3] + height
-            };
+                auto first_y_iter = std::find_if(picks.begin(), picks.end(), [](const auto& pr) { return pr.hit; });
+                float first_y = first_y_iter == picks.end() ? centre().y : first_y_iter->position.y;
 
-            // + Y
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                std::array<float, 4> y_bottom =
+                {
+                    picks[0].hit ? picks[0].position.y : first_y,
+                    picks[1].hit ? picks[1].position.y : first_y,
+                    picks[2].hit ? picks[2].position.y : first_y,
+                    picks[3].hit ? picks[3].position.y : first_y
+                };
 
-            // + X
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                std::array<float, 4> y_top =
+                {
+                    y_bottom[0] + height,
+                    y_bottom[1] + height,
+                    y_bottom[2] + height,
+                    y_bottom[3] + height
+                };
 
-            // - X
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                // + Y
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
-            // + Z
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                // + X
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
-            // - Z
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            transparency.add(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                // - X
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+
+                // + Z
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+
+                // - Z
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            }
+
+            _trigger_geometry = trigger_geometry;
         }
 
+        if (_trigger_geometry.has_value())
+        {
+            for (const auto& triangle : _trigger_geometry.value())
+            {
+                transparency.add(triangle);
+            }
+        }
+        
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <set>
 #include <memory>
+#include <optional>
 
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -161,5 +162,6 @@ namespace trview
         AlternateMode        _alternate_mode;
 
         std::vector<Trigger> _triggers;
+        std::optional<std::vector<TransparentTriangle>> _trigger_geometry;
     };
 }
