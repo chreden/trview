@@ -234,16 +234,27 @@ namespace trview
             const auto pick = this->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
             const float height = 0.25f;
             // const float y = (pick.hit ? pick.position.y : centre().y);
-            
-            float y_bottom[4] = 
+
+            const std::array<PickResult, 4> picks =
             {
-                this->pick(Vector3(x - 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false).position.y,
-                this->pick(Vector3(x - 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false).position.y,
-                this->pick(Vector3(x + 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false).position.y,
-                this->pick(Vector3(x + 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false).position.y
+                this->pick(Vector3(x - 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
+                this->pick(Vector3(x - 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false),
+                this->pick(Vector3(x + 0.49f, 500.0f, z - 0.49f), Vector3(0, -1, 0), false),
+                this->pick(Vector3(x + 0.49f, 500.0f, z + 0.49f), Vector3(0, -1, 0), false)
             };
 
-            float y_top[4] = 
+            auto first_y_iter = std::find_if(picks.begin(), picks.end(), [](const auto& pr) { return pr.hit; });
+            float first_y = first_y_iter == picks.end() ? centre().y : first_y_iter->position.y;
+
+            std::array<float, 4> y_bottom = 
+            {
+                picks[0].hit ? picks[0].position.y : first_y,
+                picks[1].hit ? picks[1].position.y : first_y,
+                picks[2].hit ? picks[2].position.y : first_y,
+                picks[3].hit ? picks[3].position.y : first_y
+            };
+
+            std::array<float, 4> y_top = 
             {
                 y_bottom[0] + height,
                 y_bottom[1] + height,
