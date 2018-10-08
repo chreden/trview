@@ -43,6 +43,10 @@ namespace trview
         items_window->set_items(_items);
         items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
+        if (_selected_item.has_value())
+        {
+            items_window->set_selected_item(_selected_item.value());
+        }
 
         const auto window = items_window.get();
         _token_store.add(items_window->on_window_closed += [window, this]()
@@ -83,6 +87,7 @@ namespace trview
 
     void ItemsWindowManager::set_selected_item(const Item& item)
     {
+        _selected_item = item;
         for (auto& window : _windows)
         {
             window->set_selected_item(item);

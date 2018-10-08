@@ -37,20 +37,24 @@ namespace trview
 
     void TriggersWindowManager::create_window()
     {
-        auto items_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
-        items_window->on_item_selected += on_item_selected;
-        items_window->on_trigger_selected += on_trigger_selected;
-        // items_window->set_items(_items);
-        items_window->set_triggers(_triggers);
-        items_window->set_current_room(_current_room);
+        auto triggers_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
+        triggers_window->on_item_selected += on_item_selected;
+        triggers_window->on_trigger_selected += on_trigger_selected;
+        triggers_window->set_items(_items);
+        triggers_window->set_triggers(_triggers);
+        triggers_window->set_current_room(_current_room);
+        if (_selected_trigger.has_value())
+        {
+            triggers_window->set_selected_trigger(_selected_trigger.value());
+        }
 
-        const auto window = items_window.get();
-        _token_store.add(items_window->on_window_closed += [window, this]()
+        const auto window = triggers_window.get();
+        _token_store.add(triggers_window->on_window_closed += [window, this]()
         {
             _closing_windows.push_back(window);
         });
 
-        _windows.push_back(std::move(items_window));
+        _windows.push_back(std::move(triggers_window));
     }
 
     void TriggersWindowManager::set_items(const std::vector<Item>& items)
@@ -83,6 +87,7 @@ namespace trview
 
     void TriggersWindowManager::set_selected_trigger(const Trigger& trigger)
     {
+        _selected_trigger = trigger;
         for (auto& window : _windows)
         {
             window->set_selected_trigger(trigger);

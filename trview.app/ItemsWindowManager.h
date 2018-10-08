@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <memory>
+#include <optional>
 
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
@@ -75,6 +76,7 @@ namespace trview
         graphics::FontFactory& _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
+        std::optional<Item> _selected_item;
     };
 }
 
