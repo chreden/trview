@@ -183,14 +183,12 @@ namespace trview
 
     std::array<float, 4> Sector::corners() const
     {
-        float abs_height = _sector.floor * -0.25f;
-        std::array<float, 4> result
-        {
-            abs_height,abs_height,abs_height,abs_height
-        };
+        // Start off the heights at the height of the floor.
+        std::array<float, 4> result;
+        result.fill(_sector.floor * -0.25f);
 
-        int8_t x_slope = _floor_slant & 0x00ff;
-        int8_t z_slope = _floor_slant >> 8;
+        const int8_t x_slope = _floor_slant & 0x00ff;
+        const int8_t z_slope = _floor_slant >> 8;
 
         if (x_slope > 0)
         {
@@ -213,14 +211,6 @@ namespace trview
             result[1] += z_slope * 0.25f;
             result[3] += z_slope * 0.25f;
         }
-
-        // The next FloorData entry contains two uint8_t slant values for the floor of this sector.
-        // Slant values are specified in increments of 256 units(so - called clicks in TRLE terms).
-        // The high byte is the Z slope, while the low byte is the X slope.If the X slope is greater than zero, 
-        // then its value is added to the floor heights of corners 00 and 01. If it is less than zero, then its 
-        // value is subtracted from the floor heights of corners 10 and 11. If the Z slope is greater than zero, 
-        // then its value is added to the floor heights of corners 00 and 10. If it is less than zero, then its 
-        // value is subtracted from the floor heights of corners 01 and 11.
 
         return result;
     }
