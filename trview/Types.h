@@ -36,12 +36,6 @@ namespace trview
         Left = 0x8
     };
 
-    enum class TriggerCommandType
-    {
-        Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
-        EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies
-    };
-
     struct TriggerInfo
     {
         std::uint8_t timer, oneshot, mask;

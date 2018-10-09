@@ -30,6 +30,7 @@ namespace trview
 
         bool Scrollbar::mouse_up(const Point&)
         {
+            set_focus_control(nullptr);
             return true;
         }
 

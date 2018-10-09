@@ -52,7 +52,8 @@ BEGIN
     END
     POPUP "Windows"
     BEGIN
-        MENUITEM "Items",                       ID_WINDOWS_ITEMS
+        MENUITEM "&Items\tCtrl+I",              ID_WINDOWS_ITEMS
+        MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
     END
     POPUP "&Help"
     BEGIN
@@ -70,10 +71,11 @@ END
 
 IDC_TRVIEW ACCELERATORS
 BEGIN
-    "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
-    "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
-    "^O",           ID_ACCEL_FILE_OPEN,     ASCII,  NOINVERT
-    "^I",           ID_ACCEL_ITEM_WINDOW,   ASCII,  NOINVERT
+    "/",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
+    "?",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
+    "^O",           ID_ACCEL_FILE_OPEN,       ASCII,  NOINVERT
+    "^I",           ID_ACCEL_ITEM_WINDOW,     ASCII,  NOINVERT
+    "^T",           ID_ACCEL_TRIGGERS_WINDOW, ASCII,  NOINVERT 
 END
 
 

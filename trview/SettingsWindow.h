@@ -35,6 +35,9 @@ namespace trview
         /// Event raised when the 'items window at startup' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_items_startup;
 
+        /// Event raised when the 'triggers window at startup' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_triggers_startup;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -51,6 +54,10 @@ namespace trview
         /// @param value The new 'items window at startup' setting.
         void set_items_startup(bool value);
 
+        /// Set the new value of the 'triggers window at startup' setting. This will not raise the on_triggers_startup event.
+        /// @param value The new 'triggers window at startup' setting.
+        void set_triggers_startup(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
@@ -58,6 +65,7 @@ namespace trview
         ui::Checkbox* _go_to_lara;
         ui::Checkbox* _invert_map_controls;
         ui::Checkbox* _items_startup;
+        ui::Checkbox* _triggers_startup;
         ui::Control* _window;
         TokenStore _token_store;
     };

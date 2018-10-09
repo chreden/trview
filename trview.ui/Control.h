@@ -235,6 +235,10 @@ namespace trview
             /// @param key The key that was pressed.
             bool inner_process_key_down(uint16_t key);
 
+            /// Process a mouse scroll and recurse to child controls.
+            /// @param delta The mouse scroll delta.
+            bool inner_process_mouse_scroll(const Point& position, int delta);
+
             /// Get the control at the specified mouse position.
             Control* hover_control_at_position(const Point& position);
 

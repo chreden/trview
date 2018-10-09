@@ -47,6 +47,10 @@ namespace trview
         items_startup->on_state_changed += on_items_startup;
         _items_startup = panel->add_child(std::move(items_startup));
 
+        auto triggers_startup = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Open Triggers Window at startup");
+        triggers_startup->on_state_changed += on_triggers_startup;
+        _triggers_startup = panel->add_child(std::move(triggers_startup));
+
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
         _token_store.add(ok->on_click += [&]() { _window->set_visible(!_window->visible()); });
@@ -86,6 +90,11 @@ namespace trview
     void SettingsWindow::set_items_startup(bool value)
     {
         _items_startup->set_state(value);
+    }
+
+    void SettingsWindow::set_triggers_startup(bool value)
+    {
+        _triggers_startup->set_state(value);
     }
 
     void SettingsWindow::toggle_visibility()
