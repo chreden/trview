@@ -229,6 +229,10 @@ namespace trview
             // Add trigger cubes.
             for (const auto& trigger : _triggers)
             {
+                // Information about sector height.
+                auto sector = _sectors[trigger.sector_id()];
+                auto y_bottom = sector->corners();
+
                 // Figure out if we should make the walls based on adjacent triggers.
                 // Remove this double loop at some point.
                 bool pos_x = true;
@@ -238,22 +242,39 @@ namespace trview
 
                 for (const auto& other : _triggers)
                 {
-                    if (other.x() == trigger.x() + 1)
+                    auto other_sector = _sectors[other.sector_id()];
+                    auto other_bottom = other_sector->corners();
+
+                    if (other.z() == trigger.z())
                     {
-                        pos_x = false;
-                    }
-                    else if (static_cast<int32_t>(trigger.x() - 1 == other.x()))
-                    {
-                        neg_x = false;
+                        if (other.x() == trigger.x() + 1 &&
+                            y_bottom[1] == other_bottom[3] &&
+                            y_bottom[0] == other_bottom[2])
+                        {
+                            pos_x = false;
+                        }
+                        else if (static_cast<int32_t>(trigger.x()) - 1 == other.x() &&
+                             y_bottom[3] == other_bottom[1] &&
+                             y_bottom[2] == other_bottom[0])
+                        {
+                            neg_x = false;
+                        }
                     }
 
-                    if (other.z() == trigger.z() + 1)
+                    if (other.x() == trigger.x())
                     {
-                        neg_z = false;
-                    }
-                    else if (static_cast<int32_t>(trigger.z() - 1 == other.z()))
-                    {
-                        pos_z = false;
+                        if (other.z() == trigger.z() + 1 &&
+                            y_bottom[2] == other_bottom[3] &&
+                            y_bottom[0] == other_bottom[1])
+                        {
+                            neg_z = false;
+                        }
+                        else if (static_cast<int32_t>(trigger.z()) - 1 == other.z() &&
+                             y_bottom[3] == other_bottom[2] &&
+                             y_bottom[1] == other_bottom[0])
+                        {
+                            pos_z = false;
+                        }
                     }
                 }
 
@@ -263,15 +284,9 @@ namespace trview
                 const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger.z()) + 0.5f;
                 const float height = 0.25f;
 
-                auto sector = _sectors[trigger.sector_id()];
-                auto corners = sector->corners();
-
                 std::array<float, 4> y_top = { 0,0,0,0 };
-                std::array<float, 4> y_bottom = { 0,0,0,0 };
-
                 for (int i = 0; i < 4; ++i)
                 {
-                    y_bottom[i] = corners[i];
                     y_top[i] = y_bottom[i] + height;
                 }
 
