@@ -40,6 +40,7 @@ namespace trview
     {
         std::uint8_t timer, oneshot, mask;
         TriggerType type; 
+        uint16_t sector_id;
         std::vector<std::pair<TriggerCommandType, std::uint16_t>> commands;
     };
     

@@ -46,6 +46,7 @@ namespace trview
         bool        only_once() const;
         uint16_t    flags() const;
         uint8_t     timer() const;
+        uint16_t    sector_id() const;
         const std::vector<Command>& commands() const;
     private:
         std::vector<uint16_t> _objects;
@@ -58,6 +59,7 @@ namespace trview
         bool _only_once;
         uint16_t _flags;
         uint8_t _timer;
+        uint16_t _sector_id;
     };
 
     /// Get the string representation of the trigger type specified.

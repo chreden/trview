@@ -92,6 +92,7 @@ namespace trview
                 _trigger.timer = setup & 0xFF;
                 _trigger.oneshot = (setup & 0x100) >> 8; 
                 _trigger.mask = (setup & 0x3E00) >> 9; 
+                _trigger.sector_id = _sector_id;
 
                 // Type of the trigger, e.g. Pad, Switch, etc.
                 _trigger.type = (TriggerType) subfunction;
@@ -182,20 +183,35 @@ namespace trview
 
     std::array<float, 4> Sector::corners() const
     {
-        std::array<float, 4> result{ 0,0,0,0 };
+        float abs_height = _sector.floor * -0.25f;
+        std::array<float, 4> result
+        {
+            abs_height,abs_height,abs_height,abs_height
+        };
 
         int8_t x_slope = _floor_slant & 0x00ff;
         int8_t z_slope = _floor_slant >> 8;
 
         if (x_slope > 0)
         {
-            result[0] += x_slope * 0.25f;
-            result[1] += x_slope * 0.25f;
+            result[0] -= x_slope * 0.25f;
+            result[1] -= x_slope * 0.25f;
         }
         else if (x_slope < 0)
         {
-            result[2] -= x_slope * 0.25f;
-            result[3] -= x_slope * 0.25f;
+            result[2] += x_slope * 0.25f;
+            result[3] += x_slope * 0.25f;
+        }
+
+        if (z_slope > 0)
+        {
+            result[0] -= z_slope * 0.25f;
+            result[2] -= z_slope * 0.25f;
+        }
+        else if(z_slope < 0)
+        {
+            result[1] += z_slope * 0.25f;
+            result[3] += z_slope * 0.25f;
         }
 
         // The next FloorData entry contains two uint8_t slant values for the floor of this sector.

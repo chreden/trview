@@ -261,42 +261,19 @@ namespace trview
                 // directly down, to see what it hits. If it hits nothing, use the centre of the room.
                 const float x = _info.x / 1024.0f + trigger.x() + 0.5f;
                 const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger.z()) + 0.5f;
-
-                using namespace DirectX::SimpleMath;
-                const auto pick = this->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
                 const float height = 0.25f;
 
-                const std::array<PickResult, 4> picks =
+                auto sector = _sectors[trigger.sector_id()];
+                auto corners = sector->corners();
+
+                std::array<float, 4> y_top = { 0,0,0,0 };
+                std::array<float, 4> y_bottom = { 0,0,0,0 };
+
+                for (int i = 0; i < 4; ++i)
                 {
-                    this->pick(Vector3(x - 0.499f, 500.0f, z - 0.499f), Vector3(0, -1, 0), false),
-                    this->pick(Vector3(x - 0.499f, 500.0f, z + 0.499f), Vector3(0, -1, 0), false),
-                    this->pick(Vector3(x + 0.499f, 500.0f, z - 0.499f), Vector3(0, -1, 0), false),
-                    this->pick(Vector3(x + 0.499f, 500.0f, z + 0.499f), Vector3(0, -1, 0), false)
-                };
-
-                auto first_y_iter = std::find_if(picks.begin(), picks.end(), [](const auto& pr) { return pr.hit; });
-                float first_y = first_y_iter == picks.end() ? centre().y : first_y_iter->position.y;
-
-                std::array<float, 4> y_bottom =
-                {
-                    picks[0].hit ? picks[0].position.y : first_y,
-                    picks[1].hit ? picks[1].position.y : first_y,
-                    picks[2].hit ? picks[2].position.y : first_y,
-                    picks[3].hit ? picks[3].position.y : first_y
-                };
-
-                std::array<float, 4> y_top =
-                {
-                    y_bottom[0] + height,
-                    y_bottom[1] + height,
-                    y_bottom[2] + height,
-                    y_bottom[3] + height
-                };
-
-                // Find the corners from the sector...
-                auto sector_id = trigger.x() * num_z_sectors() + trigger.z();
-                auto sector = _sectors[sector_id];
-                sector->corners();
+                    y_bottom[i] = corners[i];
+                    y_top[i] = y_bottom[i] + height;
+                }
 
                 // + Y
                 trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
