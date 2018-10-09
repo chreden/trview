@@ -5,6 +5,7 @@
 #include <utility>
 #include <map>
 #include <set>
+#include <array>
 
 #include "trlevel/trtypes.h"
 #include "trlevel/ILevel.h"
@@ -43,6 +44,8 @@ namespace trview
         uint16_t x() const;
 
         uint16_t z() const;
+
+        std::array<float, 4> corners() const;
     private:
         bool parse(); 
 

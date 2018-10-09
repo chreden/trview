@@ -293,6 +293,11 @@ namespace trview
                     y_bottom[3] + height
                 };
 
+                // Find the corners from the sector...
+                auto sector_id = trigger.x() * num_z_sectors() + trigger.z();
+                auto sector = _sectors[sector_id];
+                sector->corners();
+
                 // + Y
                 trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
                     .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
