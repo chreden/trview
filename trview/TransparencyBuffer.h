@@ -5,7 +5,7 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include "MeshVertex.h"
-#include "TransparentTriangle.h"
+#include <trview.app/TransparentTriangle.h>
 
 namespace trview
 {

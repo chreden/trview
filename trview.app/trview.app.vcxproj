@@ -25,6 +25,7 @@
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="ItemsWindowManager.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="TriggersWindowManager.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="ItemsWindowManager.h" />
     <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />

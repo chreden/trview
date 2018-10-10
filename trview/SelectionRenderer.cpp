@@ -5,6 +5,7 @@
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <SimpleMath.h>
+#include <trview.app/Trigger.h>
 
 #include "Entity.h"
 #include "TransparencyBuffer.h"
@@ -96,6 +97,26 @@ namespace trview
 
     void SelectionRenderer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Entity& selected_item)
     {
+        render(context, camera, texture_storage,
+            [&](auto& context, auto& camera, auto& texture_storage, auto& color) { selected_item.render(context, camera, texture_storage, color); },
+            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); });
+    }
+
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Trigger& selected_trigger)
+    {
+        render(context, camera, texture_storage,
+            [&](auto&, auto&, auto&, auto&) {},
+            [&](auto& camera, auto& transparency, auto& color) 
+        {
+            for (auto& triangle : selected_trigger.triangles())
+            {
+                transparency.add(triangle.transform(Matrix::Identity, color));
+            }
+        });
+    }
+
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback)
+    {
         ComPtr<ID3D11Device> device;
         context->GetDevice(&device);
 
@@ -119,11 +140,11 @@ namespace trview
             _texture->apply(context);
 
             // Draw the regular faces of the item with a black colouring.
-            selected_item.render(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            solid_callback(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
-            selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
+            transparent_callback(camera, *_transparency, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.position());
             _transparency->render(context, camera, texture_storage, true);
         }

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TransparentTriangle.h"
 
 namespace trview

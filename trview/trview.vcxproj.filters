@@ -121,9 +121,6 @@
     <ClInclude Include="TransparencyBuffer.h">
       <Filter>View</Filter>
     </ClInclude>
-    <ClInclude Include="TransparentTriangle.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="DirectoryListing.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
@@ -238,9 +235,6 @@
       <Filter>View\Entity</Filter>
     </ClCompile>
     <ClCompile Include="TransparencyBuffer.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="TransparentTriangle.cpp">
       <Filter>View</Filter>
     </ClCompile>
     <ClCompile Include="DirectoryListing.cpp">

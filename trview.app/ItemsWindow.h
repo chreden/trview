@@ -34,7 +34,7 @@ namespace trview
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
-        void set_triggers(const std::vector<Trigger>& triggers);
+        void set_triggers(const std::vector<Trigger*>& triggers);
 
         /// Clear the currently selected item from the details panel.
         void clear_selected_item();
@@ -43,7 +43,7 @@ namespace trview
         Event<Item> on_item_selected;
 
         /// Event raised when a trigger is selected in the list.
-        Event<Trigger> on_trigger_selected;
+        Event<Trigger*> on_trigger_selected;
 
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
@@ -69,7 +69,7 @@ namespace trview
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
         std::vector<Item> _all_items;
-        std::vector<Trigger> _all_triggers;
+        std::vector<Trigger*> _all_triggers;
         /// Whether the item window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.

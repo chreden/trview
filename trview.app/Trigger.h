@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include "TransparentTriangle.h"
 
 namespace trview
 {
@@ -32,6 +33,9 @@ namespace trview
         uint16_t _index;
     };
 
+    class TransparencyBuffer;
+    struct ICamera;
+
     class Trigger final 
     {
     public:
@@ -48,9 +52,12 @@ namespace trview
         uint8_t     timer() const;
         uint16_t    sector_id() const;
         const std::vector<Command>& commands() const;
+        const std::vector<TransparentTriangle>& triangles() const;
+        void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
+        std::vector<TransparentTriangle> _transparent_triangles;
         TriggerType _type;
         uint32_t _number;
         uint16_t _room;

@@ -41,7 +41,7 @@ namespace trview
         Event<Item> on_item_selected;
 
         /// Event raised when a trigger is selected in one of the item windows.
-        Event<Trigger> on_trigger_selected;
+        Event<Trigger*> on_trigger_selected;
 
         /// Render all of the item windows.
         /// @param device The device to use to render.
@@ -54,7 +54,7 @@ namespace trview
 
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
-        void set_triggers(const std::vector<Trigger>& triggers);
+        void set_triggers(const std::vector<Trigger*>& triggers);
 
         /// Set the current room to filter item windows.
         /// @param room The current room.
@@ -70,7 +70,7 @@ namespace trview
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
         std::vector<ItemsWindow*> _closing_windows;
         std::vector<Item> _items;
-        std::vector<Trigger> _triggers;
+        std::vector<Trigger*> _triggers;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;

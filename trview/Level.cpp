@@ -94,9 +94,12 @@ namespace trview
         return _items;
     }
 
-    const std::vector<Trigger>& Level::triggers() const
+    std::vector<Trigger*> Level::triggers() const
     {
-        return _triggers;
+        std::vector<Trigger*> triggers;
+        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers),
+            [](const auto& trigger) { return trigger.get(); });
+        return triggers;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -207,12 +210,15 @@ namespace trview
     void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         // Assume for now that the selected item is currently being rendered.
-        if (!_selected_item)
+        if (_selected_item)
         {
-            return;
+            _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
         }
 
-        _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
+        if (_selected_trigger)
+        {
+            _selection_renderer->render(context, camera, *_texture_storage, *_selected_trigger);
+        }
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.
@@ -308,8 +314,8 @@ namespace trview
             {
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger());
-                    room->add_trigger(_triggers.back());
+                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
+                    room->add_trigger(_triggers.back().get());
                 }
             }
         }
@@ -327,12 +333,12 @@ namespace trview
             _entities.push_back(std::move(entity));
 
             // Relevant triggers.
-            std::vector<Trigger> relevant_triggers;
+            std::vector<Trigger*> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
-                if (trigger.triggers_item(i))
+                if (trigger->triggers_item(i))
                 {
-                    relevant_triggers.push_back(trigger);
+                    relevant_triggers.push_back(trigger.get());
                 }
             }
 
@@ -504,5 +510,10 @@ namespace trview
     bool Level::show_triggers() const
     {
         return _show_triggers;
+    }
+
+    void Level::set_selected_trigger(uint32_t number)
+    {
+        _selected_trigger = _triggers[number].get();
     }
 }

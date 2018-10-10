@@ -134,6 +134,16 @@ namespace trview
         return _sector_id;
     }
 
+    const std::vector<TransparentTriangle>& Trigger::triangles() const
+    {
+        return _transparent_triangles;
+    }
+
+    void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
+    {
+        _transparent_triangles = transparent_triangles;
+    }
+
     std::wstring trigger_type_name(TriggerType type)
     {
         auto name = trigger_type_names.find(type);

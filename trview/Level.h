@@ -60,7 +60,7 @@ namespace trview
 
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
-        const std::vector<Trigger>& triggers() const;
+        std::vector<Trigger*> triggers() const;
 
         // Determine whether the specified ray hits any of the triangles in any of the room geometry.
         // position: The world space position of the source of the ray.
@@ -102,6 +102,8 @@ namespace trview
         void set_show_triggers(bool show);
 
         bool show_triggers() const;
+
+        void set_selected_trigger(uint32_t number);
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers();
@@ -152,7 +154,7 @@ namespace trview
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
-        std::vector<Trigger>                 _triggers;
+        std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;
         std::vector<Item> _items;
 
@@ -163,6 +165,7 @@ namespace trview
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
         uint16_t           _selected_room{ 0u };
         Entity*            _selected_item{ nullptr };
+        Trigger*           _selected_trigger{ nullptr };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 

@@ -216,7 +216,6 @@
     <ClInclude Include="LevelTextureStorage.h" />
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="TransparencyBuffer.h" />
-    <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="trview.h" />
     <ClInclude Include="Types.h" />
@@ -251,7 +250,6 @@
     <ClCompile Include="SelectionRenderer.cpp" />
     <ClCompile Include="SettingsWindow.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />
-    <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">
