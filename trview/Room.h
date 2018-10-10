@@ -92,11 +92,12 @@ namespace trview
         // Returns all sectors 
         const inline std::map<int, std::shared_ptr<Sector>>& sectors() const { return _sectors; }
 
-        // Add the transparent triangles to the specified transparency buffer.
-        // transparency: The buffer to add triangles to.
-        // camera: The current viewpoint.
-        // selected: The current selection mode.
-        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
+        /// Add the transparent triangles to the specified transparency buffer.
+        /// @param transparency The buffer to add triangles to.
+        /// @param camera The current viewpoint.
+        /// @param selected The current selection mode.
+        /// @param include_triggers Whether to render triggers.
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers);
 
         // Add the transparent triangles for entities that are contained inside this room. This is called automatically
         // if get_transparent_triangles is used.

@@ -207,7 +207,7 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers)
     {
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
@@ -335,7 +335,7 @@ namespace trview
             _trigger_geometry = trigger_geometry;
         }
 
-        if (_trigger_geometry.has_value())
+        if (include_triggers && _trigger_geometry.has_value())
         {
             for (const auto& triangle : _trigger_geometry.value())
             {

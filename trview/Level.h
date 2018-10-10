@@ -98,6 +98,10 @@ namespace trview
         /// Determines if there are any flipmaps in the level.
         /// @returns True if there are flipmaps.
         bool any_alternates() const;
+
+        void set_show_triggers(bool show);
+
+        bool show_triggers() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers();
@@ -168,6 +172,7 @@ namespace trview
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
+        bool _show_triggers{ true };
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
 

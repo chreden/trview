@@ -177,7 +177,7 @@ namespace trview
             room.room.render(context, camera, *_texture_storage.get(), room.selection_mode);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
@@ -493,5 +493,16 @@ namespace trview
             return std::to_wstring(type_id);
         }
         return found->second;
+    }
+
+    void Level::set_show_triggers(bool show)
+    {
+        _show_triggers = show;
+        _regenerate_transparency = true;
+    }
+
+    bool Level::show_triggers() const
+    {
+        return _show_triggers;
     }
 }

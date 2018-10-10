@@ -115,6 +115,7 @@ namespace trview
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
+        void set_show_triggers(bool show);
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;

@@ -171,6 +171,7 @@ namespace trview
         _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });
         _token_store.add(_room_navigator->on_highlight += [&](bool) { toggle_highlight(); });
         _token_store.add(_room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); });
+        _token_store.add(_room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); });
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
@@ -229,6 +230,14 @@ namespace trview
                     if (_level && _level->any_alternates())
                     {
                         set_alternate_mode(!_level->alternate_mode());
+                    }
+                    break;
+                }
+                case 'T':
+                {
+                    if (_level)
+                    {
+                        set_show_triggers(!_level->show_triggers());
                     }
                     break;
                 }
@@ -396,6 +405,8 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
+
+        _level->set_show_triggers(_room_navigator->show_triggers());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -694,5 +705,14 @@ namespace trview
         });
 
         _token_store.add(_camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); });
+    }
+
+    void Viewer::set_show_triggers(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_triggers(show);
+            _room_navigator->set_show_triggers(show);
+        }
     }
 }
