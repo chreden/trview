@@ -290,44 +290,44 @@ namespace trview
                 }
 
                 // + Y
-                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                     .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                     .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
 
                 if (pos_x)
                 {
                     // + X
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
                 }
 
                 if (neg_x)
                 {
                     // - X
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
                 }
 
                 if (pos_z)
                 {
                     // + Z
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
                 }
 
                 if (neg_z)
                 {
                     // - Z
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, 0, TransparentTriangle::Mode::Normal)
+                    trigger_geometry.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
                         .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
                 }
             }

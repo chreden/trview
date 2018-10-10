@@ -12,6 +12,9 @@ namespace trview
             Additive
         };
 
+        // Use the untextured texture instead of a texture from the level textures.
+        const static uint32_t Untextured{ 0xffffffff };
+
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
             uint32_t texture, Mode mode)
