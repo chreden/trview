@@ -47,7 +47,8 @@ namespace trview
 
         std::array<float, 4> corners() const;
     private:
-        bool parse(); 
+        bool parse();
+        void parse_slope();
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
         std::uint8_t _portal, _room_above, _room_below;
@@ -72,5 +73,8 @@ namespace trview
 
         // Z position of the sector in the room.
         uint16_t _z;
+
+        // Corner heights
+        std::array<float, 4> _corners;
     };
 }
