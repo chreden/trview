@@ -248,14 +248,14 @@ namespace trview
                     if (other.z() == trigger.z())
                     {
                         if (other.x() == trigger.x() + 1 &&
-                            y_bottom[1] == other_bottom[3] &&
-                            y_bottom[0] == other_bottom[2])
+                            y_bottom[3] == other_bottom[1] &&
+                            y_bottom[2] == other_bottom[0])
                         {
                             pos_x = false;
                         }
                         else if (static_cast<int32_t>(trigger.x()) - 1 == other.x() &&
-                             y_bottom[3] == other_bottom[1] &&
-                             y_bottom[2] == other_bottom[0])
+                             y_bottom[1] == other_bottom[3] &&
+                             y_bottom[0] == other_bottom[2])
                         {
                             neg_x = false;
                         }
@@ -278,8 +278,7 @@ namespace trview
                     }
                 }
 
-                // Calculate the X/Z position - the Y must be determined by casting a ray from above 
-                // directly down, to see what it hits. If it hits nothing, use the centre of the room.
+                // Calculate the X/Z position.
                 const float x = _info.x / 1024.0f + trigger.x() + 0.5f;
                 const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger.z()) + 0.5f;
                 const float height = 0.25f;
