@@ -210,11 +210,26 @@ namespace trview
     void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
         // Assume for now that the selected item is currently being rendered.
-        if (_selected_item)
+        if (_selected_item && _selected_trigger)
+        {
+            _selection_renderer->render(context, camera, *_texture_storage, 
+                [&](auto& context, auto& camera, auto& texture_storage, auto& color) 
+            {
+                _selected_item->render(context, camera, texture_storage, color); 
+            },
+             [&](auto& camera, auto& transparency, auto& color) 
+            { 
+                _selected_item->get_transparent_triangles(transparency, camera, color);
+                for (auto& triangle : _selected_trigger->triangles())
+                {
+                    transparency.add(triangle.transform(Matrix::Identity, color));
+                }
+            });
+        }
+        else if (_selected_item)
         {
             _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
         }
-
         if (_selected_trigger)
         {
             _selection_renderer->render(context, camera, *_texture_storage, *_selected_trigger);
