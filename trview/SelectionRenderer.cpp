@@ -4,6 +4,8 @@
 #include <trview.graphics/IShader.h>
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/VertexShaderStore.h>
+#include <trview.graphics/PixelShaderStore.h>
 #include <SimpleMath.h>
 #include <trview.app/Trigger.h>
 
@@ -99,7 +101,7 @@ namespace trview
     {
         render(context, camera, texture_storage,
             [&](auto& context, auto& camera, auto& texture_storage, auto& color) { selected_item.render(context, camera, texture_storage, color); },
-            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); });
+            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); }, false);
     }
 
     void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Trigger& selected_trigger)
@@ -112,10 +114,10 @@ namespace trview
             {
                 transparency.add(triangle.transform(Matrix::Identity, color));
             }
-        });
+        }, true);
     }
 
-    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback)
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback, bool hank)
     {
         ComPtr<ID3D11Device> device;
         context->GetDevice(&device);
@@ -188,8 +190,12 @@ namespace trview
         // Render the texture to the screen using the pixel shader and vertex shader. The vertex shader doesn't do anything
         // special, but the pixel shader will find where the red stops and make a white border and remove the black parts of
         // the image (so the actual item can be seen underneath).
+        VertexShaderStore vs_store(context);
+        PixelShaderStore ps_store(context);
+
         _vertex_shader->apply(context);
         _pixel_shader->apply(context);
+        
         context->PSSetShaderResources(0, 1, _texture->texture().view().GetAddressOf());
         UINT stride = sizeof(SelectionVertex);
         UINT offset = 0;
@@ -199,5 +205,7 @@ namespace trview
         context->PSSetConstantBuffers(0, 1, _scale_buffer.GetAddressOf());
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
         context->DrawIndexed(4, 0, 0);
+
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
 }

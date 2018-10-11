@@ -55,6 +55,12 @@
     <ClInclude Include="DeviceWindow.h">
       <Filter>Device</Filter>
     </ClInclude>
+    <ClInclude Include="VertexShaderStore.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShaderStore.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -104,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="DeviceWindow.cpp">
       <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShaderStore.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShaderStore.cpp">
+      <Filter>Shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
