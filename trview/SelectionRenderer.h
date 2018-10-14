@@ -56,7 +56,7 @@ namespace trview
         /// Callback for rendering transparent triangles.
         using TransparentCallback = std::function<void(const ICamera& camera, TransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)>;
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback, bool hank);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& outline_colour, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback);
 
         /// Create vertex, index and parameter buffers.
         /// @param device The device to use to create the buffers.

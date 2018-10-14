@@ -2,6 +2,7 @@ cbuffer cb : register (b0)
 {
     float width_pixel;
     float height_pixel;
+    float4 outline_colour;
 }
 
 struct PixelInput
@@ -57,5 +58,5 @@ float4 main(PixelInput input) : SV_TARGET
     };
 
     clip(-1.5 + tex.Sample(samplerState, input.uv).r + min(1, any(inner_samples) + any(outer_samples)));
-    return float4(1, 1, 0, 1);
+    return outline_colour;
 }

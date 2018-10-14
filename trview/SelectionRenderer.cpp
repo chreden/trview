@@ -25,9 +25,21 @@ namespace trview
     {
         struct SelectionVertex
         {
-            DirectX::SimpleMath::Vector3 pos;
-            DirectX::SimpleMath::Vector2 uv;
+            Vector3 pos;
+            Vector2 uv;
         };
+
+        __declspec(align(16))
+        struct PS_Data
+        {
+            float pixel_width;
+            float pixel_height;
+            double _; // Padding.
+            Color outline_colour;
+        }; 
+
+        const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
+        const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
     }
 
     SelectionRenderer::SelectionRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage)
@@ -90,7 +102,7 @@ namespace trview
         memset(&scale_desc, 0, sizeof(scale_desc));
 
         scale_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        scale_desc.ByteWidth = sizeof(float) * 4;
+        scale_desc.ByteWidth = sizeof(PS_Data);
         scale_desc.Usage = D3D11_USAGE_DYNAMIC;
         scale_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -99,14 +111,14 @@ namespace trview
 
     void SelectionRenderer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Entity& selected_item)
     {
-        render(context, camera, texture_storage,
+        render(context, camera, texture_storage, Item_Outline,
             [&](auto& context, auto& camera, auto& texture_storage, auto& color) { selected_item.render(context, camera, texture_storage, color); },
-            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); }, false);
+            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); });
     }
 
     void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Trigger& selected_trigger)
     {
-        render(context, camera, texture_storage,
+        render(context, camera, texture_storage, Trigger_Outline,
             [&](auto&, auto&, auto&, auto&) {},
             [&](auto& camera, auto& transparency, auto& color) 
         {
@@ -114,10 +126,10 @@ namespace trview
             {
                 transparency.add(triangle.transform(Matrix::Identity, color));
             }
-        }, true);
+        });
     }
 
-    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback, bool hank)
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& outline_colour, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback)
     {
         ComPtr<ID3D11Device> device;
         context->GetDevice(&device);
@@ -175,13 +187,7 @@ namespace trview
             D3D11_MAPPED_SUBRESOURCE mapped_resource;
             memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-            struct Data
-            {
-                float pixel_width;
-                float pixel_height;
-            };
-
-            Data data{ 1.0f / viewport.Width, 1.0f / viewport.Height };
+            PS_Data data{ 1.0f / viewport.Width, 1.0f / viewport.Height, 0, outline_colour };
             context->Map(_scale_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
             memcpy(mapped_resource.pData, &data, sizeof(data));
             context->Unmap(_scale_buffer.Get(), 0);
