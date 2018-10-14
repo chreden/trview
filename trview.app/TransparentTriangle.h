@@ -17,10 +17,14 @@ namespace trview
 
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
-            uint32_t texture, Mode mode)
-            : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode)
-        {
-        }
+            uint32_t texture, Mode mode, DirectX::SimpleMath::Color = { 1,1,1,1 });
+
+        /// Create an untextured transparent triangle with the specified colour.
+        /// @param v0 The first vertex.
+        /// @param v1 The second vertex.
+        /// @param v2 The third vertex.
+        /// @param colour The colour for the triangle.
+        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& colour);
 
         TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
 

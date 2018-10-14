@@ -19,6 +19,11 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        const Color Trigger_Colour{ 1, 0, 1, 0.5f };
+    }
+
     Room::Room(const ComPtr<ID3D11Device>& device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
@@ -368,46 +373,37 @@ namespace trview
             }
 
             std::vector<TransparentTriangle> triangles;
+
             // + Y
-            triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-            triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Trigger_Colour));
+            triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Trigger_Colour));
 
             if (pos_x)
             {
                 // + X
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Trigger_Colour));
             }
 
             if (neg_x)
             {
                 // - X
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Trigger_Colour));
             }
 
             if (pos_z)
             {
                 // + Z
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Trigger_Colour));
             }
 
             if (neg_z)
             {
                 // - Z
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Trigger_Colour));
             }
 
             trigger->set_triangles(triangles);
