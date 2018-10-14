@@ -58,7 +58,7 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -82,7 +82,10 @@ namespace trview
                     pick_results.push_back(entity_result);
                 }
             }
+        }
 
+        if (include_triggers)
+        {
             for (const auto& trigger : _triggers)
             {
                 auto trigger_result = trigger->pick(position, direction);

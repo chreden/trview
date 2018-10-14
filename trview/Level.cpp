@@ -47,7 +47,7 @@ namespace trview
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
         generate_rooms(device);
-        generate_triggers();
+        generate_triggers(device);
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
@@ -305,7 +305,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers()
+    void Level::generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
     {
         for (auto i = 0; i < _rooms.size(); ++i)
         {
@@ -314,7 +314,7 @@ namespace trview
             {
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(device, _triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
             }
@@ -387,7 +387,7 @@ namespace trview
         auto rooms = get_rooms_to_render(camera);
         for (auto& room : rooms)
         {
-            auto result = room.room.pick(position, direction);
+            auto result = room.room.pick(position, direction, true, _show_triggers);
             if (result.hit && result.distance < final_result.distance)
             {
                 final_result.hit = true;

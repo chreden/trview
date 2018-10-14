@@ -70,7 +70,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities = true) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities = true, bool include_triggers = true) const;
 
         // Render the level geometry and the objects contained in this room.
         // context: The D3D context.

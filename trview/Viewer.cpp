@@ -262,6 +262,10 @@ namespace trview
                     {
                         select_item(_level->items()[_current_pick.index]);
                     }
+                    else if (_current_pick.type == PickResult::Type::Trigger)
+                    {
+                        select_trigger(_level->triggers()[_current_pick.index]);
+                    }
                     set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
@@ -501,7 +505,7 @@ namespace trview
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text((result.type == PickResult::Type::Room ? L"R" : L"I") + std::to_wstring(result.index));
+            _picking->set_text((result.type == PickResult::Type::Room ? L"R" : result.type == PickResult::Type::Trigger ? L"T" : L"I") + std::to_wstring(result.index));
         }
         _current_pick = result;
     }

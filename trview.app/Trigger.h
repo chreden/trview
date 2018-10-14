@@ -4,6 +4,7 @@
 #include <vector>
 #include "TransparentTriangle.h"
 #include "PickResult.h"
+#include "Mesh.h"
 
 namespace trview
 {
@@ -40,7 +41,7 @@ namespace trview
     class Trigger final 
     {
     public:
-        explicit Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        explicit Trigger(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
 
         uint32_t    number() const;
         uint16_t    room() const;
@@ -59,7 +60,8 @@ namespace trview
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
-        std::vector<TransparentTriangle> _transparent_triangles;
+        std::unique_ptr<Mesh> _mesh;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         TriggerType _type;
         uint32_t _number;
         uint16_t _room;
