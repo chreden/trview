@@ -388,7 +388,7 @@ namespace trview
         for (auto& room : rooms)
         {
             auto result = room.room.pick(position, direction, true, _show_triggers);
-            if (result.hit && result.distance < final_result.distance)
+            if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
             {
                 final_result.hit = true;
                 final_result.distance = result.distance;

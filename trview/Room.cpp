@@ -84,7 +84,7 @@ namespace trview
             }
         }
 
-        if (include_triggers)
+        if (include_triggers && pick_results.empty())
         {
             for (const auto& trigger : _triggers)
             {
