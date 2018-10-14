@@ -241,17 +241,20 @@ namespace trview
 
         if (include_triggers)
         {
-            if (!_trigger_geometry.has_value())
+            if (!_trigger_geometry_generated)
             {
                 generate_trigger_geometry();
             }
 
-            for (const auto& triangle : _trigger_geometry.value())
+            for (const auto& trigger : _triggers)
             {
-                transparency.add(triangle);
+                for (const auto& triangle : trigger->triangles())
+                {
+                    transparency.add(triangle);
+                }
             }
         }
-        
+
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
@@ -307,9 +310,6 @@ namespace trview
 
     void Room::generate_trigger_geometry()
     {
-        std::vector<TransparentTriangle> trigger_geometry;
-
-        // Add trigger cubes.
         for (auto& trigger : _triggers)
         {
             // Information about sector height.
@@ -407,9 +407,8 @@ namespace trview
             }
 
             trigger->set_triangles(triangles);
-            std::copy(triangles.begin(), triangles.end(), std::back_inserter(trigger_geometry));
         }
 
-        _trigger_geometry = trigger_geometry;
+        _trigger_geometry_generated = true;
     }
 }
