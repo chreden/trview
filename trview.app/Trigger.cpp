@@ -144,7 +144,6 @@ namespace trview
 
     void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
     {
-        // Create the collision triangles for the transparent triangles.
         std::vector<Triangle> collision;
         std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
             [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
@@ -153,8 +152,6 @@ namespace trview
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction)
     {
-        // Check bounding box....
-
         if (_mesh)
         {
             auto result = _mesh->pick(position, direction);
