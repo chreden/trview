@@ -234,125 +234,13 @@ namespace trview
             static_mesh->get_transparent_triangles(transparency, colour);
         }
 
-        if (!_trigger_geometry.has_value())
+        if (include_triggers)
         {
-            std::vector<TransparentTriangle> trigger_geometry;
-
-            // Add trigger cubes.
-            for (auto& trigger : _triggers)
+            if (!_trigger_geometry.has_value())
             {
-                // Information about sector height.
-                auto sector = _sectors[trigger->sector_id()];
-                auto y_bottom = sector->corners();
-
-                // Figure out if we should make the walls based on adjacent triggers.
-                // Remove this double loop at some point.
-                bool pos_x = true;
-                bool neg_x = true;
-                bool pos_z = true;
-                bool neg_z = true;
-
-                for (const auto& other : _triggers)
-                {
-                    auto other_sector = _sectors[other->sector_id()];
-                    auto other_bottom = other_sector->corners();
-
-                    if (other->z() == trigger->z())
-                    {
-                        if (other->x() == trigger->x() + 1 &&
-                            y_bottom[3] == other_bottom[1] &&
-                            y_bottom[2] == other_bottom[0])
-                        {
-                            pos_x = false;
-                        }
-                        else if (static_cast<int32_t>(trigger->x()) - 1 == other->x() &&
-                             y_bottom[1] == other_bottom[3] &&
-                             y_bottom[0] == other_bottom[2])
-                        {
-                            neg_x = false;
-                        }
-                    }
-
-                    if (other->x() == trigger->x())
-                    {
-                        if (other->z() == trigger->z() + 1 &&
-                            y_bottom[2] == other_bottom[3] &&
-                            y_bottom[0] == other_bottom[1])
-                        {
-                            neg_z = false;
-                        }
-                        else if (static_cast<int32_t>(trigger->z()) - 1 == other->z() &&
-                             y_bottom[3] == other_bottom[2] &&
-                             y_bottom[1] == other_bottom[0])
-                        {
-                            pos_z = false;
-                        }
-                    }
-                }
-
-                // Calculate the X/Z position.
-                const float x = _info.x / 1024.0f + trigger->x() + 0.5f;
-                const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
-                const float height = 0.25f;
-
-                std::array<float, 4> y_top = { 0,0,0,0 };
-                for (int i = 0; i < 4; ++i)
-                {
-                    y_top[i] = y_bottom[i] + height;
-                }
-
-                std::vector<TransparentTriangle> triangles;
-                // + Y
-                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-
-                if (pos_x)
-                {
-                    // + X
-                    triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                }
-
-                if (neg_x)
-                {
-                    // - X
-                    triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                }
-
-                if (pos_z)
-                {
-                    // + Z
-                    triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                }
-
-                if (neg_z)
-                {
-                    // - Z
-                    triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                    triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
-                        .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
-                }
-
-                trigger->set_triangles(triangles);
-                std::copy(triangles.begin(), triangles.end(), std::back_inserter(trigger_geometry));
+                generate_trigger_geometry();
             }
 
-            _trigger_geometry = trigger_geometry;
-        }
-
-        if (include_triggers && _trigger_geometry.has_value())
-        {
             for (const auto& triangle : _trigger_geometry.value())
             {
                 transparency.add(triangle);
@@ -410,5 +298,122 @@ namespace trview
     const DirectX::BoundingBox& Room::bounding_box() const
     {
         return _bounding_box;
+    }
+
+    void Room::generate_trigger_geometry()
+    {
+        std::vector<TransparentTriangle> trigger_geometry;
+
+        // Add trigger cubes.
+        for (auto& trigger : _triggers)
+        {
+            // Information about sector height.
+            auto sector = _sectors[trigger->sector_id()];
+            auto y_bottom = sector->corners();
+
+            // Figure out if we should make the walls based on adjacent triggers.
+            // Remove this double loop at some point.
+            bool pos_x = true;
+            bool neg_x = true;
+            bool pos_z = true;
+            bool neg_z = true;
+
+            for (const auto& other : _triggers)
+            {
+                auto other_sector = _sectors[other->sector_id()];
+                auto other_bottom = other_sector->corners();
+
+                if (other->z() == trigger->z())
+                {
+                    if (other->x() == trigger->x() + 1 &&
+                        y_bottom[3] == other_bottom[1] &&
+                        y_bottom[2] == other_bottom[0])
+                    {
+                        pos_x = false;
+                    }
+                    else if (static_cast<int32_t>(trigger->x()) - 1 == other->x() &&
+                        y_bottom[1] == other_bottom[3] &&
+                        y_bottom[0] == other_bottom[2])
+                    {
+                        neg_x = false;
+                    }
+                }
+
+                if (other->x() == trigger->x())
+                {
+                    if (other->z() == trigger->z() + 1 &&
+                        y_bottom[2] == other_bottom[3] &&
+                        y_bottom[0] == other_bottom[1])
+                    {
+                        neg_z = false;
+                    }
+                    else if (static_cast<int32_t>(trigger->z()) - 1 == other->z() &&
+                        y_bottom[3] == other_bottom[2] &&
+                        y_bottom[1] == other_bottom[0])
+                    {
+                        pos_z = false;
+                    }
+                }
+            }
+
+            // Calculate the X/Z position.
+            const float x = _info.x / 1024.0f + trigger->x() + 0.5f;
+            const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
+            const float height = 0.25f;
+
+            std::array<float, 4> y_top = { 0,0,0,0 };
+            for (int i = 0; i < 4; ++i)
+            {
+                y_top[i] = y_bottom[i] + height;
+            }
+
+            std::vector<TransparentTriangle> triangles;
+            // + Y
+            triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+
+            if (pos_x)
+            {
+                // + X
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            }
+
+            if (neg_x)
+            {
+                // - X
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            }
+
+            if (pos_z)
+            {
+                // + Z
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            }
+
+            if (neg_z)
+            {
+                // - Z
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector2::Zero, Vector2::Zero, Vector2::Zero, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal)
+                    .transform(Matrix::Identity, Color(1, 0, 1, 0.5f)));
+            }
+
+            trigger->set_triangles(triangles);
+            std::copy(triangles.begin(), triangles.end(), std::back_inserter(trigger_geometry));
+        }
+
+        _trigger_geometry = trigger_geometry;
     }
 }
