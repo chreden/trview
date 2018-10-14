@@ -76,23 +76,14 @@
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>View</Filter>
-    </ClInclude>
     <ClInclude Include="StaticMesh.h">
       <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="ITextureStorage.h">
-      <Filter>View\Textures</Filter>
     </ClInclude>
     <ClInclude Include="MeshStorage.h">
       <Filter>View\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="IMeshStorage.h">
       <Filter>View\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="ILevelTextureStorage.h">
-      <Filter>View\Textures</Filter>
     </ClInclude>
     <ClInclude Include="LevelTextureStorage.h">
       <Filter>View\Textures</Filter>
@@ -114,9 +105,6 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshVertex.h">
-      <Filter>View</Filter>
     </ClInclude>
     <ClInclude Include="TransparencyBuffer.h">
       <Filter>View</Filter>
@@ -166,12 +154,6 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>View\Selection</Filter>
     </ClInclude>
-    <ClInclude Include="PickResult.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>View</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -198,20 +180,11 @@
     <ClCompile Include="StaticMesh.cpp">
       <Filter>View</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="ITextureStorage.cpp">
-      <Filter>View\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="MeshStorage.cpp">
       <Filter>View\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="IMeshStorage.cpp">
       <Filter>View\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="ILevelTextureStorage.cpp">
-      <Filter>View\Textures</Filter>
     </ClCompile>
     <ClCompile Include="LevelTextureStorage.cpp">
       <Filter>View\Textures</Filter>

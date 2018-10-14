@@ -144,6 +144,22 @@ namespace trview
         _transparent_triangles = transparent_triangles;
     }
 
+    PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction)
+    {
+        // Check bounding box....
+
+        // Check against the mesh.
+        PickResult result;
+        return result;
+        // PickResult result;
+        // result.hit = true;
+        // result.type = PickResult::Type::Trigger;
+        // result.index = _index;
+        // result.distance = 0;
+        // result.position = position + direction * 0;
+        // return result;
+    }
+
     std::wstring trigger_type_name(TriggerType type)
     {
         auto name = trigger_type_names.find(type);

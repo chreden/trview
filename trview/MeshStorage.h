@@ -9,7 +9,7 @@
 #include <trlevel/ILevel.h>
 
 #include "IMeshStorage.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 
 namespace trview
 {

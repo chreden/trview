@@ -19,9 +19,9 @@
 
 #include "StaticMesh.h"
 #include "TransparencyBuffer.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 #include <trview\Sector.h>
-#include "PickResult.h"
+#include <trview.app/PickResult.h>
 
 namespace trview
 {

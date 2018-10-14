@@ -10,7 +10,8 @@ namespace trview
         {
             Room,
             Entity,
-            Mesh
+            Mesh,
+            Trigger
         };
 
         bool                         hit{ false };

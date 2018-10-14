@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Room.h"
-#include "MeshVertex.h"
+#include <trview.app/MeshVertex.h>
 #include "Entity.h"
 
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
 #include "ICamera.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 #include "TransparencyBuffer.h"
 
 #include <SimpleMath.h>
@@ -80,6 +80,15 @@ namespace trview
                 if (entity_result.hit)
                 {
                     pick_results.push_back(entity_result);
+                }
+            }
+
+            for (const auto& trigger : _triggers)
+            {
+                auto trigger_result = trigger->pick(position, direction);
+                if (trigger_result.hit)
+                {
+                    pick_results.push_back(trigger_result);
                 }
             }
         }

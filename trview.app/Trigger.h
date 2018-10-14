@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include "TransparentTriangle.h"
+#include "PickResult.h"
 
 namespace trview
 {
@@ -54,6 +55,7 @@ namespace trview
         const std::vector<Command>& commands() const;
         const std::vector<TransparentTriangle>& triangles() const;
         void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction);
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;

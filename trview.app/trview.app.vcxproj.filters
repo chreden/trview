@@ -28,6 +28,15 @@
     <ClCompile Include="TransparentTriangle.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="ILevelTextureStorage.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="ITextureStorage.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -58,6 +67,22 @@
     <ClInclude Include="TransparentTriangle.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="PickResult.h" />
+    <ClInclude Include="Mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshVertex.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="ILevelTextureStorage.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ITextureStorage.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -71,6 +96,9 @@
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{7b41da32-5b52-4a13-a345-eb254e49683d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

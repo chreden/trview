@@ -9,7 +9,7 @@
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
 
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 
 namespace trview
 {

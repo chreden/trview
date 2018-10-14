@@ -12,7 +12,7 @@
 #include "Entity.h"
 #include "TransparencyBuffer.h"
 #include "ICamera.h"
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

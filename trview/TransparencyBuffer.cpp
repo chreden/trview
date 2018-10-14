@@ -2,8 +2,8 @@
 #include "TransparencyBuffer.h"
 
 #include "ICamera.h"
-#include "ILevelTextureStorage.h"
-#include "MeshVertex.h"
+#include <trview.app/ILevelTextureStorage.h>
+#include <trview.app/MeshVertex.h>
 
 #include <algorithm>
 
