@@ -209,7 +209,6 @@ namespace trview
 
     void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
-        // Assume for now that the selected item is currently being rendered.
         if (_selected_item)
         {
             _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
@@ -388,6 +387,7 @@ namespace trview
         for (auto& room : rooms)
         {
             auto result = room.room.pick(position, direction, true, _show_triggers);
+            // Choose the nearest pick - but if the previous closest was trigger an entity should take priority over it.
             if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
             {
                 final_result.hit = true;
