@@ -4,8 +4,14 @@
 
 namespace trview
 {
-    struct Colour
+    struct Colour final
     {
+        /// Create a colour with the specified rgb components and a fully opaque alpha value.
+        /// @param r The red value from 0 to 1.
+        /// @param g The green value from 0 to 1.
+        /// @param b The blue value from 0 to 1.
+        Colour(float r, float g, float b);
+
         Colour(float a, float r, float g, float b);
 
         operator DirectX::SimpleMath::Color() const;
