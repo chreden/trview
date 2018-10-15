@@ -140,6 +140,8 @@ namespace trview
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_trigger_geometry();
+        Sector*  get_trigger_sector(int32_t x, int32_t z);
+        uint32_t get_sector_id(int32_t x, int32_t z) const;
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
@@ -163,7 +165,7 @@ namespace trview
         int16_t              _alternate_room;
         AlternateMode        _alternate_mode;
 
-        std::vector<Trigger*> _triggers;
+        std::unordered_map<uint32_t, Trigger*> _triggers;
         bool _trigger_geometry_generated{ false };
     };
 }

@@ -93,7 +93,7 @@ namespace trview
         {
             for (const auto& trigger : _triggers)
             {
-                auto trigger_result = trigger->pick(position, direction);
+                auto trigger_result = trigger.second->pick(position, direction);
                 if (trigger_result.hit)
                 {
                     pick_results.push_back(trigger_result);
@@ -209,7 +209,7 @@ namespace trview
 
     void Room::add_trigger(Trigger* trigger)
     {
-        _triggers.push_back(trigger);
+        _triggers.insert({ trigger->sector_id(), trigger });
     }
 
     void 
@@ -248,7 +248,7 @@ namespace trview
 
             for (const auto& trigger : _triggers)
             {
-                for (const auto& triangle : trigger->triangles())
+                for (const auto& triangle : trigger.second->triangles())
                 {
                     transparency.add(triangle);
                 }
@@ -310,54 +310,49 @@ namespace trview
 
     void Room::generate_trigger_geometry()
     {
-        for (auto& trigger : _triggers)
+        for (auto& trigger_iter : _triggers)
         {
             // Information about sector height.
+            auto trigger = trigger_iter.second;
             auto sector = _sectors[trigger->sector_id()];
             auto y_bottom = sector->corners();
 
             // Figure out if we should make the walls based on adjacent triggers.
-            // Remove this double loop at some point.
-            bool pos_x = true;
-            bool neg_x = true;
-            bool pos_z = true;
-            bool neg_z = true;
+            bool pos_x = true, neg_x = true, pos_z = true, neg_z = true;
 
-            for (const auto& other : _triggers)
+            if (auto other = get_trigger_sector(trigger->x() + 1, trigger->z()))
             {
-                auto other_sector = _sectors[other->sector_id()];
-                auto other_bottom = other_sector->corners();
-
-                if (other->z() == trigger->z())
+                auto corners = other->corners();
+                if (y_bottom[3] == corners[1] && y_bottom[2] == corners[0])
                 {
-                    if (other->x() == trigger->x() + 1 &&
-                        y_bottom[3] == other_bottom[1] &&
-                        y_bottom[2] == other_bottom[0])
-                    {
-                        pos_x = false;
-                    }
-                    else if (static_cast<int32_t>(trigger->x()) - 1 == other->x() &&
-                        y_bottom[1] == other_bottom[3] &&
-                        y_bottom[0] == other_bottom[2])
-                    {
-                        neg_x = false;
-                    }
+                    pos_x = false;
                 }
+            }
 
-                if (other->x() == trigger->x())
+            if (auto other = get_trigger_sector(static_cast<int32_t>(trigger->x()) - 1, trigger->z()))
+            {
+                auto corners = other->corners();
+                if (y_bottom[1] == corners[3] && y_bottom[0] == corners[2])
                 {
-                    if (other->z() == trigger->z() + 1 &&
-                        y_bottom[2] == other_bottom[3] &&
-                        y_bottom[0] == other_bottom[1])
-                    {
-                        neg_z = false;
-                    }
-                    else if (static_cast<int32_t>(trigger->z()) - 1 == other->z() &&
-                        y_bottom[3] == other_bottom[2] &&
-                        y_bottom[1] == other_bottom[0])
-                    {
-                        pos_z = false;
-                    }
+                    neg_x = false;
+                }
+            }
+
+            if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
+            {
+                auto corners = other->corners();
+                if (y_bottom[2] == corners[3] && y_bottom[0] == corners[1])
+                {
+                    neg_z = false;
+                }
+            }
+
+            if (auto other = get_trigger_sector(trigger->x(), static_cast<int32_t>(trigger->z()) - 1))
+            {
+                auto corners = other->corners();
+                if (y_bottom[3] == corners[2] && y_bottom[1] == corners[0])
+                {
+                    pos_z = false;
                 }
             }
 
@@ -410,5 +405,21 @@ namespace trview
         }
 
         _trigger_geometry_generated = true;
+    }
+
+    uint32_t Room::get_sector_id(int32_t x, int32_t z) const
+    {
+        return x * _num_z_sectors + (_num_z_sectors - z - 1);
+    }
+
+    Sector* Room::get_trigger_sector(int32_t x, int32_t z)
+    {
+        auto sector_id = get_sector_id(x, z);
+        auto trigger = _triggers.find(sector_id);
+        if (trigger == _triggers.end())
+        {
+            return nullptr;
+        }
+        return _sectors[sector_id].get();
     }
 }
