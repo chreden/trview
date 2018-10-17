@@ -152,6 +152,9 @@ namespace trview
         FileDropper _file_dropper;
         TokenStore _token_store;
         DirectX::SimpleMath::Vector3 _target;
+
+        ui::Label* _measure_label;
+        PickResult _previous_pick;
     };
 }
 

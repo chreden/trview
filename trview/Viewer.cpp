@@ -118,6 +118,9 @@ namespace trview
         picking->set_handles_input(false);
         _picking = _control->add_child(std::move(picking));
 
+        auto measure_label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        _measure_label = _control->add_child(std::move(measure_label));
+
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
 
@@ -259,6 +262,8 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
+                    _previous_pick = _current_pick;
+
                     if (_current_pick.type == PickResult::Type::Room)
                     {
                         select_room(_current_pick.index);
@@ -524,6 +529,8 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
+            _measure_label->set_text(std::to_wstring((_current_pick.position - _previous_pick.position).Length()));
+
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text((result.type == PickResult::Type::Room ? L"R-" : result.type == PickResult::Type::Trigger ? L"T-" : L"I-") + std::to_wstring(result.index));
