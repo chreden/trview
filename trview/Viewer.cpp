@@ -223,6 +223,11 @@ namespace trview
 
         _token_store.add(_keyboard.on_key_down += [&](uint16_t key)
         {
+            if (GetAsyncKeyState(VK_CONTROL))
+            {
+                return;
+            }
+
             switch (key)
             {
                 case 'P':

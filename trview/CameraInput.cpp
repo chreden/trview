@@ -17,6 +17,11 @@ namespace trview
     // key: The key that was pressed.
     void CameraInput::key_down(uint16_t key)
     {
+        if (GetAsyncKeyState(VK_CONTROL))
+        {
+            return;
+        }
+
         switch (key)
         {
             case 'F':
