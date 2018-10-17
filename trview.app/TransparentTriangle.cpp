@@ -7,6 +7,9 @@ namespace trview
     TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2, uint32_t texture, Mode mode, Color colour)
         : vertices{ v0, v1, v2 }, uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode), colour(colour)
     {
+        Vector3 minimum = Vector3::Min(Vector3::Min(v0, v1), v2);
+        Vector3 maximum = Vector3::Max(Vector3::Max(v0, v1), v2);
+        position = Vector3::Lerp(minimum, maximum, 0.5f);
     }
 
     TransparentTriangle::TransparentTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, const Color& colour)
@@ -17,16 +20,11 @@ namespace trview
     TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const
     {
         using namespace DirectX::SimpleMath;
-        TransparentTriangle result(
+        return TransparentTriangle(
             Vector3::Transform(vertices[0], matrix),
             Vector3::Transform(vertices[1], matrix),
             Vector3::Transform(vertices[2], matrix),
-            uvs[0], uvs[1], uvs[2], texture, mode);
-        Vector3 minimum = Vector3::Min(Vector3::Min(result.vertices[0], result.vertices[1]), result.vertices[2]);
-        Vector3 maximum = Vector3::Max(Vector3::Max(result.vertices[0], result.vertices[1]), result.vertices[2]);
-        result.position = Vector3::Lerp(minimum, maximum, 0.5f);
-        result.colour = colour_override;
-        return result;
+            uvs[0], uvs[1], uvs[2], texture, mode, colour_override);
     }
 
     // Determine whether the face should be transparent give the attribute and effects values. The 
