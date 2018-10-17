@@ -2,7 +2,7 @@
 #include "DefaultTextures.h"
 #include "resource.h"
 
-#include "ITextureStorage.h"
+#include <trview.app/ITextureStorage.h>
 #include "ResourceHelper.h"
 
 #include <external/DirectXTK/Inc/WICTextureLoader.h>

@@ -7,7 +7,7 @@
 #include <trlevel/trtypes.h>
 
 #include "MeshVertex.h"
-#include "TransparencyBuffer.h"
+#include "TransparentTriangle.h"
 #include "Triangle.h"
 #include "PickResult.h"
 

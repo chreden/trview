@@ -13,7 +13,7 @@
 
 #include "Room.h"
 #include "Entity.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 #include "StaticMesh.h"
 #include <trview.app/Item.h>
 #include <trview.app/Trigger.h>
@@ -60,7 +60,7 @@ namespace trview
 
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
-        const std::vector<Trigger>& triggers() const;
+        std::vector<Trigger*> triggers() const;
 
         // Determine whether the specified ray hits any of the triangles in any of the room geometry.
         // position: The world space position of the source of the ray.
@@ -98,9 +98,15 @@ namespace trview
         /// Determines if there are any flipmaps in the level.
         /// @returns True if there are flipmaps.
         bool any_alternates() const;
+
+        void set_show_triggers(bool show);
+
+        bool show_triggers() const;
+
+        void set_selected_trigger(uint32_t number);
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
-        void generate_triggers();
+        void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
@@ -148,7 +154,7 @@ namespace trview
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
-        std::vector<Trigger>                 _triggers;
+        std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;
         std::vector<Item> _items;
 
@@ -159,6 +165,7 @@ namespace trview
         RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
         uint16_t           _selected_room{ 0u };
         Entity*            _selected_item{ nullptr };
+        Trigger*           _selected_trigger{ nullptr };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
@@ -168,6 +175,7 @@ namespace trview
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
+        bool _show_triggers{ true };
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
 

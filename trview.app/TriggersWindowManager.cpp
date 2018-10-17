@@ -66,7 +66,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_triggers(const std::vector<Trigger>& triggers)
+    void TriggersWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _triggers = triggers;
         for (auto& window : _windows)
@@ -85,7 +85,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_selected_trigger(const Trigger& trigger)
+    void TriggersWindowManager::set_selected_trigger(const Trigger* const trigger)
     {
         _selected_trigger = trigger;
         for (auto& window : _windows)

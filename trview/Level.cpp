@@ -47,7 +47,7 @@ namespace trview
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
         generate_rooms(device);
-        generate_triggers();
+        generate_triggers(device);
         generate_entities(device);
 
         _transparency = std::make_unique<TransparencyBuffer>(device);
@@ -94,9 +94,12 @@ namespace trview
         return _items;
     }
 
-    const std::vector<Trigger>& Level::triggers() const
+    std::vector<Trigger*> Level::triggers() const
     {
-        return _triggers;
+        std::vector<Trigger*> triggers;
+        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers),
+            [](const auto& trigger) { return trigger.get(); });
+        return triggers;
     }
 
     Level::RoomHighlightMode Level::highlight_mode() const
@@ -177,7 +180,7 @@ namespace trview
             room.room.render(context, camera, *_texture_storage.get(), room.selection_mode);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
@@ -206,13 +209,15 @@ namespace trview
 
     void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
     {
-        // Assume for now that the selected item is currently being rendered.
-        if (!_selected_item)
+        if (_selected_item)
         {
-            return;
+            _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
         }
 
-        _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
+        if (_selected_trigger)
+        {
+            _selection_renderer->render(context, camera, *_texture_storage, *_selected_trigger);
+        }
     }
 
     // Get the collection of rooms that need to be renderered depending on the current view mode.
@@ -299,7 +304,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers()
+    void Level::generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
     {
         for (auto i = 0; i < _rooms.size(); ++i)
         {
@@ -308,7 +313,8 @@ namespace trview
             {
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger());
+                    _triggers.emplace_back(std::make_unique<Trigger>(device, _triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
+                    room->add_trigger(_triggers.back().get());
                 }
             }
         }
@@ -326,12 +332,12 @@ namespace trview
             _entities.push_back(std::move(entity));
 
             // Relevant triggers.
-            std::vector<Trigger> relevant_triggers;
+            std::vector<Trigger*> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
-                if (trigger.triggers_item(i))
+                if (trigger->triggers_item(i))
                 {
-                    relevant_triggers.push_back(trigger);
+                    relevant_triggers.push_back(trigger.get());
                 }
             }
 
@@ -380,8 +386,9 @@ namespace trview
         auto rooms = get_rooms_to_render(camera);
         for (auto& room : rooms)
         {
-            auto result = room.room.pick(position, direction);
-            if (result.hit && result.distance < final_result.distance)
+            auto result = room.room.pick(position, direction, true, _show_triggers);
+            // Choose the nearest pick - but if the previous closest was trigger an entity should take priority over it.
+            if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
             {
                 final_result.hit = true;
                 final_result.distance = result.distance;
@@ -492,5 +499,21 @@ namespace trview
             return std::to_wstring(type_id);
         }
         return found->second;
+    }
+
+    void Level::set_show_triggers(bool show)
+    {
+        _show_triggers = show;
+        _regenerate_transparency = true;
+    }
+
+    bool Level::show_triggers() const
+    {
+        return _show_triggers;
+    }
+
+    void Level::set_selected_trigger(uint32_t number)
+    {
+        _selected_trigger = _triggers[number].get();
     }
 }

@@ -28,6 +28,7 @@
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="PixelShaderStore.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="RenderTargetStore.h" />
     <ClInclude Include="ShaderStorage.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="TextAlignment.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VertexShaderStore.h" />
     <ClInclude Include="ViewportStore.h" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +48,7 @@
     <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />
     <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="PixelShaderStore.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="RenderTargetStore.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -54,6 +57,7 @@
     <ClCompile Include="SpriteSizeStore.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="VertexShaderStore.cpp" />
     <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

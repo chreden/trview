@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "RoomNavigator.h"
-#include "ITextureStorage.h"
+#include <trview.app/ITextureStorage.h>
 #include "RoomInfo.h"
 
 #include <trview.ui/GroupBox.h>
@@ -15,14 +15,17 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 130), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
+        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 145), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
         auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), L"Highlight");
         auto flip = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), L"Flip");
+        auto triggers = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), L"Triggers");
+        triggers->set_state(true);
 
         highlight->on_state_changed += on_highlight;
         flip->on_state_changed += on_flip;
+        triggers->on_state_changed += on_show_triggers;
 
-        auto room_box = std::make_unique<GroupBox>(Point(12, 40), Size(120, 80), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
+        auto room_box = std::make_unique<GroupBox>(Point(12, 65), Size(120, 70), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(),StackPanel::Direction::Vertical);
         auto room_number_labels = std::make_unique<StackPanel>(Point(), Size(96, 30), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Horizontal);
         auto room_number = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0);
@@ -49,6 +52,7 @@ namespace trview
 
         _highlight = rooms_groups->add_child(std::move(highlight));
         _flip = rooms_groups->add_child(std::move(flip));
+        _triggers = rooms_groups->add_child(std::move(triggers));
         rooms_groups->add_child(std::move(room_box));
 
         parent.add_child(std::move(rooms_groups));
@@ -85,5 +89,15 @@ namespace trview
     void RoomNavigator::set_flip_enabled(bool enabled)
     {
         _flip->set_enabled(enabled);
+    }
+
+    void RoomNavigator::set_show_triggers(bool show)
+    {
+        _triggers->set_state(show);
+    }
+
+    bool RoomNavigator::show_triggers() const
+    {
+        return _triggers->state();
     }
 }

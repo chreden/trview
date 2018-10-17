@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <vector>
+#include "TransparentTriangle.h"
+#include "PickResult.h"
+#include "Mesh.h"
 
 namespace trview
 {
@@ -32,10 +35,13 @@ namespace trview
         uint16_t _index;
     };
 
+    class TransparencyBuffer;
+    struct ICamera;
+
     class Trigger final 
     {
     public:
-        explicit Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        explicit Trigger(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
 
         uint32_t    number() const;
         uint16_t    room() const;
@@ -46,10 +52,16 @@ namespace trview
         bool        only_once() const;
         uint16_t    flags() const;
         uint8_t     timer() const;
+        uint16_t    sector_id() const;
         const std::vector<Command>& commands() const;
+        const std::vector<TransparentTriangle>& triangles() const;
+        void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
+        std::unique_ptr<Mesh> _mesh;
+        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         TriggerType _type;
         uint32_t _number;
         uint16_t _room;
@@ -58,6 +70,7 @@ namespace trview
         bool _only_once;
         uint16_t _flags;
         uint8_t _timer;
+        uint16_t _sector_id;
     };
 
     /// Get the string representation of the trigger type specified.

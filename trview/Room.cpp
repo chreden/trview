@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Room.h"
-#include "MeshVertex.h"
+#include <trview.app/MeshVertex.h>
 #include "Entity.h"
 
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
 #include "ICamera.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 #include "TransparencyBuffer.h"
 
 #include <SimpleMath.h>
@@ -19,6 +19,11 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        const Color Trigger_Colour{ 1, 0, 1, 0.5f };
+    }
+
     Room::Room(const ComPtr<ID3D11Device>& device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
@@ -58,7 +63,7 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    PickResult Room::pick(const Vector3& position, const Vector3& direction) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -71,13 +76,28 @@ namespace trview
 
         std::vector<PickResult> pick_results;
 
-        // Pick against the entity geometry:
-        for (const auto& entity : _entities)
+        if (include_entities)
         {
-            auto entity_result = entity->pick(position, direction);
-            if (entity_result.hit)
+            // Pick against the entity geometry:
+            for (const auto& entity : _entities)
             {
-                pick_results.push_back(entity_result);
+                auto entity_result = entity->pick(position, direction);
+                if (entity_result.hit)
+                {
+                    pick_results.push_back(entity_result);
+                }
+            }
+        }
+
+        if (include_triggers && pick_results.empty())
+        {
+            for (const auto& trigger : _triggers)
+            {
+                auto trigger_result = trigger.second->pick(position, direction);
+                if (trigger_result.hit)
+                {
+                    pick_results.push_back(trigger_result);
+                }
             }
         }
 
@@ -187,6 +207,11 @@ namespace trview
         _entities.push_back(entity);
     }
 
+    void Room::add_trigger(Trigger* trigger)
+    {
+        _triggers.insert({ trigger->sector_id(), trigger });
+    }
+
     void 
     Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
@@ -199,7 +224,7 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers)
     {
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
@@ -212,6 +237,22 @@ namespace trview
         for (const auto& static_mesh : _static_meshes)
         {
             static_mesh->get_transparent_triangles(transparency, colour);
+        }
+
+        if (include_triggers)
+        {
+            if (!_trigger_geometry_generated)
+            {
+                generate_trigger_geometry();
+            }
+
+            for (const auto& trigger : _triggers)
+            {
+                for (const auto& triangle : trigger.second->triangles())
+                {
+                    transparency.add(triangle);
+                }
+            }
         }
 
         get_contained_transparent_triangles(transparency, camera, colour);
@@ -265,5 +306,120 @@ namespace trview
     const DirectX::BoundingBox& Room::bounding_box() const
     {
         return _bounding_box;
+    }
+
+    void Room::generate_trigger_geometry()
+    {
+        for (auto& trigger_iter : _triggers)
+        {
+            // Information about sector height.
+            auto trigger = trigger_iter.second;
+            auto sector = _sectors[trigger->sector_id()];
+            auto y_bottom = sector->corners();
+
+            // Figure out if we should make the walls based on adjacent triggers.
+            bool pos_x = true, neg_x = true, pos_z = true, neg_z = true;
+
+            if (auto other = get_trigger_sector(trigger->x() + 1, trigger->z()))
+            {
+                auto corners = other->corners();
+                if (y_bottom[3] == corners[1] && y_bottom[2] == corners[0])
+                {
+                    pos_x = false;
+                }
+            }
+
+            if (auto other = get_trigger_sector(static_cast<int32_t>(trigger->x()) - 1, trigger->z()))
+            {
+                auto corners = other->corners();
+                if (y_bottom[1] == corners[3] && y_bottom[0] == corners[2])
+                {
+                    neg_x = false;
+                }
+            }
+
+            if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
+            {
+                auto corners = other->corners();
+                if (y_bottom[2] == corners[3] && y_bottom[0] == corners[1])
+                {
+                    neg_z = false;
+                }
+            }
+
+            if (auto other = get_trigger_sector(trigger->x(), static_cast<int32_t>(trigger->z()) - 1))
+            {
+                auto corners = other->corners();
+                if (y_bottom[3] == corners[2] && y_bottom[1] == corners[0])
+                {
+                    pos_z = false;
+                }
+            }
+
+            // Calculate the X/Z position.
+            const float x = _info.x / 1024.0f + trigger->x() + 0.5f;
+            const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
+            const float height = 0.25f;
+
+            std::array<float, 4> y_top = { 0,0,0,0 };
+            for (int i = 0; i < 4; ++i)
+            {
+                y_top[i] = y_bottom[i] + height;
+            }
+
+            std::vector<TransparentTriangle> triangles;
+
+            // + Y
+            triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Trigger_Colour));
+            triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Trigger_Colour));
+
+            if (pos_x)
+            {
+                // + X
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Trigger_Colour));
+            }
+
+            if (neg_x)
+            {
+                // - X
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Trigger_Colour));
+            }
+
+            if (pos_z)
+            {
+                // + Z
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_top[1], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x + 0.5f, y_top[3], z + 0.5f), Vector3(x - 0.5f, y_bottom[1], z + 0.5f), Vector3(x + 0.5f, y_bottom[3], z + 0.5f), Trigger_Colour));
+            }
+
+            if (neg_z)
+            {
+                // - Z
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_top[2], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Trigger_Colour));
+                triangles.push_back(TransparentTriangle(Vector3(x - 0.5f, y_top[0], z - 0.5f), Vector3(x + 0.5f, y_bottom[2], z - 0.5f), Vector3(x - 0.5f, y_bottom[0], z - 0.5f), Trigger_Colour));
+            }
+
+            trigger->set_triangles(triangles);
+        }
+
+        _trigger_geometry_generated = true;
+    }
+
+    uint32_t Room::get_sector_id(int32_t x, int32_t z) const
+    {
+        return x * _num_z_sectors + (_num_z_sectors - z - 1);
+    }
+
+    Sector* Room::get_trigger_sector(int32_t x, int32_t z)
+    {
+        auto sector_id = get_sector_id(x, z);
+        auto trigger = _triggers.find(sector_id);
+        if (trigger == _triggers.end())
+        {
+            return nullptr;
+        }
+        return _sectors[sector_id].get();
     }
 }

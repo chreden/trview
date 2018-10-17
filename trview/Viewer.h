@@ -101,7 +101,7 @@ namespace trview
         void render_map(); 
         void select_room(uint32_t room);
         void select_item(const Item& item);
-        void select_trigger(const Trigger& trigger);
+        void select_trigger(const Trigger* const trigger);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
@@ -115,6 +115,7 @@ namespace trview
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
+        void set_show_triggers(bool show);
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;

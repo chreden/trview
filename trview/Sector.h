@@ -5,6 +5,7 @@
 #include <utility>
 #include <map>
 #include <set>
+#include <array>
 
 #include "trlevel/trtypes.h"
 #include "trlevel/ILevel.h"
@@ -43,14 +44,17 @@ namespace trview
         uint16_t x() const;
 
         uint16_t z() const;
+
+        std::array<float, 4> corners() const;
     private:
-        bool parse(); 
+        bool parse();
+        void parse_slope();
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
         std::uint8_t _portal, _room_above, _room_below;
 
         // Holds slope data 
-        std::uint16_t _floor_slant, _ceiling_slant; 
+        std::uint16_t _floor_slant{ 0 }, _ceiling_slant{ 0 };
 
         // Holds trigger data 
         TriggerInfo _trigger;
@@ -61,13 +65,16 @@ namespace trview
         // Reference to the level this sector belongs to 
         const trlevel::ILevel &_level;
 
-        // Reference to the base sector structure 
-        const trlevel::tr_room_sector &_sector;
+        // Base sector structure 
+        const trlevel::tr_room_sector _sector;
 
         // X position of the sector in the room.
         uint16_t _x;
 
         // Z position of the sector in the room.
         uint16_t _z;
+
+        // Corner heights
+        std::array<float, 4> _corners;
     };
 }

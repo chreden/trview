@@ -28,6 +28,11 @@ namespace trview
                      { L"Room", std::to_wstring(item.room()) },
                      { L"Type", trigger_type_name(item.type()) }} };
         }
+
+        ui::Listbox::Item create_listbox_item_pointer(const Trigger* const item)
+        {
+            return create_listbox_item(*item);
+        }
     }
 
     using namespace graphics;
@@ -81,7 +86,7 @@ namespace trview
         _token_store.add(triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            load_trigger_details(_all_triggers[index]);
+            load_trigger_details(*_all_triggers[index]);
             if (_sync_trigger)
             {
                 on_trigger_selected(_all_triggers[index]);
@@ -141,7 +146,7 @@ namespace trview
         _token_store.add(command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
-            auto command = _selected_trigger.value().commands()[index];
+            auto command = _selected_trigger.value()->commands()[index];
             if (command.type() == TriggerCommandType::Object)
             {
                 set_track_room(false);
@@ -155,7 +160,7 @@ namespace trview
         return right_panel;
     }
 
-    void TriggersWindow::set_triggers(const std::vector<Trigger>& triggers)
+    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
@@ -165,11 +170,11 @@ namespace trview
     {
     }
 
-    void TriggersWindow::populate_triggers(const std::vector<Trigger>& triggers)
+    void TriggersWindow::populate_triggers(const std::vector<Trigger*>& triggers)
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        std::transform(triggers.begin(), triggers.end(), std::back_inserter(list_items), create_listbox_item);
+        std::transform(triggers.begin(), triggers.end(), std::back_inserter(list_items), create_listbox_item_pointer);
         _triggers_list->set_items(list_items);
     }
 
@@ -179,10 +184,10 @@ namespace trview
         {
             _filter_applied = true;
 
-            std::vector<Trigger> filtered_triggers;
+            std::vector<Trigger*> filtered_triggers;
             for (const auto& trigger : _all_triggers)
             {
-                if (trigger.room() == room)
+                if (trigger->room() == room)
                 {
                     filtered_triggers.push_back(trigger);
                 }
@@ -193,15 +198,15 @@ namespace trview
         _current_room = room;
     }
 
-    void TriggersWindow::set_selected_trigger(const Trigger& trigger)
+    void TriggersWindow::set_selected_trigger(const Trigger* const trigger)
     {
         _selected_trigger = trigger;
         if (_sync_trigger)
         {
-            const auto& list_item = create_listbox_item(trigger);
+            const auto& list_item = create_listbox_item(*trigger);
             if (_triggers_list->set_selected_item(list_item))
             {
-                load_trigger_details(trigger);
+                load_trigger_details(*trigger);
             }
             else
             {

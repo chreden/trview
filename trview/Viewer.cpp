@@ -171,6 +171,7 @@ namespace trview
         _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });
         _token_store.add(_room_navigator->on_highlight += [&](bool) { toggle_highlight(); });
         _token_store.add(_room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); });
+        _token_store.add(_room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); });
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
@@ -232,6 +233,14 @@ namespace trview
                     }
                     break;
                 }
+                case 'T':
+                {
+                    if (_level)
+                    {
+                        set_show_triggers(!_level->show_triggers());
+                    }
+                    break;
+                }
             }
         });
 
@@ -252,6 +261,10 @@ namespace trview
                     else if (_current_pick.type == PickResult::Type::Entity)
                     {
                         select_item(_level->items()[_current_pick.index]);
+                    }
+                    else if (_current_pick.type == PickResult::Type::Trigger)
+                    {
+                        select_trigger(_level->triggers()[_current_pick.index]);
                     }
                     set_camera_mode(CameraMode::Orbit);
                 }
@@ -397,6 +410,8 @@ namespace trview
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
 
+        _level->set_show_triggers(_room_navigator->show_triggers());
+
         // Set up the views.
         auto rooms = _level->room_info();
         _camera.reset();
@@ -491,7 +506,7 @@ namespace trview
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text((result.type == PickResult::Type::Room ? L"R" : L"I") + std::to_wstring(result.index));
+            _picking->set_text((result.type == PickResult::Type::Room ? L"R" : result.type == PickResult::Type::Trigger ? L"T" : L"I") + std::to_wstring(result.index));
         }
         _current_pick = result;
     }
@@ -607,26 +622,27 @@ namespace trview
         }
     }
 
-    void Viewer::select_trigger(const Trigger& trigger)
+    void Viewer::select_trigger(const Trigger* const trigger)
     {
         if (_level)
         {
-            select_room(trigger.room());
+            select_room(trigger->room());
 
-            const auto room = _level->room(trigger.room());
+            const auto room = _level->room(trigger->room());
             const auto room_info = room->info();
 
             // Calculate the X/Z position - the Y must be determined by casting a ray from above 
             // directly down, to see what it hits. If it hits nothing, use the centre of the room.
-            const float x = room_info.x / 1024.0f + trigger.x() + 0.5f;
-            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger.z()) + 0.5f;
+            const float x = room_info.x / 1024.0f + trigger->x() + 0.5f;
+            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
 
             using namespace DirectX::SimpleMath;
-            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0));
+            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
             const float y = pick.hit ? pick.position.y : room->centre().y;
 
             _target = DirectX::SimpleMath::Vector3(x, y, z);
 
+            _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
         }
     }
@@ -695,5 +711,14 @@ namespace trview
         });
 
         _token_store.add(_camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); });
+    }
+
+    void Viewer::set_show_triggers(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_triggers(show);
+            _room_navigator->set_show_triggers(show);
+        }
     }
 }

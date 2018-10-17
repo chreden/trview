@@ -6,7 +6,7 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
-#include "ITextureStorage.h"
+#include <trview.app/ITextureStorage.h>
 
 namespace trview
 {

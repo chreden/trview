@@ -47,6 +47,11 @@ namespace trview
         /// @remarks This event is not raised by the set_flip function.
         Event<bool> on_flip;
 
+        /// Event raised when the user toggles the trigger visibility. The boolean passed as a parameter when this
+        /// event is raised indicates whether triggers are visible.
+        /// @remarks This event is not raised by the set_show_triggers function.
+        Event<bool> on_show_triggers;
+
         /// Set the room information for the current room. This will be used to populate the labels (eg position).
         /// @param room_info The room information.
         void set_room_info(RoomInfo room_info);
@@ -70,9 +75,18 @@ namespace trview
         /// Set whether the flip control is enabled or disabled.
         /// @param enabled Whether the control is enabled.
         void set_flip_enabled(bool enabled);
+
+        /// Set whether triggers are visible or not.
+        /// @param show Whether the triggers are visible.
+        void set_show_triggers(bool show);
+
+        /// Get the current value of the show triggers checkbox.
+        /// @returns The current value of the checkbox.
+        bool show_triggers() const;
     private:
         ui::Checkbox*      _highlight;
         ui::Checkbox*      _flip;
+        ui::Checkbox*      _triggers;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;

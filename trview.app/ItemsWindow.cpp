@@ -44,7 +44,7 @@ namespace trview
         populate_items(items);
     }
 
-    void ItemsWindow::set_triggers(const std::vector<Trigger>& triggers)
+    void ItemsWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
         _trigger_list->set_items({});
@@ -245,9 +245,9 @@ namespace trview
             triggers.push_back(
                 {
                     {
-                        { L"#", std::to_wstring(trigger.number()) },
-                        { L"Room", std::to_wstring(trigger.room()) },
-                        { L"Type", trigger_type_name(trigger.type()) },
+                        { L"#", std::to_wstring(trigger->number()) },
+                        { L"Room", std::to_wstring(trigger->room()) },
+                        { L"Type", trigger_type_name(trigger->type()) },
                     }
                 });
         }

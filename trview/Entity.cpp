@@ -4,10 +4,11 @@
 #include <stack>
 #include <algorithm>
 
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
 #include "ICamera.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
+#include "TransparencyBuffer.h"
 
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>

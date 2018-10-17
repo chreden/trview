@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-#include "PickResult.h"
+#include <trview.app/PickResult.h>
 
 namespace trlevel
 {

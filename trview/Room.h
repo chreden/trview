@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <set>
 #include <memory>
+#include <optional>
 
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -18,9 +19,9 @@
 
 #include "StaticMesh.h"
 #include "TransparencyBuffer.h"
-#include "Mesh.h"
+#include <trview.app/Mesh.h>
 #include <trview\Sector.h>
-#include "PickResult.h"
+#include <trview.app/PickResult.h>
 
 namespace trview
 {
@@ -69,7 +70,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities = true, bool include_triggers = true) const;
 
         // Render the level geometry and the objects contained in this room.
         // context: The D3D context.
@@ -84,14 +85,19 @@ namespace trview
         // Entity: The entity to add.
         void add_entity(Entity* entity);
 
+        /// Add the specified trigger to the room.
+        /// @paramt trigger The trigger to add.
+        void add_trigger(Trigger* trigger);
+
         // Returns all sectors 
         const inline std::map<int, std::shared_ptr<Sector>>& sectors() const { return _sectors; }
 
-        // Add the transparent triangles to the specified transparency buffer.
-        // transparency: The buffer to add triangles to.
-        // camera: The current viewpoint.
-        // selected: The current selection mode.
-        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
+        /// Add the transparent triangles to the specified transparency buffer.
+        /// @param transparency The buffer to add triangles to.
+        /// @param camera The current viewpoint.
+        /// @param selected The current selection mode.
+        /// @param include_triggers Whether to render triggers.
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers);
 
         // Add the transparent triangles for entities that are contained inside this room. This is called automatically
         // if get_transparent_triangles is used.
@@ -133,6 +139,9 @@ namespace trview
         void render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_trigger_geometry();
+        Sector*  get_trigger_sector(int32_t x, int32_t z);
+        uint32_t get_sector_id(int32_t x, int32_t z) const;
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
@@ -155,5 +164,8 @@ namespace trview
 
         int16_t              _alternate_room;
         AlternateMode        _alternate_mode;
+
+        std::unordered_map<uint32_t, Trigger*> _triggers;
+        bool _trigger_geometry_generated{ false };
     };
 }

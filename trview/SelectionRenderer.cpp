@@ -4,12 +4,15 @@
 #include <trview.graphics/IShader.h>
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/VertexShaderStore.h>
+#include <trview.graphics/PixelShaderStore.h>
 #include <SimpleMath.h>
+#include <trview.app/Trigger.h>
 
 #include "Entity.h"
 #include "TransparencyBuffer.h"
 #include "ICamera.h"
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -22,9 +25,21 @@ namespace trview
     {
         struct SelectionVertex
         {
-            DirectX::SimpleMath::Vector3 pos;
-            DirectX::SimpleMath::Vector2 uv;
+            Vector3 pos;
+            Vector2 uv;
         };
+
+        __declspec(align(16))
+        struct PS_Data
+        {
+            float pixel_width;
+            float pixel_height;
+            double _; // Padding.
+            Color outline_colour;
+        }; 
+
+        const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
+        const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
     }
 
     SelectionRenderer::SelectionRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage)
@@ -87,7 +102,7 @@ namespace trview
         memset(&scale_desc, 0, sizeof(scale_desc));
 
         scale_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        scale_desc.ByteWidth = sizeof(float) * 4;
+        scale_desc.ByteWidth = sizeof(PS_Data);
         scale_desc.Usage = D3D11_USAGE_DYNAMIC;
         scale_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -95,6 +110,26 @@ namespace trview
     }
 
     void SelectionRenderer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Entity& selected_item)
+    {
+        render(context, camera, texture_storage, Item_Outline,
+            [&](auto& context, auto& camera, auto& texture_storage, auto& color) { selected_item.render(context, camera, texture_storage, color); },
+            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); });
+    }
+
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Trigger& selected_trigger)
+    {
+        render(context, camera, texture_storage, Trigger_Outline,
+            [&](auto&, auto&, auto&, auto&) {},
+            [&](auto& camera, auto& transparency, auto& color) 
+        {
+            for (auto& triangle : selected_trigger.triangles())
+            {
+                transparency.add(triangle.transform(Matrix::Identity, color));
+            }
+        });
+    }
+
+    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& outline_colour, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback)
     {
         ComPtr<ID3D11Device> device;
         context->GetDevice(&device);
@@ -119,11 +154,11 @@ namespace trview
             _texture->apply(context);
 
             // Draw the regular faces of the item with a black colouring.
-            selected_item.render(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            solid_callback(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
-            selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
+            transparent_callback(camera, *_transparency, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.position());
             _transparency->render(context, camera, texture_storage, true);
         }
@@ -152,13 +187,7 @@ namespace trview
             D3D11_MAPPED_SUBRESOURCE mapped_resource;
             memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-            struct Data
-            {
-                float pixel_width;
-                float pixel_height;
-            };
-
-            Data data{ 1.0f / viewport.Width, 1.0f / viewport.Height };
+            PS_Data data{ 1.0f / viewport.Width, 1.0f / viewport.Height, 0, outline_colour };
             context->Map(_scale_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
             memcpy(mapped_resource.pData, &data, sizeof(data));
             context->Unmap(_scale_buffer.Get(), 0);
@@ -167,8 +196,12 @@ namespace trview
         // Render the texture to the screen using the pixel shader and vertex shader. The vertex shader doesn't do anything
         // special, but the pixel shader will find where the red stops and make a white border and remove the black parts of
         // the image (so the actual item can be seen underneath).
+        VertexShaderStore vs_store(context);
+        PixelShaderStore ps_store(context);
+
         _vertex_shader->apply(context);
         _pixel_shader->apply(context);
+        
         context->PSSetShaderResources(0, 1, _texture->texture().view().GetAddressOf());
         UINT stride = sizeof(SelectionVertex);
         UINT offset = 0;
@@ -178,5 +211,7 @@ namespace trview
         context->PSSetConstantBuffers(0, 1, _scale_buffer.GetAddressOf());
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
         context->DrawIndexed(4, 0, 0);
+
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ITextureStorage.h"
+#include <trview.app/ITextureStorage.h>
 #include <unordered_map>
 #include <wrl/client.h>
 

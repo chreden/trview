@@ -30,13 +30,13 @@ namespace trview
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
-        void set_triggers(const std::vector<Trigger>& triggers);
+        void set_triggers(const std::vector<Trigger*>& triggers);
 
         /// Clear the currently selected trigger from the details panel.
         void clear_selected_trigger();
 
         /// Event raised when a trigger is selected in the list.
-        Event<Trigger> on_trigger_selected;
+        Event<Trigger*> on_trigger_selected;
 
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
@@ -47,13 +47,13 @@ namespace trview
 
         /// Set the selected item.
         /// @param item The selected item.
-        void set_selected_trigger(const Trigger& item);
+        void set_selected_trigger(const Trigger* const item);
 
         void set_items(const std::vector<Item>& items);
     protected:
         virtual void update_layout() override;
     private:
-        void populate_triggers(const std::vector<Trigger>& triggers);
+        void populate_triggers(const std::vector<Trigger*>& triggers);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         void set_track_room(bool value);
@@ -67,7 +67,7 @@ namespace trview
         ui::Listbox*  _command_list;
 
         std::vector<Item> _all_items;
-        std::vector<Trigger> _all_triggers;
+        std::vector<Trigger*> _all_triggers;
 
         /// Whether the trigger window is tracking the current room.
         bool _track_room{ false };
@@ -76,6 +76,6 @@ namespace trview
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
-        std::optional<Trigger> _selected_trigger;
+        std::optional<const Trigger*> _selected_trigger;
     };
 }
