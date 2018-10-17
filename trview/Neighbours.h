@@ -15,6 +15,7 @@ namespace trview
     {
         class Control;
         class Checkbox;
+        class NumericUpDown;
     }
 
     struct ITextureStorage;
@@ -41,7 +42,12 @@ namespace trview
         /// Set whether neighbours are enabled. This will not raise the on_enabled_changed event.
         /// @param value Whether neighbours are enabled.
         void set_enabled(bool value);
+
+        /// Set the value of the depth control. This will not raise the on_depth_changed event.
+        /// @param value The neighbour depth to use.
+        void set_depth(int32_t value);
     private:
-        ui::Checkbox* _enabled;
+        ui::Checkbox*      _enabled;
+        ui::NumericUpDown* _depth;
     };
 }

@@ -418,6 +418,7 @@ namespace trview
         }
 
         _neighbours->set_enabled(false);
+        _neighbours->set_depth(1);
 
         // Strip the last part of the path away.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));

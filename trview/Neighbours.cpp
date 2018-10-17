@@ -24,7 +24,7 @@ namespace trview
         depth->on_value_changed += on_depth_changed;
 
         _enabled = group->add_child(std::move(enabled));
-        group->add_child(std::move(depth));
+        _depth = group->add_child(std::move(depth));
         parent.add_child(std::move(group));
     }
 
@@ -33,5 +33,10 @@ namespace trview
     void Neighbours::set_enabled(bool value)
     {
         _enabled->set_state(value);
+    }
+
+    void Neighbours::set_depth(int32_t value)
+    {
+        _depth->set_value(value);
     }
 }
