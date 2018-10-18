@@ -2,6 +2,11 @@
 
 namespace trview
 {
+    Colour::Colour(float r, float g, float b)
+        : Colour(1.0f, r, g, b)
+    {
+    }
+
     Colour::Colour(float a, float r, float g, float b)
         : a(a), r(r), g(g), b(b)
     {
