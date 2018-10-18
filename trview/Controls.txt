@@ -4,6 +4,8 @@
 
 CTRL + O    Open file
 CTRL + R    Show 'go to room' box
+CTRL + T    New Triggers window
+CTRL + I    New Items window
 F1          Toggle settings window
 ENTER       Toggle room highlighting
 INSERT      Reset camera
@@ -11,6 +13,7 @@ F           Free camera
 O           Orbit camera
 X           Axis camera
 P           Toggle flipmap
+T           Toggle trigger visibility
 Left mouse  Click on a room to go to that room
 
 == Free View ==
@@ -69,13 +72,28 @@ Movement Speed      How fast the camera moves in free mode
 == Items Window ==
 
 Track Room          Whether to show the items that are in the currently selected room
+Sync Item           Whether an the item selected in the window will be synced with the item selected in the view (bidirectional)
 
 The column headers can be clicked to sort the items by that column. Clicking an item in the list will focus the camera on it in the viewer. The details of the item will be displayed in the Item Details panel.
+The 'Triggered By' list shows the triggers that can trigger the item. Clicking a trigger in the list will select that trigger.
+
+<</>>               This button collapses or expands the side panel.
 
 Multiple Item windows can be active at once.
 
-=== Weird old stuff ===
+== Triggers Window ==
 
-F2 = Toggle texture window
-PAGE UP = Previous texture (in texture window)
-PAGE DOWN = Next texture (in texture window)
+Track Room          Whether to show the triggers that are in the currently selected room
+Sync Item           Whether an the trigger selected in the window will be synced with the item selected in the view (bidirectional)
+
+The column headers can be clicked to sort the items by that column. Clicking a trigger in the list will focus the camera on it in the viewer. The details of the trigger will be displayed in the Trigger Details panel.
+The 'Commands' list shows the commands carried out when the trigger executes. Clicking on 'Object' or 'Look at Item' commands will select the item.
+
+<</>>               This button collapses or expands the side panel.
+
+Multiple Trigger windows can be active at once.
+
+== Minimap ==
+
+Left click          If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
+Right click         Goes to the room above, if one is present.
