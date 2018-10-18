@@ -147,7 +147,7 @@ namespace trview
         {
             auto index = std::stoi(trigger_item.value(L"#"));
             auto command = _selected_trigger.value()->commands()[index];
-            if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object)
+            if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
             {
                 set_track_room(false);
                 on_item_selected(_all_items[command.index()]);
@@ -281,7 +281,11 @@ namespace trview
         {
             if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object)
             {
-                return _all_items[command.index()].type();
+                if (command.index() < _all_items.size())
+                {
+                    return _all_items[command.index()].type();
+                }
+                return std::wstring(L"No Item");
             }
             return std::wstring();
         };
