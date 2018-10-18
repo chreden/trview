@@ -18,7 +18,7 @@ namespace trview
     {
     public:
         // Constructs sector object and parses floor data automatically 
-        Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id);
+        Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number);
 
         // Returns the id of the room that this floor data points to 
         std::uint16_t portal() const; 
@@ -46,6 +46,8 @@ namespace trview
         uint16_t z() const;
 
         std::array<float, 4> corners() const;
+
+        uint32_t room() const;
     private:
         bool parse();
         void parse_slope();
@@ -76,5 +78,7 @@ namespace trview
 
         // Corner heights
         std::array<float, 4> _corners;
+
+        uint32_t _room;
     };
 }
