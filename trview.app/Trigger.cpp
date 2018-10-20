@@ -34,15 +34,15 @@ namespace trview
         {
             { TriggerCommandType::Object, L"Object" },
             { TriggerCommandType::Camera, L"Camera" },
-            { TriggerCommandType::UnderwaterCurrent, L"Underwater Current" },
+            { TriggerCommandType::UnderwaterCurrent, L"Current" },
             { TriggerCommandType::FlipMap, L"Flip Map" },
             { TriggerCommandType::FlipOn, L"Flip On" },
             { TriggerCommandType::FlipOff, L"Flip Off" },
             { TriggerCommandType::LookAtItem, L"Look at Item" },
             { TriggerCommandType::EndLevel, L"End Level" },
-            { TriggerCommandType::PlaySoundtrack, L"Play Soundtrack" },
+            { TriggerCommandType::PlaySoundtrack, L"Music" },
             { TriggerCommandType::Flipeffect, L"Flipeffect" },
-            { TriggerCommandType::SecretFound, L"Secret Found" },
+            { TriggerCommandType::SecretFound, L"Secret" },
             { TriggerCommandType::ClearBodies, L"Clear Bodies" }
         };
     }
