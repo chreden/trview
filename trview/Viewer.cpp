@@ -278,17 +278,32 @@ namespace trview
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
                     if (sector)
                     {
-                        if (sector->flags & SectorFlag::Portal)
+                        // Select the trigger (if it is a trigger).
+                        const auto triggers = _level->triggers();
+                        auto trigger = std::find_if(triggers.begin(), triggers.end(),
+                            [&](auto t)
                         {
-                            select_room(sector->portal());
+                            return t->room() == sector->room() && t->sector_id() == sector->id();
+                        });
+
+                        if (trigger == triggers.end() || GetAsyncKeyState(VK_CONTROL))
+                        {
+                            if (sector->flags & SectorFlag::Portal)
+                            {
+                                select_room(sector->portal());
+                            }
+                            else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                            {
+                                select_room(sector->room_below());
+                            }
+                            else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                            {
+                                select_room(sector->room_above());
+                            }
                         }
-                        else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                        else
                         {
-                            select_room(sector->room_below());
-                        }
-                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
-                        {
-                            select_room(sector->room_above());
+                            select_trigger(*trigger);
                         }
                     }
                 }

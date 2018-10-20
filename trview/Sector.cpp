@@ -3,8 +3,8 @@
 
 namespace trview
 {
-    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id)
-        : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below)
+    Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number)
+        : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
     {
         _x = sector_id / room.num_z_sectors;
         _z = room.num_z_sectors - (sector_id % room.num_z_sectors) - 1;
@@ -235,6 +235,11 @@ namespace trview
     std::array<float, 4> Sector::corners() const
     {
         return _corners;
+    }
+
+    uint32_t Sector::room() const
+    {
+        return _room;
     }
 }
 
