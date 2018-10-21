@@ -1,4 +1,5 @@
 #include "Toolbar.h"
+#include <trview.ui/Button.h>
 
 using namespace trview::ui;
 
@@ -7,7 +8,7 @@ namespace trview
     Toolbar::Toolbar(Control& control)
     {
         // Create a panel at the bottom of the parent control - have to add it to the control first so we can find out where to put it.
-        auto toolbar = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour(0.5f, 0.5f, 0.5f), Size(2,0), StackPanel::Direction::Horizontal);
+        auto toolbar = std::make_unique<StackPanel>(Point(), Size(100, 40), Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(5,5), StackPanel::Direction::Horizontal);
         _toolbar = control.add_child(std::move(toolbar));
 
         // Put the toolbar in the middle bottom of the window.
@@ -18,7 +19,23 @@ namespace trview
                       size.height - _toolbar->size().height));
         };
 
+        // Resize the toolbar.
         set_position(control.size());
         _token_store.add(control.on_size_changed += set_position);
+        _token_store.add(_toolbar->on_size_changed += 
+            [=](const auto&) 
+        {
+            set_position(_toolbar->parent()->size());
+        });
+    }
+
+    void Toolbar::add_tool(const std::wstring& name)
+    {
+        auto tool = std::make_unique<Button>(Point(), Size(32, 32), name);
+        _token_store.add(tool->on_click += [=]()
+        {
+            on_tool_clicked(name);
+        });
+        _toolbar->add_child(std::move(tool));
     }
 }

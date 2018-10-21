@@ -119,6 +119,7 @@ namespace trview
         _picking = _control->add_child(std::move(picking));
 
         _toolbar = std::make_unique<Toolbar>(*_control);
+        _toolbar->add_tool(L"M");
 
         auto measure_label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         _measure_label = _control->add_child(std::move(measure_label));
