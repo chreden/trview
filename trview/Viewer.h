@@ -30,6 +30,7 @@
 #include <trview.app/FileDropper.h>
 #include <trview.app/ItemsWindowManager.h>
 #include <trview.app/TriggersWindowManager.h>
+#include <trview.app/Toolbar.h>
 
 namespace trview
 {
@@ -155,6 +156,7 @@ namespace trview
 
         ui::Label* _measure_label;
         PickResult _previous_pick;
+        std::unique_ptr<Toolbar> _toolbar;
     };
 }
 

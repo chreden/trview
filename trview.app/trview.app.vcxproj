@@ -28,6 +28,7 @@
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Trigger.h" />

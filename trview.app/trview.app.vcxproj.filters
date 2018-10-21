@@ -37,6 +37,9 @@
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
+    <ClCompile Include="Toolbar.cpp">
+      <Filter>Toolbar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -83,6 +86,9 @@
     <ClInclude Include="ITextureStorage.h">
       <Filter>Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Toolbar.h">
+      <Filter>Toolbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -99,6 +105,9 @@
     </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Toolbar">
+      <UniqueIdentifier>{bf4d0359-b434-41b1-a3ba-f5400a2b5faa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
