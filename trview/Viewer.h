@@ -166,8 +166,10 @@ namespace trview
         Tool _active_tool{ Tool::None };
 
         // Measure tool settings (temporary).
-        std::optional<PickResult> _measure_pick;
+        std::optional<PickResult> _measure_start;
+        std::optional<PickResult> _measure_end;
         ui::Label*                _measure_label;
+        std::unique_ptr<Mesh>     _measure_mesh;
     };
 }
 

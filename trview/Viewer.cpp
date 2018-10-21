@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include <directxmath.h>
 
 #include <trlevel/trlevel.h>
@@ -125,7 +127,8 @@ namespace trview
             if (tool == L"Measure")
             {
                 _active_tool = Tool::Measure;
-                _measure_pick.reset();
+                _measure_start.reset();
+                _measure_end.reset();
             }
         });
 
@@ -275,14 +278,15 @@ namespace trview
                 {
                     if (_active_tool == Tool::Measure)
                     {
-                        if (!_measure_pick.has_value())
+                        if (!_measure_start.has_value())
                         {
-                            _measure_pick = _current_pick;
+                            _measure_start = _current_pick;
                         }
                         else
                         {
                             // Create a measurement (store it somewhere).
                             _active_tool = Tool::None;
+                            _measure_end = _current_pick;
                         }
                     }
                     else
@@ -553,15 +557,21 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            if (_active_tool == Tool::Measure && _measure_pick.has_value())
-            {
-                _measure_label->set_text(std::to_wstring((_current_pick.position - _measure_pick.value().position).Length()));
-            }
-
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text((result.type == PickResult::Type::Room ? L"R-" : result.type == PickResult::Type::Trigger ? L"T-" : L"I-") + std::to_wstring(result.index));
             _picking->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
+
+            if (_active_tool == Tool::Measure && _measure_start.has_value())
+            {
+                _measure_end = _current_pick;
+
+                std::wstringstream stream;
+                stream << std::setprecision(3) << (_current_pick.position - _measure_start.value().position).Length();
+                auto dist = stream.str();
+                _measure_label->set_text(dist);
+                _picking->set_text(dist);
+            }
         }
         _current_pick = result;
     }
@@ -576,6 +586,54 @@ namespace trview
                 _camera.set_target(_target);
             }
             _level->render(_device.context(), current_camera());
+
+            // Render measurement tool.
+            if (_measure_start.has_value())
+            {
+                if (!_measure_mesh)
+                {
+                    using namespace DirectX::SimpleMath;
+
+                    const std::vector<MeshVertex> vertices
+                    {
+                        { { 0.5f, 0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { 0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { -0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { -0.5f, 0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { 0.5f, -0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { 0.5f, -0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { -0.5f, -0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { -0.5f, -0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
+                    };
+
+                    const std::vector<uint32_t> indices
+                    {
+                        0, 1, 2, 2, 3, 0, // + y
+                        0, 4, 5, 5, 1, 0, // + x
+                        2, 3, 7, 7, 6, 2, // - x
+                        0, 4, 3, 3, 4, 7, // + z
+                        2, 1, 5, 5, 6, 2, // - z
+                        4, 5, 6, 6, 7, 4 // - y
+                    };
+
+                    _measure_mesh = std::make_unique<Mesh>(_device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+                }
+
+                using namespace DirectX::SimpleMath;
+
+                auto to = _measure_end.value().position - _measure_start.value().position;
+                int blobs = to.Length() / 0.25f;
+                to.Normalize();
+                for (int i = 0; i < blobs; ++i)
+                {
+                    auto pos = _measure_start.value().position + to * 0.25f * i;
+                    auto wvp = Matrix::CreateScale(0.1f) * Matrix::CreateTranslation(pos) * current_camera().view_projection();
+                    _measure_mesh->render(_device.context(), wvp, *_level->_texture_storage, Color(1.0f, 1.0f, 1.0f));
+                }
+
+                auto wvp = Matrix::CreateScale(0.1f) * Matrix::CreateTranslation(_measure_end.value().position) * current_camera().view_projection();
+                _measure_mesh->render(_device.context(), wvp, *_level->_texture_storage, Color(1.0f, 1.0f, 1.0f));
+            }
         }
     }
 

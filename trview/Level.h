@@ -169,7 +169,9 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
+        public:
         std::unique_ptr<ILevelTextureStorage> _texture_storage;
+        private:
         std::unique_ptr<IMeshStorage> _mesh_storage;
         std::unique_ptr<TransparencyBuffer> _transparency;
 
