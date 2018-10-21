@@ -19,7 +19,8 @@ namespace trview
 
         /// Add a new tool to the toolbar.
         /// @param name The name of the tool
-        void add_tool(const std::wstring& name);
+        /// @param text The text to show in the button.
+        void add_tool(const std::wstring& name, const std::wstring& text);
 
         /// Event raised when a tool button is clicked.
         /// @remarks The name of the tool is passed as a parameter.

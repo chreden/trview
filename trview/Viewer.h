@@ -154,9 +154,20 @@ namespace trview
         TokenStore _token_store;
         DirectX::SimpleMath::Vector3 _target;
 
-        ui::Label* _measure_label;
-        PickResult _previous_pick;
+        // Tools:
         std::unique_ptr<Toolbar> _toolbar;
+
+        enum class Tool
+        {
+            None,
+            Measure
+        };
+
+        Tool _active_tool{ Tool::None };
+
+        // Measure tool settings (temporary).
+        std::optional<PickResult> _measure_pick;
+        ui::Label*                _measure_label;
     };
 }
 

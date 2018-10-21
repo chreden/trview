@@ -119,7 +119,15 @@ namespace trview
         _picking = _control->add_child(std::move(picking));
 
         _toolbar = std::make_unique<Toolbar>(*_control);
-        _toolbar->add_tool(L"M");
+        _toolbar->add_tool(L"Measure", L"|....|");
+        _token_store.add(_toolbar->on_tool_clicked += [this](const std::wstring& tool)
+        {
+            if (tool == L"Measure")
+            {
+                _active_tool = Tool::Measure;
+                _measure_pick.reset();
+            }
+        });
 
         auto measure_label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1, 0.5f, 0.5f, 0.5f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         _measure_label = _control->add_child(std::move(measure_label));
@@ -265,21 +273,34 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    _previous_pick = _current_pick;
-
-                    if (_current_pick.type == PickResult::Type::Room)
+                    if (_active_tool == Tool::Measure)
                     {
-                        select_room(_current_pick.index);
+                        if (!_measure_pick.has_value())
+                        {
+                            _measure_pick = _current_pick;
+                        }
+                        else
+                        {
+                            // Create a measurement (store it somewhere).
+                            _active_tool = Tool::None;
+                        }
                     }
-                    else if (_current_pick.type == PickResult::Type::Entity)
+                    else
                     {
-                        select_item(_level->items()[_current_pick.index]);
+                        if (_current_pick.type == PickResult::Type::Room)
+                        {
+                            select_room(_current_pick.index);
+                        }
+                        else if (_current_pick.type == PickResult::Type::Entity)
+                        {
+                            select_item(_level->items()[_current_pick.index]);
+                        }
+                        else if (_current_pick.type == PickResult::Type::Trigger)
+                        {
+                            select_trigger(_level->triggers()[_current_pick.index]);
+                        }
+                        set_camera_mode(CameraMode::Orbit);
                     }
-                    else if (_current_pick.type == PickResult::Type::Trigger)
-                    {
-                        select_trigger(_level->triggers()[_current_pick.index]);
-                    }
-                    set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
                 {
@@ -532,7 +553,10 @@ namespace trview
         _picking->set_visible(result.hit);
         if (result.hit)
         {
-            _measure_label->set_text(std::to_wstring((_current_pick.position - _previous_pick.position).Length()));
+            if (_active_tool == Tool::Measure && _measure_pick.has_value())
+            {
+                _measure_label->set_text(std::to_wstring((_current_pick.position - _measure_pick.value().position).Length()));
+            }
 
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));

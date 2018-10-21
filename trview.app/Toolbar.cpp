@@ -29,9 +29,9 @@ namespace trview
         });
     }
 
-    void Toolbar::add_tool(const std::wstring& name)
+    void Toolbar::add_tool(const std::wstring& name, const std::wstring& text)
     {
-        auto tool = std::make_unique<Button>(Point(), Size(32, 32), name);
+        auto tool = std::make_unique<Button>(Point(), Size(32, 32), text);
         _token_store.add(tool->on_click += [=]()
         {
             on_tool_clicked(name);
