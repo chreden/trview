@@ -127,10 +127,15 @@ namespace trview
             if (tool == L"Measure")
             {
                 _active_tool = Tool::Measure;
+                _measure_label->set_visible(false);
                 _measure_start.reset();
                 _measure_end.reset();
             }
         });
+
+        auto measure_label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        measure_label->set_visible(false);
+        _measure_label = _control->add_child(std::move(measure_label));
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
@@ -252,6 +257,13 @@ namespace trview
                     }
                     break;
                 }
+                case 'M':
+                {
+                    _active_tool = Tool::Measure;
+                    _measure_start.reset();
+                    _measure_end.reset();
+                    break;
+                }
                 case 'T':
                 {
                     if (_level)
@@ -284,6 +296,7 @@ namespace trview
                             // Create a measurement (store it somewhere).
                             _active_tool = Tool::None;
                             _measure_end = _current_pick;
+                            _measure_label->set_visible(true);
                         }
                     }
                     else
@@ -565,7 +578,10 @@ namespace trview
 
                 std::wstringstream stream;
                 stream << std::setprecision(3) << (_current_pick.position - _measure_start.value().position).Length();
+
                 auto dist = stream.str();
+                _measure_label->set_text(dist);
+
                 _picking->set_text(dist);
             }
         }
@@ -592,7 +608,7 @@ namespace trview
 
                     const std::vector<MeshVertex> vertices
                     {
-                        { { 0.5f, 0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                        { { 0.5f, 0.5f, 0.5f },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
                         { { 0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
                         { { -0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
                         { { -0.5f, 0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
@@ -618,10 +634,11 @@ namespace trview
                 using namespace DirectX::SimpleMath;
 
                 auto to = _measure_end.value().position - _measure_start.value().position;
-                const auto scale = Matrix::CreateScale(0.1f);
+                const auto scale = Matrix::CreateScale(0.05f);
                 const auto view_projection = current_camera().view_projection();
 
                 int blobs = to.Length() / 0.25f;
+
                 to.Normalize();
                 for (int i = 0; i <= blobs; ++i)
                 {
@@ -632,6 +649,13 @@ namespace trview
 
                 auto wvp = scale * Matrix::CreateTranslation(_measure_end.value().position) * view_projection;
                 _measure_mesh->render(_device.context(), wvp, *_level->_texture_storage, Color(1.0f, 1.0f, 1.0f));
+
+                auto halfway = Vector3::Lerp(_measure_start.value().position, _measure_end.value().position, 0.5f);
+                const auto window_size = _window.size();
+
+                Vector3 point = XMVector3Project(halfway, 0, 0, window_size.width, window_size.height, 0, 1.0f, current_camera().projection(), current_camera().view(), Matrix::Identity);
+
+                _measure_label->set_position(Point(point.x, point.y));
             }
         }
     }
