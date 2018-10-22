@@ -28,7 +28,7 @@ namespace trview
         Measure(const graphics::Device& device, ui::Control& ui);
 
         /// Start measuring or reset the current measurement.
-        void start();
+        void reset();
 
         /// Add the position to the measurement.
         /// @param position The position to add to the measurement.

@@ -42,7 +42,7 @@ namespace trview
         _label = ui.add_child(std::move(label));
     }
 
-    void Measure::start()
+    void Measure::reset()
     {
         _start.reset();
         _end.reset();

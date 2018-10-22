@@ -129,7 +129,7 @@ namespace trview
             if (tool == L"Measure")
             {
                 _active_tool = Tool::Measure;
-                _measure->start();
+                _measure->reset();
             }
         });
 
@@ -488,6 +488,7 @@ namespace trview
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _level_info->set_level(name);
         _level_info->set_level_version(_current_level->get_version());
+        _measure->start();
     }
 
     void Viewer::render()
