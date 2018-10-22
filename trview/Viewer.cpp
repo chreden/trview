@@ -560,7 +560,10 @@ namespace trview
             if (_active_tool == Tool::Measure)
             {
                 _measure->set(result.position);
-                _picking->set_text(_measure->distance());
+                if (_measure->measuring())
+                {
+                    _picking->set_text(_measure->distance());
+                }
             }
         }
         _current_pick = result;

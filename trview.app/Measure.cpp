@@ -116,4 +116,9 @@ namespace trview
     {
         return _label->text();
     }
+
+    bool Measure::measuring() const
+    {
+        return _start.has_value() && _end.has_value();
+    }
 }

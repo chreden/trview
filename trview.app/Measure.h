@@ -48,6 +48,10 @@ namespace trview
         /// Get the current text version of the distance measured.
         /// @returns The text version of the distance.
         std::wstring distance() const;
+
+        /// Get whether a distance is actively being measured.
+        /// @returns True if start and end is set.
+        bool measuring() const;
     private:
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
