@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SimpleMath.h>
+#include <trview.common/Size.h>
 
 namespace trview
 {
@@ -23,6 +24,8 @@ namespace trview
         virtual float rotation_yaw() const = 0;
 
         virtual float rotation_pitch() const = 0;
+
+        virtual Size view_size() const = 0;
 
         virtual void set_rotation_yaw(float rotation) = 0;
 

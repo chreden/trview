@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TransparencyBuffer.h"
 
-#include "ICamera.h"
+#include <trview.app/ICamera.h>
 #include <trview.app/ILevelTextureStorage.h>
 #include <trview.app/MeshVertex.h>
 

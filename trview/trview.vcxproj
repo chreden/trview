@@ -190,7 +190,6 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
-    <ClInclude Include="ICamera.h" />
     <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelInfo.h" />
@@ -227,7 +226,6 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
-    <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelInfo.cpp" />

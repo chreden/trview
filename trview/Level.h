@@ -104,6 +104,8 @@ namespace trview
         bool show_triggers() const;
 
         void set_selected_trigger(uint32_t number);
+
+        const ILevelTextureStorage& texture_storage() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
@@ -169,9 +171,7 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
-        public:
         std::unique_ptr<ILevelTextureStorage> _texture_storage;
-        private:
         std::unique_ptr<IMeshStorage> _mesh_storage;
         std::unique_ptr<TransparencyBuffer> _transparency;
 

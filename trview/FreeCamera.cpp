@@ -14,6 +14,7 @@ namespace trview
     void FreeCamera::calculate_projection_matrix(const Size& size)
     {
         using namespace DirectX;
+        _view_size = size;
         float aspect_ratio = size.width / size.height;
         _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
@@ -135,5 +136,10 @@ namespace trview
     void FreeCamera::set_view_size(const Size& size)
     {
         calculate_projection_matrix(size);
+    }
+
+    Size FreeCamera::view_size() const
+    {
+        return _view_size;
     }
 }
