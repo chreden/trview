@@ -168,7 +168,6 @@ namespace trview
         // Measure tool settings (temporary).
         std::optional<PickResult> _measure_start;
         std::optional<PickResult> _measure_end;
-        ui::Label*                _measure_label;
         std::unique_ptr<Mesh>     _measure_mesh;
     };
 }
