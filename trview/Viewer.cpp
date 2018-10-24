@@ -280,9 +280,12 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    if (_active_tool == Tool::Measure && _measure->add(_current_pick.position))
+                    if (_active_tool == Tool::Measure)
                     {
-                        _active_tool = Tool::None;
+                        if (_measure->add(_current_pick.position))
+                        {
+                            _active_tool = Tool::None;
+                        }
                     }
                     else
                     {

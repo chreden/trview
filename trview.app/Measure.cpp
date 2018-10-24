@@ -74,7 +74,7 @@ namespace trview
 
         _end = position;
         std::wstringstream stream;
-        stream << std::setprecision(3) << (_end.value() - _start.value()).Length();
+        stream << std::fixed << std::setprecision(2) << (_end.value() - _start.value()).Length();
         _label->set_text(stream.str());
     }
 
