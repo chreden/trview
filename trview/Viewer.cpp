@@ -568,6 +568,10 @@ namespace trview
                 {
                     _picking->set_text(_measure->distance());
                 }
+                else
+                {
+                    _picking->set_text(L"|....|");
+                }
             }
         }
         _current_pick = result;
