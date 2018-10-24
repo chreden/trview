@@ -684,7 +684,7 @@ namespace trview
         {
             select_room(item.room());
             auto entity = _current_level->get_entity(item.number());
-            _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _target = entity.position();
             _level->set_selected_item(item.number());
             _items_windows->set_selected_item(item);
         }
@@ -701,8 +701,8 @@ namespace trview
 
             // Calculate the X/Z position - the Y must be determined by casting a ray from above 
             // directly down, to see what it hits. If it hits nothing, use the centre of the room.
-            const float x = room_info.x / 1024.0f + trigger->x() + 0.5f;
-            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
+            const float x = room_info.x / trlevel::Scale_X + trigger->x() + 0.5f;
+            const float z = room_info.z / trlevel::Scale_Z + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
 
             using namespace DirectX::SimpleMath;
             const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);

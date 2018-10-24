@@ -58,7 +58,7 @@ namespace trview
         // Start off the heights at the height of the floor (or in the case of a 
         // wall, at the bottom of the room).
         _corners.fill(flags & SectorFlag::Wall ?
-            _level.get_room(_room).info.yBottom / -1024.0f :
+            _level.get_room(_room).info.yBottom / trlevel::Scale_Y :
             _sector.floor * -0.25f);
 
         std::uint16_t cur_index = _sector.floordata_index;

@@ -19,7 +19,7 @@ namespace trview
         // Returns: The scaled vector.
         Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
         {
-            return Vector3(vertex.x / 1024.f, -vertex.y / 1024.f, vertex.z / 1024.f);
+            return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
         };
     }
 

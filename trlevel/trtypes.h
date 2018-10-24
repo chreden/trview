@@ -2,10 +2,16 @@
 
 #include <cstdint>
 #include <vector>
+#include <SimpleMath.h>
 
 namespace trlevel
 {
 #pragma pack(push, 1)
+
+    constexpr float Scale_X { 1024.0f };
+    constexpr float Scale_Y { -1024.0f };
+    constexpr float Scale_Z { 1024.0f };
+
     struct tr_colour
     {
         uint8_t Red;
@@ -172,6 +178,11 @@ namespace trlevel
         int32_t Offset_X;
         int32_t Offset_Y;
         int32_t Offset_Z;
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(Offset_X / Scale_X, Offset_Y / Scale_Y, Offset_Z / Scale_Z);
+        }
     };
 
     struct tr_model  // 18 bytes
@@ -306,6 +317,11 @@ namespace trlevel
         int16_t Intensity1;
         int16_t Intensity2; // Like Intensity1, and almost always with the same value.
         uint16_t Flags;
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(x / Scale_X, y / Scale_Y, z / Scale_Z);
+        }
     };
 
     struct tr_sound_details // 8 bytes
@@ -447,6 +463,11 @@ namespace trlevel
         uint16_t colour;     // 15-bit colour
         uint16_t unused;     // Not used!
         uint16_t mesh_id;     // Which StaticMesh item to draw
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(x / Scale_X, y / Scale_Y, z / Scale_Z);
+        }
     };
 
     struct tr2_frame_rotation
@@ -509,6 +530,11 @@ namespace trlevel
         int16_t bb2x, bb2y, bb2z;
         int16_t offsetx, offsety, offsetz;
         std::vector<tr2_frame_rotation> values;
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(offsetx / Scale_X, offsety / Scale_Y, offsetz / Scale_Z);
+        }
     };
 
     struct tr_mesh

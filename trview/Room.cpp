@@ -41,7 +41,7 @@ namespace trview
         // (IsAlternate).
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
-        _room_offset = Matrix::CreateTranslation(room.info.x / 1024.f, 0, room.info.z / 1024.f);
+        _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         generate_geometry(device, room, texture_storage);
         generate_sectors(level, room);
         generate_adjacency();
@@ -102,7 +102,7 @@ namespace trview
         }
 
         // Pick against the room geometry:
-        auto room_offset = Matrix::CreateTranslation(-_info.x / 1024.f, 0, -_info.z / 1024.f);
+        auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
         PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
         if (geometry_result.hit)
         {
@@ -298,9 +298,9 @@ namespace trview
 
     Vector3 Room::centre() const
     {
-        return Vector3(_info.x / 1024.f + _num_x_sectors / 2.f,
-                 _info.yBottom / -1024.f + (_info.yTop - _info.yBottom) / -1024.f / 2.0f,
-                 (_info.z / 1024.f) + _num_z_sectors / 2.f);
+        return Vector3(_info.x / trlevel::Scale_X + _num_x_sectors / 2.f,
+                 _info.yBottom / trlevel::Scale_Y + (_info.yTop - _info.yBottom) / trlevel::Scale_Y / 2.0f,
+                 (_info.z / trlevel::Scale_Z) + _num_z_sectors / 2.f);
     }
 
     const DirectX::BoundingBox& Room::bounding_box() const
@@ -357,8 +357,8 @@ namespace trview
             }
 
             // Calculate the X/Z position.
-            const float x = _info.x / 1024.0f + trigger->x() + 0.5f;
-            const float z = _info.z / 1024.0f + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
+            const float x = _info.x / trlevel::Scale_X + trigger->x() + 0.5f;
+            const float z = _info.z / trlevel::Scale_Z + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
             const float height = 0.25f;
 
             std::array<float, 4> y_top = { 0,0,0,0 };
