@@ -64,6 +64,11 @@ namespace trview
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
 
+        auto get_rotate = [](const trlevel::tr2_frame_rotation& r)
+        {
+            return Matrix::CreateRotationZ(XM_2PI - r.y) * Matrix::CreateRotationX(XM_2PI - r.x) * Matrix::CreateRotationY(r.z);
+        };
+
         if (model.NumMeshes > 0)
         {
             // Load the frames.
@@ -73,12 +78,10 @@ namespace trview
 
             auto initial_frame = frame.values[frame_offset++];
 
-            Matrix initial_rotation = Matrix::CreateFromYawPitchRoll(initial_frame.y, XM_2PI - initial_frame.x, XM_2PI - initial_frame.z);
+            Matrix initial_rotation = get_rotate(initial_frame);
             Matrix initial_frame_offset = Matrix::CreateTranslation(frame.offsetx / 1024.0f, frame.offsety / -1024.0f, frame.offsetz / 1024.0f);
 
-            _world = initial_rotation * initial_frame_offset * _world;
-
-            Matrix previous_world = Matrix::Identity;
+            Matrix previous_world = initial_rotation * initial_frame_offset;
             _world_transforms.push_back(previous_world);
 
             std::stack<Matrix> world_stack;
@@ -104,7 +107,7 @@ namespace trview
                 // Get the rotation from the frames.
                 // Rotations are performed in Y, X, Z order.
                 auto rotation = frame.values[frame_offset++];
-                Matrix rotation_matrix = Matrix::CreateFromYawPitchRoll(rotation.y, XM_2PI - rotation.x, XM_2PI - rotation.z);
+                Matrix rotation_matrix = get_rotate(rotation);
                 Matrix translation_matrix = Matrix::CreateTranslation(node.Offset_X / 1024.0f, node.Offset_Y / -1024.0f, node.Offset_Z / 1024.0f);
                 Matrix node_transform = rotation_matrix * translation_matrix * parent_world;
 
