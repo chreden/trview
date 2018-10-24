@@ -19,7 +19,7 @@ namespace trview
     enum class TriggerCommandType
     {
         Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
-        EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies
+        EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies, Flyby, Cutscene
     };
 
     class Command final
