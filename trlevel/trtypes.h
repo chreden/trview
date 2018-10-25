@@ -9,7 +9,7 @@ namespace trlevel
 #pragma pack(push, 1)
 
     constexpr float Scale_X { 1024.0f };
-    constexpr float Scale_Y { -1024.0f };
+    constexpr float Scale_Y { 1024.0f };
     constexpr float Scale_Z { 1024.0f };
 
     struct tr_colour

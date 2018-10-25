@@ -43,12 +43,16 @@ namespace trview
         // Set the dimensions of the render target for the camera.
         // size: The size in pixels of the render target.
         void set_view_size(const Size& size);
+
+        virtual DirectX::BoundingFrustum frustum() const override;
     private:
         void calculate_projection_matrix(const Size& size);
         void calculate_view_matrix();
 
         DirectX::SimpleMath::Matrix _view;
+        DirectX::SimpleMath::Matrix _view_lh;
         DirectX::SimpleMath::Matrix _projection;
+        DirectX::SimpleMath::Matrix _projection_lh;
         DirectX::SimpleMath::Matrix _view_projection;
 
         DirectX::SimpleMath::Vector3 _position;

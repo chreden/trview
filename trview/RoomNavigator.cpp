@@ -61,8 +61,8 @@ namespace trview
 
     void RoomNavigator::set_room_info(RoomInfo room_info)
     {
-        _x->set_text(L"X:" + std::to_wstring(room_info.x / trlevel::Scale_X));
-        _z-> set_text(L"Z:" + std::to_wstring(room_info.z / trlevel::Scale_Z));
+        _x->set_text(L"X:" + std::to_wstring(static_cast<uint32_t>(room_info.x / trlevel::Scale_X)));
+        _z->set_text(L"Z:" + std::to_wstring(static_cast<uint32_t>(room_info.z / trlevel::Scale_Z)));
     }
 
     void RoomNavigator::set_max_rooms(uint32_t max_rooms)

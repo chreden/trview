@@ -30,5 +30,7 @@ namespace trview
         virtual void set_rotation_yaw(float rotation) = 0;
 
         virtual void set_rotation_pitch(float rotation) = 0;
+
+        virtual DirectX::BoundingFrustum frustum() const = 0;
     };
 }

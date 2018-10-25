@@ -405,7 +405,7 @@ namespace trview
                 {
                     // Reset the camera to defaults.
                     _camera.set_rotation_yaw(0.f);
-                    _camera.set_rotation_pitch(0.78539f);
+                    _camera.set_rotation_pitch(-0.78539f);
                     _camera.set_zoom(8.f);
                     break;
                 }
@@ -705,7 +705,7 @@ namespace trview
             const float z = room_info.z / trlevel::Scale_Z + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
 
             using namespace DirectX::SimpleMath;
-            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
+            const auto pick = room->pick(Vector3(x, -500.0f, z), Vector3(0, +1, 0), false);
             const float y = pick.hit ? pick.position.y : room->centre().y;
 
             _target = DirectX::SimpleMath::Vector3(x, y, z);
@@ -758,7 +758,7 @@ namespace trview
             const float high_sensitivity = 25.0f;
             const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _settings.camera_sensitivity;
             camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
-            camera.set_rotation_pitch(camera.rotation_pitch() + y / sensitivity);
+            camera.set_rotation_pitch(camera.rotation_pitch() - y / sensitivity);
             if (_level)
             {
                 _level->on_camera_moved();

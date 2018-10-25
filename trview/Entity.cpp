@@ -66,7 +66,7 @@ namespace trview
 
         auto get_rotate = [](const trlevel::tr2_frame_rotation& r)
         {
-            return Matrix::CreateFromYawPitchRoll(r.y, XM_2PI - r.x, XM_2PI - r.z);
+            return Matrix::CreateFromYawPitchRoll(r.y, r.x, r.z);
         };
 
         if (model.NumMeshes > 0)
@@ -133,10 +133,10 @@ namespace trview
         using namespace DirectX::SimpleMath;
         std::vector<MeshVertex> vertices
         {
-            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
-            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
             { Vector3(-0.5f, -0.5f, 0), Vector2(u, v + height), Vector4(1,1,1,1) },
             { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
         };
 
         std::vector<TransparentTriangle> transparent_triangles
@@ -155,7 +155,7 @@ namespace trview
         _scale = Matrix::CreateScale(object_width, object_height, 1);
 
         // An offset to move the sprite up a bit.
-        _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
+        _offset = Matrix::CreateTranslation(0, object_height / -2.0f, 0);
     }
 
     void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)

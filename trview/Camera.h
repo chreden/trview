@@ -32,18 +32,22 @@ namespace trview
         // Set the dimensions of the render target for the camera.
         // size: The size in pixels of the render target.
         void set_view_size(const Size& size);
+
+        virtual DirectX::BoundingFrustum frustum() const override;
     private:
         void calculate_projection_matrix(const Size& size);
         void calculate_view_matrix();
 
-        const float default_pitch = 0.78539f;
+        const float default_pitch = -0.78539f;
         const float default_yaw = 0.0f;
         const float default_zoom = 8.0f;
 
         // This is the orbit target.
         DirectX::SimpleMath::Vector3 _target;
         DirectX::SimpleMath::Matrix _view;
+        DirectX::SimpleMath::Matrix _view_lh;
         DirectX::SimpleMath::Matrix _projection;
+        DirectX::SimpleMath::Matrix _projection_lh;
         DirectX::SimpleMath::Matrix _view_projection;
         float             _rotation_yaw{ default_yaw };
         float             _rotation_pitch{ default_pitch };

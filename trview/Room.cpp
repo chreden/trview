@@ -299,7 +299,7 @@ namespace trview
     Vector3 Room::centre() const
     {
         return Vector3(_info.x / trlevel::Scale_X + _num_x_sectors / 2.f,
-                 _info.yBottom / trlevel::Scale_Y + (_info.yTop - _info.yBottom) / trlevel::Scale_Y / 2.0f,
+                 _info.yTop / trlevel::Scale_Y + (_info.yBottom - _info.yTop) / trlevel::Scale_Y / 2.0f,
                  (_info.z / trlevel::Scale_Z) + _num_z_sectors / 2.f);
     }
 
@@ -364,7 +364,7 @@ namespace trview
             std::array<float, 4> y_top = { 0,0,0,0 };
             for (int i = 0; i < 4; ++i)
             {
-                y_top[i] = y_bottom[i] + height;
+                y_top[i] = y_bottom[i] - height;
             }
 
             std::vector<TransparentTriangle> triangles;
