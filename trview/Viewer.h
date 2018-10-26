@@ -30,6 +30,8 @@
 #include <trview.app/FileDropper.h>
 #include <trview.app/ItemsWindowManager.h>
 #include <trview.app/TriggersWindowManager.h>
+#include <trview.app/Toolbar.h>
+#include <trview.app/Measure.h>
 
 namespace trview
 {
@@ -152,6 +154,18 @@ namespace trview
         FileDropper _file_dropper;
         TokenStore _token_store;
         DirectX::SimpleMath::Vector3 _target;
+
+        // Tools:
+        std::unique_ptr<Toolbar> _toolbar;
+
+        enum class Tool
+        {
+            None,
+            Measure
+        };
+
+        Tool _active_tool{ Tool::None };
+        std::unique_ptr<Measure> _measure;
     };
 }
 

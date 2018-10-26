@@ -9,7 +9,7 @@
 
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
-#include "ICamera.h"
+#include <trview.app/ICamera.h>
 #include "TransparencyBuffer.h"
 #include "ResourceHelper.h"
 #include "resource.h"
@@ -515,5 +515,10 @@ namespace trview
     void Level::set_selected_trigger(uint32_t number)
     {
         _selected_trigger = _triggers[number].get();
+    }
+
+    const ILevelTextureStorage& Level::texture_storage() const
+    {
+        return *_texture_storage;
     }
 }

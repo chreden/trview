@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include <directxmath.h>
 
 #include <trlevel/trlevel.h>
@@ -86,6 +88,8 @@ namespace trview
         load_default_textures(_device.device(), *_texture_storage.get());
 
         generate_ui();
+
+        _measure = std::make_unique<Measure>(_device, *_control);
     }
 
     Viewer::~Viewer()
@@ -117,6 +121,17 @@ namespace trview
         picking->set_visible(false);
         picking->set_handles_input(false);
         _picking = _control->add_child(std::move(picking));
+
+        _toolbar = std::make_unique<Toolbar>(*_control);
+        _toolbar->add_tool(L"Measure", L"|....|");
+        _token_store.add(_toolbar->on_tool_clicked += [this](const std::wstring& tool)
+        {
+            if (tool == L"Measure")
+            {
+                _active_tool = Tool::Measure;
+                _measure->reset();
+            }
+        });
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
@@ -238,6 +253,12 @@ namespace trview
                     }
                     break;
                 }
+                case 'M':
+                {
+                    _active_tool = Tool::Measure;
+                    _measure->reset();
+                    break;
+                }
                 case 'T':
                 {
                     if (_level)
@@ -259,19 +280,29 @@ namespace trview
             {
                 if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
                 {
-                    if (_current_pick.type == PickResult::Type::Room)
+                    if (_active_tool == Tool::Measure)
                     {
-                        select_room(_current_pick.index);
+                        if (_measure->add(_current_pick.position))
+                        {
+                            _active_tool = Tool::None;
+                        }
                     }
-                    else if (_current_pick.type == PickResult::Type::Entity)
+                    else
                     {
-                        select_item(_level->items()[_current_pick.index]);
+                        if (_current_pick.type == PickResult::Type::Room)
+                        {
+                            select_room(_current_pick.index);
+                        }
+                        else if (_current_pick.type == PickResult::Type::Entity)
+                        {
+                            select_item(_level->items()[_current_pick.index]);
+                        }
+                        else if (_current_pick.type == PickResult::Type::Trigger)
+                        {
+                            select_trigger(_level->triggers()[_current_pick.index]);
+                        }
+                        set_camera_mode(CameraMode::Orbit);
                     }
-                    else if (_current_pick.type == PickResult::Type::Trigger)
-                    {
-                        select_trigger(_level->triggers()[_current_pick.index]);
-                    }
-                    set_camera_mode(CameraMode::Orbit);
                 }
                 else if (over_map())
                 {
@@ -460,6 +491,7 @@ namespace trview
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _level_info->set_level(name);
         _level_info->set_level_version(_current_level->get_version());
+        _measure->reset();
     }
 
     void Viewer::render()
@@ -528,6 +560,19 @@ namespace trview
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
             _picking->set_text((result.type == PickResult::Type::Room ? L"R-" : result.type == PickResult::Type::Trigger ? L"T-" : L"I-") + std::to_wstring(result.index));
             _picking->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
+
+            if (_active_tool == Tool::Measure)
+            {
+                _measure->set(result.position);
+                if (_measure->measuring())
+                {
+                    _picking->set_text(_measure->distance());
+                }
+                else
+                {
+                    _picking->set_text(L"|....|");
+                }
+            }
         }
         _current_pick = result;
     }
@@ -542,6 +587,8 @@ namespace trview
                 _camera.set_target(_target);
             }
             _level->render(_device.context(), current_camera());
+
+            _measure->render(_device.context(), current_camera(), _level->texture_storage());
         }
     }
 

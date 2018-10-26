@@ -3,7 +3,7 @@
 #include <trview.common/Size.h>
 
 #include <cstdint>
-#include "ICamera.h"
+#include <trview.app/ICamera.h>
 #include "CameraMode.h"
 
 namespace trview
@@ -30,6 +30,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 forward() const override;
         float rotation_yaw() const override;
         float rotation_pitch() const override;
+        virtual Size view_size() const override;
         void set_rotation_yaw(float rotation) override;
         void set_rotation_pitch(float rotation) override;
         void set_position(const DirectX::SimpleMath::Vector3& position);
@@ -55,6 +56,7 @@ namespace trview
 
         float _rotation_yaw{ 0.0f };
         float _rotation_pitch{ 0.0f };
+        Size  _view_size;
     };
 
     FreeCamera::Alignment camera_mode_to_alignment(CameraMode mode);

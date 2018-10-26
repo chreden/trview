@@ -104,6 +104,8 @@ namespace trview
         bool show_triggers() const;
 
         void set_selected_trigger(uint32_t number);
+
+        const ILevelTextureStorage& texture_storage() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);

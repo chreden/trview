@@ -37,6 +37,15 @@
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
+    <ClCompile Include="Toolbar.cpp">
+      <Filter>Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="Measure.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ICamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -83,6 +92,15 @@
     <ClInclude Include="ITextureStorage.h">
       <Filter>Textures</Filter>
     </ClInclude>
+    <ClInclude Include="Toolbar.h">
+      <Filter>Toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="Measure.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ICamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -99,6 +117,15 @@
     </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Toolbar">
+      <UniqueIdentifier>{bf4d0359-b434-41b1-a3ba-f5400a2b5faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{05ae82b5-00cf-4f47-b88f-e3cba6e9928f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{d691a642-d434-42b6-b4d8-8fde59fea2af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

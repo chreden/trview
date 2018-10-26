@@ -2,7 +2,7 @@
 
 #include <trview.common/Size.h>
 
-#include "ICamera.h"
+#include <trview.app/ICamera.h>
 
 namespace trview
 {
@@ -27,6 +27,8 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 up() const override;
         virtual DirectX::SimpleMath::Vector3 forward() const override;
 
+        virtual Size view_size() const override;
+
         // Set the dimensions of the render target for the camera.
         // size: The size in pixels of the render target.
         void set_view_size(const Size& size);
@@ -46,5 +48,6 @@ namespace trview
         float             _rotation_yaw{ default_yaw };
         float             _rotation_pitch{ default_pitch };
         float             _zoom{ default_zoom };
+        Size              _view_size;
     };
 }

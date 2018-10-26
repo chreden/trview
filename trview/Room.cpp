@@ -5,7 +5,7 @@
 
 #include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
-#include "ICamera.h"
+#include <trview.app/ICamera.h>
 #include <trview.app/Mesh.h>
 #include "TransparencyBuffer.h"
 

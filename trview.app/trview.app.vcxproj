@@ -21,13 +21,16 @@
   <ItemGroup>
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="FileDropper.cpp" />
+    <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="ItemsWindowManager.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
+    <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
@@ -37,15 +40,18 @@
   <ItemGroup>
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="FileDropper.h" />
+    <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="ItemsWindowManager.h" />
     <ClInclude Include="ITextureStorage.h" />
+    <ClInclude Include="Measure.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Trigger.h" />

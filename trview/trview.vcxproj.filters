@@ -127,9 +127,6 @@
     <ClInclude Include="FreeCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="ICamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="CameraMode.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -223,9 +220,6 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="FreeCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="ICamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="CameraInput.cpp">
