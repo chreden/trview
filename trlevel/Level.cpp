@@ -420,7 +420,16 @@ namespace trlevel
 
             if (mode)
             {
-                float angle = (data & 0x03ff) * PiMul2 / 1024.0f;
+                float angle = 0;
+                if (_version >= LevelVersion::Tomb4)
+                {
+                    angle = (data & 0x0fff) * PiMul2 / 4096.0f;
+                }
+                else
+                {
+                    angle = (data & 0x03ff) * PiMul2 / 1024.0f;
+                }
+
                 if (mode == 0x4000)
                 {
                     rotation.x = angle;
