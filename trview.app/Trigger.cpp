@@ -43,7 +43,9 @@ namespace trview
             { TriggerCommandType::PlaySoundtrack, L"Music" },
             { TriggerCommandType::Flipeffect, L"Flipeffect" },
             { TriggerCommandType::SecretFound, L"Secret" },
-            { TriggerCommandType::ClearBodies, L"Clear Bodies" }
+            { TriggerCommandType::ClearBodies, L"Clear Bodies" },
+            { TriggerCommandType::Flyby, L"Flyby" },
+            { TriggerCommandType::Cutscene, L"Cutscene" }
         };
     }
 
