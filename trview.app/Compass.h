@@ -18,8 +18,8 @@ namespace trview
     class Compass final
     {
     public:
-        Compass();
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const graphics::IShaderStorage& shader_storage);
+        Compass(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
     private:
         std::unique_ptr<graphics::RenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;

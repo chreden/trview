@@ -90,6 +90,7 @@ namespace trview
         generate_ui();
 
         _measure = std::make_unique<Measure>(_device, *_control);
+        _compass = std::make_unique<Compass>(_device, *_shader_storage);
     }
 
     Viewer::~Viewer()
@@ -589,7 +590,7 @@ namespace trview
             _level->render(_device.context(), current_camera());
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
-            _compass.render(_device, current_camera(), _level->texture_storage(), *_shader_storage);
+            _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }
 

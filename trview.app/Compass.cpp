@@ -17,20 +17,17 @@ namespace trview
         const float View_Size = 200;
     }
 
-    Compass::Compass()
+    Compass::Compass(const graphics::Device& device, const IShaderStorage& shader_storage)
         : _mesh_camera(Size(View_Size, View_Size))
     {
+        _mesh = create_cube_mesh(device.device());
+        _sprite = std::make_unique<Sprite>(device.device(), shader_storage, Size(View_Size, View_Size));
+        _render_target = std::make_unique<RenderTarget>(device.device(), View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled);
     }
 
-    void Compass::render(const Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const IShaderStorage& shader_storage)
+    void Compass::render(const Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         auto context = device.context();
-
-        // Create a render target
-        if (!_render_target)
-        {
-            _render_target = std::make_unique<RenderTarget>(device.device(), View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled);
-        }
 
         {
             RenderTargetStore rs_store(context);
@@ -44,12 +41,6 @@ namespace trview
             _mesh_camera.set_rotation_pitch(camera.rotation_pitch());
             _mesh_camera.set_rotation_yaw(camera.rotation_yaw());
 
-            // Render the mesh 
-            if (!_mesh)
-            {
-                _mesh = create_cube_mesh(device.device());
-            }
-
             const auto view_projection = _mesh_camera.view_projection();
             const auto scale = Matrix::CreateScale(0.015f, 1.0f, 0.015f);
 
@@ -59,11 +50,6 @@ namespace trview
             _mesh->render(context, scale * Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
             // Z
             _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
-        }
-
-        if (!_sprite)
-        {
-            _sprite = std::make_unique<Sprite>(device.device(), shader_storage, camera.view_size());
         }
 
         auto screen_size = camera.view_size();
