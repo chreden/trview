@@ -73,9 +73,9 @@ IDC_TRVIEW ACCELERATORS
 BEGIN
     "/",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
     "?",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
-    "^O",           ID_ACCEL_FILE_OPEN,       ASCII,  NOINVERT
-    "^I",           ID_ACCEL_ITEM_WINDOW,     ASCII,  NOINVERT
-    "^T",           ID_ACCEL_TRIGGERS_WINDOW, ASCII,  NOINVERT 
+    "O",            ID_ACCEL_FILE_OPEN,       ASCII,  CONTROL, NOINVERT, VIRTKEY
+    "I",            ID_ACCEL_ITEM_WINDOW,     ASCII,  CONTROL, NOINVERT, VIRTKEY
+    "T",            ID_ACCEL_TRIGGERS_WINDOW, ASCII,  CONTROL, NOINVERT, VIRTKEY 
 END
 
 
