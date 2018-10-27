@@ -18,12 +18,6 @@ namespace trview
     class Mesh
     {
     public:
-        enum class Primitive
-        {
-            Triangle,
-            Line
-        };
-
         /// Create a mesh using the specified vertices and indices.
         /// @param device The D3D device to create the mesh.
         /// @param vertices The vertices that make up the mesh.
@@ -36,8 +30,7 @@ namespace trview
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
              const std::vector<TransparentTriangle>& transparent_triangles,
-             const std::vector<Triangle>& collision_triangles,
-             Primitive primitive = Primitive::Triangle);
+             const std::vector<Triangle>& collision_triangles);
 
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
@@ -56,7 +49,6 @@ namespace trview
         std::vector<TransparentTriangle>                  _transparent_triangles;
         std::vector<Triangle>                             _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
-        Primitive                                         _primitive;
     };
 
     /// Create a new mesh based on the contents of the mesh specified.
