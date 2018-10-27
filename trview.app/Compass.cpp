@@ -14,10 +14,11 @@ namespace trview
     namespace
     {
         const float Pi = 1.5707963267948966192313216916398f;
+        const float View_Size = 200;
     }
 
     Compass::Compass()
-        : _mesh_camera(Size(100, 100))
+        : _mesh_camera(Size(View_Size, View_Size))
     {
     }
 
@@ -30,7 +31,7 @@ namespace trview
         // Create a render target
         if (!_render_target)
         {
-            _render_target = std::make_unique<RenderTarget>(device.device(), 100, 100, RenderTarget::DepthStencilMode::Enabled);
+            _render_target = std::make_unique<RenderTarget>(device.device(), View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled);
         }
 
         {
@@ -50,14 +51,31 @@ namespace trview
             // Render the axes mesh 
             if (!_mesh)
             {
+                const float Thick = 0.015f;
+
                 const std::vector<MeshVertex> vertices
                 {
-                    { { 0.0f, 0.5f, 0.0f },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { 0.0f, -0.5f, 0.0f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
+                    { { Thick, 0.5f, Thick },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { Thick, 0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { -Thick, 0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { -Thick, 0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { Thick, -0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { Thick, -0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { -Thick, -0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+                    { { -Thick, -0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
                 };
-                const std::vector<uint32_t> indices { 0, 1 };
 
-                _mesh = std::make_unique<Mesh>(device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>(), Mesh::Primitive::Line);
+                const std::vector<uint32_t> indices
+                {
+                    2, 1, 0, 0, 3, 2, // + y
+                    5, 4, 0, 0, 1, 5, // + x
+                    2, 3, 7, 7, 6, 2, // - x
+                    0, 4, 3, 3, 4, 7, // + z
+                    5, 1, 2, 2, 6, 5, // - z
+                    4, 5, 6, 6, 7, 4  // - y
+                };
+
+                _mesh = std::make_unique<Mesh>(device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
             }
 
             auto view_projection = _mesh_camera.view_projection();
@@ -73,6 +91,6 @@ namespace trview
         // Render the image to the screen somewhere.
         auto sprite = std::make_unique<Sprite>(device.device(), shader_storage, camera.view_size());
         auto screen_size = camera.view_size();
-        sprite->render(context, _render_target->texture(), screen_size.width - 100, screen_size.height - 100, 100, 100);
+        sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 }

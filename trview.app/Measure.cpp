@@ -27,12 +27,12 @@ namespace trview
 
         const std::vector<uint32_t> indices
         {
-            0, 1, 2, 2, 3, 0, // + y
-            0, 4, 5, 5, 1, 0, // + x
-            7, 3, 2, 2, 6, 7, // - x
-            3, 4, 0, 7, 4, 3, // + z
-            2, 1, 5, 5, 6, 2, // - z
-            6, 5, 4, 4, 7, 6  // - y
+            2, 1, 0, 0, 3, 2, // + y
+            5, 4, 0, 0, 1, 5, // + x
+            2, 3, 7, 7, 6, 2, // - x
+            0, 4, 3, 3, 4, 7, // + z
+            5, 1, 2, 2, 6, 5, // - z
+            4, 5, 6, 6, 7, 4  // - y
         };
 
         _mesh = std::make_unique<Mesh>(device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
