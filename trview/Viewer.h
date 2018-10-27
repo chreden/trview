@@ -32,6 +32,7 @@
 #include <trview.app/TriggersWindowManager.h>
 #include <trview.app/Toolbar.h>
 #include <trview.app/Measure.h>
+#include <trview.app/Compass.h>
 
 namespace trview
 {
@@ -166,6 +167,7 @@ namespace trview
 
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
+        Compass _compass;
     };
 }
 

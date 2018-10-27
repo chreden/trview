@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CollapsiblePanel.cpp" />
+    <ClCompile Include="Compass.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
@@ -39,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CollapsiblePanel.h" />
+    <ClInclude Include="Compass.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />

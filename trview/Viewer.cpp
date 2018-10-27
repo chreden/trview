@@ -589,6 +589,7 @@ namespace trview
             _level->render(_device.context(), current_camera());
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
+            _compass.render(_device, current_camera(), _level->texture_storage());
         }
     }
 
