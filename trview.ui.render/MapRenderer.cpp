@@ -59,6 +59,7 @@ namespace trview
 
                     _render_target->apply(context);
                     render_internal(context);
+                    _force_redraw = false;
                 }
 
                 // Now render the render target in the correct position.
