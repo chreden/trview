@@ -45,11 +45,8 @@ namespace trview
             const float thickness = 0.015f;
             const auto scale = Matrix::CreateScale(thickness, 1.0f, thickness);
 
-            // Y
             _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
-            // X
             _mesh->render(context, scale * Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
-            // Z
             _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
         }
 
