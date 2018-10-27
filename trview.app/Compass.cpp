@@ -51,41 +51,18 @@ namespace trview
             // Render the axes mesh 
             if (!_mesh)
             {
-                const float Thick = 0.015f;
-
-                const std::vector<MeshVertex> vertices
-                {
-                    { { Thick, 0.5f, Thick },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { Thick, 0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { -Thick, 0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { -Thick, 0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { Thick, -0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { Thick, -0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { -Thick, -0.5f, -Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-                    { { -Thick, -0.5f, Thick }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
-                };
-
-                const std::vector<uint32_t> indices
-                {
-                    2, 1, 0, 0, 3, 2, // + y
-                    5, 4, 0, 0, 1, 5, // + x
-                    2, 3, 7, 7, 6, 2, // - x
-                    0, 4, 3, 3, 4, 7, // + z
-                    5, 1, 2, 2, 6, 5, // - z
-                    4, 5, 6, 6, 7, 4  // - y
-                };
-
-                _mesh = std::make_unique<Mesh>(device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+                _mesh = create_cube_mesh(device.device());
             }
 
-            auto view_projection = _mesh_camera.view_projection();
+            const auto view_projection = _mesh_camera.view_projection();
+            const auto scale = Matrix::CreateScale(0.015f, 1.0f, 0.015f);
 
             // Y
-            _mesh->render(context, view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
+            _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
             // X
-            _mesh->render(context, Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
             // Z
-            _mesh->render(context, Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
         }
 
         // Render the image to the screen somewhere.

@@ -12,31 +12,8 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     Measure::Measure(const Device& device, ui::Control& ui)
+        : _mesh(create_cube_mesh(device.device()))
     {
-        const std::vector<MeshVertex> vertices
-        {
-            { { 0.5f, 0.5f, 0.5f },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5f, 0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5f, 0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5f, -0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5f, -0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5f, -0.5f, -0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5f, -0.5f, 0.5f }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
-        };
-
-        const std::vector<uint32_t> indices
-        {
-            2, 1, 0, 0, 3, 2, // + y
-            5, 4, 0, 0, 1, 5, // + x
-            2, 3, 7, 7, 6, 2, // - x
-            0, 4, 3, 3, 4, 7, // + z
-            5, 1, 2, 2, 6, 5, // - z
-            4, 5, 6, 6, 7, 4  // - y
-        };
-
-        _mesh = std::make_unique<Mesh>(device.device(), vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
-
         auto label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         label->set_visible(false);
         _label = ui.add_child(std::move(label));

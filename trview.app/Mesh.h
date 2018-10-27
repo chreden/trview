@@ -59,6 +59,9 @@ namespace trview
     /// @returns The new mesh.
     std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
+    /// Create a new cube mesh.
+    std::unique_ptr<Mesh> create_cube_mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param rectangles The rectangles from the mesh or room geometry.
     /// @param input_vertices The vertices that the rectangle indices refer to.
