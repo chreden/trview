@@ -18,11 +18,11 @@ namespace trview
     }
 
     Compass::Compass(const graphics::Device& device, const IShaderStorage& shader_storage)
-        : _mesh_camera(Size(View_Size, View_Size))
+        : _mesh_camera(Size(View_Size, View_Size)),
+          _mesh(create_cube_mesh(device.device())),
+          _sprite(std::make_unique<Sprite>(device.device(), shader_storage, Size(View_Size, View_Size))),
+          _render_target(std::make_unique<RenderTarget>(device.device(), View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled))
     {
-        _mesh = create_cube_mesh(device.device());
-        _sprite = std::make_unique<Sprite>(device.device(), shader_storage, Size(View_Size, View_Size));
-        _render_target = std::make_unique<RenderTarget>(device.device(), View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled);
     }
 
     void Compass::render(const Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
