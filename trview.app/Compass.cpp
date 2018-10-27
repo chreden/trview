@@ -26,8 +26,6 @@ namespace trview
     {
         auto context = device.context();
 
-        // The process for rendering the compass:
-        // Select an area to render the mesh to - let's say a 100x100 square in the bottom right
         // Create a render target
         if (!_render_target)
         {
@@ -40,15 +38,13 @@ namespace trview
             _render_target->apply(context);
             _render_target->clear(context, Color(0.0f, 0.0f, 0.0f, 0.0f));
 
-            // Have a camera that looks at the compass
-            // Match rotation to the real camera
+            // Have a camera that looks at the compass and match rotation to the real camera
             _mesh_camera.set_target(Vector3::Zero);
             _mesh_camera.set_zoom(2.5f);
             _mesh_camera.set_rotation_pitch(camera.rotation_pitch());
             _mesh_camera.set_rotation_yaw(camera.rotation_yaw());
 
             // Render the mesh 
-            // Render the axes mesh 
             if (!_mesh)
             {
                 _mesh = create_cube_mesh(device.device());
@@ -65,9 +61,13 @@ namespace trview
             _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
         }
 
-        // Render the image to the screen somewhere.
-        auto sprite = std::make_unique<Sprite>(device.device(), shader_storage, camera.view_size());
+        if (!_sprite)
+        {
+            _sprite = std::make_unique<Sprite>(device.device(), shader_storage, camera.view_size());
+        }
+
         auto screen_size = camera.view_size();
-        sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
+        _sprite->set_host_size(screen_size);
+        _sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 }
