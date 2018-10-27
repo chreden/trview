@@ -405,7 +405,7 @@ namespace trview
                 {
                     // Reset the camera to defaults.
                     _camera.set_rotation_yaw(0.f);
-                    _camera.set_rotation_pitch(0.78539f);
+                    _camera.set_rotation_pitch(-0.78539f);
                     _camera.set_zoom(8.f);
                     break;
                 }
@@ -684,7 +684,7 @@ namespace trview
         {
             select_room(item.room());
             auto entity = _current_level->get_entity(item.number());
-            _target = DirectX::SimpleMath::Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _target = entity.position();
             _level->set_selected_item(item.number());
             _items_windows->set_selected_item(item);
         }
@@ -701,11 +701,11 @@ namespace trview
 
             // Calculate the X/Z position - the Y must be determined by casting a ray from above 
             // directly down, to see what it hits. If it hits nothing, use the centre of the room.
-            const float x = room_info.x / 1024.0f + trigger->x() + 0.5f;
-            const float z = room_info.z / 1024.0f + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
+            const float x = room_info.x / trlevel::Scale_X + trigger->x() + 0.5f;
+            const float z = room_info.z / trlevel::Scale_Z + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
 
             using namespace DirectX::SimpleMath;
-            const auto pick = room->pick(Vector3(x, 500.0f, z), Vector3(0, -1, 0), false);
+            const auto pick = room->pick(Vector3(x, -500.0f, z), Vector3(0, +1, 0), false);
             const float y = pick.hit ? pick.position.y : room->centre().y;
 
             _target = DirectX::SimpleMath::Vector3(x, y, z);
@@ -758,7 +758,7 @@ namespace trview
             const float high_sensitivity = 25.0f;
             const float sensitivity = low_sensitivity + (high_sensitivity - low_sensitivity) * _settings.camera_sensitivity;
             camera.set_rotation_yaw(camera.rotation_yaw() + x / sensitivity);
-            camera.set_rotation_pitch(camera.rotation_pitch() + y / sensitivity);
+            camera.set_rotation_pitch(camera.rotation_pitch() - y / sensitivity);
             if (_level)
             {
                 _level->on_camera_moved();

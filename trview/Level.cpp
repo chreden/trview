@@ -226,8 +226,7 @@ namespace trview
     {
         std::vector<RoomToRender> rooms;
 
-        DirectX::BoundingFrustum frustum(camera.projection());
-        frustum.Transform(frustum, camera.view().Invert());
+        DirectX::BoundingFrustum frustum = camera.frustum();
 
         auto in_view = [&](const Room& room)
         {

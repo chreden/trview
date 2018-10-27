@@ -58,8 +58,8 @@ namespace trview
         // Start off the heights at the height of the floor (or in the case of a 
         // wall, at the bottom of the room).
         _corners.fill(flags & SectorFlag::Wall ?
-            _level.get_room(_room).info.yBottom / -1024.0f :
-            _sector.floor * -0.25f);
+            _level.get_room(_room).info.yBottom / trlevel::Scale_Y :
+            _sector.floor * 0.25f);
 
         std::uint16_t cur_index = _sector.floordata_index;
         if (cur_index == 0x0)
@@ -157,10 +157,10 @@ namespace trview
                 const uint16_t c11 = (corner_values & 0xF000) >> 12;
                 const auto max_corner = std::max({ c00, c01, c10, c11 });
 
-                _corners[0] -= (max_corner - c00) * 0.25f;
-                _corners[1] -= (max_corner - c01) * 0.25f;
-                _corners[2] -= (max_corner - c10) * 0.25f;
-                _corners[3] -= (max_corner - c11) * 0.25f;
+                _corners[0] += (max_corner - c00) * 0.25f;
+                _corners[1] += (max_corner - c01) * 0.25f;
+                _corners[2] += (max_corner - c10) * 0.25f;
+                _corners[3] += (max_corner - c11) * 0.25f;
                 break;
             }
             case 0x9:
@@ -214,24 +214,24 @@ namespace trview
 
         if (x_slope > 0)
         {
-            _corners[0] -= x_slope * 0.25f;
-            _corners[1] -= x_slope * 0.25f;
+            _corners[0] += x_slope * 0.25f;
+            _corners[1] += x_slope * 0.25f;
         }
         else if (x_slope < 0)
         {
-            _corners[2] += x_slope * 0.25f;
-            _corners[3] += x_slope * 0.25f;
+            _corners[2] -= x_slope * 0.25f;
+            _corners[3] -= x_slope * 0.25f;
         }
 
         if (z_slope > 0)
         {
-            _corners[0] -= z_slope * 0.25f;
-            _corners[2] -= z_slope * 0.25f;
+            _corners[0] += z_slope * 0.25f;
+            _corners[2] += z_slope * 0.25f;
         }
         else if (z_slope < 0)
         {
-            _corners[1] += z_slope * 0.25f;
-            _corners[3] += z_slope * 0.25f;
+            _corners[1] -= z_slope * 0.25f;
+            _corners[3] -= z_slope * 0.25f;
         }
     }
 

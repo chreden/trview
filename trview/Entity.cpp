@@ -33,14 +33,14 @@ namespace trview
         {
             // Set up world matrix.
             _world = Matrix::CreateRotationY((entity.Angle / 16384.0f) * XM_PIDIV2) * 
-                     Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+                     Matrix::CreateTranslation(entity.position());
             load_model(model, level);
         }
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
-            _world = Matrix::CreateTranslation(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _world = Matrix::CreateTranslation(entity.position());
             load_sprite(device, sprite, level, texture_storage);
-            _position = Vector3(entity.x / 1024.0f, entity.y / -1024.0f, entity.z / 1024.0f);
+            _position = entity.position();
         }
 
         generate_bounding_box();
@@ -64,6 +64,11 @@ namespace trview
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
 
+        auto get_rotate = [](const trlevel::tr2_frame_rotation& r)
+        {
+            return Matrix::CreateFromYawPitchRoll(r.y, r.x, r.z);
+        };
+
         if (model.NumMeshes > 0)
         {
             // Load the frames.
@@ -73,12 +78,10 @@ namespace trview
 
             auto initial_frame = frame.values[frame_offset++];
 
-            Matrix initial_rotation = Matrix::CreateFromYawPitchRoll(initial_frame.y, XM_2PI - initial_frame.x, XM_2PI - initial_frame.z);
-            Matrix initial_frame_offset = Matrix::CreateTranslation(frame.offsetx / 1024.0f, frame.offsety / -1024.0f, frame.offsetz / 1024.0f);
+            Matrix initial_rotation = get_rotate(initial_frame);
+            Matrix initial_frame_offset = Matrix::CreateTranslation(frame.position());
 
-            _world = initial_rotation * initial_frame_offset * _world;
-
-            Matrix previous_world = Matrix::Identity;
+            Matrix previous_world = initial_rotation * initial_frame_offset;
             _world_transforms.push_back(previous_world);
 
             std::stack<Matrix> world_stack;
@@ -104,8 +107,8 @@ namespace trview
                 // Get the rotation from the frames.
                 // Rotations are performed in Y, X, Z order.
                 auto rotation = frame.values[frame_offset++];
-                Matrix rotation_matrix = Matrix::CreateFromYawPitchRoll(rotation.y, XM_2PI - rotation.x, XM_2PI - rotation.z);
-                Matrix translation_matrix = Matrix::CreateTranslation(node.Offset_X / 1024.0f, node.Offset_Y / -1024.0f, node.Offset_Z / 1024.0f);
+                Matrix rotation_matrix = get_rotate(rotation);
+                Matrix translation_matrix = Matrix::CreateTranslation(node.position());
                 Matrix node_transform = rotation_matrix * translation_matrix * parent_world;
 
                 _world_transforms.push_back(node_transform);
@@ -130,10 +133,10 @@ namespace trview
         using namespace DirectX::SimpleMath;
         std::vector<MeshVertex> vertices
         {
-            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
-            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
             { Vector3(-0.5f, -0.5f, 0), Vector2(u, v + height), Vector4(1,1,1,1) },
             { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
         };
 
         std::vector<TransparentTriangle> transparent_triangles
@@ -147,12 +150,12 @@ namespace trview
         _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
 
         // Scale is computed from the 'side' values.
-        float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / 1024.0f;
-        float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / 1024.0f;
+        float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / trlevel::Scale_X;
+        float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Z;
         _scale = Matrix::CreateScale(object_width, object_height, 1);
 
         // An offset to move the sprite up a bit.
-        _offset = Matrix::CreateTranslation(0, object_height / 2.0f, 0);
+        _offset = Matrix::CreateTranslation(0, object_height / -2.0f, 0);
     }
 
     void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)

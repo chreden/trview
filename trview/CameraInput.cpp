@@ -9,7 +9,7 @@ namespace trview
     {
         return DirectX::SimpleMath::Vector3(
             _free_left ? -1.0f : 0.0f + _free_right ? 1.0f : 0.0f,
-            _free_up ? 1.0f : 0.0f + _free_down ? -1.0f : 0.0f,
+            _free_up ? -1.0f : 0.0f + _free_down ? 1.0f : 0.0f,
             _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
     }
 

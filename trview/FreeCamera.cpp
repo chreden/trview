@@ -16,7 +16,8 @@ namespace trview
         using namespace DirectX;
         _view_size = size;
         float aspect_ratio = size.width / size.height;
-        _projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
         _view_projection = _view * _projection;
     }
 
@@ -25,9 +26,10 @@ namespace trview
         using namespace DirectX;
         using namespace DirectX::SimpleMath;
         auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        Vector3 up_vector = Vector3::Transform(Vector3::Up, rotate);
-        auto target = _position + Vector3::Transform(Vector3(0, 0, 1), rotate);
-        _view = XMMatrixLookAtLH(_position, target, up_vector);
+        Vector3 up_vector = Vector3::Transform(Vector3::Down, rotate);
+        auto target = _position - Vector3::Transform(Vector3(0, 0, -1), rotate);
+        _view = XMMatrixLookAtRH(_position, target, up_vector);
+        _view_lh = XMMatrixLookAtLH(_position, target, up_vector);
         _view_projection = _view * _projection;
     }
 
@@ -50,7 +52,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        return _position + Vector3::Transform(Vector3(0, 0, 1), rotate);
+        return _position + Vector3::Transform(Vector3(0, 0, -1), rotate);
     }
 
     DirectX::SimpleMath::Vector3 FreeCamera::position() const
@@ -106,14 +108,14 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        return Vector3::Transform(Vector3::Up, rotate);
+        return Vector3::Transform(Vector3::Down, rotate);
     }
     
     DirectX::SimpleMath::Vector3 FreeCamera::forward() const
     {
         using namespace DirectX::SimpleMath;
         auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        auto to = Vector3::Transform(Vector3(0, 0, 1), rotate);
+        auto to = Vector3::Transform(Vector3(0, 0, -1), rotate);
         to.Normalize();
         return to;
     }
@@ -135,7 +137,18 @@ namespace trview
     // size: The size in pixels of the render target.
     void FreeCamera::set_view_size(const Size& size)
     {
+        _view_size = size;
         calculate_projection_matrix(size);
+    }
+
+    DirectX::BoundingFrustum FreeCamera::frustum() const
+    {
+        using namespace DirectX;
+        XMVECTOR determinant;
+        XMMATRIX inv_view_lh = XMMatrixInverse(&determinant, _view_lh);
+        BoundingFrustum boundingFrustum(_projection_lh);
+        boundingFrustum.Transform(boundingFrustum, inv_view_lh);
+        return boundingFrustum;
     }
 
     Size FreeCamera::view_size() const

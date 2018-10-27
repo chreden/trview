@@ -3,6 +3,7 @@
 #include <trview.app/ITextureStorage.h>
 #include "RoomInfo.h"
 
+#include <trlevel/trtypes.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/NumericUpDown.h>
@@ -60,8 +61,8 @@ namespace trview
 
     void RoomNavigator::set_room_info(RoomInfo room_info)
     {
-        _x->set_text(L"X:" + std::to_wstring(room_info.x / 1024));
-        _z-> set_text(L"Z:" + std::to_wstring(room_info.z / 1024));
+        _x->set_text(L"X:" + std::to_wstring(static_cast<uint32_t>(room_info.x / trlevel::Scale_X)));
+        _z->set_text(L"Z:" + std::to_wstring(static_cast<uint32_t>(room_info.z / trlevel::Scale_Z)));
     }
 
     void RoomNavigator::set_max_rooms(uint32_t max_rooms)
