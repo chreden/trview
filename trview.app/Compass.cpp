@@ -48,6 +48,18 @@ namespace trview
             _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
             _mesh->render(context, scale * Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
             _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+
+            // Nodules for each direction - they can be clicked.
+            const auto nodule_scale = Matrix::CreateScale(0.05f);
+            // Y
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(0, 0.5f, 0) * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(0, -0.5f, 0) * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
+            // X
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(0.5f, 0, 0) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(-0.5f, 0, 0) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            // Z
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(0, 0, 0.5f) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(context, nodule_scale * Matrix::CreateTranslation(0, 0, -0.5f) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
         }
 
         auto screen_size = camera.view_size();
