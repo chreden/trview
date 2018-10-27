@@ -42,7 +42,8 @@ namespace trview
             _mesh_camera.set_rotation_yaw(camera.rotation_yaw());
 
             const auto view_projection = _mesh_camera.view_projection();
-            const auto scale = Matrix::CreateScale(0.015f, 1.0f, 0.015f);
+            const float thickness = 0.015f;
+            const auto scale = Matrix::CreateScale(thickness, 1.0f, thickness);
 
             // Y
             _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
