@@ -28,8 +28,9 @@ namespace trview
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
         const std::vector<TransparentTriangle>& transparent_triangles,
-        const std::vector<Triangle>& collision_triangles)
-        : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
+        const std::vector<Triangle>& collision_triangles,
+        Primitive primitive)
+        : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles), _primitive(primitive)
     {
         if (!vertices.empty())
         {
@@ -139,6 +140,7 @@ namespace trview
         UINT offset = 0;
         context->IASetVertexBuffers(0, 1, _vertex_buffer.GetAddressOf(), &stride, &offset);
         context->VSSetConstantBuffers(0, 1, _matrix_buffer.GetAddressOf());
+        context->IASetPrimitiveTopology(_primitive == Primitive::Triangle ? D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST : D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
         for (uint32_t i = 0; i < _index_buffers.size(); ++i)
         {

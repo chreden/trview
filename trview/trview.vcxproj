@@ -179,7 +179,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraInput.h" />
     <ClInclude Include="CameraMode.h" />
@@ -216,7 +215,6 @@
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="CameraInput.cpp" />
     <ClCompile Include="DefaultFonts.cpp" />

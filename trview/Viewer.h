@@ -18,7 +18,7 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
 
-#include "Camera.h"
+#include <trview.app/Camera.h>
 #include "CameraInput.h"
 #include "CameraMode.h"
 #include "FreeCamera.h"

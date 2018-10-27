@@ -47,6 +47,9 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="Compass.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -103,6 +106,9 @@
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="Compass.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">

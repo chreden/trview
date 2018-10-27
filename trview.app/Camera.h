@@ -2,7 +2,7 @@
 
 #include <trview.common/Size.h>
 
-#include <trview.app/ICamera.h>
+#include "ICamera.h"
 
 namespace trview
 {

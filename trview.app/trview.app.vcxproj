@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
     <ClCompile Include="FileDropper.cpp" />
@@ -39,6 +40,7 @@
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
     <ClInclude Include="FileDropper.h" />

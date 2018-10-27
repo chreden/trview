@@ -121,9 +121,6 @@
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="FreeCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -215,9 +212,6 @@
     </ClCompile>
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="FreeCamera.cpp">
       <Filter>Camera</Filter>
