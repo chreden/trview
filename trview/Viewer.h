@@ -168,6 +168,7 @@ namespace trview
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
         std::unique_ptr<Compass> _compass;
+        std::optional<Compass::Axis> _compass_axis;
     };
 }
 

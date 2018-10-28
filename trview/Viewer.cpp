@@ -279,30 +279,37 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
-                if (!over_ui() && !over_map() && _picking->visible() && _current_pick.hit)
+                if (!over_ui() && !over_map() && _picking->visible())
                 {
-                    if (_active_tool == Tool::Measure)
+                    if (_compass_axis.has_value())
                     {
-                        if (_measure->add(_current_pick.position))
-                        {
-                            _active_tool = Tool::None;
-                        }
+                        align_camera_to_axis(current_camera(), _compass_axis.value());
                     }
-                    else
+                    else if (_current_pick.hit)
                     {
-                        if (_current_pick.type == PickResult::Type::Room)
+                        if (_active_tool == Tool::Measure)
                         {
-                            select_room(_current_pick.index);
+                            if (_measure->add(_current_pick.position))
+                            {
+                                _active_tool = Tool::None;
+                            }
                         }
-                        else if (_current_pick.type == PickResult::Type::Entity)
+                        else
                         {
-                            select_item(_level->items()[_current_pick.index]);
+                            if (_current_pick.type == PickResult::Type::Room)
+                            {
+                                select_room(_current_pick.index);
+                            }
+                            else if (_current_pick.type == PickResult::Type::Entity)
+                            {
+                                select_item(_level->items()[_current_pick.index]);
+                            }
+                            else if (_current_pick.type == PickResult::Type::Trigger)
+                            {
+                                select_trigger(_level->triggers()[_current_pick.index]);
+                            }
+                            set_camera_mode(CameraMode::Orbit);
                         }
-                        else if (_current_pick.type == PickResult::Type::Trigger)
-                        {
-                            select_trigger(_level->triggers()[_current_pick.index]);
-                        }
-                        set_camera_mode(CameraMode::Orbit);
                     }
                 }
                 else if (over_map())
@@ -541,12 +548,26 @@ namespace trview
         using namespace SimpleMath;
 
         const ICamera& camera = current_camera();
+        Point mouse_pos = client_cursor_position(_window);
+
+        // Test against the compass first.
+        Compass::Axis axis;
+        if (_compass->pick(mouse_pos, camera, axis))
+        {
+            _current_pick.hit = false;
+            _compass_axis = axis;
+            _picking->set_visible(true);
+            _picking->set_text(axis_name(axis));
+            _picking->set_position(Point(mouse_pos.x - _picking->size().width, mouse_pos.y - _picking->size().height));
+            return;
+        }
+
+        _compass_axis.reset();
+
         const Vector3 position = camera.position();
         auto world = Matrix::CreateTranslation(position);
         auto projection = camera.projection();
         auto view = camera.view();
-
-        Point mouse_pos = client_cursor_position(_window);
         const auto window_size = _window.size();
 
         Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
