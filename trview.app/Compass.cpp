@@ -59,7 +59,7 @@ namespace trview
 
             // Have a camera that looks at the compass and match rotation to the real camera
             _mesh_camera.set_target(Vector3::Zero);
-            _mesh_camera.set_zoom(2.5f);
+            _mesh_camera.set_zoom(2.0f);
             _mesh_camera.set_rotation_pitch(camera.rotation_pitch());
             _mesh_camera.set_rotation_yaw(camera.rotation_yaw());
 
