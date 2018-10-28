@@ -558,6 +558,7 @@ namespace trview
             _compass_axis = axis;
             _picking->set_visible(true);
             _picking->set_text(axis_name(axis));
+            _picking->set_text_colour(Colour(1.0f, 1.0f, 1.0f));
             _picking->set_position(Point(mouse_pos.x - _picking->size().width, mouse_pos.y - _picking->size().height));
             return;
         }
