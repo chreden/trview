@@ -153,7 +153,7 @@ namespace trview
             pitch = 0;
             break;
         case Compass::Axis::Neg_X:
-            yaw = Pi;
+            yaw = -Pi;
             pitch = 0;
             break;
         case Compass::Axis::Neg_Y:
