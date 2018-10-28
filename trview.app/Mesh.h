@@ -24,7 +24,6 @@ namespace trview
         /// @param indices The indices for triangles that use level textures.
         /// @param untextured_indices The indices for triangles that do not use level textures.
         /// @param collision_triangles The triangles for picking.
-        /// @param primitive The primitive type.
         Mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
