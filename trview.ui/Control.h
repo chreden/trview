@@ -151,6 +151,8 @@ namespace trview
             template <typename T>
             T* find(const std::string& name) const;
 
+            int z() const;
+
             /// Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
 
@@ -255,6 +257,8 @@ namespace trview
             Align    _horizontal_alignment{ Align::Near };
             Align    _vertical_alignment{ Align::Near };
             std::string _name;
+        public:
+            int      _z{ 0 };
         };
     }
 }

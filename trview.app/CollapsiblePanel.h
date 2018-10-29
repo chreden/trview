@@ -28,6 +28,7 @@ namespace trview
         class Control;
         class Window;
         class Button;
+        class StackPanel;
         namespace render
         {
             class Renderer;
@@ -83,13 +84,14 @@ namespace trview
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;
+        std::unique_ptr<ui::Window> _ui;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
 
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
-        std::unique_ptr<ui::Window> _ui;
+        ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
         input::Mouse    _mouse;
         input::Keyboard _keyboard;

@@ -49,6 +49,8 @@ namespace trview
                 Size size() const;
 
                 bool visible() const;
+
+                int z() const;
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) = 0;
 

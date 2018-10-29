@@ -93,6 +93,12 @@ namespace trview
 
         void Control::clear_child_elements()
         {
+            auto focus = focus_control();
+            if (std::find_if(_child_elements.begin(), _child_elements.end(),
+                [&](const auto& control) { return control.get() == focus; }) != _child_elements.end())
+            {
+                set_focus_control(nullptr);
+            }
             _child_elements.clear();
             on_hierarchy_changed();
             on_invalidate();
@@ -103,6 +109,7 @@ namespace trview
             std::vector<Control*> output;
             std::transform(_child_elements.begin(), _child_elements.end(),
                 std::back_inserter(output), [](auto& child) {return child.get(); });
+            std::sort(output.begin(), output.end(), [](const auto& l, const auto& r) { return l->z() > r->z(); });
             return output;
         }
 
@@ -115,7 +122,7 @@ namespace trview
             }
 
             bool handled = false;
-            for (auto& child : _child_elements)
+            for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
                 handled |= child->process_mouse_down(position - child->position());
@@ -161,7 +168,8 @@ namespace trview
 
             if (_focus_control && _focus_control != this)
             {
-                bool focus_handled = _focus_control->move(position - _focus_control->absolute_position());
+                auto focus = _focus_control;
+                bool focus_handled = focus->move(position - focus->absolute_position());
                 if (focus_handled)
                 {
                     return true;
@@ -180,7 +188,7 @@ namespace trview
             }
 
             bool handled = false;
-            for (auto& child : _child_elements)
+            for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
                 handled |= child->inner_process_mouse_move(position - child->position());
@@ -220,7 +228,7 @@ namespace trview
             }
 
             bool handled = false;
-            for (auto& child : _child_elements)
+            for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
                 handled |= child->inner_process_mouse_up(position - child->position());
@@ -252,7 +260,7 @@ namespace trview
             }
 
             bool handled = false;
-            for (auto& child : _child_elements)
+            for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
                 handled |= child->inner_process_mouse_scroll(position - child->position(), delta);
@@ -347,7 +355,7 @@ namespace trview
         bool Control::inner_process_key_down(uint16_t key)
         {
             bool handled = false;
-            for (auto& child : _child_elements)
+            for (auto& child : child_elements())
             {
                 if (child->inner_process_key_down(key))
                 {
@@ -368,7 +376,7 @@ namespace trview
             }
 
             bool is_over_child = false;
-            for (const auto& child : _child_elements)
+            for (const auto& child : child_elements())
             {
                 if (child->visible())
                 {
@@ -407,7 +415,7 @@ namespace trview
                 return nullptr;
             }
 
-            for (const auto& control : _child_elements)
+            for (const auto& control : child_elements())
             {
                 auto result = control->hover_control_at_position(position - control->position());
                 if (result && result->_handles_hover)
@@ -456,6 +464,11 @@ namespace trview
         void Control::set_handles_hover(bool value)
         {
             _handles_hover = value;
+        }
+
+        int Control::z() const
+        {
+            return _z;
         }
     }
 }

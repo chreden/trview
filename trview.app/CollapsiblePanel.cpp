@@ -85,6 +85,8 @@ namespace trview
         _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); });
         _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
         _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); });
+
+        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
     }
 
     void CollapsiblePanel::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -115,10 +117,11 @@ namespace trview
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
-        _ui = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        _left_panel = _ui->add_child(std::move(left_panel));
-        _divider = _ui->add_child(create_divider());
-        _right_panel = _ui->add_child(std::move(right_panel));
+        auto panel = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        _left_panel = panel->add_child(std::move(left_panel));
+        _divider = panel->add_child(create_divider());
+        _right_panel = panel->add_child(std::move(right_panel));
+        _panels = _ui->add_child(std::move(panel));
         _ui_renderer->load(_ui.get());
     }
 
@@ -130,6 +133,7 @@ namespace trview
     void CollapsiblePanel::update_layout()
     {
         _ui->set_size(window().size());
+        _panels->set_size(window().size());
         const auto new_height = window().size().height;
         _left_panel->set_size(Size(_left_panel->size().width, new_height));
         _divider->set_size(Size(_divider->size().width, new_height));

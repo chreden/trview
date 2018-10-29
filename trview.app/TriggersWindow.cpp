@@ -7,6 +7,7 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/GroupBox.h>
+#include <trview.ui/Dropdown.h>
 
 namespace trview
 {
@@ -74,7 +75,15 @@ namespace trview
         // Add the expander button at this point.
         add_expander(*controls);
 
+        // Command filter:
         auto controls_row2 = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        controls_row2->add_child(std::make_unique<Label>(Point(), Size(60, 20), Colours::LeftPanel, L"Command: ", 8, TextAlignment::Centre, ParagraphAlignment::Centre));
+
+        auto command_filter = std::make_unique<Dropdown>(Point(), Size(100, 20));
+        command_filter->set_values({L"All", L"Object", L"End Level"});
+        command_filter->set_dropdown_scope(_ui.get());
+
+        controls_row2->add_child(std::move(command_filter));
 
         _controls = controls_box->add_child(std::move(controls));
         controls_box->add_child(std::move(controls_row2));
