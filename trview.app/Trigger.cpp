@@ -47,6 +47,24 @@ namespace trview
             { TriggerCommandType::Flyby, L"Flyby" },
             { TriggerCommandType::Cutscene, L"Cutscene" }
         };
+
+        const std::unordered_map<std::wstring, TriggerCommandType> command_type_lookup
+        {
+            { L"Object", TriggerCommandType::Object },
+            { L"Camera", TriggerCommandType::Camera },
+            { L"Current", TriggerCommandType::UnderwaterCurrent },
+            { L"Flip Map", TriggerCommandType::FlipMap },
+            { L"Flip On", TriggerCommandType::FlipOn },
+            { L"Flip Off", TriggerCommandType::FlipOff },
+            { L"Look at Item", TriggerCommandType::LookAtItem },
+            { L"End Level", TriggerCommandType::EndLevel },
+            { L"Music", TriggerCommandType::PlaySoundtrack },
+            { L"Flipeffect", TriggerCommandType::Flipeffect },
+            { L"Secret", TriggerCommandType::SecretFound },
+            { L"Clear Bodies", TriggerCommandType::ClearBodies },
+            { L"Flyby", TriggerCommandType::Flyby },
+            { L"Cutscene", TriggerCommandType::Cutscene }
+        };
     }
 
     Command::Command(uint32_t number, TriggerCommandType type, uint16_t index)
@@ -168,6 +186,14 @@ namespace trview
         return PickResult();
     }
 
+    bool Trigger::has_command(TriggerCommandType type) const
+    {
+        return std::find_if(_commands.begin(), _commands.end(), [&](const auto& c)
+        {
+            return c.type() == type;
+        }) != _commands.end();
+    }
+
     std::wstring trigger_type_name(TriggerType type)
     {
         auto name = trigger_type_names.find(type);
@@ -186,5 +212,15 @@ namespace trview
             return L"Unknown";
         }
         return name->second;
+    }
+
+    TriggerCommandType command_from_name(const std::wstring& name)
+    {
+        auto type = command_type_lookup.find(name);
+        if (type == command_type_lookup.end())
+        {
+            return TriggerCommandType::Object;
+        }
+        return type->second;
     }
 }

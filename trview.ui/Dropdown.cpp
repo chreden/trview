@@ -10,17 +10,12 @@ namespace trview
         Dropdown::Dropdown(const Point& position, const Size& size)
             : Window(position, size, Colour(1.0f, 0.0f, 0.0f))
         {
-            _label = add_child(
-                std::make_unique<Label>(
-                    position, 
-                    size, 
-                    Colour(1.0f, 0.0f, 0.0f), 
-                    L"", 
-                    8,
-                    graphics::TextAlignment::Centre,
-                    graphics::ParagraphAlignment::Centre));
-            set_handles_input(true);
-            set_handles_hover(true);
+            _button = add_child(std::make_unique<Button>(position, size, L""));
+            _token_store.add(_button->on_click += [&]()
+            {
+                _dropdown->set_visible(!_dropdown->visible());
+                update_dropdown();
+            });
         }
 
         void Dropdown::set_dropdown_scope(ui::Control* scope)
@@ -38,6 +33,11 @@ namespace trview
             update_dropdown();
         }
 
+        void Dropdown::set_selected_value(const std::wstring& value)
+        {
+            _button->set_text(value);
+        }
+
         void Dropdown::update_dropdown()
         {
             if (!_dropdown || !_dropdown->visible())
@@ -48,33 +48,18 @@ namespace trview
             // Set the position of the dropdown to be just below us.
             _dropdown->set_position(absolute_position() + Point(0, size().height));
             _dropdown->clear_child_elements();
+            _dropdown->set_size(Size(size().width, size().height * _values.size()));
             for (const auto& value : _values)
             {
                 auto button = std::make_unique<Button>(Point(), size(), value);
                 _token_store.add(button->on_click += [&]()
                 {
-                    _label->set_text(value);
+                    _button->set_text(value);
                     _dropdown->set_visible(false);
+                    on_value_selected(value);
                 });
                 _dropdown->add_child(std::move(button));
             }
-        }
-
-        bool Dropdown::mouse_down(const Point&)
-        {
-            return true;
-        }
-
-        bool Dropdown::mouse_up(const Point&)
-        {
-            return true;
-        }
-
-        bool Dropdown::clicked(Point)
-        {
-            _dropdown->set_visible(!_dropdown->visible());
-            update_dropdown();
-            return true;
         }
     }
 }

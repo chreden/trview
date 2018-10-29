@@ -1,5 +1,6 @@
 #include <sstream>
 #include <bitset>
+#include <set>
 
 #include "TriggersWindow.h"
 #include <trview.common/Colour.h>
@@ -8,6 +9,7 @@
 #include <trview.ui/Button.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Dropdown.h>
+#include <trview.ui/Label.h>
 
 namespace trview
 {
@@ -76,14 +78,27 @@ namespace trview
         add_expander(*controls);
 
         // Command filter:
-        auto controls_row2 = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls_row2 = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls_row2->add_child(std::make_unique<Label>(Point(), Size(60, 20), Colours::LeftPanel, L"Command: ", 8, TextAlignment::Centre, ParagraphAlignment::Centre));
 
-        auto command_filter = std::make_unique<Dropdown>(Point(), Size(100, 20));
-        command_filter->set_values({L"All", L"Object", L"End Level"});
+        auto command_filter = std::make_unique<Dropdown>(Point(), Size(110, 20));
+        command_filter->set_values({L"All"});
         command_filter->set_dropdown_scope(_ui.get());
+        command_filter->set_selected_value(L"All");
+        _token_store.add(command_filter->on_value_selected += [&](const auto& value) 
+        {
+            if (value == L"All")
+            {
+                _selected_command.reset();
+            }
+            else
+            {
+                _selected_command = command_from_name(value);
+            }
+            apply_filters();
+        });
 
-        controls_row2->add_child(std::move(command_filter));
+        _command_filter = controls_row2->add_child(std::move(command_filter));
 
         _controls = controls_box->add_child(std::move(controls));
         controls_box->add_child(std::move(controls_row2));
@@ -178,6 +193,21 @@ namespace trview
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
+
+        // Populate command filter dropdown.
+        _selected_command.reset();
+        std::set<TriggerCommandType> command_set;
+        for (const auto& trigger : triggers)
+        {
+            for (const auto& command : trigger->commands())
+            {
+                command_set.insert(command.type());
+            }
+        }
+        std::vector<std::wstring> all_commands{ L"All" };
+        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
+        _command_filter->set_values(all_commands);
+        _command_filter->set_selected_value(L"All");
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -196,17 +226,9 @@ namespace trview
     {
         if (_track_room && (!_filter_applied || _current_room != room))
         {
+            _current_room = room;
             _filter_applied = true;
-
-            std::vector<Trigger*> filtered_triggers;
-            for (const auto& trigger : _all_triggers)
-            {
-                if (trigger->room() == room)
-                {
-                    filtered_triggers.push_back(trigger);
-                }
-            }
-            populate_triggers(filtered_triggers);
+            apply_filters();
         }
 
         _current_room = room;
@@ -217,6 +239,13 @@ namespace trview
         _selected_trigger = trigger;
         if (_sync_trigger)
         {
+            if (_selected_command.has_value() && !trigger->has_command(_selected_command.value()))
+            {
+                _selected_command.reset();
+                _command_filter->set_selected_value(L"All");
+                apply_filters();
+            }
+
             const auto& list_item = create_listbox_item(*trigger);
             if (_triggers_list->set_selected_item(list_item))
             {
@@ -333,5 +362,28 @@ namespace trview
     void TriggersWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+    }
+
+    void TriggersWindow::apply_filters()
+    {
+        auto room_filter = [&](const auto& trigger)
+        {
+            return !_filter_applied || trigger->room() == _current_room;
+        };
+
+        auto command_filter = [&](const auto& trigger)
+        {
+            return !_selected_command.has_value() || trigger->has_command(_selected_command.value());
+        };
+
+        std::vector<Trigger*> filtered_triggers;
+        for (const auto& trigger : _all_triggers)
+        {
+            if (room_filter(trigger) && command_filter(trigger))
+            {
+                filtered_triggers.push_back(trigger);
+            }
+        }
+        populate_triggers(filtered_triggers);
     }
 }

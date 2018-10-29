@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Window.h"
-#include "Label.h"
+#include "Button.h"
 
 namespace trview
 {
@@ -32,17 +32,17 @@ namespace trview
             /// @param values The values to show.
             void set_values(const std::vector<std::wstring>& values);
 
+            /// Set the selected value. This will not raise the on_value_selected event.
+            /// @param value The new value.
+            void set_selected_value(const std::wstring& value);
+
             /// Event raised when a value is selected. The selected value is passed as a parameter.
             Event<std::wstring> on_value_selected;
-        protected:
-            virtual bool mouse_down(const Point&) override;
-            virtual bool mouse_up(const Point&) override;
-            virtual bool clicked(Point position) override;
         private:
             void update_dropdown();
 
             std::vector<std::wstring> _values;
-            ui::Label*                _label;
+            ui::Button*               _button;
             ui::StackPanel*           _dropdown;
         };
     }
