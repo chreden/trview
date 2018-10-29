@@ -188,10 +188,7 @@ namespace trview
 
     bool Trigger::has_command(TriggerCommandType type) const
     {
-        return std::find_if(_commands.begin(), _commands.end(), [&](const auto& c)
-        {
-            return c.type() == type;
-        }) != _commands.end();
+        return std::any_of(_commands.begin(), _commands.end(), [&](const auto& c) { return c.type() == type; });
     }
 
     std::wstring trigger_type_name(TriggerType type)
