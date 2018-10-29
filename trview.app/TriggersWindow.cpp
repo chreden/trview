@@ -50,6 +50,7 @@ namespace trview
         auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Control modes:.
+        auto controls_box = std::make_unique<StackPanel>(Point(), Size(200, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
@@ -73,9 +74,13 @@ namespace trview
         // Add the expander button at this point.
         add_expander(*controls);
 
-        _controls = left_panel->add_child(std::move(controls));
+        auto controls_row2 = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
 
-        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        _controls = controls_box->add_child(std::move(controls));
+        controls_box->add_child(std::move(controls_row2));
+        auto _controls_box = left_panel->add_child(std::move(controls_box));
+
+        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls_box->size().height), Colours::LeftPanel);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
