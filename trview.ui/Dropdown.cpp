@@ -21,7 +21,7 @@ namespace trview
         void Dropdown::set_dropdown_scope(ui::Control* scope)
         {
             auto dropdown = std::make_unique<StackPanel>(Point(), Size(size().width, size().height * _values.size()), Colour(0.4f, 0.0f, 0.4f), Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-            dropdown->_z = -1;
+            dropdown->set_z(-1);
             dropdown->set_visible(false);
             _dropdown = scope->add_child(std::move(dropdown));
             update_dropdown();

@@ -470,5 +470,11 @@ namespace trview
         {
             return _z;
         }
+
+        void Control::set_z(int value)
+        {
+            _z = value;
+            on_invalidate();
+        }
     }
 }
