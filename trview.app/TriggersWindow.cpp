@@ -101,10 +101,11 @@ namespace trview
         _command_filter = controls_row2->add_child(std::move(command_filter));
 
         _controls = controls_box->add_child(std::move(controls));
+        auto controls_box_bottom = controls_box->size().height;
         controls_box->add_child(std::move(controls_row2));
-        auto _controls_box = left_panel->add_child(std::move(controls_box));
+        left_panel->add_child(std::move(controls_box));
 
-        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls_box->size().height), Colours::LeftPanel);
+        auto triggers_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - controls_box_bottom), Colours::LeftPanel);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
