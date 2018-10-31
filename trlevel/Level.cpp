@@ -110,7 +110,7 @@ namespace trlevel
                 _version = LevelVersion::Tomb5;
             }
 
-            if (_version == LevelVersion::Tomb4)
+            if (_version >= LevelVersion::Tomb4)
             {
                 load_tr4(file);
                 return;
@@ -507,11 +507,26 @@ namespace trlevel
         _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
         auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
-        std::vector<uint8_t> level_data = read_compressed(file);
-        std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
-        std::istringstream data_stream(data, std::ios::binary);
+        if (_version == LevelVersion::Tomb5)
+        {
+            uint16_t lara_type = read<uint16_t>(file);
+            uint16_t weather_type = read<uint16_t>(file);
+            file.seekg(28, std::ios::cur);
+        }
 
-        load_level_data(data_stream);
+        if (_version == LevelVersion::Tomb4)
+        {
+            std::vector<uint8_t> level_data = read_compressed(file);
+            std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
+            std::istringstream data_stream(data, std::ios::binary);
+            load_level_data(data_stream);
+        }
+        else
+        {
+            uint32_t leveldata_uncompressed = read<uint32_t>(file);
+            uint32_t leveldata_compressed = read<uint32_t>(file);
+            load_level_data(file);
+        }
 
         uint32_t num_sound_samples = read<uint32_t>(file);
         std::vector<tr4_sample> sound_samples(num_sound_samples);
