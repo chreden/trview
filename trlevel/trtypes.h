@@ -45,6 +45,15 @@ namespace trlevel
     struct tr_room_info
     {
         int32_t x;
+        int32_t y;
+        int32_t z;
+        int32_t yBottom;
+        int32_t yTop;
+    };
+
+    struct tr1_4_room_info
+    {
+        int32_t x;
         int32_t z;
         int32_t yBottom;
         int32_t yTop;
@@ -55,6 +64,13 @@ namespace trlevel
         int16_t x;
         int16_t y;
         int16_t z;
+    };
+
+    struct tr5_vertex
+    {
+        float x;
+        float y;
+        float z;
     };
 
     // Four vertices(the values are indices into the appropriate vertex list) and a texture(an index into 
@@ -194,6 +210,18 @@ namespace trlevel
         uint32_t FrameOffset;  // Byte offset into Frames[] (divide by 2 for Frames[i])
         uint16_t Animation;    // Offset into Animations[]
     };
+
+    struct tr5_model  // 18 bytes
+    {
+        uint32_t ID;           // Type Identifier (matched in Entities[])
+        uint16_t NumMeshes;    // Number of meshes in this object
+        uint16_t StartingMesh; // Starting mesh (offset into MeshPointers[])
+        uint32_t MeshTree;     // Offset into MeshTree[]
+        uint32_t FrameOffset;  // Byte offset into Frames[] (divide by 2 for Frames[i])
+        uint16_t Animation;    // Offset into Animations[]
+        uint16_t Filler;
+    };
+
 
     struct tr_bounding_box // 12 bytes
     {
@@ -388,6 +416,38 @@ namespace trlevel
         uint16_t    colour;
     };
 
+    struct tr5_room_vertex
+    {
+        tr5_vertex vertex;
+        tr5_vertex normal;
+        uint32_t   colour;
+    };
+
+    struct tr5_room_layer
+    {
+        uint16_t num_vertices;
+        uint16_t unknown1;
+        uint16_t unknown2;
+        uint16_t num_rectangles;
+        uint16_t num_triangles;
+        uint16_t unknown3;
+
+        uint16_t filler;
+        uint16_t filler2;
+
+        float    bb_x1;
+        float    bb_y1;
+        float    bb_z1;
+        float    bb_x2;
+        float    bb_y2;
+        float    bb_z2;
+
+        uint32_t filler3;
+        uint32_t unknown4;
+        uint32_t unknown5;
+        uint32_t unknown6;
+    };
+
     struct tr_room_portal
     {
         uint16_t  adjoining_room;
@@ -441,6 +501,23 @@ namespace trlevel
         float dx;
         float dy;
         float dz;
+    };
+
+    struct tr5_room_light
+    {
+        float x, y, z;
+        float r, g, b;
+        uint32_t separator;
+        float in;
+        float out;
+        float rad_in;
+        float rad_out;
+        float range;
+        float dx, dy, dz;
+        int32_t x2, y2, z2;
+        int32_t dx2, dy2, dz2;
+        uint8_t light_type;
+        uint8_t filler[3];
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.
@@ -508,6 +585,7 @@ namespace trlevel
         uint16_t num_x_sectors;
         std::vector<tr_room_sector> sector_list;
 
+        uint32_t colour{ 0xffffffff };
         int16_t ambient_intensity_1;
         int16_t ambient_intensity_2;
         int16_t light_mode;
@@ -565,6 +643,12 @@ namespace trlevel
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices);
 
+    /// Convert a set of Tomb Raider 5 vertices into a vertex format compatible
+    /// with Tomb Raider III (what the viewer is currently using).
+    /// @param vertices The vertices to convert.
+    /// @return The converted vertices.
+    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
+
     // Convert a set of Tomb Raider I lights into a light format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_light> convert_lights(std::vector<tr_room_light> lights);
@@ -589,4 +673,11 @@ namespace trlevel
 
     // Convert a set of Tomb Raider I-III rectangles to TRIV rectangles.
     std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles);
+
+    /// Convert a pre TR5 room info into a TR5 room info.
+    /// @param room_info The room info to convert.
+    /// @returns The converted room info.
+    tr_room_info convert_room_info(const tr1_4_room_info& room_info);
+
+    std::vector<tr_model> convert_models(std::vector<tr5_model> models);
 }

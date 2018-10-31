@@ -46,6 +46,20 @@ namespace trlevel
         return new_vertices;
     }
 
+    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices)
+    {
+        std::vector<tr3_room_vertex> new_vertices;
+        new_vertices.reserve(vertices.size());
+        std::transform(vertices.begin(), vertices.end(),
+            std::back_inserter(new_vertices), [](const auto& vert)
+        {
+            tr_vertex vertex{ vert.vertex.x, vert.vertex.y, vert.vertex.z };
+            tr3_room_vertex new_vertex{ vertex, 0, 0, 0xffff };
+            return new_vertex;
+        });
+        return new_vertices;
+    }
+
     // Convert a set of Tomb Raider I lights into a light format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_light> convert_lights(std::vector<tr_room_light> lights)
@@ -143,5 +157,30 @@ namespace trlevel
             return new_face4;
         });
         return new_rectangles;
+    }
+
+    tr_room_info convert_room_info(const tr1_4_room_info& room_info)
+    {
+        tr_room_info new_info;
+        new_info.x = room_info.x;
+        new_info.y = 0;
+        new_info.z = room_info.z;
+        new_info.yTop = room_info.yTop;
+        new_info.y = room_info.yBottom;
+        return new_info;
+    }
+
+    std::vector<tr_model> convert_models(std::vector<tr5_model> models)
+    {
+        std::vector<tr_model> new_models;
+        new_models.reserve(models.size());
+        std::transform(models.begin(), models.end(),
+            std::back_inserter(new_models), [](const auto& model)
+        {
+            tr_model new_model;
+            memcpy(&new_model, &model, sizeof(tr_model));
+            return new_model;
+        });
+        return new_models;
     }
 }
