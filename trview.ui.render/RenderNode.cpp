@@ -59,7 +59,12 @@ namespace trview
 
                 render_self(context, sprite);
 
-                for (auto& child : _child_nodes)
+                std::vector<RenderNode*> children;
+                std::transform(_child_nodes.begin(), _child_nodes.end(), std::back_inserter(children),
+                    [](auto& child) { return child.get(); });
+                std::sort(children.begin(), children.end(), [](const auto& l, const auto& r) { return l->z() > r->z(); });
+
+                for (auto& child : children)
                 {
                     if (!child->visible())
                     {
@@ -120,6 +125,11 @@ namespace trview
             {
                 return std::any_of(_child_nodes.begin(), _child_nodes.end(),
                     [](const auto& n) { return n->needs_redraw() || n->needs_recompositing(); });
+            }
+
+            int RenderNode::z() const
+            {
+                return _control->z();
             }
         }
     }

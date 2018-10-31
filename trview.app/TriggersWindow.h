@@ -13,6 +13,7 @@ namespace trview
     namespace ui
     {
         class Checkbox;
+        class Dropdown;
     }
 
     class TriggersWindow final : public CollapsiblePanel
@@ -59,12 +60,14 @@ namespace trview
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
         void load_trigger_details(const Trigger& trigger);
+        void apply_filters();
 
         ui::Window*   _controls;
         ui::Checkbox* _track_room_checkbox;
         ui::Listbox*  _triggers_list;
         ui::Listbox*  _stats_list;
         ui::Listbox*  _command_list;
+        ui::Dropdown* _command_filter;
 
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
@@ -77,5 +80,6 @@ namespace trview
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
         std::optional<const Trigger*> _selected_trigger;
+        std::optional<TriggerCommandType> _selected_command;
     };
 }

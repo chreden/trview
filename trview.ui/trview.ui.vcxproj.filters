@@ -46,6 +46,9 @@
     <ClInclude Include="Scrollbar.h">
       <Filter>Controls\Scrollbar</Filter>
     </ClInclude>
+    <ClInclude Include="Dropdown.h">
+      <Filter>Controls\Dropdown</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -93,6 +96,9 @@
     <ClCompile Include="ListboxColumn.cpp">
       <Filter>Controls\Listbox</Filter>
     </ClCompile>
+    <ClCompile Include="Dropdown.cpp">
+      <Filter>Controls\Dropdown</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -106,6 +112,9 @@
     </Filter>
     <Filter Include="Controls\Scrollbar">
       <UniqueIdentifier>{148c0414-eb8e-4d27-8c1c-8b53340436dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Dropdown">
+      <UniqueIdentifier>{07f12ab6-b126-4ef8-b58d-9a1ef6abb44b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

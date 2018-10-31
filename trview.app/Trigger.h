@@ -57,6 +57,7 @@ namespace trview
         const std::vector<TransparentTriangle>& triangles() const;
         void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
+        bool has_command(TriggerCommandType type) const;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
@@ -82,4 +83,9 @@ namespace trview
     /// @param type The type to test.
     /// @returns The string version of the enum.
     std::wstring command_type_name(TriggerCommandType type);
+
+    /// Get the trigger command type from a string.
+    /// @param name The string to convert.
+    /// @returns The trigger command type.
+    TriggerCommandType command_from_name(const std::wstring& name);
 }

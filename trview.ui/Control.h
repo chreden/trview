@@ -151,6 +151,14 @@ namespace trview
             template <typename T>
             T* find(const std::string& name) const;
 
+            /// Get the z order of the control.
+            /// @returns The z order.
+            int z() const;
+
+            /// Set the z order of the control.
+            /// @param value The new z order.
+            void set_z(int value);
+
             /// Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
 
@@ -255,6 +263,7 @@ namespace trview
             Align    _horizontal_alignment{ Align::Near };
             Align    _vertical_alignment{ Align::Near };
             std::string _name;
+            int      _z{ 0 };
         };
     }
 }
