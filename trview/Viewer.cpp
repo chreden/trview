@@ -481,10 +481,10 @@ namespace trview
         _room_navigator->set_flip(false);
         _room_navigator->set_flip_enabled(_level->any_alternates());
 
-        trlevel::tr2_entity lara_entity;
-        if (_settings.go_to_lara && _current_level->find_first_entity_by_type(0, lara_entity))
+        Item lara;
+        if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
         {
-            select_room(lara_entity.Room);
+            select_item(lara);
         }
         else
         {

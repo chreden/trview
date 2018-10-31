@@ -10,6 +10,9 @@ namespace trview
     class Item final
     {
     public:
+        /// Default constructor for item.
+        Item() = default;
+
         /// Create an item.
         /// @param number The item number in the level.
         /// @param room The room number the item is in.
@@ -57,11 +60,11 @@ namespace trview
         const std::vector<Trigger*>& triggers() const;
     private:
         std::vector<Trigger*> _triggers;
-        uint32_t _number;
-        uint32_t _room;
-        uint32_t _type_id;
+        uint32_t _number{ 0u };
+        uint32_t _room{ 0u };
+        uint32_t _type_id{ 0u };
         std::wstring _type;
-        uint32_t _ocb;
-        uint16_t _flags;
+        uint32_t _ocb{ 0u };
+        uint16_t _flags{ 0u };
     };
 }
