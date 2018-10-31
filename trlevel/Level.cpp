@@ -81,6 +81,18 @@ namespace trlevel
             data_stream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             return read_vector<DataType>(data_stream, elements);
         }
+
+        bool is_tr5(LevelVersion version, const std::wstring& filename)
+        {
+            if (version != LevelVersion::Tomb4)
+            {
+                return false;
+            }
+
+            std::wstring transformed;
+            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), toupper);
+            return transformed.find(L".TRC") != filename.npos;
+        }
     }
 
     Level::Level(const std::wstring& filename)
@@ -93,6 +105,10 @@ namespace trlevel
             file.open(filename.c_str(), std::ios::binary);
 
             _version = convert_level_version(read<uint32_t>(file));
+            if (is_tr5(_version, filename))
+            {
+                _version = LevelVersion::Tomb5;
+            }
 
             if (_version == LevelVersion::Tomb4)
             {
