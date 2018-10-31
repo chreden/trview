@@ -107,7 +107,7 @@ namespace trview
             maximum = Vector3::Max(maximum, v.pos);
         }
 
-        const Vector3 half_size = (maximum - minimum) * 0.5f;
+        const Vector3 half_size = vertices.empty() ? Vector3::Zero : (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
         _bounding_box.Center = minimum + half_size;
     }

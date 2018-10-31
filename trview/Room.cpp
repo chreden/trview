@@ -188,8 +188,10 @@ namespace trview
         process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
 
         _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, collision_triangles);
-        _bounding_box = _mesh->bounding_box();
-        _bounding_box.Center = centre();
+        
+        // Generate the bounding box based on the room dimensions.
+        const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
+        _bounding_box = DirectX::BoundingBox(centre(), extents);
     }
 
     void Room::generate_adjacency()
