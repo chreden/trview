@@ -18,7 +18,7 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
 
-#include "Camera.h"
+#include <trview.app/Camera.h>
 #include "CameraInput.h"
 #include "CameraMode.h"
 #include "FreeCamera.h"
@@ -32,6 +32,7 @@
 #include <trview.app/TriggersWindowManager.h>
 #include <trview.app/Toolbar.h>
 #include <trview.app/Measure.h>
+#include <trview.app/Compass.h>
 
 namespace trview
 {
@@ -166,6 +167,8 @@ namespace trview
 
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
+        std::unique_ptr<Compass> _compass;
+        std::optional<Compass::Axis> _compass_axis;
     };
 }
 

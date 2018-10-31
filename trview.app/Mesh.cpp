@@ -213,6 +213,33 @@ namespace trview
         return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
+    std::unique_ptr<Mesh> create_cube_mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+    {
+        const std::vector<MeshVertex> vertices
+        {
+            { { 0.5, 0.5f, 0.5 },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { 0.5, 0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { -0.5, 0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { -0.5, 0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { 0.5, -0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { 0.5, -0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { -0.5, -0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
+            { { -0.5, -0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
+        };
+
+        const std::vector<uint32_t> indices
+        {
+            2, 1, 0, 0, 3, 2, // + y
+            5, 4, 0, 0, 1, 5, // + x
+            2, 3, 7, 7, 6, 2, // - x
+            0, 4, 3, 3, 4, 7, // + z
+            5, 1, 2, 2, 6, 5, // - z
+            4, 5, 6, 6, 7, 4  // - y
+        };
+
+        return std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+    }
+
     void process_textured_rectangles(
         const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices,
