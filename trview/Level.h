@@ -183,4 +183,11 @@ namespace trview
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
     };
+
+    /// Find the first item with the type id specified.
+    /// @param level The level to search.
+    /// @param type_id The type id to search for.
+    /// @param output_item The item to output the result into.
+    /// @returns True if the item was found.
+    bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item);
 }

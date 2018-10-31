@@ -520,4 +520,16 @@ namespace trview
     {
         return *_texture_storage;
     }
+
+    bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)
+    {
+        const auto& items = level.items();
+        auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item) { return item.type_id() == type_id; });
+        if (found_item == items.end())
+        {
+            return false;
+        }
+        output_item = *found_item;
+        return true;
+    }
 }
