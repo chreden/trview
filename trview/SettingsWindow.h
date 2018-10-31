@@ -38,6 +38,9 @@ namespace trview
         /// Event raised when the 'triggers window at startup' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_triggers_startup;
 
+        /// Event raised when the 'Switch to orbit on selection' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_auto_orbit;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -58,6 +61,10 @@ namespace trview
         /// @param value The new 'triggers window at startup' setting.
         void set_triggers_startup(bool value);
 
+        /// Set the new value of the 'Switch to orbit on selection' setting. This will not raise the on_auto_orbit event.
+        /// @param value The new 'Switch to orbit on selection' setting.
+        void set_auto_orbit(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
@@ -66,6 +73,7 @@ namespace trview
         ui::Checkbox* _invert_map_controls;
         ui::Checkbox* _items_startup;
         ui::Checkbox* _triggers_startup;
+        ui::Checkbox* _auto_orbit;
         ui::Control* _window;
         TokenStore _token_store;
     };

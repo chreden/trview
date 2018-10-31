@@ -51,6 +51,10 @@ namespace trview
         triggers_startup->on_state_changed += on_triggers_startup;
         _triggers_startup = panel->add_child(std::move(triggers_startup));
 
+        auto auto_orbit = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Switch to orbit on selection");
+        auto_orbit->on_state_changed += on_auto_orbit;
+        _auto_orbit = panel->add_child(std::move(auto_orbit));
+
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
         _token_store.add(ok->on_click += [&]() { _window->set_visible(!_window->visible()); });
@@ -95,6 +99,11 @@ namespace trview
     void SettingsWindow::set_triggers_startup(bool value)
     {
         _triggers_startup->set_state(value);
+    }
+
+    void SettingsWindow::set_auto_orbit(bool value)
+    {
+        _auto_orbit->set_state(value);
     }
 
     void SettingsWindow::toggle_visibility()

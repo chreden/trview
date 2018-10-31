@@ -163,11 +163,17 @@ namespace trview
             _settings.triggers_startup = value;
             save_user_settings(_settings);
         });
+        _token_store.add(_settings_window->on_auto_orbit += [&](bool value)
+        {
+            _settings.auto_orbit = value;
+            save_user_settings(_settings);
+        });
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
         _settings_window->set_items_startup(_settings.items_startup);
         _settings_window->set_triggers_startup(_settings.triggers_startup);
+        _settings_window->set_auto_orbit(_settings.auto_orbit);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.size());
@@ -308,7 +314,11 @@ namespace trview
                             {
                                 select_trigger(_level->triggers()[_current_pick.index]);
                             }
-                            set_camera_mode(CameraMode::Orbit);
+
+                            if (_settings.auto_orbit)
+                            {
+                                set_camera_mode(CameraMode::Orbit);
+                            }
                         }
                     }
                 }
@@ -693,7 +703,10 @@ namespace trview
 
             _map_renderer->load(_level->room(_level->selected_room()));
 
-            set_camera_mode(CameraMode::Orbit);
+            if (_settings.auto_orbit)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
 
             _target = _level->room(_level->selected_room())->centre();
 
