@@ -4,6 +4,19 @@
 
 namespace trlevel
 {
+    namespace
+    {
+        /// Convert a tr4 object texture into a type that matches 1-3.
+        /// @param texture The texture to convert.
+        /// @returns The converted texture.
+        tr_object_texture convert_object_texture(const tr4_object_texture& texture)
+        {
+            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
+            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
+            return new_entity;
+        }
+    }
+
     uint32_t convert_textile32(uint32_t t)
     {
         uint32_t a = (t & 0xff000000) >> 24;
