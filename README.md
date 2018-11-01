@@ -1,9 +1,8 @@
 # trview
 
-trview is a level visualiser for Tomb Raider 1, 2, 3 and The Last Revelation 
-made with speedrunning in mind. This program is useful to quickly check how the 
-rooms are laid out, see the triggers present on them and analyse route
-possibilities.
+trview is a level visualiser for Tomb Raider 1 - 5 made with speedrunning 
+in mind. This program is useful to quickly check how the rooms are laid out,
+see the triggers present on them and analyse route possibilities.
 
 ![Screenshot](https://i.imgur.com/irC0Udm.png)
 
@@ -27,6 +26,6 @@ Build > Build Solution.
 
 ## Running
 
-Double click a level file (.TR2, .TR4 or .PHD) present in the game's data folder and
-choose to open it with trview.exe. You can also open trview by itself and choose
+Double click a level file (.TR2, .TR4, .TRC or .PHD) present in the game's data folder 
+and choose to open it with trview.exe. You can also open trview by itself and choose
 a level file using the File menu or drag and drop a level file onto the window.
