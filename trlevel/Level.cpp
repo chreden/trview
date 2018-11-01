@@ -573,103 +573,44 @@ namespace trlevel
 
             if (_version == LevelVersion::Tomb5)
             {
-                // Offsets:
                 skip_xela(file);
                 uint32_t room_data_size = read<uint32_t>(file);
-                uint32_t room_start = file.tellg();
-                uint32_t room_end = room_start + room_data_size;
+                const uint32_t room_start = file.tellg();
+                const uint32_t room_end = room_start + room_data_size;
 
-                skip(file, 4);
-                uint32_t end_sd_offset = read<uint32_t>(file);
-                uint32_t start_sd_offset = read<uint32_t>(file);
-                skip(file, 4);
-                uint32_t end_portal_offset = read<uint32_t>(file);
+                const auto header = read<tr5_room_header>(file);
 
-                room.info = read<tr_room_info>(file);
-                room.num_z_sectors = read<uint16_t>(file);
-                room.num_x_sectors = read<uint16_t>(file);
-                room.colour = read<uint32_t>(file);
+                // Copy useful data from the header to the room.
+                room.info = header.info;
+                room.num_x_sectors = header.num_x_sectors;
+                room.num_z_sectors = header.num_z_sectors;
+                room.colour = header.colour;
+                room.reverb_info = header.reverb_info;
+                room.alternate_group = header.alternate_group;
+                room.water_scheme = header.water_scheme;
+                room.alternate_room = header.alternate_room;
+                room.flags = header.flags;
 
-                uint16_t num_lights = read<uint16_t>(file);
-                uint16_t num_static_meshes = read<uint16_t>(file);
+                // The offsets start measuring from this position, after all the header information.
+                const uint32_t data_start = file.tellg();
 
-                room.reverb_info = read<uint8_t>(file);
-                room.alternate_group = read<uint8_t>(file);
-                room.water_scheme = read<uint16_t>(file);
-
-                // Skip fillers.
-                skip(file, 20);
-
-                room.alternate_room = read<uint16_t>(file);
-                room.flags = read<uint16_t>(file);
-
-                // Three unknowns, a separator and two more unknowns.
-                skip(file, 12);
-                skip(file, 4);
-                skip(file, 4);
-
-                float room_x = read<float>(file);
-                float room_y = read<float>(file);
-                float room_z = read<float>(file);
-
-                // More separators
-                skip(file, 16);
-                // Null room separator...
-                skip(file, 4);
-                skip(file, 4);
-
-                uint32_t num_room_triangles = read<uint32_t>(file);
-                uint32_t num_room_rectangles = read<uint32_t>(file);
-
-                // Separator
-                skip(file, 4);
-
-                uint32_t light_data_size = read<uint32_t>(file);
-                uint32_t num_lights2 = read<uint32_t>(file);
-
-                // Unknown.
-                skip(file, 4);
-
-                float room_y_top = read<float>(file);
-                float room_y_bottom = read<float>(file);
-
-                // Layers:
-                uint32_t num_layers = read<uint32_t>(file);
-                uint32_t layer_offset = read<uint32_t>(file);
-                uint32_t vertices_offset = read<uint32_t>(file);
-                uint32_t poly_offset = read<uint32_t>(file);
-                uint32_t poly_offset2 = read<uint32_t>(file);
-
-                uint32_t vertices_size = read<uint32_t>(file);
-
-                // Separator
-                skip(file, 16);
-
-                // Actual data:
                 // Discard lights as they are not currently used:
-                auto x = sizeof(tr5_room_light);
-                skip(file, sizeof(tr5_room_light) * num_lights);
+                skip(file, sizeof(tr5_room_light) * header.num_lights);
 
-                uint32_t current = file.tellg();
-                file.seekg(room_start + start_sd_offset + 208, std::ios::beg);
-
+                file.seekg(data_start + header.start_sd_offset, std::ios::beg);
                 room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
                 room.portals = read_vector<uint16_t, tr_room_portal>(file);
 
                 // Separator
                 skip(file, 2);
 
-                file.seekg(room_start + end_portal_offset + 208, std::ios::beg);
+                file.seekg(data_start + header.end_portal_offset, std::ios::beg);
+                room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
 
-                room.static_meshes = read_vector<tr3_room_staticmesh>(file, num_static_meshes);
+                file.seekg(data_start + header.layer_offset, std::ios::beg);
+                auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
 
-                file.seekg(room_start + layer_offset + 208, std::ios::beg);
-
-                // Layers
-                auto layers = read_vector<tr5_room_layer>(file, num_layers);
-
-                file.seekg(room_start + poly_offset + 208, std::ios::beg);
-
+                file.seekg(data_start + header.poly_offset, std::ios::beg);
                 uint32_t vertex_offset = 0;
                 for (const auto& layer : layers)
                 {
@@ -696,16 +637,14 @@ namespace trlevel
                     vertex_offset += layer.num_vertices;
                 }
 
-                file.seekg(room_start + vertices_offset + 208, std::ios::beg);
-
-                uint32_t num_vertices = vertices_size / sizeof(tr5_room_vertex);
+                file.seekg(data_start + header.vertices_offset, std::ios::beg);
+                uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
                 for (const auto& layer : layers)
                 {
                     auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
                     std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
                 }
 
-                uint32_t actual_room_end = file.tellg();
                 file.seekg(room_end, std::ios::beg);
             }
             else

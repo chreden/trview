@@ -639,6 +639,47 @@ namespace trlevel
         std::vector<uint8_t> sound_data;
     };
 
+    struct tr5_room_header
+    {
+        uint8_t _1[4];
+        uint32_t end_sd_offset;
+        uint32_t start_sd_offset;
+        uint8_t _2[4];
+        uint32_t end_portal_offset;
+        tr_room_info info;
+        uint16_t num_z_sectors;
+        uint16_t num_x_sectors;
+        uint32_t colour;
+        uint16_t num_lights;
+        uint16_t num_static_meshes;
+        uint8_t reverb_info;
+        uint8_t alternate_group;
+        uint16_t water_scheme;
+        uint8_t _3[20];
+        uint16_t alternate_room;
+        uint16_t flags;
+        uint8_t _4[20];
+        float room_x;
+        float room_y;
+        float room_z;
+        uint8_t _5[24];
+        uint32_t num_room_triangles;
+        uint32_t num_room_rectangles;
+        uint8_t _6[4];
+        uint32_t light_data_size;
+        uint32_t num_lights2;
+        uint8_t _7[4];
+        float room_y_top;
+        float room_y_bottom;
+        uint32_t num_layers;
+        uint32_t layer_offset;
+        uint32_t vertices_offset;
+        uint32_t poly_offset;
+        uint32_t poly_offset2;
+        uint32_t vertices_size;
+        uint8_t _8[16];
+    };
+
     // Convert a 32 bit textile into a 32 bit argb value.
     uint32_t convert_textile32(uint32_t t);
 
