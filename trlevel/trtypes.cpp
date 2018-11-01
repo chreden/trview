@@ -130,13 +130,7 @@ namespace trlevel
     {
         std::vector<tr_object_texture> new_object_textures;
         new_object_textures.reserve(object_textures.size());
-        std::transform(object_textures.begin(), object_textures.end(),
-            std::back_inserter(new_object_textures), [](const auto& texture)
-        {
-            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
-            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
-            return new_entity;
-        });
+        std::transform(object_textures.begin(), object_textures.end(), std::back_inserter(new_object_textures), convert_object_texture);
         return new_object_textures;
     }
 
@@ -145,12 +139,7 @@ namespace trlevel
         std::vector<tr_object_texture> new_object_textures;
         new_object_textures.reserve(object_textures.size());
         std::transform(object_textures.begin(), object_textures.end(),
-            std::back_inserter(new_object_textures), [](const auto& texture)
-        {
-            tr_object_texture new_entity{ texture.tr4_texture.Attribute, texture.tr4_texture.TileAndFlag };
-            memcpy(new_entity.Vertices, texture.tr4_texture.Vertices, sizeof(new_entity.Vertices));
-            return new_entity;
-        });
+            std::back_inserter(new_object_textures), [](const auto& texture) { return convert_object_texture(texture.tr4_texture); });
         return new_object_textures;
     }
 
@@ -193,7 +182,7 @@ namespace trlevel
         new_info.y = 0;
         new_info.z = room_info.z;
         new_info.yTop = room_info.yTop;
-        new_info.y = room_info.yBottom;
+        new_info.yBottom = room_info.yBottom;
         return new_info;
     }
 
