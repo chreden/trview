@@ -3027,14 +3027,83 @@
 				"id": 7,
 				"name": "LaraFlareAnim"
 			}, {
+				"id": 41,
+				"name": "Dog"
+			}, {
+				"id": 45,
+				"name": "Larson"
+			}, {
+				"id": 57,
+				"name": "Lion"
+			}, {
+				"id": 59,
+				"name": "Gladiator"
+			}, {
+				"id": 61,
+				"name": "Soldier Statue"
+			}, {
+				"id": 63,
+				"name": "Gargoyle Head"
+			}, {
+				"id": 65,
+				"name": "Floating Head"
+			}, {
+				"id": 85,
+				"name": "Dog"
+			}, {
+				"id": 86,
+				"name": "Ventilator"
+			}, {
+				"id": 93,
+				"name": "Bats"
+			}, {
+				"id": 94,
+				"name": "Rats"
+			}, {
 				"id": 99,
 				"name": "Dart"
 			}, {
 				"id": 100,
-				"name": "DartEmitter"
+				"name": "Dart Emitter"
 			}, {
 				"id": 102,
-				"name": "FallingCeiling"
+				"name": "Falling Ceiling"
+			}, {
+				"id": 105,
+				"name": "Trapdoor"
+			}, {
+				"id": 106,
+				"name": "Trapdoor"
+			}, {
+				"id": 109,
+				"name": "Floor trapdoor"
+			}, {
+				"id": 117,
+				"name": "Spikes"
+			}, {
+				"id": 118,
+				"name": "Ram"
+			}, {
+				"id": 122,
+				"name": "Flame"
+			}, {
+				"id": 129,
+				"name": "Ventilator"
+			}, {
+				"id": 134,
+				"name": "Pushable Block"
+			}, {
+				"id": 137,
+				"name": "Pushable Block"
+			}, {
+				"id": 154,
+				"name": "Tightrope"
+			}, {
+				"id": 164,
+				"name": "Cupboard"
+			}, {
+				"id": 168,
+				"name": "Cupboard"
 			}, {
 				"id": 172,
 				"name": "Puzzle 1"
@@ -3048,18 +3117,33 @@
 				"id": 175,
 				"name": "Puzzle 4"
 			}, {
+				"id": 176,
+				"name": "Puzzle 5"
+			}, {
+				"id": 186,
+				"name": "Puzzle 4 Combo 1"
+			}, {
+				"id": 187,
+				"name": "Puzzle 4 Combo 2"
+			}, {
 				"id": 196,
 				"name": "Key 1"
 			}, {
-				"id": 197,
+				"id": 198,
 				"name": "Key 2"
 			}, {
-				"id": 198,
+				"id": 200,
 				"name": "Key 3"
 			}, {
-				"id": 199,
+				"id": 202,
 				"name": "Key 4"
 			}, {
+				"id": 220,
+				"name": "Pickup 1"
+			}, {
+				"id": 223,
+				"name": "Secret"
+			},   {
 				"id": 242,
 				"name": "Slot 1"
 			}, {
@@ -3071,6 +3155,9 @@
 			}, {
 				"id": 245,
 				"name": "Slot 4"
+			}, {
+				"id": 246,
+				"name": "Slot 5"
 			}, {
 				"id": 250,
 				"name": "Slot 1 Done"
@@ -3084,6 +3171,9 @@
 				"id": 253,
 				"name": "Slot 4 Done"
 			}, {
+				"id": 254,
+				"name": "Slot 5 Done"
+			}, {
 				"id": 258,
 				"name": "Keyhole 1"
 			}, {
@@ -3095,6 +3185,21 @@
 			}, {
 				"id": 261,
 				"name": "Keyhole 4"
+			}, {
+				"id": 266,
+				"name": "Switch 1"
+			}, {
+				"id": 272,
+				"name": "Shoot switch 1"
+			}, {
+				"id": 273,
+				"name": "Shoot switch 2"
+			}, {
+				"id": 274,
+				"name": "Switch 7"
+			}, {
+				"id": 282,
+				"name": "Pole"
 			}, {
 				"id": 284,
 				"name": "Door 1"
@@ -3120,26 +3225,56 @@
 				"id": 298,
 				"name": "Door 8"
 			}, {
+				"id": 300,
+				"name": "Door 9"
+			}, {
+				"id": 302,
+				"name": "Door 10"
+			}, {
+				"id": 304,
+				"name": "Door 11"
+			}, {
+				"id": 306,
+				"name": "Door 12"
+			}, {
+				"id": 326,
+				"name": "Double doors"
+			}, {
 				"id": 334,
 				"name": "Pistols"
 			}, {
 				"id": 335,
-				"name": "PistolAmmo"
+				"name": "Pistol  Ammo"
 			}, {
 				"id": 336,
 				"name": "Uzis"
 			}, {
 				"id": 337,
-				"name": "UziAmmo"
+				"name": "Uzi Ammo"
 			}, {
 				"id": 338,
 				"name": "Shotgun"
 			}, {
+				"id": 339,
+				"name": "Shotgun ammo (red)"
+			}, {
+				"id": 340,
+				"name": "Shotgun ammo (blue)"
+			}, {
+				"id": 347,
+				"name": "Revolver"
+			},   {
+				"id": 348,
+				"name": "Revolver ammo"
+			},  {
 				"id": 349,
-				"name": "LargeMedipack"
+				"name": "Large medipack"
 			}, {
 				"id": 350,
-				"name": "SmallMedipack"
+				"name": "Small medipack"
+			}, {
+				"id": 351,
+				"name": "Lasersight"
 			}, {
 				"id": 354,
 				"name": "Flare"
@@ -3149,6 +3284,12 @@
 			}, {
 				"id": 356,
 				"name": "Compass"
+			}, {
+				"id": 364,
+				"name": "Steam"
+			}, {
+				"id": 365,
+				"name": "Steam"
 			}, {
 				"id": 366,
 				"name": "Earthquake"
@@ -3179,6 +3320,108 @@
 			}, {
 				"id": 383,
 				"name": "AIPatrol2"
+			}, {
+				"id": 410,
+				"name": "Waterfall 1"
+			}, {
+				"id": 414,
+				"name": "Waterfall 4"
+			}, {
+				"id": 416,
+				"name": "Animating 1"
+			}, {
+				"id": 417,
+				"name": "Animating 1 mip"
+			}, {
+				"id": 418,
+				"name": "Animating 2"
+			}, {
+				"id": 419,
+				"name": "Animating 2 mip"
+			}, {
+				"id": 420,
+				"name": "Animating 3"
+			}, {
+				"id": 421,
+				"name": "Animating 3 mip"
+			}, {
+				"id": 422,
+				"name": "Animating 4"
+			}, {
+				"id": 423,
+				"name": "Animating 4 mip"
+			}, {
+				"id": 424,
+				"name": "Animating 5"
+			}, {
+				"id": 425,
+				"name": "Animating 5 mip"
+			}, {
+				"id": 426,
+				"name": "Animating 6"
+			}, {
+				"id": 427,
+				"name": "Animating 6 mip"
+			}, {
+				"id": 428,
+				"name": "Animating 7"
+			}, {
+				"id": 429,
+				"name": "Animating 7 mip"
+			}, {
+				"id": 430,
+				"name": "Animating 8"
+			}, {
+				"id": 431,
+				"name": "Animating 8 mip"
+			}, {
+				"id": 432,
+				"name": "Animating 9"
+			}, {
+				"id": 433,
+				"name": "Animating 9 mip"
+			}, {
+				"id": 434,
+				"name": "Animating 10"
+			}, {
+				"id": 435,
+				"name": "Animating 10 mip"
+			}, {
+				"id": 436,
+				"name": "Animating 11"
+			}, {
+				"id": 437,
+				"name": "Animating 11 mip"
+			}, {
+				"id": 438,
+				"name": "Animating 12"
+			}, {
+				"id": 439,
+				"name": "Animating 12 mip"
+			}, {
+				"id": 440,
+				"name": "Animating 13"
+			}, {
+				"id": 441,
+				"name": "Animating 13 mip"
+			}, {
+				"id": 442,
+				"name": "Animating 14"
+			}, {
+				"id": 443,
+				"name": "Animating 14 mip"
+			}, {
+				"id": 444,
+				"name": "Animating 15"
+			}, {
+				"id": 445,
+				"name": "Animating 15 mip"
+			}, {
+				"id": 446,
+				"name": "Animating 16"
+			}, {
+				"id": 447,
+				"name": "Animating 16 mip"
 			}, {
 				"id": 448,
 				"name": "Bridge (Flat)"
