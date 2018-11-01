@@ -67,8 +67,7 @@ namespace trlevel
             std::back_inserter(new_vertices), [](const auto& vert)
         {
             tr_vertex vertex{ vert.vertex.x, vert.vertex.y, vert.vertex.z };
-            tr3_room_vertex new_vertex{ vertex, 0, 0, 0xffff };
-            return new_vertex;
+            return tr3_room_vertex { vertex, 0, 0, 0xffff };
         });
         return new_vertices;
     }
@@ -191,12 +190,7 @@ namespace trlevel
         std::vector<tr_model> new_models;
         new_models.reserve(models.size());
         std::transform(models.begin(), models.end(),
-            std::back_inserter(new_models), [](const auto& model)
-        {
-            tr_model new_model;
-            memcpy(&new_model, &model, sizeof(tr_model));
-            return new_model;
-        });
+            std::back_inserter(new_models), [](const auto& model) { return model.model; });
         return new_models;
     }
 }

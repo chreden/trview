@@ -211,15 +211,10 @@ namespace trlevel
         uint16_t Animation;    // Offset into Animations[]
     };
 
-    struct tr5_model  // 18 bytes
+    struct tr5_model
     {
-        uint32_t ID;           // Type Identifier (matched in Entities[])
-        uint16_t NumMeshes;    // Number of meshes in this object
-        uint16_t StartingMesh; // Starting mesh (offset into MeshPointers[])
-        uint32_t MeshTree;     // Offset into MeshTree[]
-        uint32_t FrameOffset;  // Byte offset into Frames[] (divide by 2 for Frames[i])
-        uint16_t Animation;    // Offset into Animations[]
-        uint16_t Filler;
+        tr_model model;
+        uint16_t filler;
     };
 
 
@@ -432,26 +427,13 @@ namespace trlevel
     struct tr5_room_layer
     {
         uint16_t num_vertices;
-        uint16_t unknown1;
-        uint16_t unknown2;
+        uint16_t _1[2];
         uint16_t num_rectangles;
         uint16_t num_triangles;
-        uint16_t unknown3;
-
-        uint16_t filler;
-        uint16_t filler2;
-
-        float    bb_x1;
-        float    bb_y1;
-        float    bb_z1;
-        float    bb_x2;
-        float    bb_y2;
-        float    bb_z2;
-
-        uint32_t filler3;
-        uint32_t unknown4;
-        uint32_t unknown5;
-        uint32_t unknown6;
+        uint16_t _2[3];
+        tr5_vertex bounding_box_min;
+        tr5_vertex bounding_box_max;
+        uint32_t _3[4];
     };
 
     struct tr_room_portal
@@ -511,7 +493,7 @@ namespace trlevel
 
     struct tr5_room_light
     {
-        float x, y, z;
+        tr5_vertex position;
         float r, g, b;
         uint32_t separator;
         float in;
@@ -519,7 +501,7 @@ namespace trlevel
         float rad_in;
         float rad_out;
         float range;
-        float dx, dy, dz;
+        tr5_vertex direction;
         int32_t x2, y2, z2;
         int32_t dx2, dy2, dz2;
         uint8_t light_type;
