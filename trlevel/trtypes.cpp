@@ -127,6 +127,20 @@ namespace trlevel
         return new_object_textures;
     }
 
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr5_object_texture> object_textures)
+    {
+        std::vector<tr_object_texture> new_object_textures;
+        new_object_textures.reserve(object_textures.size());
+        std::transform(object_textures.begin(), object_textures.end(),
+            std::back_inserter(new_object_textures), [](const auto& texture)
+        {
+            tr_object_texture new_entity{ texture.tr4_texture.Attribute, texture.tr4_texture.TileAndFlag };
+            memcpy(new_entity.Vertices, texture.tr4_texture.Vertices, sizeof(new_entity.Vertices));
+            return new_entity;
+        });
+        return new_object_textures;
+    }
+
     std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles)
     {
         std::vector<tr4_mesh_face3> new_triangles;

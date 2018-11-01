@@ -537,13 +537,18 @@ namespace trlevel
             uint32_t leveldata_compressed = read<uint32_t>(file);
             load_level_data(file);
         }
-        /*
+
+        if (_version == LevelVersion::Tomb5)
+        {
+            skip(file, 6);
+        }
+
         uint32_t num_sound_samples = read<uint32_t>(file);
         std::vector<tr4_sample> sound_samples(num_sound_samples);
         for (uint32_t i = 0; i < num_sound_samples; ++i)
         {
             sound_samples[i].sound_data = read_compressed(file);
-        }*/
+        }
 
         generate_meshes(_mesh_data);
     }
@@ -690,11 +695,6 @@ namespace trlevel
 
                     vertex_offset += layer.num_vertices;
                 }
-
-                // file.seekg(room_start + vertices_offset, std::ios::beg);
-
-                // room.data.rectangles = convert_rectangles(read_vector<tr_face4>(file, num_room_rectangles));
-                // room.data.triangles = convert_triangles(read_vector<tr_face3>(file, num_room_triangles));
 
                 file.seekg(room_start + vertices_offset + 208, std::ios::beg);
 
@@ -891,9 +891,13 @@ namespace trlevel
         {
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
         }
-        if (get_version() >= LevelVersion::Tomb4)
+        if (get_version() == LevelVersion::Tomb4)
         {
             _object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
+        }
+        else if (get_version() == LevelVersion::Tomb5)
+        {
+            _object_textures = convert_object_textures(read_vector<uint32_t, tr5_object_texture>(file));
         }
 
         if (_version == LevelVersion::Tomb1)
@@ -941,7 +945,6 @@ namespace trlevel
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 450);
         }
 
-        return;
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);
 
         if (_version == LevelVersion::Tomb1)

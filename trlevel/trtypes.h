@@ -401,6 +401,12 @@ namespace trlevel
         uint32_t               Height;    // Actually height-1
     };
 
+    struct tr5_object_texture
+    {
+        tr4_object_texture tr4_texture;
+        uint16_t           filler;
+    };
+
     // Room vertex for Tomb Raider 1/Unfinished Business.
     struct tr_room_vertex
     {
@@ -667,6 +673,11 @@ namespace trlevel
     // Convert a set of Tomb Raider IV object textures into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
+
+    /// Convert a set of TR5 object textures into a format compatible with TR3 (what the viewer is currently using).
+    /// @param object_textures The textures to convert.
+    /// @returns The converted texture.
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr5_object_texture> object_textures);
 
     // Convert a set of Tomb Raider I-III triangles to TRIV triangles.
     std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles);
