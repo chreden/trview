@@ -103,6 +103,163 @@ namespace trlevel
         {
             skip(file, 4);
         }
+
+        void load_tr1_4_room(std::istream& file, tr3_room& room, LevelVersion version)
+        {
+            room.info = convert_room_info(read<tr1_4_room_info>(file));
+
+            uint32_t NumDataWords = read<uint32_t>(file);
+
+            // Read actual room data.
+            if (NumDataWords > 0)
+            {
+                if (version == LevelVersion::Tomb1)
+                {
+                    room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
+                }
+                else
+                {
+                    room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
+                }
+                room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+                room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+                room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
+            }
+
+            room.portals = read_vector<uint16_t, tr_room_portal>(file);
+
+            room.num_z_sectors = read<uint16_t>(file);
+            room.num_x_sectors = read<uint16_t>(file);
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+
+            if (version == LevelVersion::Tomb4)
+            {
+                uint32_t room_colour = read<uint32_t>(file);
+            }
+            else
+            {
+                room.ambient_intensity_1 = read<int16_t>(file);
+
+                if (version > LevelVersion::Tomb1)
+                {
+                    room.ambient_intensity_2 = read<int16_t>(file);
+                }
+            }
+
+            if (version == LevelVersion::Tomb2)
+            {
+                room.light_mode = read<int16_t>(file);
+            }
+
+            if (version == LevelVersion::Tomb1)
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
+            }
+            else if (version == LevelVersion::Tomb4)
+            {
+                auto lights = read_vector<uint16_t, tr4_room_light>(file);
+            }
+            else
+            {
+                room.lights = read_vector<uint16_t, tr3_room_light>(file);
+            }
+
+            if (version == LevelVersion::Tomb1)
+            {
+                room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh>(file));
+            }
+            else
+            {
+                room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
+            }
+
+            room.alternate_room = read<int16_t>(file);
+            room.flags = read<int16_t>(file);
+
+            if (version >= LevelVersion::Tomb3)
+            {
+                room.water_scheme = read<uint8_t>(file);
+                room.reverb_info = read<uint8_t>(file);
+                room.alternate_group = read<uint8_t>(file);
+            }
+        }
+
+        void load_tr5_room(std::istream& file, tr3_room& room)
+        {
+            skip_xela(file);
+            uint32_t room_data_size = read<uint32_t>(file);
+            const uint32_t room_start = file.tellg();
+            const uint32_t room_end = room_start + room_data_size;
+
+            const auto header = read<tr5_room_header>(file);
+
+            // Copy useful data from the header to the room.
+            room.info = header.info;
+            room.num_x_sectors = header.num_x_sectors;
+            room.num_z_sectors = header.num_z_sectors;
+            room.colour = header.colour;
+            room.reverb_info = header.reverb_info;
+            room.alternate_group = header.alternate_group;
+            room.water_scheme = header.water_scheme;
+            room.alternate_room = header.alternate_room;
+            room.flags = header.flags;
+
+            // The offsets start measuring from this position, after all the header information.
+            const uint32_t data_start = file.tellg();
+
+            // Discard lights as they are not currently used:
+            skip(file, sizeof(tr5_room_light) * header.num_lights);
+
+            file.seekg(data_start + header.start_sd_offset, std::ios::beg);
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            room.portals = read_vector<uint16_t, tr_room_portal>(file);
+
+            // Separator
+            skip(file, 2);
+
+            file.seekg(data_start + header.end_portal_offset, std::ios::beg);
+            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
+
+            file.seekg(data_start + header.layer_offset, std::ios::beg);
+            auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
+
+            file.seekg(data_start + header.poly_offset, std::ios::beg);
+            uint32_t vertex_offset = 0;
+            for (const auto& layer : layers)
+            {
+                auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
+                for (auto& rect : rects)
+                {
+                    for (auto& v : rect.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
+
+                auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
+                for (auto& tri : tris)
+                {
+                    for (auto& v : tri.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
+
+                vertex_offset += layer.num_vertices;
+            }
+
+            file.seekg(data_start + header.vertices_offset, std::ios::beg);
+            uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
+            for (const auto& layer : layers)
+            {
+                auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
+                std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
+            }
+
+            file.seekg(room_end, std::ios::beg);
+        }
     }
 
     Level::Level(const std::wstring& filename)
@@ -570,163 +727,14 @@ namespace trlevel
         for (uint16_t i = 0; i < _num_rooms; ++i)
         {
             tr3_room room;
-
             if (_version == LevelVersion::Tomb5)
             {
-                skip_xela(file);
-                uint32_t room_data_size = read<uint32_t>(file);
-                const uint32_t room_start = file.tellg();
-                const uint32_t room_end = room_start + room_data_size;
-
-                const auto header = read<tr5_room_header>(file);
-
-                // Copy useful data from the header to the room.
-                room.info = header.info;
-                room.num_x_sectors = header.num_x_sectors;
-                room.num_z_sectors = header.num_z_sectors;
-                room.colour = header.colour;
-                room.reverb_info = header.reverb_info;
-                room.alternate_group = header.alternate_group;
-                room.water_scheme = header.water_scheme;
-                room.alternate_room = header.alternate_room;
-                room.flags = header.flags;
-
-                // The offsets start measuring from this position, after all the header information.
-                const uint32_t data_start = file.tellg();
-
-                // Discard lights as they are not currently used:
-                skip(file, sizeof(tr5_room_light) * header.num_lights);
-
-                file.seekg(data_start + header.start_sd_offset, std::ios::beg);
-                room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
-                room.portals = read_vector<uint16_t, tr_room_portal>(file);
-
-                // Separator
-                skip(file, 2);
-
-                file.seekg(data_start + header.end_portal_offset, std::ios::beg);
-                room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
-
-                file.seekg(data_start + header.layer_offset, std::ios::beg);
-                auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
-
-                file.seekg(data_start + header.poly_offset, std::ios::beg);
-                uint32_t vertex_offset = 0;
-                for (const auto& layer : layers)
-                {
-                    auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
-                    for (auto& rect : rects)
-                    {
-                        for (auto& v : rect.vertices)
-                        {
-                            v += vertex_offset;
-                        }
-                    }
-                    std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
-
-                    auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
-                    for (auto& tri : tris)
-                    {
-                        for (auto& v : tri.vertices)
-                        {
-                            v += vertex_offset;
-                        }
-                    }
-                    std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
-
-                    vertex_offset += layer.num_vertices;
-                }
-
-                file.seekg(data_start + header.vertices_offset, std::ios::beg);
-                uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
-                for (const auto& layer : layers)
-                {
-                    auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
-                    std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
-                }
-
-                file.seekg(room_end, std::ios::beg);
+                load_tr5_room(file, room);
             }
             else
             {
-                room.info = convert_room_info(read<tr1_4_room_info>(file));
-
-                uint32_t NumDataWords = read<uint32_t>(file);
-
-                // Read actual room data.
-                if (NumDataWords > 0)
-                {
-                    if (_version == LevelVersion::Tomb1)
-                    {
-                        room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
-                    }
-                    else
-                    {
-                        room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
-                    }
-                    room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
-                    room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
-                    room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
-                }
-
-                room.portals = read_vector<uint16_t, tr_room_portal>(file);
-
-                room.num_z_sectors = read<uint16_t>(file);
-                room.num_x_sectors = read<uint16_t>(file);
-                room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
-
-                if (_version == LevelVersion::Tomb4)
-                {
-                    uint32_t room_colour = read<uint32_t>(file);
-                }
-                else
-                {
-                    room.ambient_intensity_1 = read<int16_t>(file);
-
-                    if (_version > LevelVersion::Tomb1)
-                    {
-                        room.ambient_intensity_2 = read<int16_t>(file);
-                    }
-                }
-
-                if (get_version() == LevelVersion::Tomb2)
-                {
-                    room.light_mode = read<int16_t>(file);
-                }
-
-                if (_version == LevelVersion::Tomb1)
-                {
-                    room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
-                }
-                else if (_version == LevelVersion::Tomb4)
-                {
-                    auto lights = read_vector<uint16_t, tr4_room_light>(file);
-                }
-                else
-                {
-                    room.lights = read_vector<uint16_t, tr3_room_light>(file);
-                }
-
-                if (_version == LevelVersion::Tomb1)
-                {
-                    room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh>(file));
-                }
-                else
-                {
-                    room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
-                }
-
-                room.alternate_room = read<int16_t>(file);
-                room.flags = read<int16_t>(file);
-
-                if (get_version() >= LevelVersion::Tomb3)
-                {
-                    room.water_scheme = read<uint8_t>(file);
-                    room.reverb_info = read<uint8_t>(file);
-                    room.alternate_group = read<uint8_t>(file);
-                }
+                load_tr1_4_room(file, room, _version);
             }
-
             _rooms.push_back(room);
         }
 
