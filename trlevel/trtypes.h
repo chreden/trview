@@ -45,6 +45,15 @@ namespace trlevel
     struct tr_room_info
     {
         int32_t x;
+        int32_t y;
+        int32_t z;
+        int32_t yBottom;
+        int32_t yTop;
+    };
+
+    struct tr1_4_room_info
+    {
+        int32_t x;
         int32_t z;
         int32_t yBottom;
         int32_t yTop;
@@ -55,6 +64,13 @@ namespace trlevel
         int16_t x;
         int16_t y;
         int16_t z;
+    };
+
+    struct tr5_vertex
+    {
+        float x;
+        float y;
+        float z;
     };
 
     // Four vertices(the values are indices into the appropriate vertex list) and a texture(an index into 
@@ -194,6 +210,13 @@ namespace trlevel
         uint32_t FrameOffset;  // Byte offset into Frames[] (divide by 2 for Frames[i])
         uint16_t Animation;    // Offset into Animations[]
     };
+
+    struct tr5_model
+    {
+        tr_model model;
+        uint16_t filler;
+    };
+
 
     struct tr_bounding_box // 12 bytes
     {
@@ -373,6 +396,12 @@ namespace trlevel
         uint32_t               Height;    // Actually height-1
     };
 
+    struct tr5_object_texture
+    {
+        tr4_object_texture tr4_texture;
+        uint16_t           filler;
+    };
+
     // Room vertex for Tomb Raider 1/Unfinished Business.
     struct tr_room_vertex
     {
@@ -386,6 +415,25 @@ namespace trlevel
         int16_t     lighting;
         uint16_t    attributes;
         uint16_t    colour;
+    };
+
+    struct tr5_room_vertex
+    {
+        tr5_vertex vertex;
+        tr5_vertex normal;
+        uint32_t   colour;
+    };
+
+    struct tr5_room_layer
+    {
+        uint16_t num_vertices;
+        uint16_t _1[2];
+        uint16_t num_rectangles;
+        uint16_t num_triangles;
+        uint16_t _2[3];
+        tr5_vertex bounding_box_min;
+        tr5_vertex bounding_box_max;
+        uint32_t _3[4];
     };
 
     struct tr_room_portal
@@ -441,6 +489,23 @@ namespace trlevel
         float dx;
         float dy;
         float dz;
+    };
+
+    struct tr5_room_light
+    {
+        tr5_vertex position;
+        float r, g, b;
+        uint32_t separator;
+        float in;
+        float out;
+        float rad_in;
+        float rad_out;
+        float range;
+        tr5_vertex direction;
+        int32_t x2, y2, z2;
+        int32_t dx2, dy2, dz2;
+        uint8_t light_type;
+        uint8_t filler[3];
     };
 
     // Version of tr_room_staticmesh used in TR1/UB.
@@ -508,6 +573,7 @@ namespace trlevel
         uint16_t num_x_sectors;
         std::vector<tr_room_sector> sector_list;
 
+        uint32_t colour{ 0xffffffff };
         int16_t ambient_intensity_1;
         int16_t ambient_intensity_2;
         int16_t light_mode;
@@ -555,6 +621,47 @@ namespace trlevel
         std::vector<uint8_t> sound_data;
     };
 
+    struct tr5_room_header
+    {
+        uint8_t _1[4];
+        uint32_t end_sd_offset;
+        uint32_t start_sd_offset;
+        uint8_t _2[4];
+        uint32_t end_portal_offset;
+        tr_room_info info;
+        uint16_t num_z_sectors;
+        uint16_t num_x_sectors;
+        uint32_t colour;
+        uint16_t num_lights;
+        uint16_t num_static_meshes;
+        uint8_t reverb_info;
+        uint8_t alternate_group;
+        uint16_t water_scheme;
+        uint8_t _3[20];
+        uint16_t alternate_room;
+        uint16_t flags;
+        uint8_t _4[20];
+        float room_x;
+        float room_y;
+        float room_z;
+        uint8_t _5[24];
+        uint32_t num_room_triangles;
+        uint32_t num_room_rectangles;
+        uint8_t _6[4];
+        uint32_t light_data_size;
+        uint32_t num_lights2;
+        uint8_t _7[4];
+        float room_y_top;
+        float room_y_bottom;
+        uint32_t num_layers;
+        uint32_t layer_offset;
+        uint32_t vertices_offset;
+        uint32_t poly_offset;
+        uint32_t poly_offset2;
+        uint32_t vertices_size;
+        uint8_t _8[16];
+    };
+
     // Convert a 32 bit textile into a 32 bit argb value.
     uint32_t convert_textile32(uint32_t t);
 
@@ -564,6 +671,12 @@ namespace trlevel
     // Convert a set of Tomb Raider I vertices into a vertex format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr3_room_vertex> convert_vertices(std::vector<tr_room_vertex> vertices);
+
+    /// Convert a set of Tomb Raider 5 vertices into a vertex format compatible
+    /// with Tomb Raider III (what the viewer is currently using).
+    /// @param vertices The vertices to convert.
+    /// @return The converted vertices.
+    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices);
 
     // Convert a set of Tomb Raider I lights into a light format compatible
     // with Tomb Raider III (what the viewer is currently using).
@@ -584,9 +697,21 @@ namespace trlevel
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr_object_texture> convert_object_textures(std::vector<tr4_object_texture> object_textures);
 
+    /// Convert a set of TR5 object textures into a format compatible with TR3 (what the viewer is currently using).
+    /// @param object_textures The textures to convert.
+    /// @returns The converted texture.
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr5_object_texture> object_textures);
+
     // Convert a set of Tomb Raider I-III triangles to TRIV triangles.
     std::vector<tr4_mesh_face3> convert_triangles(std::vector<tr_face3> triangles);
 
     // Convert a set of Tomb Raider I-III rectangles to TRIV rectangles.
     std::vector<tr4_mesh_face4> convert_rectangles(std::vector<tr_face4> rectangles);
+
+    /// Convert a pre TR5 room info into a TR5 room info.
+    /// @param room_info The room info to convert.
+    /// @returns The converted room info.
+    tr_room_info convert_room_info(const tr1_4_room_info& room_info);
+
+    std::vector<tr_model> convert_models(std::vector<tr5_model> models);
 }

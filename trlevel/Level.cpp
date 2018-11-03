@@ -81,6 +81,185 @@ namespace trlevel
             data_stream.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             return read_vector<DataType>(data_stream, elements);
         }
+
+        bool is_tr5(LevelVersion version, const std::wstring& filename)
+        {
+            if (version != LevelVersion::Tomb4)
+            {
+                return false;
+            }
+
+            std::wstring transformed;
+            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), toupper);
+            return transformed.find(L".TRC") != filename.npos;
+        }
+
+        void skip(std::istream& file, uint32_t size)
+        {
+            file.seekg(size, std::ios::cur);
+        }
+
+        void skip_xela(std::istream& file)
+        {
+            skip(file, 4);
+        }
+
+        void load_tr1_4_room(std::istream& file, tr3_room& room, LevelVersion version)
+        {
+            room.info = convert_room_info(read<tr1_4_room_info>(file));
+
+            uint32_t NumDataWords = read<uint32_t>(file);
+
+            // Read actual room data.
+            if (NumDataWords > 0)
+            {
+                if (version == LevelVersion::Tomb1)
+                {
+                    room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
+                }
+                else
+                {
+                    room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
+                }
+                room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+                room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+                room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
+            }
+
+            room.portals = read_vector<uint16_t, tr_room_portal>(file);
+
+            room.num_z_sectors = read<uint16_t>(file);
+            room.num_x_sectors = read<uint16_t>(file);
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+
+            if (version == LevelVersion::Tomb4)
+            {
+                uint32_t room_colour = read<uint32_t>(file);
+            }
+            else
+            {
+                room.ambient_intensity_1 = read<int16_t>(file);
+
+                if (version > LevelVersion::Tomb1)
+                {
+                    room.ambient_intensity_2 = read<int16_t>(file);
+                }
+            }
+
+            if (version == LevelVersion::Tomb2)
+            {
+                room.light_mode = read<int16_t>(file);
+            }
+
+            if (version == LevelVersion::Tomb1)
+            {
+                room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
+            }
+            else if (version == LevelVersion::Tomb4)
+            {
+                auto lights = read_vector<uint16_t, tr4_room_light>(file);
+            }
+            else
+            {
+                room.lights = read_vector<uint16_t, tr3_room_light>(file);
+            }
+
+            if (version == LevelVersion::Tomb1)
+            {
+                room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh>(file));
+            }
+            else
+            {
+                room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
+            }
+
+            room.alternate_room = read<int16_t>(file);
+            room.flags = read<int16_t>(file);
+
+            if (version >= LevelVersion::Tomb3)
+            {
+                room.water_scheme = read<uint8_t>(file);
+                room.reverb_info = read<uint8_t>(file);
+                room.alternate_group = read<uint8_t>(file);
+            }
+        }
+
+        void load_tr5_room(std::istream& file, tr3_room& room)
+        {
+            skip_xela(file);
+            uint32_t room_data_size = read<uint32_t>(file);
+            const uint32_t room_start = file.tellg();
+            const uint32_t room_end = room_start + room_data_size;
+
+            const auto header = read<tr5_room_header>(file);
+
+            // Copy useful data from the header to the room.
+            room.info = header.info;
+            room.num_x_sectors = header.num_x_sectors;
+            room.num_z_sectors = header.num_z_sectors;
+            room.colour = header.colour;
+            room.reverb_info = header.reverb_info;
+            room.alternate_group = header.alternate_group;
+            room.water_scheme = header.water_scheme;
+            room.alternate_room = header.alternate_room;
+            room.flags = header.flags;
+
+            // The offsets start measuring from this position, after all the header information.
+            const uint32_t data_start = file.tellg();
+
+            // Discard lights as they are not currently used:
+            skip(file, sizeof(tr5_room_light) * header.num_lights);
+
+            file.seekg(data_start + header.start_sd_offset, std::ios::beg);
+            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
+            room.portals = read_vector<uint16_t, tr_room_portal>(file);
+
+            // Separator
+            skip(file, 2);
+
+            file.seekg(data_start + header.end_portal_offset, std::ios::beg);
+            room.static_meshes = read_vector<tr3_room_staticmesh>(file, header.num_static_meshes);
+
+            file.seekg(data_start + header.layer_offset, std::ios::beg);
+            auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
+
+            file.seekg(data_start + header.poly_offset, std::ios::beg);
+            uint32_t vertex_offset = 0;
+            for (const auto& layer : layers)
+            {
+                auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
+                for (auto& rect : rects)
+                {
+                    for (auto& v : rect.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(rects.begin(), rects.end(), std::back_inserter(room.data.rectangles));
+
+                auto tris = read_vector<tr4_mesh_face3>(file, layer.num_triangles);
+                for (auto& tri : tris)
+                {
+                    for (auto& v : tri.vertices)
+                    {
+                        v += vertex_offset;
+                    }
+                }
+                std::copy(tris.begin(), tris.end(), std::back_inserter(room.data.triangles));
+
+                vertex_offset += layer.num_vertices;
+            }
+
+            file.seekg(data_start + header.vertices_offset, std::ios::beg);
+            uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
+            for (const auto& layer : layers)
+            {
+                auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
+                std::copy(verts.begin(), verts.end(), std::back_inserter(room.data.vertices));
+            }
+
+            file.seekg(room_end, std::ios::beg);
+        }
     }
 
     Level::Level(const std::wstring& filename)
@@ -93,8 +272,12 @@ namespace trlevel
             file.open(filename.c_str(), std::ios::binary);
 
             _version = convert_level_version(read<uint32_t>(file));
+            if (is_tr5(_version, filename))
+            {
+                _version = LevelVersion::Tomb5;
+            }
 
-            if (_version == LevelVersion::Tomb4)
+            if (_version >= LevelVersion::Tomb4)
             {
                 load_tr4(file);
                 return;
@@ -491,11 +674,31 @@ namespace trlevel
         _textile16 = read_vector_compressed<tr_textile16>(file, _num_textiles);
         auto textile32_misc = read_vector_compressed<tr_textile32>(file, 2);
 
-        std::vector<uint8_t> level_data = read_compressed(file);
-        std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
-        std::istringstream data_stream(data, std::ios::binary);
+        if (_version == LevelVersion::Tomb5)
+        {
+            uint16_t lara_type = read<uint16_t>(file);
+            uint16_t weather_type = read<uint16_t>(file);
+            file.seekg(28, std::ios::cur);
+        }
 
-        load_level_data(data_stream);
+        if (_version == LevelVersion::Tomb4)
+        {
+            std::vector<uint8_t> level_data = read_compressed(file);
+            std::string data(reinterpret_cast<char*>(&level_data[0]), level_data.size());
+            std::istringstream data_stream(data, std::ios::binary);
+            load_level_data(data_stream);
+        }
+        else
+        {
+            uint32_t leveldata_uncompressed = read<uint32_t>(file);
+            uint32_t leveldata_compressed = read<uint32_t>(file);
+            load_level_data(file);
+        }
+
+        if (_version == LevelVersion::Tomb5)
+        {
+            skip(file, 6);
+        }
 
         uint32_t num_sound_samples = read<uint32_t>(file);
         std::vector<tr4_sample> sound_samples(num_sound_samples);
@@ -512,88 +715,26 @@ namespace trlevel
         // Read unused value.
         read<uint32_t>(file);
 
-        _num_rooms = read<uint16_t>(file);
+        if (_version == LevelVersion::Tomb5)
+        {
+            _num_rooms = read<uint32_t>(file);
+        }
+        else
+        {
+            _num_rooms = read<uint16_t>(file);
+        }
 
         for (uint16_t i = 0; i < _num_rooms; ++i)
         {
             tr3_room room;
-            room.info = read<tr_room_info>(file);
-
-            uint32_t NumDataWords = read<uint32_t>(file);
-
-            // Read actual room data.
-            if (NumDataWords > 0)
+            if (_version == LevelVersion::Tomb5)
             {
-                if (_version == LevelVersion::Tomb1)
-                {
-                    room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
-                }
-                else
-                {
-                    room.data.vertices = read_vector<int16_t, tr3_room_vertex>(file);
-                }
-                room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
-                room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
-                room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
-            }
-
-            room.portals = read_vector<uint16_t, tr_room_portal>(file);
-
-            room.num_z_sectors = read<uint16_t>(file);
-            room.num_x_sectors = read<uint16_t>(file);
-            room.sector_list = read_vector<tr_room_sector>(file, room.num_z_sectors * room.num_x_sectors);
-
-            if (_version == LevelVersion::Tomb4)
-            {
-                uint32_t room_colour = read<uint32_t>(file);
+                load_tr5_room(file, room);
             }
             else
             {
-                room.ambient_intensity_1 = read<int16_t>(file);
-
-                if (_version > LevelVersion::Tomb1)
-                {
-                    room.ambient_intensity_2 = read<int16_t>(file);
-                }
+                load_tr1_4_room(file, room, _version);
             }
-
-            if (get_version() == LevelVersion::Tomb2)
-            {
-                room.light_mode = read<int16_t>(file);
-            }
-
-            if (_version == LevelVersion::Tomb1)
-            {
-                room.lights = convert_lights(read_vector<uint16_t, tr_room_light>(file));
-            }
-            else if (_version == LevelVersion::Tomb4)
-            {
-                auto lights = read_vector<uint16_t, tr4_room_light>(file);
-            }
-            else
-            {
-                room.lights = read_vector<uint16_t, tr3_room_light>(file);
-            }
-
-            if (_version == LevelVersion::Tomb1)
-            {
-                room.static_meshes = convert_room_static_meshes(read_vector<uint16_t, tr_room_staticmesh>(file));
-            }
-            else
-            {
-                room.static_meshes = read_vector<uint16_t, tr3_room_staticmesh>(file);
-            }
-
-            room.alternate_room = read<int16_t>(file);
-            room.flags = read<int16_t>(file);
-
-            if (get_version() >= LevelVersion::Tomb3)
-            {
-                room.water_scheme = read<uint8_t>(file);
-                room.reverb_info = read<uint8_t>(file);
-                room.alternate_group = read<uint8_t>(file);
-            }
-
             _rooms.push_back(room);
         }
 
@@ -614,7 +755,15 @@ namespace trlevel
         std::vector<tr_anim_command> anim_commands = read_vector<uint32_t, tr_anim_command>(file);
         _meshtree = read_vector<uint32_t, uint32_t>(file);
         _frames = read_vector<uint32_t, uint16_t>(file);
-        _models = read_vector<uint32_t, tr_model>(file);
+
+        if (_version < LevelVersion::Tomb5)
+        {
+            _models = read_vector<uint32_t, tr_model>(file);
+        }
+        else
+        {
+            _models = convert_models(read_vector<uint32_t, tr5_model>(file));
+        }
 
         auto static_meshes = read_vector<uint32_t, tr_staticmesh>(file);
         for (const auto& mesh : static_meshes)
@@ -627,10 +776,14 @@ namespace trlevel
             _object_textures = read_vector<uint32_t, tr_object_texture>(file);
         }
 
-        if (_version == LevelVersion::Tomb4)
+        if (_version >= LevelVersion::Tomb4)
         {
             // Skip past the 'SPR' marker.
             file.seekg(3, std::ios::cur);
+            if (_version == LevelVersion::Tomb5)
+            {
+                skip(file, 1);
+            }
         }
 
         _sprite_textures = read_vector<uint32_t, tr_sprite_texture>(file);
@@ -641,7 +794,7 @@ namespace trlevel
 
         std::vector<tr_camera> cameras = read_vector<uint32_t, tr_camera>(file);
 
-        if (_version == LevelVersion::Tomb4)
+        if (_version >= LevelVersion::Tomb4)
         {
             std::vector<tr4_flyby_camera> flyby_cameras = read_vector<uint32_t, tr4_flyby_camera>(file);
         }
@@ -671,10 +824,14 @@ namespace trlevel
         }
         std::vector<uint16_t> animated_textures = read_vector<uint32_t, uint16_t>(file);
 
-        if (_version == LevelVersion::Tomb4)
+        if (_version >= LevelVersion::Tomb4)
         {
             uint8_t animated_textures_uv_count = read<uint8_t>(file);
             file.seekg(3, std::ios::cur);
+            if (_version == LevelVersion::Tomb5)
+            {
+                skip(file, 1);
+            }
         }
 
         if (get_version() == LevelVersion::Tomb3)
@@ -684,6 +841,10 @@ namespace trlevel
         if (get_version() == LevelVersion::Tomb4)
         {
             _object_textures = convert_object_textures(read_vector<uint32_t, tr4_object_texture>(file));
+        }
+        else if (get_version() == LevelVersion::Tomb5)
+        {
+            _object_textures = convert_object_textures(read_vector<uint32_t, tr5_object_texture>(file));
         }
 
         if (_version == LevelVersion::Tomb1)
@@ -706,7 +867,7 @@ namespace trlevel
             _palette = read_vector<tr_colour>(file, 256);
         }
 
-        if (_version == LevelVersion::Tomb4)
+        if (_version >= LevelVersion::Tomb4)
         {
             std::vector<tr4_ai_object> ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
         }
@@ -722,9 +883,13 @@ namespace trlevel
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 256);
         }
-        else
+        else if (_version < LevelVersion::Tomb5)
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+        }
+        else
+        {
+            std::vector<int16_t> sound_map = read_vector<int16_t>(file, 450);
         }
 
         std::vector<tr3_sound_details> sound_details = read_vector<uint32_t, tr3_sound_details>(file);

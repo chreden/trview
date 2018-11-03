@@ -14,6 +14,14 @@ namespace trview
 {
     namespace
     {
+        const uint16_t Texture_Mask_TR4 = 0x7fff;
+        const uint16_t Texture_Mask     = 0x0fff;
+
+        uint16_t texture_mask(trlevel::LevelVersion level_version)
+        {
+            return level_version == trlevel::LevelVersion::Tomb4 ? Texture_Mask_TR4 : Texture_Mask;
+        }
+
         // Convert the vertex to the scale used by the viewer.
         // vertex: The vertex to convert.
         // Returns: The scaled vector.
@@ -197,7 +205,7 @@ namespace trview
         return result;
     }
 
-    std::unique_ptr<Mesh> create_mesh(const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -205,8 +213,8 @@ namespace trview
         std::vector<TransparentTriangle> transparent_triangles;
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
-        process_textured_triangles(mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_rectangles(level_version, mesh.textured_rectangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
+        process_textured_triangles(level_version, mesh.textured_triangles, mesh.vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, transparent_collision);
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
@@ -241,6 +249,7 @@ namespace trview
     }
 
     void process_textured_rectangles(
+        trlevel::LevelVersion level_version,
         const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -260,7 +269,7 @@ namespace trview
                 verts[i] = convert_vertex(input_vertices[rect.vertices[i]]);
             }
 
-            const uint16_t texture = rect.texture & 0x7fff;
+            const uint16_t texture = rect.texture & texture_mask(level_version);
 
             std::array<Vector2, 4> uvs;
             for (int i = 0; i < uvs.size(); ++i)
@@ -330,6 +339,7 @@ namespace trview
     }
 
     void process_textured_triangles(
+        trlevel::LevelVersion level_version,
         const std::vector<trlevel::tr4_mesh_face3>& triangles,
         const std::vector<trlevel::tr_vertex>& input_vertices,
         const ILevelTextureStorage& texture_storage,
@@ -348,7 +358,7 @@ namespace trview
             }
 
             // Select UVs - otherwise they will be 0.
-            const uint16_t texture = tri.texture & 0x7fff;
+            const uint16_t texture = tri.texture & texture_mask(level_version);
             std::array<Vector2, 3> uvs;
             for (int i = 0; i < uvs.size(); ++i)
             {

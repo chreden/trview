@@ -42,7 +42,7 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
-        generate_geometry(device, room, texture_storage);
+        generate_geometry(level.get_version(), device, room, texture_storage);
         generate_sectors(level, room);
         generate_adjacency();
         generate_static_meshes(level, room, mesh_storage);
@@ -171,7 +171,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(const ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(trlevel::LevelVersion level_version, const ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -184,8 +184,8 @@ namespace trview
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
 
         _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, collision_triangles);
         

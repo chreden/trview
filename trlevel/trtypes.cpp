@@ -4,6 +4,19 @@
 
 namespace trlevel
 {
+    namespace
+    {
+        /// Convert a tr4 object texture into a type that matches 1-3.
+        /// @param texture The texture to convert.
+        /// @returns The converted texture.
+        tr_object_texture convert_object_texture(const tr4_object_texture& texture)
+        {
+            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
+            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
+            return new_entity;
+        }
+    }
+
     uint32_t convert_textile32(uint32_t t)
     {
         uint32_t a = (t & 0xff000000) >> 24;
@@ -42,6 +55,19 @@ namespace trlevel
         {
             tr3_room_vertex new_vertex { vert.vertex, vert.lighting, 0, 0xffff };
             return new_vertex;
+        });
+        return new_vertices;
+    }
+
+    std::vector<tr3_room_vertex> convert_vertices(std::vector<tr5_room_vertex> vertices)
+    {
+        std::vector<tr3_room_vertex> new_vertices;
+        new_vertices.reserve(vertices.size());
+        std::transform(vertices.begin(), vertices.end(),
+            std::back_inserter(new_vertices), [](const auto& vert)
+        {
+            tr_vertex vertex{ vert.vertex.x, vert.vertex.y, vert.vertex.z };
+            return tr3_room_vertex { vertex, 0, 0, 0xffff };
         });
         return new_vertices;
     }
@@ -103,13 +129,16 @@ namespace trlevel
     {
         std::vector<tr_object_texture> new_object_textures;
         new_object_textures.reserve(object_textures.size());
+        std::transform(object_textures.begin(), object_textures.end(), std::back_inserter(new_object_textures), convert_object_texture);
+        return new_object_textures;
+    }
+
+    std::vector<tr_object_texture> convert_object_textures(std::vector<tr5_object_texture> object_textures)
+    {
+        std::vector<tr_object_texture> new_object_textures;
+        new_object_textures.reserve(object_textures.size());
         std::transform(object_textures.begin(), object_textures.end(),
-            std::back_inserter(new_object_textures), [](const auto& texture)
-        {
-            tr_object_texture new_entity{ texture.Attribute, texture.TileAndFlag };
-            memcpy(new_entity.Vertices, texture.Vertices, sizeof(new_entity.Vertices));
-            return new_entity;
-        });
+            std::back_inserter(new_object_textures), [](const auto& texture) { return convert_object_texture(texture.tr4_texture); });
         return new_object_textures;
     }
 
@@ -143,5 +172,25 @@ namespace trlevel
             return new_face4;
         });
         return new_rectangles;
+    }
+
+    tr_room_info convert_room_info(const tr1_4_room_info& room_info)
+    {
+        tr_room_info new_info;
+        new_info.x = room_info.x;
+        new_info.y = 0;
+        new_info.z = room_info.z;
+        new_info.yTop = room_info.yTop;
+        new_info.yBottom = room_info.yBottom;
+        return new_info;
+    }
+
+    std::vector<tr_model> convert_models(std::vector<tr5_model> models)
+    {
+        std::vector<tr_model> new_models;
+        new_models.reserve(models.size());
+        std::transform(models.begin(), models.end(),
+            std::back_inserter(new_models), [](const auto& model) { return model.model; });
+        return new_models;
     }
 }
