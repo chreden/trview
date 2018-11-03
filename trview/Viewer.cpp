@@ -507,8 +507,9 @@ namespace trview
         // Strip the last part of the path away.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        _level_info->set_level(name);
+        _level_info->set_level(name);        
         _level_info->set_level_version(_current_level->get_version());
+        _window.set_title("trview - " + name);
         _measure->reset();
     }
 

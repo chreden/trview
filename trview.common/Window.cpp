@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Window.h"
+#include "Strings.h"
 
 namespace trview
 {
@@ -23,6 +24,12 @@ namespace trview
     Window::operator HWND () const
     {
         return _window;
+    }
+
+    void Window::set_title(const std::string& title)
+    {
+        auto converted = to_utf16(title);
+        SetWindowText(_window, converted.c_str());
     }
 
     // Get the position of the cursor in client coordinates.
