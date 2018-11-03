@@ -88,9 +88,10 @@ namespace trview
             virtual void clear_child_elements();
 
             /// Get the elements that are direct children of this element.
+            /// @param rendering_order If true, this will sort the controls in reverse z order.
             /// @remarks To add a new child, use add_child.
             /// @returns The child elements.
-            std::vector<Control*> child_elements() const;
+            std::vector<Control*> child_elements(bool rendering_order = false) const;
 
             /// Process a mouse_down event at the position specified.
             /// @param position The position of the mouse relative to the control.
@@ -192,6 +193,9 @@ namespace trview
             /// This should be overriden by child elements to handle a click.
             /// @param position The position of the click relative to the control.
             virtual bool clicked(Point position);
+
+            /// To be called when the user clicks away from a focus control.
+            virtual void clicked_off(Control* new_focus);
 
             /// To be called when the mouse was moved over the element.
             /// This should be overriden by child elements to handle a move.

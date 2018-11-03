@@ -10,7 +10,7 @@ namespace trview
 {
     namespace ui
     {
-        class StackPanel;
+        class Listbox;
 
         class Dropdown final : public Window
         {
@@ -26,7 +26,7 @@ namespace trview
             /// Set the scope that the dropdown will appear in. This may be required if the parent control
             /// does not have space for the entire dropdown to be rendered.
             /// @param scope The scope to create the dropdown control in.
-            void set_dropdown_scope(ui::Control* scope);
+            void set_dropdown_scope(Control* scope);
 
             /// Set the values to show in the dropdown.
             /// @param values The values to show.
@@ -38,12 +38,14 @@ namespace trview
 
             /// Event raised when a value is selected. The selected value is passed as a parameter.
             Event<std::wstring> on_value_selected;
+        protected:
+            virtual void clicked_off(Control* new_focus) override;
         private:
             void update_dropdown();
 
             std::vector<std::wstring> _values;
             ui::Button*               _button;
-            ui::StackPanel*           _dropdown;
+            ui::Listbox*              _dropdown;
         };
     }
 }

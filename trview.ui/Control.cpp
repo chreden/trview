@@ -104,12 +104,19 @@ namespace trview
             on_invalidate();
         }
 
-        std::vector<Control*> Control::child_elements() const
+        std::vector<Control*> Control::child_elements(bool rendering_order) const
         {
             std::vector<Control*> output;
             std::transform(_child_elements.begin(), _child_elements.end(),
                 std::back_inserter(output), [](auto& child) {return child.get(); });
-            std::sort(output.begin(), output.end(), [](const auto& l, const auto& r) { return l->z() > r->z(); });
+            if (rendering_order)
+            {
+                std::sort(output.begin(), output.end(), [](const auto& l, const auto& r) { return l->z() > r->z(); });
+            }
+            else
+            {
+                std::sort(output.begin(), output.end(), [](const auto& l, const auto& r) { return l->z() < r->z(); });
+            }
             return output;
         }
 
@@ -121,18 +128,13 @@ namespace trview
                 return false;
             }
 
-            bool handled = false;
             for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->process_mouse_down(position - child->position());
-            }
-
-            // If none of the child elements have handled this event themselves, call the 
-            // mouse_down function of this control.
-            if (handled)
-            {
-                return true;
+                if (child->process_mouse_down(position - child->position()))
+                {
+                    return true;
+                }
             }
 
             // Promote controls to focus control, or clear if there are no controls that 
@@ -169,8 +171,7 @@ namespace trview
             if (_focus_control && _focus_control != this)
             {
                 auto focus = _focus_control;
-                bool focus_handled = focus->move(position - focus->absolute_position());
-                if (focus_handled)
+                if (focus->move(position - focus->absolute_position()))
                 {
                     return true;
                 }
@@ -187,16 +188,18 @@ namespace trview
                 return false;
             }
 
-            bool handled = false;
             for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->inner_process_mouse_move(position - child->position());
+                if (child->inner_process_mouse_move(position - child->position()))
+                {
+                    return true;
+                }
             }
 
             // If none of the child elements have handled this event themselves, call the 
             // move function of this control.
-            return handled | move(position);
+            return move(position);
         }
 
         bool Control::process_mouse_up(const Point& position)
@@ -227,23 +230,24 @@ namespace trview
                 return false;
             }
 
-            bool handled = false;
             for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->inner_process_mouse_up(position - child->position());
+                if (child->inner_process_mouse_up(position - child->position()))
+                {
+                    return true;
+                }
             }
 
             // If none of the child elements have handled this event themselves, call the up of the control.
-            return handled | mouse_up(position);
+            return mouse_up(position);
         }
 
         bool Control::mouse_scroll(const Point& position, int16_t delta)
         {
             if (_focus_control && _focus_control != this)
             {
-                bool focus_handled = _focus_control->inner_process_mouse_scroll(position, delta);
-                if (focus_handled)
+                if (_focus_control->inner_process_mouse_scroll(position, delta))
                 {
                     return true;
                 }
@@ -259,16 +263,18 @@ namespace trview
                 return false;
             }
 
-            bool handled = false;
             for (auto& child : child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
-                handled |= child->inner_process_mouse_scroll(position - child->position(), delta);
+                if (child->inner_process_mouse_scroll(position - child->position(), delta))
+                {
+                    return true;
+                }
             }
 
             // If none of the child elements have handled this event themselves, call the 
             // scroll function of this control.
-            return handled | scroll(delta);
+            return scroll(delta);
         }
 
         bool Control::mouse_down(const Point&)
@@ -284,6 +290,10 @@ namespace trview
         bool Control::clicked(Point)
         {
             return false;
+        }
+
+        void Control::clicked_off(Control*)
+        {
         }
 
         bool Control::move(Point)
@@ -309,6 +319,10 @@ namespace trview
             }
             else
             {
+                if (_focus_control)
+                {
+                    _focus_control->clicked_off(control);
+                }
                 inner_set_focus_control(control);
             }
         }
@@ -342,8 +356,7 @@ namespace trview
         {
             if (_focus_control && _focus_control != this)
             {
-                bool focus_handled = _focus_control->key_down(key);
-                if (focus_handled)
+                if (_focus_control->key_down(key))
                 {
                     return true;
                 }
@@ -354,12 +367,11 @@ namespace trview
 
         bool Control::inner_process_key_down(uint16_t key)
         {
-            bool handled = false;
             for (auto& child : child_elements())
             {
                 if (child->inner_process_key_down(key))
                 {
-                    return handled;
+                    return true;
                 }
             }
 
