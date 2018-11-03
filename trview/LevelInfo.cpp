@@ -7,6 +7,7 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 #include <trview.app/ITextureStorage.h>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -62,9 +63,9 @@ namespace trview
 
     // Set the name of the level.
     // name: The level name.
-    void LevelInfo::set_level(const std::wstring& name)
+    void LevelInfo::set_level(const std::string& name)
     {
-        _name->set_text(name);
+        _name->set_text(to_utf16(name));
     }
 
     // Set the version of the game that level was created for.

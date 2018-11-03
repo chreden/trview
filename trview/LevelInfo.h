@@ -38,7 +38,7 @@ namespace trview
 
         /// Sets the name of the level.
         /// @param name The level name.
-        void set_level(const std::wstring& name);
+        void set_level(const std::string& name);
 
         /// Set the version of the game that level was created for.
         /// @param version The version of the game.

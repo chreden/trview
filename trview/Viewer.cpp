@@ -29,8 +29,6 @@
 #include "TextureStorage.h"
 #include "SettingsWindow.h"
 
-#include <trview.common/Strings.h>
-
 namespace trview
 {
     namespace
@@ -509,7 +507,7 @@ namespace trview
         // Strip the last part of the path away.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        _level_info->set_level(to_utf16(name));
+        _level_info->set_level(name);
         _level_info->set_level_version(_current_level->get_version());
         _measure->reset();
     }
