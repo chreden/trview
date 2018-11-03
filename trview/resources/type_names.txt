@@ -3027,11 +3027,62 @@
 				"id": 7,
 				"name": "LaraFlareAnim"
 			}, {
+				"id": 33,
+				"name": "SWAT"
+			}, {
+				"id": 35,
+				"name": "Advanced SWAT"
+			}, {
+				"id": 36,
+				"name": "Advanced SWAT mip"
+			}, {
+				"id": 37,
+				"name": "Guard"
+			}, {
+				"id": 38,
+				"name": "Blue Guard"
+			}, {
+				"id": 39,
+				"name": "Two Gun"
+			}, {
+				"id": 40,
+				"name": "Two gun mip"
+			}, {
 				"id": 41,
 				"name": "Dog"
 			}, {
+				"id": 42,
+				"name": "Dog mip"
+			}, {
+				"id": 43,
+				"name": "Crow"
+			}, {
+				"id": 44,
+				"name": "Crow mip"
+			}, {
 				"id": 45,
 				"name": "Larson"
+			}, {
+				"id": 46,
+				"name": "Larson mip"
+			}, {
+				"id": 48,
+				"name": "Pierre mip"
+			}, {
+				"id": 49,
+				"name": "Soldier (MG)"
+			}, {
+				"id": 50,
+				"name": "Soldier (MG) mip"
+			}, {
+				"id": 51,
+				"name": "Soldier (Pistols)"
+			}, {
+				"id": 54,
+				"name": "Sailor mip"
+			}, {
+				"id": 56,
+				"name": "Sub Captain"
 			}, {
 				"id": 57,
 				"name": "Lion"
@@ -3043,10 +3094,37 @@
 				"name": "Soldier Statue"
 			}, {
 				"id": 63,
-				"name": "Gargoyle Head"
+				"name": "Hydra"
+			}, {
+				"id": 64,
+				"name": "Hydra mip"
 			}, {
 				"id": 65,
-				"name": "Floating Head"
+				"name": "Guardian"
+			}, {
+				"id": 67,
+				"name": "Cyborg"
+			}, {
+				"id": 69,
+				"name": "Scientist"
+			}, {
+				"id": 71,
+				"name": "Will-o'-the-wisp"
+			}, {
+				"id": 73,
+				"name": "Skeleton"
+			}, {
+				"id": 77,
+				"name": "Maze Monster"
+			}, {
+				"id": 79,
+				"name": "Water Monster"
+			}, {
+				"id": 81,
+				"name": "Attack Sub"
+			}, {
+				"id": 83,
+				"name": "Sniper"
 			}, {
 				"id": 85,
 				"name": "Dog"
@@ -3054,11 +3132,29 @@
 				"id": 86,
 				"name": "Ventilator"
 			}, {
+				"id": 87,
+				"name": "Chef"
+			}, {
+				"id": 89,
+				"name": "Imp"
+			}, {
+				"id": 91,
+				"name": "Gunship"
+			}, {
 				"id": 93,
 				"name": "Bats"
 			}, {
 				"id": 94,
 				"name": "Rats"
+			}, {
+				"id": 95,
+				"name": "Spiders"
+			}, {
+				"id": 97,
+				"name": "Autogun"
+			}, {
+				"id": 98,
+				"name": "Cables"
 			}, {
 				"id": 99,
 				"name": "Dart"
@@ -3070,13 +3166,28 @@
 				"name": "Falling Ceiling"
 			}, {
 				"id": 105,
-				"name": "Trapdoor"
+				"name": "Crumbling Floor"
 			}, {
 				"id": 106,
-				"name": "Trapdoor"
+				"name": "Trapdoor 1"
+			}, {
+				"id": 107,
+				"name": "Trapdoor 2"
+			}, {
+				"id": 108,
+				"name": "Trapdoor 3"
 			}, {
 				"id": 109,
-				"name": "Floor trapdoor"
+				"name": "Floor trapdoor 1"
+			}, {
+				"id": 110,
+				"name": "Floor trapdoor 2"
+			}, {
+				"id": 111,
+				"name": "Ceiling trapdoor"
+			}, {
+				"id": 114,
+				"name": "Boulder"
 			}, {
 				"id": 117,
 				"name": "Spikes"
@@ -3084,26 +3195,116 @@
 				"id": 118,
 				"name": "Ram"
 			}, {
+				"id": 121,
+				"name": "Flame"
+			}, {
 				"id": 122,
 				"name": "Flame"
 			}, {
+				"id": 123,
+				"name": "Flame"
+			}, {
+				"id": 124,
+				"name": "Cooker Flame"
+			}, {
+				"id": 125,
+				"name": "Roots"
+			}, {
+				"id": 126,
+				"name": "Rope"
+			}, {
+				"id": 128,
+				"name": "Pole"
+			}, {
 				"id": 129,
-				"name": "Ventilator"
+				"name": "Propeller"
+			}, {
+				"id": 130,
+				"name": "Propeller"
+			}, {
+				"id": 131,
+				"name": "Grappling Target"
 			}, {
 				"id": 134,
-				"name": "Pushable Block"
+				"name": "Raising Block"
+			}, {
+				"id": 135,
+				"name": "Raising Block 2"
+			}, {
+				"id": 136,
+				"name": "Expanding Platform"
 			}, {
 				"id": 137,
-				"name": "Pushable Block"
+				"name": "Pushable 1"
+			}, {
+				"id": 138,
+				"name": "Pushable 2"
+			}, {
+				"id": 139,
+				"name": "Pushable 3"
+			}, {
+				"id": 140,
+				"name": "Pushable 4"
+			}, {
+				"id": 141,
+				"name": "Pushable 5"
+			}, {
+				"id": 142,
+				"name": "The Claw"
+			}, {
+				"id": 147,
+				"name": "Spark Emitter"
+			}, {
+				"id": 149,
+				"name": "Explosion"
+			}, {
+				"id": 150,
+				"name": "Iris Lightning"
+			}, {
+				"id": 151,
+				"name": "Monitor Screen"
+			}, {
+				"id": 152,
+				"name": "Security Screens"
+			}, {
+				"id": 153,
+				"name": "Motion Sensors"
 			}, {
 				"id": 154,
 				"name": "Tightrope"
 			}, {
+				"id": 155,
+				"name": "Horizontal Bar"
+			}, {
+				"id": 156,
+				"name": "X-Ray Controller"
+			}, {
+				"id": 158,
+				"name": "Portal"
+			}, {
+				"id": 159,
+				"name": "Generic Slot 1"
+			}, {
+				"id": 160,
+				"name": "Generic Slot 2"
+			}, {
+				"id": 161,
+				"name": "Generic Slot 3"
+			}, {
+				"id": 162,
+				"name": "Generic Slot 4"
+			}, {
 				"id": 164,
 				"name": "Cupboard"
 			}, {
+				"id": 166,
+				"name": "Drawer"
+			}, {
 				"id": 168,
 				"name": "Cupboard"
+			}, {
+				"id": 170,
+				"name": "Suitcase"
 			}, {
 				"id": 172,
 				"name": "Puzzle 1"
@@ -3120,6 +3321,24 @@
 				"id": 176,
 				"name": "Puzzle 5"
 			}, {
+				"id": 180,
+				"name": "Puzzle 1 Combo 1"
+			}, {
+				"id": 181,
+				"name": "Puzzle 1 Combo 2"
+			}, {
+				"id": 182,
+				"name": "Puzzle 2 Combo 1"
+			}, {
+				"id": 183,
+				"name": "Puzzle 2 Combo 2"
+			}, {
+				"id": 184,
+				"name": "Puzzle 3 Combo 1"
+			}, {
+				"id": 185,
+				"name": "Puzzle 3 Combo 2"
+			}, {
 				"id": 186,
 				"name": "Puzzle 4 Combo 1"
 			}, {
@@ -3129,21 +3348,51 @@
 				"id": 196,
 				"name": "Key 1"
 			}, {
-				"id": 198,
+				"id": 197,
 				"name": "Key 2"
 			}, {
-				"id": 200,
+				"id": 198,
 				"name": "Key 3"
 			}, {
-				"id": 202,
+				"id": 199,
 				"name": "Key 4"
+			}, {
+				"id": 200,
+				"name": "Key 5"
+			}, {
+				"id": 201,
+				"name": "Key 6"
+			}, {
+				"id": 202,
+				"name": "Key 7"
+			}, {
+				"id": 203,
+				"name": "Key 8"
 			}, {
 				"id": 220,
 				"name": "Pickup 1"
 			}, {
+				"id": 221,
+				"name": "Pickup 2"
+			}, {
+				"id": 222,
+				"name": "Pickup 3"
+			}, {
 				"id": 223,
 				"name": "Secret"
-			},   {
+			}, {
+				"id": 235,
+				"name": "Bottle"
+			}, {
+				"id": 236,
+				"name": "Cloth"
+			}, {
+				"id": 240,
+				"name": "Crowbar"
+			}, {
+				"id": 241,
+				"name": "Torch"
+			}, {
 				"id": 242,
 				"name": "Slot 1"
 			}, {
@@ -3158,6 +3407,15 @@
 			}, {
 				"id": 246,
 				"name": "Slot 5"
+			}, {
+				"id": 247,
+				"name": "Slot 6"
+			}, {
+				"id": 248,
+				"name": "Slot 7"
+			}, {
+				"id": 249,
+				"name": "Slot 8"
 			}, {
 				"id": 250,
 				"name": "Slot 1 Done"
@@ -3174,6 +3432,15 @@
 				"id": 254,
 				"name": "Slot 5 Done"
 			}, {
+				"id": 255,
+				"name": "Slot 6 Done"
+			}, {
+				"id": 256,
+				"name": "Slot 7 Done"
+			}, {
+				"id": 257,
+				"name": "Slot 8 Done"
+			}, {
 				"id": 258,
 				"name": "Keyhole 1"
 			}, {
@@ -3186,8 +3453,35 @@
 				"id": 261,
 				"name": "Keyhole 4"
 			}, {
+				"id": 262,
+				"name": "Keyhole 5"
+			}, {
+				"id": 263,
+				"name": "Keyhole 6"
+			}, {
+				"id": 264,
+				"name": "Keyhole 7"
+			}, {
+				"id": 265,
+				"name": "Keyhole 8"
+			}, {
 				"id": 266,
 				"name": "Switch 1"
+			}, {
+				"id": 267,
+				"name": "Switch 2"
+			}, {
+				"id": 268,
+				"name": "Switch 3"
+			}, {
+				"id": 269,
+				"name": "Switch 4"
+			}, {
+				"id": 270,
+				"name": "Switch 5"
+			}, {
+				"id": 271,
+				"name": "Switch 6"
 			}, {
 				"id": 272,
 				"name": "Shoot switch 1"
@@ -3198,8 +3492,17 @@
 				"id": 274,
 				"name": "Switch 7"
 			}, {
+				"id": 278,
+				"name": "Cog Switch"
+			}, {
+				"id": 280,
+				"name": "Jump Switch"
+			}, {
 				"id": 282,
 				"name": "Pole"
+			}, {
+				"id": 283,
+				"name": "Crow/Dove Switch"
 			}, {
 				"id": 284,
 				"name": "Door 1"
@@ -3226,19 +3529,49 @@
 				"name": "Door 8"
 			}, {
 				"id": 300,
-				"name": "Door 9"
+				"name": "Closed Door 1"
 			}, {
 				"id": 302,
-				"name": "Door 10"
+				"name": "Closed Door 2"
 			}, {
 				"id": 304,
-				"name": "Door 11"
+				"name": "Closed Door 3"
 			}, {
 				"id": 306,
-				"name": "Door 12"
+				"name": "Closed Door 4"
+			}, {
+				"id": 308,
+				"name": "Closed Door 5"
+			}, {
+				"id": 310,
+				"name": "Closed Door 6"
+			}, {
+				"id": 312,
+				"name": "Lift Doors 1"
+			}, {
+				"id": 314,
+				"name": "Lift Doors 2"
+			}, {
+				"id": 320,
+				"name": "Kick Door 1"
 			}, {
 				"id": 326,
 				"name": "Double doors"
+			}, {
+				"id": 328,
+				"name": "Sequence Door 1"
+			}, {
+				"id": 329,
+				"name": "Sequence Switch 1"
+			}, {
+				"id": 330,
+				"name": "Sequence Switch 2"
+			}, {
+				"id": 331,
+				"name": "Sequence Switch 3"
+			}, {
+				"id": 332,
+				"name": "Steel Door"
 			}, {
 				"id": 334,
 				"name": "Pistols"
@@ -3261,9 +3594,21 @@
 				"id": 340,
 				"name": "Shotgun ammo (blue)"
 			}, {
+				"id": 341,
+				"name": "Grappling Gun"
+			}, {
+				"id": 342,
+				"name": "Grappling Ammo"
+			}, {
+				"id": 345,
+				"name": "HK"
+			}, {
+				"id": 346,
+				"name": "HK Ammo"
+			}, {
 				"id": 347,
 				"name": "Revolver"
-			},   {
+			}, {
 				"id": 348,
 				"name": "Revolver ammo"
 			},  {
@@ -3300,8 +3645,17 @@
 				"id": 368,
 				"name": "Waterfall Mist"
 			}, {
+				"id": 373,
+				"name": "Blinking Light"
+			}, {
 				"id": 374,
-				"name": "PulsatingLight"
+				"name": "Pulsating Light"
+			}, {
+				"id": 375,
+				"name": "Strobe Light"
+			}, {
+				"id": 376,
+				"name": "Electrical Light"
 			}, {
 				"id": 378,
 				"name": "AIGuard"
@@ -3321,11 +3675,59 @@
 				"id": 383,
 				"name": "AIPatrol2"
 			}, {
+				"id": 387,
+				"name": "Teleporter"
+			}, {
+				"id": 388,
+				"name": "Lift Teleporter"
+			}, {
+				"id": 389,
+				"name": "Raising Cog"
+			}, {
+				"id": 390,
+				"name": "Lasers"
+			}, {
+				"id": 391,
+				"name": "Steam lasers"
+			}, {
+				"id": 392,
+				"name": "Floor Lasers"
+			}, {
+				"id": 394,
+				"name": "Trigger triggerer"
+			}, {
+				"id": 395,
+				"name": "High Object 1"
+			}, {
+				"id": 396,
+				"name": "High Object 2"
+			}, {
+				"id": 397,
+				"name": "Smash Object 1"
+			}, {
+				"id": 398,
+				"name": "Smash Object 2"
+			}, {
+				"id": 409,
+				"name": "Camera Target"
+			}, {
 				"id": 410,
 				"name": "Waterfall 1"
 			}, {
+				"id": 411,
+				"name": "Waterfall 2"
+			}, {
+				"id": 412,
+				"name": "Waterfall 3"
+			}, {
+				"id": 413,
+				"name": "Fish tank"
+			}, {
 				"id": 414,
-				"name": "Waterfall 4"
+				"name": "Waterfall 1"
+			}, {
+				"id": 415,
+				"name": "Waterfall 2"
 			}, {
 				"id": 416,
 				"name": "Animating 1"
