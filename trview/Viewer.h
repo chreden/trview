@@ -79,7 +79,7 @@ namespace trview
 
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        void open(const std::wstring filename);
+        void open(const std::string& filename);
 
         /// Get the current user settings.
         /// @returns The current settings.
@@ -87,11 +87,11 @@ namespace trview
 
         /// Event raised when a level file is successfully opened.
         /// @remarks The filename is passed as a parameter to the listener functions.
-        Event<std::wstring> on_file_loaded;
+        Event<std::string> on_file_loaded;
 
         /// Event raised when the recent files list is updated.
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
-        Event<std::list<std::wstring>> on_recent_files_changed;
+        Event<std::list<std::string>> on_recent_files_changed;
     private:
         void generate_ui();
         void generate_tool_window();

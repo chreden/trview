@@ -4,6 +4,7 @@
 #include <ShlObj.h>
 #include <fstream>
 #include <algorithm>
+#include <external/nlohmann/json.hpp>
 
 namespace trview
 {
@@ -24,7 +25,7 @@ namespace trview
         };
     }
 
-    void UserSettings::add_recent_file(const std::wstring& file)
+    void UserSettings::add_recent_file(const std::string& file)
     {
         // If the file already exists in the recent files list, remove it from where it is
         // and move it to the to avoid duplicates and to make it ordered by most recent.
@@ -56,69 +57,27 @@ namespace trview
         
         try
         {
-            std::wifstream file(file_path);
-            file.exceptions(std::wifstream::failbit | std::wifstream::badbit | std::wifstream::eofbit);
+            std::ifstream file(file_path);
+            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             if (!file.is_open())
             {
                 return settings;
             }
 
-            while (!file.eof())
-            {
-                std::wstring setting;
-                file >> setting;
+            nlohmann::json json;
+            file >> json;
 
-                if (setting == L"camera")
-                {
-                    file >> settings.camera_sensitivity;
-                }
-                else if (setting == L"movement")
-                {
-                    file >> settings.camera_movement_speed;
-                }
-                else if (setting == L"vsync")
-                {
-                    file >> settings.vsync;
-                }
-                else if (setting == L"gotolara")
-                {
-                    file >> settings.go_to_lara;
-                }
-                else if (setting == L"invertmapcontrols")
-                {
-                    file >> settings.invert_map_controls;
-                }
-                else if (setting == L"itemsstartup")
-                {
-                    file >> settings.items_startup;
-                }
-                else if (setting == L"triggersstartup")
-                {
-                    file >> settings.triggers_startup;
-                }
-                else if (setting == L"autoorbit")
-                {
-                    file >> settings.auto_orbit;
-                }
-                else if (setting == L"recent")
-                {
-                    uint32_t recent_count = 0;
-                    file >> recent_count;
-
-                    // Get the eol for the count.
-                    std::wstring line;
-                    std::getline(file, line);
-
-                    for (uint32_t i = 0; i < recent_count; ++i)
-                    {
-                        std::wstring recent_file;
-                        std::getline(file, recent_file);
-                        settings.recent_files.push_back(recent_file);
-                    }
-                }
-            }
+            settings.camera_sensitivity = json["camera"].get<float>();
+            settings.camera_movement_speed = json["movement"].get<float>();
+            settings.vsync = json["vsync"].get<bool>();
+            settings.go_to_lara = json["gotolara"].get<bool>();
+            settings.invert_map_controls = json["invertmapcontrols"].get<bool>();
+            settings.items_startup = json["itemsstartup"].get<bool>();
+            settings.triggers_startup = json["triggersstartup"].get<bool>();
+            settings.auto_orbit = json["autoorbit"].get<bool>();
+            settings.recent_files = json["recent"].get<std::list<std::string>>();
         }
-        catch (std::ifstream::failure&)
+        catch (...)
         {
             // Nowhere to log this yet...
         }
@@ -142,24 +101,25 @@ namespace trview
         }
 
         file_path += L"\\settings.txt";
-        std::wofstream file(file_path);
-        if (!file.is_open())
-        {
-            return;
-        }
 
-        file << L"camera "  << settings.camera_sensitivity      << '\n';
-        file << L"movement "<< settings.camera_movement_speed   << '\n';
-        file << L"vsync " << settings.vsync << '\n';
-        file << L"gotolara " << settings.go_to_lara << '\n';
-        file << L"invertmapcontrols " << settings.invert_map_controls << '\n';
-        file << L"itemsstartup " << settings.items_startup << '\n';
-        file << L"triggersstartup " << settings.triggers_startup << '\n';
-        file << L"autoorbit " << settings.auto_orbit << '\n';
-        file << L"recent "  << settings.recent_files.size()     << '\n';
-        for (const auto& file_name : settings.recent_files)
+        try
         {
-            file << file_name << '\n';
+            nlohmann::json json;
+            json["camera"] = settings.camera_sensitivity;
+            json["movement"] = settings.camera_movement_speed;
+            json["vsync"] = settings.vsync;
+            json["gotolara"] = settings.go_to_lara;
+            json["invertmapcontrols"] = settings.invert_map_controls;
+            json["itemsstartup"] = settings.items_startup;
+            json["triggersstartup"] = settings.triggers_startup;
+            json["autoorbit"] = settings.auto_orbit;
+            json["recent"] = settings.recent_files;
+
+            std::ofstream file(file_path);
+            file << json;
+        }
+        catch (...)
+        {
         }
     }
 }

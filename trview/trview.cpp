@@ -10,6 +10,7 @@
 #include <commdlg.h>
 #include <shellapi.h>
 #include <Shlwapi.h>
+#include <trview.common/Strings.h>
 
 #define MAX_LOADSTRING 100
 
@@ -70,7 +71,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     const LPWSTR* const arguments = CommandLineToArgvW(GetCommandLine(), &number_of_arguments);
     if (number_of_arguments > 1)
     {
-        viewer->open(arguments[1]);
+        viewer->open(trview::to_utf8(arguments[1]));
     }
 
     MSG msg;
@@ -198,7 +199,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 if (GetOpenFileName(&ofn))
                 {
                     SetCurrentDirectory(cd);
-                    viewer->open(ofn.lpstrFile);
+                    viewer->open(trview::to_utf8(ofn.lpstrFile));
                 }
                 break;
             } 

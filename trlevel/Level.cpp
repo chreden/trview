@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <trview.common/Strings.h>
 
 #include <external/zlib/zlib.h>
 
@@ -262,17 +263,20 @@ namespace trlevel
         }
     }
 
-    Level::Level(const std::wstring& filename)
+    Level::Level(const std::string& filename)
     {
         // Load the level from the file.
         try
         {
+            // Convert the filename to UTF-16
+            auto converted = trview::to_utf16(filename);
+
             std::ifstream file;
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-            file.open(filename.c_str(), std::ios::binary);
+            file.open(converted.c_str(), std::ios::binary);
 
             _version = convert_level_version(read<uint32_t>(file));
-            if (is_tr5(_version, filename))
+            if (is_tr5(_version, converted))
             {
                 _version = LevelVersion::Tomb5;
             }

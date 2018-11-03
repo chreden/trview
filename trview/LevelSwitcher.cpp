@@ -2,6 +2,7 @@
 #include "LevelSwitcher.h"
 #include "resource.h"
 #include "DirectoryListing.h"
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -66,10 +67,10 @@ namespace trview
         }
     }
 
-    void LevelSwitcher::open_file(const std::wstring& filepath)
+    void LevelSwitcher::open_file(const std::string& filepath)
     {
-        const std::size_t pos = filepath.find_last_of(L"\\/");
-        const std::wstring folder = filepath.substr(0, pos);
+        const std::size_t pos = filepath.find_last_of("\\/");
+        const std::string folder = filepath.substr(0, pos);
 
         DirectoryListing dir_lister(folder);
         _file_switcher_list = dir_lister.GetFiles();
@@ -81,7 +82,7 @@ namespace trview
         reset_menu(window(), _directory_listing_menu);
         for (int i = 0; i < _file_switcher_list.size(); ++i)
         {
-            AppendMenuW(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + i, _file_switcher_list[i].friendly_name.c_str());
+            AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + i, to_utf16(_file_switcher_list[i].friendly_name).c_str());
         }
 
         DrawMenuBar(window());

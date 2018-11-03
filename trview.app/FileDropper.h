@@ -28,6 +28,6 @@ namespace trview
         virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when the user drops a file on to the window. The file dropped is passed as a parameter.
-        Event<std::wstring> on_file_dropped;
+        Event<std::string> on_file_dropped;
     };
 }

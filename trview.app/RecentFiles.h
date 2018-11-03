@@ -31,12 +31,12 @@ namespace trview
 
         /// Event raised when the user opens a file from the recent files list. The file that was opened
         /// is passed as a parameter.
-        Event<std::wstring> on_file_open;
+        Event<std::string> on_file_open;
 
         /// Set the current list of recent files.
         /// @param files The list of recent files.
-        void set_recent_files(const std::list<std::wstring>& files);
+        void set_recent_files(const std::list<std::string>& files);
     private:
-        std::vector<std::wstring> _recent_files;
+        std::vector<std::string> _recent_files;
     };
 }

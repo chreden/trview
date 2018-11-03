@@ -7,9 +7,9 @@ namespace trview
 {
     struct UserSettings
     {
-        void add_recent_file(const std::wstring& file);
+        void add_recent_file(const std::string& file);
 
-        std::list<std::wstring> recent_files;
+        std::list<std::string>  recent_files;
         float                   camera_sensitivity{ 0 };
         float                   camera_movement_speed{ 0 };
         bool                    vsync{ true };

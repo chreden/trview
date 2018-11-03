@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DirectoryListing.h"
 #include <algorithm>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -12,13 +13,13 @@ namespace
     bool
     IsDirectory(const std::wstring& path)
     {
-        DWORD attr = GetFileAttributesW(path.c_str());
+        DWORD attr = GetFileAttributes(path.c_str());
         return (bool)(attr & FILE_ATTRIBUTE_DIRECTORY);
     }
 }
 
-DirectoryListing::DirectoryListing(const std::wstring& path)
-    : _path(path)
+DirectoryListing::DirectoryListing(const std::string& path)
+    : _path(to_utf16(path))
 {
     if (!IsDirectory(_path))
     {
@@ -27,14 +28,14 @@ DirectoryListing::DirectoryListing(const std::wstring& path)
 }
 
 std::vector<File> 
-DirectoryListing::GetFiles(const std::wstring& pattern) const
+DirectoryListing::GetFiles(const std::string& pattern) const
 {
     std::vector<std::wstring> patterns;
     std::size_t index = 0;
     do
     {
-        std::size_t next = pattern.find(L',', index);
-        patterns.push_back(pattern.substr(index, next - index));
+        std::size_t next = pattern.find(',', index);
+        patterns.push_back(to_utf16(pattern.substr(index, next - index)));
         index = ++next;
     } while(index);
 
@@ -49,7 +50,7 @@ DirectoryListing::GetFiles(const std::vector<std::wstring>& patterns) const
     for (const auto& pattern : patterns)
     {
         WIN32_FIND_DATA fd;
-        HANDLE find = FindFirstFileW((_path + pattern).c_str(), &fd);
+        HANDLE find = FindFirstFile((_path + pattern).c_str(), &fd);
 
         if (find == INVALID_HANDLE_VALUE)
         {
@@ -65,11 +66,11 @@ DirectoryListing::GetFiles(const std::vector<std::wstring>& patterns) const
         {
             if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
             {
-                File file{ _path + L"\\" + fd.cFileName, fd.cFileName, fd.nFileSizeLow };
+                File file{ to_utf8(_path + L"\\" + fd.cFileName), to_utf8(fd.cFileName), fd.nFileSizeLow };
                 data.push_back(file);
             }
         } while
-            (FindNextFileW(find, &fd) != 0);
+            (FindNextFile(find, &fd) != 0);
     }
 
     return data;
