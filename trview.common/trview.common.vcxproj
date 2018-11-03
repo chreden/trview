@@ -25,6 +25,7 @@
     <ClInclude Include="MessageHandler.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
+    <ClInclude Include="Strings.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TokenStore.h" />
     <ClInclude Include="Window.h" />
@@ -36,6 +37,7 @@
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Size.cpp" />
+    <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TokenStore.cpp" />
     <ClCompile Include="Window.cpp" />

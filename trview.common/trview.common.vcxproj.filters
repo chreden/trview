@@ -16,6 +16,7 @@
     <ClInclude Include="TokenStore.h">
       <Filter>Events</Filter>
     </ClInclude>
+    <ClInclude Include="Strings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="TokenStore.cpp">
       <Filter>Events</Filter>
     </ClCompile>
+    <ClCompile Include="Strings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
