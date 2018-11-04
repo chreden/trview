@@ -183,7 +183,7 @@ namespace trview
         bool Control::inner_process_mouse_move(const Point& position)
         {
             // Bounds check - before child elements are checked.
-            if (!in_bounds(position, _size))
+            if (!visible() || !in_bounds(position, _size))
             {
                 return false;
             }
@@ -225,7 +225,7 @@ namespace trview
         bool Control::inner_process_mouse_up(const Point& position)
         {
             // Bounds check - before child elements are checked.
-            if (!in_bounds(position, _size))
+            if (!visible() || !in_bounds(position, _size))
             {
                 return false;
             }
@@ -258,7 +258,7 @@ namespace trview
         bool Control::inner_process_mouse_scroll(const Point& position, int delta)
         {
             // Bounds check - before child elements are checked.
-            if (!in_bounds(position, _size))
+            if (!visible() || !in_bounds(position, _size))
             {
                 return false;
             }
@@ -382,7 +382,7 @@ namespace trview
 
         bool Control::is_mouse_over(const Point& position) const
         {
-            if (!in_bounds(position, _size))
+            if (!visible() || !in_bounds(position, _size))
             {
                 return false;
             }
@@ -422,7 +422,7 @@ namespace trview
 
         Control* Control::hover_control_at_position(const Point& position)
         {
-            if (!in_bounds(position, size()))
+            if (!visible() || !in_bounds(position, size()))
             {
                 return nullptr;
             }
