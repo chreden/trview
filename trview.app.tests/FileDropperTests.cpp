@@ -34,7 +34,7 @@ namespace trview
                 FileDropper dropper(window);
 
                 uint32_t times_called = 0;
-                std::wstring file_opened;
+                std::string file_opened;
                 auto token = dropper.on_file_dropped += [&](const auto& file)
                 {
                     ++times_called;
@@ -54,7 +54,7 @@ namespace trview
                 GlobalFree(global);
 
                 Assert::AreEqual(1u, times_called);
-                Assert::AreEqual(std::wstring(L"test_filename"), file_opened);
+                Assert::AreEqual(std::string("test_filename"), file_opened);
             }
 
             // Tests that the class enables drag and drop

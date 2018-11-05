@@ -1,5 +1,6 @@
 #include "RecentFiles.h"
 #include "WindowIDs.h"
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -7,7 +8,7 @@ namespace trview
     {
         const int ID_RECENT_FILE_BASE = 5000;
 
-        void update_menu(HWND window, const std::vector<std::wstring>& recent_files)
+        void update_menu(HWND window, const std::vector<std::string>& recent_files)
         {
             // Set up the recently used files menu.
             HMENU menu = GetMenu(window);
@@ -15,7 +16,7 @@ namespace trview
 
             for (int i = 0; i < recent_files.size(); ++i)
             {
-                AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, recent_files[i].c_str());
+                AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, to_utf16(recent_files[i]).c_str());
             }
 
             MENUITEMINFO info;
@@ -49,7 +50,7 @@ namespace trview
         }
     }
 
-    void RecentFiles::set_recent_files(const std::list<std::wstring>& files)
+    void RecentFiles::set_recent_files(const std::list<std::string>& files)
     {
         _recent_files.assign(files.begin(), files.end());
         update_menu(window(), _recent_files);

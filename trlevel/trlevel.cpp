@@ -3,7 +3,7 @@
 
 namespace trlevel
 {
-    std::unique_ptr<ILevel> load_level(const std::wstring& filename)
+    std::unique_ptr<ILevel> load_level(const std::string& filename)
     {
         return std::make_unique<Level>(filename);
     }

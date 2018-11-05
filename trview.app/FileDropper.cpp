@@ -1,4 +1,5 @@
 #include "FileDropper.h"
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -16,7 +17,7 @@ namespace trview
             wchar_t filename[MAX_PATH];
             memset(&filename, 0, sizeof(filename));
             DragQueryFile((HDROP)wParam, 0, filename, MAX_PATH);
-            on_file_dropped(filename);
+            on_file_dropped(to_utf8(filename));
         }
     }
 }

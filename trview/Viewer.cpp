@@ -453,7 +453,7 @@ namespace trview
         }
     }
 
-    void Viewer::open(const std::wstring filename)
+    void Viewer::open(const std::string& filename)
     {
         try
         {

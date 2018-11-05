@@ -33,10 +33,10 @@ namespace trview
 
         /// Open the specified file. This will populate the switcher menu.
         /// @param filename The file that was opened.
-        void open_file(const std::wstring& filename);
+        void open_file(const std::string& filename);
 
         /// Event raised when the user switches level. The opened level is passed as a parameter.
-        Event<std::wstring> on_switch_level;
+        Event<std::string> on_switch_level;
     private:
 
         HMENU             _directory_listing_menu;

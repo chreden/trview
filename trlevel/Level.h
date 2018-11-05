@@ -13,7 +13,7 @@ namespace trlevel
     class Level : public ILevel
     {
     public:
-        explicit Level(const std::wstring& filename);
+        explicit Level(const std::string& filename);
 
         virtual ~Level();
 
