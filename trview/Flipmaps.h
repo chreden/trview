@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <set>
 #include <trview.common/Event.h>
+#include <trview.common/TokenStore.h>
 
 namespace trview
 {
@@ -36,10 +37,15 @@ namespace trview
         void set_flip_enabled(bool enabled);
 
         Event<bool> on_flip;
+
+        /// Event raised when an alternate group is toggled. The group number and the new state are passed as parameters.
+        Event<uint16_t, bool> on_alternate_group;
     private:
+        TokenStore      _token_store;
         ui::Checkbox*   _flip;
         ui::Window*     _tr1_3_panel;
         ui::Window*     _tr4_5_panel;
         ui::StackPanel* _alternate_groups;
+        std::unordered_map<uint16_t, bool> _alternate_group_values;
     };
 }

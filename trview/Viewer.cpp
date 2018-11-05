@@ -197,6 +197,7 @@ namespace trview
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _token_store.add(_flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); });
+        _token_store.add(_flipmaps->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); });
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
@@ -764,6 +765,14 @@ namespace trview
         {
             _level->set_alternate_mode(enabled);
             _flipmaps->set_flip(enabled);
+        }
+    }
+
+    void Viewer::set_alternate_group(uint16_t group, bool enabled)
+    {
+        if (_level)
+        {
+            _level->set_alternate_group(group, enabled);
         }
     }
 

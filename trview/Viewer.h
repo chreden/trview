@@ -115,6 +115,7 @@ namespace trview
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);
         void set_alternate_mode(bool enabled);
+        void set_alternate_group(uint16_t group, bool enabled);
         // Tell things that need to be resized that they should resize.
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
