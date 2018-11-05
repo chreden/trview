@@ -55,6 +55,7 @@ namespace trview
     class Neighbours;
     class RoomNavigator;
     class SettingsWindow;
+    class Flipmaps;
 
     namespace graphics
     {
@@ -139,6 +140,7 @@ namespace trview
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<Flipmaps> _flipmaps;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<LevelInfo> _level_info;
