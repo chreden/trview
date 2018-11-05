@@ -97,3 +97,17 @@ Multiple Trigger windows can be active at once.
 
 Left click          If a trigger square, will select the trigger. If not a trigger (or control is pressed) it will follow a portal, or go to the room below. 
 Right click         Goes to the room above, if one is present.
+
+=== Tools ===
+
+== Measure ==
+
+The measure tool can be used to measure a distance: 
+- Click on the measure button at the bottom of the 3D view or press the M key 
+- Click on a point in the world
+- Click on a second point
+A path will appear between the two points with a distance label. This is the distance in units of 1024.
+
+== Compass ==
+
+At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
