@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <cstdint>
+#include <string>
 #include "Size.h"
 #include "Point.h"
 
@@ -14,6 +15,10 @@ namespace trview
         Size size() const;
         HWND window() const;
         operator HWND () const;
+
+        /// Set the title of the window.
+        /// @param title The new window title.
+        void set_title(const std::string& title);
     private:
         HWND        _window;
         uint32_t    _width;
