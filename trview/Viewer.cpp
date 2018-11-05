@@ -492,7 +492,8 @@ namespace trview
         _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
 
-        _flipmaps->set_alternate_groups(_current_level->get_version() >= trlevel::LevelVersion::Tomb4);
+        _flipmaps->set_use_alternate_groups(_current_level->get_version() >= trlevel::LevelVersion::Tomb4);
+        _flipmaps->set_alternate_groups(_level->alternate_groups());
         _flipmaps->set_flip(false);
         _flipmaps->set_flip_enabled(_level->any_alternates());
 
