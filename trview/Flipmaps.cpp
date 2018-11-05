@@ -18,7 +18,7 @@ namespace trview
         // Add two methods of controlling flipmaps:
         // The TR1-3 method:
         auto tr1_3_panel = std::make_unique<Window>(Point(5, 16), panel_size, Colour(1.0f, 0.5f, 0.5f, 0.5f));
-        auto flip = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Flip");
+        auto flip = std::make_unique<Checkbox>(Point(7,0), Size(16, 16), L"Flip");
         flip->on_state_changed += on_flip;
         _flip = tr1_3_panel->add_child(std::move(flip));
         _tr1_3_panel = flips_group->add_child(std::move(tr1_3_panel));
