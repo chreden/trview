@@ -69,7 +69,7 @@ namespace trview
                 }
 
                 // Process the child nodes and build the structure to match the UI model.
-                auto children = control->child_elements();
+                auto children = control->child_elements(true);
                 for (auto child : children)
                 {
                     node->add_child(process_control(child));
@@ -79,7 +79,7 @@ namespace trview
                 _token_store.add(control->on_hierarchy_changed += [this, control, node_ptr]()
                 {
                     node_ptr->clear_children();
-                    auto children = control->child_elements();
+                    auto children = control->child_elements(true);
                     for (auto child : children)
                     {
                         node_ptr->add_child(process_control(child));
