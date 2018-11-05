@@ -132,7 +132,14 @@ namespace trview
         const auto& room = *_rooms[index];
         if (is_alternate_mismatch(room))
         {
-            on_alternate_mode_selected(!_alternate_mode);
+            if (_level->get_version() >= trlevel::LevelVersion::Tomb4)
+            {
+                on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
+            }
+            else
+            {
+                on_alternate_mode_selected(!_alternate_mode);
+            }
         }
     }
 
@@ -463,13 +470,8 @@ namespace trview
     {
         if (_level->get_version() >= trlevel::LevelVersion::Tomb4)
         {
-            auto is_set = [this](uint16_t group)
-            {
-                return _alternate_groups.find(group) != _alternate_groups.end();
-            };
-
-            return room.alternate_mode() == Room::AlternateMode::HasAlternate && is_set(room.alternate_group()) ||
-                   room.alternate_mode() == Room::AlternateMode::IsAlternate && !is_set(room.alternate_group());
+            return room.alternate_mode() == Room::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
+                   room.alternate_mode() == Room::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
         }
 
         return room.alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode ||
@@ -569,6 +571,11 @@ namespace trview
             }
         }
         return groups;
+    }
+
+    bool Level::is_alternate_group_set(uint16_t group) const
+    {
+        return _alternate_groups.find(group) != _alternate_groups.end();
     }
 
     bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)

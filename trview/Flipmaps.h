@@ -9,6 +9,7 @@ namespace trview
 {
     namespace ui
     {
+        class Button;
         class Control;
         class Checkbox;
         class Window;
@@ -23,6 +24,11 @@ namespace trview
         /// Set whether to use alternate groups method of flipmaps.
         /// @param value Whether to use alternate groups or a single toggle.
         void set_use_alternate_groups(bool value);
+
+        /// Set whether an alternate group is enabled.
+        /// @param value The group to change.
+        /// @param enabled Whether the group is enabled.
+        void set_alternate_group(uint16_t value, bool enabled);
 
         /// Set the alternate groups that are in the level.
         /// @param groups The groups in the level.
@@ -47,5 +53,6 @@ namespace trview
         ui::Window*     _tr4_5_panel;
         ui::StackPanel* _alternate_groups;
         std::unordered_map<uint16_t, bool> _alternate_group_values;
+        std::unordered_map<uint16_t, ui::Button*> _alternate_group_buttons;
     };
 }

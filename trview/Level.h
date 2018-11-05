@@ -94,6 +94,9 @@ namespace trview
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;   
 
+        /// Event raised when the levle needs to change the alternate group mode.
+        Event<uint16_t, bool> on_alternate_group_selected;
+
         // Returns the room with ID provided 
         inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
 
@@ -162,6 +165,8 @@ namespace trview
         /// @returns The type name of the item.
         /// @remarks If the type id is not found, this will return the string version of the type id.
         std::wstring lookup_type_name(uint32_t type_id) const;
+
+        bool is_alternate_group_set(uint16_t group) const;
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;

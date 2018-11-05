@@ -39,26 +39,41 @@ namespace trview
         _tr4_5_panel->set_visible(value);
     }
 
+    void Flipmaps::set_alternate_group(uint16_t value, bool enabled)
+    {
+        _alternate_group_values[value] = enabled;
+
+        // Update the button.
+        auto button = _alternate_group_buttons.find(value);
+        if (button != _alternate_group_buttons.end())
+        {
+            button->second->set_text_background_colour(enabled ? Colour(0.6f, 0.6f, 0.6f) : Colour(0.2f, 0.2f, 0.2f));
+        }
+    }
+
     void Flipmaps::set_alternate_groups(const std::set<uint16_t>& groups)
     {
         _alternate_groups->clear_child_elements();
         _alternate_group_values.clear();
+        _alternate_group_buttons.clear();
 
         for (auto& group : groups)
         {
             _alternate_group_values.insert({ group, false });
-            auto button = std::make_unique<ui::Button>(Point(), Size(16, 16), std::to_wstring(group));
-            button->set_text_background_colour(Colour(1.0f, 0.2f, 0.2f, 0.2f));
 
-            auto btn = button.get();
-            _token_store.add(button->on_click += [btn, this, group]()
+            auto button = std::make_unique<ui::Button>(Point(), Size(16, 16), std::to_wstring(group));
+            button->set_text_background_colour(Colour(0.2f, 0.2f, 0.2f));
+            auto group_button = _alternate_groups->add_child(std::move(button));
+
+            _token_store.add(group_button->on_click += [group_button, this, group]()
             {
                 auto group_value = !_alternate_group_values[group];
-                btn->set_text_background_colour(group_value ? Colour(0.6f, 0.6f, 0.6f) : Colour(0.2f, 0.2f, 0.2f));
+                group_button->set_text_background_colour(group_value ? Colour(0.6f, 0.6f, 0.6f) : Colour(0.2f, 0.2f, 0.2f));
                 on_alternate_group(group, group_value);
                 _alternate_group_values[group] = group_value;
             });
-            _alternate_groups->add_child(std::move(button));
+
+            _alternate_group_buttons[group] = group_button;
         }
     }
 
