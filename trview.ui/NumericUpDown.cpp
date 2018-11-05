@@ -20,8 +20,8 @@ namespace trview
             up->set_border_thickness(0u);
             down->set_border_thickness(0u);
 
-            _token_store.add(up->on_click += [&]() { set_value(_value + 1); });
-            _token_store.add(down->on_click += [&]() { set_value(_value - 1); });
+            _token_store.add(up->on_click += [&]() { set_value(_value + 1); on_value_changed(_value); });
+            _token_store.add(down->on_click += [&]() { set_value(_value - 1); on_value_changed(_value); });
 
             _label = add_child(std::move(label));
             add_child(std::move(up));
@@ -40,7 +40,6 @@ namespace trview
 
             _value = value;
             _label->set_text(std::to_wstring(value));
-            on_value_changed(_value);
             on_invalidate();
         }
 
