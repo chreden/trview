@@ -187,6 +187,7 @@
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Flipmaps.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
     <ClInclude Include="IMeshStorage.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Flipmaps.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />

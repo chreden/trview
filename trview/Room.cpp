@@ -32,6 +32,7 @@ namespace trview
         uint32_t index)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
+        _alternate_group(room.alternate_group),
         _num_x_sectors(room.num_x_sectors),
         _num_z_sectors(room.num_z_sectors),
         _index(index)
@@ -287,6 +288,11 @@ namespace trview
     int16_t Room::alternate_room() const
     {
         return _alternate_room;
+    }
+
+    int16_t Room::alternate_group() const
+    {
+        return _alternate_group;
     }
 
     // Set this room to be the alternate room of the room specified.

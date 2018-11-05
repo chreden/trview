@@ -287,6 +287,8 @@ namespace trview
             _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get(), i));
         }
 
+        std::set<uint32_t> alternate_groups;
+
         // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
         // This can only be done once all the rooms are loaded.
         for (int16_t i = 0; i < _rooms.size(); ++i)
@@ -294,6 +296,8 @@ namespace trview
             const auto& room = _rooms[i];
             if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
             {
+                alternate_groups.insert(room->alternate_group());
+
                 int16_t alternate = room->alternate_room();
                 if (alternate != -1)
                 {
@@ -519,6 +523,20 @@ namespace trview
     const ILevelTextureStorage& Level::texture_storage() const
     {
         return *_texture_storage;
+    }
+
+    std::set<uint16_t> Level::alternate_groups() const
+    {
+        std::set<uint16_t> groups;
+        for (int16_t i = 0; i < _rooms.size(); ++i)
+        {
+            const auto& room = _rooms[i];
+            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            {
+                groups.insert(room->alternate_group());
+            }
+        }
+        return groups;
     }
 
     bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)

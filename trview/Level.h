@@ -106,6 +106,10 @@ namespace trview
         void set_selected_trigger(uint32_t number);
 
         const ILevelTextureStorage& texture_storage() const;
+
+        /// Gets the alternate groups that exist in the level.
+        /// @returns The set of alternate groups in the level.
+        std::set<uint16_t> alternate_groups() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);

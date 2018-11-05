@@ -114,6 +114,10 @@ namespace trview
         // Returns: The room number of the alternate room.
         int16_t alternate_room() const;
 
+        /// Gets the alternate group for the room.
+        /// @returns The alternate group number.
+        int16_t alternate_group() const;
+
         // Set this room to be the alternate room of the room specified.
         // This will change the alternate_mode of this room to IsAlternate.
         // number: The room number.
@@ -163,6 +167,7 @@ namespace trview
         std::uint16_t       _num_x_sectors, _num_z_sectors; 
 
         int16_t              _alternate_room;
+        int16_t              _alternate_group;
         AlternateMode        _alternate_mode;
 
         std::unordered_map<uint32_t, Trigger*> _triggers;

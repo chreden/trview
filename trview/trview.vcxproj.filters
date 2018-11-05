@@ -148,6 +148,9 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>View\Selection</Filter>
     </ClInclude>
+    <ClInclude Include="Flipmaps.h">
+      <Filter>Program\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Viewer.cpp">
@@ -236,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="SelectionRenderer.cpp">
       <Filter>View\Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="Flipmaps.cpp">
+      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
