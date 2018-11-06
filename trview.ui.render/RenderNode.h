@@ -32,6 +32,8 @@ namespace trview
             class RenderNode
             {
             public:
+                friend class Renderer;
+
                 RenderNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Control* control);
 
                 virtual ~RenderNode() = 0;
@@ -53,7 +55,7 @@ namespace trview
                 int z() const;
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) = 0;
-            public:
+
                 TokenStore _token_store;
             public:
                 // Determines if the control itself needs to redraw.
