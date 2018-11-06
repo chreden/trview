@@ -1,3 +1,6 @@
+/// @file GoToRoom.h
+/// @brief UI element that allows the user to control the flipmaps in a level.
+
 #pragma once
 
 #include <cstdint>
@@ -16,16 +19,19 @@ namespace trview
         class StackPanel;
     }
 
+    /// UI element that allows the user to control the flipmaps in a level.
     class Flipmaps
     {
     public:
+        /// Create a new Flipmaps window.
+        /// @param parent The control to add the window to.
         explicit Flipmaps(ui::Control& parent);
 
         /// Set whether to use alternate groups method of flipmaps.
         /// @param value Whether to use alternate groups or a single toggle.
         void set_use_alternate_groups(bool value);
 
-        /// Set whether an alternate group is enabled.
+        /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
         void set_alternate_group(uint16_t value, bool enabled);
@@ -42,6 +48,7 @@ namespace trview
         /// @param enabled Whether the control is enabled.
         void set_flip_enabled(bool enabled);
 
+        /// Event raised when a TR1-3 flip in toggled. The flipmap state is passed as a parameter.
         Event<bool> on_flip;
 
         /// Event raised when an alternate group is toggled. The group number and the new state are passed as parameters.
