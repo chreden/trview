@@ -565,7 +565,7 @@ namespace trview
         for (int16_t i = 0; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
-            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            if (room->alternate_mode() != Room::AlternateMode::None)
             {
                 groups.insert(room->alternate_group());
             }

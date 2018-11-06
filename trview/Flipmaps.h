@@ -20,7 +20,7 @@ namespace trview
     }
 
     /// UI element that allows the user to control the flipmaps in a level.
-    class Flipmaps
+    class Flipmaps final
     {
     public:
         /// Create a new Flipmaps window.
