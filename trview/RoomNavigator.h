@@ -68,14 +68,6 @@ namespace trview
         /// @param selected_room The room that has been selected.
         void set_selected_room(uint32_t selected_room);
 
-        /// Set the current flip mode. This will not raise the on_flip event but will update the user interface appropriately.
-        /// @param flip The new flip mode.
-        void set_flip(bool flip);
-
-        /// Set whether the flip control is enabled or disabled.
-        /// @param enabled Whether the control is enabled.
-        void set_flip_enabled(bool enabled);
-
         /// Set whether triggers are visible or not.
         /// @param show Whether the triggers are visible.
         void set_show_triggers(bool show);

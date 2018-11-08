@@ -55,6 +55,7 @@ namespace trview
     class Neighbours;
     class RoomNavigator;
     class SettingsWindow;
+    class Flipmaps;
 
     namespace graphics
     {
@@ -114,6 +115,7 @@ namespace trview
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);
         void set_alternate_mode(bool enabled);
+        void set_alternate_group(uint16_t group, bool enabled);
         // Tell things that need to be resized that they should resize.
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
@@ -139,6 +141,7 @@ namespace trview
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<Flipmaps> _flipmaps;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<LevelInfo> _level_info;

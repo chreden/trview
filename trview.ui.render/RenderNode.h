@@ -32,6 +32,8 @@ namespace trview
             class RenderNode
             {
             public:
+                friend class Renderer;
+
                 RenderNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Control* control);
 
                 virtual ~RenderNode() = 0;

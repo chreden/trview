@@ -28,6 +28,7 @@
 #include "RoomNavigator.h"
 #include "TextureStorage.h"
 #include "SettingsWindow.h"
+#include "Flipmaps.h"
 
 namespace trview
 {
@@ -192,8 +193,11 @@ namespace trview
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });
         _token_store.add(_room_navigator->on_highlight += [&](bool) { toggle_highlight(); });
-        _token_store.add(_room_navigator->on_flip += [&](bool flip) { set_alternate_mode(flip); });
         _token_store.add(_room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); });
+
+        _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
+        _token_store.add(_flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); });
+        _token_store.add(_flipmaps->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); });
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
@@ -473,6 +477,7 @@ namespace trview
         _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
         _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
+        _token_store.add(_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); });
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
@@ -488,8 +493,11 @@ namespace trview
         // Reset UI buttons
         _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _room_navigator->set_highlight(false);
-        _room_navigator->set_flip(false);
-        _room_navigator->set_flip_enabled(_level->any_alternates());
+
+        _flipmaps->set_use_alternate_groups(_current_level->get_version() >= trlevel::LevelVersion::Tomb4);
+        _flipmaps->set_alternate_groups(_level->alternate_groups());
+        _flipmaps->set_flip(false);
+        _flipmaps->set_flip_enabled(_level->any_alternates());
 
         Item lara;
         if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
@@ -758,7 +766,16 @@ namespace trview
         if (_level)
         {
             _level->set_alternate_mode(enabled);
-            _room_navigator->set_flip(enabled);
+            _flipmaps->set_flip(enabled);
+        }
+    }
+
+    void Viewer::set_alternate_group(uint16_t group, bool enabled)
+    {
+        if (_level)
+        {
+            _level->set_alternate_group(group, enabled);
+            _flipmaps->set_alternate_group(group, enabled);
         }
     }
 

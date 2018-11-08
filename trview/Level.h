@@ -83,11 +83,19 @@ namespace trview
         // enabled: Whether to render the flipmap.
         void set_alternate_mode(bool enabled);
 
+        /// Set whether to render the alternate group specified.
+        /// @param group The group to toggle.
+        /// @param enabled Whether the group is enabled.
+        void set_alternate_group(uint16_t group, bool enabled);
+
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
 
         // Event raised when the level needs to change the alternate mode.
         Event<bool> on_alternate_mode_selected;   
+
+        /// Event raised when the levle needs to change the alternate group mode.
+        Event<uint16_t, bool> on_alternate_group_selected;
 
         // Returns the room with ID provided 
         inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
@@ -106,6 +114,10 @@ namespace trview
         void set_selected_trigger(uint32_t number);
 
         const ILevelTextureStorage& texture_storage() const;
+
+        /// Gets the alternate groups that exist in the level.
+        /// @returns The set of alternate groups in the level.
+        std::set<uint16_t> alternate_groups() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
@@ -143,7 +155,7 @@ namespace trview
 
         // Determines whether the alternate mode specified is a mismatch with the current setting of 
         // the alternate mode flag.
-        bool is_alternate_mismatch(Room::AlternateMode mode) const;
+        bool is_alternate_mismatch(const Room& room) const;
 
         /// Load the type name lookup table from resources.
         void load_type_name_lookup();
@@ -153,6 +165,8 @@ namespace trview
         /// @returns The type name of the item.
         /// @remarks If the type id is not found, this will return the string version of the type id.
         std::wstring lookup_type_name(uint32_t type_id) const;
+
+        bool is_alternate_group_set(uint16_t group) const;
 
         const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
@@ -182,6 +196,7 @@ namespace trview
         std::unordered_map<uint32_t, std::wstring> _type_names;
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
+        std::set<uint16_t> _alternate_groups;
     };
 
     /// Find the first item with the type id specified.
