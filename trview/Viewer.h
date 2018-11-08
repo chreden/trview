@@ -21,7 +21,7 @@
 #include <trview.app/Camera.h>
 #include "CameraInput.h"
 #include "CameraMode.h"
-#include "FreeCamera.h"
+#include <trview.app/FreeCamera.h>
 #include "Level.h"
 #include "UserSettings.h"
 #include "LevelSwitcher.h"

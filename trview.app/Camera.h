@@ -34,7 +34,7 @@ namespace trview
         void set_view_size(const Size& size);
 
         virtual DirectX::BoundingFrustum frustum() const override;
-    private:
+    protected:
         void calculate_projection_matrix(const Size& size);
         void calculate_view_matrix();
 
@@ -42,6 +42,7 @@ namespace trview
         const float default_yaw = 0.0f;
         const float default_zoom = 8.0f;
 
+        DirectX::SimpleMath::Vector3 _position;
         // This is the orbit target.
         DirectX::SimpleMath::Vector3 _target;
         DirectX::SimpleMath::Matrix _view;
