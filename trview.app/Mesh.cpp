@@ -115,7 +115,16 @@ namespace trview
             maximum = Vector3::Max(maximum, v.pos);
         }
 
-        const Vector3 half_size = vertices.empty() ? Vector3::Zero : (maximum - minimum) * 0.5f;
+        for (const auto& t : transparent_triangles)
+        {
+            for (const auto& v : t.vertices)
+            {
+                minimum = Vector3::Min(minimum, v);
+                maximum = Vector3::Max(maximum, v);
+            }
+        }
+
+        const Vector3 half_size = (vertices.empty() && transparent_triangles.empty()) ? Vector3::Zero : (maximum - minimum) * 0.5f;
         _bounding_box.Extents = half_size;
         _bounding_box.Center = minimum + half_size;
     }
