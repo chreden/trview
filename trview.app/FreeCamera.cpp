@@ -1,5 +1,4 @@
 #include "FreeCamera.h"
-
 #include <algorithm>
 
 namespace trview
@@ -9,13 +8,6 @@ namespace trview
     FreeCamera::FreeCamera(const Size& size)
         : Camera(size)
     {
-        
-    }
-
-    Vector3 FreeCamera::target() const
-    {
-        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        return _position + Vector3::Transform(Vector3::Forward, rotate);
     }
 
     void FreeCamera::move(const Vector3& movement)
