@@ -19,6 +19,9 @@ namespace trview
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
             uint32_t texture, Mode mode, DirectX::SimpleMath::Color = { 1,1,1,1 });
 
+        TransparentTriangle(const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
+            uint32_t texture, Mode mode, DirectX::SimpleMath::Color = { 1,1,1,1 });
+
         /// Create an untextured transparent triangle with the specified colour.
         /// @param v0 The first vertex.
         /// @param v1 The second vertex.
@@ -36,11 +39,13 @@ namespace trview
         DirectX::SimpleMath::Vector3 position;
         // The level texture index to use.
         uint32_t                     texture;
-        
+        float                        distance;
         Mode                         mode;
 
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };
     };
+
+    bool operator >(const TransparentTriangle& left, const TransparentTriangle& right);
 
     // Determine whether the face should be transparent give the attribute and effects values. The 
     // mode is stored in out if it is transparent.

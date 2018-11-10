@@ -177,7 +177,7 @@ namespace trview
 
         if (_regenerate_transparency)
         {
-            _transparency->reset();
+            _transparency->reset(camera.position());
         }
 
         // Render the opaque portions of the rooms and also collect the transparent triangles

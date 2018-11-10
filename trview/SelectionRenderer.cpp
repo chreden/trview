@@ -157,7 +157,7 @@ namespace trview
             solid_callback(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
-            _transparency->reset();
+            _transparency->reset(camera.position());
             transparent_callback(camera, *_transparency, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.position());
             _transparency->render(context, camera, texture_storage, true);

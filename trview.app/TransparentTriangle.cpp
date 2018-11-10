@@ -17,14 +17,29 @@ namespace trview
     {
     }
 
+    TransparentTriangle::TransparentTriangle(const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
+        uint32_t texture, Mode mode, DirectX::SimpleMath::Color colour)
+        : uvs{ uv0, uv1, uv2 }, texture(texture), mode(mode), colour(colour)
+    {
+    }
+
     TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const
     {
         using namespace DirectX::SimpleMath;
-        return TransparentTriangle(
-            Vector3::Transform(vertices[0], matrix),
-            Vector3::Transform(vertices[1], matrix),
-            Vector3::Transform(vertices[2], matrix),
-            uvs[0], uvs[1], uvs[2], texture, mode, colour_override);
+        auto triangle = TransparentTriangle(uvs[0], uvs[1], uvs[2], texture, mode, colour_override);
+        Vector3::Transform(triangle.vertices, 3, matrix, triangle.vertices);
+
+        // Recalcuate centroid
+        Vector3 minimum = Vector3::Min(Vector3::Min(triangle.vertices[0], triangle.vertices[1]), triangle.vertices[2]);
+        Vector3 maximum = Vector3::Max(Vector3::Max(triangle.vertices[0], triangle.vertices[1]), triangle.vertices[2]);
+        triangle.position = Vector3::Lerp(minimum, maximum, 0.5f);
+
+        return triangle;
+    }
+
+    bool operator >(const TransparentTriangle& left, const TransparentTriangle& right)
+    {
+        return left.distance > right.distance;
     }
 
     // Determine whether the face should be transparent give the attribute and effects values. The 

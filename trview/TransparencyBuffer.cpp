@@ -63,16 +63,14 @@ namespace trview
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
     {
-        _triangles.push_back(triangle);
+        TransparentTriangle tri = triangle;
+        tri.distance = Vector3::DistanceSquared(_eye_position, tri.position);
+        _triangles.push_back(tri);
     }
 
     void TransparencyBuffer::sort(const Vector3& eye_position)
     {
-        std::sort(_triangles.begin(), _triangles.end(),
-            [&eye_position](const auto& l, const auto& r)
-        {
-            return Vector3::DistanceSquared(eye_position, l.position) > Vector3::DistanceSquared(eye_position, r.position);
-        });
+        std::sort(_triangles.begin(), _triangles.end(), std::greater<TransparentTriangle>()); 
         complete();
     }
 
@@ -136,8 +134,9 @@ namespace trview
         context->OMSetBlendState(old_blend_state.Get(), nullptr, 0xffffffff);
     }
 
-    void TransparencyBuffer::reset()
+    void TransparencyBuffer::reset(const Vector3& eye_position)
     {
+        _eye_position = eye_position;
         _triangles.clear();
     }
 

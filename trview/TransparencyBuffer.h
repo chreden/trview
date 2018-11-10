@@ -39,7 +39,7 @@ namespace trview
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false);
 
         // Reset the triangles buffer.
-        void reset();
+        void reset(const DirectX::SimpleMath::Vector3& eye_position);
     private:
         void create_buffer();
         void create_matrix_buffer();
@@ -64,5 +64,6 @@ namespace trview
         };
 
         std::vector<TextureRun> _texture_run;
+        DirectX::SimpleMath::Vector3 _eye_position;
     };
 }
