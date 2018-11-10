@@ -519,10 +519,17 @@ namespace trview
         _level_info->set_level_version(_current_level->get_version());
         _window.set_title("trview - " + name);
         _measure->reset();
-    }
 
+    }
     void Viewer::render()
     {
+        // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
+        if (window_is_minimised(_window))
+        {
+            Sleep(1);
+            return;
+        }
+
         _timer.update();
 
         update_camera();
