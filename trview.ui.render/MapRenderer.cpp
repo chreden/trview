@@ -80,14 +80,21 @@ namespace trview
                     int minimum_flag_enabled = -1;
                     Color draw_color = Color(0.0f, 0.7f, 0.7f); // fallback 
 
-                    for (const auto& color : default_colours)
+                    if (!(tile.sector->flags & SectorFlag::Portal) && (tile.sector->flags & SectorFlag::Wall && tile.sector->flags & SectorFlag::FloorSlant)) // is it no-space?
                     {
-                        if ((color.first & tile.sector->flags)
-                            && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
-                            && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
+                        draw_color = { 0.2f, 0.2f, 0.9f };
+                    }
+                    else
+                    {
+                        for (const auto& color : default_colours)
                         {
-                            minimum_flag_enabled = color.first;
-                            draw_color = color.second;
+                            if ((color.first & tile.sector->flags)
+                                && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
+                                && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
+                            {
+                                minimum_flag_enabled = color.first;
+                                draw_color = color.second;
+                            }
                         }
                     }
 
