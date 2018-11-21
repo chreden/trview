@@ -4,7 +4,7 @@
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Sprite.h>
 #include "Mesh.h"
-#include "Camera.h"
+#include "OrbitCamera.h"
 
 namespace trview
 {
@@ -50,7 +50,7 @@ namespace trview
         std::unique_ptr<graphics::RenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;
         std::unique_ptr<graphics::Sprite> _sprite;
-        Camera _mesh_camera;
+        OrbitCamera _mesh_camera;
     };
 
     /// Get a string representation of a compass axis.

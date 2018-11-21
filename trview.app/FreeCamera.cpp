@@ -10,6 +10,16 @@ namespace trview
     {
     }
 
+    float FreeCamera::rotation_yaw() const
+    {
+        return _rotation_yaw;
+    }
+
+    float FreeCamera::rotation_pitch() const
+    {
+        return _rotation_pitch;
+    }
+
     void FreeCamera::move(const Vector3& movement)
     {
         if (_alignment == Alignment::Camera)
@@ -21,37 +31,27 @@ namespace trview
         {
             _position += movement;
         }
-        _target = _position - Vector3::Transform(Vector3::Forward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
         calculate_view_matrix();
     }
 
     void FreeCamera::set_rotation_pitch(float rotation)
     {
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
-        _target = _position - Vector3::Transform(Vector3::Forward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
+        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
         calculate_view_matrix();
     }
 
     void FreeCamera::set_rotation_yaw(float rotation)
     {
         _rotation_yaw = rotation;
-        _target = _position - Vector3::Transform(Vector3::Forward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
+        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
         calculate_view_matrix();
     }
 
     void FreeCamera::set_position(const Vector3& position)
     {
         _position = position;
-        _target = _position - Vector3::Transform(Vector3::Forward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
         calculate_view_matrix();
-    }
-
-    Vector3 FreeCamera::forward() const
-    {
-        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        auto to = Vector3::Transform(Vector3::Forward, rotate);
-        to.Normalize();
-        return to;
     }
 
     // Set the camera alignment. This controls how the camera movement

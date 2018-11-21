@@ -53,6 +53,9 @@
     <ClCompile Include="FreeCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="OrbitCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="Compass.h" />
     <ClInclude Include="FreeCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="OrbitCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>

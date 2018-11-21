@@ -32,6 +32,7 @@
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OrbitCamera.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Measure.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshVertex.h" />
+    <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="Toolbar.h" />
