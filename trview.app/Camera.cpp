@@ -83,4 +83,26 @@ namespace trview
     {
         return _forward;
     }
+
+    void Camera::set_rotation_pitch(float rotation)
+    {
+        _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
+        update_vectors();
+    }
+
+    void Camera::set_rotation_yaw(float rotation)
+    {
+        _rotation_yaw = rotation;
+        update_vectors();
+    }
+
+    float Camera::rotation_pitch() const
+    {
+        return _rotation_pitch;
+    }
+
+    float Camera::rotation_yaw() const
+    {
+        return _rotation_yaw;
+    }
 }

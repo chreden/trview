@@ -21,16 +21,6 @@ namespace trview
         return _target;
     }
 
-    float OrbitCamera::rotation_pitch() const
-    {
-        return _rotation_pitch;
-    }
-
-    float OrbitCamera::rotation_yaw() const
-    {
-        return _rotation_yaw;
-    }
-
     float OrbitCamera::zoom() const
     {
         return _zoom;
@@ -39,18 +29,6 @@ namespace trview
     void OrbitCamera::set_target(const Vector3& target)
     {
         _target = target;
-        update_vectors();
-    }
-
-    void OrbitCamera::set_rotation_pitch(float rotation)
-    {
-        _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
-        update_vectors();
-    }
-
-    void OrbitCamera::set_rotation_yaw(float rotation)
-    {
-        _rotation_yaw = rotation;
         update_vectors();
     }
 

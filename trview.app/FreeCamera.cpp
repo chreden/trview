@@ -8,16 +8,8 @@ namespace trview
     FreeCamera::FreeCamera(const Size& size)
         : Camera(size)
     {
-    }
-
-    float FreeCamera::rotation_yaw() const
-    {
-        return _rotation_yaw;
-    }
-
-    float FreeCamera::rotation_pitch() const
-    {
-        return _rotation_pitch;
+        _rotation_yaw = 0.0f;
+        _rotation_pitch = 0.0f;
     }
 
     void FreeCamera::move(const Vector3& movement)
@@ -34,20 +26,6 @@ namespace trview
         calculate_view_matrix();
     }
 
-    void FreeCamera::set_rotation_pitch(float rotation)
-    {
-        _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
-        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
-        calculate_view_matrix();
-    }
-
-    void FreeCamera::set_rotation_yaw(float rotation)
-    {
-        _rotation_yaw = rotation;
-        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
-        calculate_view_matrix();
-    }
-
     void FreeCamera::set_position(const Vector3& position)
     {
         _position = position;
@@ -60,5 +38,11 @@ namespace trview
     void FreeCamera::set_alignment(Alignment alignment)
     {
         _alignment = alignment;
+    }
+
+    void FreeCamera::update_vectors()
+    {
+        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
+        calculate_view_matrix();
     }
 }
