@@ -11,7 +11,7 @@ namespace trview
         virtual ~Camera() = default;
         virtual float rotation_yaw() const override;
         virtual float rotation_pitch() const override;
-        virtual Size view_size() const override;
+        virtual const Size& view_size() const override;
         virtual const DirectX::SimpleMath::Matrix& view() const override;
         virtual const DirectX::SimpleMath::Matrix& projection() const override;
         virtual const DirectX::SimpleMath::Matrix& view_projection() const override;

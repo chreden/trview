@@ -33,7 +33,7 @@ namespace trview
         return _view_projection;
     }
 
-    Size Camera::view_size() const
+    const Size& Camera::view_size() const
     {
         return _view_size;
     }
