@@ -15,8 +15,8 @@ namespace trview
         bool                    vsync{ true };
         bool                    go_to_lara{ true };
         bool                    invert_map_controls{ false };
-        bool                    items_startup{ true };
-        bool                    triggers_startup{ true };
+        bool                    items_startup{ false };
+        bool                    triggers_startup{ false };
         bool                    auto_orbit{ true };
     };
 
