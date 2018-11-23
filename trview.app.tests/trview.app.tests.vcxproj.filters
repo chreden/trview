@@ -4,5 +4,6 @@
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
+    <ClCompile Include="FreeCameraTests.cpp" />
   </ItemGroup>
 </Project>
