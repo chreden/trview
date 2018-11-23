@@ -24,6 +24,6 @@ namespace trview
         // This is the orbit target.
         DirectX::SimpleMath::Vector3 _target;
 
-        float             _zoom{ default_zoom };
+        float _zoom{ default_zoom };
     };
 }
