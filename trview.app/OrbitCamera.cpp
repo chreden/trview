@@ -39,35 +39,25 @@ namespace trview
     void OrbitCamera::set_target(const Vector3& target)
     {
         _target = target;
-        _position = Vector3::Transform(Vector3(0, 0, -_zoom), Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0)) + _target;
-        (_target - _position).Normalize(_forward);
-        calculate_view_matrix();
+        update_vectors();
     }
 
     void OrbitCamera::set_rotation_pitch(float rotation)
     {
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
-        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        _position = Vector3::Transform(Vector3(0, 0, -_zoom), rotate) + _target;
-        (_target - _position).Normalize(_forward);
-        calculate_view_matrix();
+        update_vectors();
     }
 
     void OrbitCamera::set_rotation_yaw(float rotation)
     {
         _rotation_yaw = rotation;
-        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-        _position = Vector3::Transform(Vector3(0, 0, -_zoom), rotate) + _target;
-        _up = Vector3::Transform(Vector3::Down, rotate);
-        (_target - _position).Normalize(_forward);
-        calculate_view_matrix();
+        update_vectors();
     }
 
     void OrbitCamera::set_zoom(float zoom)
     {
         _zoom = std::min(std::max(zoom, min_zoom), max_zoom);
-        _position = Vector3::Transform(Vector3(0, 0, -_zoom), Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0)) + _target;
-        calculate_view_matrix();
+        update_vectors();
     }
 
     void OrbitCamera::reset()
@@ -75,5 +65,14 @@ namespace trview
         set_rotation_yaw(default_yaw);
         set_rotation_pitch(default_pitch);
         set_zoom(default_zoom);
+    }
+
+    void OrbitCamera::update_vectors()
+    {
+        auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+        _position = Vector3::Transform(Vector3(0, 0, -_zoom), rotate) + _target;
+        _up = Vector3::Transform(Vector3::Down, rotate);
+        (_target - _position).Normalize(_forward);
+        calculate_view_matrix();
     }
 }
