@@ -30,7 +30,7 @@ namespace trview
 
         /// Get the current orbit target.
         /// @returns The orbit target.
-        DirectX::SimpleMath::Vector3 target() const;
+        const DirectX::SimpleMath::Vector3& target() const;
 
         /// Get the current distance from the orbit target.
         /// @returns The distance from the orbit target.

@@ -1,8 +1,10 @@
 #include "CppUnitTest.h"
+#include "StringConversions.h"
 
 #include <trview.app/FreeCamera.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
@@ -13,8 +15,6 @@ namespace trview
             /// Tests that when the camera is in alignment mode it moves relative the world axis.
             TEST_METHOD(Alignment)
             {
-                using namespace DirectX::SimpleMath;
-
                 FreeCamera camera(Size(100, 100));
 
                 // Set the camera to be slightly pitched, so that moving up in camera mode
@@ -25,9 +25,7 @@ namespace trview
                 camera.set_alignment(FreeCamera::Alignment::Axis);
 
                 const auto current_position = camera.position();
-                Assert::AreEqual(0.0f, current_position.x);
-                Assert::AreEqual(0.0f, current_position.y);
-                Assert::AreEqual(0.0f, current_position.z);
+                Assert::AreEqual(Vector3::Zero, camera.position());
 
                 camera.move(Vector3(0, 1, 0));
 
@@ -41,15 +39,13 @@ namespace trview
             /// Tests that setting the position actually moves the camera.
             TEST_METHOD(Position)
             {
-                using namespace DirectX::SimpleMath;
-
                 FreeCamera camera(Size(100, 100));
 
                 const auto target_position = Vector3(1, 2, 3);
                 camera.set_position(target_position);
 
                 const auto new_position = camera.position();
-                Assert::IsTrue(new_position == target_position);
+                Assert::AreEqual(target_position, new_position);
             }
         };
     }

@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
+    <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
+    <ClCompile Include="StringConversions.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +36,9 @@
     <ProjectReference Include="..\trview.tests.common\trview.tests.common.vcxproj">
       <Project>{3ab44a93-dbba-405e-8164-e5b20866ee1d}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StringConversions.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

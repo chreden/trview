@@ -35,7 +35,7 @@ namespace trview
         update_vectors();
     }
 
-    Vector3 OrbitCamera::target() const
+    const Vector3& OrbitCamera::target() const
     {
         return _target;
     }
