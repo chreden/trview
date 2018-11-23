@@ -1,5 +1,4 @@
 #include "FreeCamera.h"
-#include <algorithm>
 
 namespace trview
 {
