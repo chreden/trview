@@ -25,18 +25,15 @@ namespace trview
         calculate_view_matrix();
     }
 
+    void FreeCamera::set_alignment(Alignment alignment)
+    {
+        _alignment = alignment;
+    }
+
     void FreeCamera::set_position(const Vector3& position)
     {
         _position = position;
         calculate_view_matrix();
-    }
-
-    // Set the camera alignment. This controls how the camera movement
-    // is applied to the current position.
-    // alignment: The new alignment mode.
-    void FreeCamera::set_alignment(Alignment alignment)
-    {
-        _alignment = alignment;
     }
 
     void FreeCamera::update_vectors()

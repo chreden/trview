@@ -1,3 +1,5 @@
+/// @brief Defines an interface for working with cameras.
+
 #pragma once
 
 #include <SimpleMath.h>

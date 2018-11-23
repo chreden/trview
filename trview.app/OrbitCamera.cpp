@@ -16,14 +16,11 @@ namespace trview
     {
     }
 
-    Vector3 OrbitCamera::target() const
+    void OrbitCamera::reset()
     {
-        return _target;
-    }
-
-    float OrbitCamera::zoom() const
-    {
-        return _zoom;
+        set_rotation_yaw(default_yaw);
+        set_rotation_pitch(default_pitch);
+        set_zoom(default_zoom);
     }
 
     void OrbitCamera::set_target(const Vector3& target)
@@ -38,11 +35,14 @@ namespace trview
         update_vectors();
     }
 
-    void OrbitCamera::reset()
+    Vector3 OrbitCamera::target() const
     {
-        set_rotation_yaw(default_yaw);
-        set_rotation_pitch(default_pitch);
-        set_zoom(default_zoom);
+        return _target;
+    }
+
+    float OrbitCamera::zoom() const
+    {
+        return _zoom;
     }
 
     void OrbitCamera::update_vectors()

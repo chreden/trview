@@ -1,34 +1,45 @@
+/// @brief Defines base class for camera.
+
 #pragma once
 
 #include "ICamera.h"
 
 namespace trview
 {
+    /// Base class for cameras. Does most of the calculation of view and projection
+    /// matrices based on the vector created by subclasses.
     class Camera : public ICamera
     {
     public:
+        /// Create a new camera.
+        /// @param size The viewport size.
         explicit Camera(const Size& size);
         virtual ~Camera() = default;
-        virtual float rotation_yaw() const override;
-        virtual float rotation_pitch() const override;
-        virtual const Size& view_size() const override;
-        virtual const DirectX::SimpleMath::Matrix& view() const override;
-        virtual const DirectX::SimpleMath::Matrix& projection() const override;
-        virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
-        virtual void set_view_size(const Size& size) override;
-        virtual void set_rotation_yaw(float rotation) override;
-        virtual void set_rotation_pitch(float rotation) override;
+        virtual DirectX::SimpleMath::Vector3 forward() const override;
         virtual const DirectX::BoundingFrustum& frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
+        virtual const DirectX::SimpleMath::Matrix& projection() const override;
+        virtual float rotation_pitch() const override;
+        virtual float rotation_yaw() const override;
+        virtual void set_rotation_pitch(float rotation) override;
+        virtual void set_rotation_yaw(float rotation) override;
+        virtual void set_view_size(const Size& size) override;
         virtual DirectX::SimpleMath::Vector3 up() const override;
-        virtual DirectX::SimpleMath::Vector3 forward() const override;
+        virtual const DirectX::SimpleMath::Matrix& view() const override;
+        virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
+        virtual const Size& view_size() const override;
     protected:
-        void calculate_view_matrix();
-        void calculate_projection_matrix();
+        /// Calculate the bounding frustum based on the view and projection matrices.
         void calculate_bounding_frustum();
+        
+        /// Calculate the projection matrix based on the viewport size.
+        void calculate_projection_matrix();
+
+        /// Calculate the view matrix based on the forward, up and rotation fields.
+        void calculate_view_matrix();
 
         /// Function called when the forward, up, and position vectors need to be updated.
-        /// This will also update the view matrix.
+        /// Overriding functions should change the forward, up and position fields and update the view matrix.
         virtual void update_vectors() = 0;
 
         const float default_pitch = -0.78539f;

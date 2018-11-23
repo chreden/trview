@@ -12,57 +12,9 @@ namespace trview
         calculate_projection_matrix();
     }
 
-    void Camera::set_view_size(const Size& size)
+    Vector3 Camera::forward() const
     {
-        _view_size = size;
-        calculate_projection_matrix();
-    }
-
-    const Matrix& Camera::view() const
-    {
-        return _view;
-    }
-
-    const Matrix& Camera::projection() const
-    {
-        return _projection;
-    }
-
-    const Matrix& Camera::view_projection() const
-    {
-        return _view_projection;
-    }
-
-    const Size& Camera::view_size() const
-    {
-        return _view_size;
-    }
-
-    void Camera::calculate_view_matrix()
-    {
-        _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
-        _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
-        _view_projection = _view * _projection;
-        calculate_bounding_frustum();
-    }
-
-    void Camera::calculate_projection_matrix()
-    {
-        using namespace DirectX;
-        float aspect_ratio = _view_size.width / _view_size.height;
-        _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
-        _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
-        _view_projection = _view * _projection;
-        calculate_bounding_frustum();
-    }
-
-    void Camera::calculate_bounding_frustum()
-    {
-        using namespace DirectX;
-        XMVECTOR determinant;
-        XMMATRIX inv_view_lh = XMMatrixInverse(&determinant, _view_lh);
-        BoundingFrustum boundingFrustum(_projection_lh);
-        boundingFrustum.Transform(_bounding_frustum, inv_view_lh);
+        return _forward;
     }
 
     const DirectX::BoundingFrustum& Camera::frustum() const
@@ -74,15 +26,20 @@ namespace trview
     {
         return _position;
     }
-    
-    Vector3 Camera::up() const
+
+    const Matrix& Camera::projection() const
     {
-        return _up;
+        return _projection;
     }
 
-    Vector3 Camera::forward() const
+    float Camera::rotation_pitch() const
     {
-        return _forward;
+        return _rotation_pitch;
+    }
+
+    float Camera::rotation_yaw() const
+    {
+        return _rotation_yaw;
     }
 
     void Camera::set_rotation_pitch(float rotation)
@@ -97,13 +54,56 @@ namespace trview
         update_vectors();
     }
 
-    float Camera::rotation_pitch() const
+    void Camera::set_view_size(const Size& size)
     {
-        return _rotation_pitch;
+        _view_size = size;
+        calculate_projection_matrix();
     }
 
-    float Camera::rotation_yaw() const
+    Vector3 Camera::up() const
     {
-        return _rotation_yaw;
+        return _up;
+    }
+
+    const Matrix& Camera::view() const
+    {
+        return _view;
+    }
+
+    const Matrix& Camera::view_projection() const
+    {
+        return _view_projection;
+    }
+
+    const Size& Camera::view_size() const
+    {
+        return _view_size;
+    }
+
+    void Camera::calculate_bounding_frustum()
+    {
+        using namespace DirectX;
+        XMVECTOR determinant;
+        XMMATRIX inv_view_lh = XMMatrixInverse(&determinant, _view_lh);
+        BoundingFrustum boundingFrustum(_projection_lh);
+        boundingFrustum.Transform(_bounding_frustum, inv_view_lh);
+    }
+
+    void Camera::calculate_projection_matrix()
+    {
+        using namespace DirectX;
+        float aspect_ratio = _view_size.width / _view_size.height;
+        _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        _view_projection = _view * _projection;
+        calculate_bounding_frustum();
+    }
+
+    void Camera::calculate_view_matrix()
+    {
+        _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
+        _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
+        _view_projection = _view * _projection;
+        calculate_bounding_frustum();
     }
 }
