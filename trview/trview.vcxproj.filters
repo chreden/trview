@@ -121,9 +121,6 @@
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="FreeCamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="CameraMode.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -216,9 +213,6 @@
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="CameraInput.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -239,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="SelectionRenderer.cpp">
       <Filter>View\Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMode.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="Flipmaps.cpp">
       <Filter>Program\Windows</Filter>

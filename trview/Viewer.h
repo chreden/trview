@@ -18,10 +18,10 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/Camera.h>
+#include <trview.app/FreeCamera.h>
+#include <trview.app/OrbitCamera.h>
 #include "CameraInput.h"
 #include "CameraMode.h"
-#include "FreeCamera.h"
 #include "Level.h"
 #include "UserSettings.h"
 #include "LevelSwitcher.h"
@@ -130,7 +130,7 @@ namespace trview
         std::unique_ptr<Level> _level;
         Window _window;
         Timer _timer;
-        Camera _camera;
+        OrbitCamera _camera;
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;

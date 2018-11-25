@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <trview.app/FreeCamera.h>
+
 namespace trview
 {
     /// Defines the behaviour of the camera and the way it reacts to input.
@@ -19,4 +21,6 @@ namespace trview
         /// The camera is free roaming but movement is constrained to the axes.
         Axis
     };
+
+    FreeCamera::Alignment camera_mode_to_alignment(CameraMode mode);
 }

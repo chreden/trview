@@ -188,7 +188,6 @@
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Flipmaps.h" />
-    <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoToRoom.h" />
     <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="Level.h" />
@@ -218,13 +217,13 @@
   <ItemGroup>
     <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="CameraInput.cpp" />
+    <ClCompile Include="CameraMode.cpp" />
     <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Flipmaps.cpp" />
-    <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="Level.cpp" />

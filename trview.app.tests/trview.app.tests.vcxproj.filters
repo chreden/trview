@@ -4,5 +4,11 @@
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
+    <ClCompile Include="FreeCameraTests.cpp" />
+    <ClCompile Include="OrbitCameraTests.cpp" />
+    <ClCompile Include="StringConversions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StringConversions.h" />
   </ItemGroup>
 </Project>

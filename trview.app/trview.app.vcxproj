@@ -23,6 +23,7 @@
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
     <ClCompile Include="FileDropper.cpp" />
+    <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OrbitCamera.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
@@ -44,6 +46,7 @@
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
     <ClInclude Include="FileDropper.h" />
+    <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="Item.h" />
@@ -53,6 +56,7 @@
     <ClInclude Include="Measure.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshVertex.h" />
+    <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="Toolbar.h" />
