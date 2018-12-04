@@ -14,21 +14,25 @@ namespace trview
             TEST_METHOD(NumberKeys)
             {
                 auto window = create_test_window(L"AlternateGroupToggler");
-                AlternateGroupToggler toggler(window);
 
-                bool called = false;
-                uint32_t called_group = 0;
-
-                auto token = toggler.on_alternate_group += [&](uint32_t group)
+                for (uint32_t i = 0; i < 10; ++i)
                 {
-                    called = true;
-                    called_group = group;
-                };
+                    AlternateGroupToggler toggler(window);
 
-                toggler.process_message(window, WM_CHAR, L'1', 0);
+                    bool called = false;
+                    uint32_t called_group = 0;
 
-                Assert::IsTrue(called, L"Callback was not raised");
-                Assert::AreEqual(called_group, 1u);
+                    auto token = toggler.on_alternate_group += [&](uint32_t group)
+                    {
+                        called = true;
+                        called_group = group;
+                    };
+
+                    toggler.process_message(window, WM_CHAR, L'0' + i, 0);
+
+                    Assert::IsTrue(called, L"Callback was not raised");
+                    Assert::AreEqual(called_group, i);
+                }
             }
 
             /// Tests that if a non-numeric character is sent, no event is raised.

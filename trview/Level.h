@@ -88,6 +88,11 @@ namespace trview
         /// @param enabled Whether the group is enabled.
         void set_alternate_group(uint16_t group, bool enabled);
 
+        /// Gets whether the specified alternate group is active.
+        /// @param group The group to check.
+        /// @returns True if the group is active.
+        bool alternate_group(uint16_t group) const;
+
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
 

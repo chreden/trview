@@ -41,7 +41,7 @@ namespace trview
     Viewer::Viewer(const Window& window)
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
-        _window_resizer(window), _recent_files(window), _file_dropper(window)
+        _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window)
     {
         _settings = load_user_settings();
 
@@ -82,6 +82,8 @@ namespace trview
         _token_store.add(on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); });
 
         _token_store.add(_file_dropper.on_file_dropped += [&](const auto& file) { open(file); });
+
+        _token_store.add(_alternate_group_toggler.on_alternate_group += [&](uint32_t group) { set_alternate_group(group, !alternate_group(group)); });
 
         initialise_input();
 
@@ -784,6 +786,15 @@ namespace trview
             _level->set_alternate_group(group, enabled);
             _flipmaps->set_alternate_group(group, enabled);
         }
+    }
+
+    bool Viewer::alternate_group(uint16_t group) const
+    {
+        if (_level)
+        {
+            return _level->alternate_group(group);
+        }
+        return false;
     }
 
     void Viewer::resize_elements()

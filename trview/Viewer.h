@@ -33,6 +33,7 @@
 #include <trview.app/Toolbar.h>
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
+#include <trview.app/AlternateGroupToggler.h>
 
 namespace trview
 {
@@ -116,6 +117,7 @@ namespace trview
         void set_camera_mode(CameraMode camera_mode);
         void set_alternate_mode(bool enabled);
         void set_alternate_group(uint16_t group, bool enabled);
+        bool alternate_group(uint16_t group) const;
         // Tell things that need to be resized that they should resize.
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
@@ -157,6 +159,7 @@ namespace trview
         RecentFiles _recent_files;
         FileDropper _file_dropper;
         TokenStore _token_store;
+        AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
 
         // Tools:
