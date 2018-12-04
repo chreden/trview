@@ -83,7 +83,13 @@ namespace trview
 
         _token_store.add(_file_dropper.on_file_dropped += [&](const auto& file) { open(file); });
 
-        _token_store.add(_alternate_group_toggler.on_alternate_group += [&](uint32_t group) { set_alternate_group(group, !alternate_group(group)); });
+        _token_store.add(_alternate_group_toggler.on_alternate_group += [&](uint32_t group) 
+        { 
+            if (!_go_to_room->visible())
+            {
+                set_alternate_group(group, !alternate_group(group));
+            }
+        });
 
         initialise_input();
 
