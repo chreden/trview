@@ -464,6 +464,11 @@ namespace trview
         }
     }
 
+    bool Level::alternate_group(uint16_t group) const
+    {
+        return _alternate_groups.find(group) != _alternate_groups.end();
+    }
+
     // Determines whether the alternate mode specified is a mismatch with the current setting of 
     // the alternate mode flag.
     bool Level::is_alternate_mismatch(const Room& room) const

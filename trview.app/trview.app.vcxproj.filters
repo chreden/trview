@@ -56,6 +56,9 @@
     <ClCompile Include="OrbitCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="AlternateGroupToggler.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -121,6 +124,9 @@
     <ClInclude Include="OrbitCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="AlternateGroupToggler.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -146,6 +152,9 @@
     </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{d691a642-d434-42b6-b4d8-8fde59fea2af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{d7102050-10b8-49dc-bb00-6929c90f8339}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

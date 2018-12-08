@@ -7,8 +7,16 @@
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="StringConversions.cpp" />
+    <ClCompile Include="AlternateGroupTogglerTests.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConversions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Input">
+      <UniqueIdentifier>{d3867a39-d160-4aeb-a8e2-02afcb4efbe2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
