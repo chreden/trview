@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.ui/Window.h>
+#include <trview.ui/StackPanel.h>
 
 namespace trview
 {
@@ -18,7 +18,11 @@ namespace trview
         /// Set the context menu to visible.
         /// @param value The new visibility status.
         void set_visible(bool value);
+
+        /// Event raised when the user has clicked the button to create a new
+        /// waypoint for the current route.
+        Event<> on_add_waypoint;
     private:
-        ui::Window* _menu;
+        ui::StackPanel* _menu;
     };
 }

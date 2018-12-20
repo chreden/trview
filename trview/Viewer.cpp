@@ -149,6 +149,7 @@ namespace trview
         });
 
         _context_menu = std::make_unique<ContextMenu>(*_control);
+        _token_store.add(_context_menu->on_add_waypoint += [&]() { _context_menu->set_visible(false); });
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
@@ -305,6 +306,11 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
+                if (!over_ui() && !over_map())
+                {
+                    _context_menu->set_visible(false);
+                }
+
                 if (!over_ui() && !over_map() && _picking->visible())
                 {
                     if (_compass_axis.has_value())
@@ -379,6 +385,8 @@ namespace trview
             }
             else if (button == Mouse::Button::Right)
             {
+                _context_menu->set_visible(false);
+
                 if (over_map())
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
@@ -400,8 +408,12 @@ namespace trview
         {
             if (button == input::Mouse::Button::Right)
             {
-                // Show right click menu? Or show it all the time?
-                _context_menu->set_position(client_cursor_position(_window));
+                if (!over_ui() && !over_map() && _picking->visible())
+                {
+                    // Show right click menu? Or show it all the time?
+                    _context_menu->set_position(client_cursor_position(_window));
+                    _context_menu->set_visible(true);
+                }
             }
         });
 
@@ -843,6 +855,7 @@ namespace trview
         {
             if (window_under_cursor() == _window)
             {
+                _context_menu->set_visible(false);
                 _camera_input.mouse_scroll(scroll);
             }
         });
