@@ -393,11 +393,15 @@ namespace trview
                         }
                     }
                 }
-                else
-                {
-                    // Show right click menu? Or show it all the time?
-                    _context_menu->set_position(client_cursor_position(_window));
-                }
+            }
+        });
+
+        _token_store.add(_mouse.mouse_click += [&](auto button)
+        {
+            if (button == input::Mouse::Button::Right)
+            {
+                // Show right click menu? Or show it all the time?
+                _context_menu->set_position(client_cursor_position(_window));
             }
         });
 

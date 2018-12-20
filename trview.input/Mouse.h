@@ -49,6 +49,10 @@ namespace trview
             /// as a parameter to the event listeners.
             Event<Button> mouse_up;
 
+            /// Event raised when a mouse is pressed and released (clicked). The button that was clicked
+            /// is passed as a parameter to the event listeners.
+            Event<Button> mouse_click;
+
             /// Event raised when the mouse wheel has rotated. The amount that the wheel has rotated
             /// is passed as a parameter to the event listeners.
             Event<int16_t> mouse_wheel;
@@ -75,6 +79,9 @@ namespace trview
             bool _any_absolute_previous{ false };
             long _absolute_x;
             long _absolute_y;
+
+            DWORD _left_down{ 0u };
+            DWORD _right_down{ 0u };
         };
     }
 }
