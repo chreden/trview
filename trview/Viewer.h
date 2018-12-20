@@ -34,6 +34,7 @@
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
+#include <trview.app/ContextMenu.h>
 
 namespace trview
 {
@@ -164,6 +165,7 @@ namespace trview
 
         // Tools:
         std::unique_ptr<Toolbar> _toolbar;
+        std::unique_ptr<ContextMenu> _context_menu;
 
         enum class Tool
         {

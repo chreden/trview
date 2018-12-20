@@ -23,6 +23,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
+    <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="ICamera.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
+    <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="ICamera.h" />

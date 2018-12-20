@@ -148,6 +148,8 @@ namespace trview
             }
         });
 
+        _context_menu = std::make_unique<ContextMenu>(*_control);
+
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
 
@@ -391,9 +393,10 @@ namespace trview
                         }
                     }
                 }
-                else if (_active_tool == Tool::Route)
+                else
                 {
                     // Show right click menu? Or show it all the time?
+                    _context_menu->set_position(client_cursor_position(_window));
                 }
             }
         });

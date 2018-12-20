@@ -59,6 +59,7 @@
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="ContextMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="ContextMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
