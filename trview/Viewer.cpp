@@ -134,12 +134,17 @@ namespace trview
 
         _toolbar = std::make_unique<Toolbar>(*_control);
         _toolbar->add_tool(L"Measure", L"|....|");
+        _toolbar->add_tool(L"Route", L"R");
         _token_store.add(_toolbar->on_tool_clicked += [this](const std::wstring& tool)
         {
             if (tool == L"Measure")
             {
                 _active_tool = Tool::Measure;
                 _measure->reset();
+            }
+            else if (tool == L"Route")
+            {
+                _active_tool = Tool::Route;
             }
         });
 
@@ -385,6 +390,10 @@ namespace trview
                             select_room(sector->room_below());
                         }
                     }
+                }
+                else if (_active_tool == Tool::Route)
+                {
+                    // Show right click menu? Or show it all the time?
                 }
             }
         });

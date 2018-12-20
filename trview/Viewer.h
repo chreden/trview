@@ -168,7 +168,8 @@ namespace trview
         enum class Tool
         {
             None,
-            Measure
+            Measure,
+            Route
         };
 
         Tool _active_tool{ Tool::None };
