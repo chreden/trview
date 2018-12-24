@@ -171,7 +171,6 @@ namespace trview
         {
             None,
             Measure,
-            Route
         };
 
         Tool _active_tool{ Tool::None };
