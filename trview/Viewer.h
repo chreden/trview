@@ -181,6 +181,7 @@ namespace trview
         // Temporary route objects.
         DirectX::SimpleMath::Vector3 _context_point;
         std::vector<DirectX::SimpleMath::Vector3> _route;
+        std::unique_ptr<Mesh> _route_mesh;
     };
 }
 

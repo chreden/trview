@@ -100,6 +100,7 @@ namespace trview
 
         _measure = std::make_unique<Measure>(_device, *_control);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
+        _route_mesh = create_cube_mesh(_device.device());
     }
 
     Viewer::~Viewer()
@@ -677,6 +678,33 @@ namespace trview
             _level->render(_device.context(), current_camera());
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
+
+            const float PoleThickness = 0.05f;
+            const float RopeThickness = 0.015f;
+
+            // Render the route meshes.
+            for (std::size_t i = 0; i < _route.size(); ++i)
+            {
+                // Render the pole.
+                using namespace DirectX::SimpleMath;
+                const auto waypoint = _route[i];
+
+                auto wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(waypoint - Vector3(0, 0.25f, 0)) * current_camera().view_projection();
+                _route_mesh->render(_device.context(), wvp, _level->texture_storage(), Color(1.0f, 0.0f, 1.0f));
+
+                // Should render the in-between line somehow - if there is another point in the list.
+                if (i < _route.size() - 1)
+                {
+                    const auto current = waypoint - Vector3(0, 0.5f, 0);
+                    const auto next_waypoint = _route[i + 1] - Vector3(0, 0.5f, 0);
+                    const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
+                    const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
+                    const auto length = (next_waypoint - current).Length();
+                    const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * current_camera().view_projection();
+                    _route_mesh->render(_device.context(), to_wvp, _level->texture_storage(), Color(0.0f, 1.0f, 0.0f));
+                }
+            }
+
             _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }
