@@ -144,7 +144,13 @@ namespace trview
         });
 
         _context_menu = std::make_unique<ContextMenu>(*_control);
-        _token_store.add(_context_menu->on_add_waypoint += [&]() { _context_menu->set_visible(false); });
+        _token_store.add(_context_menu->on_add_waypoint += [&]()
+        {
+            // Add the waypoint to the temporary route list - this will just be rendered as a
+            // sequence of points until the route rendering is done properly.
+            _route.push_back(_context_point);
+            _context_menu->set_visible(false);
+        });
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
@@ -406,6 +412,7 @@ namespace trview
                 if (!over_ui() && !over_map() && _picking->visible())
                 {
                     // Show right click menu? Or show it all the time?
+                    _context_point = _current_pick.position;
                     _context_menu->set_position(client_cursor_position(_window));
                     _context_menu->set_visible(true);
                 }

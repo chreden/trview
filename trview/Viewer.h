@@ -177,6 +177,10 @@ namespace trview
         std::unique_ptr<Measure> _measure;
         std::unique_ptr<Compass> _compass;
         std::optional<Compass::Axis> _compass_axis;
+
+        // Temporary route objects.
+        DirectX::SimpleMath::Vector3 _context_point;
+        std::vector<DirectX::SimpleMath::Vector3> _route;
     };
 }
 
