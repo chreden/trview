@@ -60,6 +60,7 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="ContextMenu.cpp" />
+    <ClCompile Include="PickResult.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />

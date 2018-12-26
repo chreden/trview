@@ -35,6 +35,7 @@
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OrbitCamera.cpp" />
+    <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
