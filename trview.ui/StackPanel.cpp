@@ -27,7 +27,7 @@ namespace trview
                 auto last_size = last->size();
                 return get_next_position(last_position, last_size);
             }
-            return Point(_padding.width, _padding.height);
+            return Point(_margin.width, _margin.height);
         }
 
         Point StackPanel::get_next_position(Point previous_position, Size previous_size) const
@@ -39,7 +39,7 @@ namespace trview
 
         void StackPanel::recalculate_layout()
         {
-            Point previous_position(_padding.width, _padding.height);
+            Point previous_position(_margin.width, _margin.height);
             Size previous_size(0,0);
             float max_height = 0;
             float max_width = 0;
@@ -57,7 +57,7 @@ namespace trview
 
             if (_size_mode == SizeMode::Auto)
             {
-                auto size = Size(previous_position.x + _padding.width, previous_position.y + _padding.height);
+                auto size = Size(previous_position.x + _margin.width, previous_position.y + _margin.height);
 
                 if (_direction == Direction::Horizontal)
                 {
