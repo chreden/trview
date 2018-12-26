@@ -112,5 +112,11 @@ namespace trview
             _size_dimension = dimension;
             recalculate_layout();
         }
+
+        void StackPanel::set_margin(const Size& margin)
+        {
+            _margin = margin;
+            recalculate_layout();
+        }
     }
 }
