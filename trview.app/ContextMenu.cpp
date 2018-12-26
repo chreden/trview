@@ -8,7 +8,7 @@ namespace trview
 {
     ContextMenu::ContextMenu(Control& parent)
     {
-        _menu = parent.add_child(std::make_unique<StackPanel>(Point(300, 300), Size(200, 100), Colour(0.15f, 0.15f, 0.15f), Size()));
+        _menu = parent.add_child(std::make_unique<StackPanel>(Point(300, 300), Size(200, 100), Colour(0.15f, 0.15f, 0.15f), Size(1,1)));
 
         // Add a button in a little area with some writing.
         auto button_area = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour(0.2f, 0.2f, 0.2f), Size(), StackPanel::Direction::Horizontal);
