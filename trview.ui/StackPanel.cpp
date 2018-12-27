@@ -33,8 +33,13 @@ namespace trview
         Point StackPanel::get_next_position(Point previous_position, Size previous_size) const
         {
             return _direction == Direction::Vertical ?
-                Point(_padding.width, previous_position.y + previous_size.height + _padding.height) :
-                Point(previous_position.x + previous_size.width + _padding.width, _padding.height);
+                Point(previous_position.x, previous_position.y + previous_size.height) :
+                Point(previous_position.x + previous_size.width, previous_position.y);
+        }
+
+        Point StackPanel::get_padding() const
+        {
+            return _direction == Direction::Vertical ? Point(0, _padding.height) : Point(_padding.width, 0);
         }
 
         void StackPanel::recalculate_layout()
@@ -43,16 +48,23 @@ namespace trview
             Size previous_size(0,0);
             float max_height = 0;
             float max_width = 0;
+            bool first = true;
 
             for (const auto& element : child_elements())
             {
                 auto position = get_next_position(previous_position, previous_size);
+                if (!first)
+                {
+                    position += get_padding();
+                }
                 element->set_position(position);
                 previous_position = position;
                 previous_size = element->size();
 
                 max_width = std::max(previous_size.width, max_width);
                 max_height = std::max(previous_size.height, max_height);
+
+                first = false;
             }
 
             if (_size_mode == SizeMode::Auto)

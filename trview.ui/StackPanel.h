@@ -51,6 +51,7 @@ namespace trview
         private:
             Point get_next_position() const;
             Point get_next_position(Point previous_position, Size previous_size) const;
+            Point get_padding() const;
             void recalculate_layout();
             const Size _padding;
             Size _margin;
