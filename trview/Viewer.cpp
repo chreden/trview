@@ -197,6 +197,7 @@ namespace trview
 
         // This is the main tool window on the side of the screen.
         auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 348.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
+        tool_window->set_margin(Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
         _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });

@@ -30,6 +30,7 @@ namespace trview
         // Create the rest of the window contents.
         auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), background_colour, Size(5,5));
         panel->set_auto_size_dimension(SizeDimension::Height);
+        panel->set_margin(Size(5, 5));
 
         auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), L"Vsync");
         vsync->on_state_changed += on_vsync;

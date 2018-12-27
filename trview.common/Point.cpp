@@ -22,6 +22,13 @@ namespace trview
         return Point(x + other.x, y + other.y);
     }
 
+    Point& Point::operator +=(const Point& other)
+    {
+        x += other.x;
+        y += other.y;
+        return *this;
+    }
+
     bool Point::is_between(const Point& first, const Point& second) const
     {
         return x >= first.x && y >= first.y 
