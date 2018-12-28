@@ -36,6 +36,8 @@ namespace trview
     {
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
         const float _CAMERA_MOVEMENT_SPEED_DEFAULT = 0.5f;
+        const float PoleThickness = 0.05f;
+        const float RopeThickness = 0.015f;
     }
 
     Viewer::Viewer(const Window& window)
@@ -417,6 +419,7 @@ namespace trview
                     _context_point = _current_pick.position;
                     _context_menu->set_position(client_cursor_position(_window));
                     _context_menu->set_visible(true);
+                    _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 }
             }
         });
@@ -643,6 +646,26 @@ namespace trview
 
         auto result = _level->pick(camera, position, direction);
 
+        // Pick against the waypoints on the routes, update the pick result if required.
+        for (uint32_t i = 0; i < _route.size(); ++i)
+        {
+            using namespace DirectX::SimpleMath;
+            const auto waypoint = _route[i];
+
+            auto box = BoundingBox(waypoint - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
+
+            float distance = 0;
+            if (box.Intersects(position, direction, distance) &&
+               (!result.hit || distance < result.distance))
+            {
+                result.distance = distance;
+                result.hit = true;
+                result.index = i;
+                result.position = position + direction * distance;
+                result.type = PickResult::Type::Waypoint;
+            }
+        }
+
         _picking->set_visible(result.hit);
         if (result.hit)
         {
@@ -687,9 +710,6 @@ namespace trview
 
     void Viewer::render_route()
     {
-        const float PoleThickness = 0.05f;
-        const float RopeThickness = 0.015f;
-
         // Render the route meshes.
         for (std::size_t i = 0; i < _route.size(); ++i)
         {
