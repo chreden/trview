@@ -33,5 +33,7 @@ namespace trview
     private:
         ui::StackPanel* _menu;
         ui::Label*      _remove_label;
+        bool            _remove_enabled{ false };
+        TokenStore      _token_store;
     };
 }

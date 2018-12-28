@@ -154,6 +154,17 @@ namespace trview
             _route.push_back(_context_point);
             _context_menu->set_visible(false);
         });
+        _token_store.add(_context_menu->on_remove_waypoint += [&]()
+        {
+            // Remove the selected waypoint.
+            auto index = _current_pick.index;
+            if (index < _route.size())
+            {
+                _route.erase(_route.begin() + index);
+            }
+            _context_menu->set_visible(false);
+        });
+
         _context_menu->set_remove_enabled(false);
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());

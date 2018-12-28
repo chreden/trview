@@ -21,7 +21,13 @@ namespace trview
         // Add the similar remove waypoint button 
         auto remove_button_area = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour(0.2f, 0.2f, 0.2f), Size(), StackPanel::Direction::Horizontal);
         auto remove_button = std::make_unique<Button>(Point(), Size(24, 24), L"-");
-        remove_button->on_click += on_remove_waypoint;
+        _token_store.add(remove_button->on_click += [&]() 
+        {
+            if (_remove_enabled)
+            {
+                on_remove_waypoint();
+            }
+        });
         remove_button_area->add_child(std::move(remove_button));
         auto remove_label = std::make_unique<Label>(Point(), Size(100, 24), Colour(0.2f, 0.2f, 0.2f), L"Remove Waypoint", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         _remove_label = remove_button_area->add_child(std::move(remove_label));
@@ -42,6 +48,7 @@ namespace trview
 
     void ContextMenu::set_remove_enabled(bool value)
     {
+        _remove_enabled = value;
         _remove_label->set_text_colour(value ? Colour(1.0f, 1.0f, 1.0f) : Colour(0.4f, 0.4f, 0.4f));
     }
 }
