@@ -82,4 +82,13 @@ namespace trview
             }
         }
     }
+
+    Vector3 Route::waypoint(uint32_t index) const
+    {
+        if (index < _waypoints.size())
+        {
+            return _waypoints[index];
+        }
+        return Vector3::Zero;
+    }
 }

@@ -35,6 +35,10 @@ namespace trview
         /// @param camera The camera to use to render.
         /// @param texture_storage Texture storage for the mesh.
         void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+
+        /// Get the waypoint at the specified index.
+        /// @param index The index to get.
+        DirectX::SimpleMath::Vector3 waypoint(uint32_t index) const;
     private:
         std::vector<DirectX::SimpleMath::Vector3> _waypoints;
         std::unique_ptr<Mesh>                     _waypoint_mesh;

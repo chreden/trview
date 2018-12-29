@@ -338,17 +338,20 @@ namespace trview
                         }
                         else
                         {
-                            if (_current_pick.type == PickResult::Type::Room)
+                            switch (_current_pick.type)
                             {
+                            case PickResult::Type::Room:
                                 select_room(_current_pick.index);
-                            }
-                            else if (_current_pick.type == PickResult::Type::Entity)
-                            {
+                                break;
+                            case PickResult::Type::Entity:
                                 select_item(_level->items()[_current_pick.index]);
-                            }
-                            else if (_current_pick.type == PickResult::Type::Trigger)
-                            {
+                                break;
+                            case PickResult::Type::Trigger:
                                 select_trigger(_level->triggers()[_current_pick.index]);
+                                break;
+                            case PickResult::Type::Waypoint:
+                                select_waypoint(_current_pick.index);
+                                break;
                             }
 
                             if (_settings.auto_orbit)
@@ -821,6 +824,15 @@ namespace trview
 
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
+        }
+    }
+
+    void Viewer::select_waypoint(uint32_t index)
+    {
+        _target = _route->waypoint(index);
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
         }
     }
 
