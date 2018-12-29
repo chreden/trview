@@ -37,6 +37,7 @@
     <ClCompile Include="OrbitCamera.cpp" />
     <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="Route.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="Route.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Triangle.h" />

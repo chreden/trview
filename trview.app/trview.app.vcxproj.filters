@@ -61,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="PickResult.cpp" />
+    <ClCompile Include="Route.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -130,6 +133,9 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="ContextMenu.h" />
+    <ClInclude Include="Route.h">
+      <Filter>Route</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -158,6 +164,9 @@
     </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{d7102050-10b8-49dc-bb00-6929c90f8339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Route">
+      <UniqueIdentifier>{25d8b57c-1dd7-4694-82d4-d3841fe870d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

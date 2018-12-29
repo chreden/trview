@@ -35,6 +35,7 @@
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
 #include <trview.app/ContextMenu.h>
+#include <trview.app/Route.h>
 
 namespace trview
 {
@@ -181,8 +182,7 @@ namespace trview
 
         // Temporary route objects.
         DirectX::SimpleMath::Vector3 _context_point;
-        std::vector<DirectX::SimpleMath::Vector3> _route;
-        std::unique_ptr<Mesh> _route_mesh;
+        std::unique_ptr<Route> _route;
     };
 }
 
