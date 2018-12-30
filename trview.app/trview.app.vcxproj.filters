@@ -136,6 +136,9 @@
     <ClInclude Include="Route.h">
       <Filter>Route</Filter>
     </ClInclude>
+    <ClInclude Include="Waypoint.h">
+      <Filter>Route</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">

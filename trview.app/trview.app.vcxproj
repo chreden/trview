@@ -72,6 +72,7 @@
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />
+    <ClInclude Include="Waypoint.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />
   </ItemGroup>
