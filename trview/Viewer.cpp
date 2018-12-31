@@ -100,7 +100,7 @@ namespace trview
 
         _measure = std::make_unique<Measure>(_device, *_control);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
-        _route = std::make_unique<Route>(_device);
+        _route = std::make_unique<Route>(_device, *_shader_storage);
     }
 
     Viewer::~Viewer()
@@ -830,6 +830,7 @@ namespace trview
     void Viewer::select_waypoint(uint32_t index)
     {
         _target = _route->waypoint(index);
+        _route->select_waypoint(index);
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

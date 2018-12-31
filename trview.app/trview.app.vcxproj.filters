@@ -73,6 +73,9 @@
     <ClCompile Include="IRenderable.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Waypoint.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />

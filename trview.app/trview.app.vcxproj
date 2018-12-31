@@ -46,6 +46,7 @@
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="TriggersWindowManager.cpp" />
+    <ClCompile Include="Waypoint.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>

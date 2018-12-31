@@ -14,14 +14,14 @@ namespace trview
         const float RopeThickness = 0.015f;
     }
 
-    Route::Route(const graphics::Device& device)
-        : _waypoint_mesh(create_cube_mesh(device.device()))
+    Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
+        : _waypoint_mesh(create_cube_mesh(device.device())), _selection_renderer(device, shader_storage)
     {
     }
 
     void Route::add(const Vector3& position)
     {
-        _waypoints.push_back(position);
+        _waypoints.emplace_back(_waypoint_mesh.get(), position);
     }
 
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
@@ -31,9 +31,9 @@ namespace trview
 
         for (uint32_t i = 0; i < _waypoints.size(); ++i)
         {
-            const auto waypoint = _waypoints[i];
+            const auto& waypoint = _waypoints[i];
 
-            auto box = BoundingBox(waypoint - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
+            auto box = BoundingBox(waypoint.position() - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
 
             float distance = 0;
             if (box.Intersects(position, direction, distance) && (!result.hit || distance < result.distance))
@@ -62,18 +62,14 @@ namespace trview
     {
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
-            // Render the pole.
-            using namespace DirectX::SimpleMath;
-            const auto waypoint = _waypoints[i];
-
-            auto wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(waypoint - Vector3(0, 0.25f, 0)) * camera.view_projection();
-            _waypoint_mesh->render(device.context(), wvp, texture_storage, Color(1.0f, 0.0f, 1.0f));
+            auto& waypoint = _waypoints[i];
+            waypoint.render(device, camera, texture_storage, Color(1.0f, 0.0f, 1.0f));
 
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
-                const auto current = waypoint - Vector3(0, 0.5f, 0);
-                const auto next_waypoint = _waypoints[i + 1] - Vector3(0, 0.5f, 0);
+                const auto current = waypoint.position() - Vector3(0, 0.5f, 0);
+                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f, 0);
                 const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
@@ -81,13 +77,24 @@ namespace trview
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, Color(0.0f, 1.0f, 0.0f));
             }
         }
+
+        // Render selected waypoint...
+        if (_selected_index < _waypoints.size())
+        {
+            _selection_renderer.render(device, camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+        }
+    }
+
+    void Route::select_waypoint(uint32_t index)
+    {
+        _selected_index = index;
     }
 
     Vector3 Route::waypoint(uint32_t index) const
     {
         if (index < _waypoints.size())
         {
-            return _waypoints[index];
+            return _waypoints[index].position();
         }
         return Vector3::Zero;
     }

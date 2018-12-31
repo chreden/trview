@@ -9,7 +9,6 @@
 #include <trview.app/Trigger.h>
 
 #include "IRenderable.h"
-#include "TransparencyBuffer.h"
 #include "ICamera.h"
 #include "ILevelTextureStorage.h"
 

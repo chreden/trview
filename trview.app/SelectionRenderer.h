@@ -12,11 +12,13 @@
 #include <wrl/client.h>
 #include <SimpleMath.h>
 
+#include "TransparencyBuffer.h"
+#include <trview.graphics/RenderTarget.h>
+
 namespace trview
 {
     namespace graphics
     {
-        class RenderTarget;
         struct IShader;
         struct IShaderStorage;
         class Device;
@@ -26,7 +28,6 @@ namespace trview
     struct ICamera;
     struct ILevelTextureStorage;
     class Trigger;
-    class TransparencyBuffer;
 
     /// Draws an outline around an object.
     class SelectionRenderer final
