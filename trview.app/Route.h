@@ -24,6 +24,9 @@ namespace trview
         /// @param position The new waypoint.
         void add(const DirectX::SimpleMath::Vector3& position);
 
+        /// Remove all of the waypoints from the route.
+        void clear();
+
         /// Insert the new waypoint into the route.
         /// @param position The new waypoint.
         /// @param index The index in the route list to put the waypoint.
