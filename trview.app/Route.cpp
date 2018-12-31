@@ -56,6 +56,10 @@ namespace trview
             return;
         }
         _waypoints.erase(_waypoints.begin() + index);
+        if (_selected_index > index)
+        {
+            --_selected_index;
+        }
     }
 
     void Route::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
