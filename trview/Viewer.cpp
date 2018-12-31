@@ -305,6 +305,22 @@ namespace trview
                     }
                     break;
                 }
+                case VK_LEFT:
+                {
+                    if (_route->selected_waypoint() > 0)
+                    {
+                        select_waypoint(_route->selected_waypoint() - 1);
+                    }
+                    break;
+                }
+                case VK_RIGHT:
+                {
+                    if (_route->selected_waypoint() + 1 < _route->waypoints())
+                    {
+                        select_waypoint(_route->selected_waypoint() + 1);
+                    }
+                    break;
+                }
             }
         });
 

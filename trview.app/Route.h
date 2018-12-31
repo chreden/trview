@@ -39,6 +39,9 @@ namespace trview
         /// @param texture_storage Texture storage for the mesh.
         void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
 
+        /// Get the index of the currently selected waypoint.
+        uint32_t selected_waypoint() const;
+
         /// Set the specified waypoint index to be the selected waypoint.
         /// @param index The index to select.
         void select_waypoint(uint32_t index);
@@ -46,6 +49,9 @@ namespace trview
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
         DirectX::SimpleMath::Vector3 waypoint(uint32_t index) const;
+
+        /// Get the number of waypoints in the route.
+        uint32_t waypoints() const;
     private:
         std::vector<Waypoint> _waypoints;
         std::unique_ptr<Mesh> _waypoint_mesh;

@@ -1,5 +1,7 @@
+#define NOMINMAX
 #include "Route.h"
 #include <DirectXCollision.h>
+#include <algorithm>
 #include "ICamera.h"
 #include "ILevelTextureStorage.h"
 
@@ -89,6 +91,11 @@ namespace trview
         }
     }
 
+    uint32_t Route::selected_waypoint() const
+    {
+        return _selected_index;
+    }
+
     void Route::select_waypoint(uint32_t index)
     {
         _selected_index = index;
@@ -101,5 +108,10 @@ namespace trview
             return _waypoints[index].position();
         }
         return Vector3::Zero;
+    }
+
+    uint32_t Route::waypoints() const
+    {
+        return _waypoints.size();
     }
 }
