@@ -24,6 +24,11 @@ namespace trview
         /// @param position The new waypoint.
         void add(const DirectX::SimpleMath::Vector3& position);
 
+        /// Insert the new waypoint into the route.
+        /// @param position The new waypoint.
+        /// @param index The index in the route list to put the waypoint.
+        void insert(const DirectX::SimpleMath::Vector3& position, uint32_t index);
+
         /// Pick against the waypoints in the route.
         /// @param position The position of the camera.
         /// @param direction The direction of the ray.

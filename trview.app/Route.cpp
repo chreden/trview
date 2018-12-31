@@ -26,6 +26,15 @@ namespace trview
         _waypoints.emplace_back(_waypoint_mesh.get(), position);
     }
 
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t index)
+    {
+        if (index >= _waypoints.size())
+        {
+            return add(position);
+        }
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position));
+    }
+
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
     {
         PickResult result;

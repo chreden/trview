@@ -147,14 +147,13 @@ namespace trview
         _context_menu = std::make_unique<ContextMenu>(*_control);
         _token_store.add(_context_menu->on_add_waypoint += [&]()
         {
-            // Add the waypoint to the temporary route list - this will just be rendered as a
-            // sequence of points until the route rendering is done properly.
-            _route->add(_context_point);
+            uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
+            _route->insert(_context_point, new_index);
+            select_waypoint(new_index);
             _context_menu->set_visible(false);
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
-            // Remove the selected waypoint.
             _route->remove(_current_pick.index);
             _context_menu->set_visible(false);
         });
