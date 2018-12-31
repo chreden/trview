@@ -7,7 +7,7 @@
 #include "IMeshStorage.h"
 #include <trview.app/ICamera.h>
 #include <trview.app/Mesh.h>
-#include "TransparencyBuffer.h"
+#include <trview.app/TransparencyBuffer.h>
 
 #include <SimpleMath.h>
 #include <DirectXCollision.h>
@@ -131,10 +131,12 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+
+        auto context = device.context();
 
         _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
 
@@ -143,21 +145,21 @@ namespace trview
             mesh->render(context, camera.view_projection(), texture_storage, colour);
         }
 
-        render_contained(context, camera, texture_storage, colour);
+        render_contained(device, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
-        render_contained(context, camera, texture_storage, colour);
+        render_contained(device, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         for (const auto& entity : _entities)
         {
-            entity->render(context, camera, texture_storage, colour);
+            entity->render(device, camera, texture_storage, colour);
         }
     }
 

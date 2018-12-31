@@ -37,7 +37,7 @@ namespace trview
     class Level
     {
     public:
-        Level(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
+        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -70,7 +70,7 @@ namespace trview
         // is also specified.
         PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
+        void render(const graphics::Device& device, const ICamera& camera);
 
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);
@@ -125,7 +125,7 @@ namespace trview
         std::set<uint16_t> alternate_groups() const;
     private:
         void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
-        void generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+        void generate_triggers(const graphics::Device& device);
         void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
@@ -133,9 +133,9 @@ namespace trview
         // Render the rooms in the level.
         // context: The device context.
         // camera: The current camera to render the level with.
-        void render_rooms(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
+        void render_rooms(const graphics::Device& device, const ICamera& camera);
 
-        void render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera);
+        void render_selected_item(const graphics::Device& device, const ICamera& camera);
 
         struct RoomToRender
         {

@@ -2,6 +2,7 @@
 #include <trview/Types.h>
 #include <unordered_map>
 #include <algorithm>
+#include "TransparencyBuffer.h"
 
 using namespace Microsoft::WRL;
 
@@ -87,7 +88,7 @@ namespace trview
         return _index;
     }
 
-    Trigger::Trigger(const ComPtr<ID3D11Device>& device, uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
+    Trigger::Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
         : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer), _sector_id(trigger_info.sector_id)
     {
         uint32_t command_index = 0;
@@ -189,6 +190,19 @@ namespace trview
     bool Trigger::has_command(TriggerCommandType type) const
     {
         return std::any_of(_commands.begin(), _commands.end(), [&](const auto& c) { return c.type() == type; });
+    }
+
+    void Trigger::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
+    }
+
+    void Trigger::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
+        using namespace DirectX::SimpleMath;
+        for (auto& triangle : _mesh->transparent_triangles())
+        {
+            transparency.add(triangle.transform(Matrix::Identity, colour));
+        }
     }
 
     std::wstring trigger_type_name(TriggerType type)

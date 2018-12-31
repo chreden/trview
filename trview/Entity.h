@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <trview.app/PickResult.h>
+#include <trview.app/IRenderable.h>
 
 namespace trlevel
 {
@@ -26,15 +27,16 @@ namespace trview
     struct ICamera;
     class TransparencyBuffer;
 
-    class Entity
+    class Entity : public IRenderable
     {
     public:
         explicit Entity(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index);
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        virtual ~Entity() = default;
+        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         uint16_t room() const;
         uint32_t index() const;
 
-        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
+        virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:

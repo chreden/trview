@@ -8,7 +8,7 @@
 #include "IMeshStorage.h"
 #include <trview.app/ICamera.h>
 #include <trview.app/Mesh.h>
-#include "TransparencyBuffer.h"
+#include <trview.app/TransparencyBuffer.h>
 
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
@@ -158,14 +158,14 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / -2.0f, 0);
     }
 
-    void Entity::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Entity::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             auto wvp = _world_transforms[i] * _world * camera.view_projection();
-            _meshes[i]->render(context, wvp, texture_storage, colour);
+            _meshes[i]->render(device.context(), wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
@@ -174,7 +174,7 @@ namespace trview
             auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
             auto world = _scale * billboard * _offset;
             auto wvp = world * camera.view_projection();
-            _sprite_mesh->render(context, wvp, texture_storage, colour);
+            _sprite_mesh->render(device.context(), wvp, texture_storage, colour);
         }
     }
 
