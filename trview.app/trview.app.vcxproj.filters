@@ -76,6 +76,9 @@
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
     </ClCompile>
+    <ClCompile Include="RouteWindow.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -159,6 +162,9 @@
     </ClInclude>
     <ClInclude Include="IRenderable.h">
       <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteWindow.h">
+      <Filter>Route</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

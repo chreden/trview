@@ -101,6 +101,8 @@ namespace trview
         _measure = std::make_unique<Measure>(_device, *_control);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
         _route = std::make_unique<Route>(_device, *_shader_storage);
+
+        _route_window = std::make_unique<RouteWindow>(_device, *_shader_storage, *_font_factory, window);
     }
 
     Viewer::~Viewer()
@@ -616,6 +618,7 @@ namespace trview
 
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
+        _route_window->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.

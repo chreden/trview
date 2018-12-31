@@ -36,6 +36,7 @@
 #include <trview.app/AlternateGroupToggler.h>
 #include <trview.app/ContextMenu.h>
 #include <trview.app/Route.h>
+#include <trview.app/RouteWindow.h>
 
 namespace trview
 {
@@ -184,6 +185,7 @@ namespace trview
         // Temporary route objects.
         DirectX::SimpleMath::Vector3 _context_point;
         std::unique_ptr<Route> _route;
+        std::unique_ptr<RouteWindow> _route_window;
     };
 }
 
