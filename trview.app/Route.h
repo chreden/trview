@@ -24,6 +24,12 @@ namespace trview
         /// @param position The new waypoint.
         void add(const DirectX::SimpleMath::Vector3& position);
 
+        /// Add a new waypoint to the end of the route.
+        /// @param position The position of the waypoint in the world.
+        /// @param type The type of the waypoint.
+        /// @param type_index The index of the referred to entity or trigger.
+        void add(const DirectX::SimpleMath::Vector3& position, Waypoint::Type type, uint32_t type_index);
+
         /// Remove all of the waypoints from the route.
         void clear();
 
@@ -31,6 +37,13 @@ namespace trview
         /// @param position The new waypoint.
         /// @param index The index in the route list to put the waypoint.
         void insert(const DirectX::SimpleMath::Vector3& position, uint32_t index);
+
+        /// Insert a new non-positional waypoint.
+        /// @param position The position of the waypoint in the world.
+        /// @param type The type of waypoint.
+        /// @param index The index in the route list to put the waypoint.
+        /// @param type_index The index of the trigger or entity to reference.
+        void insert(const DirectX::SimpleMath::Vector3& position, uint32_t index, Waypoint::Type type, uint32_t type_index);
 
         /// Pick against the waypoints in the route.
         /// @param position The position of the camera.
@@ -56,7 +69,7 @@ namespace trview
 
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
-        DirectX::SimpleMath::Vector3 waypoint(uint32_t index) const;
+        const Waypoint& waypoint(uint32_t index) const;
 
         /// Get the number of waypoints in the route.
         uint32_t waypoints() const;

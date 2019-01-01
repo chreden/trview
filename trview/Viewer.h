@@ -183,7 +183,7 @@ namespace trview
         std::optional<Compass::Axis> _compass_axis;
 
         // Temporary route objects.
-        DirectX::SimpleMath::Vector3 _context_point;
+        PickResult _context_pick;
         std::unique_ptr<Route> _route;
         std::unique_ptr<RouteWindow> _route_window;
     };

@@ -154,7 +154,8 @@ namespace trview
         _token_store.add(_context_menu->on_add_waypoint += [&]()
         {
             uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
-            _route->insert(_context_point, new_index);
+            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
+            _route->insert(_context_pick.position, new_index, type, _context_pick.index);
             select_waypoint(new_index);
             _context_menu->set_visible(false);
             _route_window->load_waypoints(*_route);
@@ -447,7 +448,7 @@ namespace trview
                 if (!over_ui() && !over_map() && _picking->visible())
                 {
                     // Show right click menu? Or show it all the time?
-                    _context_point = _current_pick.position;
+                    _context_pick = _current_pick;
                     _context_menu->set_position(client_cursor_position(_window));
                     _context_menu->set_visible(true);
                     _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
@@ -854,7 +855,7 @@ namespace trview
 
     void Viewer::select_waypoint(uint32_t index)
     {
-        _target = _route->waypoint(index);
+        _target = _route->waypoint(index).position();
         _route->select_waypoint(index);
         if (_settings.auto_orbit)
         {

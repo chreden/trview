@@ -23,7 +23,12 @@ namespace trview
 
     void Route::add(const Vector3& position)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position);
+        add(position, Waypoint::Type::Position, 0u);
+    }
+
+    void Route::add(const DirectX::SimpleMath::Vector3& position, Waypoint::Type type, uint32_t type_index)
+    {
+        _waypoints.emplace_back(_waypoint_mesh.get(), position, type, type_index);
     }
 
     void Route::clear()
@@ -36,9 +41,14 @@ namespace trview
     {
         if (index >= _waypoints.size())
         {
-            return add(position);
+            return add(position, Waypoint::Type::Position, 0u);
         }
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position));
+        insert(position, index, Waypoint::Type::Position, 0u);
+    }
+
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t index, Waypoint::Type type, uint32_t type_index)
+    {
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, type, type_index));
     }
 
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
@@ -116,13 +126,13 @@ namespace trview
         _selected_index = index;
     }
 
-    Vector3 Route::waypoint(uint32_t index) const
+    const Waypoint& Route::waypoint(uint32_t index) const
     {
         if (index < _waypoints.size())
         {
-            return _waypoints[index].position();
+            return _waypoints[index];
         }
-        return Vector3::Zero;
+        throw std::range_error("Waypoint index out of range");
     }
 
     uint32_t Route::waypoints() const

@@ -8,10 +8,24 @@ namespace trview
 
     namespace
     {
-        Listbox::Item create_listbox_item(uint32_t index, const DirectX::SimpleMath::Vector3& waypoint)
+        std::wstring waypoint_type_to_string(Waypoint::Type type)
+        {
+            switch (type)
+            {
+            case Waypoint::Type::Entity:
+                return L"Entity";
+            case Waypoint::Type::Position:
+                return L"Position";
+            case Waypoint::Type::Trigger:
+                return L"Trigger";
+            }
+            return L"Unknown";
+        }
+
+        Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint)
         {
             return { {{ L"#", std::to_wstring(index) },
-                     { L"Type", L"Unknown" }} };
+                     { L"Type", waypoint_type_to_string(waypoint.type())}} };
         }
     }
 

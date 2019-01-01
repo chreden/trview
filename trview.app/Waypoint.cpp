@@ -11,7 +11,12 @@ namespace trview
     }
 
     Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position)
-        : _mesh(mesh), _position(position)
+        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u)
+    {
+    }
+
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, Type type, uint32_t index)
+        : _mesh(mesh), _position(position), _type(type), _index(index)
     {
     }
 
@@ -31,5 +36,16 @@ namespace trview
     {
         return _position;
     }
+
+    Waypoint::Type Waypoint::type() const
+    {
+        return _type;
+    }
+
+    uint32_t Waypoint::index() const
+    {
+        return _index;
+    }
+
 }
 
