@@ -103,6 +103,10 @@ namespace trview
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
         _route_window = std::make_unique<RouteWindow>(_device, *_shader_storage, *_font_factory, window);
+        _token_store.add(_route_window->on_waypoint_selected += [&](auto index)
+        {
+            select_waypoint(index);
+        });
     }
 
     Viewer::~Viewer()
@@ -153,11 +157,13 @@ namespace trview
             _route->insert(_context_point, new_index);
             select_waypoint(new_index);
             _context_menu->set_visible(false);
+            _route_window->load_waypoints(*_route);
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
             _route->remove(_current_pick.index);
             _context_menu->set_visible(false);
+            _route_window->load_waypoints(*_route);
         });
 
         _context_menu->set_remove_enabled(false);
