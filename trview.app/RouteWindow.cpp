@@ -47,7 +47,7 @@ namespace trview
         const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
         const Colour LeftPanel{ 1.0f, 0.4f, 0.4f, 0.4f };
         const Colour ItemDetails{ 1.0f, 0.35f, 0.35f, 0.35f };
-        const Colour Triggers{ 1.0f, 0.3f, 0.3f, 0.3f };
+        const Colour Notes{ 1.0f, 0.3f, 0.3f, 0.3f };
         const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
@@ -99,7 +99,7 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 110), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
 
         auto stats_box = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 100), Colours::ItemDetails);
         stats_box->set_show_headers(false);
@@ -123,6 +123,13 @@ namespace trview
         });
         _stats = group_box->add_child(std::move(stats_box));
         right_panel->add_child(std::move(group_box));
+
+        // Notes area.
+        auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 110), Colours::Notes, Colours::DetailsBorder, L"Notes");
+
+        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
+        right_panel->add_child(std::move(notes_box));
+
         return right_panel;
     }
 
