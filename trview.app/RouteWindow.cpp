@@ -152,6 +152,12 @@ namespace trview
         _stats->set_items(stats);
     }
 
+    void RouteWindow::select_waypoint(uint32_t index)
+    {
+        _waypoints->set_selected_item(create_listbox_item(index, _all_waypoints[index]));
+        load_waypoint_details(index);
+    }
+
     /// Set the items to that are in the level.
     /// @param items The items to show.
     void RouteWindow::set_items(const std::vector<Item>& items)

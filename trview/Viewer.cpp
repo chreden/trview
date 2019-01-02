@@ -158,9 +158,9 @@ namespace trview
             uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
             _route->insert(_context_pick.position, new_index, type, _context_pick.index);
-            select_waypoint(new_index);
             _context_menu->set_visible(false);
             _route_window->load_waypoints(*_route);
+            select_waypoint(new_index);
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
@@ -861,6 +861,7 @@ namespace trview
     {
         _target = _route->waypoint(index).position();
         _route->select_waypoint(index);
+        _route_window->select_waypoint(index);
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

@@ -36,6 +36,10 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<Trigger*> on_trigger_selected;
 
+        /// Select the specified waypoint.
+        /// @param index The index of the waypoint to select.
+        void select_waypoint(uint32_t index);
+
         /// Set the items to that are in the level.
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
