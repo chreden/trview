@@ -10,13 +10,13 @@ namespace trview
         const float PoleThickness = 0.05f;
     }
 
-    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position)
-        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u)
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
+        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u), _room(room)
     {
     }
 
-    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, Type type, uint32_t index)
-        : _mesh(mesh), _position(position), _type(type), _index(index)
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index)
+        : _mesh(mesh), _position(position), _type(type), _index(index), _room(room)
     {
     }
 
@@ -47,5 +47,8 @@ namespace trview
         return _index;
     }
 
+    uint32_t Waypoint::room() const
+    {
+        return _room;}
 }
 

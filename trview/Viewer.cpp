@@ -157,7 +157,8 @@ namespace trview
         {
             uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            _route->insert(_context_pick.position, new_index, type, _context_pick.index);
+
+            _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
             _context_menu->set_visible(false);
             _route_window->load_waypoints(*_route);
             select_waypoint(new_index);
@@ -859,6 +860,7 @@ namespace trview
 
     void Viewer::select_waypoint(uint32_t index)
     {
+        select_room(_route->waypoint(index).room());
         _target = _route->waypoint(index).position();
         _route->select_waypoint(index);
         _route_window->select_waypoint(index);
@@ -961,4 +963,21 @@ namespace trview
             _room_navigator->set_show_triggers(show);
         }
     }
+
+    uint32_t Viewer::room_from_pick(const PickResult& pick) const
+    {
+        switch (pick.type)
+        {
+        case PickResult::Type::Room:
+            return pick.index;
+        case PickResult::Type::Entity:
+            return _level->items()[pick.index].room();
+        case PickResult::Type::Trigger:
+            return _level->triggers()[pick.index]->room();
+        case PickResult::Type::Waypoint:
+            return _route->waypoint(pick.index).room();
+        }
+        return _level->selected_room();
+    }
 }
+

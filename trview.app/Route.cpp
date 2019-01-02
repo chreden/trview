@@ -21,14 +21,14 @@ namespace trview
     {
     }
 
-    void Route::add(const Vector3& position)
+    void Route::add(const Vector3& position, uint32_t room)
     {
-        add(position, Waypoint::Type::Position, 0u);
+        add(position, room, Waypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, Waypoint::Type type, uint32_t type_index)
+    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, type, type_index);
+        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index);
     }
 
     void Route::clear()
@@ -37,18 +37,18 @@ namespace trview
         _selected_index = 0u;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index)
     {
         if (index >= _waypoints.size())
         {
-            return add(position, Waypoint::Type::Position, 0u);
+            return add(position, room, Waypoint::Type::Position, 0u);
         }
-        insert(position, index, Waypoint::Type::Position, 0u);
+        insert(position, room, index, Waypoint::Type::Position, 0u);
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t index, Waypoint::Type type, uint32_t type_index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, type, type_index));
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index));
     }
 
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const

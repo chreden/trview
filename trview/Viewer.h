@@ -127,7 +127,7 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
         void set_show_triggers(bool show);
-        void render_route();
+        uint32_t room_from_pick(const PickResult& pick) const;
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
