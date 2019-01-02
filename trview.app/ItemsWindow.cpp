@@ -93,9 +93,11 @@ namespace trview
     {
         using namespace ui;
         auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store.add(track_room->on_state_changed += [this](bool value)
         {
