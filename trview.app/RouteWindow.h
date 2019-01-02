@@ -3,6 +3,8 @@
 #include <trview.ui/Listbox.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
+#include "Waypoint.h"
+#include "Item.h"
 
 namespace trview
 {
@@ -27,9 +29,22 @@ namespace trview
 
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
+
+        /// Set the items to that are in the level.
+        /// @param items The items to show.
+        void set_items(const std::vector<Item>& items);
+
+        /// Set the triggers in the level.
+        /// @param triggers The triggers.
+        void set_triggers(const std::vector<Trigger*>& triggers);
     private:
+        void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox* _waypoints;
+        ui::Listbox* _stats;
+        std::vector<Waypoint> _all_waypoints;
+        std::vector<Item> _all_items;
+        std::vector<Trigger*> _all_triggers;
     };
 }

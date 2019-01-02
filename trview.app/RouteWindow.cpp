@@ -1,6 +1,7 @@
 #include "RouteWindow.h"
 #include "Waypoint.h"
 #include "Route.h"
+#include <trview.ui/GroupBox.h>
 
 namespace trview
 {
@@ -22,11 +23,23 @@ namespace trview
             return L"Unknown";
         }
 
+        std::wstring pos_to_string(const DirectX::SimpleMath::Vector3& position)
+        {
+            return std::to_wstring(static_cast<int>(position.x * 1024)) + L", " +
+                std::to_wstring(static_cast<int>(position.y * 1024)) + L", " + 
+                std::to_wstring(static_cast<int>(position.z * 1024));
+        }
+
         Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint)
         {
             return { {{ L"#", std::to_wstring(index) },
                      { L"Type", waypoint_type_to_string(waypoint.type())}} };
         }
+
+        Listbox::Item make_item(const std::wstring& name, const std::wstring& value)
+        {
+            return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
+        };
     }
 
     namespace Colours
@@ -48,10 +61,13 @@ namespace trview
 
     void RouteWindow::load_waypoints(const Route& route) 
     {
+        _all_waypoints.clear();
+
         std::vector<Listbox::Item> items;
         for (uint32_t i = 0; i < route.waypoints(); ++i)
         {
             items.push_back(create_listbox_item(i, route.waypoint(i)));
+            _all_waypoints.push_back(route.waypoint(i));
         }
         _waypoints->set_items(items);
     }
@@ -70,6 +86,7 @@ namespace trview
         );
         _token_store.add(waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
+            load_waypoint_details(index);
             on_waypoint_selected(index);
         });
         _waypoints = left_panel->add_child(std::move(waypoints));
@@ -80,6 +97,58 @@ namespace trview
     {
         const float panel_width = 270;
         auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        right_panel->set_margin(Size(0, 8));
+
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+
+        auto stats_box = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 100), Colours::ItemDetails);
+        stats_box->set_show_headers(false);
+        stats_box->set_show_scrollbar(false);
+        stats_box->set_columns(
+            {
+                { Listbox::Column::Type::String, L"Name", 100 },
+                { Listbox::Column::Type::String, L"Value", 150 }
+            });
+
+        _stats = group_box->add_child(std::move(stats_box));
+        right_panel->add_child(std::move(group_box));
         return right_panel;
+    }
+
+    void RouteWindow::load_waypoint_details(uint32_t index)
+    {
+        const auto& waypoint = _all_waypoints[index];
+        std::vector<Listbox::Item> stats;
+        stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
+        stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
+
+        if (waypoint.type() != Waypoint::Type::Position)
+        {
+            stats.push_back(make_item(L"Target Index", std::to_wstring(waypoint.index())));
+            if (waypoint.type() == Waypoint::Type::Entity)
+            {
+                stats.push_back(make_item(L"Entity", _all_items[waypoint.index()].type()));
+            }
+            else if (waypoint.type() == Waypoint::Type::Trigger)
+            {
+                stats.push_back(make_item(L"Trigger Type", trigger_type_name(_all_triggers[waypoint.index()]->type())));
+            }
+        }
+
+        _stats->set_items(stats);
+    }
+
+    /// Set the items to that are in the level.
+    /// @param items The items to show.
+    void RouteWindow::set_items(const std::vector<Item>& items)
+    {
+        _all_items = items;
+    }
+
+    /// Set the triggers in the level.
+    /// @param triggers The triggers.
+    void RouteWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    {
+        _all_triggers = triggers;
     }
 }

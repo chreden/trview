@@ -559,6 +559,8 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
+        _route_window->set_items(_level->items());
+        _route_window->set_triggers(_level->triggers());
 
         _level->set_show_triggers(_room_navigator->show_triggers());
 
