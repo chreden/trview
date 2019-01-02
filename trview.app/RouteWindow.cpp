@@ -109,7 +109,18 @@ namespace trview
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 150 }
             });
-
+        _token_store.add(stats_box->on_item_selected += [&](const auto& item)
+        {
+            switch (_selected_type)
+            {
+            case Waypoint::Type::Entity:
+                on_item_selected(_all_items[_selected_index]);
+                break;
+            case Waypoint::Type::Trigger:
+                on_trigger_selected(_all_triggers[_selected_index]);
+                break;
+            }
+        });
         _stats = group_box->add_child(std::move(stats_box));
         right_panel->add_child(std::move(group_box));
         return right_panel;
@@ -121,6 +132,9 @@ namespace trview
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
         stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
+
+        _selected_type = waypoint.type();
+        _selected_index = waypoint.index();
 
         if (waypoint.type() != Waypoint::Type::Position)
         {

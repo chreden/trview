@@ -107,6 +107,8 @@ namespace trview
         {
             select_waypoint(index);
         });
+        _token_store.add(_route_window->on_item_selected += [&](const auto& item) { select_item(item); });
+        _token_store.add(_route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
     }
 
     Viewer::~Viewer()
