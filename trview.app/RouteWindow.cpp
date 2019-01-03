@@ -175,6 +175,8 @@ namespace trview
         }
 
         _stats->set_items(stats);
+
+        _notes_area->set_text(L"No notes yet...");
     }
 
     void RouteWindow::select_waypoint(uint32_t index)
