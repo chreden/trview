@@ -25,6 +25,8 @@ namespace trview
             virtual bool mouse_down(const Point& position) override;
         private:
             Label* current_line();
+            void add_line();
+            void remove_line();
 
             std::vector<Label*> _lines;
             Colour              _text_colour;

@@ -488,5 +488,11 @@ namespace trview
             _z = value;
             on_invalidate();
         }
+
+        void Control::remove_child(Control* child_element)
+        {
+            _child_elements.erase(std::remove_if(_child_elements.begin(), _child_elements.end(), [&](const auto& element) { return element.get() == child_element; }), _child_elements.end());
+            on_hierarchy_changed();
+        }
     }
 }

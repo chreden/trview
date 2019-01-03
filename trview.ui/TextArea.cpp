@@ -28,7 +28,15 @@ namespace trview
                 {
                     text.pop_back();
                 }
+                else
+                {
+                    remove_line();
+                    return;
+                }
                 break;
+            case 0xD:
+                add_line();
+                return;
             default:
                 text += static_cast<wchar_t>(character);
                 break;
@@ -46,9 +54,25 @@ namespace trview
         {
             if (_lines.empty())
             {
-                _lines.push_back(add_child(std::make_unique<Label>(Point(), Size(size().width, 20), background_colour(), L"", 8)));
+                add_line();
             }
             return _lines.back();
+        }
+
+        void TextArea::add_line()
+        {
+            _lines.push_back(add_child(std::make_unique<Label>(Point(), Size(size().width, 20), background_colour(), L"", 8)));
+        }
+
+        void TextArea::remove_line()
+        {
+            if (_lines.empty())
+            {
+                return;
+            }
+
+            remove_child(_lines.back());
+            _lines.pop_back();
         }
     }
 }
