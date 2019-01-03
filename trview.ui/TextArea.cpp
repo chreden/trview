@@ -56,6 +56,15 @@ namespace trview
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
         }
 
+        void TextArea::set_text(const std::wstring& text)
+        {
+            while (!_lines.empty())
+            {
+                remove_line();
+            }
+            add_line(text);
+        }
+
         bool TextArea::mouse_down(const Point& position)
         {
             return true;
@@ -70,9 +79,9 @@ namespace trview
             return _lines.back();
         }
 
-        void TextArea::add_line()
+        void TextArea::add_line(std::wstring text)
         {
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), L"", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
+            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
         }
 
         void TextArea::remove_line()

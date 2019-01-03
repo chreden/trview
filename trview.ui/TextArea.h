@@ -21,11 +21,15 @@ namespace trview
 
             /// Handle character input from the keyboard.
             void handle_char(uint16_t character);
+
+            /// Set the text in the text area to be the specified text.
+            /// @param text The text to use.
+            void set_text(const std::wstring& text);
         protected:
             virtual bool mouse_down(const Point& position) override;
         private:
             Label* current_line();
-            void add_line();
+            void add_line(std::wstring text = std::wstring());
             void remove_line();
 
             StackPanel*         _area;
