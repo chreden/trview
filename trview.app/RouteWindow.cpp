@@ -2,6 +2,7 @@
 #include "Waypoint.h"
 #include "Route.h"
 #include <trview.ui/GroupBox.h>
+#include <trview.ui/TextArea.h>
 
 namespace trview
 {
@@ -54,9 +55,14 @@ namespace trview
     using namespace graphics;
 
     RouteWindow::RouteWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400)), _keyboard(window())
     {
         set_panels(create_left_panel(), create_right_panel());
+
+        _token_store.add(_keyboard.on_char += [&](auto character)
+        {
+            _notes_area->handle_char(character);
+        });
     }
 
     void RouteWindow::load_waypoints(const Route& route) 
@@ -126,6 +132,9 @@ namespace trview
 
         // Notes area.
         auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 110), Colours::Notes, Colours::DetailsBorder, L"Notes");
+
+        auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(200, 200), Colour(0.2f, 0.2f, 0.2f), Colour(1.0f, 1.0f, 1.0f));
+        _notes_area = notes_box->add_child(std::move(notes_area));
 
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));

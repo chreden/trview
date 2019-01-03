@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.ui/Listbox.h>
+#include <trview.ui/TextArea.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include "Waypoint.h"
@@ -53,10 +54,12 @@ namespace trview
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
+        ui::TextArea* _notes_area;
         std::vector<Waypoint> _all_waypoints;
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
+        input::Keyboard _keyboard;
     };
 }
