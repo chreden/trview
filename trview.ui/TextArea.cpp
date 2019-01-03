@@ -50,10 +50,7 @@ namespace trview
             };
 
             process_char();
-
-            auto line = current_line();
-            _cursor->set_position(Point(line->size().width + 2, line->position().y));
-            _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
+            update_cursor();
         }
 
         void TextArea::set_text(const std::wstring& text)
@@ -82,6 +79,7 @@ namespace trview
         void TextArea::add_line(std::wstring text)
         {
             _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
+            update_cursor();
         }
 
         void TextArea::remove_line()
@@ -93,6 +91,13 @@ namespace trview
 
             _area->remove_child(_lines.back());
             _lines.pop_back();
+        }
+
+        void TextArea::update_cursor()
+        {
+            auto line = current_line();
+            _cursor->set_position(Point(line->size().width + 2, line->position().y));
+            _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
         }
     }
 }

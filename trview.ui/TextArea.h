@@ -31,6 +31,7 @@ namespace trview
             Label* current_line();
             void add_line(std::wstring text = std::wstring());
             void remove_line();
+            void update_cursor();
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
