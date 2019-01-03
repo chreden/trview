@@ -61,7 +61,7 @@ namespace trview
 
         void TextArea::add_line()
         {
-            _lines.push_back(add_child(std::make_unique<Label>(Point(), Size(size().width, 20), background_colour(), L"", 8)));
+            _lines.push_back(add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), L"", 8)));
         }
 
         void TextArea::remove_line()
