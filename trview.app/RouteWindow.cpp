@@ -31,12 +31,6 @@ namespace trview
                 std::to_wstring(static_cast<int>(position.z * 1024));
         }
 
-        Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint)
-        {
-            return { {{ L"#", std::to_wstring(index) },
-                     { L"Type", waypoint_type_to_string(waypoint.type())}} };
-        }
-
         Listbox::Item make_item(const std::wstring& name, const std::wstring& value)
         {
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
@@ -140,6 +134,21 @@ namespace trview
         right_panel->add_child(std::move(notes_box));
 
         return right_panel;
+    }
+
+    Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const Waypoint& waypoint)
+    {
+        std::wstring type = waypoint_type_to_string(waypoint.type());
+        if (waypoint.type() == Waypoint::Type::Entity)
+        {
+            type = _all_items[waypoint.index()].type();
+        }
+        else if (waypoint.type() == Waypoint::Type::Trigger)
+        {
+            type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+        }
+        return { {{ L"#", std::to_wstring(index) },
+                 { L"Type", type}} };
     }
 
     void RouteWindow::load_waypoint_details(uint32_t index)
