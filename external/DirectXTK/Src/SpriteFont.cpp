@@ -33,7 +33,7 @@ public:
     void SetDefaultCharacter(wchar_t character);
 
     template<typename TAction>
-    void ForEachGlyph(_In_z_ wchar_t const* text, TAction action) const;
+    void ForEachGlyph(_In_z_ wchar_t const* text, TAction action, bool wspace = false) const;
 
 
     // Fields.
@@ -176,7 +176,7 @@ void SpriteFont::Impl::SetDefaultCharacter(wchar_t character)
 
 // The core glyph layout algorithm, shared between DrawString and MeasureString.
 template<typename TAction>
-void SpriteFont::Impl::ForEachGlyph(_In_z_ wchar_t const* text, TAction action) const
+void SpriteFont::Impl::ForEachGlyph(_In_z_ wchar_t const* text, TAction action, bool wspace) const
 {
     float x = 0;
     float y = 0;
@@ -208,7 +208,7 @@ void SpriteFont::Impl::ForEachGlyph(_In_z_ wchar_t const* text, TAction action) 
 
                 float advance = glyph->Subrect.right - glyph->Subrect.left + glyph->XAdvance;
 
-                if (!iswspace(character)
+                if ((!iswspace(character) || wspace)
                     || ((glyph->Subrect.right - glyph->Subrect.left) > 1)
                     || ((glyph->Subrect.bottom - glyph->Subrect.top) > 1))
                 {
@@ -354,12 +354,17 @@ XMVECTOR XM_CALLCONV SpriteFont::MeasureString(_In_z_ wchar_t const* text) const
         UNREFERENCED_PARAMETER(advance);
 
         auto w = static_cast<float>(glyph->Subrect.right - glyph->Subrect.left);
-        auto h = static_cast<float>(glyph->Subrect.bottom - glyph->Subrect.top) + glyph->YOffset;
+        auto h = static_cast<float>(glyph->Subrect.bottom - glyph->Subrect.top) + (iswspace(glyph->Character) ? 0 : glyph->YOffset);
 
         h = std::max(h, pImpl->lineSpacing);
 
+        if (iswspace(glyph->Character))
+        {
+            x += glyph->XAdvance;
+        }
+
         result = XMVectorMax(result, XMVectorSet(x + w, y + h, 0, 0));
-    });
+    }, true);
 
     return result;
 }
