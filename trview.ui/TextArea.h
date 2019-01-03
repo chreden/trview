@@ -9,7 +9,7 @@ namespace trview
         class Label;
 
         /// A text area is a number of lines of text.
-        class TextArea final : public StackPanel
+        class TextArea final : public Window
         {
         public:
             /// Create a text area.
@@ -28,8 +28,10 @@ namespace trview
             void add_line();
             void remove_line();
 
+            StackPanel*         _area;
             std::vector<Label*> _lines;
             Colour              _text_colour;
+            Window*             _cursor;
         };
     }
 }

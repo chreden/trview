@@ -109,7 +109,8 @@ namespace trview
 
             void RenderNode::regenerate_texture()
             {
-                const auto size = _control->size();
+                auto size = _control->size();
+                size = Size(size.width == 0 ? 1 : size.width, size.height == 0 ? 1 : size.height);
                 _render_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
             }
 
