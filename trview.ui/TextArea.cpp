@@ -9,6 +9,7 @@ namespace trview
             : Window(position, size, background_colour), _text_colour(text_colour)
         {
             _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+            _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
             set_handles_input(true);
         }
@@ -31,6 +32,7 @@ namespace trview
                     if (!text.empty())
                     {
                         text.pop_back();
+                        --_cursor_position;
                     }
                     else
                     {
@@ -43,6 +45,7 @@ namespace trview
                     return;
                 default:
                     text += static_cast<wchar_t>(character);
+                    ++_cursor_position;
                     break;
                 }
 

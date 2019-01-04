@@ -8,6 +8,7 @@
 #include <trview.graphics/TextAlignment.h>
 #include <trview.graphics/ParagraphAlignment.h>
 #include "SizeMode.h"
+#include "IFontMeasurer.h"
 
 namespace trview
 {
@@ -43,13 +44,23 @@ namespace trview
             /// Set the text colour for the label.
             /// @param colour The new text colour.
             void set_text_colour(const Colour& colour);
+
+            /// Measure the specified text.
+            /// @param text The text to measure.
+            /// @returns The size of the rendered text.
+            Size measure_text(const std::wstring& text) const;
+
+            /// Set the measurer used to measure how big text will be.
+            /// @param measurer The measurer instance.
+            void set_measurer(IFontMeasurer* measurer);
         private:
-            std::wstring                 _text;
-            int                          _text_size;
-            graphics::TextAlignment      _text_alignment;
-            graphics::ParagraphAlignment _paragraph_alignment;
-            SizeMode                     _size_mode;
-            Colour                       _text_colour;
+            std::wstring                   _text;
+            int                            _text_size;
+            graphics::TextAlignment        _text_alignment;
+            graphics::ParagraphAlignment   _paragraph_alignment;
+            SizeMode                       _size_mode;
+            Colour                         _text_colour;
+            IFontMeasurer*                 _measurer{ nullptr };
         };
     }
 }

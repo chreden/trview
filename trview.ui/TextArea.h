@@ -37,6 +37,7 @@ namespace trview
             std::vector<Label*> _lines;
             Colour              _text_colour;
             Window*             _cursor;
+            uint32_t            _cursor_position{ 0u };
         };
     }
 }

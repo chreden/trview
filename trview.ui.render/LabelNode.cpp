@@ -22,11 +22,17 @@ namespace trview
                         generate_font_texture();
                     });
                 }
-                
+                _label->set_measurer(this);
             }
 
             LabelNode::~LabelNode()
             {
+                _label->set_measurer(nullptr);
+            }
+
+            Size LabelNode::measure(const std::wstring& text) const
+            {
+                return _font->measure(text);
             }
 
             void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)

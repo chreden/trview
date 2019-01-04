@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WindowNode.h"
+#include <trview.ui/IFontMeasurer.h>
 
 namespace trview
 {
@@ -16,11 +17,12 @@ namespace trview
 
         namespace render
         {
-            class LabelNode : public WindowNode
+            class LabelNode : public WindowNode, public IFontMeasurer
             {
             public:
                 LabelNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Label* label, const graphics::FontFactory& font_factory);
                 virtual ~LabelNode();
+                virtual Size measure(const std::wstring& text) const override;
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
             private:
