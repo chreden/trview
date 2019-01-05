@@ -99,6 +99,18 @@ namespace trview
 
             switch (key) 
             {
+                // VK_END
+                case 0x23:
+                {
+                    _cursor_position = text.size();
+                    break;
+                }
+                // VK_HOME
+                case 0x24:
+                {
+                    _cursor_position = 0;
+                    break;
+                }
                 // VK_LEFT
                 case 0x25:
                 {
@@ -123,18 +135,20 @@ namespace trview
                     _cursor_position = std::min(static_cast<uint32_t>(text.size()), _cursor_position + 1);
                     break;
                 }
+                // VK_DOWN
+                case 0x28:
+                {
+                    if (!_lines.empty())
+                    {
+                        _cursor_line = std::min(_cursor_line + 1, static_cast<uint32_t>(_lines.size()) - 1u);
+                    }
+                    break;
+                }
                 // VK_DELETE
                 case 0x2E:
                 {
                     text.erase(_cursor_position, 1);
-                    if (text.empty())
-                    {
-                        remove_line(_cursor_line);
-                    }
-                    else
-                    {
-                        line->set_text(text);
-                    }
+                    line->set_text(text);
                     break;
                 }
             }
@@ -167,6 +181,10 @@ namespace trview
 
             _area->remove_child(_lines.back());
             _lines.pop_back();
+            if (_cursor_line >= _lines.size() && _cursor_line > 0)
+            {
+                --_cursor_line;
+            }
         }
 
         void TextArea::remove_line(uint32_t line)
@@ -178,6 +196,10 @@ namespace trview
 
             _area->remove_child(_lines[line]);
             _lines.erase(_lines.begin() + line);
+            if (_cursor_line >= _lines.size() && _cursor_line > 0)
+            {
+                --_cursor_line;
+            }
         }
 
         void TextArea::update_cursor()
