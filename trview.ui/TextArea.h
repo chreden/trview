@@ -25,6 +25,9 @@ namespace trview
             /// Set the text in the text area to be the specified text.
             /// @param text The text to use.
             void set_text(const std::wstring& text);
+
+            /// Event raised when the text in the text area has changed.
+            Event<std::wstring> on_text_changed;
         protected:
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
@@ -41,6 +44,8 @@ namespace trview
 
             /// Move the cursor element to be in the correct place.
             void update_cursor();
+
+            void notify_text_updated();
 
             StackPanel*         _area;
             std::vector<Label*> _lines;

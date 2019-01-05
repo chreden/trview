@@ -1,5 +1,6 @@
 #include "TextArea.h"
 #include "Label.h"
+#include <sstream>
 
 namespace trview
 {
@@ -36,6 +37,7 @@ namespace trview
                             if (_cursor_position > 0)
                             {
                                 text.erase(--_cursor_position, 1);
+                                notify_text_updated();
                             }
                         }
                         else
@@ -72,6 +74,7 @@ namespace trview
                 }
 
                 line->set_text(text);
+                notify_text_updated();
             };
 
             process_char();
@@ -84,7 +87,13 @@ namespace trview
             {
                 remove_line();
             }
-            add_line(text);
+
+            std::wstringstream stream(text);
+            std::wstring line;
+            while (std::getline(stream, line, L'\n'))
+            {
+                add_line(line);
+            }
         }
 
         bool TextArea::mouse_down(const Point& position)
@@ -149,6 +158,7 @@ namespace trview
                 {
                     text.erase(_cursor_position, 1);
                     line->set_text(text);
+                    notify_text_updated();
                     break;
                 }
             }
@@ -168,6 +178,7 @@ namespace trview
         void TextArea::add_line(std::wstring text)
         {
             _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
+            notify_text_updated();
             _cursor_position = text.size();
             update_cursor();
         }
@@ -185,6 +196,7 @@ namespace trview
             {
                 --_cursor_line;
             }
+            notify_text_updated();
         }
 
         void TextArea::remove_line(uint32_t line)
@@ -200,6 +212,7 @@ namespace trview
             {
                 --_cursor_line;
             }
+            notify_text_updated();
         }
 
         void TextArea::update_cursor()
@@ -213,6 +226,22 @@ namespace trview
             auto size = line->measure_text(text.substr(0, _cursor_position));
             _cursor->set_position(Point(size.width + 2, line->position().y));
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
+        }
+
+        void TextArea::notify_text_updated()
+        {
+            bool first = true;
+            std::wstring full_string;
+            for (const auto& line : _lines)
+            {
+                if (!first)
+                {
+                    full_string += L'\n';
+                }
+                first = false;
+                full_string += line->text();
+            }
+            on_text_changed(full_string);
         }
     }
 }
