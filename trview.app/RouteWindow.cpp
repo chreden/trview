@@ -121,7 +121,7 @@ namespace trview
         // Notes area.
         auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 110), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
-        auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(200, 200), Colour(0.2f, 0.2f, 0.2f), Colour(1.0f, 1.0f, 1.0f));
+        auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colour(0.2f, 0.2f, 0.2f), Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
 
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
@@ -133,7 +133,10 @@ namespace trview
         });
         _token_store.add(_notes_area->on_text_changed += [&](const std::wstring& text)
         {
-            _route->waypoint(_selected_index).set_notes(text);
+            if (_route)
+            {
+                _route->waypoint(_selected_index).set_notes(text);
+            }
         });
 
         return right_panel;

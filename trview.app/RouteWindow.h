@@ -57,7 +57,7 @@ namespace trview
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
         ui::TextArea* _notes_area;
-        Route* _route;
+        Route* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
