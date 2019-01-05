@@ -27,10 +27,17 @@ namespace trview
             void set_text(const std::wstring& text);
         protected:
             virtual bool mouse_down(const Point& position) override;
+            virtual bool key_down(uint16_t key) override;
         private:
             Label* current_line();
+
+            /// Add a new line to the text area with the specified content.
+            /// @param text The optional content to use.
             void add_line(std::wstring text = std::wstring());
+
             void remove_line();
+
+            /// Move the cursor element to be in the correct place.
             void update_cursor();
 
             StackPanel*         _area;

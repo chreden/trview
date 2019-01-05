@@ -31,8 +31,10 @@ namespace trview
                 case 0x8:
                     if (!text.empty())
                     {
-                        text.pop_back();
-                        --_cursor_position;
+                        if (_cursor_position > 0)
+                        {
+                            text.erase(--_cursor_position, 1);
+                        }
                     }
                     else
                     {
@@ -44,7 +46,16 @@ namespace trview
                     add_line();
                     return;
                 default:
-                    text += static_cast<wchar_t>(character);
+                    // Check if adding the character is going to make the text wider than the text area. If so,
+                    // then create a new line and put the character on that line instead.
+                    if (line->measure_text(text + static_cast<wchar_t>(character)).width > _area->size().width)
+                    {
+                        add_line({ character });
+                        return;
+                    }
+
+                    // Add the character to the current line.
+                    text.insert(text.begin() + _cursor_position, static_cast<wchar_t>(character));
                     ++_cursor_position;
                     break;
                 }
@@ -70,6 +81,37 @@ namespace trview
             return true;
         }
 
+        bool TextArea::key_down(uint16_t key)
+        {
+            auto line = current_line();
+            auto text = line->text();
+
+            switch (key) 
+            {
+                case 0x25:
+                {
+                    if (_cursor_position > 0)
+                    {
+                        --_cursor_position;
+                    }
+                    break;
+                }
+                case 0x27:
+                {
+                    _cursor_position = std::min(static_cast<uint32_t>(text.size()), _cursor_position + 1);
+                    break;
+                }
+                case 0x2E:
+                {
+                    text.erase(_cursor_position, 1);
+                    line->set_text(text);
+                    break;
+                }
+            }
+            update_cursor();
+            return true;
+        }
+
         Label* TextArea::current_line()
         {
             if (_lines.empty())
@@ -82,6 +124,7 @@ namespace trview
         void TextArea::add_line(std::wstring text)
         {
             _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
+            _cursor_position = text.size();
             update_cursor();
         }
 
@@ -98,8 +141,14 @@ namespace trview
 
         void TextArea::update_cursor()
         {
+            // Get the current line and the text it is rendering.
             auto line = current_line();
-            _cursor->set_position(Point(line->size().width + 2, line->position().y));
+            auto text = line->text();
+
+            // Place the cursor based on the current cursor position and the size of the text
+            // as it would be renderered.
+            auto size = line->measure_text(text.substr(0, _cursor_position));
+            _cursor->set_position(Point(size.width + 2, line->position().y));
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
         }
     }
