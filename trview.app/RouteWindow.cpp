@@ -52,22 +52,16 @@ namespace trview
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400)), _keyboard(window())
     {
         set_panels(create_left_panel(), create_right_panel());
-
-        _token_store.add(_keyboard.on_char += [&](auto character)
-        {
-            _notes_area->handle_char(character);
-        });
     }
 
-    void RouteWindow::load_waypoints(const Route& route) 
+    void RouteWindow::set_route(Route* route) 
     {
-        _all_waypoints.clear();
+        _route = route;
 
         std::vector<Listbox::Item> items;
-        for (uint32_t i = 0; i < route.waypoints(); ++i)
+        for (uint32_t i = 0; i < _route->waypoints(); ++i)
         {
-            items.push_back(create_listbox_item(i, route.waypoint(i)));
-            _all_waypoints.push_back(route.waypoint(i));
+            items.push_back(create_listbox_item(i, _route->waypoint(i)));
         }
         _waypoints->set_items(items);
     }
@@ -133,6 +127,15 @@ namespace trview
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));
 
+        _token_store.add(_keyboard.on_char += [&](auto character)
+        {
+            _notes_area->handle_char(character);
+        });
+        _token_store.add(_notes_area->on_text_changed += [&](const std::wstring& text)
+        {
+            _route->waypoint(_selected_index).set_notes(text);
+        });
+
         return right_panel;
     }
 
@@ -153,13 +156,13 @@ namespace trview
 
     void RouteWindow::load_waypoint_details(uint32_t index)
     {
-        const auto& waypoint = _all_waypoints[index];
+        const auto& waypoint = _route->waypoint(index);
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
         stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
 
         _selected_type = waypoint.type();
-        _selected_index = waypoint.index();
+        _selected_index = index;
 
         if (waypoint.type() != Waypoint::Type::Position)
         {
@@ -176,12 +179,12 @@ namespace trview
 
         _stats->set_items(stats);
 
-        _notes_area->set_text(L"No notes yet...");
+        _notes_area->set_text(waypoint.notes());
     }
 
     void RouteWindow::select_waypoint(uint32_t index)
     {
-        _waypoints->set_selected_item(create_listbox_item(index, _all_waypoints[index]));
+        _waypoints->set_selected_item(create_listbox_item(index, _route->waypoint(index)));
         load_waypoint_details(index);
     }
 

@@ -49,6 +49,17 @@ namespace trview
 
     uint32_t Waypoint::room() const
     {
-        return _room;}
+        return _room;
+    }
+
+    std::wstring Waypoint::notes() const
+    {
+        return _notes;
+    }
+
+    void Waypoint::set_notes(const std::wstring& notes)
+    {
+        _notes = notes;
+    }
 }
 

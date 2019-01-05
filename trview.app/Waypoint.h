@@ -62,8 +62,15 @@ namespace trview
 
         /// Gets the room that the waypoint is in.
         uint32_t room() const;
+
+        /// Get any notes associated with the waypoint.
+        std::wstring notes() const;
+
+        /// Set the notes associated with the waypoint.
+        /// @param notes The notes to save.
+        void set_notes(const std::wstring& notes);
     private:
-        std::string                  _name;
+        std::wstring                 _notes;
         DirectX::SimpleMath::Vector3 _position;
         Mesh*                        _mesh;
         Type                         _type;

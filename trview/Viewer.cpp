@@ -160,14 +160,14 @@ namespace trview
 
             _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
             _context_menu->set_visible(false);
-            _route_window->load_waypoints(*_route);
+            _route_window->set_route(_route.get());
             select_waypoint(new_index);
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
             _route->remove(_current_pick.index);
             _context_menu->set_visible(false);
-            _route_window->load_waypoints(*_route);
+            _route_window->set_route(_route.get());
         });
 
         _context_menu->set_remove_enabled(false);

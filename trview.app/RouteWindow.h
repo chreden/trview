@@ -26,7 +26,7 @@ namespace trview
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        void load_waypoints(const Route& route);
+        void set_route(Route* route);
 
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
@@ -57,7 +57,7 @@ namespace trview
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
         ui::TextArea* _notes_area;
-        std::vector<Waypoint> _all_waypoints;
+        Route* _route;
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };

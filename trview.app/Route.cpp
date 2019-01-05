@@ -135,6 +135,15 @@ namespace trview
         throw std::range_error("Waypoint index out of range");
     }
 
+    Waypoint& Route::waypoint(uint32_t index)
+    {
+        if (index < _waypoints.size())
+        {
+            return _waypoints[index];
+        }
+        throw std::range_error("Waypoint index out of range");
+    }
+
     uint32_t Route::waypoints() const
     {
         return _waypoints.size();

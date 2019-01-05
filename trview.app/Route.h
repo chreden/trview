@@ -76,6 +76,10 @@ namespace trview
         /// @param index The index to get.
         const Waypoint& waypoint(uint32_t index) const;
 
+        /// Get the waypoint at the specified index.
+        /// @param index The index to get.
+        Waypoint& waypoint(uint32_t index);
+
         /// Get the number of waypoints in the route.
         uint32_t waypoints() const;
     private:
