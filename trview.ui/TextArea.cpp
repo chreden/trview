@@ -28,36 +28,47 @@ namespace trview
 
                 switch (character)
                 {
-                case 0x8:
-                    if (!text.empty())
+                    // VK_BACK
+                    case 0x8:
                     {
-                        if (_cursor_position > 0)
+                        if (!text.empty())
                         {
-                            text.erase(--_cursor_position, 1);
+                            if (_cursor_position > 0)
+                            {
+                                text.erase(--_cursor_position, 1);
+                            }
                         }
+                        else
+                        {
+                            remove_line();
+                            // Move the cursor to the end of the line that we just moved up to,
+                            // as we did just do a backspace.
+                            _cursor_position = current_line()->text().size();
+                            return;
+                        }
+                        break;
                     }
-                    else
+                    // VK_RETURN
+                    case 0xD:
                     {
-                        remove_line();
+                        add_line();
+                        ++_cursor_line;
                         return;
                     }
-                    break;
-                case 0xD:
-                    add_line();
-                    return;
-                default:
-                    // Check if adding the character is going to make the text wider than the text area. If so,
-                    // then create a new line and put the character on that line instead.
-                    if (line->measure_text(text + static_cast<wchar_t>(character)).width > _area->size().width)
-                    {
-                        add_line({ character });
-                        return;
-                    }
+                    default:
+                        // Check if adding the character is going to make the text wider than the text area. If so,
+                        // then create a new line and put the character on that line instead.
+                        if (line->measure_text(text + static_cast<wchar_t>(character)).width > _area->size().width)
+                        {
+                            add_line({ character });
+                            ++_cursor_line;
+                            return;
+                        }
 
-                    // Add the character to the current line.
-                    text.insert(text.begin() + _cursor_position, static_cast<wchar_t>(character));
-                    ++_cursor_position;
-                    break;
+                        // Add the character to the current line.
+                        text.insert(text.begin() + _cursor_position, static_cast<wchar_t>(character));
+                        ++_cursor_position;
+                        break;
                 }
 
                 line->set_text(text);
@@ -88,6 +99,7 @@ namespace trview
 
             switch (key) 
             {
+                // VK_LEFT
                 case 0x25:
                 {
                     if (_cursor_position > 0)
@@ -96,15 +108,33 @@ namespace trview
                     }
                     break;
                 }
+                // VK_UP
+                case 0x26:
+                {
+                    if (_cursor_line > 0)
+                    {
+                        --_cursor_line;
+                    }
+                    break;
+                }
+                // VK_RIGHT
                 case 0x27:
                 {
                     _cursor_position = std::min(static_cast<uint32_t>(text.size()), _cursor_position + 1);
                     break;
                 }
+                // VK_DELETE
                 case 0x2E:
                 {
                     text.erase(_cursor_position, 1);
-                    line->set_text(text);
+                    if (text.empty())
+                    {
+                        remove_line(_cursor_line);
+                    }
+                    else
+                    {
+                        line->set_text(text);
+                    }
                     break;
                 }
             }
@@ -118,7 +148,7 @@ namespace trview
             {
                 add_line();
             }
-            return _lines.back();
+            return _lines[_cursor_line];
         }
 
         void TextArea::add_line(std::wstring text)
@@ -137,6 +167,17 @@ namespace trview
 
             _area->remove_child(_lines.back());
             _lines.pop_back();
+        }
+
+        void TextArea::remove_line(uint32_t line)
+        {
+            if (line >= _lines.size())
+            {
+                return;
+            }
+
+            _area->remove_child(_lines[line]);
+            _lines.erase(_lines.begin() + line);
         }
 
         void TextArea::update_cursor()

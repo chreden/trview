@@ -37,6 +37,8 @@ namespace trview
 
             void remove_line();
 
+            void remove_line(uint32_t line);
+
             /// Move the cursor element to be in the correct place.
             void update_cursor();
 
@@ -45,6 +47,7 @@ namespace trview
             Colour              _text_colour;
             Window*             _cursor;
             uint32_t            _cursor_position{ 0u };
+            uint32_t            _cursor_line{ 0u };
         };
     }
 }
