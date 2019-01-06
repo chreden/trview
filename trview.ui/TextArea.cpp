@@ -127,6 +127,11 @@ namespace trview
                     {
                         --_cursor_position;
                     }
+                    else if (_cursor_line > 0)
+                    {
+                        --_cursor_line;
+                        _cursor_position = _lines[_cursor_line]->text().size();
+                    }
                     break;
                 }
                 // VK_UP
@@ -135,13 +140,22 @@ namespace trview
                     if (_cursor_line > 0)
                     {
                         --_cursor_line;
+                        _cursor_position = std::min(static_cast<uint32_t>(_lines[_cursor_line]->text().size()), _cursor_position);
                     }
                     break;
                 }
                 // VK_RIGHT
                 case 0x27:
                 {
-                    _cursor_position = std::min(static_cast<uint32_t>(text.size()), _cursor_position + 1);
+                    if (_cursor_position < text.size())
+                    {
+                        ++_cursor_position;
+                    }
+                    else if (_cursor_line + 1 < _lines.size())
+                    {
+                        ++_cursor_line;
+                        _cursor_position = 0;
+                    }
                     break;
                 }
                 // VK_DOWN
@@ -150,6 +164,7 @@ namespace trview
                     if (!_lines.empty())
                     {
                         _cursor_line = std::min(_cursor_line + 1, static_cast<uint32_t>(_lines.size()) - 1u);
+                        _cursor_position = std::min(static_cast<uint32_t>(_lines[_cursor_line]->text().size()), _cursor_position);
                     }
                     break;
                 }
