@@ -102,13 +102,13 @@ namespace trview
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
-        _route_window = std::make_unique<RouteWindow>(_device, *_shader_storage, *_font_factory, window);
-        _token_store.add(_route_window->on_waypoint_selected += [&](auto index)
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, *_font_factory, window);
+        _token_store.add(_route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
         });
-        _token_store.add(_route_window->on_item_selected += [&](const auto& item) { select_item(item); });
-        _token_store.add(_route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); });
+        _token_store.add(_route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
     }
 
     Viewer::~Viewer()
@@ -160,14 +160,14 @@ namespace trview
 
             _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
             _context_menu->set_visible(false);
-            _route_window->set_route(_route.get());
+            _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
             _route->remove(_current_pick.index);
             _context_menu->set_visible(false);
-            _route_window->set_route(_route.get());
+            _route_window_manager->set_route(_route.get());
         });
 
         _context_menu->set_remove_enabled(false);
@@ -562,8 +562,8 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
-        _route_window->set_items(_level->items());
-        _route_window->set_triggers(_level->triggers());
+        _route_window_manager->set_items(_level->items());
+        _route_window_manager->set_triggers(_level->triggers());
 
         _level->set_show_triggers(_room_navigator->show_triggers());
 
@@ -630,7 +630,7 @@ namespace trview
 
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
-        _route_window->render(_device, _settings.vsync);
+        _route_window_manager->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -863,7 +863,7 @@ namespace trview
         select_room(_route->waypoint(index).room());
         _target = _route->waypoint(index).position();
         _route->select_waypoint(index);
-        _route_window->select_waypoint(index);
+        _route_window_manager->select_waypoint(index);
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

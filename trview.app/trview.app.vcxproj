@@ -40,6 +40,7 @@
     <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="RouteWindow.cpp" />
+    <ClCompile Include="RouteWindowManager.cpp" />
     <ClCompile Include="SelectionRenderer.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="RouteWindow.h" />
+    <ClInclude Include="RouteWindowManager.h" />
     <ClInclude Include="SelectionRenderer.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparencyBuffer.h" />

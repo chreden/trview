@@ -64,6 +64,7 @@ namespace trview
             items.push_back(create_listbox_item(i, _route->waypoint(i)));
         }
         _waypoints->set_items(items);
+        load_waypoint_details(_selected_index);
     }
 
     std::unique_ptr<Control> RouteWindow::create_left_panel()
@@ -108,10 +109,10 @@ namespace trview
             switch (_selected_type)
             {
             case Waypoint::Type::Entity:
-                on_item_selected(_all_items[_selected_index]);
+                on_item_selected(_all_items[_route->waypoint(_selected_index).index()]);
                 break;
             case Waypoint::Type::Trigger:
-                on_trigger_selected(_all_triggers[_selected_index]);
+                on_trigger_selected(_all_triggers[_route->waypoint(_selected_index).index()]);
                 break;
             }
         });
@@ -159,6 +160,11 @@ namespace trview
 
     void RouteWindow::load_waypoint_details(uint32_t index)
     {
+        if (index >= _route->waypoints())
+        {
+            return;
+        }
+
         const auto& waypoint = _route->waypoint(index);
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
@@ -187,6 +193,13 @@ namespace trview
 
     void RouteWindow::select_waypoint(uint32_t index)
     {
+        _selected_index = index;
+
+        if (!_route)
+        {
+            return;
+        }
+
         _waypoints->set_selected_item(create_listbox_item(index, _route->waypoint(index)));
         load_waypoint_details(index);
     }

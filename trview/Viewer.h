@@ -36,7 +36,7 @@
 #include <trview.app/AlternateGroupToggler.h>
 #include <trview.app/ContextMenu.h>
 #include <trview.app/Route.h>
-#include <trview.app/RouteWindow.h>
+#include <trview.app/RouteWindowManager.h>
 
 namespace trview
 {
@@ -185,7 +185,7 @@ namespace trview
         // Temporary route objects.
         PickResult _context_pick;
         std::unique_ptr<Route> _route;
-        std::unique_ptr<RouteWindow> _route_window;
+        std::unique_ptr<RouteWindowManager> _route_window_manager;
     };
 }
 
