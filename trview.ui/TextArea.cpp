@@ -94,6 +94,10 @@ namespace trview
             {
                 add_line(line);
             }
+
+            _cursor_line = _lines.empty() ? 0 : _lines.size() - 1;
+            _cursor_position = _lines.empty() ? 0 : _lines.back()->text().size();
+            update_cursor();
         }
 
         bool TextArea::mouse_down(const Point& position)
