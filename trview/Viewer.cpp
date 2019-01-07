@@ -475,7 +475,7 @@ namespace trview
     {
         if (_go_to_room->visible())
         {
-            if (key == 'R' && _keyboard.control())
+            if (key == 'G' && _keyboard.control())
             {
                 _go_to_room->toggle_visible();
             }
@@ -488,7 +488,7 @@ namespace trview
         {
             switch (key)
             {
-                case 'R':
+                case 'G':
                 {
                     if (_keyboard.control())
                     {
