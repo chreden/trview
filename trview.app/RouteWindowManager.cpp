@@ -36,11 +36,11 @@ namespace trview
 
         _route_window->set_items(_all_items);
         _route_window->set_triggers(_all_triggers);
-        _route_window->select_waypoint(_selected_waypoint);
         if (_route)
         {
             _route_window->set_route(_route);
         }
+        _route_window->select_waypoint(_selected_waypoint);
     }
 
     void RouteWindowManager::render(graphics::Device& device, bool vsync)
