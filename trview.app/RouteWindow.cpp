@@ -3,6 +3,7 @@
 #include "Route.h"
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/TextArea.h>
+#include <trview.ui/Button.h>
 
 namespace trview
 {
@@ -71,8 +72,24 @@ namespace trview
     {
         auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
+        auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
+        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Import"));
+        _token_store.add(import->on_click += []()
+        {
+            OPENFILENAME ofn;
+            memset(&ofn, 0, sizeof(ofn));
+            ofn.lStructSize = sizeof(ofn);
+            ofn.lpstrFilter = L"trview route\0*.trvr\0";
+            ofn.nMaxFile = MAX_PATH;
+            ofn.lpstrTitle = L"Import route";
+            ofn.Flags = OFN_FILEMUSTEXIST;
+            GetOpenFileName(&ofn);
+        });
+        buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
+        auto _buttons = left_panel->add_child(std::move(buttons));
+
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Point(), Size(200, window().size().height), Colours::LeftPanel);
+        auto waypoints = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
         waypoints->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
