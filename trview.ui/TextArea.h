@@ -32,18 +32,18 @@ namespace trview
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
         private:
-            Label* current_line();
+            Label* current_line(bool raise_event = true);
 
             /// Add a new line to the text area with the specified content.
             /// @param text The optional content to use.
-            void add_line(std::wstring text = std::wstring());
+            void add_line(std::wstring text = std::wstring(), bool raise_event = true);
 
-            void remove_line();
+            void remove_line(bool raise_event = true);
 
             void remove_line(uint32_t line);
 
             /// Move the cursor element to be in the correct place.
-            void update_cursor();
+            void update_cursor(bool raise_event = true);
 
             void notify_text_updated();
 

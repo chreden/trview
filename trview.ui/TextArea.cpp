@@ -85,19 +85,19 @@ namespace trview
         {
             while (!_lines.empty())
             {
-                remove_line();
+                remove_line(false);
             }
 
             std::wstringstream stream(text);
             std::wstring line;
             while (std::getline(stream, line, L'\n'))
             {
-                add_line(line);
+                add_line(line, false);
             }
 
             _cursor_line = _lines.empty() ? 0 : _lines.size() - 1;
             _cursor_position = _lines.empty() ? 0 : _lines.back()->text().size();
-            update_cursor();
+            update_cursor(false);
         }
 
         bool TextArea::mouse_down(const Point& position)
@@ -185,24 +185,27 @@ namespace trview
             return true;
         }
 
-        Label* TextArea::current_line()
+        Label* TextArea::current_line(bool raise_event)
         {
             if (_lines.empty())
             {
-                add_line();
+                add_line(std::wstring(), raise_event);
             }
             return _lines[_cursor_line];
         }
 
-        void TextArea::add_line(std::wstring text)
+        void TextArea::add_line(std::wstring text, bool raise_event)
         {
             _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
-            notify_text_updated();
+            if (raise_event)
+            {
+                notify_text_updated();
+            }
             _cursor_position = text.size();
-            update_cursor();
+            update_cursor(raise_event);
         }
 
-        void TextArea::remove_line()
+        void TextArea::remove_line(bool raise_event)
         {
             if (_lines.empty())
             {
@@ -215,7 +218,11 @@ namespace trview
             {
                 --_cursor_line;
             }
-            notify_text_updated();
+
+            if (raise_event)
+            {
+                notify_text_updated();
+            }
         }
 
         void TextArea::remove_line(uint32_t line)
@@ -234,10 +241,10 @@ namespace trview
             notify_text_updated();
         }
 
-        void TextArea::update_cursor()
+        void TextArea::update_cursor(bool raise_event)
         {
             // Get the current line and the text it is rendering.
-            auto line = current_line();
+            auto line = current_line(raise_event);
             auto text = line->text();
 
             // Place the cursor based on the current cursor position and the size of the text
