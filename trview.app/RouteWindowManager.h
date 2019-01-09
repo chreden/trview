@@ -46,6 +46,9 @@ namespace trview
 
         void select_waypoint(uint32_t index);
 
+        /// Event raised when a route is imported.
+        Event<std::string> on_route_import;
+
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
 

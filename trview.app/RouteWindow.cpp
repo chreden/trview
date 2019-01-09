@@ -4,6 +4,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/TextArea.h>
 #include <trview.ui/Button.h>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -58,6 +59,7 @@ namespace trview
     void RouteWindow::set_route(Route* route) 
     {
         _route = route;
+        _selected_index = 0u;
 
         std::vector<Listbox::Item> items;
         for (uint32_t i = 0; i < _route->waypoints(); ++i)
@@ -74,16 +76,24 @@ namespace trview
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Import"));
-        _token_store.add(import->on_click += []()
+        _token_store.add(import->on_click += [&]()
         {
             OPENFILENAME ofn;
             memset(&ofn, 0, sizeof(ofn));
+
+            wchar_t path[MAX_PATH];
+            memset(&path, 0, sizeof(path));
+
             ofn.lStructSize = sizeof(ofn);
             ofn.lpstrFilter = L"trview route\0*.trvr\0";
             ofn.nMaxFile = MAX_PATH;
             ofn.lpstrTitle = L"Import route";
             ofn.Flags = OFN_FILEMUSTEXIST;
-            GetOpenFileName(&ofn);
+            ofn.lpstrFile = path;
+            if (GetOpenFileName(&ofn))
+            {
+                on_route_import(trview::to_utf8(ofn.lpstrFile));
+            }
         });
         buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
         auto _buttons = left_panel->add_child(std::move(buttons));
@@ -179,6 +189,8 @@ namespace trview
     {
         if (index >= _route->waypoints())
         {
+            _stats->set_items({});
+            _notes_area->set_text(L"");
             return;
         }
 

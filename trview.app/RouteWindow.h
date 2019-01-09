@@ -37,6 +37,9 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<Trigger*> on_trigger_selected;
 
+        /// Event raised when a route file is opened.
+        Event<std::string> on_route_import;
+
         /// Select the specified waypoint.
         /// @param index The index of the waypoint to select.
         void select_waypoint(uint32_t index);

@@ -109,6 +109,11 @@ namespace trview
         });
         _token_store.add(_route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); });
         _token_store.add(_route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_route_window_manager->on_route_import += [&](const std::string& path)
+        {
+            _route = std::make_unique<Route>(_device, *_shader_storage);
+            _route_window_manager->set_route(_route.get());
+        });
     }
 
     Viewer::~Viewer()
