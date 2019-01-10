@@ -181,6 +181,10 @@ namespace trview
             _route->remove(_current_pick.index);
             _context_menu->set_visible(false);
             _route_window_manager->set_route(_route.get());
+            if (_route->waypoints() > 0)
+            {
+                _route_window_manager->select_waypoint(_route->selected_waypoint());
+            }
         });
 
         _context_menu->set_remove_enabled(false);
