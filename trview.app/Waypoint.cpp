@@ -77,5 +77,19 @@ namespace trview
 
         return Waypoint::Type::Position;
     }
+
+    std::wstring waypoint_type_to_string(Waypoint::Type type)
+    {
+        switch (type)
+        {
+        case Waypoint::Type::Entity:
+            return L"Entity";
+        case Waypoint::Type::Position:
+            return L"Position";
+        case Waypoint::Type::Trigger:
+            return L"Trigger";
+        }
+        return L"Unknown";
+    }
 }
 

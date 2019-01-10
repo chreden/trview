@@ -90,4 +90,5 @@ namespace trview
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
+    void export_route(const Route& route, const std::string& filename);
 }

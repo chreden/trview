@@ -79,4 +79,5 @@ namespace trview
     };
 
     Waypoint::Type waypoint_type_from_string(const std::string& value);
+    std::wstring waypoint_type_to_string(Waypoint::Type type);
 }

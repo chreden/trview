@@ -12,20 +12,6 @@ namespace trview
 
     namespace
     {
-        std::wstring waypoint_type_to_string(Waypoint::Type type)
-        {
-            switch (type)
-            {
-            case Waypoint::Type::Entity:
-                return L"Entity";
-            case Waypoint::Type::Position:
-                return L"Position";
-            case Waypoint::Type::Trigger:
-                return L"Trigger";
-            }
-            return L"Unknown";
-        }
-
         std::wstring pos_to_string(const DirectX::SimpleMath::Vector3& position)
         {
             return std::to_wstring(static_cast<int>(position.x * 1024)) + L", " +
@@ -95,7 +81,25 @@ namespace trview
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
         });
-        buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
+        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
+        _token_store.add(export_button->on_click += [&]()
+        {
+            OPENFILENAME ofn;
+            memset(&ofn, 0, sizeof(ofn));
+
+            wchar_t path[MAX_PATH];
+            memset(&path, 0, sizeof(path));
+
+            ofn.lStructSize = sizeof(ofn);
+            ofn.lpstrFilter = L"trview route\0*.trvr\0";
+            ofn.nMaxFile = MAX_PATH;
+            ofn.lpstrTitle = L"Export route";
+            ofn.lpstrFile = path;
+            if (GetSaveFileName(&ofn))
+            {
+                on_route_export(trview::to_utf8(ofn.lpstrFile));
+            }
+        });
         auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.

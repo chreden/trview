@@ -118,6 +118,10 @@ namespace trview
                 _route_window_manager->set_route(_route.get());
             }
         });
+        _token_store.add(_route_window_manager->on_route_export += [&](const std::string& path)
+        {
+            export_route(*_route, path);
+        });
     }
 
     Viewer::~Viewer()

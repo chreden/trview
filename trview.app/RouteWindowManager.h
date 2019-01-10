@@ -49,6 +49,9 @@ namespace trview
         /// Event raised when a route is imported.
         Event<std::string> on_route_import;
 
+        /// Event raised when a route is exported.
+        Event<std::string> on_route_export;
+
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
 
