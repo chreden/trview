@@ -4,6 +4,10 @@
 #include <algorithm>
 #include "ICamera.h"
 #include "ILevelTextureStorage.h"
+#include <external/nlohmann/json.hpp>
+#include <fstream>
+#include <trview.common/Strings.h>
+#include <sstream>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -147,5 +151,56 @@ namespace trview
     uint32_t Route::waypoints() const
     {
         return _waypoints.size();
+    }
+
+    std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
+    {
+        try
+        {
+            std::ifstream file(to_utf16(filename));
+            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+            if (!file.is_open())
+            {
+                return std::unique_ptr<Route>();
+            }
+
+            auto route = std::make_unique<Route>(device, shader_storage);
+
+            nlohmann::json json;
+            file >> json;
+
+            for (const auto& waypoint : json["waypoints"])
+            {
+                auto type_string = waypoint["type"].get<std::string>();
+                Waypoint::Type type = waypoint_type_from_string(type_string);
+ 
+                auto position_string = waypoint["position"].get<std::string>();
+
+                std::stringstream stringstream(position_string);
+
+                std::vector<float> result;
+                for (int i = 0; i < 3; ++i)
+                {
+                    std::string substr;
+                    std::getline(stringstream, substr, ',');
+                    result.push_back(std::stof(substr));
+                }
+
+                Vector3 position = Vector3(result[0], result[1], result[2]);
+
+                auto room = waypoint["room"].get<int>();
+                auto index = waypoint["index"].get<int>();
+                auto notes = waypoint["notes"].get<std::string>();
+
+                route->add(position, room, type, index);
+                route->waypoint(route->waypoints() - 1).set_notes(to_utf16(notes));
+            }
+
+            return route;
+        }
+        catch (std::exception& e)
+        {
+            return std::unique_ptr<Route>();
+        }
     }
 }

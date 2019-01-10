@@ -1,5 +1,6 @@
 #include "Waypoint.h"
 #include "ICamera.h"
+#include <locale>
 
 using namespace DirectX::SimpleMath;
 
@@ -60,6 +61,21 @@ namespace trview
     void Waypoint::set_notes(const std::wstring& notes)
     {
         _notes = notes;
+    }
+
+    Waypoint::Type waypoint_type_from_string(const std::string& value)
+    {
+        if (value == "Trigger")
+        {
+            return Waypoint::Type::Trigger;
+        }
+
+        if (value == "Entity")
+        {
+            return Waypoint::Type::Entity;
+        }
+
+        return Waypoint::Type::Position;
     }
 }
 

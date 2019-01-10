@@ -88,4 +88,6 @@ namespace trview
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
     };
+
+    std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
 }

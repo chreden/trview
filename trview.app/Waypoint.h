@@ -77,4 +77,6 @@ namespace trview
         uint32_t                     _index;
         uint32_t                     _room;
     };
+
+    Waypoint::Type waypoint_type_from_string(const std::string& value);
 }

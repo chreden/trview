@@ -111,8 +111,12 @@ namespace trview
         _token_store.add(_route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
         _token_store.add(_route_window_manager->on_route_import += [&](const std::string& path)
         {
-            _route = std::make_unique<Route>(_device, *_shader_storage);
-            _route_window_manager->set_route(_route.get());
+            auto route = import_route(_device, *_shader_storage, path);
+            if (route)
+            {
+                _route = std::move(route);
+                _route_window_manager->set_route(_route.get());
+            }
         });
     }
 
