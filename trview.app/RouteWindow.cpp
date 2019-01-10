@@ -71,7 +71,7 @@ namespace trview
             memset(&path, 0, sizeof(path));
 
             ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"trview route\0*.trvr\0";
+            ofn.lpstrFilter = L"trview route\0*.tvr\0";
             ofn.nMaxFile = MAX_PATH;
             ofn.lpstrTitle = L"Import route";
             ofn.Flags = OFN_FILEMUSTEXIST;
@@ -91,10 +91,11 @@ namespace trview
             memset(&path, 0, sizeof(path));
 
             ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"trview route\0*.trvr\0";
+            ofn.lpstrFilter = L"trview route\0*.tvr\0";
             ofn.nMaxFile = MAX_PATH;
             ofn.lpstrTitle = L"Export route";
             ofn.lpstrFile = path;
+            ofn.lpstrDefExt = L"tvr";
             if (GetSaveFileName(&ofn))
             {
                 on_route_export(trview::to_utf8(ofn.lpstrFile));
