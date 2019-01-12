@@ -37,7 +37,7 @@ namespace trview
     using namespace graphics;
 
     RouteWindow::RouteWindow(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400)), _keyboard(window())
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -160,10 +160,6 @@ namespace trview
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));
 
-        _token_store.add(_keyboard.on_char += [&](auto character)
-        {
-            _notes_area->handle_char(character);
-        });
         _token_store.add(_notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route)
