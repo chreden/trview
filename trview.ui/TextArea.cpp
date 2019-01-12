@@ -15,13 +15,8 @@ namespace trview
             set_handles_input(true);
         }
 
-        void TextArea::handle_char(uint16_t character)
+        bool TextArea::key_char(wchar_t character)
         {
-            if (focus_control() != this)
-            {
-                return;
-            }
-
             auto process_char = [&]()
             {
                 auto line = current_line();
@@ -79,6 +74,7 @@ namespace trview
 
             process_char();
             update_cursor();
+            return true;
         }
 
         void TextArea::set_text(const std::wstring& text)
