@@ -618,6 +618,7 @@ namespace trview
         _window.set_title("trview - " + name);
         _measure->reset();
         _route->clear();
+        _route_window_manager->set_route(_route.get());
     }
 
     void Viewer::render()
