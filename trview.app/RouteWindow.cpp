@@ -261,8 +261,11 @@ namespace trview
             return;
         }
 
-        _waypoints->set_selected_item(create_listbox_item(index, _route->waypoint(index)));
-        load_waypoint_details(index);
+        if (index < _route->waypoints())
+        {
+            _waypoints->set_selected_item(create_listbox_item(index, _route->waypoint(index)));
+            load_waypoint_details(index);
+        }
     }
 
     /// Set the items to that are in the level.
