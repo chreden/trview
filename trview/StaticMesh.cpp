@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StaticMesh.h"
 #include <trview.app/Mesh.h>
-#include "TransparencyBuffer.h"
+#include <trview.app/TransparencyBuffer.h>
 
 namespace trview
 {

@@ -18,7 +18,7 @@
 #include <trlevel/ILevel.h>
 
 #include "StaticMesh.h"
-#include "TransparencyBuffer.h"
+#include <trview.app/TransparencyBuffer.h>
 #include <trview.app/Mesh.h>
 #include <trview\Sector.h>
 #include <trview.app/PickResult.h>
@@ -77,9 +77,9 @@ namespace trview
         // camera: The camera to use to render.
         // texture_storage: The textures for the level.
         // selected: The selection mode to use to highlight geometry and objects.
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
-        void render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
@@ -140,7 +140,7 @@ namespace trview
         void generate_geometry(trlevel::LevelVersion level_version, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
-        void render_contained(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         void generate_trigger_geometry();

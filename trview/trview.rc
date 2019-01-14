@@ -54,6 +54,7 @@ BEGIN
     BEGIN
         MENUITEM "&Items\tCtrl+I",              ID_WINDOWS_ITEMS
         MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
+        MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
     END
     POPUP "&Help"
     BEGIN
@@ -76,6 +77,7 @@ BEGIN
     "O",            ID_ACCEL_FILE_OPEN,       ASCII,  CONTROL, NOINVERT, VIRTKEY
     "I",            ID_ACCEL_ITEM_WINDOW,     ASCII,  CONTROL, NOINVERT, VIRTKEY
     "T",            ID_ACCEL_TRIGGERS_WINDOW, ASCII,  CONTROL, NOINVERT, VIRTKEY 
+    "R",            ID_ACCEL_ROUTE_WINDOW,    ASCII,  CONTROL, NOINVERT, VIRTKEY
 END
 
 

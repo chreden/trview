@@ -59,6 +59,29 @@
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="ContextMenu.cpp" />
+    <ClCompile Include="PickResult.cpp" />
+    <ClCompile Include="Route.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectionRenderer.cpp">
+      <Filter>Selection</Filter>
+    </ClCompile>
+    <ClCompile Include="TransparencyBuffer.cpp">
+      <Filter>Transparency</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Waypoint.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteWindow.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteWindowManager.cpp">
+      <Filter>Route</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -127,6 +150,28 @@
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="ContextMenu.h" />
+    <ClInclude Include="Route.h">
+      <Filter>Route</Filter>
+    </ClInclude>
+    <ClInclude Include="Waypoint.h">
+      <Filter>Route</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectionRenderer.h">
+      <Filter>Selection</Filter>
+    </ClInclude>
+    <ClInclude Include="TransparencyBuffer.h">
+      <Filter>Transparency</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteWindow.h">
+      <Filter>Route</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteWindowManager.h">
+      <Filter>Route</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -155,6 +200,15 @@
     </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{d7102050-10b8-49dc-bb00-6929c90f8339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Route">
+      <UniqueIdentifier>{25d8b57c-1dd7-4694-82d4-d3841fe870d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Selection">
+      <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transparency">
+      <UniqueIdentifier>{4605e9d0-57f6-40ec-906a-10828e27dad5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

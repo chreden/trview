@@ -4,8 +4,8 @@
 #include <SimpleMath.h>
 #include <wrl/client.h>
 #include <d3d11.h>
-#include <trview.app/MeshVertex.h>
-#include <trview.app/TransparentTriangle.h>
+#include "MeshVertex.h"
+#include "TransparentTriangle.h"
 
 namespace trview
 {

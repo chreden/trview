@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "SelectionRenderer.h"
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
@@ -9,10 +8,9 @@
 #include <SimpleMath.h>
 #include <trview.app/Trigger.h>
 
-#include "Entity.h"
-#include "TransparencyBuffer.h"
-#include <trview.app/ICamera.h>
-#include <trview.app/ILevelTextureStorage.h>
+#include "IRenderable.h"
+#include "ICamera.h"
+#include "ILevelTextureStorage.h"
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -37,20 +35,17 @@ namespace trview
             double _; // Padding.
             Color outline_colour;
         }; 
-
-        const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
-        const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
     }
 
-    SelectionRenderer::SelectionRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage)
+    SelectionRenderer::SelectionRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
     {
         _pixel_shader = shader_storage.get("selection_pixel_shader");
         _vertex_shader = shader_storage.get("ui_vertex_shader");
-        _transparency = std::make_unique<TransparencyBuffer>(device);
+        _transparency = std::make_unique<TransparencyBuffer>(device.device());
         create_buffers(device);
     }
 
-    void SelectionRenderer::create_buffers(const ComPtr<ID3D11Device>& device)
+    void SelectionRenderer::create_buffers(const graphics::Device& device)
     {
         const SelectionVertex vertices[] =
         {
@@ -70,7 +65,7 @@ namespace trview
         memset(&vertex_data, 0, sizeof(vertex_data));
         vertex_data.pSysMem = vertices;
 
-        HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+        HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
 
         uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -84,7 +79,7 @@ namespace trview
         memset(&index_data, 0, sizeof(index_data));
         index_data.pSysMem = indices;
 
-        hr = device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+        hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC desc;
@@ -95,7 +90,7 @@ namespace trview
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+        device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC scale_desc;
@@ -106,33 +101,12 @@ namespace trview
         scale_desc.Usage = D3D11_USAGE_DYNAMIC;
         scale_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device->CreateBuffer(&scale_desc, nullptr, _scale_buffer.GetAddressOf());
+        device.device()->CreateBuffer(&scale_desc, nullptr, _scale_buffer.GetAddressOf());
     }
 
-    void SelectionRenderer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Entity& selected_item)
+    void SelectionRenderer::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
     {
-        render(context, camera, texture_storage, Item_Outline,
-            [&](auto& context, auto& camera, auto& texture_storage, auto& color) { selected_item.render(context, camera, texture_storage, color); },
-            [&](auto& camera, auto& transparency, auto& color) { selected_item.get_transparent_triangles(transparency, camera, color); });
-    }
-
-    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, Trigger& selected_trigger)
-    {
-        render(context, camera, texture_storage, Trigger_Outline,
-            [&](auto&, auto&, auto&, auto&) {},
-            [&](auto& camera, auto& transparency, auto& color) 
-        {
-            for (auto& triangle : selected_trigger.triangles())
-            {
-                transparency.add(triangle.transform(Matrix::Identity, color));
-            }
-        });
-    }
-
-    void SelectionRenderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& outline_colour, const SolidCallback& solid_callback, const TransparentCallback& transparent_callback)
-    {
-        ComPtr<ID3D11Device> device;
-        context->GetDevice(&device);
+        auto context = device.context();
 
         // Get viewport size - this is used for checking if the texture size needs to change and for
         // scaling the coordinates that the pixel shader uses for the edge detection.
@@ -143,7 +117,7 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
-            _texture = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height, RenderTarget::DepthStencilMode::Enabled);
+            _texture = std::make_unique<RenderTarget>(device.device(), viewport.Width, viewport.Height, RenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.
@@ -154,11 +128,11 @@ namespace trview
             _texture->apply(context);
 
             // Draw the regular faces of the item with a black colouring.
-            solid_callback(context, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            selected_item.render(device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
-            transparent_callback(camera, *_transparency, Color(0.0f, 0.0f, 0.0f));
+            selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.position());
             _transparency->render(context, camera, texture_storage, true);
         }

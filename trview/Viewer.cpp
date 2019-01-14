@@ -100,6 +100,28 @@ namespace trview
 
         _measure = std::make_unique<Measure>(_device, *_control);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
+        _route = std::make_unique<Route>(_device, *_shader_storage);
+
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, *_font_factory, window);
+        _token_store.add(_route_window_manager->on_waypoint_selected += [&](auto index)
+        {
+            select_waypoint(index);
+        });
+        _token_store.add(_route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); });
+        _token_store.add(_route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_route_window_manager->on_route_import += [&](const std::string& path)
+        {
+            auto route = import_route(_device, *_shader_storage, path);
+            if (route)
+            {
+                _route = std::move(route);
+                _route_window_manager->set_route(_route.get());
+            }
+        });
+        _token_store.add(_route_window_manager->on_route_export += [&](const std::string& path)
+        {
+            export_route(*_route, path);
+        });
     }
 
     Viewer::~Viewer()
@@ -142,6 +164,30 @@ namespace trview
                 _measure->reset();
             }
         });
+
+        _context_menu = std::make_unique<ContextMenu>(*_control);
+        _token_store.add(_context_menu->on_add_waypoint += [&]()
+        {
+            uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
+            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
+
+            _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
+            _context_menu->set_visible(false);
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        });
+        _token_store.add(_context_menu->on_remove_waypoint += [&]()
+        {
+            _route->remove(_current_pick.index);
+            _context_menu->set_visible(false);
+            _route_window_manager->set_route(_route.get());
+            if (_route->waypoints() > 0)
+            {
+                _route_window_manager->select_waypoint(_route->selected_waypoint());
+            }
+        });
+
+        _context_menu->set_remove_enabled(false);
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
         _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
@@ -287,6 +333,22 @@ namespace trview
                     }
                     break;
                 }
+                case VK_LEFT:
+                {
+                    if (_route->selected_waypoint() > 0)
+                    {
+                        select_waypoint(_route->selected_waypoint() - 1);
+                    }
+                    break;
+                }
+                case VK_RIGHT:
+                {
+                    if (_route->selected_waypoint() + 1 < _route->waypoints())
+                    {
+                        select_waypoint(_route->selected_waypoint() + 1);
+                    }
+                    break;
+                }
             }
         });
 
@@ -298,6 +360,11 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
+                if (!over_ui() && !over_map())
+                {
+                    _context_menu->set_visible(false);
+                }
+
                 if (!over_ui() && !over_map() && _picking->visible())
                 {
                     if (_compass_axis.has_value())
@@ -315,17 +382,20 @@ namespace trview
                         }
                         else
                         {
-                            if (_current_pick.type == PickResult::Type::Room)
+                            switch (_current_pick.type)
                             {
+                            case PickResult::Type::Room:
                                 select_room(_current_pick.index);
-                            }
-                            else if (_current_pick.type == PickResult::Type::Entity)
-                            {
+                                break;
+                            case PickResult::Type::Entity:
                                 select_item(_level->items()[_current_pick.index]);
-                            }
-                            else if (_current_pick.type == PickResult::Type::Trigger)
-                            {
+                                break;
+                            case PickResult::Type::Trigger:
                                 select_trigger(_level->triggers()[_current_pick.index]);
+                                break;
+                            case PickResult::Type::Waypoint:
+                                select_waypoint(_current_pick.index);
+                                break;
                             }
 
                             if (_settings.auto_orbit)
@@ -372,6 +442,8 @@ namespace trview
             }
             else if (button == Mouse::Button::Right)
             {
+                _context_menu->set_visible(false);
+
                 if (over_map())
                 {
                     std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
@@ -385,6 +457,21 @@ namespace trview
                             select_room(sector->room_below());
                         }
                     }
+                }
+            }
+        });
+
+        _token_store.add(_mouse.mouse_click += [&](auto button)
+        {
+            if (button == input::Mouse::Button::Right)
+            {
+                if (!over_ui() && !over_map() && _picking->visible())
+                {
+                    // Show right click menu? Or show it all the time?
+                    _context_pick = _current_pick;
+                    _context_menu->set_position(client_cursor_position(_window));
+                    _context_menu->set_visible(true);
+                    _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 }
             }
         });
@@ -405,7 +492,7 @@ namespace trview
     {
         if (_go_to_room->visible())
         {
-            if (key == 'R' && _keyboard.control())
+            if (key == 'G' && _keyboard.control())
             {
                 _go_to_room->toggle_visible();
             }
@@ -418,7 +505,7 @@ namespace trview
         {
             switch (key)
             {
-                case 'R':
+                case 'G':
                 {
                     if (_keyboard.control())
                     {
@@ -483,7 +570,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device.device(), *_shader_storage.get(), _current_level.get());
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
         _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
         _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
         _token_store.add(_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); });
@@ -492,6 +579,8 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
+        _route_window_manager->set_items(_level->items());
+        _route_window_manager->set_triggers(_level->triggers());
 
         _level->set_show_triggers(_room_navigator->show_triggers());
 
@@ -528,8 +617,10 @@ namespace trview
         _level_info->set_level_version(_current_level->get_version());
         _window.set_title("trview - " + name);
         _measure->reset();
-
+        _route->clear();
+        _route_window_manager->set_route(_route.get());
     }
+
     void Viewer::render()
     {
         // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
@@ -557,6 +648,7 @@ namespace trview
 
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
+        _route_window_manager->render(_device, _settings.vsync);
     }
 
     // Determines whether the cursor is over a UI element that would take any input.
@@ -611,12 +703,18 @@ namespace trview
 
         auto result = _level->pick(camera, position, direction);
 
+        auto route_result = _route->pick(position, direction);
+        if (route_result.hit)
+        {
+            result = route_result;
+        }
+
         _picking->set_visible(result.hit);
         if (result.hit)
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text((result.type == PickResult::Type::Room ? L"R-" : result.type == PickResult::Type::Trigger ? L"T-" : L"I-") + std::to_wstring(result.index));
+            _picking->set_text(pick_to_string(result));
             _picking->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
 
             if (_active_tool == Tool::Measure)
@@ -644,9 +742,10 @@ namespace trview
             {
                 _camera.set_target(_target);
             }
-            _level->render(_device.context(), current_camera());
+            _level->render(_device, current_camera());
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
+            _route->render(_device, current_camera(), _level->texture_storage());
             _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }
@@ -777,6 +876,18 @@ namespace trview
         }
     }
 
+    void Viewer::select_waypoint(uint32_t index)
+    {
+        select_room(_route->waypoint(index).room());
+        _target = _route->waypoint(index).position();
+        _route->select_waypoint(index);
+        _route_window_manager->select_waypoint(index);
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
+    }
+
     void Viewer::set_alternate_mode(bool enabled)
     {
         if (_level)
@@ -827,6 +938,7 @@ namespace trview
         {
             if (window_under_cursor() == _window)
             {
+                _context_menu->set_visible(false);
                 _camera_input.mouse_scroll(scroll);
             }
         });
@@ -869,4 +981,21 @@ namespace trview
             _room_navigator->set_show_triggers(show);
         }
     }
+
+    uint32_t Viewer::room_from_pick(const PickResult& pick) const
+    {
+        switch (pick.type)
+        {
+        case PickResult::Type::Room:
+            return pick.index;
+        case PickResult::Type::Entity:
+            return _level->items()[pick.index].room();
+        case PickResult::Type::Trigger:
+            return _level->triggers()[pick.index]->room();
+        case PickResult::Type::Waypoint:
+            return _route->waypoint(pick.index).room();
+        }
+        return _level->selected_room();
+    }
 }
+

@@ -10,10 +10,10 @@
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
 #include <trview.app/ICamera.h>
-#include "TransparencyBuffer.h"
+#include <trview.app/TransparencyBuffer.h>
 #include "ResourceHelper.h"
 #include "resource.h"
-#include "SelectionRenderer.h"
+#include <trview.app/SelectionRenderer.h>
 
 #include <external/nlohmann/json.hpp>
 
@@ -22,7 +22,7 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
+    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
         : _level(level)
     {
         load_type_name_lookup();
@@ -42,15 +42,15 @@ namespace trview
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
 
         // Create the texture sampler state.
-        device->CreateSamplerState(&sampler_desc, &_sampler_state);
+        device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
-        _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
-        generate_rooms(device);
+        _texture_storage = std::make_unique<LevelTextureStorage>(device.device(), *_level);
+        _mesh_storage = std::make_unique<MeshStorage>(device.device(), *_level, *_texture_storage.get());
+        generate_rooms(device.device());
         generate_triggers(device);
-        generate_entities(device);
+        generate_entities(device.device());
 
-        _transparency = std::make_unique<TransparencyBuffer>(device);
+        _transparency = std::make_unique<TransparencyBuffer>(device.device());
 
         _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
@@ -154,23 +154,25 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    void Level::render(const graphics::Device& device, const ICamera& camera)
     {
         using namespace DirectX;
+
+        auto context = device.context();
 
         context->PSSetSamplers(0, 1, &_sampler_state);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         _vertex_shader->apply(context);
         _pixel_shader->apply(context);
 
-        render_rooms(context, camera);
-        render_selected_item(context, camera);
+        render_rooms(device, camera);
+        render_selected_item(device, camera);
     }
 
     // Render the rooms in the level.
     // context: The device context.
     // camera: The current camera to render the level with.
-    void Level::render_rooms(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    void Level::render_rooms(const graphics::Device& device, const ICamera& camera)
     {
         // Only render the rooms that the current view mode includes.
         auto rooms = get_rooms_to_render(camera);
@@ -184,7 +186,7 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(context, camera, *_texture_storage.get(), room.selection_mode);
+            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers);
@@ -194,7 +196,7 @@ namespace trview
             if (_alternate_mode && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(context, camera, *_texture_storage.get(), room.selection_mode);
+                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode);
                 if (_regenerate_transparency)
                 {
                     original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode);
@@ -211,19 +213,22 @@ namespace trview
         _regenerate_transparency = false;
 
         // Render the triangles that the transparency buffer has produced.
-        _transparency->render(context, camera, *_texture_storage.get());
+        _transparency->render(device.context(), camera, *_texture_storage.get());
     }
 
-    void Level::render_selected_item(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera)
+    void Level::render_selected_item(const graphics::Device& device, const ICamera& camera)
     {
+        const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
+        const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
+
         if (_selected_item)
         {
-            _selection_renderer->render(context, camera, *_texture_storage, *_selected_item);
+            _selection_renderer->render(device, camera, *_texture_storage, *_selected_item, Item_Outline);
         }
 
         if (_selected_trigger)
         {
-            _selection_renderer->render(context, camera, *_texture_storage, *_selected_trigger);
+            _selection_renderer->render(device, camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
         }
     }
 
@@ -314,7 +319,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+    void Level::generate_triggers(const graphics::Device& device)
     {
         for (auto i = 0; i < _rooms.size(); ++i)
         {
@@ -323,7 +328,7 @@ namespace trview
             {
                 if (sector.second->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(std::make_unique<Trigger>(device, _triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
             }

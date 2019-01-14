@@ -11,7 +11,8 @@ namespace trview
             Room,
             Entity,
             Mesh,
-            Trigger
+            Trigger,
+            Waypoint
         };
 
         bool                         hit{ false };
@@ -20,4 +21,8 @@ namespace trview
         Type                         type{ Type::Room };
         uint32_t                     index{ 0u };
     };
+
+    /// Convert the pick result to a display string.
+    /// @param pick The result to convert.
+    std::wstring pick_to_string(const PickResult& pick);
 }

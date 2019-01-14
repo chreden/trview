@@ -5,6 +5,12 @@ namespace trview
 {
     namespace input
     {
+        namespace
+        {
+            /// The amount of milliseconds before a click is no longer considered a click.
+            const uint32_t ClickDelta = 200;
+        }
+
         Mouse::Mouse(HWND window)
             : MessageHandler(window)
         {
@@ -38,16 +44,27 @@ namespace trview
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_UP)
                 {
+                    auto difference = GetTickCount() - _left_down;
+                    if (difference < ClickDelta)
+                    {
+                        mouse_click(Button::Left);
+                    }
                     mouse_up(Button::Left);
                 }
 
                 if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
                 {
+                    _right_down = GetTickCount();
                     mouse_down(Button::Right);
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_UP)
                 {
+                    auto difference = GetTickCount() - _right_down;
+                    if (difference < ClickDelta)
+                    {
+                        mouse_click(Button::Right);
+                    }
                     mouse_up(Button::Right);
                 }
 

@@ -23,10 +23,12 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
+    <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
+    <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="ItemsWindowManager.cpp" />
@@ -34,12 +36,19 @@
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OrbitCamera.cpp" />
+    <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
+    <ClCompile Include="Route.cpp" />
+    <ClCompile Include="RouteWindow.cpp" />
+    <ClCompile Include="RouteWindowManager.cpp" />
+    <ClCompile Include="SelectionRenderer.cpp" />
     <ClCompile Include="Toolbar.cpp" />
+    <ClCompile Include="TransparencyBuffer.cpp" />
     <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="TriggersWindowManager.cpp" />
+    <ClCompile Include="Waypoint.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -47,10 +56,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
+    <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
+    <ClInclude Include="IRenderable.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="ItemsWindowManager.h" />
@@ -61,12 +72,18 @@
     <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PickResult.h" />
     <ClInclude Include="RecentFiles.h" />
+    <ClInclude Include="Route.h" />
+    <ClInclude Include="RouteWindow.h" />
+    <ClInclude Include="RouteWindowManager.h" />
+    <ClInclude Include="SelectionRenderer.h" />
     <ClInclude Include="Toolbar.h" />
+    <ClInclude Include="TransparencyBuffer.h" />
     <ClInclude Include="TransparentTriangle.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />
+    <ClInclude Include="Waypoint.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />
   </ItemGroup>

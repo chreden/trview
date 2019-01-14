@@ -5,6 +5,7 @@
 #include "TransparentTriangle.h"
 #include "PickResult.h"
 #include "Mesh.h"
+#include "IRenderable.h"
 
 namespace trview
 {
@@ -38,10 +39,11 @@ namespace trview
     class TransparencyBuffer;
     struct ICamera;
 
-    class Trigger final 
+    class Trigger final : public IRenderable
     {
     public:
-        explicit Trigger(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        explicit Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        virtual ~Trigger() = default;
 
         uint32_t    number() const;
         uint16_t    room() const;
@@ -58,6 +60,9 @@ namespace trview
         void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
         bool has_command(TriggerCommandType type) const;
+
+        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;

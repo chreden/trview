@@ -34,6 +34,9 @@
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
+#include <trview.app/ContextMenu.h>
+#include <trview.app/Route.h>
+#include <trview.app/RouteWindowManager.h>
 
 namespace trview
 {
@@ -107,6 +110,7 @@ namespace trview
         void select_room(uint32_t room);
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
+        void select_waypoint(uint32_t index);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
@@ -123,6 +127,7 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
         void set_show_triggers(bool show);
+        uint32_t room_from_pick(const PickResult& pick) const;
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
@@ -164,6 +169,7 @@ namespace trview
 
         // Tools:
         std::unique_ptr<Toolbar> _toolbar;
+        std::unique_ptr<ContextMenu> _context_menu;
 
         enum class Tool
         {
@@ -175,6 +181,11 @@ namespace trview
         std::unique_ptr<Measure> _measure;
         std::unique_ptr<Compass> _compass;
         std::optional<Compass::Axis> _compass_axis;
+
+        // Temporary route objects.
+        PickResult _context_pick;
+        std::unique_ptr<Route> _route;
+        std::unique_ptr<RouteWindowManager> _route_window_manager;
     };
 }
 
