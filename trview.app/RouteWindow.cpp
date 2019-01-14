@@ -138,13 +138,20 @@ namespace trview
             });
         _token_store.add(stats_box->on_item_selected += [&](const auto& item)
         {
+            const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
             {
             case Waypoint::Type::Entity:
-                on_item_selected(_all_items[_route->waypoint(_selected_index).index()]);
+                if (index < _all_items.size())
+                {
+                    on_item_selected(_all_items[index]);
+                }
                 break;
             case Waypoint::Type::Trigger:
-                on_trigger_selected(_all_triggers[_route->waypoint(_selected_index).index()]);
+                if (index < _all_triggers.size())
+                {
+                    on_trigger_selected(_all_triggers[index]);
+                }
                 break;
             }
         });
@@ -176,11 +183,25 @@ namespace trview
         std::wstring type = waypoint_type_to_string(waypoint.type());
         if (waypoint.type() == Waypoint::Type::Entity)
         {
-            type = _all_items[waypoint.index()].type();
+            if (waypoint.index() < _all_items.size())
+            {
+                type = _all_items[waypoint.index()].type();
+            }
+            else
+            {
+                type = L"Invalid entity";
+            }
         }
         else if (waypoint.type() == Waypoint::Type::Trigger)
         {
-            type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+            if (waypoint.index() < _all_triggers.size())
+            {
+                type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+            }
+            else
+            {
+                type = L"Invalid trigger";
+            }
         }
         return { {{ L"#", std::to_wstring(index) },
                  { L"Type", type}} };
@@ -208,11 +229,21 @@ namespace trview
             stats.push_back(make_item(L"Target Index", std::to_wstring(waypoint.index())));
             if (waypoint.type() == Waypoint::Type::Entity)
             {
-                stats.push_back(make_item(L"Entity", _all_items[waypoint.index()].type()));
+                std::wstring type = L"Invalid entity";
+                if (waypoint.index() < _all_items.size())
+                {
+                    type = _all_items[waypoint.index()].type();
+                }
+                stats.push_back(make_item(L"Entity", type));
             }
             else if (waypoint.type() == Waypoint::Type::Trigger)
             {
-                stats.push_back(make_item(L"Trigger Type", trigger_type_name(_all_triggers[waypoint.index()]->type())));
+                std::wstring type = L"Invalid trigger";
+                if (waypoint.index() < _all_items.size())
+                {
+                    type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+                }
+                stats.push_back(make_item(L"Trigger Type", type));
             }
         }
 
