@@ -1,3 +1,6 @@
+/// @file IFontMeasurer.h
+/// @brief Interface to allow the UI to find out what size a string will be when rendered.
+
 #pragma once
 
 #include <trview.common/Size.h>
@@ -7,6 +10,7 @@ namespace trview
 {
     namespace ui
     {
+        /// Interface to allow the UI to find out what size a string will be when rendered.
         struct IFontMeasurer
         {
             virtual ~IFontMeasurer() = 0;
