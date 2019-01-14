@@ -7,9 +7,6 @@
     <ClInclude Include="Window.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Label.h">
-      <Filter>Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Image.h">
       <Filter>Controls</Filter>
     </ClInclude>
@@ -49,15 +46,21 @@
     <ClInclude Include="Dropdown.h">
       <Filter>Controls\Dropdown</Filter>
     </ClInclude>
+    <ClInclude Include="TextArea.h">
+      <Filter>Controls\TextArea</Filter>
+    </ClInclude>
+    <ClInclude Include="Label.h">
+      <Filter>Controls\Label</Filter>
+    </ClInclude>
+    <ClInclude Include="IFontMeasurer.h">
+      <Filter>Controls\Label</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Label.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp">
@@ -99,6 +102,15 @@
     <ClCompile Include="Dropdown.cpp">
       <Filter>Controls\Dropdown</Filter>
     </ClCompile>
+    <ClCompile Include="TextArea.cpp">
+      <Filter>Controls\TextArea</Filter>
+    </ClCompile>
+    <ClCompile Include="Label.cpp">
+      <Filter>Controls\Label</Filter>
+    </ClCompile>
+    <ClCompile Include="IFontMeasurer.cpp">
+      <Filter>Controls\Label</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -115,6 +127,12 @@
     </Filter>
     <Filter Include="Controls\Dropdown">
       <UniqueIdentifier>{07f12ab6-b126-4ef8-b58d-9a1ef6abb44b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\TextArea">
+      <UniqueIdentifier>{4442810d-913c-42e8-839a-c9de84a71ec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Label">
+      <UniqueIdentifier>{4a8f2bab-af56-45f4-acfd-cacd829e7763}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

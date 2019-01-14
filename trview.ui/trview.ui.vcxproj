@@ -24,6 +24,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="Dropdown.h" />
     <ClInclude Include="GroupBox.h" />
+    <ClInclude Include="IFontMeasurer.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Listbox.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Checkbox.h" />
+    <ClInclude Include="TextArea.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +43,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Dropdown.cpp" />
     <ClCompile Include="GroupBox.cpp" />
+    <ClCompile Include="IFontMeasurer.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Listbox.cpp" />
@@ -52,6 +55,7 @@
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Checkbox.cpp" />
+    <ClCompile Include="TextArea.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

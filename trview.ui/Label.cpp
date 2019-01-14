@@ -52,5 +52,19 @@ namespace trview
             on_text_changed(_text);
             on_invalidate();
         }
+
+        Size Label::measure_text(const std::wstring& text) const
+        {
+            if (!_measurer)
+            {
+                return Size();
+            }
+            return _measurer->measure(text);
+        }
+
+        void Label::set_measurer(IFontMeasurer* measurer)
+        {
+            _measurer = measurer;
+        }
     }
 }

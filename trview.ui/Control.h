@@ -133,6 +133,11 @@ namespace trview
             /// @returns True if the event was processed by the control.
             bool process_key_down(uint16_t key);
 
+            /// Process a char event.
+            /// @param key The character that was pressed.
+            /// @returns True if the event was processed by the control.
+            bool process_char(wchar_t key);
+
             /// Set the size of the control.
             /// @param size The new size of the control.
             void set_size(Size size);
@@ -159,6 +164,10 @@ namespace trview
             /// Set the z order of the control.
             /// @param value The new z order.
             void set_z(int value);
+
+            /// Remove the specified child element.
+            /// @param child_element The element to remove.
+            void remove_child(Control* child_element);
 
             /// Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
@@ -213,6 +222,12 @@ namespace trview
             /// @returns True if the key event was handled.
             virtual bool key_down(uint16_t key);
 
+            /// To be called when a key character is pressed.
+            /// This should be overriden by child elements to handle a key char event.
+            /// @param key The key that was pressed.
+            /// @returns True if the key char event was handled.
+            virtual bool key_char(wchar_t key);
+
             /// Set the control in the tree that has focus.
             /// @param control The current focus control
             void set_focus_control(Control* control);
@@ -246,6 +261,10 @@ namespace trview
             /// Process a key down and recurse to child controls.
             /// @param key The key that was pressed.
             bool inner_process_key_down(uint16_t key);
+
+            /// Process a character key press and recurse to child controls.
+            /// @param key The character that was pressed.
+            bool inner_process_char(wchar_t key);
 
             /// Process a mouse scroll and recurse to child controls.
             /// @param delta The mouse scroll delta.

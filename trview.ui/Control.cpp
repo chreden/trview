@@ -311,6 +311,11 @@ namespace trview
             return false;
         }
 
+        bool Control::key_char(wchar_t key)
+        {
+            return false;
+        }
+
         void Control::set_focus_control(Control* control)
         {
             if (_parent)
@@ -378,6 +383,27 @@ namespace trview
             // If none of the child elements have handled this event themselves, call the key_down
             // event of the control.
             return key_down(key);
+        }
+
+        bool Control::process_char(wchar_t key)
+        {
+            if (_focus_control && _focus_control != this && _focus_control->key_char(key))
+            {
+                return true;
+            }
+            return inner_process_char(key);
+        }
+
+        bool Control::inner_process_char(wchar_t key)
+        {
+            for (auto& child : child_elements())
+            {
+                if (child->inner_process_char(key))
+                {
+                    return true;
+                }
+            }
+            return key_char(key);
         }
 
         bool Control::is_mouse_over(const Point& position) const
@@ -487,6 +513,12 @@ namespace trview
         {
             _z = value;
             on_invalidate();
+        }
+
+        void Control::remove_child(Control* child_element)
+        {
+            _child_elements.erase(std::remove_if(_child_elements.begin(), _child_elements.end(), [&](const auto& element) { return element.get() == child_element; }), _child_elements.end());
+            on_hierarchy_changed();
         }
     }
 }
