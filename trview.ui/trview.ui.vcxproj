@@ -34,6 +34,7 @@
     <ClInclude Include="Slider.h" />
     <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Checkbox.h" />
+    <ClInclude Include="TextArea.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +53,7 @@
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Checkbox.cpp" />
+    <ClCompile Include="TextArea.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
