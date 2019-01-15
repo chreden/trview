@@ -87,7 +87,7 @@ namespace trview
             return;
         }
         _waypoints.erase(_waypoints.begin() + index);
-        if (_selected_index > index)
+        if (_selected_index >= index && _selected_index > 0)
         {
             --_selected_index;
         }
