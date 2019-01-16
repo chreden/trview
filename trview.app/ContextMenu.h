@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trview.ui/StackPanel.h>
-#include <trview.ui/Label.h>
+#include <trview.ui/Button.h>
 
 namespace trview
 {
@@ -32,7 +32,7 @@ namespace trview
         Event<> on_remove_waypoint;
     private:
         ui::StackPanel* _menu;
-        ui::Label*      _remove_label;
+        ui::Button*     _remove_button;
         bool            _remove_enabled{ false };
         TokenStore      _token_store;
     };
