@@ -174,8 +174,8 @@ namespace trview
         stats_list->set_show_highlight(false);
 
         _stats_list = details_panel->add_child(std::move(stats_list));
-        _add_to_route = details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
-        _token_store.add(_add_to_route->on_click += [&]()
+        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
+        _token_store.add(add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())
             {

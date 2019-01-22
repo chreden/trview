@@ -145,7 +145,7 @@ namespace trview
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(0, 0), Size(panel_width - 20, 120), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Point(), Size(panel_width - 20, 120), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 100 },

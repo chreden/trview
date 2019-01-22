@@ -71,7 +71,6 @@ namespace trview
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
-        ui::Button* _add_to_route;
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
         /// Whether the item window is tracking the current room.
