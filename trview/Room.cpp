@@ -13,6 +13,7 @@
 #include <DirectXCollision.h>
 #include <array>
 #include <iterator>
+#include <numeric>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -246,11 +247,6 @@ namespace trview
 
         if (include_triggers)
         {
-            if (!_trigger_geometry_generated)
-            {
-                generate_trigger_geometry();
-            }
-
             for (const auto& trigger : _triggers)
             {
                 for (const auto& triangle : trigger.second->triangles())
@@ -412,9 +408,11 @@ namespace trview
             }
 
             trigger->set_triangles(triangles);
-        }
 
-        _trigger_geometry_generated = true;
+            float centre_y = std::accumulate(y_top.begin(), y_top.end(), std::accumulate(y_bottom.begin(), y_bottom.end(), 0.0f)) / 8.0f;
+
+            trigger->set_position(Vector3(x, centre_y, z));
+        }
     }
 
     uint32_t Room::get_sector_id(int32_t x, int32_t z) const

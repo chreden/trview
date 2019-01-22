@@ -331,6 +331,7 @@ namespace trview
                     _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
+                room->generate_trigger_geometry();
             }
         }
     }

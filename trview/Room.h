@@ -136,6 +136,8 @@ namespace trview
         /// Get the bounding box of the room. The bounding box is pre-transformed to the coordinates of the room.
         /// @returns The bounding box for the room.
         const DirectX::BoundingBox& bounding_box() const;
+
+        void generate_trigger_geometry();
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
@@ -143,7 +145,6 @@ namespace trview
         void render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
-        void generate_trigger_geometry();
         Sector*  get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
@@ -171,6 +172,5 @@ namespace trview
         AlternateMode        _alternate_mode;
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
-        bool _trigger_geometry_generated{ false };
     };
 }
