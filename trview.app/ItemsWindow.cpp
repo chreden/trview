@@ -159,7 +159,7 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
-        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(180, 210), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
         auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 160), Colours::ItemDetails);
@@ -174,8 +174,15 @@ namespace trview
         stats_list->set_show_highlight(false);
 
         _stats_list = details_panel->add_child(std::move(stats_list));
-        details_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
-        details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
+        _add_to_route = details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
+        _token_store.add(_add_to_route->on_click += [&]()
+        {
+            if (_selected_item.has_value())
+            {
+                on_add_to_route(_selected_item.value());
+            }
+        });
+
         group_box->add_child(std::move(details_panel));
 
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
