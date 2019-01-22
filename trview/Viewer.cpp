@@ -59,6 +59,13 @@ namespace trview
         }
         _token_store.add(_items_windows->on_item_selected += [this](const auto& item) { select_item(item); });
         _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_items_windows->on_add_to_route += [this](const auto& item)
+        {
+            auto entity = _current_level->get_entity(item.number());
+            uint32_t new_index = _route->insert(entity.position(), item.room(), Waypoint::Type::Entity, item.number());
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        });
 
         _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
         if (_settings.triggers_startup)
@@ -168,10 +175,8 @@ namespace trview
         _context_menu = std::make_unique<ContextMenu>(*_control);
         _token_store.add(_context_menu->on_add_waypoint += [&]()
         {
-            uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-
-            _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
+            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
             _context_menu->set_visible(false);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);

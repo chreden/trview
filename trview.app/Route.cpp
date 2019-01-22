@@ -50,9 +50,23 @@ namespace trview
         insert(position, room, index, Waypoint::Type::Position, 0u);
     }
 
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room)
+    {
+        uint32_t index = next_index();
+        insert(position, room, index);
+        return index;
+    }
+
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index));
+    }
+
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    {
+        uint32_t index = next_index();
+        insert(position, room, index, type, type_index);
+        return index;
     }
 
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
@@ -151,6 +165,11 @@ namespace trview
     uint32_t Route::waypoints() const
     {
         return _waypoints.size();
+    }
+
+    uint32_t Route::next_index() const
+    {
+        return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)

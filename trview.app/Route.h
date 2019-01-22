@@ -39,8 +39,13 @@ namespace trview
         /// @param position The new waypoint.
         /// @param room The room that the waypoint is in.
         /// @param index The index in the route list to put the waypoint.
-        /// @param room The room
         void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index);
+
+        /// Insert the new waypoint into the route based on the currently selected waypoint.
+        /// @param position The new waypoint.
+        /// @param room The room that the waypoint is in.
+        /// @return The index of the new waypoint.
+        uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room);
 
         /// Insert a new non-positional waypoint.
         /// @param position The position of the waypoint in the world.
@@ -49,6 +54,14 @@ namespace trview
         /// @param index The index in the route list to put the waypoint.
         /// @param type_index The index of the trigger or entity to reference.
         void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index);
+
+        /// Insert a new non-positional waypoint based on the currently selected waypoint.
+        /// @param position The position of the waypoint in the world.
+        /// @param room The room that the waypoint is in.
+        /// @param type The type of waypoint.
+        /// @param type_index The index of the trigger or entity to reference.
+        /// @return The index of the new waypoint.
+        uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index);
 
         /// Pick against the waypoints in the route.
         /// @param position The position of the camera.
@@ -83,6 +96,8 @@ namespace trview
         /// Get the number of waypoints in the route.
         uint32_t waypoints() const;
     private:
+        uint32_t next_index() const;
+
         std::vector<Waypoint> _waypoints;
         std::unique_ptr<Mesh> _waypoint_mesh;
         SelectionRenderer     _selection_renderer;
