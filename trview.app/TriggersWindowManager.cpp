@@ -40,6 +40,7 @@ namespace trview
         auto triggers_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
+        triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->set_items(_items);
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);

@@ -43,6 +43,9 @@ namespace trview
         /// Event raised when a trigger is selected in one of the item windows.
         Event<Trigger*> on_trigger_selected;
 
+        /// Event raised when the 'add to route' button is pressed in one of the item windows.
+        Event<Item> on_add_to_route;
+
         /// Render all of the item windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.

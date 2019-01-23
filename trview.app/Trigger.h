@@ -60,6 +60,8 @@ namespace trview
         void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
         bool has_command(TriggerCommandType type) const;
+        void set_position(const DirectX::SimpleMath::Vector3& position);
+        DirectX::SimpleMath::Vector3 position() const;
 
         virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
@@ -68,6 +70,7 @@ namespace trview
         std::vector<Command> _commands;
         std::unique_ptr<Mesh> _mesh;
         Microsoft::WRL::ComPtr<ID3D11Device> _device;
+        DirectX::SimpleMath::Vector3 _position;
         TriggerType _type;
         uint32_t _number;
         uint16_t _room;

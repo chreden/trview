@@ -205,6 +205,16 @@ namespace trview
         }
     }
 
+    void Trigger::set_position(const DirectX::SimpleMath::Vector3& position)
+    {
+        _position = position;
+    }
+
+    DirectX::SimpleMath::Vector3 Trigger::position() const
+    {
+        return _position;
+    }
+
     std::wstring trigger_type_name(TriggerType type)
     {
         auto name = trigger_type_names.find(type);

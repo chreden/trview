@@ -59,6 +59,13 @@ namespace trview
         }
         _token_store.add(_items_windows->on_item_selected += [this](const auto& item) { select_item(item); });
         _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_items_windows->on_add_to_route += [this](const auto& item)
+        {
+            auto entity = _current_level->get_entity(item.number());
+            uint32_t new_index = _route->insert(entity.position(), item.room(), Waypoint::Type::Entity, item.number());
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        });
 
         _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
         if (_settings.triggers_startup)
@@ -67,6 +74,12 @@ namespace trview
         }
         _token_store.add(_triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); });
         _token_store.add(_triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
+        _token_store.add(_triggers_windows->on_add_to_route += [this](const auto& trigger)
+        {
+            uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        });
 
         _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
         _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
@@ -168,10 +181,8 @@ namespace trview
         _context_menu = std::make_unique<ContextMenu>(*_control);
         _token_store.add(_context_menu->on_add_waypoint += [&]()
         {
-            uint32_t new_index = _route->waypoints() == 0 ? 0 : _route->selected_waypoint() + 1;
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-
-            _route->insert(_context_pick.position, room_from_pick(_context_pick), new_index, type, _context_pick.index);
+            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
             _context_menu->set_visible(false);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
@@ -856,21 +867,7 @@ namespace trview
         if (_level)
         {
             select_room(trigger->room());
-
-            const auto room = _level->room(trigger->room());
-            const auto room_info = room->info();
-
-            // Calculate the X/Z position - the Y must be determined by casting a ray from above 
-            // directly down, to see what it hits. If it hits nothing, use the centre of the room.
-            const float x = room_info.x / trlevel::Scale_X + trigger->x() + 0.5f;
-            const float z = room_info.z / trlevel::Scale_Z + (room->num_z_sectors() - 1 - trigger->z()) + 0.5f;
-
-            using namespace DirectX::SimpleMath;
-            const auto pick = room->pick(Vector3(x, -500.0f, z), Vector3(0, +1, 0), false);
-            const float y = pick.hit ? pick.position.y : room->centre().y;
-
-            _target = DirectX::SimpleMath::Vector3(x, y, z);
-
+            _target = trigger->position();
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
         }
