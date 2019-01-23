@@ -185,6 +185,12 @@ namespace trview
 
         bool Listbox::key_down(uint16_t key)
         {
+            if (key == VK_DELETE)
+            {
+                on_delete();
+                return true;
+            }
+
             if (key != VK_UP && key != VK_DOWN)
             {
                 return false;

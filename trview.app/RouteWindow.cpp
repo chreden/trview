@@ -116,6 +116,10 @@ namespace trview
             load_waypoint_details(index);
             on_waypoint_selected(index);
         });
+        _token_store.add(waypoints->on_delete += [&]() {
+            on_waypoint_deleted(_selected_index);
+        });
+
         _waypoints = left_panel->add_child(std::move(waypoints));
         return left_panel;
     }
