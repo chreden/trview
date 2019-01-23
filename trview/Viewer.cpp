@@ -359,6 +359,11 @@ namespace trview
                     }
                     break;
                 }
+                case VK_DELETE:
+                {
+                    remove_waypoint(_route->selected_waypoint());
+                    break;
+                }
             }
         });
 
