@@ -71,13 +71,13 @@ namespace trview
             button->set_text_background_colour(Colours::FlipOff);
             auto group_button = _alternate_groups->add_child(std::move(button));
 
-            _token_store.add(group_button->on_click += [group_button, this, group]()
+            _token_store += group_button->on_click += [group_button, this, group]()
             {
                 auto group_value = !_alternate_group_values[group];
                 group_button->set_text_background_colour(group_value ? Colours::FlipOn : Colours::FlipOff);
                 on_alternate_group(group, group_value);
                 _alternate_group_values[group] = group_value;
-            });
+            };
 
             _alternate_group_buttons[group] = group_button;
         }

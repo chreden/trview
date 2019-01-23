@@ -27,13 +27,13 @@ namespace trview
         // Add the similar remove waypoint button 
         auto remove_button = std::make_unique<Button>(Point(), Size(100, 24), L"Remove Waypoint");
         remove_button->set_text_background_colour(Colours::Button);
-        _token_store.add(remove_button->on_click += [&]()
+        _token_store += remove_button->on_click += [&]()
         {
             if (_remove_enabled)
             {
                 on_remove_waypoint();
             }
-        });
+        };
         _remove_button = _menu->add_child(std::move(remove_button));
 
         _menu->set_visible(false);

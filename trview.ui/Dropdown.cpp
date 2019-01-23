@@ -11,12 +11,12 @@ namespace trview
             : Window(position, size, Colour(1.0f, 0.0f, 0.0f))
         {
             _button = add_child(std::make_unique<Button>(position, size, L""));
-            _token_store.add(_button->on_click += [&]()
+            _token_store += _button->on_click += [&]()
             {
                 _dropdown->set_visible(!_dropdown->visible());
                 set_focus_control(this);
                 update_dropdown();
-            });
+            };
         }
 
         void Dropdown::set_dropdown_scope(ui::Control* scope)
@@ -30,13 +30,13 @@ namespace trview
                 });
             dropdown->set_show_headers(false);
             dropdown->set_show_scrollbar(false);
-            _token_store.add(dropdown->on_item_selected += [&](const auto& item)
+            _token_store += dropdown->on_item_selected += [&](const auto& item)
             {
                 auto value = item.value(L"Name");
                 on_value_selected(value);
                 _button->set_text(value);
                 _dropdown->set_visible(false);
-            });
+            };
             _dropdown = scope->add_child(std::move(dropdown));
             update_dropdown();
         }

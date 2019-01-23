@@ -73,19 +73,19 @@ namespace trview
         _ui_renderer(std::make_unique<render::Renderer>(device.device(), shader_storage, font_factory, window().size())),
         _mouse(window()), _keyboard(window())
     {
-        _token_store.add(_window_resizer.on_resize += [=]()
+        _token_store += _window_resizer.on_resize += [=]()
         {
             _device_window->resize();
             update_layout();
             _ui_renderer->set_host_size(window().size());
-        });
+        };
 
-        _token_store.add(_mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); });
-        _token_store.add(_mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); });
-        _token_store.add(_keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); });
-        _token_store.add(_keyboard.on_char += [&](auto key) { _ui->process_char(key); });
+        _token_store += _mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); };
+        _token_store += _mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); };
+        _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); };
+        _token_store += _mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); };
+        _token_store += _keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); };
+        _token_store += _keyboard.on_char += [&](auto key) { _ui->process_char(key); };
 
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
     }
@@ -156,10 +156,10 @@ namespace trview
     void CollapsiblePanel::add_expander(Control& parent)
     {
         auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
-        _token_store.add(expander->on_click += [this]()
+        _token_store += expander->on_click += [this]()
         {
             toggle_expand();
-        });
+        };
         _expander = parent.add_child(std::move(expander));
     }
 }

@@ -2,8 +2,9 @@
 
 namespace trview
 {
-    void TokenStore::add(EventBase::Token&& token)
+    TokenStore& TokenStore::operator += (EventBase::Token&& token)
     {
         _tokens.emplace_back(std::move(token));
+        return *this;
     }
 }

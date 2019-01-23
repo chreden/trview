@@ -21,21 +21,21 @@ namespace trview
 
         // Resize the toolbar.
         set_position(control.size());
-        _token_store.add(control.on_size_changed += set_position);
-        _token_store.add(_toolbar->on_size_changed += 
+        _token_store += control.on_size_changed += set_position;
+        _token_store += _toolbar->on_size_changed += 
             [=](const auto&) 
         {
             set_position(_toolbar->parent()->size());
-        });
+        };
     }
 
     void Toolbar::add_tool(const std::wstring& name, const std::wstring& text)
     {
         auto tool = std::make_unique<Button>(Point(), Size(32, 32), text);
-        _token_store.add(tool->on_click += [=]()
+        _token_store += tool->on_click += [=]()
         {
             on_tool_clicked(name);
-        });
+        };
         _toolbar->add_child(std::move(tool));
     }
 }

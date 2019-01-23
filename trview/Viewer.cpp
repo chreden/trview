@@ -57,52 +57,52 @@ namespace trview
         {
             _items_windows->create_window();
         }
-        _token_store.add(_items_windows->on_item_selected += [this](const auto& item) { select_item(item); });
-        _token_store.add(_items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
-        _token_store.add(_items_windows->on_add_to_route += [this](const auto& item)
+        _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
             auto entity = _current_level->get_entity(item.number());
             uint32_t new_index = _route->insert(entity.position(), item.room(), Waypoint::Type::Entity, item.number());
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
-        });
+        };
 
         _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
         }
-        _token_store.add(_triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); });
-        _token_store.add(_triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); });
-        _token_store.add(_triggers_windows->on_add_to_route += [this](const auto& trigger)
+        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
             uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
-        });
+        };
 
-        _token_store.add(_level_switcher.on_switch_level += [=](const auto& file) { open(file); });
-        _token_store.add(on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); });
+        _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
+        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
-        _token_store.add(_window_resizer.on_resize += [=]()
+        _token_store += _window_resizer.on_resize += [=]()
         {
             _main_window->resize();
             resize_elements();
-        });
+        };
 
-        _token_store.add(_recent_files.on_file_open += [=](const auto& file) { open(file); });
+        _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
         _recent_files.set_recent_files(_settings.recent_files);
-        _token_store.add(on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); });
+        _token_store += on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
 
-        _token_store.add(_file_dropper.on_file_dropped += [&](const auto& file) { open(file); });
+        _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
-        _token_store.add(_alternate_group_toggler.on_alternate_group += [&](uint32_t group) 
+        _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group) 
         { 
             if (!_go_to_room->visible())
             {
                 set_alternate_group(group, !alternate_group(group));
             }
-        });
+        };
 
         initialise_input();
 
@@ -116,13 +116,13 @@ namespace trview
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
         _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, *_font_factory, window);
-        _token_store.add(_route_window_manager->on_waypoint_selected += [&](auto index)
+        _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
-        });
-        _token_store.add(_route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); });
-        _token_store.add(_route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); });
-        _token_store.add(_route_window_manager->on_route_import += [&](const std::string& path)
+        };
+        _token_store += _route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); };
+        _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _route_window_manager->on_route_import += [&](const std::string& path)
         {
             auto route = import_route(_device, *_shader_storage, path);
             if (route)
@@ -130,15 +130,15 @@ namespace trview
                 _route = std::move(route);
                 _route_window_manager->set_route(_route.get());
             }
-        });
-        _token_store.add(_route_window_manager->on_route_export += [&](const std::string& path)
+        };
+        _token_store += _route_window_manager->on_route_export += [&](const std::string& path)
         {
             export_route(*_route, path);
-        });
-        _token_store.add(_route_window_manager->on_waypoint_deleted += [&](auto index)
+        };
+        _token_store += _route_window_manager->on_waypoint_deleted += [&](auto index)
         {
             remove_waypoint(index);
-        });
+        };
     }
 
     Viewer::~Viewer()
@@ -161,10 +161,10 @@ namespace trview
         generate_tool_window();
 
         _go_to_room = std::make_unique<GoToRoom>(*_control.get());
-        _token_store.add(_go_to_room->room_selected += [&](uint32_t room)
+        _token_store += _go_to_room->room_selected += [&](uint32_t room)
         {
             select_room(room);
-        });
+        };
 
         auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
@@ -173,66 +173,66 @@ namespace trview
 
         _toolbar = std::make_unique<Toolbar>(*_control);
         _toolbar->add_tool(L"Measure", L"|....|");
-        _token_store.add(_toolbar->on_tool_clicked += [this](const std::wstring& tool)
+        _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
         {
             if (tool == L"Measure")
             {
                 _active_tool = Tool::Measure;
                 _measure->reset();
             }
-        });
+        };
 
         _context_menu = std::make_unique<ContextMenu>(*_control);
-        _token_store.add(_context_menu->on_add_waypoint += [&]()
+        _token_store += _context_menu->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
             uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
             _context_menu->set_visible(false);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
-        });
-        _token_store.add(_context_menu->on_remove_waypoint += [&]()
+        };
+        _token_store += _context_menu->on_remove_waypoint += [&]()
         {
             remove_waypoint(_current_pick.index);
             _context_menu->set_visible(false);
-        });
+        };
 
         _context_menu->set_remove_enabled(false);
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *_texture_storage.get());
-        _token_store.add(_level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); });
+        _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window = std::make_unique<SettingsWindow>(*_control.get());
-        _token_store.add(_settings_window->on_vsync += [&](bool value)
+        _token_store += _settings_window->on_vsync += [&](bool value)
         { 
             _settings.vsync = value; 
             save_user_settings(_settings);
-        });
-        _token_store.add(_settings_window->on_go_to_lara += [&](bool value)
+        };
+        _token_store += _settings_window->on_go_to_lara += [&](bool value)
         { 
             _settings.go_to_lara = value; 
             save_user_settings(_settings); 
-        });
-        _token_store.add(_settings_window->on_invert_map_controls += [&](bool value)
+        };
+        _token_store += _settings_window->on_invert_map_controls += [&](bool value)
         {
             _settings.invert_map_controls = value;
             save_user_settings(_settings);
-        });
-        _token_store.add(_settings_window->on_items_startup += [&](bool value)
+        };
+        _token_store += _settings_window->on_items_startup += [&](bool value)
         {
             _settings.items_startup = value;
             save_user_settings(_settings);
-        });
-        _token_store.add(_settings_window->on_triggers_startup += [&](bool value)
+        };
+        _token_store += _settings_window->on_triggers_startup += [&](bool value)
         {
             _settings.triggers_startup = value;
             save_user_settings(_settings);
-        });
-        _token_store.add(_settings_window->on_auto_orbit += [&](bool value)
+        };
+        _token_store += _settings_window->on_auto_orbit += [&](bool value)
         {
             _settings.auto_orbit = value;
             save_user_settings(_settings);
-        });
+        };
         _settings_window->set_vsync(_settings.vsync);
         _settings_window->set_go_to_lara(_settings.go_to_lara);
         _settings_window->set_invert_map_controls(_settings.invert_map_controls);
@@ -256,43 +256,43 @@ namespace trview
         tool_window->set_margin(Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());
-        _token_store.add(_room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); });
-        _token_store.add(_room_navigator->on_highlight += [&](bool) { toggle_highlight(); });
-        _token_store.add(_room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); });
+        _token_store += _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
+        _token_store += _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
+        _token_store += _room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); };
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
-        _token_store.add(_flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); });
-        _token_store.add(_flipmaps->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); });
+        _token_store += _flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); };
+        _token_store += _flipmaps->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); };
 
         _neighbours = std::make_unique<Neighbours>(*tool_window.get(), *_texture_storage.get());
-        _token_store.add(_neighbours->on_depth_changed += [&](int32_t value)
+        _token_store += _neighbours->on_depth_changed += [&](int32_t value)
         {
             if (_level)
             {
                 _level->set_neighbour_depth(value);
             }
-        });
-        _token_store.add(_neighbours->on_enabled_changed += [&](bool enabled)
+        };
+        _token_store += _neighbours->on_enabled_changed += [&](bool enabled)
         {
             if (_level)
             {
                 _level->set_highlight_mode(enabled ? Level::RoomHighlightMode::Neighbours : Level::RoomHighlightMode::None);
                 _room_navigator->set_highlight(false);
             }
-        });
+        };
 
         _camera_controls = std::make_unique<CameraControls>(*tool_window.get());
-        _token_store.add(_camera_controls->on_reset += [&]() { _camera.reset(); });
-        _token_store.add(_camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); });
-        _token_store.add(_camera_controls->on_sensitivity_changed += [&](float value)
+        _token_store += _camera_controls->on_reset += [&]() { _camera.reset(); };
+        _token_store += _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _camera_controls->on_sensitivity_changed += [&](float value)
         {
             _settings.camera_sensitivity = value;
-        });
+        };
 
-        _token_store.add(_camera_controls->on_movement_speed_changed += [&](float value)
+        _token_store += _camera_controls->on_movement_speed_changed += [&](float value)
         {
             _settings.camera_movement_speed = value;
-        });
+        };
 
         _camera_controls->set_sensitivity(_settings.camera_sensitivity);
         _camera_controls->set_mode(CameraMode::Orbit);
@@ -306,13 +306,13 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store.add(_keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1));
-        _token_store.add(_keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1));
+        _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
+        _token_store += _keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1);
 
-        _token_store.add(_keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); });
-        _token_store.add(_keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); });
+        _token_store += _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
+        _token_store += _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
 
-        _token_store.add(_keyboard.on_key_down += [&](uint16_t key)
+        _token_store += _keyboard.on_key_down += [&](uint16_t key)
         {
             if (GetAsyncKeyState(VK_CONTROL))
             {
@@ -365,13 +365,13 @@ namespace trview
                     break;
                 }
             }
-        });
+        };
 
         setup_camera_input();
 
         using namespace input;
 
-        _token_store.add(_mouse.mouse_down += [&](Mouse::Button button)
+        _token_store += _mouse.mouse_down += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
@@ -474,9 +474,9 @@ namespace trview
                     }
                 }
             }
-        });
+        };
 
-        _token_store.add(_mouse.mouse_click += [&](auto button)
+        _token_store += _mouse.mouse_click += [&](auto button)
         {
             if (button == input::Mouse::Button::Right)
             {
@@ -489,18 +489,18 @@ namespace trview
                     _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 }
             }
-        });
+        };
 
-        _token_store.add(_mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(_window)); });
-        _token_store.add(_mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(_window)); });
+        _token_store += _mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(_window)); };
+        _token_store += _mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(_window)); };
 
         // Add some extra handlers for the user interface. These will be merged in
         // to one at some point so that the UI can take priority where appropriate.
-        _token_store.add(_mouse.mouse_down += [&](Mouse::Button)
+        _token_store += _mouse.mouse_down += [&](Mouse::Button)
         {
             // The client mouse coordinate is already relative to the root window (at present).
             _control->process_mouse_down(client_cursor_position(_window));
-        });
+        };
     }
 
     void Viewer::process_input_key(uint16_t key)
@@ -586,9 +586,9 @@ namespace trview
         save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
-        _token_store.add(_level->on_room_selected += [&](uint16_t room) { select_room(room); });
-        _token_store.add(_level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); });
-        _token_store.add(_level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); });
+        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
+        _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
+        _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
@@ -942,19 +942,19 @@ namespace trview
     {
         using namespace input;
 
-        _token_store.add(_mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); });
-        _token_store.add(_mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); });
-        _token_store.add(_mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); });
-        _token_store.add(_mouse.mouse_wheel += [&](int16_t scroll) 
+        _token_store += _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _token_store += _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _token_store += _mouse.mouse_move += [&](long x, long y) { _camera_input.mouse_move(x, y); };
+        _token_store += _mouse.mouse_wheel += [&](int16_t scroll) 
         {
             if (window_under_cursor() == _window)
             {
                 _context_menu->set_visible(false);
                 _camera_input.mouse_scroll(scroll);
             }
-        });
+        };
 
-        _token_store.add(_camera_input.on_rotate += [&](float x, float y)
+        _token_store += _camera_input.on_rotate += [&](float x, float y)
         {
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
@@ -966,9 +966,9 @@ namespace trview
             {
                 _level->on_camera_moved();
             }
-        });
+        };
 
-        _token_store.add(_camera_input.on_zoom += [&](float zoom)
+        _token_store += _camera_input.on_zoom += [&](float zoom)
         {
             // Zoom only affects Orbit mode.
             if (_camera_mode == CameraMode::Orbit)
@@ -979,9 +979,9 @@ namespace trview
                     _level->on_camera_moved();
                 }
             }
-        });
+        };
 
-        _token_store.add(_camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); });
+        _token_store += _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
     }
 
     void Viewer::set_show_triggers(bool show)

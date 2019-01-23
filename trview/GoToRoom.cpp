@@ -47,10 +47,10 @@ namespace trview
         window->add_child(std::move(box));
         _window = parent.add_child(std::move(window));
 
-        _token_store.add(parent.on_size_changed += [&](const Size& size)
+        _token_store += parent.on_size_changed += [&](const Size& size)
         {
             _window->set_position(Point(size.width / 2.0f - _window->size().width / 2.0f, size.height / 2.0f - WindowHeight / 2.0f));
-        });
+        };
     }
 
     bool GoToRoom::visible() const

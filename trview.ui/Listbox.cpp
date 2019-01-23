@@ -11,11 +11,11 @@ namespace trview
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
             : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {
-            _token_store.add(on_size_changed += [=](auto)
+            _token_store += on_size_changed += [=](auto)
             {
                 generate_rows();
                 populate_rows();
-            });
+            };
         }
 
         Listbox::~Listbox()
@@ -79,10 +79,10 @@ namespace trview
                 if (_show_scrollbar)
                 {
                     auto rows_scrollbar = std::make_unique<Scrollbar>(Point(), Size(scrollbar_width, remaining_height), background_colour());
-                    _token_store.add(rows_scrollbar->on_scroll += [&](float value)
+                    _token_store += rows_scrollbar->on_scroll += [&](float value)
                     {
                         scroll_to(value * _items.size());
-                    });
+                    };
                     _rows_scrollbar = rows_container->add_child(std::move(rows_scrollbar));
                 }
 
@@ -98,7 +98,7 @@ namespace trview
             for (auto i = 0; i < remaining_rows; ++i)
             {
                 auto row = std::make_unique<Row>(background_colour(), _columns);
-                _token_store.add(row->on_click += [this](const auto& item) { select_item(item); });
+                _token_store += row->on_click += [this](const auto& item) { select_item(item); };
                 _rows_element->add_child(std::move(row));
             }
         }
@@ -266,7 +266,7 @@ namespace trview
             {
                 auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
                 header_element->set_text_background_colour(background_colour());
-                _token_store.add(header_element->on_click += [this, column]()
+                _token_store += header_element->on_click += [this, column]()
                 {
                     if (_current_sort.name() == column.name())
                     {
@@ -278,7 +278,7 @@ namespace trview
                         _current_sort_direction = false;
                     }
                     sort_items();
-                });
+                };
                 headers_element->add_child(std::move(header_element));
             }
 

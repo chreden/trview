@@ -59,10 +59,10 @@ namespace trview
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
-        _token_store.add(track_room->on_state_changed += [this](bool value)
+        _token_store += track_room->on_state_changed += [this](bool value)
         {
             set_track_room(value);
-        });
+        };
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
@@ -71,7 +71,7 @@ namespace trview
 
         auto sync_trigger = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Trigger");
         sync_trigger->set_state(_sync_trigger);
-        _token_store.add(sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); });
+        _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
         controls->add_child(std::move(sync_trigger));
 
         // Space out the button
@@ -88,7 +88,7 @@ namespace trview
         command_filter->set_values({L"All"});
         command_filter->set_dropdown_scope(_ui.get());
         command_filter->set_selected_value(L"All");
-        _token_store.add(command_filter->on_value_selected += [&](const auto& value) 
+        _token_store += command_filter->on_value_selected += [&](const auto& value) 
         {
             if (value == L"All")
             {
@@ -99,7 +99,7 @@ namespace trview
                 _selected_command = command_from_name(value);
             }
             apply_filters();
-        });
+        };
 
         _command_filter = controls_row2->add_child(std::move(command_filter));
 
@@ -116,7 +116,7 @@ namespace trview
                 { Listbox::Column::Type::String, L"Type", 130 }
             }
         );
-        _token_store.add(triggers_list->on_item_selected += [&](const auto& item)
+        _token_store += triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
             load_trigger_details(*_all_triggers[index]);
@@ -124,7 +124,7 @@ namespace trview
             {
                 on_trigger_selected(_all_triggers[index]);
             }
-        });
+        };
 
         _triggers_list = triggers_list.get();
         left_panel->add_child(std::move(triggers_list));
@@ -158,13 +158,13 @@ namespace trview
         _stats_list = details_panel->add_child(std::move(stats_list));
 
         auto button = details_panel->add_child(std::make_unique<Button>(Point(), Size(panel_width - 20, 20), L"Add to Route"));
-        _token_store.add(button->on_click += [&]()
+        _token_store += button->on_click += [&]()
         {
             if (_selected_trigger.has_value())
             {
                 on_add_to_route(_selected_trigger.value());
             }
-        });
+        };
 
         group_box->add_child(std::move(details_panel));
 
@@ -189,7 +189,7 @@ namespace trview
         command_list->set_show_scrollbar(true);
         command_list->set_show_highlight(false);
 
-        _token_store.add(command_list->on_item_selected += [&](const auto& trigger_item)
+        _token_store += command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
             auto command = _selected_trigger.value()->commands()[index];
@@ -198,7 +198,7 @@ namespace trview
                 set_track_room(false);
                 on_item_selected(_all_items[command.index()]);
             }
-        });
+        };
 
         _command_list = command_group_box->add_child(std::move(command_list));
         right_panel->add_child(std::move(command_group_box));
