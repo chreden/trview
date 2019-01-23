@@ -135,6 +135,10 @@ namespace trview
         {
             export_route(*_route, path);
         });
+        _token_store.add(_route_window_manager->on_waypoint_deleted += [&](auto index)
+        {
+            remove_waypoint(index);
+        });
     }
 
     Viewer::~Viewer()
@@ -189,13 +193,8 @@ namespace trview
         });
         _token_store.add(_context_menu->on_remove_waypoint += [&]()
         {
-            _route->remove(_current_pick.index);
+            remove_waypoint(_current_pick.index);
             _context_menu->set_visible(false);
-            _route_window_manager->set_route(_route.get());
-            if (_route->waypoints() > 0)
-            {
-                _route_window_manager->select_waypoint(_route->selected_waypoint());
-            }
         });
 
         _context_menu->set_remove_enabled(false);
@@ -882,6 +881,16 @@ namespace trview
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);
+        }
+    }
+
+    void Viewer::remove_waypoint(uint32_t index)
+    {
+        _route->remove(index);
+        _route_window_manager->set_route(_route.get());
+        if (_route->waypoints() > 0)
+        {
+            select_waypoint(_route->selected_waypoint());
         }
     }
 

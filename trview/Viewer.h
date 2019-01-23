@@ -111,6 +111,7 @@ namespace trview
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
+        void remove_waypoint(uint32_t index);
         // Determines whether the cursor is over a UI element that would take any input.
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
