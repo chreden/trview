@@ -50,10 +50,10 @@ namespace trview
         }
 
         const auto window = triggers_window.get();
-        _token_store.add(triggers_window->on_window_closed += [window, this]()
+        _token_store += triggers_window->on_window_closed += [window, this]()
         {
             _closing_windows.push_back(window);
-        });
+        };
 
         _windows.push_back(std::move(triggers_window));
     }

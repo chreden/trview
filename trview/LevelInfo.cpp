@@ -51,15 +51,15 @@ namespace trview
         _panel = control.add_child(std::move(panel));
 
         // Have the control move itself when the parent control resizes.
-        _token_store.add(control.on_size_changed += [&](const Size& size)
+        _token_store += control.on_size_changed += [&](const Size& size)
         {
             _panel->set_position(Point(size.width / 2.0f - _panel->size().width / 2.0f, 0));
-        });
-        _token_store.add(_panel->on_size_changed += [&](const Size& size)
+        };
+        _token_store += _panel->on_size_changed += [&](const Size& size)
         {
             auto parent = _panel->parent();
             _panel->set_position(Point(parent->size().width / 2.0f - size.width / 2.0f, 0));
-        });
+        };
     }
 
     // Set the name of the level.

@@ -13,7 +13,7 @@ namespace trview
         void StackPanel::inner_add_child(Control* child_element)
         {
             child_element->set_position(get_next_position());
-            _token_store.add(child_element->on_size_changed += [&](auto) { recalculate_layout(); });
+            _token_store += child_element->on_size_changed += [&](auto) { recalculate_layout(); };
             recalculate_layout();
         }
 

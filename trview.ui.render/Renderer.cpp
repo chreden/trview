@@ -76,7 +76,7 @@ namespace trview
                 }
 
                 auto* node_ptr = node.get();
-                node_ptr->_token_store.add(control->on_hierarchy_changed += [this, control, node_ptr]()
+                node_ptr->_token_store += control->on_hierarchy_changed += [this, control, node_ptr]()
                 {
                     node_ptr->clear_children();
                     auto children = control->child_elements(true);
@@ -84,7 +84,7 @@ namespace trview
                     {
                         node_ptr->add_child(process_control(child));
                     }
-                });
+                };
 
                 return node;
             }

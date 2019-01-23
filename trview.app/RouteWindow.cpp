@@ -62,7 +62,7 @@ namespace trview
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Import"));
-        _token_store.add(import->on_click += [&]()
+        _token_store += import->on_click += [&]()
         {
             OPENFILENAME ofn;
             memset(&ofn, 0, sizeof(ofn));
@@ -80,9 +80,9 @@ namespace trview
             {
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
-        });
+        };
         auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
-        _token_store.add(export_button->on_click += [&]()
+        _token_store += export_button->on_click += [&]()
         {
             OPENFILENAME ofn;
             memset(&ofn, 0, sizeof(ofn));
@@ -100,7 +100,7 @@ namespace trview
             {
                 on_route_export(trview::to_utf8(ofn.lpstrFile));
             }
-        });
+        };
         auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.
@@ -111,14 +111,14 @@ namespace trview
                 { Listbox::Column::Type::String, L"Type", 160 }
             }
         );
-        _token_store.add(waypoints->on_item_selected += [&](const auto& item) {
+        _token_store += waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
             on_waypoint_selected(index);
-        });
-        _token_store.add(waypoints->on_delete += [&]() {
+        };
+        _token_store += waypoints->on_delete += [&]() {
             on_waypoint_deleted(_selected_index);
-        });
+        };
 
         _waypoints = left_panel->add_child(std::move(waypoints));
         return left_panel;
@@ -142,7 +142,7 @@ namespace trview
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 150 }
             });
-        _token_store.add(stats_box->on_item_selected += [&](const auto& item)
+        _token_store += stats_box->on_item_selected += [&](const auto& item)
         {
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
@@ -160,17 +160,17 @@ namespace trview
                 }
                 break;
             }
-        });
+        };
         _stats = details_panel->add_child(std::move(stats_box));
 
         auto delete_button = details_panel->add_child(std::make_unique<Button>(Point(), Size(panel_width - 20, 20), L"Delete Waypoint"));
-        _token_store.add(delete_button->on_click += [&]()
+        _token_store += delete_button->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
             {
                 on_waypoint_deleted(_selected_index);
             }
-        });
+        };
 
         group_box->add_child(std::move(details_panel));
         right_panel->add_child(std::move(group_box));
@@ -184,13 +184,13 @@ namespace trview
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));
 
-        _token_store.add(_notes_area->on_text_changed += [&](const std::wstring& text)
+        _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route)
             {
                 _route->waypoint(_selected_index).set_notes(text);
             }
-        });
+        };
 
         return right_panel;
     }

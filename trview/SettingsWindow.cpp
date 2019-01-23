@@ -58,7 +58,7 @@ namespace trview
 
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
-        _token_store.add(ok->on_click += [&]() { _window->set_visible(!_window->visible()); });
+        _token_store += ok->on_click += [&]() { _window->set_visible(!_window->visible()); };
         panel->add_child(std::move(ok));
 
         window->add_child(std::move(panel));
