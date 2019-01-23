@@ -126,9 +126,11 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 110), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
 
-        auto stats_box = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 100), Colours::ItemDetails);
+        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 120), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        auto stats_box = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 80), Colours::ItemDetails);
         stats_box->set_show_headers(false);
         stats_box->set_show_scrollbar(false);
         stats_box->set_columns(
@@ -155,11 +157,22 @@ namespace trview
                 break;
             }
         });
-        _stats = group_box->add_child(std::move(stats_box));
+        _stats = details_panel->add_child(std::move(stats_box));
+
+        auto delete_button = details_panel->add_child(std::make_unique<Button>(Point(), Size(panel_width - 20, 20), L"Delete Waypoint"));
+        _token_store.add(delete_button->on_click += [&]()
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                on_waypoint_deleted(_selected_index);
+            }
+        });
+
+        group_box->add_child(std::move(details_panel));
         right_panel->add_child(std::move(group_box));
 
         // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 110), Colours::Notes, Colours::DetailsBorder, L"Notes");
+        auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
         auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colour(0.2f, 0.2f, 0.2f), Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
