@@ -60,6 +60,9 @@ namespace trview
 
         /// Event raised when a trigger is selected.
         Event<Trigger*> on_trigger_selected;
+
+        /// Event raised when a waypoint is deleted.
+        Event<uint32_t> on_waypoint_deleted;
     private:
         const graphics::Device& _device;
         const graphics::IShaderStorage& _shader_storage;

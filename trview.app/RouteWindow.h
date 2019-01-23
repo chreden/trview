@@ -43,6 +43,9 @@ namespace trview
         /// Event raised when a route is exported.
         Event<std::string> on_route_export;
 
+        /// Event raised when a waypoint is deleted.
+        Event<uint32_t> on_waypoint_deleted;
+
         /// Select the specified waypoint.
         /// @param index The index of the waypoint to select.
         void select_waypoint(uint32_t index);

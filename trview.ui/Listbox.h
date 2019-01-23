@@ -150,6 +150,9 @@ namespace trview
 
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
+
+            /// Event raised when the delete key is pressed.
+            Event<> on_delete;
         protected:
             virtual bool scroll(int delta) override;
             virtual bool key_down(uint16_t key) override;
