@@ -5,6 +5,7 @@
 
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
+#include <trview.common/Colour.h>
 
 #include "Control.h"
 
@@ -66,12 +67,15 @@ namespace trview
         protected:
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
+            virtual void mouse_enter() override;
+            virtual void mouse_leave() override;
             virtual bool clicked(Point position) override;
         private:
             graphics::Texture _up_image;
             graphics::Texture _down_image;
             float _border_thickness{ 1.0f };
             Label* _text;
+            Colour _previous_colour;
         };
     }
 }

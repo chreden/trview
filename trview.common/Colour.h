@@ -6,6 +6,8 @@ namespace trview
 {
     struct Colour final
     {
+        Colour();
+
         /// Create a colour with the specified rgb components and a fully opaque alpha value.
         /// @param r The red value from 0 to 1.
         /// @param g The green value from 0 to 1.
@@ -20,4 +22,8 @@ namespace trview
 
         float a, r, g, b;
     };
+
+    Colour operator+(const Colour& left, const Colour& right);
+
+    bool operator==(const Colour& left, const Colour& right);
 }
