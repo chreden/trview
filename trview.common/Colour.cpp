@@ -2,6 +2,11 @@
 
 namespace trview
 {
+    Colour::Colour()
+        : Colour(1.0f, 1.0f, 1.0f)
+    {
+    }
+
     Colour::Colour(float r, float g, float b)
         : Colour(1.0f, r, g, b)
     {
@@ -24,5 +29,15 @@ namespace trview
         g += other.g;
         b += other.b;
         return *this;
+    }
+
+    Colour operator+(const Colour& left, const Colour& right)
+    {
+        return Colour(left.a + right.a, left.r + right.r, left.g + right.g, left.b + right.b);
+    }
+
+    bool operator==(const Colour& left, const Colour& right)
+    {
+        return left.a == right.a && left.r == right.r && left.g == right.g && left.b == right.b;
     }
 }
