@@ -17,6 +17,15 @@ namespace trview
     {
     }
 
+    Vector3 TransparentTriangle::normal() const
+    {
+        auto first = vertices[1] - vertices[0];
+        auto second = vertices[2] - vertices[0];
+        first.Normalize();
+        second.Normalize();
+        return first.Cross(second);
+    }
+
     TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const
     {
         using namespace DirectX::SimpleMath;

@@ -2,11 +2,14 @@ cbuffer cb : register (b0)
 {
     matrix scale : packoffset (c0);
     float4 colour : packoffset(c4);
+    float3 light_dir : packoffset(c5);
+    bool light_enable : packoffset(c5.w);
 }
 
 struct VertexInput
 {
     float4 position : POSITION;
+    float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float4 colour : TEXCOORD1;
 };

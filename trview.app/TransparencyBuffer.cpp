@@ -200,9 +200,10 @@ namespace trview
                 ++_texture_run.back().count;
             }
 
+            auto normal = triangle.normal();
             for (uint32_t i = 0; i < 3; ++i)
             {
-                _vertices[index++] = { triangle.vertices[i], triangle.uvs[i], triangle.colour };
+                _vertices[index++] = { triangle.vertices[i], normal, triangle.uvs[i], triangle.colour };
             }
         }
 

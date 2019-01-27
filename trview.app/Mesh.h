@@ -32,7 +32,11 @@ namespace trview
              const std::vector<TransparentTriangle>& transparent_triangles,
              const std::vector<Triangle>& collision_triangles);
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+            const DirectX::SimpleMath::Matrix& world_view_projection,
+            const ILevelTextureStorage& texture_storage,
+            const DirectX::SimpleMath::Color& colour,
+            DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero);
 
         const std::vector<TransparentTriangle>& transparent_triangles() const;
 

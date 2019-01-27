@@ -25,8 +25,11 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
+        auto light_direction = _position - camera.position();
+        light_direction.Normalize();
+
         auto wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.25f, 0)) * camera.view_projection();
-        _mesh->render(device.context(), wvp, texture_storage, colour);
+        _mesh->render(device.context(), wvp, texture_storage, colour, light_direction);
     }
 
     void Waypoint::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
