@@ -38,8 +38,8 @@ namespace trview
             second.Normalize();
             return first.Cross(second);
         }
-    }
-
+    }    
+       
     Mesh::Mesh(const ComPtr<ID3D11Device>& device, 
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
@@ -49,7 +49,7 @@ namespace trview
         : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
     {
         if (!vertices.empty())
-        {
+        {  
             D3D11_BUFFER_DESC vertex_desc;
             memset(&vertex_desc, 0, sizeof(vertex_desc));
             vertex_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -108,7 +108,7 @@ namespace trview
             memset(&matrix_desc, 0, sizeof(matrix_desc));
 
             matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+            matrix_desc.ByteWidth = sizeof(MeshData);
             matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -149,21 +149,11 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-#pragma pack(push, 1)
-        struct Data
-        {
-            Matrix matrix;
-            Color colour;
-            Vector3 light_direction;
-            bool light_enabled;
-        };
-#pragma pack(pop)
-
-        Data data{ world_view_projection, colour, light_direction, light_direction == Vector3::Zero};
-
-        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_direction != Vector3::Zero };
+        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);
+
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
@@ -248,40 +238,40 @@ namespace trview
         const std::vector<MeshVertex> vertices
         {
             // + y
-            { { -0.5, 0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { 0.5, 0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { 0.5, 0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { -0.5, 0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { 0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { 0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { -0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
 
             // +x
-            { { 0.5, -0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, -0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5, 0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { 0.5, -0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { 0.5, -0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, 0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
 
             // -x 
-            { { -0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5, 0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5, -0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
-            { { -0.5, -0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { -0.5, 0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { -0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, -0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
+            { { -0.5, -0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
 
             // +z
-            { { 0.5, 0.5f, 0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
-            { { 0.5, -0.5f, 0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { -0.5, 0.5f, 0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
-            { { -0.5, -0.5f, 0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
+            { { 0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { -0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
 
             // -z
-            { { 0.5, -0.5f, -0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { 0.5, 0.5f, -0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
-            { { -0.5, 0.5f, -0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
-            { { -0.5, -0.5f, -0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { 0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { 0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { -0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { -0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
 
             // -y
-            { { 0.5, -0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
-            { { 0.5, -0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
-            { { -0.5, -0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
-            { { -0.5, -0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }        // 7
+            { { 0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { -0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { -0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }        // 7
         };
 
         const std::vector<uint32_t> indices
@@ -554,4 +544,4 @@ namespace trview
             }
         }
     }
-}
+} 

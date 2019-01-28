@@ -1009,5 +1009,4 @@ namespace trview
         return _level->selected_room();
     }
 }
-
-  
+   

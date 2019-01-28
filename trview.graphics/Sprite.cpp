@@ -10,6 +10,9 @@
 #include "IShader.h"
 #include "Texture.h"
 
+#include <SimpleMath.h>
+#include <trview.app/Mesh.h>
+
 using namespace Microsoft::WRL;
 
 namespace trview
@@ -113,7 +116,7 @@ namespace trview
             memset(&desc, 0, sizeof(desc));
 
             desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+            desc.ByteWidth = sizeof(MeshData);
             desc.Usage = D3D11_USAGE_DYNAMIC;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -127,12 +130,6 @@ namespace trview
             D3D11_MAPPED_SUBRESOURCE mapped_resource;
             memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-            struct Data
-            {
-                Matrix matrix;
-                Color colour;
-            };
-
             // Need to scale the quad so that it is a certain size. Will need to know the 
             // size of the host window as well as the size that we want the texture window
             // to be. Then create a scaling matrix and throw it in to the shader.
@@ -141,7 +138,7 @@ namespace trview
             // Try to make the appropriate translation matrix to move it to the top left of the screen.
             auto translation = Matrix::CreateTranslation(-1.f + width / _host_size.width + (x * 2) / _host_size.width, 1.f - height / _host_size.height - (y * 2) / _host_size.height, 0);
 
-            Data data{ scaling * translation, colour };
+            MeshData data{ scaling * translation, colour, Vector4::Zero };
 
             context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
             memcpy(mapped_resource.pData, &data, sizeof(data));

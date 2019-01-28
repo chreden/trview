@@ -137,4 +137,14 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles);
+
+#pragma pack(push, 4)
+    __declspec(align(16)) struct MeshData
+    {
+        DirectX::SimpleMath::Matrix matrix;
+        DirectX::SimpleMath::Color colour;
+        DirectX::SimpleMath::Vector4 light_dir;
+        bool light_enabled{ false };
+    };
+#pragma pack(pop)
 }
