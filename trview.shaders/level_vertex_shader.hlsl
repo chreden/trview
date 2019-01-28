@@ -26,6 +26,8 @@ VertexOutput main( VertexInput input )
     VertexOutput output;
     output.position = mul(scale, input.position);
     output.uv = input.uv;
-    output.colour = colour * input.colour;
+
+    float d = light_enable ? dot(light_dir, input.normal) : 1.0f;
+    output.colour = colour * input.colour * d;
     return output;
 }
