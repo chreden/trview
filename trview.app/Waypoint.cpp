@@ -28,8 +28,13 @@ namespace trview
         auto light_direction = _position - camera.position();
         light_direction.Normalize();
 
-        auto wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.25f, 0)) * camera.view_projection();
-        _mesh->render(device.context(), wvp, texture_storage, colour, light_direction);
+        // The pole
+        auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.25f, 0)) * camera.view_projection();
+        _mesh->render(device.context(), pole_wvp, texture_storage, colour, light_direction);
+
+        // The light blob.
+        auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * camera.view_projection();
+        _mesh->render(device.context(), blob_wvp, texture_storage, Color(0.0f, 1.0f, 0.0f));
     }
 
     void Waypoint::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
