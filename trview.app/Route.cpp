@@ -112,7 +112,7 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint.render(device, camera, texture_storage, Color(1.0f, 0.0f, 1.0f));
+            waypoint.render(device, camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
