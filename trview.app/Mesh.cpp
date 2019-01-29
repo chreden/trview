@@ -49,7 +49,7 @@ namespace trview
         : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
     {
         if (!vertices.empty())
-        {  
+        {
             D3D11_BUFFER_DESC vertex_desc;
             memset(&vertex_desc, 0, sizeof(vertex_desc));
             vertex_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -153,7 +153,6 @@ namespace trview
         context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);
-
 
         UINT stride = sizeof(MeshVertex);
         UINT offset = 0;
@@ -544,4 +543,4 @@ namespace trview
             }
         }
     }
-} 
+}

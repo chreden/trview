@@ -5,7 +5,7 @@
 #include <trview.app/MeshVertex.h>
 
 #include <algorithm>
-#include <trview.app/Mesh.h>
+#include "Mesh.h"
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
