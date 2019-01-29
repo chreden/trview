@@ -86,7 +86,7 @@ namespace trview
         memset(&desc, 0, sizeof(desc));
 
         desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+        desc.ByteWidth = sizeof(MeshData);
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -143,13 +143,7 @@ namespace trview
             D3D11_MAPPED_SUBRESOURCE mapped_resource;
             memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-            struct Data
-            {
-                Matrix matrix;
-                Color colour;
-            };
-
-            Data data{ Matrix::Identity, Color(1,1,1,1) };
+            MeshData data{ Matrix::Identity, Color(1,1,1,1), Vector4::Zero };
             context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
             memcpy(mapped_resource.pData, &data, sizeof(data));
             context->Unmap(_matrix_buffer.Get(), 0);

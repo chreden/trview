@@ -32,7 +32,11 @@ namespace trview
              const std::vector<TransparentTriangle>& transparent_triangles,
              const std::vector<Triangle>& collision_triangles);
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+            const DirectX::SimpleMath::Matrix& world_view_projection,
+            const ILevelTextureStorage& texture_storage,
+            const DirectX::SimpleMath::Color& colour,
+            DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero);
 
         const std::vector<TransparentTriangle>& transparent_triangles() const;
 
@@ -133,4 +137,12 @@ namespace trview
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles);
+
+    __declspec(align(16)) struct MeshData
+    {
+        DirectX::SimpleMath::Matrix matrix;
+        DirectX::SimpleMath::Color colour;
+        DirectX::SimpleMath::Vector4 light_dir;
+        int light_enabled{ 0 };
+    };
 }

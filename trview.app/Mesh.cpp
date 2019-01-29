@@ -28,9 +28,18 @@ namespace trview
         Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
         {
             return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
-        };
-    }
+        }
 
+        Vector3 calculate_normal(const Vector3* const vertices)
+        {
+            auto first = vertices[1] - vertices[0];
+            auto second = vertices[2] - vertices[0];
+            first.Normalize();
+            second.Normalize();
+            return first.Cross(second);
+        }
+    }    
+       
     Mesh::Mesh(const ComPtr<ID3D11Device>& device, 
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
@@ -99,7 +108,7 @@ namespace trview
             memset(&matrix_desc, 0, sizeof(matrix_desc));
 
             matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+            matrix_desc.ByteWidth = sizeof(MeshData);
             matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -129,7 +138,7 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, Vector3 light_direction)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -140,15 +149,8 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        struct Data
-        {
-            Matrix matrix;
-            Color colour;
-        };
-
-        Data data{ world_view_projection, colour };
-
-        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
+        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_direction != Vector3::Zero };
+        context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);
 
@@ -234,24 +236,51 @@ namespace trview
     {
         const std::vector<MeshVertex> vertices
         {
-            { { 0.5, 0.5f, 0.5 },  { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5, 0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5, 0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5, 0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5, -0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { 0.5, -0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5, -0.5f, -0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },
-            { { -0.5, -0.5f, 0.5 }, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }
+            // + y
+            { { -0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { 0.5, 0.5f, -0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { 0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { -0.5, 0.5f, 0.5 }, Vector3::Down, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+
+            // +x
+            { { 0.5, -0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { 0.5, -0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, 0.5f, 0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, 0.5f, -0.5 }, Vector3::Left, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+
+            // -x 
+            { { -0.5, 0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { -0.5, 0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, -0.5f, 0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
+            { { -0.5, -0.5f, -0.5 }, Vector3::Right, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+
+            // +z
+            { { 0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },         // 0
+            { { 0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { -0.5, 0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 3
+            { { -0.5, -0.5f, 0.5 }, Vector3::Forward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 7
+
+            // -z
+            { { 0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { 0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 1
+            { { -0.5, 0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 2
+            { { -0.5, -0.5f, -0.5 }, Vector3::Backward, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+
+            // -y
+            { { 0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },        // 4
+            { { 0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },       // 5
+            { { -0.5, -0.5f, -0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } },      // 6
+            { { -0.5, -0.5f, 0.5 }, Vector3::Up, { 0, 0 }, { 1.0f, 1.0f, 1.0f } }        // 7
         };
 
         const std::vector<uint32_t> indices
         {
-            2, 1, 0, 0, 3, 2, // + y
-            5, 4, 0, 0, 1, 5, // + x
-            2, 3, 7, 7, 6, 2, // - x
-            0, 4, 3, 3, 4, 7, // + z
-            5, 1, 2, 2, 6, 5, // - z
-            4, 5, 6, 6, 7, 4  // - y
+            0,  1,  2,  2,  3,  0,  // +y
+            4,  5,  6,  6,  7,  4,  // +x
+            8,  9,  10, 10, 11, 8,  // -x
+            12, 13, 14, 13, 15, 14, // +z
+            16, 17, 18, 18, 19, 16, // -z
+            20, 21, 22, 22, 23, 20  // -y
         };
 
         return std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
@@ -314,9 +343,10 @@ namespace trview
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
+                output_vertices.push_back({ verts[i], normal, uvs[i], Color(1,1,1,1) });
             }
 
             auto& tex_indices = output_indices[texture_storage.tile(texture)];
@@ -396,9 +426,10 @@ namespace trview
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], uvs[i], Color(1,1,1,1) });
+                output_vertices.push_back({ verts[i], normal, uvs[i], Color(1,1,1,1) });
             }
 
             auto& tex_indices = output_indices[texture_storage.tile(texture)];
@@ -440,9 +471,10 @@ namespace trview
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 4; ++i)
             {
-                output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);
@@ -491,9 +523,10 @@ namespace trview
             }
 
             const uint32_t base = static_cast<uint32_t>(output_vertices.size());
+            const auto normal = calculate_normal(&verts[0]);
             for (int i = 0; i < 3; ++i)
             {
-                output_vertices.push_back({ verts[i], Vector2::Zero, texture_storage.palette_from_texture(texture) });
+                output_vertices.push_back({ verts[i], normal, Vector2::Zero, texture_storage.palette_from_texture(texture) });
             }
 
             output_indices.push_back(base);

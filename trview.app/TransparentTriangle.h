@@ -26,6 +26,8 @@ namespace trview
         /// @param colour The colour for the triangle.
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& colour);
 
+        DirectX::SimpleMath::Vector3 normal() const;
+
         TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
 
         // The world space positions that make up the triangle.

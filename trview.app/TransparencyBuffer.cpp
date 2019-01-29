@@ -5,6 +5,7 @@
 #include <trview.app/MeshVertex.h>
 
 #include <algorithm>
+#include "Mesh.h"
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -92,14 +93,8 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        struct Data
-        {
-            Matrix matrix;
-            Color colour;
-        };
-
-        Data data{ camera.view_projection(), Color(1,1,1,1) };
-
+        MeshData data{ camera.view_projection(), Color(1,1,1,1), Vector4::Zero };
+         
         context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource);
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);
@@ -171,7 +166,7 @@ namespace trview
         memset(&matrix_desc, 0, sizeof(matrix_desc));
 
         matrix_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-        matrix_desc.ByteWidth = sizeof(Matrix) + sizeof(Color);
+        matrix_desc.ByteWidth = sizeof(MeshData);
         matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
         matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -200,9 +195,10 @@ namespace trview
                 ++_texture_run.back().count;
             }
 
+            auto normal = triangle.normal();
             for (uint32_t i = 0; i < 3; ++i)
             {
-                _vertices[index++] = { triangle.vertices[i], triangle.uvs[i], triangle.colour };
+                _vertices[index++] = { triangle.vertices[i], normal, triangle.uvs[i], triangle.colour };
             }
         }
 

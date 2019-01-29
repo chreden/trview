@@ -1,12 +1,15 @@
 cbuffer cb : register (b0)
 {
-    matrix scale : packoffset (c0);
-    float4 colour : packoffset(c4);
+    matrix scale;
+    float4 colour;
+    float4 light_dir;
+    int light_enable;
 }
 
 struct VertexInput
 {
     float4 position : POSITION;
+    float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float4 colour : TEXCOORD1;
 };
@@ -23,6 +26,13 @@ VertexOutput main( VertexInput input )
     VertexOutput output;
     output.position = mul(scale, input.position);
     output.uv = input.uv;
-    output.colour = colour * input.colour;
+    output.colour = input.colour * colour;
+
+    if (light_enable != 0)
+    {
+        output.colour *= max(0.2f, dot(light_dir, normalize(input.normal)));
+        output.colour.a = 1.0f;
+    }
+
     return output;
 }

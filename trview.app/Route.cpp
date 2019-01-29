@@ -112,13 +112,13 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint.render(device, camera, texture_storage, Color(1.0f, 0.0f, 1.0f));
+            waypoint.render(device, camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
-                const auto current = waypoint.position() - Vector3(0, 0.5f, 0);
-                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f, 0);
+                const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
                 const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
