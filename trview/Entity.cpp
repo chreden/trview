@@ -133,10 +133,10 @@ namespace trview
         using namespace DirectX::SimpleMath;
         std::vector<MeshVertex> vertices
         {
-            { Vector3(-0.5f, -0.5f, 0), Vector2(u, v + height), Vector4(1,1,1,1) },
-            { Vector3(0.5f, -0.5f, 0), Vector2(u + width, v + height), Vector4(1,1,1,1) },
-            { Vector3(-0.5f, 0.5f, 0), Vector2(u, v), Vector4(1,1,1,1) },
-            { Vector3(0.5f, 0.5f, 0), Vector2(u + width, v), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Vector4(1,1,1,1) },
+            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Vector4(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Vector4(1,1,1,1) },
         };
 
         std::vector<TransparentTriangle> transparent_triangles
