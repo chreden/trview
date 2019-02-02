@@ -127,6 +127,9 @@ namespace trview
             /// @param columns The column names.
             void set_columns(const std::vector<Column>& columns);
 
+            /// Set whether the user can sort the listbox items.
+            void set_enable_sorting(bool value);
+
             /// Set the items for the list box.
             /// @param items The items to add to the list box.
             void set_items(const std::vector<Item>& items);
@@ -188,6 +191,7 @@ namespace trview
             bool _show_scrollbar{ true };
             bool _show_headers{ true };
             bool _show_highlight{ true };
+            bool _enable_sorting{ true };
             std::optional<Item> _selected_item;
             uint32_t _fully_visible_rows{ 0u };
         };

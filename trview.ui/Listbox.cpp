@@ -28,6 +28,11 @@ namespace trview
             generate_ui();
         }
 
+        void Listbox::set_enable_sorting(bool value)
+        {
+            _enable_sorting = value;
+        }
+
         void Listbox::set_items(const std::vector<Item>& items)
         {
             // Reset the index for scrolling.
@@ -268,6 +273,11 @@ namespace trview
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {
+                    if (!_enable_sorting)
+                    {
+                        return;
+                    }
+
                     if (_current_sort.name() == column.name())
                     {
                         _current_sort_direction = !_current_sort_direction;
