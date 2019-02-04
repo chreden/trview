@@ -187,7 +187,7 @@ namespace trview
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
-            if (_route)
+            if (_route && _selected_index < _route->waypoints())
             {
                 _route->waypoint(_selected_index).set_notes(text);
             }
