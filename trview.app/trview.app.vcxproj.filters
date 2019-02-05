@@ -82,6 +82,7 @@
     <ClCompile Include="RouteWindowManager.cpp">
       <Filter>Route</Filter>
     </ClCompile>
+    <ClCompile Include="ViewMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="RouteWindowManager.h">
       <Filter>Route</Filter>
     </ClInclude>
+    <ClInclude Include="ViewMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
