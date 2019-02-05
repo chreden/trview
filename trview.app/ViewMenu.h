@@ -20,5 +20,8 @@ namespace trview
 
         /// Event raised when the show UI option is toggled.
         Event<bool> on_show_ui;
+
+        /// Event raised when the show compass option is toggled.
+        Event<bool> on_show_compass;
     };
 }

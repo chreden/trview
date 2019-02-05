@@ -31,14 +31,10 @@ namespace trview
     {
         // Set all of the items to be initially visible.
         HMENU menu = GetMenu(window);
-        MENUITEMINFO info;
-        memset(&info, 0, sizeof(info));
-        info.cbSize = sizeof(info);
-        info.fMask = MIIM_STATE;
-        info.fState = MFS_CHECKED;
-        SetMenuItemInfo(menu, ID_APP_VIEW_MINIMAP, FALSE, &info);
-        SetMenuItemInfo(menu, ID_APP_VIEW_TOOLTIP, FALSE, &info);
-        SetMenuItemInfo(menu, ID_APP_VIEW_UI, FALSE, &info);
+        set_checked(menu, ID_APP_VIEW_MINIMAP, true);
+        set_checked(menu, ID_APP_VIEW_TOOLTIP, true);
+        set_checked(menu, ID_APP_VIEW_UI, true);
+        set_checked(menu, ID_APP_VIEW_COMPASS, true);
     }
 
     void ViewMenu::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -67,6 +63,11 @@ namespace trview
             case ID_APP_VIEW_UI:
             {
                 on_show_ui(!checked);
+                break;
+            }
+            case ID_APP_VIEW_COMPASS:
+            {
+                on_show_compass(!checked);
                 break;
             }
             default:

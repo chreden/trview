@@ -55,6 +55,7 @@ BEGIN
         MENUITEM "Minimap",                     ID_VIEW_MINIMAP
         MENUITEM "Tooltip",                     ID_VIEW_TOOLTIP
         MENUITEM "UI",                          ID_VIEW_UI
+        MENUITEM "Compass",                     ID_VIEW_COMPASS
     END
     POPUP "Windows"
     BEGIN

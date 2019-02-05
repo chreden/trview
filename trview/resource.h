@@ -49,6 +49,7 @@
 #define ID_VIEW_MINIMAP                 ID_APP_VIEW_MINIMAP
 #define ID_VIEW_TOOLTIP                 ID_APP_VIEW_TOOLTIP
 #define ID_VIEW_UI                      ID_APP_VIEW_UI
+#define ID_VIEW_COMPASS                 ID_APP_VIEW_COMPASS
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
