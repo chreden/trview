@@ -46,6 +46,9 @@
 #define ID_ACCEL_TRIGGERS_WINDOW        ID_APP_ACCEL_TRIGGERS_WINDOW
 #define ID_WINDOWS_ROUTE                ID_APP_WINDOWS_ROUTE
 #define ID_ACCEL_ROUTE_WINDOW           ID_APP_ACCEL_ROUTE_WINDOW
+#define ID_VIEW_MINIMAP                 ID_APP_VIEW_MINIMAP
+#define ID_VIEW_TOOLTIP                 ID_APP_VIEW_TOOLTIP
+#define ID_VIEW_UI                      ID_APP_VIEW_UI
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
