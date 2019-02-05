@@ -49,6 +49,11 @@ namespace trview
 
     void Compass::render(const Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         auto context = device.context();
 
         {
@@ -91,6 +96,11 @@ namespace trview
 
     bool Compass::pick(const Point& mouse_position, const ICamera& camera, Axis& axis)
     {
+        if (!_visible)
+        {
+            return false;
+        }
+
         // Convert the mouse position into coordinates of the compass window.
         const auto screen_size = camera.view_size();
         const auto view_top_left = Point(screen_size.width - View_Size, screen_size.height - View_Size);
@@ -122,6 +132,11 @@ namespace trview
         }
 
         return hit;
+    }
+
+    void Compass::set_visible(bool value)
+    {
+        _visible = value;
     }
 
     std::wstring axis_name(Compass::Axis axis)

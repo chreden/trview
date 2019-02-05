@@ -41,7 +41,8 @@ namespace trview
     Viewer::Viewer(const Window& window)
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
-        _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window)
+        _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
+        _view_menu(window)
     {
         _settings = load_user_settings();
 
@@ -139,6 +140,11 @@ namespace trview
         {
             remove_waypoint(index);
         };
+
+        _token_store += _view_menu.on_show_minimap += [&](bool show) { _map_renderer->set_visible(show); };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _show_picking = show; };
+        _token_store += _view_menu.on_show_ui += [&](bool show) { _control->set_visible(show); };
+        _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
     }
 
     Viewer::~Viewer()
@@ -380,7 +386,7 @@ namespace trview
                     _context_menu->set_visible(false);
                 }
 
-                if (!over_ui() && !over_map() && _picking->visible())
+                if (!over_ui() && !over_map())
                 {
                     if (_compass_axis.has_value())
                     {
@@ -678,11 +684,17 @@ namespace trview
         return _map_renderer->loaded() && _map_renderer->cursor_is_over_control();
     }
 
+    bool Viewer::should_pick() const
+    {
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window));
+    }
+
     void Viewer::pick()
     {
-        if (!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window))
+        if (!should_pick())
         {
             _picking->set_visible(false);
+            _current_pick.hit = false;
             return;
         }
 
@@ -724,7 +736,7 @@ namespace trview
             result = route_result;
         }
 
-        _picking->set_visible(result.hit);
+        _picking->set_visible(result.hit && _show_picking);
         if (result.hit)
         {
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());

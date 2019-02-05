@@ -37,6 +37,7 @@
 #include <trview.app/ContextMenu.h>
 #include <trview.app/Route.h>
 #include <trview.app/RouteWindowManager.h>
+#include <trview.app/ViewMenu.h>
 
 namespace trview
 {
@@ -116,6 +117,7 @@ namespace trview
         // Returns: True if there is any UI under the cursor that would take input.
         bool over_ui() const;
         bool over_map() const;
+        bool should_pick() const;
         void pick();
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -159,6 +161,7 @@ namespace trview
         std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
         ui::Label* _picking;
+        bool _show_picking{ true };
         PickResult _current_pick;
         LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
@@ -167,6 +170,7 @@ namespace trview
         TokenStore _token_store;
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
+        ViewMenu _view_menu;
 
         // Tools:
         std::unique_ptr<Toolbar> _toolbar;
