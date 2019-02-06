@@ -21,7 +21,23 @@ namespace trview
             memset(&info, 0, sizeof(info));
             info.cbSize = sizeof(info);
             info.fMask = MIIM_STATE;
-            info.fState = (checked ? MFS_CHECKED : MFS_UNCHECKED);
+            GetMenuItemInfo(menu, id, FALSE, &info);
+            
+            info.fState ^= (checked ? MFS_UNCHECKED : MFS_CHECKED);
+            info.fState |= (checked ? MFS_CHECKED : MFS_UNCHECKED);
+            SetMenuItemInfo(menu, id, FALSE, &info);
+        }
+
+        void set_enabled(HMENU menu, UINT id, bool enabled)
+        {
+            MENUITEMINFO info;
+            memset(&info, 0, sizeof(info));
+            info.cbSize = sizeof(info);
+            info.fMask = MIIM_STATE;
+            GetMenuItemInfo(menu, id, FALSE, &info);
+
+            info.fState ^= (enabled ? MFS_DISABLED : MFS_ENABLED);
+            info.fState |= (enabled ? MFS_ENABLED : MFS_DISABLED);
             SetMenuItemInfo(menu, id, FALSE, &info);
         }
     }
@@ -46,28 +62,48 @@ namespace trview
 
         HMENU menu = GetMenu(window);
         UINT id = LOWORD(wParam);
-        bool checked = is_checked(menu, id);
+        bool enable = !is_checked(menu, id);
 
         switch (id)
         {
             case ID_APP_VIEW_MINIMAP:
             {
-                on_show_minimap(!checked);
+                on_show_minimap(enable);
                 break;
             }
             case ID_APP_VIEW_TOOLTIP:
             {
-                on_show_tooltip(!checked);
-                break;
-            }
-            case ID_APP_VIEW_UI:
-            {
-                on_show_ui(!checked);
+                on_show_tooltip(enable);
                 break;
             }
             case ID_APP_VIEW_COMPASS:
             {
-                on_show_compass(!checked);
+                on_show_compass(enable);
+                break;
+            }
+            case ID_APP_VIEW_UI:
+            {
+                // If the UI element is toggled, then enable/disable all other elements.
+                set_enabled(menu, ID_APP_VIEW_MINIMAP, enable);
+                set_enabled(menu, ID_APP_VIEW_TOOLTIP, enable);
+                set_enabled(menu, ID_APP_VIEW_COMPASS, enable);
+                on_show_ui(enable);
+
+                // Raise event to disable all other elements as they are sub-elements of the UI. However, do not alter
+                // their checked state in the UI so that it is preserved for when the UI main element is re-enabled.
+                if (!enable)
+                {
+                    on_show_minimap(false);
+                    on_show_tooltip(false);
+                    on_show_compass(false);
+                }
+                else
+                {
+                    // Return the states of the settings to what they were before the main UI toggle was changed.
+                    on_show_minimap(is_checked(menu, ID_APP_VIEW_MINIMAP));
+                    on_show_tooltip(is_checked(menu, ID_APP_VIEW_TOOLTIP));
+                    on_show_compass(is_checked(menu, ID_APP_VIEW_COMPASS));
+                }
                 break;
             }
             default:
@@ -76,6 +112,6 @@ namespace trview
             }
         }
 
-        set_checked(menu, id, !checked);
+        set_checked(menu, id, enable);
     }
 }
