@@ -51,6 +51,9 @@ namespace trview
         set_checked(menu, ID_APP_VIEW_TOOLTIP, true);
         set_checked(menu, ID_APP_VIEW_UI, true);
         set_checked(menu, ID_APP_VIEW_COMPASS, true);
+        set_checked(menu, ID_APP_VIEW_SELECTION, true);
+        set_checked(menu, ID_APP_VIEW_ROUTE, true);
+        set_checked(menu, ID_APP_VIEW_TOOLS, true);
     }
 
     void ViewMenu::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -81,12 +84,30 @@ namespace trview
                 on_show_compass(enable);
                 break;
             }
+            case ID_APP_VIEW_SELECTION:
+            {
+                on_show_selection(enable);
+                break;
+            }
+            case ID_APP_VIEW_ROUTE:
+            {
+                on_show_route(enable);
+                break;
+            }
+            case ID_APP_VIEW_TOOLS:
+            {
+                on_show_tools(enable);
+                break;
+            }
             case ID_APP_VIEW_UI:
             {
                 // If the UI element is toggled, then enable/disable all other elements.
                 set_enabled(menu, ID_APP_VIEW_MINIMAP, enable);
                 set_enabled(menu, ID_APP_VIEW_TOOLTIP, enable);
                 set_enabled(menu, ID_APP_VIEW_COMPASS, enable);
+                set_enabled(menu, ID_APP_VIEW_SELECTION, enable);
+                set_enabled(menu, ID_APP_VIEW_ROUTE, enable);
+                set_enabled(menu, ID_APP_VIEW_TOOLS, enable);
                 on_show_ui(enable);
 
                 // Raise event to disable all other elements as they are sub-elements of the UI. However, do not alter
@@ -96,6 +117,9 @@ namespace trview
                     on_show_minimap(false);
                     on_show_tooltip(false);
                     on_show_compass(false);
+                    on_show_selection(false);
+                    on_show_route(false);
+                    on_show_tools(false);
                 }
                 else
                 {
@@ -103,6 +127,9 @@ namespace trview
                     on_show_minimap(is_checked(menu, ID_APP_VIEW_MINIMAP));
                     on_show_tooltip(is_checked(menu, ID_APP_VIEW_TOOLTIP));
                     on_show_compass(is_checked(menu, ID_APP_VIEW_COMPASS));
+                    on_show_selection(is_checked(menu, ID_APP_VIEW_SELECTION));
+                    on_show_route(is_checked(menu, ID_APP_VIEW_ROUTE));
+                    on_show_tools(is_checked(menu, ID_APP_VIEW_TOOLS));
                 }
                 break;
             }

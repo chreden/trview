@@ -145,6 +145,9 @@ namespace trview
         _token_store += _view_menu.on_show_tooltip += [&](bool show) { _show_picking = show; };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _control->set_visible(show); };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
+        _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
+        _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
+        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
     }
 
     Viewer::~Viewer()
@@ -769,10 +772,15 @@ namespace trview
             {
                 _camera.set_target(_target);
             }
-            _level->render(_device, current_camera());
+            _level->render(_device, current_camera(), _show_selection);
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
-            _route->render(_device, current_camera(), _level->texture_storage());
+
+            if (_show_route)
+            {
+                _route->render(_device, current_camera(), _level->texture_storage());
+            }
+
             _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }

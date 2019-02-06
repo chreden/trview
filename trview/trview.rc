@@ -56,6 +56,9 @@ BEGIN
         MENUITEM "Minimap",                     ID_VIEW_MINIMAP
         MENUITEM "Tooltip",                     ID_VIEW_TOOLTIP
         MENUITEM "Compass",                     ID_VIEW_COMPASS
+        MENUITEM "Selection",                   ID_VIEW_SELECTION
+        MENUITEM "Route",                       ID_VIEW_ROUTE
+        MENUITEM "Tools",                       ID_VIEW_TOOLS
     END
     POPUP "Windows"
     BEGIN

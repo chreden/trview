@@ -171,6 +171,7 @@ namespace trview
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
         ViewMenu _view_menu;
+        bool _show_selection{ true };
 
         // Tools:
         std::unique_ptr<Toolbar> _toolbar;
@@ -191,6 +192,7 @@ namespace trview
         PickResult _context_pick;
         std::unique_ptr<Route> _route;
         std::unique_ptr<RouteWindowManager> _route_window_manager;
+        bool _show_route{ true };
     };
 }
 
