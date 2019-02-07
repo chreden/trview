@@ -46,11 +46,16 @@ namespace trview
         /// @param camera The screen camera.
         /// @param axis The axis that was hovered over.
         bool pick(const Point& mouse_position, const ICamera& camera, Axis& axis);
+
+        /// Set whether the compass is visible.
+        /// @param value Whether to render the compass.
+        void set_visible(bool value);
     private:
         std::unique_ptr<graphics::RenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;
         std::unique_ptr<graphics::Sprite> _sprite;
         OrbitCamera _mesh_camera;
+        bool _visible{ true };
     };
 
     /// Get a string representation of a compass axis.

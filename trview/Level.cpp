@@ -154,7 +154,7 @@ namespace trview
         regenerate_neighbours();
     }
 
-    void Level::render(const graphics::Device& device, const ICamera& camera)
+    void Level::render(const graphics::Device& device, const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;
 
@@ -166,7 +166,10 @@ namespace trview
         _pixel_shader->apply(context);
 
         render_rooms(device, camera);
-        render_selected_item(device, camera);
+        if (render_selection)
+        {
+            render_selected_item(device, camera);
+        }
     }
 
     // Render the rooms in the level.

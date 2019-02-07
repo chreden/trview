@@ -70,7 +70,11 @@ namespace trview
         // is also specified.
         PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
-        void render(const graphics::Device& device, const ICamera& camera);
+        /// Render the current scene.
+        /// @param device The graphics device to use to render the scene.
+        /// @param camera The current camera.
+        /// @param render_selection Whether to render selection highlights on selected items.
+        void render(const graphics::Device& device, const ICamera& camera, bool render_selection);
 
         RoomHighlightMode highlight_mode() const;
         void set_highlight_mode(RoomHighlightMode mode);

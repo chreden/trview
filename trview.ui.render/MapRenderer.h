@@ -74,6 +74,9 @@ namespace trview
 
                 // Set the size of the host window.
                 void set_window_size(const Size& size);
+
+                /// Set whether the map is visible.
+                void set_visible(bool visible);
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 
@@ -98,6 +101,7 @@ namespace trview
                 bool needs_redraw();
 
                 Microsoft::WRL::ComPtr<ID3D11Device>               _device;
+                bool                                               _visible = true;
                 int                                                _window_width, _window_height;
                 graphics::Sprite                                   _sprite; 
                 graphics::Texture                                  _texture;

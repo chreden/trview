@@ -52,10 +52,14 @@ namespace trview
         /// Get whether a distance is actively being measured.
         /// @returns True if start and end is set.
         bool measuring() const;
+
+        /// Set whether the measure tool should be rendered.
+        void set_visible(bool value);
     private:
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
         ui::Label*                                  _label;
         std::unique_ptr<Mesh>                       _mesh;
+        bool                                        _visible{ true };
     };
 }

@@ -50,6 +50,16 @@ BEGIN
         MENUITEM "Switch &Level",               ID_FILE_SWITCHLEVEL
         MENUITEM "E&xit",                       IDM_EXIT
     END
+    POPUP "View"
+    BEGIN
+        MENUITEM "UI",                          ID_VIEW_UI
+        MENUITEM "Minimap",                     ID_VIEW_MINIMAP
+        MENUITEM "Tooltip",                     ID_VIEW_TOOLTIP
+        MENUITEM "Compass",                     ID_VIEW_COMPASS
+        MENUITEM "Selection",                   ID_VIEW_SELECTION
+        MENUITEM "Route",                       ID_VIEW_ROUTE
+        MENUITEM "Tools",                       ID_VIEW_TOOLS
+    END
     POPUP "Windows"
     BEGIN
         MENUITEM "&Items\tCtrl+I",              ID_WINDOWS_ITEMS

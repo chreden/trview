@@ -42,7 +42,7 @@ namespace trview
             void
             MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
             {
-                if (!_render_target)
+                if (!_render_target || !_visible)
                 {
                     return;
                 }
@@ -192,7 +192,7 @@ namespace trview
             bool 
             MapRenderer::cursor_is_over_control() const
             {
-                return _render_target && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
+                return _render_target && _visible && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
             }
 
             void 
@@ -248,6 +248,11 @@ namespace trview
                 }
 
                 return false;
+            }
+
+            void MapRenderer::set_visible(bool visible)
+            {
+                _visible = visible;
             }
         }
     }

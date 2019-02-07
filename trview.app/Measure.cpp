@@ -57,7 +57,7 @@ namespace trview
 
     void Measure::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
-        if (!_start.has_value() || !_end.has_value())
+        if (!_start.has_value() || !_end.has_value() || !_visible)
         {
             return;
         }
@@ -97,5 +97,11 @@ namespace trview
     bool Measure::measuring() const
     {
         return _start.has_value() && _end.has_value();
+    }
+
+    void Measure::set_visible(bool value)
+    {
+        _visible = value;
+        _label->set_visible(value && _end.has_value());
     }
 }
