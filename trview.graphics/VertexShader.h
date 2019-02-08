@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "IShader.h"
+#include <trview.graphics/Device.h>
 
 namespace trview
 {
@@ -16,7 +17,7 @@ namespace trview
             // device: The D3D device to use to create the vertex shader.
             // data: The data to use to compile the shader.
             // input_desc: The input layout description.
-            VertexShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::vector<uint8_t>& data, const std::vector<D3D11_INPUT_ELEMENT_DESC>& input_desc);
+            VertexShader(const graphics::Device& device, const std::vector<uint8_t>& data, const std::vector<D3D11_INPUT_ELEMENT_DESC>& input_desc);
 
             virtual ~VertexShader() = default;
 

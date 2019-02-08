@@ -15,7 +15,7 @@ namespace trview
     {
         namespace render
         {
-            ButtonNode::ButtonNode(const ComPtr<ID3D11Device>& device, Button* button)
+            ButtonNode::ButtonNode(const graphics::Device& device, Button* button)
                 : RenderNode(device, button), _button(button), _blank(_device, 1, 1, std::vector<uint32_t>(1, 0xffffffff))
             {
             }

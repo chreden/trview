@@ -26,7 +26,7 @@ namespace trview
         // width: The width of the new render target.
         // height: The height of the new render target.
         // depth_mode: Whether a depth stencil should be created.
-        RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode)
+        RenderTarget::RenderTarget(const graphics::Device& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode)
             : _width(width), _height(height), 
             _texture(device, width, height, Texture::Bind::RenderTarget)
         {
@@ -35,14 +35,14 @@ namespace trview
                 _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
             }
 
-            device->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
+            device.device()->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
         }
 
         // Create a render target using the specfied pre-existing texture.
         // device: The D3D device.
         // texture: The texture to use as the render target.
         // depth_mode: Whether a depth stencil should be created.
-        RenderTarget::RenderTarget(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode)
+        RenderTarget::RenderTarget(const graphics::Device& device, const ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode)
             : _texture{ texture, nullptr }
         {
             // Initialise properties from the existing texture.
@@ -56,7 +56,7 @@ namespace trview
                 _depth_stencil = std::make_unique<DepthStencil>(device, _width, _height);
             }
 
-            device->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
+            device.device()->CreateRenderTargetView(_texture.texture().Get(), nullptr, &_view);
         }
 
         RenderTarget::~RenderTarget() 

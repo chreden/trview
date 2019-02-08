@@ -11,7 +11,7 @@ namespace trview
     {
         namespace render
         {
-            ImageNode::ImageNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Image* image)
+            ImageNode::ImageNode(const graphics::Device& device, Image* image)
                 : WindowNode(device, image), _image(image)
             {
             }

@@ -18,7 +18,7 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& host_size)
+            Renderer::Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& host_size)
                 : _device(device), 
                 _font_factory(font_factory),
                 _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_size)),
@@ -26,7 +26,7 @@ namespace trview
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-                device->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
+                device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
             }
 
             Renderer::~Renderer()

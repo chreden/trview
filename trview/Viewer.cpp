@@ -47,13 +47,12 @@ namespace trview
         _settings = load_user_settings();
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device.device(), *_shader_storage.get());
+        load_default_shaders(_device, *_shader_storage.get());
 
-        _font_factory = std::make_unique<graphics::FontFactory>(_device.device());
-        load_default_fonts(_device.device(), *_font_factory.get());
+        load_default_fonts(_device, _font_factory);
 
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -68,7 +67,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), *_font_factory.get(), window);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -107,8 +106,8 @@ namespace trview
 
         initialise_input();
 
-        _texture_storage = std::make_unique<TextureStorage>(_device.device());
-        load_default_textures(_device.device(), *_texture_storage.get());
+        _texture_storage = std::make_unique<TextureStorage>(_device);
+        load_default_textures(_device, *_texture_storage.get());
 
         generate_ui();
 
@@ -116,7 +115,7 @@ namespace trview
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, *_font_factory, window);
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
@@ -250,10 +249,10 @@ namespace trview
         _settings_window->set_auto_orbit(_settings.auto_orbit);
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(_device.device(), *_shader_storage.get(), *_font_factory.get(), _window.size());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(_device, *_shader_storage.get(), _font_factory, _window.size());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device.device(), *_shader_storage.get(), _window.size());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, *_shader_storage.get(), _window.size());
     }
 
     void Viewer::generate_tool_window()

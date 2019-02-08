@@ -43,12 +43,12 @@ namespace trview
         {
         }
 
-        Texture::Texture(const ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, Bind bind)
+        Texture::Texture(const graphics::Device& device, uint32_t width, uint32_t height, Bind bind)
             : Texture(device, width, height, std::vector<uint32_t>(width * height, 0x00000000), bind)
         {
         }
 
-        Texture::Texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
+        Texture::Texture(const graphics::Device& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
         {
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
@@ -67,10 +67,10 @@ namespace trview
             desc.CPUAccessFlags = 0;
             desc.MiscFlags = 0;
 
-            device->CreateTexture2D(&desc, &srd, &_texture);
+            device.device()->CreateTexture2D(&desc, &srd, &_texture);
             if (bind != Texture::Bind::DepthStencil)
             {
-                device->CreateShaderResourceView(_texture.Get(), nullptr, &_view);
+                device.device()->CreateShaderResourceView(_texture.Get(), nullptr, &_view);
             }
         }
 

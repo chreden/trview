@@ -18,17 +18,17 @@ namespace trview
         /// @param device The Direct3D device to use to load the font.
         /// @param resource_id The integer ID of the font in the resource file.
         /// @returns The font loaded from the resource.
-        std::shared_ptr<SpriteFont> load_font_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
+        std::shared_ptr<SpriteFont> load_font_from_resource(const graphics::Device& device, int resource_id)
         {
             auto resource_memory = get_resource_memory(resource_id, L"SPRITEFONT");
-            return std::make_shared<SpriteFont>(device.Get(), resource_memory.data, resource_memory.size);
+            return std::make_shared<SpriteFont>(device.device().Get(), resource_memory.data, resource_memory.size);
         }
     }
 
     /// Loads the fonts that have been embedded in the resource file and puts them into the font storage provided.
     /// @param device The Direct3D device to use to load the fonts.
     /// @param font_factory The FontFactory instance to store the fonts in.
-    void load_default_fonts(const ComPtr<ID3D11Device>& device, graphics::FontFactory& font_factory)
+    void load_default_fonts(const graphics::Device& device, graphics::FontFactory& font_factory)
     {
         // Load some sort of manifest that contains the files to load.
         // For each font, load it with the given key.

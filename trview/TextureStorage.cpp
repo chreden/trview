@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    TextureStorage::TextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+    TextureStorage::TextureStorage(const graphics::Device& device)
         : _device(device)
     {
     }

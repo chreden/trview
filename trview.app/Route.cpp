@@ -21,7 +21,7 @@ namespace trview
     }
 
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
-        : _waypoint_mesh(create_cube_mesh(device.device())), _selection_renderer(device, shader_storage)
+        : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
     {
     }
 

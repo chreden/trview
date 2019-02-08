@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    MeshStorage::MeshStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
+    MeshStorage::MeshStorage(const graphics::Device& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
         : _device(device), _level(level), _texture_storage(texture_storage)
     {
     }

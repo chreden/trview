@@ -46,7 +46,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& window_size);
+                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& window_size);
 
                 // Renders the map 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
@@ -100,7 +100,7 @@ namespace trview
                 // Determines if the minimap needs to be re-drawn.
                 bool needs_redraw();
 
-                Microsoft::WRL::ComPtr<ID3D11Device>               _device;
+                const graphics::Device&                            _device;
                 bool                                               _visible = true;
                 int                                                _window_width, _window_height;
                 graphics::Sprite                                   _sprite; 

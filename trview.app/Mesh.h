@@ -6,6 +6,7 @@
 
 #include <trlevel/trtypes.h>
 #include <trlevel/LevelVersion.h>
+#include <trview.graphics/Device.h>
 
 #include "MeshVertex.h"
 #include "TransparentTriangle.h"
@@ -24,13 +25,19 @@ namespace trview
         /// @param vertices The vertices that make up the mesh.
         /// @param indices The indices for triangles that use level textures.
         /// @param untextured_indices The indices for triangles that do not use level textures.
+        /// @param transparent_triangles The transparent triangles to use to create the mesh.
         /// @param collision_triangles The triangles for picking.
-        Mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device,
+        Mesh(const graphics::Device& device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
              const std::vector<TransparentTriangle>& transparent_triangles,
              const std::vector<Triangle>& collision_triangles);
+
+        /// Create a mesh using the specified vertices and indices.
+        /// @param transparent_triangles The triangles to use to create the mesh.
+        /// @param collision_triangles The triangles for picking.
+        Mesh(const std::vector<TransparentTriangle>& transparent_triangles, const std::vector<Triangle>& collision_triangles);
 
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
             const DirectX::SimpleMath::Matrix& world_view_projection,
@@ -44,6 +51,8 @@ namespace trview
 
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:
+        void calculate_bounding_box(const std::vector<MeshVertex>& vertices, const std::vector<TransparentTriangle>& transparent_triangles);
+
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
         std::vector<uint32_t>                             _index_counts;
         std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> _index_buffers;
@@ -62,10 +71,10 @@ namespace trview
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
+    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::Device& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
     /// Create a new cube mesh.
-    std::unique_ptr<Mesh> create_cube_mesh(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+    std::unique_ptr<Mesh> create_cube_mesh(const graphics::Device& device);
 
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param level_version The level version - affects texture index.

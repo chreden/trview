@@ -6,8 +6,6 @@
 #include <memory>
 #include <optional>
 
-#include <d3d11.h>
-#include <wrl/client.h>
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
@@ -52,7 +50,7 @@ namespace trview
             IsAlternate
         };
 
-        explicit Room(const Microsoft::WRL::ComPtr<ID3D11Device>& device, 
+        explicit Room(const graphics::Device& device, 
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
@@ -139,7 +137,7 @@ namespace trview
 
         void generate_trigger_geometry();
     private:
-        void generate_geometry(trlevel::LevelVersion level_version, const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
+        void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
         void render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);

@@ -44,13 +44,13 @@ namespace trview
         // Create the texture sampler state.
         device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<LevelTextureStorage>(device.device(), *_level);
-        _mesh_storage = std::make_unique<MeshStorage>(device.device(), *_level, *_texture_storage.get());
-        generate_rooms(device.device());
-        generate_triggers(device);
-        generate_entities(device.device());
+        _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
+        _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
+        generate_rooms(device);
+        generate_triggers();
+        generate_entities(device);
 
-        _transparency = std::make_unique<TransparencyBuffer>(device.device());
+        _transparency = std::make_unique<TransparencyBuffer>(device);
 
         _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
@@ -293,7 +293,7 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device)
+    void Level::generate_rooms(const graphics::Device& device)
     {
         const uint16_t num_rooms = _level->num_rooms();
         for (uint16_t i = 0; i < num_rooms; ++i)
@@ -322,7 +322,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers(const graphics::Device& device)
+    void Level::generate_triggers()
     {
         for (auto i = 0; i < _rooms.size(); ++i)
         {
@@ -339,7 +339,7 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const ComPtr<ID3D11Device>& device)
+    void Level::generate_entities(const graphics::Device& device)
     {
         const uint32_t num_entities = _level->num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)

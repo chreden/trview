@@ -29,7 +29,7 @@ namespace trview
 
         namespace render
         {
-            MapRenderer::MapRenderer(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& window_size)
+            MapRenderer::MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& window_size)
                 : _device(device),
                 _window_width(static_cast<int>(window_size.width)), 
                 _window_height(static_cast<int>(window_size.height)),

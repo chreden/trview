@@ -128,9 +128,9 @@ namespace trview
         /// @returns The set of alternate groups in the level.
         std::set<uint16_t> alternate_groups() const;
     private:
-        void generate_rooms(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
-        void generate_triggers(const graphics::Device& device);
-        void generate_entities(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+        void generate_rooms(const graphics::Device& device);
+        void generate_triggers();
+        void generate_entities(const graphics::Device& device);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth);
 
