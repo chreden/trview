@@ -2,8 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="WindowResizer.cpp" />
-    <ClCompile Include="RecentFiles.cpp" />
-    <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Item.cpp">
       <Filter>Items</Filter>
     </ClCompile>
@@ -49,7 +47,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Compass.cpp" />
     <ClCompile Include="FreeCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -60,7 +57,6 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="ContextMenu.cpp" />
-    <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="Route.cpp">
       <Filter>Route</Filter>
     </ClCompile>
@@ -82,13 +78,26 @@
     <ClCompile Include="RouteWindowManager.cpp">
       <Filter>Route</Filter>
     </ClCompile>
-    <ClCompile Include="ViewMenu.cpp" />
+    <ClCompile Include="Compass.cpp" />
+    <ClCompile Include="FileDropper.cpp">
+      <Filter>Windows Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="RecentFiles.cpp">
+      <Filter>Windows Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewMenu.cpp">
+      <Filter>Windows Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="PickResult.cpp">
+      <Filter>Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="Picking.cpp">
+      <Filter>Picking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
-    <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="WindowIDs.h" />
-    <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Item.h">
       <Filter>Items</Filter>
     </ClInclude>
@@ -113,7 +122,6 @@
     <ClInclude Include="TransparentTriangle.h">
       <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="PickResult.h" />
     <ClInclude Include="Mesh.h">
       <Filter>Geometry</Filter>
     </ClInclude>
@@ -141,7 +149,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Compass.h" />
     <ClInclude Include="FreeCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -173,7 +180,25 @@
     <ClInclude Include="RouteWindowManager.h">
       <Filter>Route</Filter>
     </ClInclude>
-    <ClInclude Include="ViewMenu.h" />
+    <ClInclude Include="Compass.h" />
+    <ClInclude Include="FileDropper.h">
+      <Filter>Windows Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="RecentFiles.h">
+      <Filter>Windows Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewMenu.h">
+      <Filter>Windows Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Picking.h">
+      <Filter>Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="PickResult.h">
+      <Filter>Picking</Filter>
+    </ClInclude>
+    <ClInclude Include="PickInfo.h">
+      <Filter>Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -211,6 +236,12 @@
     </Filter>
     <Filter Include="Transparency">
       <UniqueIdentifier>{4605e9d0-57f6-40ec-906a-10828e27dad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows Menus">
+      <UniqueIdentifier>{df64e74e-be44-4213-b0eb-f5e3f2789c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Picking">
+      <UniqueIdentifier>{17fe44c3-c618-433a-9014-24283b5ba6f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

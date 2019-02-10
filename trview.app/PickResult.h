@@ -20,6 +20,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 position;
         Type                         type{ Type::Room };
         uint32_t                     index{ 0u };
+        bool                         stop{ false };
     };
 
     /// Convert the pick result to a display string.

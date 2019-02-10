@@ -147,6 +147,51 @@ namespace trview
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
+
+        _picking2 = std::make_unique<Picking>(*_control);
+        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop)
+            {
+                return;
+            }
+
+            Compass::Axis axis;
+            if (_compass->pick(info.screen_position, info.screen_size, axis))
+            {
+                result.hit = false;
+                result.stop = true;
+                _compass_axis = axis;
+            }
+        };
+        // Level
+        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop || !_level)
+            {
+                return;
+            }
+
+            auto level_result = _level->pick(current_camera(), info.position, info.direction);
+            if (level_result.hit && level_result.distance < result.distance)
+            {
+                result = level_result;
+            }
+        };
+        // Route
+        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop)
+            {
+                return;
+            }
+
+            auto route_result = _route->pick(info.position, info.direction);
+            if (route_result.hit && route_result.distance < result.distance)
+            {
+                result = route_result;
+            }
+        };
     }
 
     Viewer::~Viewer()
@@ -289,27 +334,22 @@ namespace trview
             }
         };
 
-        _camera_controls = std::make_unique<CameraControls>(*tool_window.get());
+        initialise_camera_controls(*tool_window);
+
+        _control->add_child(std::move(tool_window));
+    }
+
+    void Viewer::initialise_camera_controls(ui::Control& parent)
+    {
+        _camera_controls = std::make_unique<CameraControls>(parent);
         _token_store += _camera_controls->on_reset += [&]() { _camera.reset(); };
         _token_store += _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
-        _token_store += _camera_controls->on_sensitivity_changed += [&](float value)
-        {
-            _settings.camera_sensitivity = value;
-        };
-
-        _token_store += _camera_controls->on_movement_speed_changed += [&](float value)
-        {
-            _settings.camera_movement_speed = value;
-        };
+        _token_store += _camera_controls->on_sensitivity_changed += [&](float value) { _settings.camera_sensitivity = value; };
+        _token_store += _camera_controls->on_movement_speed_changed += [&](float value) { _settings.camera_movement_speed = value; };
 
         _camera_controls->set_sensitivity(_settings.camera_sensitivity);
         _camera_controls->set_mode(CameraMode::Orbit);
-
-        _camera_controls->set_movement_speed (
-            _settings.camera_movement_speed == 0? _CAMERA_MOVEMENT_SPEED_DEFAULT: _settings.camera_movement_speed
-        );
-
-        _control->add_child(std::move(tool_window));
+        _camera_controls->set_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
     }
 
     void Viewer::initialise_input()
@@ -699,6 +739,8 @@ namespace trview
             _current_pick.hit = false;
             return;
         }
+
+        _picking2->pick(_window, current_camera());
 
         using namespace DirectX;
         using namespace SimpleMath;
