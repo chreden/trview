@@ -1,7 +1,6 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11.h>
+#include <trview.graphics/Device.h>
 
 namespace trview
 {
@@ -10,5 +9,5 @@ namespace trview
         struct IShaderStorage;
     }
 
-    void load_default_shaders(const Microsoft::WRL::ComPtr<ID3D11Device>& device, graphics::IShaderStorage& storage);
+    void load_default_shaders(const graphics::Device& device, graphics::IShaderStorage& storage);
 }

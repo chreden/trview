@@ -9,8 +9,7 @@ namespace trview
 {
     namespace graphics
     {
-        FontFactory::FontFactory(const ComPtr<ID3D11Device>& device)
-            : _device(device)
+        FontFactory::FontFactory()
         {
         }
 

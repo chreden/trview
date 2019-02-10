@@ -41,7 +41,7 @@ namespace trview
         private:
             void create_render_target();
 
-            Microsoft::WRL::ComPtr<ID3D11Device> _device;
+            const Device&                               _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<IDXGISwapChain> _swap_chain;
             std::unique_ptr<RenderTarget> _render_target;

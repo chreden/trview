@@ -28,7 +28,7 @@ namespace trview
             };
         }
 
-        Sprite::Sprite(const ComPtr<ID3D11Device>& device, const graphics::IShaderStorage& shader_storage, const Size& host_size)
+        Sprite::Sprite(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& host_size)
             : _host_size(host_size)
         {
             using namespace DirectX::SimpleMath;
@@ -51,7 +51,7 @@ namespace trview
             memset(&vertex_data, 0, sizeof(vertex_data));
             vertex_data.pSysMem = vertices;
 
-            HRESULT hr = device->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+            HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
 
             uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -65,7 +65,7 @@ namespace trview
             memset(&index_data, 0, sizeof(index_data));
             index_data.pSysMem = indices;
 
-            hr = device->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+            hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
             _vertex_shader = shader_storage.get("ui_vertex_shader");
             _pixel_shader = shader_storage.get("ui_pixel_shader");
@@ -82,7 +82,7 @@ namespace trview
             desc.MaxLOD = D3D11_FLOAT32_MAX;
 
             // Create the texture sampler state.
-            device->CreateSamplerState(&desc, &_sampler_state);
+            device.device()->CreateSamplerState(&desc, &_sampler_state);
 
             create_matrix(device);
         }
@@ -109,7 +109,7 @@ namespace trview
             context->DrawIndexed(4, 0, 0);
         }
 
-        void Sprite::create_matrix(const ComPtr<ID3D11Device>& device)
+        void Sprite::create_matrix(const graphics::Device& device)
         {
             using namespace DirectX::SimpleMath;
             D3D11_BUFFER_DESC desc;
@@ -120,7 +120,7 @@ namespace trview
             desc.Usage = D3D11_USAGE_DYNAMIC;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-            device->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+            device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
         }
 
         void Sprite::update_matrix(const ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)

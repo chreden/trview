@@ -168,7 +168,7 @@ namespace trview
         std::vector<Triangle> collision;
         std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
             [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
-        _mesh = std::make_unique<Mesh>(_device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision);
+        _mesh = std::make_unique<Mesh>(transparent_triangles, collision);
     }
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const

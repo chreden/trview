@@ -25,7 +25,7 @@ namespace trview
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
     }
 
-    Room::Room(const ComPtr<ID3D11Device>& device, 
+    Room::Room(const graphics::Device& device, 
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
@@ -175,7 +175,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(trlevel::LevelVersion level_version, const ComPtr<ID3D11Device>& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),

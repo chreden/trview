@@ -12,7 +12,7 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     Measure::Measure(const Device& device, ui::Control& ui)
-        : _mesh(create_cube_mesh(device.device()))
+        : _mesh(create_cube_mesh(device))
     {
         auto label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         label->set_visible(false);

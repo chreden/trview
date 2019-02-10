@@ -4,7 +4,7 @@
 
 namespace trview
 {
-    LevelTextureStorage::LevelTextureStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level)
+    LevelTextureStorage::LevelTextureStorage(const graphics::Device& device, const trlevel::ILevel& level)
         : _device(device), _level(level), _texture_storage(std::make_unique<TextureStorage>(device))
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)

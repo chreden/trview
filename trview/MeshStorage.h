@@ -10,6 +10,7 @@
 
 #include "IMeshStorage.h"
 #include <trview.app/Mesh.h>
+#include <trview.graphics/Device.h>
 
 namespace trview
 {
@@ -18,13 +19,13 @@ namespace trview
     class MeshStorage final : public IMeshStorage
     {
     public:
-        explicit MeshStorage(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        explicit MeshStorage(const graphics::Device& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
         virtual ~MeshStorage() = default;
 
         virtual Mesh* mesh(uint32_t mesh_pointer) const override;
     private:
-        Microsoft::WRL::ComPtr<ID3D11Device> _device;
+        const graphics::Device& _device;
         const trlevel::ILevel& _level;
         const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;

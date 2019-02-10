@@ -6,9 +6,7 @@
 #pragma once
 
 #include <string>
-#include <wrl/client.h>
 #include <memory>
-#include <d3d11.h>
 #include <vector>
 #include <unordered_map>
 
@@ -27,8 +25,7 @@ namespace trview
         class FontFactory
         {
         public:
-            /// Creates a new instace of the FontFactory class.
-            explicit FontFactory(const Microsoft::WRL::ComPtr<ID3D11Device>& device);
+            FontFactory();
 
             ~FontFactory();
 
@@ -47,7 +44,6 @@ namespace trview
             /// @returns The new font instance.
             std::unique_ptr<Font> create_font(const std::string& font_face, int size, TextAlignment text_alignment = TextAlignment::Left, ParagraphAlignment paragraph_alignment = ParagraphAlignment::Near) const;
         private:
-            Microsoft::WRL::ComPtr<ID3D11Device> _device;
             mutable std::unordered_map<std::string, std::shared_ptr<DirectX::SpriteFont>> _cache;
         };
     }

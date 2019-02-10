@@ -17,7 +17,7 @@ namespace trview
     {
         namespace render
         {
-            RenderNode::RenderNode(const ComPtr<ID3D11Device>& device, Control* control)
+            RenderNode::RenderNode(const graphics::Device& device, Control* control)
                 : _device(device), _control(control)
             {
                 regenerate_texture();

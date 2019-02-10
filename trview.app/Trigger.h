@@ -69,7 +69,6 @@ namespace trview
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
         std::unique_ptr<Mesh> _mesh;
-        Microsoft::WRL::ComPtr<ID3D11Device> _device;
         DirectX::SimpleMath::Vector3 _position;
         TriggerType _type;
         uint32_t _number;

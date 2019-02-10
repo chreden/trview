@@ -22,7 +22,7 @@ namespace trview
                 /// Create a new ButtonNode.
                 /// @param device The device to use to render.
                 /// @param button The button to render.
-                explicit ButtonNode(const Microsoft::WRL::ComPtr<ID3D11Device>& device, Button* button);
+                explicit ButtonNode(const graphics::Device& device, Button* button);
 
                 /// Destructor for the button node.
                 virtual ~ButtonNode();

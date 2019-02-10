@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "IShader.h"
+#include <trview.graphics/Device.h>
 
 namespace trview
 {
@@ -12,7 +13,7 @@ namespace trview
         class PixelShader final : public IShader
         {
         public:
-            PixelShader(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const std::vector<uint8_t>& data);
+            PixelShader(const graphics::Device& device, const std::vector<uint8_t>& data);
 
             virtual ~PixelShader() = default;
 

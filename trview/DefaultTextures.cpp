@@ -18,13 +18,13 @@ namespace trview
         // device: The Direct3D device to use to load the textures.
         // resource_id: The integer ID of the texture in the resource file.
         // Returns: The texture loaded from the resource.
-        graphics::Texture load_texture_from_resource(const ComPtr<ID3D11Device>& device, int resource_id)
+        graphics::Texture load_texture_from_resource(const graphics::Device& device, int resource_id)
         {
             ComPtr<ID3D11Resource> resource;
             ComPtr<ID3D11ShaderResourceView> view;
 
             auto resource_memory = get_resource_memory(resource_id, L"PNG");
-            DirectX::CreateWICTextureFromMemory(device.Get(), resource_memory.data, resource_memory.size, &resource, &view);
+            DirectX::CreateWICTextureFromMemory(device.device().Get(), resource_memory.data, resource_memory.size, &resource, &view);
 
             if (!resource)
             {
@@ -43,7 +43,7 @@ namespace trview
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.
     // storage: The ITextureStorage instance to store the textures in.
-    void load_default_textures(const ComPtr<ID3D11Device>& device, ITextureStorage& storage)
+    void load_default_textures(const graphics::Device& device, ITextureStorage& storage)
     {
         // Load some sort of manifest that contains the files to load.
         // For each texture, load it with the given key.

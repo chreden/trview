@@ -8,7 +8,7 @@ namespace trview
     namespace graphics
     {
         DeviceWindow::DeviceWindow(const Device& device, const Window& window)
-            : _device(device.device()), _context(device.context())
+            : _device(device), _context(device.context())
         {
             // Swap chain description.
             DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
@@ -26,12 +26,12 @@ namespace trview
             swap_chain_desc.SampleDesc.Quality = 0;
 
             ComPtr<IDXGIDevice> dxgi_device;
-            _device.As(&dxgi_device);
+            _device.device().As(&dxgi_device);
             ComPtr<IDXGIAdapter> dxgi_adapter;
             dxgi_device->GetAdapter(&dxgi_adapter);
             ComPtr<IDXGIFactory> factory;
             dxgi_adapter->GetParent(__uuidof(IDXGIFactory), &factory);
-            factory->CreateSwapChain(_device.Get(), &swap_chain_desc, &_swap_chain);
+            factory->CreateSwapChain(_device.device().Get(), &swap_chain_desc, &_swap_chain);
 
             create_render_target();
         }

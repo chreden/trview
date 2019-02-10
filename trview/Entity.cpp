@@ -17,7 +17,7 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    Entity::Entity(const ComPtr<ID3D11Device>& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
+    Entity::Entity(const graphics::Device& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
         : _room(entity.Room), _index(index)
     {
         using namespace DirectX;
@@ -117,7 +117,7 @@ namespace trview
         }
     }
 
-    void Entity::load_sprite(const ComPtr<ID3D11Device>& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
+    void Entity::load_sprite(const graphics::Device& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
     {
         // Get the first sprite image.
         auto sprite = level.get_sprite_texture(sprite_sequence.Offset);

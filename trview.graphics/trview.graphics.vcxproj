@@ -60,6 +60,11 @@
     <ClCompile Include="VertexShaderStore.cpp" />
     <ClCompile Include="ViewportStore.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\trview.common\trview.common.vcxproj">
+      <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{3270FD29-EDAB-40BE-8CA1-DABC5E261E4C}</ProjectGuid>
