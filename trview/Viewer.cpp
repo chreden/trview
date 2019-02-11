@@ -96,8 +96,8 @@ namespace trview
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
-        _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group) 
-        { 
+        _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
+        {
             if (!_go_to_room->visible())
             {
                 set_alternate_group(group, !alternate_group(group));
@@ -149,23 +149,29 @@ namespace trview
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
 
         _picking2 = std::make_unique<Picking>(*_control);
-        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
         {
-            if (result.stop)
+            if (result.stop || _active_tool != Tool::None)
             {
+                _compass_axis.reset();
                 return;
             }
 
             Compass::Axis axis;
             if (_compass->pick(info.screen_position, info.screen_size, axis))
             {
-                result.hit = false;
+                result.hit = true;
                 result.stop = true;
+                result.position = info.position + info.direction;
+                result.type = PickResult::Type::Compass;
+                result.index = static_cast<uint32_t>(axis);
+                result.distance = 1.0f;
                 _compass_axis = axis;
             }
         };
         // Level
-        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || !_level)
             {
@@ -179,7 +185,7 @@ namespace trview
             }
         };
         // Route
-        _token_store += _picking2->on_pick += [&](PickInfo info, PickResult& result)
+        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
         {
             if (result.stop)
             {
@@ -191,6 +197,28 @@ namespace trview
             {
                 result = route_result;
             }
+        };
+        // Measure??
+        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
+        {
+            if (_active_tool == Tool::Measure && result.hit && !result.stop)
+            {
+                _measure->set(result.position);
+                if (_measure->measuring())
+                {
+                    result.text = _measure->distance();
+                }
+                else
+                {
+                    result.text = L"|....|";
+                }
+            }
+        };
+
+        _token_store += _picking2->on_pick += [&](const PickResult& result)
+        {
+            // Do something with picking.
+            _current_pick = result;
         };
     }
 
@@ -433,6 +461,7 @@ namespace trview
                     if (_compass_axis.has_value())
                     {
                         align_camera_to_axis(current_camera(), _compass_axis.value());
+                        _compass_axis.reset();
                     }
                     else if (_current_pick.hit)
                     {
@@ -697,7 +726,7 @@ namespace trview
 
         update_camera();
 
-        pick();
+        _picking2->pick(_window, current_camera());
 
         _device.begin();
         _main_window->begin();
@@ -729,79 +758,6 @@ namespace trview
     bool Viewer::should_pick() const
     {
         return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window));
-    }
-
-    void Viewer::pick()
-    {
-        if (!should_pick())
-        {
-            _picking->set_visible(false);
-            _current_pick.hit = false;
-            return;
-        }
-
-        _picking2->pick(_window, current_camera());
-
-        using namespace DirectX;
-        using namespace SimpleMath;
-
-        const ICamera& camera = current_camera();
-        Point mouse_pos = client_cursor_position(_window);
-
-        // Test against the compass first.
-        Compass::Axis axis;
-        if (_compass->pick(mouse_pos, camera, axis))
-        {
-            _current_pick.hit = false;
-            _compass_axis = axis;
-            _picking->set_visible(true);
-            _picking->set_text(axis_name(axis));
-            _picking->set_text_colour(Colour(1.0f, 1.0f, 1.0f));
-            _picking->set_position(Point(mouse_pos.x - _picking->size().width, mouse_pos.y - _picking->size().height));
-            return;
-        }
-
-        _compass_axis.reset();
-
-        const Vector3 position = camera.position();
-        auto world = Matrix::CreateTranslation(position);
-        auto projection = camera.projection();
-        auto view = camera.view();
-        const auto window_size = _window.size();
-
-        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
-        direction.Normalize();
-
-        auto result = _level->pick(camera, position, direction);
-
-        auto route_result = _route->pick(position, direction);
-        if (route_result.hit)
-        {
-            result = route_result;
-        }
-
-        _picking->set_visible(result.hit && _show_picking);
-        if (result.hit)
-        {
-            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
-            _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text(pick_to_string(result));
-            _picking->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
-
-            if (_active_tool == Tool::Measure)
-            {
-                _measure->set(result.position);
-                if (_measure->measuring())
-                {
-                    _picking->set_text(_measure->distance());
-                }
-                else
-                {
-                    _picking->set_text(L"|....|");
-                }
-            }
-        }
-        _current_pick = result;
     }
 
     void Viewer::render_scene()

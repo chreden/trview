@@ -120,7 +120,6 @@ namespace trview
         bool over_ui() const;
         bool over_map() const;
         bool should_pick() const;
-        void pick();
         const ICamera& current_camera() const;
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);

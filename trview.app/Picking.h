@@ -18,14 +18,18 @@ namespace trview
     class Picking final
     {
     public:
-        Picking(ui::Control& parent);
+        explicit Picking(ui::Control& parent);
 
         /// Perform a pick operation.
         /// @param window The window that the scene is being rendered in.
         /// @param camera The current scene camera.
         void pick(const Window& window, const ICamera& camera);
 
-        Event<PickInfo, PickResult&> on_pick;
+        /// The sources of pick information.
+        Event<PickInfo, PickResult&> pickers;
+
+        /// Raise when something has been picked.
+        Event<PickResult> on_pick;
     private:
         ui::Label* _label;
         bool       _show{ true };

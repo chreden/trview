@@ -1,4 +1,5 @@
 #include "PickResult.h"
+#include "Compass.h"
 #include <string>
 
 namespace trview
@@ -20,10 +21,40 @@ namespace trview
             }
             return L"?";
         }
+
+        std::wstring axis_to_string(Compass::Axis axis)
+        {
+            switch (axis)
+            {
+            case Compass::Axis::Pos_X:
+                return L"+X";
+            case Compass::Axis::Pos_Y:
+                return L"+Y";
+            case Compass::Axis::Pos_Z:
+                return L"+Z";
+            case Compass::Axis::Neg_X:
+                return L"-X";
+            case Compass::Axis::Neg_Y:
+                return L"-Y";
+            case Compass::Axis::Neg_Z:
+                return L"-Z";
+            }
+            return L"?";
+        }
     }
 
     std::wstring pick_to_string(const PickResult& pick)
     {
+        if (!pick.text.empty())
+        {
+            return pick.text;
+        }
+
+        if (pick.type == PickResult::Type::Compass)
+        {
+            return axis_to_string(static_cast<Compass::Axis>(pick.index));
+        }
+
         return pick_type_to_string(pick.type) + L"-" + std::to_wstring(pick.index);
     }
  }
