@@ -38,6 +38,7 @@
 #include <trview.app/Route.h>
 #include <trview.app/RouteWindowManager.h>
 #include <trview.app/ViewMenu.h>
+#include <trview.app/Picking.h>
 
 namespace trview
 {
@@ -101,6 +102,7 @@ namespace trview
     private:
         void generate_ui();
         void generate_tool_window();
+        void initialise_camera_controls(ui::Control& parent);
         void initialise_input();
         void process_input_key(uint16_t key);
         void process_char(uint16_t character);
@@ -118,7 +120,6 @@ namespace trview
         bool over_ui() const;
         bool over_map() const;
         bool should_pick() const;
-        void pick();
         const ICamera& current_camera() const;
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);
@@ -160,8 +161,7 @@ namespace trview
         graphics::FontFactory _font_factory;
         std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
-        ui::Label* _picking;
-        bool _show_picking{ true };
+        std::unique_ptr<Picking> _picking;
         PickResult _current_pick;
         LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;

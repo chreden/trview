@@ -96,8 +96,8 @@ namespace trview
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
-        _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group) 
-        { 
+        _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
+        {
             if (!_go_to_room->visible())
             {
                 set_alternate_group(group, !alternate_group(group));
@@ -141,12 +141,71 @@ namespace trview
         };
 
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _map_renderer->set_visible(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _show_picking = show; };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _picking->set_show(show); };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _control->set_visible(show); };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
+
+        _picking = std::make_unique<Picking>(*_control);
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop || _active_tool != Tool::None)
+            {
+                _compass_axis.reset();
+                return;
+            }
+
+            Compass::Axis axis;
+            if (_compass->pick(info.screen_position, info.screen_size, axis))
+            {
+                result.hit = true;
+                result.stop = true;
+                result.position = info.position + info.direction;
+                result.type = PickResult::Type::Compass;
+                result.index = static_cast<uint32_t>(axis);
+                result.distance = 1.0f;
+                _compass_axis = axis;
+            }
+        };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop || !_level)
+            {
+                return;
+            }
+            result = nearest_result(result, _level->pick(current_camera(), info.position, info.direction));
+        };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop)
+            {
+                return;
+            }
+            result = nearest_result(result, _route->pick(info.position, info.direction));
+        };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        {
+            if (_active_tool == Tool::Measure && result.hit && !result.stop)
+            {
+                _measure->set(result.position);
+                if (_measure->measuring())
+                {
+                    result.text = _measure->distance();
+                }
+                else
+                {
+                    result.text = L"|....|";
+                }
+            }
+        };
+
+        _token_store += _picking->on_pick += [&](const PickResult& result)
+        {
+            _current_pick = result;
+        };
     }
 
     Viewer::~Viewer()
@@ -174,11 +233,6 @@ namespace trview
             select_room(room);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        picking->set_visible(false);
-        picking->set_handles_input(false);
-        _picking = _control->add_child(std::move(picking));
-
         _toolbar = std::make_unique<Toolbar>(*_control);
         _toolbar->add_tool(L"Measure", L"|....|");
         _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
@@ -201,7 +255,7 @@ namespace trview
         };
         _token_store += _context_menu->on_remove_waypoint += [&]()
         {
-            remove_waypoint(_current_pick.index);
+            remove_waypoint(_context_pick.index);
             _context_menu->set_visible(false);
         };
 
@@ -289,27 +343,22 @@ namespace trview
             }
         };
 
-        _camera_controls = std::make_unique<CameraControls>(*tool_window.get());
+        initialise_camera_controls(*tool_window);
+
+        _control->add_child(std::move(tool_window));
+    }
+
+    void Viewer::initialise_camera_controls(ui::Control& parent)
+    {
+        _camera_controls = std::make_unique<CameraControls>(parent);
         _token_store += _camera_controls->on_reset += [&]() { _camera.reset(); };
         _token_store += _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
-        _token_store += _camera_controls->on_sensitivity_changed += [&](float value)
-        {
-            _settings.camera_sensitivity = value;
-        };
-
-        _token_store += _camera_controls->on_movement_speed_changed += [&](float value)
-        {
-            _settings.camera_movement_speed = value;
-        };
+        _token_store += _camera_controls->on_sensitivity_changed += [&](float value) { _settings.camera_sensitivity = value; };
+        _token_store += _camera_controls->on_movement_speed_changed += [&](float value) { _settings.camera_movement_speed = value; };
 
         _camera_controls->set_sensitivity(_settings.camera_sensitivity);
         _camera_controls->set_mode(CameraMode::Orbit);
-
-        _camera_controls->set_movement_speed (
-            _settings.camera_movement_speed == 0? _CAMERA_MOVEMENT_SPEED_DEFAULT: _settings.camera_movement_speed
-        );
-
-        _control->add_child(std::move(tool_window));
+        _camera_controls->set_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
     }
 
     void Viewer::initialise_input()
@@ -393,6 +442,7 @@ namespace trview
                     if (_compass_axis.has_value())
                     {
                         align_camera_to_axis(current_camera(), _compass_axis.value());
+                        _compass_axis.reset();
                     }
                     else if (_current_pick.hit)
                     {
@@ -486,16 +536,12 @@ namespace trview
 
         _token_store += _mouse.mouse_click += [&](auto button)
         {
-            if (button == input::Mouse::Button::Right)
+            if (button == input::Mouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
             {
-                if (!over_ui() && !over_map() && _picking->visible())
-                {
-                    // Show right click menu? Or show it all the time?
-                    _context_pick = _current_pick;
-                    _context_menu->set_position(client_cursor_position(_window));
-                    _context_menu->set_visible(true);
-                    _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                }
+                _context_pick = _current_pick;
+                _context_menu->set_position(client_cursor_position(_window));
+                _context_menu->set_visible(true);
+                _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
             }
         };
 
@@ -657,7 +703,7 @@ namespace trview
 
         update_camera();
 
-        pick();
+        _picking->pick(_window, current_camera());
 
         _device.begin();
         _main_window->begin();
@@ -689,77 +735,6 @@ namespace trview
     bool Viewer::should_pick() const
     {
         return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window));
-    }
-
-    void Viewer::pick()
-    {
-        if (!should_pick())
-        {
-            _picking->set_visible(false);
-            _current_pick.hit = false;
-            return;
-        }
-
-        using namespace DirectX;
-        using namespace SimpleMath;
-
-        const ICamera& camera = current_camera();
-        Point mouse_pos = client_cursor_position(_window);
-
-        // Test against the compass first.
-        Compass::Axis axis;
-        if (_compass->pick(mouse_pos, camera, axis))
-        {
-            _current_pick.hit = false;
-            _compass_axis = axis;
-            _picking->set_visible(true);
-            _picking->set_text(axis_name(axis));
-            _picking->set_text_colour(Colour(1.0f, 1.0f, 1.0f));
-            _picking->set_position(Point(mouse_pos.x - _picking->size().width, mouse_pos.y - _picking->size().height));
-            return;
-        }
-
-        _compass_axis.reset();
-
-        const Vector3 position = camera.position();
-        auto world = Matrix::CreateTranslation(position);
-        auto projection = camera.projection();
-        auto view = camera.view();
-        const auto window_size = _window.size();
-
-        Vector3 direction = XMVector3Unproject(Vector3(mouse_pos.x, mouse_pos.y, 1), 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, world);
-        direction.Normalize();
-
-        auto result = _level->pick(camera, position, direction);
-
-        auto route_result = _route->pick(position, direction);
-        if (route_result.hit)
-        {
-            result = route_result;
-        }
-
-        _picking->set_visible(result.hit && _show_picking);
-        if (result.hit)
-        {
-            Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
-            _picking->set_position(Point(screen_pos.x - _picking->size().width, screen_pos.y - _picking->size().height));
-            _picking->set_text(pick_to_string(result));
-            _picking->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
-
-            if (_active_tool == Tool::Measure)
-            {
-                _measure->set(result.position);
-                if (_measure->measuring())
-                {
-                    _picking->set_text(_measure->distance());
-                }
-                else
-                {
-                    _picking->set_text(L"|....|");
-                }
-            }
-        }
-        _current_pick = result;
     }
 
     void Viewer::render_scene()

@@ -94,7 +94,7 @@ namespace trview
         _sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 
-    bool Compass::pick(const Point& mouse_position, const ICamera& camera, Axis& axis)
+    bool Compass::pick(const Point& mouse_position, const Size& screen_size, Axis& axis)
     {
         if (!_visible)
         {
@@ -102,7 +102,6 @@ namespace trview
         }
 
         // Convert the mouse position into coordinates of the compass window.
-        const auto screen_size = camera.view_size();
         const auto view_top_left = Point(screen_size.width - View_Size, screen_size.height - View_Size);
         const auto view_pos = mouse_position - view_top_left;
         const auto view_size = Size(View_Size, View_Size);
