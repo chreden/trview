@@ -28,4 +28,7 @@ namespace trview
     /// Convert the pick result to a display string.
     /// @param pick The result to convert.
     std::wstring pick_to_string(const PickResult& pick);
+
+    /// If the next pick is nearer than the current and is a hit, choose that one.
+    PickResult nearest_result(const PickResult& current, const PickResult& next);
 }

@@ -57,4 +57,13 @@ namespace trview
 
         return pick_type_to_string(pick.type) + L"-" + std::to_wstring(pick.index);
     }
+
+    PickResult nearest_result(const PickResult& current, const PickResult& next)
+    {
+        if (next.hit && next.distance < current.distance)
+        {
+            return next;
+        }
+        return current;
+    }
  }

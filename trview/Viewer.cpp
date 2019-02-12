@@ -170,35 +170,22 @@ namespace trview
                 _compass_axis = axis;
             }
         };
-        // Level
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || !_level)
             {
                 return;
             }
-
-            auto level_result = _level->pick(current_camera(), info.position, info.direction);
-            if (level_result.hit && level_result.distance < result.distance)
-            {
-                result = level_result;
-            }
+            result = nearest_result(result, _level->pick(current_camera(), info.position, info.direction));
         };
-        // Route
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop)
             {
                 return;
             }
-
-            auto route_result = _route->pick(info.position, info.direction);
-            if (route_result.hit && route_result.distance < result.distance)
-            {
-                result = route_result;
-            }
+            result = nearest_result(result, _route->pick(info.position, info.direction));
         };
-        // Measure??
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (_active_tool == Tool::Measure && result.hit && !result.stop)

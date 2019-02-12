@@ -35,7 +35,7 @@ namespace trview
         // Call the registered pickers.
         PickInfo info{ camera.view_size(), mouse_pos, position, direction };
         PickResult result{};
-        pickers(info, result);
+        pick_sources(info, result);
 
         // Show the tooltip.
         _label->set_visible(result.hit && _show);
