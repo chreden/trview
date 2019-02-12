@@ -141,7 +141,7 @@ namespace trview
         };
 
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _map_renderer->set_visible(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _show_picking = show; };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _picking->set_show(show); };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _control->set_visible(show); };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };

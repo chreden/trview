@@ -49,4 +49,10 @@ namespace trview
 
         on_pick(result);
     }
+
+    void Picking::set_show(bool value)
+    {
+        _show = value;
+        _label->set_visible(_label->visible() && _show);
+    }
 }

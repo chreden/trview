@@ -25,6 +25,10 @@ namespace trview
         /// @param camera The current scene camera.
         void pick(const Window& window, const ICamera& camera);
 
+        /// Set whether to show the picking tooltip.
+        /// @param value Whether to show the tooltip.
+        void set_show(bool value);
+
         /// The sources of pick information.
         Event<PickInfo, PickResult&> pick_sources;
 
