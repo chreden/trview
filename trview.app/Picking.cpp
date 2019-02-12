@@ -45,7 +45,8 @@ namespace trview
             _label->set_position(Point(screen_pos.x - _label->size().width, screen_pos.y - _label->size().height));
             _label->set_text(pick_to_string(result));
             _label->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
-            on_pick(result);
         }
+
+        on_pick(result);
     }
 }

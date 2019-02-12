@@ -26,7 +26,7 @@ namespace trview
         void pick(const Window& window, const ICamera& camera);
 
         /// The sources of pick information.
-        Event<PickInfo, PickResult&> pickers;
+        Event<PickInfo, PickResult&> pick_sources;
 
         /// Raise when something has been picked.
         Event<PickResult> on_pick;

@@ -148,9 +148,9 @@ namespace trview
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
 
-        _picking2 = std::make_unique<Picking>(*_control);
-        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
-        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
+        _picking = std::make_unique<Picking>(*_control);
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || _active_tool != Tool::None)
             {
@@ -171,7 +171,7 @@ namespace trview
             }
         };
         // Level
-        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || !_level)
             {
@@ -185,7 +185,7 @@ namespace trview
             }
         };
         // Route
-        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop)
             {
@@ -199,7 +199,7 @@ namespace trview
             }
         };
         // Measure??
-        _token_store += _picking2->pickers += [&](PickInfo info, PickResult& result)
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (_active_tool == Tool::Measure && result.hit && !result.stop)
             {
@@ -215,9 +215,8 @@ namespace trview
             }
         };
 
-        _token_store += _picking2->on_pick += [&](const PickResult& result)
+        _token_store += _picking->on_pick += [&](const PickResult& result)
         {
-            // Do something with picking.
             _current_pick = result;
         };
     }
@@ -247,11 +246,6 @@ namespace trview
             select_room(room);
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        picking->set_visible(false);
-        picking->set_handles_input(false);
-        _picking = _control->add_child(std::move(picking));
-
         _toolbar = std::make_unique<Toolbar>(*_control);
         _toolbar->add_tool(L"Measure", L"|....|");
         _token_store += _toolbar->on_tool_clicked += [this](const std::wstring& tool)
@@ -274,7 +268,7 @@ namespace trview
         };
         _token_store += _context_menu->on_remove_waypoint += [&]()
         {
-            remove_waypoint(_current_pick.index);
+            remove_waypoint(_context_pick.index);
             _context_menu->set_visible(false);
         };
 
@@ -555,16 +549,12 @@ namespace trview
 
         _token_store += _mouse.mouse_click += [&](auto button)
         {
-            if (button == input::Mouse::Button::Right)
+            if (button == input::Mouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
             {
-                if (!over_ui() && !over_map() && _picking->visible())
-                {
-                    // Show right click menu? Or show it all the time?
-                    _context_pick = _current_pick;
-                    _context_menu->set_position(client_cursor_position(_window));
-                    _context_menu->set_visible(true);
-                    _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
-                }
+                _context_pick = _current_pick;
+                _context_menu->set_position(client_cursor_position(_window));
+                _context_menu->set_visible(true);
+                _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
             }
         };
 
@@ -726,7 +716,7 @@ namespace trview
 
         update_camera();
 
-        _picking2->pick(_window, current_camera());
+        _picking->pick(_window, current_camera());
 
         _device.begin();
         _main_window->begin();

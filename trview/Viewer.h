@@ -161,8 +161,7 @@ namespace trview
         graphics::FontFactory _font_factory;
         std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
-        std::unique_ptr<Picking> _picking2;
-        ui::Label* _picking;
+        std::unique_ptr<Picking> _picking;
         bool _show_picking{ true };
         PickResult _current_pick;
         LevelSwitcher _level_switcher;
