@@ -43,12 +43,6 @@ namespace trview
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.
-        /// @param camera The screen camera.
-        /// @param axis The axis that was hovered over.
-        bool pick(const Point& mouse_position, const ICamera& camera, Axis& axis);
-
-        /// Pick against the compass points.
-        /// @param mouse_position The mouse position in screen space.
         /// @param screen_size The screen size.
         /// @param axis The axis that was hovered over.
         bool pick(const Point& mouse_position, const Size& screen_size, Axis& axis);

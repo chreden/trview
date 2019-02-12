@@ -94,11 +94,6 @@ namespace trview
         _sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 
-    bool Compass::pick(const Point& mouse_position, const ICamera& camera, Axis& axis)
-    {
-        return pick(mouse_position, camera.view_size(), axis);
-    }
-
     bool Compass::pick(const Point& mouse_position, const Size& screen_size, Axis& axis)
     {
         if (!_visible)
