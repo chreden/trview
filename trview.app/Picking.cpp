@@ -44,7 +44,7 @@ namespace trview
             Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
             _label->set_position(Point(screen_pos.x - _label->size().width, screen_pos.y - _label->size().height));
             _label->set_text(pick_to_string(result));
-            _label->set_text_colour(result.type == PickResult::Type::Room ? Colour(1.0f, 1.0f, 1.0f) : result.type == PickResult::Type::Trigger ? Colour(1.0f, 0.0f, 1.0f) : Colour(0.0f, 1.0f, 0.0f));
+            _label->set_text_colour(pick_to_colour(result));
         }
 
         on_pick(result);
