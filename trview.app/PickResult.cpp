@@ -64,6 +64,7 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Entity:
+        case PickResult::Type::Waypoint:
             return Colour(0.0f, 1.0f, 0.0f);
         case PickResult::Type::Trigger:
             return Colour(1.0f, 0.0f, 1.0f);

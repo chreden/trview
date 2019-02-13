@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <optional>
 #include "ICamera.h"
 
 namespace trview
@@ -21,10 +22,13 @@ namespace trview
         virtual const DirectX::SimpleMath::Matrix& projection() const override;
         virtual float rotation_pitch() const override;
         virtual float rotation_yaw() const override;
+        virtual void rotate_to_pitch(float rotation) override;
+        virtual void rotate_to_yaw(float rotation) override;
         virtual void set_rotation_pitch(float rotation) override;
         virtual void set_rotation_yaw(float rotation) override;
         virtual void set_view_size(const Size& size) override;
         virtual DirectX::SimpleMath::Vector3 up() const override;
+        virtual void update(float elapsed) override;
         virtual const DirectX::SimpleMath::Matrix& view() const override;
         virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
         virtual const Size& view_size() const override;
@@ -58,5 +62,7 @@ namespace trview
         DirectX::SimpleMath::Matrix _projection_lh;
         DirectX::SimpleMath::Matrix _view_projection;
         DirectX::BoundingFrustum _bounding_frustum;
+        std::optional<float> _target_rotation_yaw;
+        std::optional<float> _target_rotation_pitch;
     };
 }

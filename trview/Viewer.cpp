@@ -620,6 +620,8 @@ namespace trview
                 _level->on_camera_moved();
             }
         }
+
+        current_camera().update(_timer.elapsed());
     }
 
     void Viewer::open(const std::string& filename)
