@@ -37,6 +37,14 @@ namespace trview
         /// @returns The yaw rotation.
         virtual float rotation_yaw() const = 0;
 
+        /// Rotate to the specified pitch.
+        /// @param rotation The angle to rotate to.
+        virtual void rotate_to_pitch(float rotation) = 0;
+
+        /// Rotate to the specified yaw.
+        /// @param rotation The angle to rotate to.
+        virtual void rotate_to_yaw(float rotation) = 0;
+
         /// Set the pitch rotation of the camera.
         /// @param rotation The rotation around the right vector in radians.
         virtual void set_rotation_pitch(float rotation) = 0;
@@ -52,6 +60,10 @@ namespace trview
         /// Gets the direction that the camera considers to be 'up'.
         /// @returns The up direction.
         virtual DirectX::SimpleMath::Vector3 up() const = 0;
+
+        /// Update any movement.
+        /// @param elapsed The time that has elapsed between updates.
+        virtual void update(float elapsed) = 0;
 
         /// Gets the current view matrix for the camera.
         /// @returns The view matrix.

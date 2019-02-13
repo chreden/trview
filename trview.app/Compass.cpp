@@ -14,7 +14,8 @@ namespace trview
 
     namespace
     {
-        const float Pi = 1.5707963267948966192313216916398f;
+        const float HalfPi = 1.5707963267948966192313216916398f;
+        const float Pi = 3.1415926535897932384626433832796f;
         const float View_Size = 200;
         const float Nodule_Size = 0.05f;
 
@@ -73,8 +74,8 @@ namespace trview
             const auto scale = Matrix::CreateScale(thickness, 1.0f, thickness);
 
             _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
-            _mesh->render(context, scale * Matrix::CreateRotationZ(Pi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
-            _mesh->render(context, scale * Matrix::CreateRotationX(Pi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationZ(HalfPi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationX(HalfPi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
 
             // Nodules for each direction - they can be clicked.
             const auto nodule_scale = Matrix::CreateScale(0.05f);
@@ -156,30 +157,30 @@ namespace trview
         switch (axis)
         {
         case Compass::Axis::Pos_X:
-            yaw = Pi;
+            yaw = HalfPi;
             pitch = 0;
             break;
         case Compass::Axis::Pos_Y:
-            pitch = -Pi;
+            pitch = -HalfPi;
             break;
         case Compass::Axis::Pos_Z:
             yaw = 0;
             pitch = 0;
             break;
         case Compass::Axis::Neg_X:
-            yaw = -Pi;
+            yaw = -HalfPi;
             pitch = 0;
             break;
         case Compass::Axis::Neg_Y:
-            pitch = Pi;
+            pitch = HalfPi;
             break;
         case Compass::Axis::Neg_Z:
-            yaw = Pi * 2;
+            yaw = Pi;
             pitch = 0;
             break;
         }
 
-        camera.set_rotation_yaw(yaw);
-        camera.set_rotation_pitch(pitch);
+        camera.rotate_to_yaw(yaw);
+        camera.rotate_to_pitch(pitch);
     }
 }

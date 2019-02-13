@@ -5,6 +5,17 @@ namespace trview
 {
     using namespace DirectX::SimpleMath;
 
+    namespace
+    {
+        float angle_to(float current, float target)
+        {
+            return atan2(sin(target - current), cos(target - current));
+        }
+    }
+
+    const float Pi = 3.1415926535897932384626433832796f;
+    const float Pi2 = 3.1415926535897932384626433832796f * 2.0f;
+
     Camera::Camera(const Size& size)
         : _view_size(size), _forward(Vector3::Forward), _up(Vector3::Down), _position(Vector3::Zero)
     {
@@ -42,15 +53,29 @@ namespace trview
         return _rotation_yaw;
     }
 
+    void Camera::rotate_to_pitch(float rotation)
+    {
+        _target_rotation_pitch = rotation;
+    }
+
+    void Camera::rotate_to_yaw(float rotation)
+    {
+        _target_rotation_yaw = rotation;
+    }
+
     void Camera::set_rotation_pitch(float rotation)
     {
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
+        _target_rotation_pitch.reset();
+        _target_rotation_yaw.reset();
         update_vectors();
     }
 
     void Camera::set_rotation_yaw(float rotation)
     {
-        _rotation_yaw = rotation;
+        _rotation_yaw = rotation - static_cast<int>(rotation / Pi2) * Pi2;
+        _target_rotation_pitch.reset();
+        _target_rotation_yaw.reset();
         update_vectors();
     }
 
@@ -63,6 +88,35 @@ namespace trview
     Vector3 Camera::up() const
     {
         return _up;
+    }
+
+    void Camera::update(float elapsed)
+    {
+        const float speed = 10.0f;
+
+        if (_target_rotation_yaw.has_value())
+        {
+            float diff = angle_to(_rotation_yaw, _target_rotation_yaw.value());
+            float amount = std::min(speed * elapsed, abs(diff));
+            _rotation_yaw += amount * (diff > 0 ? 1 : -1);
+
+            if (abs(_target_rotation_yaw.value() - _rotation_yaw) < 0.01f)
+            {
+                _target_rotation_yaw.reset();
+            }
+        }
+
+        if (_target_rotation_pitch.has_value())
+        {
+            float diff = angle_to(_rotation_pitch, _target_rotation_pitch.value());
+            float amount = std::min(speed * elapsed, abs(diff));
+            _rotation_pitch += amount * (diff > 0 ? 1 : -1);
+
+            if (abs(_target_rotation_pitch.value() - _rotation_pitch) < 0.01f)
+            {
+                _target_rotation_pitch.reset();
+            }
+        }
     }
 
     const Matrix& Camera::view() const
