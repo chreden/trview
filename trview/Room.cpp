@@ -23,6 +23,15 @@ namespace trview
     namespace
     {
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
+        const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
+
+        // Convert the vertex to the scale used by the viewer.
+        // vertex: The vertex to convert.
+        // Returns: The scaled vector.
+        Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
+        {
+            return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
+        }
     }
 
     Room::Room(const graphics::Device& device, 
@@ -44,8 +53,8 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
-        generate_geometry(level.get_version(), device, room, texture_storage);
         generate_sectors(level, room);
+        generate_geometry(level.get_version(), device, room, texture_storage);
         generate_adjacency();
         generate_static_meshes(level, room, mesh_storage);
     }
@@ -175,6 +184,17 @@ namespace trview
         }
     }
 
+    namespace
+    {
+        bool equivalent_triangles(std::vector<Vector3> left, std::vector<Vector3> right)
+        {
+            auto v0 = std::find(right.begin(), right.end(), left[0]);
+            auto v1 = std::find(right.begin(), right.end(), left[1]);
+            auto v2 = std::find(right.begin(), right.end(), left[2]);
+            return v0 != right.end() && v1 != right.end() && v2 != right.end();
+        }
+    }
+
     void Room::generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
@@ -186,12 +206,14 @@ namespace trview
 
         // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
+        std::vector<uint32_t> untextured_indices;
         std::vector<Triangle> collision_triangles;
 
         process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_unmatched_geometry(room.data, room_vertices, vertices, untextured_indices, collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+        _mesh = std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
         
         // Generate the bounding box based on the room dimensions.
         const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
@@ -429,5 +451,90 @@ namespace trview
             return nullptr;
         }
         return _sectors[sector_id].get();
+    }
+
+    namespace
+    {
+        bool geometry_matched(
+            const std::vector<Vector3>& triangle,
+            const trlevel::tr3_room_data& data, 
+            const std::vector<Vector3>& room_vertices)
+        {
+            for (const auto& r : data.rectangles)
+            {
+                if (equivalent_triangles({ triangle.begin(), triangle.begin() + 3 },
+                        {
+                            room_vertices[r.vertices[0]],
+                            room_vertices[r.vertices[1]],
+                            room_vertices[r.vertices[2]],
+                            room_vertices[r.vertices[3]]
+                        }))
+                {
+                    return true;
+                }
+            }
+
+            for (const auto& t : data.triangles)
+            {
+                if (equivalent_triangles({ triangle.begin(), triangle.begin() + 3 },
+                        {
+                            room_vertices[t.vertices[0]],
+                            room_vertices[t.vertices[1]],
+                            room_vertices[t.vertices[2]]
+                        }))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        void add_triangle(
+            const std::vector<Vector3>& tri,
+            std::vector<MeshVertex>& output_vertices,
+            std::vector<uint32_t>& output_indices,
+            std::vector<Triangle>& collision_triangles)
+        {
+            uint32_t base = output_vertices.size();
+
+            output_vertices.push_back({ tri[0], Vector3::Down, Vector2::Zero, Unmatched_Colour });
+            output_vertices.push_back({ tri[1], Vector3::Down, Vector2::Zero, Unmatched_Colour });
+            output_vertices.push_back({ tri[2], Vector3::Down, Vector2::Zero, Unmatched_Colour });
+
+            output_indices.push_back(base);
+            output_indices.push_back(base + 1);
+            output_indices.push_back(base + 2);
+
+            collision_triangles.emplace_back(tri[0], tri[1], tri[2]);
+        }
+    }
+
+    void Room::process_unmatched_geometry(
+        const trlevel::tr3_room_data& data,
+        const std::vector<trlevel::tr_vertex>& room_vertices,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<uint32_t>& output_indices,
+        std::vector<Triangle>& collision_triangles)
+    {
+        std::vector<Vector3> transformed_room_vertices;
+        std::transform(room_vertices.begin(), room_vertices.end(), std::back_inserter(transformed_room_vertices), convert_vertex);
+
+        for (const auto& sector : _sectors)
+        {
+            if (sector.second->room_below() == 0xff && !(sector.second->flags & SectorFlag::Wall) && !(sector.second->flags & SectorFlag::Portal))
+            {
+                const auto tris = sector.second->triangles(_num_z_sectors);
+                if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices))
+                {
+                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles);
+                }
+
+                if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices))
+                {
+                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles);
+                }
+            }
+        }
     }
 }

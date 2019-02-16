@@ -146,6 +146,18 @@ namespace trview
         Sector*  get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
+        /// Process the sectors in the level and find where there are walkable floors that have no matching geometry.
+        /// @param data The room data to check against.
+        /// @param room_vertices The actual room vertices.
+        /// @param output_vertices Where to store vertices.
+        /// @param output_indices Where to store indices.
+        /// @param collision_triangles Where to store collision triangles.
+        void process_unmatched_geometry(const trlevel::tr3_room_data& data, 
+            const std::vector<trlevel::tr_vertex>& room_vertices,
+            std::vector<MeshVertex>& output_vertices,
+            std::vector<uint32_t>& output_indices,
+            std::vector<Triangle>& collision_triangles);
+
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
         uint32_t _index;

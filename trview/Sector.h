@@ -14,6 +14,13 @@
 
 namespace trview
 {
+    enum class TriangulationDirection
+    {
+        None,
+        NwSe,
+        NeSw
+    };
+
     class Sector
     {
     public:
@@ -48,6 +55,10 @@ namespace trview
         std::array<float, 4> corners() const;
 
         uint32_t room() const;
+
+        TriangulationDirection triangulation_function() const;
+
+        std::vector<DirectX::SimpleMath::Vector3> triangles(uint32_t num_z_sectors) const;
     private:
         bool parse();
         void parse_slope();
@@ -80,5 +91,7 @@ namespace trview
         std::array<float, 4> _corners;
 
         uint32_t _room;
+
+        TriangulationDirection _triangulation_function{ TriangulationDirection::None };
     };
 }
