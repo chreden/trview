@@ -321,6 +321,7 @@ namespace trview
         _token_store += _room_navigator->on_room_selected += [&](uint32_t room) { select_room(room); };
         _token_store += _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); };
+        _token_store += _room_navigator->on_show_hidden_geometry += [&](bool show) { set_show_hidden_geometry(show); };
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _token_store += _flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); };
@@ -654,6 +655,7 @@ namespace trview
         _route_window_manager->set_triggers(_level->triggers());
 
         _level->set_show_triggers(_room_navigator->show_triggers());
+        _level->set_show_hidden_geometry(_room_navigator->show_hidden_geometry());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -986,6 +988,15 @@ namespace trview
         {
             _level->set_show_triggers(show);
             _room_navigator->set_show_triggers(show);
+        }
+    }
+
+    void Viewer::set_show_hidden_geometry(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_hidden_geometry(show);
+            _room_navigator->set_show_hidden_geometry(show);
         }
     }
 

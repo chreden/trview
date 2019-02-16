@@ -16,15 +16,17 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 120), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
+        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(140, 150), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Rooms");
         auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), L"Highlight");
         auto triggers = std::make_unique<Checkbox>(Point(76, 20), Size(16, 16), L"Triggers");
         triggers->set_state(true);
+        auto hidden_geometry = std::make_unique<Checkbox>(Point(12, 45), Size(16, 16), L"Geometry");
 
         highlight->on_state_changed += on_highlight;
         triggers->on_state_changed += on_show_triggers;
+        hidden_geometry->on_state_changed += on_show_hidden_geometry;
 
-        auto room_box = std::make_unique<GroupBox>(Point(12, 42), Size(120, 70), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
+        auto room_box = std::make_unique<GroupBox>(Point(12, 72), Size(120, 70), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(12, 12), Size(96, 60), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(),StackPanel::Direction::Vertical);
         auto room_number_labels = std::make_unique<StackPanel>(Point(), Size(96, 30), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Horizontal);
         auto room_number = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0);
@@ -51,6 +53,7 @@ namespace trview
 
         _highlight = rooms_groups->add_child(std::move(highlight));
         _triggers = rooms_groups->add_child(std::move(triggers));
+        _hidden_geometry = rooms_groups->add_child(std::move(hidden_geometry));
         rooms_groups->add_child(std::move(room_box));
 
         parent.add_child(std::move(rooms_groups));
@@ -84,8 +87,18 @@ namespace trview
         _triggers->set_state(show);
     }
 
+    void RoomNavigator::set_show_hidden_geometry(bool show)
+    {
+        _hidden_geometry->set_state(show);
+    }
+
     bool RoomNavigator::show_triggers() const
     {
         return _triggers->state();
+    }
+
+    bool RoomNavigator::show_hidden_geometry() const
+    {
+        return _hidden_geometry->state();
     }
 }

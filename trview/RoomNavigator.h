@@ -52,6 +52,11 @@ namespace trview
         /// @remarks This event is not raised by the set_show_triggers function.
         Event<bool> on_show_triggers;
 
+        /// Event raised when the user toggles the hidden geometry visibility. The boolean passed as a parameter when
+        /// this event is raised indicates whether hidden geomety is visible.
+        /// @remarks This event is not raised by the set_show_hidden_geometry function.
+        Event<bool> on_show_hidden_geometry;
+
         /// Set the room information for the current room. This will be used to populate the labels (eg position).
         /// @param room_info The room information.
         void set_room_info(RoomInfo room_info);
@@ -72,13 +77,22 @@ namespace trview
         /// @param show Whether the triggers are visible.
         void set_show_triggers(bool show);
 
+        /// Set whether hidden geometry is visible or not.
+        /// @param show Whether the hidden geometry is visible.
+        void set_show_hidden_geometry(bool show);
+
         /// Get the current value of the show triggers checkbox.
         /// @returns The current value of the checkbox.
         bool show_triggers() const;
+
+        /// Get the current value of the show hidden geometry checkbox.
+        /// @returns The current value of the checkbox.
+        bool show_hidden_geometry() const;
     private:
         ui::Checkbox*      _highlight;
         ui::Checkbox*      _flip;
         ui::Checkbox*      _triggers;
+        ui::Checkbox*      _hidden_geometry;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;

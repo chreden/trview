@@ -118,6 +118,8 @@ namespace trview
 
         void set_show_triggers(bool show);
 
+        void set_show_hidden_geometry(bool show);
+
         bool show_triggers() const;
 
         void set_selected_trigger(uint32_t number);
@@ -201,6 +203,7 @@ namespace trview
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
         bool _show_triggers{ true };
+        bool _show_hidden_geometry{ false };
 
         std::unordered_map<uint32_t, std::wstring> _type_names;
 

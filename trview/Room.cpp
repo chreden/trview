@@ -66,7 +66,7 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -116,13 +116,16 @@ namespace trview
             pick_results.push_back(geometry_result);
         }
 
-        PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
-        if (unmatched_result.hit)
+        if (include_hidden_geometry)
         {
-            unmatched_result.type = PickResult::Type::Room;
-            unmatched_result.index = _index;
-            unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
-            pick_results.push_back(unmatched_result);
+            PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
+            if (unmatched_result.hit)
+            {
+                unmatched_result.type = PickResult::Type::Room;
+                unmatched_result.index = _index;
+                unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
+                pick_results.push_back(unmatched_result);
+            }
         }
 
         if (pick_results.empty())
@@ -142,7 +145,7 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry)
     {
         Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
             selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
@@ -150,7 +153,10 @@ namespace trview
         auto context = device.context();
 
         _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
-        _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+        if (show_hidden_geometry)
+        {
+            _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+        }
 
         for (const auto& mesh : _static_meshes)
         {
