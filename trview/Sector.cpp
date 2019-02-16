@@ -275,8 +275,8 @@ namespace trview
         {
             return
             {
-                Vector3(_x + 0.5f, _corners[2], z - 0.5f), Vector3(x - 0.5f, _corners[0], z - 0.5f), Vector3(x - 0.5f, _corners[1], z + 0.5f),
-                Vector3(_x - 0.5f, _corners[1], z + 0.5f), Vector3(x + 0.5f, _corners[3], z + 0.5f), Vector3(x + 0.5f, _corners[2], z - 0.5f)
+                Vector3(x + 0.5f, _corners[2], z - 0.5f), Vector3(x - 0.5f, _corners[0], z - 0.5f), Vector3(x - 0.5f, _corners[1], z + 0.5f),
+                Vector3(x - 0.5f, _corners[1], z + 0.5f), Vector3(x + 0.5f, _corners[3], z + 0.5f), Vector3(x + 0.5f, _corners[2], z - 0.5f)
             };
         }
 
