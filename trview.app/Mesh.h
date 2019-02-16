@@ -147,6 +147,11 @@ namespace trview
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles);
 
+    /// Convert the vertex to the scale used by the viewer.
+    /// @param vertex The vertex to convert.
+    /// @retrurns The scaled vector.
+    DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
+
     __declspec(align(16)) struct MeshData
     {
         DirectX::SimpleMath::Matrix matrix;

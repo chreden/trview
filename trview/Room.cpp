@@ -24,14 +24,6 @@ namespace trview
     {
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
         const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
-
-        // Convert the vertex to the scale used by the viewer.
-        // vertex: The vertex to convert.
-        // Returns: The scaled vector.
-        Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
-        {
-            return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
-        }
     }
 
     Room::Room(const graphics::Device& device, 
