@@ -154,6 +154,7 @@ namespace trview
         /// @param collision_triangles Where to store collision triangles.
         void process_unmatched_geometry(const trlevel::tr3_room_data& data, 
             const std::vector<trlevel::tr_vertex>& room_vertices,
+            const std::vector<TransparentTriangle>& transparent_triangles,
             std::vector<MeshVertex>& output_vertices,
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);

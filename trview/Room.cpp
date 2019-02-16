@@ -211,7 +211,7 @@ namespace trview
 
         process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_unmatched_geometry(room.data, room_vertices, vertices, untextured_indices, collision_triangles);
+        process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
 
         _mesh = std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
         
@@ -458,11 +458,14 @@ namespace trview
         bool geometry_matched(
             const std::vector<Vector3>& triangle,
             const trlevel::tr3_room_data& data, 
-            const std::vector<Vector3>& room_vertices)
+            const std::vector<Vector3>& room_vertices,
+            const std::vector<TransparentTriangle>& transparent_triangles)
         {
+            std::vector<Vector3> tri = { triangle.begin(), triangle.begin() + 3 };
+
             for (const auto& r : data.rectangles)
             {
-                if (equivalent_triangles({ triangle.begin(), triangle.begin() + 3 },
+                if (equivalent_triangles(tri,
                         {
                             room_vertices[r.vertices[0]],
                             room_vertices[r.vertices[1]],
@@ -476,12 +479,23 @@ namespace trview
 
             for (const auto& t : data.triangles)
             {
-                if (equivalent_triangles({ triangle.begin(), triangle.begin() + 3 },
+                if (equivalent_triangles(tri,
                         {
                             room_vertices[t.vertices[0]],
                             room_vertices[t.vertices[1]],
                             room_vertices[t.vertices[2]]
                         }))
+                {
+                    return true;
+                }
+            }
+
+            for (const auto& tt : transparent_triangles)
+            {
+                if (equivalent_triangles(tri,
+                    {
+                        tt.vertices, tt.vertices + 3
+                    }))
                 {
                     return true;
                 }
@@ -513,6 +527,7 @@ namespace trview
     void Room::process_unmatched_geometry(
         const trlevel::tr3_room_data& data,
         const std::vector<trlevel::tr_vertex>& room_vertices,
+        const std::vector<TransparentTriangle>& transparent_triangles,
         std::vector<MeshVertex>& output_vertices,
         std::vector<uint32_t>& output_indices,
         std::vector<Triangle>& collision_triangles)
@@ -525,12 +540,12 @@ namespace trview
             if (sector.second->room_below() == 0xff && !(sector.second->flags & SectorFlag::Wall) && !(sector.second->flags & SectorFlag::Portal))
             {
                 const auto tris = sector.second->triangles(_num_z_sectors);
-                if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices))
+                if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
                 {
                     add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles);
                 }
 
-                if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices))
+                if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices, transparent_triangles))
                 {
                     add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles);
                 }
