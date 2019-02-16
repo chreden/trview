@@ -166,6 +166,7 @@ namespace trview
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         std::unique_ptr<Mesh>       _mesh;
+        std::unique_ptr<Mesh>       _unmatched_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
         DirectX::BoundingBox  _bounding_box;

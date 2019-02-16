@@ -116,6 +116,15 @@ namespace trview
             pick_results.push_back(geometry_result);
         }
 
+        PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
+        if (unmatched_result.hit)
+        {
+            unmatched_result.type = PickResult::Type::Room;
+            unmatched_result.index = _index;
+            unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
+            pick_results.push_back(unmatched_result);
+        }
+
         if (pick_results.empty())
         {
             return PickResult();
@@ -141,6 +150,7 @@ namespace trview
         auto context = device.context();
 
         _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+        _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
 
         for (const auto& mesh : _static_meshes)
         {
@@ -198,15 +208,21 @@ namespace trview
 
         // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
-        std::vector<uint32_t> untextured_indices;
+        
         std::vector<Triangle> collision_triangles;
 
         process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
-        
+        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
+
+        // Make the unmatched mesh.
+        collision_triangles.clear();
+        vertices.clear();
+        std::vector<uint32_t> untextured_indices;
+        process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
+        _unmatched_mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
+
         // Generate the bounding box based on the room dimensions.
         const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
         _bounding_box = DirectX::BoundingBox(centre(), extents);
