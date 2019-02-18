@@ -269,7 +269,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const float x = _x + 0.5f;
-        const float z = num_z_sectors - 1 - _z + 0.5f;
+        const float z = _z + 0.5f;
 
         if (_triangulation_function == TriangulationDirection::NwSe)
         {

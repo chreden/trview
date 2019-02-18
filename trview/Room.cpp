@@ -25,11 +25,10 @@ namespace trview
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
         const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
 
-        Color get_unmatched_colour(const RoomInfo info, const Sector& sector, uint16_t num_z_sectors)
+        Color get_unmatched_colour(const RoomInfo info, const Sector& sector)
         {
             uint32_t x = (sector.x() + info.x / 1024) % 2;
-            uint32_t z_sec = num_z_sectors - 1 - sector.z();
-            uint32_t z = info.z / 1024 + z_sec;
+            uint32_t z = info.z / 1024 + sector.z();
             return (x + z) % 2 ? Unmatched_Colour : Unmatched_Colour + Color(0, 0.05f, 0.05f);
         }
     }
@@ -397,8 +396,8 @@ namespace trview
                 }
             }
 
-            if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
-            {
+           if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
+           {
                 auto corners = other->corners();
                 if (y_bottom[3] == corners[2] && y_bottom[1] == corners[0])
                 {
@@ -565,12 +564,12 @@ namespace trview
                 const auto tris = sector.second->triangles(_num_z_sectors);
                 if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
                 {
-                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second, _num_z_sectors));
+                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second));
                 }
 
                 if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices, transparent_triangles))
                 {
-                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second, _num_z_sectors));
+                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second));
                 }
             }
         }
