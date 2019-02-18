@@ -38,7 +38,9 @@ namespace trview
 
     void FreeCamera::update_vectors()
     {
-        _forward = Vector3::Transform(Vector3::Backward, Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0));
+        const auto rotation = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+        _forward = Vector3::Transform(Vector3::Backward, rotation);
+        _up = Vector3::Transform(Vector3::Down, rotation);
         calculate_view_matrix();
     }
 }
