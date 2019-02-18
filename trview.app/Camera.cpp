@@ -100,10 +100,13 @@ namespace trview
             float amount = std::min(speed * elapsed, abs(diff));
             _rotation_yaw += amount * (diff > 0 ? 1 : -1);
 
-            if (abs(_target_rotation_yaw.value() - _rotation_yaw) < 0.01f)
+            if (abs(diff) < 0.01f)
             {
+                _rotation_yaw = _target_rotation_yaw.value();
                 _target_rotation_yaw.reset();
             }
+
+            update_vectors();
         }
 
         if (_target_rotation_pitch.has_value())
@@ -112,10 +115,13 @@ namespace trview
             float amount = std::min(speed * elapsed, abs(diff));
             _rotation_pitch += amount * (diff > 0 ? 1 : -1);
 
-            if (abs(_target_rotation_pitch.value() - _rotation_pitch) < 0.01f)
+            if (abs(diff) < 0.01f)
             {
+                _rotation_pitch = _target_rotation_pitch.value();
                 _target_rotation_pitch.reset();
             }
+
+            update_vectors();
         }
     }
 
