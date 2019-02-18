@@ -146,6 +146,11 @@ namespace trview
         Sector*  get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
+        /// Find any transparent triangles that match floor data geometry.
+        /// @param transparent_triangles The transparent triangles in the sector.
+        /// @param collision_triangles The collision output vector.
+        void process_collision_transparency(const std::vector<TransparentTriangle>& transparent_triangles, std::vector<Triangle>& collision_triangles);
+
         /// Process the sectors in the level and find where there are walkable floors that have no matching geometry.
         /// @param data The room data to check against.
         /// @param room_vertices The actual room vertices.
