@@ -229,6 +229,7 @@ namespace trview
 
         process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
@@ -545,6 +546,37 @@ namespace trview
         }
     }
 
+    void Room::process_collision_transparency(const std::vector<TransparentTriangle>& transparent_triangles, std::vector<Triangle>& collision_triangles)
+    {
+        for (const auto& triangle : transparent_triangles)
+        {
+            for (const auto& sector : _sectors)
+            {
+                if (!sector.second->is_floor())
+                {
+                    continue;
+                }
+
+                const float x = sector.second->x() + 0.5f;
+                const float z = sector.second->z() + 0.5f;
+                const auto corners = sector.second->corners();
+
+                if (triangle_contained(
+                    { triangle.vertices, triangle.vertices + 3 },
+                    { { x + 0.5f, corners[2], z - 0.5f },
+                      { x - 0.5f, corners[1], z + 0.5f },
+                      { x + 0.5f, corners[3], z + 0.5f },
+                      { x - 0.5f, corners[0], z - 0.5f } }))
+                {
+                    collision_triangles.push_back(Triangle(triangle.vertices[0], triangle.vertices[1], triangle.vertices[2]));
+
+                    // A triangle can only match in one sector, so stop after adding it once.
+                    break;
+                }
+            }
+        }
+    }
+
     void Room::process_unmatched_geometry(
         const trlevel::tr3_room_data& data,
         const std::vector<trlevel::tr_vertex>& room_vertices,
@@ -558,7 +590,7 @@ namespace trview
 
         for (const auto& sector : _sectors)
         {
-            if (sector.second->room_below() == 0xff && !(sector.second->flags & SectorFlag::Wall) && !(sector.second->flags & SectorFlag::Portal))
+            if (sector.second->is_floor())
             {
                 const auto tris = sector.second->triangles(_num_z_sectors);
                 if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
