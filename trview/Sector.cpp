@@ -7,7 +7,7 @@ namespace trview
         : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
     {
         _x = sector_id / room.num_z_sectors;
-        _z = room.num_z_sectors - (sector_id % room.num_z_sectors) - 1;
+        _z = sector_id % room.num_z_sectors;
         parse();
     }
 

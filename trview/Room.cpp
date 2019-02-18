@@ -344,7 +344,7 @@ namespace trview
                 }
             }
 
-            if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
+            if (auto other = get_trigger_sector(trigger->x(), static_cast<int32_t>(trigger->z()) - 1))
             {
                 auto corners = other->corners();
                 if (y_bottom[2] == corners[3] && y_bottom[0] == corners[1])
@@ -353,7 +353,7 @@ namespace trview
                 }
             }
 
-            if (auto other = get_trigger_sector(trigger->x(), static_cast<int32_t>(trigger->z()) - 1))
+            if (auto other = get_trigger_sector(trigger->x(), trigger->z() + 1))
             {
                 auto corners = other->corners();
                 if (y_bottom[3] == corners[2] && y_bottom[1] == corners[0])
@@ -364,7 +364,7 @@ namespace trview
 
             // Calculate the X/Z position.
             const float x = _info.x / trlevel::Scale_X + trigger->x() + 0.5f;
-            const float z = _info.z / trlevel::Scale_Z + (_num_z_sectors - 1 - trigger->z()) + 0.5f;
+            const float z = _info.z / trlevel::Scale_Z + trigger->z() + 0.5f;
             const float height = 0.25f;
 
             std::array<float, 4> y_top = { 0,0,0,0 };
@@ -417,7 +417,7 @@ namespace trview
 
     uint32_t Room::get_sector_id(int32_t x, int32_t z) const
     {
-        return x * _num_z_sectors + (_num_z_sectors - z - 1);
+        return x * _num_z_sectors + z;
     }
 
     Sector* Room::get_trigger_sector(int32_t x, int32_t z)
