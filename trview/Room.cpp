@@ -201,12 +201,15 @@ namespace trview
 
     namespace
     {
-        bool equivalent_triangles(std::vector<Vector3> left, std::vector<Vector3> right)
+        /// Check if the triangle points appear in the position source.
+        /// @param tri The triangle points.
+        /// @param source The point list.
+        bool triangle_contained(const std::vector<Vector3>& tri, const std::vector<Vector3>& source)
         {
-            auto v0 = std::find(right.begin(), right.end(), left[0]);
-            auto v1 = std::find(right.begin(), right.end(), left[1]);
-            auto v2 = std::find(right.begin(), right.end(), left[2]);
-            return v0 != right.end() && v1 != right.end() && v2 != right.end();
+            auto v0 = std::find(source.begin(), source.end(), tri[0]);
+            auto v1 = std::find(source.begin(), source.end(), tri[1]);
+            auto v2 = std::find(source.begin(), source.end(), tri[2]);
+            return v0 != source.end() && v1 != source.end() && v2 != source.end();
         }
     }
 
@@ -476,17 +479,16 @@ namespace trview
 
     namespace
     {
-        bool geometry_matched(
-            const std::vector<Vector3>& triangle,
-            const trlevel::tr3_room_data& data, 
-            const std::vector<Vector3>& room_vertices,
-            const std::vector<TransparentTriangle>& transparent_triangles)
+        /// Check if the triangle appears in any of the rectangles or triangles in the room.
+        /// @param triangle The points in the sector triangle.
+        /// @param data The room data containing the rectangles and triangles.
+        /// @param room_vertices The vertices for the room.
+        /// @param transparent_triangles Transparent triangles in the room.
+        bool geometry_matched(const std::vector<Vector3>& triangle, const trlevel::tr3_room_data& data,  const std::vector<Vector3>& room_vertices, const std::vector<TransparentTriangle>& transparent_triangles)
         {
-            std::vector<Vector3> tri = { triangle.begin(), triangle.begin() + 3 };
-
             for (const auto& r : data.rectangles)
             {
-                if (equivalent_triangles(tri,
+                if (triangle_contained(triangle,
                         {
                             room_vertices[r.vertices[0]],
                             room_vertices[r.vertices[1]],
@@ -500,7 +502,7 @@ namespace trview
 
             for (const auto& t : data.triangles)
             {
-                if (equivalent_triangles(tri,
+                if (triangle_contained(triangle,
                         {
                             room_vertices[t.vertices[0]],
                             room_vertices[t.vertices[1]],
@@ -513,10 +515,7 @@ namespace trview
 
             for (const auto& tt : transparent_triangles)
             {
-                if (equivalent_triangles(tri,
-                    {
-                        tt.vertices, tt.vertices + 3
-                    }))
+                if (triangle_contained(triangle, { tt.vertices, tt.vertices + 3 }))
                 {
                     return true;
                 }
