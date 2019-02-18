@@ -189,7 +189,7 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode);
+            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers);
@@ -334,8 +334,8 @@ namespace trview
                     _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
-                room->generate_trigger_geometry();
             }
+            room->generate_trigger_geometry();
         }
     }
 
@@ -405,7 +405,7 @@ namespace trview
         auto rooms = get_rooms_to_render(camera);
         for (auto& room : rooms)
         {
-            auto result = room.room.pick(position, direction, true, _show_triggers);
+            auto result = room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry);
             // Choose the nearest pick - but if the previous closest was trigger an entity should take priority over it.
             if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
             {
@@ -556,6 +556,11 @@ namespace trview
     {
         _show_triggers = show;
         _regenerate_transparency = true;
+    }
+
+    void Level::set_show_hidden_geometry(bool show)
+    {
+        _show_hidden_geometry = show;
     }
 
     bool Level::show_triggers() const

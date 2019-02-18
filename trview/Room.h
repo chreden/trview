@@ -68,14 +68,14 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities = true, bool include_triggers = true) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false) const;
 
         // Render the level geometry and the objects contained in this room.
         // context: The D3D context.
         // camera: The camera to use to render.
         // texture_storage: The textures for the level.
         // selected: The selection mode to use to highlight geometry and objects.
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry);
 
         void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
 
@@ -146,6 +146,19 @@ namespace trview
         Sector*  get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
+        /// Process the sectors in the level and find where there are walkable floors that have no matching geometry.
+        /// @param data The room data to check against.
+        /// @param room_vertices The actual room vertices.
+        /// @param output_vertices Where to store vertices.
+        /// @param output_indices Where to store indices.
+        /// @param collision_triangles Where to store collision triangles.
+        void process_unmatched_geometry(const trlevel::tr3_room_data& data, 
+            const std::vector<trlevel::tr_vertex>& room_vertices,
+            const std::vector<TransparentTriangle>& transparent_triangles,
+            std::vector<MeshVertex>& output_vertices,
+            std::vector<uint32_t>& output_indices,
+            std::vector<Triangle>& collision_triangles);
+
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
         uint32_t _index;
@@ -153,6 +166,7 @@ namespace trview
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
         std::unique_ptr<Mesh>       _mesh;
+        std::unique_ptr<Mesh>       _unmatched_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
         DirectX::BoundingBox  _bounding_box;

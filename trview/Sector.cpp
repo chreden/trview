@@ -149,6 +149,21 @@ namespace trview
                 // Not sure what to do with h1 and h2 values yet.
                 const int16_t h2 = (floor & 0x7C00) >> 10;
                 const int16_t h1 = (floor & 0x03E0) >> 5;
+                const int16_t function = (floor & 0x001F);
+
+                switch (function)
+                {
+                case 0x07:
+                case 0x0B:
+                case 0x0C:
+                    _triangulation_function = TriangulationDirection::NwSe;
+                    break;
+                case 0x08:
+                case 0x0D:
+                case 0x0E:
+                    _triangulation_function = TriangulationDirection::NeSw;
+                    break;
+                }
 
                 const uint16_t corner_values = _level.get_floor_data(++cur_index);
                 const uint16_t c00 = (corner_values & 0x00F0) >> 4;
@@ -243,6 +258,33 @@ namespace trview
     uint32_t Sector::room() const
     {
         return _room;
+    }
+
+    TriangulationDirection Sector::triangulation_function() const
+    {
+        return _triangulation_function;
+    }
+
+    std::vector<DirectX::SimpleMath::Vector3> Sector::triangles(uint32_t num_z_sectors) const
+    {
+        using namespace DirectX::SimpleMath;
+        const float x = _x + 0.5f;
+        const float z = _z + 0.5f;
+
+        if (_triangulation_function == TriangulationDirection::NwSe)
+        {
+            return
+            {
+                Vector3(x + 0.5f, _corners[2], z - 0.5f), Vector3(x - 0.5f, _corners[0], z - 0.5f), Vector3(x - 0.5f, _corners[1], z + 0.5f),
+                Vector3(x - 0.5f, _corners[1], z + 0.5f), Vector3(x + 0.5f, _corners[3], z + 0.5f), Vector3(x + 0.5f, _corners[2], z - 0.5f)
+            };
+        }
+
+        return
+        {
+            Vector3(x + 0.5f, _corners[3], z + 0.5f), Vector3(x - 0.5f, _corners[0], z - 0.5f), Vector3(x - 0.5f, _corners[1], z + 0.5f),
+            Vector3(x + 0.5f, _corners[3], z + 0.5f), Vector3(x + 0.5f, _corners[2], z - 0.5f), Vector3(x - 0.5f, _corners[0], z - 0.5f)
+        };
     }
 }
 

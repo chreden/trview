@@ -22,14 +22,6 @@ namespace trview
             return level_version == trlevel::LevelVersion::Tomb4 ? Texture_Mask_TR4 : Texture_Mask;
         }
 
-        // Convert the vertex to the scale used by the viewer.
-        // vertex: The vertex to convert.
-        // Returns: The scaled vector.
-        Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
-        {
-            return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
-        }
-
         Vector3 calculate_normal(const Vector3* const vertices)
         {
             auto first = vertices[1] - vertices[0];
@@ -553,5 +545,10 @@ namespace trview
                 collision_triangles.emplace_back(verts[2], verts[1], verts[0]);
             }
         }
+    }
+
+    Vector3 convert_vertex(const trlevel::tr_vertex& vertex)
+    {
+        return Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
     }
 }
