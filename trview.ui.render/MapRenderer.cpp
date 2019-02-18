@@ -158,7 +158,7 @@ namespace trview
             {
                 return Point {
                     /* X */ _DRAW_SCALE * sector.x(),
-                    /* Y */ _DRAW_SCALE * sector.z()
+                    /* Y */ _rows * _DRAW_SCALE - _DRAW_SCALE * (sector.z() + 1)
                 } + Point(1,1); 
             }
 
