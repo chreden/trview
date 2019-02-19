@@ -563,6 +563,11 @@ namespace trview
         _show_hidden_geometry = show;
     }
 
+    bool Level::show_hidden_geometry() const
+    {
+        return _show_hidden_geometry;
+    }
+
     bool Level::show_triggers() const
     {
         return _show_triggers;

@@ -581,6 +581,10 @@ namespace trview
                     {
                         _go_to_room->toggle_visible();
                     }
+                    else if(_level)
+                    {
+                        set_show_hidden_geometry(!_level->show_hidden_geometry());
+                    }
                     break;
                 }
                 case VK_F1:

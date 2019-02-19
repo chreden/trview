@@ -120,6 +120,8 @@ namespace trview
 
         void set_show_hidden_geometry(bool show);
 
+        bool show_hidden_geometry() const;
+
         bool show_triggers() const;
 
         void set_selected_trigger(uint32_t number);

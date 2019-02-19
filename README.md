@@ -43,6 +43,7 @@ CTRL + T    | New Triggers window
 CTRL + I    | New Items window
 F1          | Toggle settings window
 H           | Toggle room highlighting
+G           | Toggle hidden geometry
 INSERT      | Reset camera
 F           | Free camera
 O           | Orbit camera
