@@ -169,6 +169,10 @@ namespace trview
                 result.distance = 1.0f;
                 _compass_axis = axis;
             }
+            else
+            {
+                _compass_axis.reset();
+            }
         };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
