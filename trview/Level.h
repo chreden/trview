@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <SimpleMath.h>
+#include <set>
 
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
@@ -76,8 +77,8 @@ namespace trview
         /// @param render_selection Whether to render selection highlights on selected items.
         void render(const graphics::Device& device, const ICamera& camera, bool render_selection);
 
-        RoomHighlightMode highlight_mode() const;
-        void set_highlight_mode(RoomHighlightMode mode);
+        void set_highlight_mode(RoomHighlightMode mode, bool enabled);
+        bool highlight_mode_enabled(RoomHighlightMode mode) const;
         void set_selected_room(uint16_t index);
         void set_selected_item(uint16_t index);
         void set_neighbour_depth(uint32_t depth);
@@ -191,7 +192,8 @@ namespace trview
         graphics::IShader*          _pixel_shader;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
 
-        RoomHighlightMode  _room_highlight_mode{ RoomHighlightMode::None };
+        std::set<RoomHighlightMode> _room_highlight_modes;
+        
         uint16_t           _selected_room{ 0u };
         Entity*            _selected_item{ nullptr };
         Trigger*           _selected_trigger{ nullptr };

@@ -25,6 +25,14 @@ namespace trview
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
         const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
 
+        const Color Selected_Colour{ 1, 1, 1 };
+        const Color NotSelected_Colour{ 0.4f, 0.4f, 0.4f };
+
+        Color room_colour(Room::SelectionMode selected)
+        {
+            return selected == Room::SelectionMode::Selected ? Selected_Colour : NotSelected_Colour;
+        }
+
         Color get_unmatched_colour(const RoomInfo info, const Sector& sector)
         {
             uint32_t x = (sector.x() + info.x / 1024) % 2;
@@ -154,8 +162,7 @@ namespace trview
     // render_mode: The type of geometry and object geometry to render.
     void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry)
     {
-        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
-            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        Color colour = room_colour(selected);
 
         auto context = device.context();
 
@@ -175,8 +182,7 @@ namespace trview
 
     void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
     {
-        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
-            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        Color colour = room_colour(selected);
         render_contained(device, camera, texture_storage, colour);
     }
 
@@ -279,8 +285,7 @@ namespace trview
 
     void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers)
     {
-        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
-            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        Color colour = room_colour(selected);
 
         for (const auto& triangle : _mesh->transparent_triangles())
         {
@@ -308,8 +313,7 @@ namespace trview
 
     void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
     {
-        Color colour = selected == SelectionMode::Selected ? Color(1, 1, 1, 1) :
-            selected == SelectionMode::Neighbour ? Color(0.4f, 0.4f, 0.4f, 1) : Color(0.2f, 0.2f, 0.2f, 1);
+        Color colour = room_colour(selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 

@@ -102,24 +102,24 @@ namespace trview
         return triggers;
     }
 
-    Level::RoomHighlightMode Level::highlight_mode() const
+    void Level::set_highlight_mode(RoomHighlightMode mode, bool enabled)
     {
-        return _room_highlight_mode;
+        if (enabled)
+        {
+            _room_highlight_modes.insert(mode);
+        }
+        else
+        {
+            _room_highlight_modes.erase(mode);
+        }
+
+        regenerate_neighbours();
+        _regenerate_transparency = true;
     }
 
-    void Level::set_highlight_mode(RoomHighlightMode mode)
+    bool Level::highlight_mode_enabled(RoomHighlightMode mode) const
     {
-        if (_room_highlight_mode == mode)
-        {
-            return;
-        }
-
-        _room_highlight_mode = mode;
-        if (_room_highlight_mode == RoomHighlightMode::Neighbours)
-        {
-            regenerate_neighbours();
-        }
-        _regenerate_transparency = true;
+        return _room_highlight_modes.find(mode) != _room_highlight_modes.end();
     }
 
     void Level::set_selected_room(uint16_t index)
@@ -247,49 +247,33 @@ namespace trview
         {
             return frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
-
-        switch (_room_highlight_mode)
+    
+        bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);
+        if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
         {
-            case RoomHighlightMode::None:
+            for (uint16_t i : _neighbours)
             {
-                for (std::size_t i = 0; i < _rooms.size(); ++i)
+                const auto& room = _rooms[i];
+                if (is_alternate_mismatch(*room) || !in_view(*room))
                 {
-                    const auto& room = _rooms[i].get();
-                    if (is_alternate_mismatch(*room) || !in_view(*room))
-                    {
-                        continue;
-                    }
-                    rooms.emplace_back(*room, Room::SelectionMode::Selected, static_cast<uint16_t>(i));
+                    continue;
                 }
-                break;
-            }
-            case RoomHighlightMode::Highlight:
-            {
-                for (std::size_t i = 0; i < _rooms.size(); ++i)
-                {
-                    const auto& room = _rooms[i];
-                    if (is_alternate_mismatch(*room) || !in_view(*room))
-                    {
-                        continue;
-                    }
-                    rooms.emplace_back(*room.get(), _selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected, static_cast<uint16_t>(i));
-                }
-                break;
-            }
-            case RoomHighlightMode::Neighbours:
-            {
-                for (uint16_t i : _neighbours)
-                {
-                    const auto& room = _rooms[i];
-                    if (is_alternate_mismatch(*room) || !in_view(*room))
-                    {
-                        continue;
-                    }
-                    rooms.emplace_back(*room.get(), i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::Neighbour, i);
-                }
-                break;
+                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, i);
             }
         }
+        else
+        {
+            for (std::size_t i = 0; i < _rooms.size(); ++i)
+            {
+                const auto& room = _rooms[i].get();
+                if (is_alternate_mismatch(*room) || !in_view(*room))
+                {
+                    continue;
+                }
+                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, static_cast<uint16_t>(i));
+            }
+        }
+
         return rooms;
     }
 
@@ -424,7 +408,7 @@ namespace trview
     // Returns: True if the room is visible.
     bool Level::room_visible(uint32_t room) const
     {
-        if (_room_highlight_mode != RoomHighlightMode::Neighbours)
+        if (highlight_mode_enabled(RoomHighlightMode::Neighbours))
         {
             return true;
         }
