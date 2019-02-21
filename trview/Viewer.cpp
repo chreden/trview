@@ -343,8 +343,7 @@ namespace trview
         {
             if (_level)
             {
-                _level->set_highlight_mode(enabled ? Level::RoomHighlightMode::Neighbours : Level::RoomHighlightMode::None);
-                _room_navigator->set_highlight(false);
+                _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, enabled);
             }
         };
 
@@ -822,18 +821,9 @@ namespace trview
     {
         if (_level)
         {
-            if (_level->highlight_mode() == Level::RoomHighlightMode::Highlight)
-            {
-                _level->set_highlight_mode(Level::RoomHighlightMode::None);
-                _room_navigator->set_highlight(false);
-                _neighbours->set_enabled(false);
-            }
-            else
-            {
-                _level->set_highlight_mode(Level::RoomHighlightMode::Highlight);
-                _room_navigator->set_highlight(true);
-                _neighbours->set_enabled(false);
-            }
+            bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
+            _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
+            _room_navigator->set_highlight(new_value);
         }
     }
 

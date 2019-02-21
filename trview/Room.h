@@ -36,8 +36,7 @@ namespace trview
         enum class SelectionMode
         {
             Selected,
-            NotSelected,
-            Neighbour
+            NotSelected
         };
 
         enum class AlternateMode
