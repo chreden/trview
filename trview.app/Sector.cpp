@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#define NOMINMAX
 #include "Sector.h"
 
 namespace trview

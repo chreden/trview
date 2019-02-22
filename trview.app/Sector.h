@@ -9,7 +9,6 @@
 
 #include "trlevel/trtypes.h"
 #include "trlevel/ILevel.h"
-#include "RoomInfo.h"
 #include "Types.h" 
 
 namespace trview
