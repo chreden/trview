@@ -34,10 +34,7 @@ namespace trview
             { triangles[5] - c2 * 0.05f, Vector3::Down, {0,0}, {1, 1, 0} }
         };
 
-        const std::vector<uint32_t> indices
-        {
-            0,  1,  2,  3,  4,  5,  // +y
-        };
+        const std::vector<uint32_t> indices { 0,  1,  2,  3,  4,  5, };
 
         auto mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
         mesh->render(device.context(), _room_offset * camera.view_projection(), texture_storage, Color(1, 1, 0));
