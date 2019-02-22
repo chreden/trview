@@ -197,19 +197,13 @@ namespace trview
 
             void MapRenderer::set_cursor_position(const Point& cursor)
             {
-                bool was_visible = cursor_is_over_control();
                 auto previous_sector = sector_at_cursor();
-
                 _cursor = cursor - _first;
-                auto sector = sector_at_cursor();
 
-                if (!cursor_is_over_control() && was_visible)
+                auto sector = sector_at_cursor();
+                if(sector != previous_sector)
                 {
-                    on_sector_hover(false, 0, 0);
-                }
-                else if(sector && sector != previous_sector)
-                {
-                    on_sector_hover(true, sector->x(), sector->z());
+                    on_sector_hover(sector);
                 }
             }
 

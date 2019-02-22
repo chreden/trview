@@ -39,6 +39,7 @@
 #include <trview.app/RouteWindowManager.h>
 #include <trview.app/ViewMenu.h>
 #include <trview.app/Picking.h>
+#include <trview.app/SectorHighlight.h>
 
 namespace trview
 {
@@ -173,6 +174,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _target;
         ViewMenu _view_menu;
         bool _show_selection{ true };
+        SectorHighlight _sector_highlight;
 
         // Tools:
         std::unique_ptr<Toolbar> _toolbar;

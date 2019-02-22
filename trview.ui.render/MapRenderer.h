@@ -79,10 +79,8 @@ namespace trview
                 /// Set whether the map is visible.
                 void set_visible(bool visible);
 
-                /// Event raised when the user hovers over a map sector, or if the mouse leaves
-                /// the map. The first parameter indicates whether the mouse is over, then row
-                /// and column.
-                Event<bool, uint16_t, uint16_t> on_sector_hover;
+                /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
+                Event<std::shared_ptr<Sector>> on_sector_hover;
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 
