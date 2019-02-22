@@ -195,6 +195,30 @@ namespace trview
                 return _render_target && _visible && _cursor.is_between(Point(), Point(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())));
             }
 
+            void MapRenderer::set_cursor_position(const Point& cursor)
+            {
+                bool was_visible = cursor_is_over_control();
+                auto previous_sector = sector_at_cursor();
+
+                _cursor = cursor - _first;
+
+                if (!cursor_is_over_control())
+                {
+                    if (was_visible)
+                    {
+                        on_sector_hover(false, 0, 0);
+                    }
+                }
+                else
+                {
+                    auto sector = sector_at_cursor();
+                    if (sector != previous_sector)
+                    {
+                        on_sector_hover(true, sector->x(), sector->z());
+                    }
+                }
+            }
+
             void 
             MapRenderer::set_window_size(const Size& size)
             {
