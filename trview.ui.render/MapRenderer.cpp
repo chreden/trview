@@ -201,21 +201,15 @@ namespace trview
                 auto previous_sector = sector_at_cursor();
 
                 _cursor = cursor - _first;
+                auto sector = sector_at_cursor();
 
-                if (!cursor_is_over_control())
+                if (!cursor_is_over_control() && was_visible)
                 {
-                    if (was_visible)
-                    {
-                        on_sector_hover(false, 0, 0);
-                    }
+                    on_sector_hover(false, 0, 0);
                 }
-                else
+                else if(sector && sector != previous_sector)
                 {
-                    auto sector = sector_at_cursor();
-                    if (sector != previous_sector)
-                    {
-                        on_sector_hover(true, sector->x(), sector->z());
-                    }
+                    on_sector_hover(true, sector->x(), sector->z());
                 }
             }
 
