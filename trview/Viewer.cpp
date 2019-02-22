@@ -313,7 +313,12 @@ namespace trview
         _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, *_shader_storage.get(), _window.size());
         _token_store += _map_renderer->on_sector_hover += [&](const std::shared_ptr<Sector>& sector) 
         {
-            _sector_highlight.set_sector(sector);
+            if (_level)
+            {
+                const auto room_info = _current_level->get_room(_level->selected_room()).info;
+                _sector_highlight.set_sector(sector,
+                    DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+            }
         };
     }
 
@@ -762,7 +767,7 @@ namespace trview
                 _camera.set_target(_target);
             }
             _level->render(_device, current_camera(), _show_selection);
-            _sector_highlight.render(_device, current_camera());
+            _sector_highlight.render(_device, current_camera(), _level->texture_storage());
 
             _measure->render(_device.context(), current_camera(), _level->texture_storage());
 
