@@ -596,7 +596,7 @@ namespace trview
         {
             if (sector.second->is_floor())
             {
-                const auto tris = sector.second->triangles(_num_z_sectors);
+                const auto tris = sector.second->triangles();
                 if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
                 {
                     add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second));

@@ -265,7 +265,7 @@ namespace trview
         return _triangulation_function;
     }
 
-    std::vector<DirectX::SimpleMath::Vector3> Sector::triangles(uint32_t num_z_sectors) const
+    std::vector<DirectX::SimpleMath::Vector3> Sector::triangles() const
     {
         using namespace DirectX::SimpleMath;
         const float x = _x + 0.5f;
