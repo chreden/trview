@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <trview.graphics/Device.h>
+#include "Mesh.h"
 #include "Sector.h"
 #include "ICamera.h"
 #include "ILevelTextureStorage.h"
@@ -16,5 +17,6 @@ namespace trview
     private:
         DirectX::SimpleMath::Matrix _room_offset;
         std::shared_ptr<Sector> _sector;
+        std::unique_ptr<Mesh> _mesh;
     };
 }
