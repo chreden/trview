@@ -94,6 +94,12 @@
     <ClCompile Include="Picking.cpp">
       <Filter>Picking</Filter>
     </ClCompile>
+    <ClCompile Include="SectorHighlight.cpp">
+      <Filter>Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>Sector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -199,6 +205,15 @@
     <ClInclude Include="PickInfo.h">
       <Filter>Picking</Filter>
     </ClInclude>
+    <ClInclude Include="SectorHighlight.h">
+      <Filter>Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Sector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -242,6 +257,9 @@
     </Filter>
     <Filter Include="Picking">
       <UniqueIdentifier>{17fe44c3-c618-433a-9014-24283b5ba6f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sector">
+      <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

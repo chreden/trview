@@ -42,6 +42,8 @@
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="RouteWindow.cpp" />
     <ClCompile Include="RouteWindowManager.cpp" />
+    <ClCompile Include="Sector.cpp" />
+    <ClCompile Include="SectorHighlight.cpp" />
     <ClCompile Include="SelectionRenderer.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />
@@ -79,6 +81,8 @@
     <ClInclude Include="Route.h" />
     <ClInclude Include="RouteWindow.h" />
     <ClInclude Include="RouteWindowManager.h" />
+    <ClInclude Include="Sector.h" />
+    <ClInclude Include="SectorHighlight.h" />
     <ClInclude Include="SelectionRenderer.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparencyBuffer.h" />
@@ -87,6 +91,7 @@
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="ViewMenu.h" />
     <ClInclude Include="Waypoint.h" />
     <ClInclude Include="WindowIDs.h" />

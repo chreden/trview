@@ -106,12 +106,6 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Program\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Sector.h">
-      <Filter>View\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>View\Room</Filter>
-    </ClInclude>
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -194,9 +188,6 @@
     </ClCompile>
     <ClCompile Include="DirectoryListing.cpp">
       <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Sector.cpp">
-      <Filter>View\Room</Filter>
     </ClCompile>
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>

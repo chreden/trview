@@ -1,5 +1,5 @@
 #include "Trigger.h"
-#include <trview/Types.h>
+#include <trview.app/Types.h>
 #include <unordered_map>
 #include <algorithm>
 #include "TransparencyBuffer.h"

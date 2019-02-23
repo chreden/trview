@@ -9,7 +9,6 @@
 
 #include "trlevel/trtypes.h"
 #include "trlevel/ILevel.h"
-#include "RoomInfo.h"
 #include "Types.h" 
 
 namespace trview
@@ -58,7 +57,7 @@ namespace trview
 
         TriangulationDirection triangulation_function() const;
 
-        std::vector<DirectX::SimpleMath::Vector3> triangles(uint32_t num_z_sectors) const;
+        std::vector<DirectX::SimpleMath::Vector3> triangles() const;
 
         /// Determines whether this is a walkable floor.
         bool is_floor() const;

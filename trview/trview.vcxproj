@@ -200,7 +200,6 @@
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="RoomNavigator.h" />
-    <ClInclude Include="Sector.h" />
     <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
@@ -208,7 +207,6 @@
     <ClInclude Include="LevelTextureStorage.h" />
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="trview.h" />
-    <ClInclude Include="Types.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
@@ -232,7 +230,6 @@
     <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomNavigator.cpp" />
-    <ClCompile Include="Sector.cpp" />
     <ClCompile Include="SettingsWindow.cpp" />
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="StaticMesh.cpp" />

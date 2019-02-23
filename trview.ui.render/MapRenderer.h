@@ -10,13 +10,14 @@
 #include <map>
 
 #include <trview.graphics/Sprite.h>
-#include "trview\Types.h"
+#include <trview.app/Types.h>
 #include "trview\TextureStorage.h"
 #include <trview.graphics/Texture.h>
 #include <trview.common/Point.h>
 #include <trview.common/Size.h>
 #include "trview\Room.h"
 #include <trview.graphics/RenderTarget.h>
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -67,7 +68,7 @@ namespace trview
                 bool cursor_is_over_control() const;
 
                 // Sets the position of the cursor 
-                inline void set_cursor_position(const Point& cursor) { _cursor = cursor - _first; }
+                void set_cursor_position(const Point& cursor);
 
                 // Returns whether the map is loaded
                 inline bool loaded() const { return _loaded; }
@@ -77,6 +78,9 @@ namespace trview
 
                 /// Set whether the map is visible.
                 void set_visible(bool visible);
+
+                /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
+                Event<std::shared_ptr<Sector>> on_sector_hover;
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 
