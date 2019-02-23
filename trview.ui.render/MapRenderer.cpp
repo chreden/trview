@@ -100,8 +100,13 @@ namespace trview
 
                     // If the cursor is over the tile, then negate colour 
                     Point first = tile.position, last = Point(tile.size.width, tile.size.height) + tile.position;
-                    if (_cursor.is_between(first, last))
+                    if (_cursor.is_between(first, last) ||
+                        (_selected_sector.has_value() &&
+                         _selected_sector.value().first == tile.sector->x() &&
+                         _selected_sector.value().second == tile.sector->z()))
+                    {
                         draw_color.Negate();
+                    }
 
                     // Draw the base tile 
                     draw(context, tile.position, tile.size, draw_color);
@@ -126,16 +131,6 @@ namespace trview
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
                     if (tile.sector->flags & SectorFlag::RoomAbove)
                         draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
-
-                    if (_selected_sector.has_value() &&
-                        _selected_sector.value().first == tile.sector->x() &&
-                        _selected_sector.value().second == tile.sector->z())
-                    {
-                        draw(context, tile.position, Size(tile.size.width, 1), Color(1, 1, 0));
-                        draw(context, tile.position, Size(1, tile.size.height), Color(1, 1, 0));
-                        draw(context, tile.position + Point(0, tile.size.height - 1), Size(tile.size.width, 1), Color(1, 1, 0));
-                        draw(context, tile.position + Point(tile.size.width - 1, 0), Size(1, tile.size.height), Color(1, 1, 0));
-                    }
                 });
             }
 
