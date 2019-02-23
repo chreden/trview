@@ -79,6 +79,10 @@ namespace trview
                 /// Set whether the map is visible.
                 void set_visible(bool visible);
 
+                void clear_highlight();
+
+                void set_highlight(uint16_t x, uint16_t z);
+
                 /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
                 Event<std::shared_ptr<Sector>> on_sector_hover;
             private:
@@ -122,6 +126,8 @@ namespace trview
 
                 const float                         _DRAW_MARGIN = 30.0f; 
                 const float                         _DRAW_SCALE = 14.0f; 
+
+                std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
             };
         }
     }
