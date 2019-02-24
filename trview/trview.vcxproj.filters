@@ -103,9 +103,6 @@
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="DirectoryListing.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -120,9 +117,6 @@
     </ClInclude>
     <ClInclude Include="SettingsWindow.h">
       <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelSwitcher.h">
-      <Filter>Program</Filter>
     </ClInclude>
     <ClInclude Include="ResourceHelper.h">
       <Filter>Graphics</Filter>
@@ -186,9 +180,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="DirectoryListing.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -200,9 +191,6 @@
     </ClCompile>
     <ClCompile Include="SettingsWindow.cpp">
       <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelSwitcher.cpp">
-      <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="ResourceHelper.cpp">
       <Filter>Graphics</Filter>

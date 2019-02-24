@@ -24,7 +24,7 @@
 #include "CameraMode.h"
 #include "Level.h"
 #include "UserSettings.h"
-#include "LevelSwitcher.h"
+#include <trview.app/LevelSwitcher.h>
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>
 #include <trview.app/FileDropper.h>
