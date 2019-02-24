@@ -16,10 +16,10 @@ namespace trview
     Flipmaps::Flipmaps(ui::Control& parent)
     {
         using namespace ui;
-        auto flips_group = std::make_unique<GroupBox>(Point(), Size(140, 45), Colour(0.5f, 0.5f, 0.5f), Colour(0.0f, 0.0f, 0.0f), L"Flipmaps");
+        auto flips_group = std::make_unique<GroupBox>(Point(), Size(150, 45), Colour(0.5f, 0.5f, 0.5f), Colour(0.0f, 0.0f, 0.0f), L"Flipmaps");
 
         // Shared panel size.
-        const auto panel_size = Size(130, 20);
+        const auto panel_size = Size(140, 20);
 
         // Add two methods of controlling flipmaps:
         // The TR1-3 method:
@@ -31,7 +31,7 @@ namespace trview
 
         // The TR4-5 method:
         auto tr4_5_panel = std::make_unique<ui::Window>(Point(5, 16), panel_size, Colour(0.5f, 0.5f, 0.5f));
-        auto alternate_groups = std::make_unique<StackPanel>(Point(), Size(130, 16), Colour(0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto alternate_groups = std::make_unique<StackPanel>(Point(), Size(140, 16), Colour(0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _alternate_groups = tr4_5_panel->add_child(std::move(alternate_groups));
         tr4_5_panel->set_visible(false);
         _tr4_5_panel = flips_group->add_child(std::move(tr4_5_panel));

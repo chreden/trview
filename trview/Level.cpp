@@ -189,20 +189,20 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry);
+            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
             if (_regenerate_transparency)
             {
-                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers);
+                room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
             if (_alternate_mode && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode);
+                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, _show_water);
                 if (_regenerate_transparency)
                 {
-                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode);
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water);
                 }
             }
         }
@@ -553,6 +553,11 @@ namespace trview
     bool Level::show_hidden_geometry() const
     {
         return _show_hidden_geometry;
+    }
+
+    void Level::set_show_water(bool show)
+    {
+        _show_water = show;
     }
 
     bool Level::show_triggers() const

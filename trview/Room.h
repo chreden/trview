@@ -74,9 +74,9 @@ namespace trview
         // camera: The camera to use to render.
         // texture_storage: The textures for the level.
         // selected: The selection mode to use to highlight geometry and objects.
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry);
+        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water);
 
-        void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected);
+        void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
@@ -94,14 +94,14 @@ namespace trview
         /// @param camera The current viewpoint.
         /// @param selected The current selection mode.
         /// @param include_triggers Whether to render triggers.
-        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers);
+        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water);
 
         // Add the transparent triangles for entities that are contained inside this room. This is called automatically
         // if get_transparent_triangles is used.
         // transparency: The buffer to add triangles to.
         // camera: The current viewpoint.
         // selected: The current selection mode.
-        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected);
+        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water);
 
         // Determines the alternate state of the room.
         AlternateMode alternate_mode() const;
@@ -188,5 +188,6 @@ namespace trview
         AlternateMode        _alternate_mode;
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
+        bool _water{ false };
     };
 }

@@ -57,6 +57,11 @@ namespace trview
         /// @remarks This event is not raised by the set_show_hidden_geometry function.
         Event<bool> on_show_hidden_geometry;
 
+        /// Event raised when the user toggles showing water. The boolean passed as a paramter when this event is raised
+        /// indicates whether water colouring is visible.
+        /// @remarks This event is not raised by the set_show_water function.
+        Event<bool> on_show_water;
+
         /// Set the room information for the current room. This will be used to populate the labels (eg position).
         /// @param room_info The room information.
         void set_room_info(RoomInfo room_info);
@@ -88,11 +93,16 @@ namespace trview
         /// Get the current value of the show hidden geometry checkbox.
         /// @returns The current value of the checkbox.
         bool show_hidden_geometry() const;
+
+        /// Get the current value of the show water checkbox.
+        /// @returns The current value of the checkbox.
+        bool show_water() const;
     private:
         ui::Checkbox*      _highlight;
         ui::Checkbox*      _flip;
         ui::Checkbox*      _triggers;
         ui::Checkbox*      _hidden_geometry;
+        ui::Checkbox*      _water;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;

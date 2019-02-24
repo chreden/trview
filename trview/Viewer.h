@@ -133,6 +133,7 @@ namespace trview
         void setup_camera_input();
         void set_show_triggers(bool show);
         void set_show_hidden_geometry(bool show);
+        void set_show_water(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
 
         graphics::Device _device;
