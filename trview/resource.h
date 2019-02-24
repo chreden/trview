@@ -35,7 +35,7 @@
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773
-#define ID_FILE_SWITCHLEVEL             32774
+#define ID_FILE_SWITCHLEVEL             ID_APP_FILE_SWITCHLEVEL
 #define ID_HELP_GITHUB                  32776
 #define ID_ACCEL_FILE_OPEN              32777
 #define ID_HELP_DISCORD                 32778

@@ -100,6 +100,12 @@
     <ClCompile Include="Sector.cpp">
       <Filter>Sector</Filter>
     </ClCompile>
+    <ClCompile Include="LevelSwitcher.cpp">
+      <Filter>Windows Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryListing.cpp">
+      <Filter>Windows Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -213,6 +219,12 @@
     </ClInclude>
     <ClInclude Include="Types.h">
       <Filter>Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelSwitcher.h">
+      <Filter>Windows Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryListing.h">
+      <Filter>Windows Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

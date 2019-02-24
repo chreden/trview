@@ -1,6 +1,5 @@
-#include "stdafx.h"
 #include "LevelSwitcher.h"
-#include "resource.h"
+#include "WindowIDs.h"
 #include "DirectoryListing.h"
 #include <trview.common/Strings.h>
 
@@ -39,8 +38,8 @@ namespace trview
             info.hSubMenu = directory_listing_menu;
 
             // Set up the popup menu and grey it out initially - only when it's populated do we enable it
-            SetMenuItemInfo(menu, ID_FILE_SWITCHLEVEL, FALSE, &info);
-            EnableMenuItem(menu, ID_FILE_SWITCHLEVEL, MF_GRAYED);
+            SetMenuItemInfo(menu, ID_APP_FILE_SWITCHLEVEL, FALSE, &info);
+            EnableMenuItem(menu, ID_APP_FILE_SWITCHLEVEL, MF_GRAYED);
 
             SetMenu(window, menu);
 
@@ -76,7 +75,7 @@ namespace trview
         _file_switcher_list = dir_lister.GetFiles();
 
         // Enable menu when populating in case it's not enabled
-        EnableMenuItem(GetMenu(window()), ID_FILE_SWITCHLEVEL, MF_ENABLED);
+        EnableMenuItem(GetMenu(window()), ID_APP_FILE_SWITCHLEVEL, MF_ENABLED);
 
         // Clear all items from menu and repopulate
         reset_menu(window(), _directory_listing_menu);
