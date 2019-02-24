@@ -360,6 +360,7 @@ namespace trview
         _token_store += _room_navigator->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _room_navigator->on_show_triggers += [&](bool show) { set_show_triggers(show); };
         _token_store += _room_navigator->on_show_hidden_geometry += [&](bool show) { set_show_hidden_geometry(show); };
+        _token_store += _room_navigator->on_show_water += [&](bool show) { set_show_water(show); };
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _token_store += _flipmaps->on_flip += [&](bool flip) { set_alternate_mode(flip); };
@@ -697,6 +698,7 @@ namespace trview
 
         _level->set_show_triggers(_room_navigator->show_triggers());
         _level->set_show_hidden_geometry(_room_navigator->show_hidden_geometry());
+        _level->set_show_water(_room_navigator->show_water());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -1031,6 +1033,14 @@ namespace trview
         {
             _level->set_show_hidden_geometry(show);
             _room_navigator->set_show_hidden_geometry(show);
+        }
+    }
+
+    void Viewer::set_show_water(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_water(show);
         }
     }
 

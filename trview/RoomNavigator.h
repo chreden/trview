@@ -93,11 +93,16 @@ namespace trview
         /// Get the current value of the show hidden geometry checkbox.
         /// @returns The current value of the checkbox.
         bool show_hidden_geometry() const;
+
+        /// Get the current value of the show water checkbox.
+        /// @returns The current value of the checkbox.
+        bool show_water() const;
     private:
         ui::Checkbox*      _highlight;
         ui::Checkbox*      _flip;
         ui::Checkbox*      _triggers;
         ui::Checkbox*      _hidden_geometry;
+        ui::Checkbox*      _water;
         ui::NumericUpDown* _current;
         ui::Label*         _max;
         ui::Label*         _x;

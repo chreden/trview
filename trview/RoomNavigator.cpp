@@ -22,6 +22,7 @@ namespace trview
         triggers->set_state(true);
         auto hidden_geometry = std::make_unique<Checkbox>(Point(12, 45), Size(16, 16), L"Geometry");
         auto water = std::make_unique<Checkbox>(Point(86, 45), Size(16, 16), L"Water");
+        water->set_state(true);
 
         highlight->on_state_changed += on_highlight;
         triggers->on_state_changed += on_show_triggers;
@@ -56,7 +57,7 @@ namespace trview
         _highlight = rooms_groups->add_child(std::move(highlight));
         _triggers = rooms_groups->add_child(std::move(triggers));
         _hidden_geometry = rooms_groups->add_child(std::move(hidden_geometry));
-        rooms_groups->add_child(std::move(water));
+        _water = rooms_groups->add_child(std::move(water));
         rooms_groups->add_child(std::move(room_box));
 
         parent.add_child(std::move(rooms_groups));
@@ -103,5 +104,10 @@ namespace trview
     bool RoomNavigator::show_hidden_geometry() const
     {
         return _hidden_geometry->state();
+    }
+
+    bool RoomNavigator::show_water() const
+    {
+        return _water->state();
     }
 }

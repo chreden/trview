@@ -165,9 +165,9 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry)
+    void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
     {
-        Color colour = room_colour(_water, selected);
+        Color colour = room_colour(_water && show_water, selected);
 
         auto context = device.context();
 
@@ -185,9 +185,9 @@ namespace trview
         render_contained(device, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected)
+    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour(_water, selected);
+        Color colour = room_colour(_water && show_water, selected);
         render_contained(device, camera, texture_storage, colour);
     }
 
@@ -288,9 +288,9 @@ namespace trview
         }
     }
 
-    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers)
+    void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water)
     {
-        Color colour = room_colour(_water, selected);
+        Color colour = room_colour(_water && show_water, selected);
 
         for (const auto& triangle : _mesh->transparent_triangles())
         {
@@ -316,9 +316,9 @@ namespace trview
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
-    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected)
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour(_water, selected);
+        Color colour = room_colour(_water && show_water, selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
