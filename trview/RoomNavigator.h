@@ -57,6 +57,11 @@ namespace trview
         /// @remarks This event is not raised by the set_show_hidden_geometry function.
         Event<bool> on_show_hidden_geometry;
 
+        /// Event raised when the user toggles showing water. The boolean passed as a paramter when this event is raised
+        /// indicates whether water colouring is visible.
+        /// @remarks This event is not raised by the set_show_water function.
+        Event<bool> on_show_water;
+
         /// Set the room information for the current room. This will be used to populate the labels (eg position).
         /// @param room_info The room information.
         void set_room_info(RoomInfo room_info);
