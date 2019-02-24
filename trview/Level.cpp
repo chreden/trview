@@ -214,7 +214,10 @@ namespace trview
         }
 
         _regenerate_transparency = false;
+    }
 
+    void Level::render_transparency(const graphics::Device& device, const ICamera& camera)
+    {
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(device.context(), camera, *_texture_storage.get());
     }

@@ -801,6 +801,7 @@ namespace trview
                 _route->render(_device, current_camera(), _level->texture_storage());
             }
 
+            _level->render_transparency(_device, current_camera());
             _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }

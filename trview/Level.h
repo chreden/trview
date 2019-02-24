@@ -77,6 +77,11 @@ namespace trview
         /// @param render_selection Whether to render selection highlights on selected items.
         void render(const graphics::Device& device, const ICamera& camera, bool render_selection);
 
+        /// Render the transparent triangles in the scene.
+        /// @param device The graphics device to use to render the scene.
+        /// @param camera The current camera.
+        void render_transparency(const graphics::Device& device, const ICamera& camera);
+
         void set_highlight_mode(RoomHighlightMode mode, bool enabled);
         bool highlight_mode_enabled(RoomHighlightMode mode) const;
         void set_selected_room(uint16_t index);
