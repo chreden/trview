@@ -188,5 +188,6 @@ namespace trview
         AlternateMode        _alternate_mode;
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
+        bool _water{ false };
     };
 }
