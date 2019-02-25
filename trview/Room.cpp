@@ -2,6 +2,7 @@
 #include "Room.h"
 #include <trview.app/MeshVertex.h>
 #include "Entity.h"
+#include "Level.h"
 
 #include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
@@ -50,14 +51,16 @@ namespace trview
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage,
-        uint32_t index)
+        uint32_t index,
+        Level& parent_level)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
         _num_x_sectors(room.num_x_sectors),
         _num_z_sectors(room.num_z_sectors),
         _index(index),
-        _water(room.flags & 0x1)
+        _water(room.flags & 0x1),
+        _level(parent_level)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -480,11 +483,37 @@ namespace trview
     {
         auto sector_id = get_sector_id(x, z);
         auto trigger = _triggers.find(sector_id);
-        if (trigger == _triggers.end())
+        if (trigger != _triggers.end())
+        {
+            return _sectors[sector_id].get();
+        }
+
+        // Check if this sector is a portal.
+        auto sector = _sectors[sector_id];
+        if (!(sector->flags & SectorFlag::Portal))
         {
             return nullptr;
         }
-        return _sectors[sector_id].get();
+
+        auto room_number = sector->portal();
+        auto room = _level.room(room_number);
+
+        // Get the world position of the target sector.
+        auto world_x = (_info.x / trlevel::Scale_X) + x;
+        auto world_z = (_info.z / trlevel::Scale_Z) + z;
+
+        // Convert the world position into the space of the other room.
+        auto other_x = world_x - (room->_info.x / trlevel::Scale_X);
+        auto other_z = world_z - (room->_info.z / trlevel::Scale_Z);
+
+        auto other_sector_id = room->get_sector_id(other_x, other_z);
+        auto other_trigger = room->_triggers.find(other_sector_id);
+        if (other_trigger != room->_triggers.end())
+        {
+            return room->_sectors[other_sector_id].get();
+        }
+
+        return nullptr;
     }
 
     namespace
