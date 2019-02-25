@@ -286,7 +286,7 @@ namespace trview
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
             auto room = _level->get_room(i);
-            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get(), i));
+            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -322,6 +322,10 @@ namespace trview
                     room->add_trigger(_triggers.back().get());
                 }
             }
+        }
+
+        for (auto& room : _rooms)
+        {
             room->generate_trigger_geometry();
         }
     }
