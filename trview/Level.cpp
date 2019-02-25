@@ -558,6 +558,7 @@ namespace trview
     void Level::set_show_water(bool show)
     {
         _show_water = show;
+        _regenerate_transparency = true;
     }
 
     bool Level::show_triggers() const
