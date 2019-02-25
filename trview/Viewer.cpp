@@ -213,7 +213,7 @@ namespace trview
             // Highlight sectors in the minimap.
             if (_level)
             {
-                RoomInfo info;
+                std::optional<RoomInfo> info;
                 if (_current_pick.type == PickResult::Type::Room &&
                     _current_pick.index == _level->selected_room())
                 {
@@ -222,16 +222,20 @@ namespace trview
                 else if (_current_pick.type == PickResult::Type::Trigger)
                 {
                     auto trigger = _level->triggers()[_current_pick.index];
-                    info = _level->room(trigger->room())->info();
+                    if (trigger->room() == _level->selected_room())
+                    {
+                        info = _level->room(trigger->room())->info();
+                    }
                 }
-                else
+
+                if (!info.has_value())
                 {
                     _map_renderer->clear_highlight();
                     return;
                 }
 
-                auto x = _current_pick.position.x - (info.x / trlevel::Scale_X);
-                auto z = _current_pick.position.z - (info.z / trlevel::Scale_Z);
+                auto x = _current_pick.position.x - (info.value().x / trlevel::Scale_X);
+                auto z = _current_pick.position.z - (info.value().z / trlevel::Scale_Z);
                 _map_renderer->set_highlight(x, z);
             }
         };
