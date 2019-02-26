@@ -1,6 +1,5 @@
 #include "CameraPosition.h"
 #include <trlevel/trlevel.h>
-#include <sstream>
 
 using namespace trview::ui;
 using namespace trview::graphics;
