@@ -13,27 +13,27 @@ namespace trview
     {
         using namespace ui;
 
-        auto camera_window = std::make_unique<GroupBox>(Point(), Size(150, 152), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Camera");
+        auto camera_window = std::make_unique<GroupBox>(Point(), Size(150, 152), Colour::Transparent, Colour::Gray, L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16));
         reset_camera->on_click += on_reset;
 
-        auto reset_camera_label = std::make_unique<Label>(Point(30, 20), Size(40, 16), Colour(1.0f, 0.5f, 0.5f, 0.5f), L"Reset", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
+        auto reset_camera_label = std::make_unique<Label>(Point(30, 20), Size(40, 16), Colour::Transparent, L"Reset", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
 
-        auto orbit_camera = std::make_unique<Checkbox>(Point(86, 20), Size(16, 16), L"Orbit");
+        auto orbit_camera = std::make_unique<Checkbox>(Point(86, 20), Size(16, 16), Colour::Transparent, L"Orbit");
         _token_store += orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
 
-        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), L"Free");
+        auto free_camera = std::make_unique<Checkbox>(Point(12, 42), Size(16, 16), Colour::Transparent, L"Free");
         _token_store += free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); };
 
-        auto axis_camera = std::make_unique<Checkbox>(Point(86, 42), Size(16, 16), L"Axis");
+        auto axis_camera = std::make_unique<Checkbox>(Point(86, 42), Size(16, 16), Colour::Transparent, L"Axis");
         _token_store += axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
 
         // Camera section for the menu bar.
-        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(130, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Sensitivity");
+        auto camera_sensitivity_box = std::make_unique<GroupBox>(Point(12, 64), Size(130, 40), Colour::Transparent, Colour::Gray, L"Sensitivity");
         auto camera_sensitivity = std::make_unique<ui::Slider>(Point(6, 12), Size(118, 16));
         
-        auto movement_speed_box = std::make_unique<GroupBox>(Point(12, 104), Size(130, 40), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Movement Speed");
+        auto movement_speed_box = std::make_unique<GroupBox>(Point(12, 104), Size(130, 40), Colour::Transparent, Colour::Gray, L"Movement Speed");
         auto movement_speed = std::make_unique<ui::Slider>(Point(6, 12), Size(118, 16));
 
         camera_sensitivity->on_value_changed += on_sensitivity_changed;

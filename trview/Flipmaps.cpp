@@ -16,22 +16,22 @@ namespace trview
     Flipmaps::Flipmaps(ui::Control& parent)
     {
         using namespace ui;
-        auto flips_group = std::make_unique<GroupBox>(Point(), Size(150, 45), Colour(0.5f, 0.5f, 0.5f), Colour(0.0f, 0.0f, 0.0f), L"Flipmaps");
+        auto flips_group = std::make_unique<GroupBox>(Point(), Size(150, 45), Colour::Transparent, Colour::Gray, L"Flipmaps");
 
         // Shared panel size.
         const auto panel_size = Size(140, 20);
 
         // Add two methods of controlling flipmaps:
         // The TR1-3 method:
-        auto tr1_3_panel = std::make_unique<ui::Window>(Point(5, 16), panel_size, Colour(0.5f, 0.5f, 0.5f));
-        auto flip = std::make_unique<Checkbox>(Point(7,0), Size(16, 16), L"Flip");
+        auto tr1_3_panel = std::make_unique<ui::Window>(Point(5, 16), panel_size, Colour::Transparent);
+        auto flip = std::make_unique<Checkbox>(Point(7,0), Size(16, 16), Colour::Transparent, L"Flip");
         flip->on_state_changed += on_flip;
         _flip = tr1_3_panel->add_child(std::move(flip));
         _tr1_3_panel = flips_group->add_child(std::move(tr1_3_panel));
 
         // The TR4-5 method:
-        auto tr4_5_panel = std::make_unique<ui::Window>(Point(5, 16), panel_size, Colour(0.5f, 0.5f, 0.5f));
-        auto alternate_groups = std::make_unique<StackPanel>(Point(), Size(140, 16), Colour(0.5f, 0.5f, 0.5f), Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto tr4_5_panel = std::make_unique<ui::Window>(Point(5, 16), panel_size, Colour::Transparent);
+        auto alternate_groups = std::make_unique<StackPanel>(Point(), Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _alternate_groups = tr4_5_panel->add_child(std::move(alternate_groups));
         tr4_5_panel->set_visible(false);
         _tr4_5_panel = flips_group->add_child(std::move(tr4_5_panel));

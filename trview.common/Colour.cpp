@@ -2,7 +2,9 @@
 
 namespace trview
 {
+    Colour Colour::Gray = Colour(0.4f, 0.4f, 0.4f);
     Colour Colour::Transparent = Colour(0.0f, 0.0f, 0.0f, 0.0f);
+    Colour Colour::White = Colour(1.0f, 1.0f, 1.0f);
 
     Colour::Colour()
         : Colour(1.0f, 1.0f, 1.0f)

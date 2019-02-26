@@ -22,7 +22,9 @@ namespace trview
 
         float a, r, g, b;
 
+        static Colour Gray;
         static Colour Transparent;
+        static Colour White;
     };
 
     Colour operator+(const Colour& left, const Colour& right);
