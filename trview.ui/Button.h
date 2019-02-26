@@ -7,7 +7,7 @@
 #include <trview.common/Event.h>
 #include <trview.common/Colour.h>
 
-#include "Control.h"
+#include "Window.h"
 
 namespace trview
 {
@@ -18,7 +18,7 @@ namespace trview
         class Label;
 
         /// UI element that provides a clickable area.
-        class Button : public Control
+        class Button : public Window
         {
         public:
             /// Creates a new button with provided textures.

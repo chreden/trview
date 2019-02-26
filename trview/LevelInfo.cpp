@@ -43,6 +43,7 @@ namespace trview
         name->set_vertical_alignment(Align::Centre);
 
         auto settings = std::make_unique<Button>(Point(), Size(16, 16), texture_storage.lookup("settings"), texture_storage.lookup("settings"));
+        settings->set_background_colour(Colour(0.4f, 0.4f, 0.4f));
         settings->on_click += on_toggle_settings;
 
         _version = panel->add_child(std::move(version));
