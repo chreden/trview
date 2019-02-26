@@ -21,6 +21,8 @@ namespace trview
         Colour& operator += (const Colour& other);
 
         float a, r, g, b;
+
+        static Colour Transparent;
     };
 
     Colour operator+(const Colour& left, const Colour& right);

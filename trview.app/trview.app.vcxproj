@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="AlternateGroupToggler.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraPosition.cpp" />
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
@@ -60,6 +61,7 @@
   <ItemGroup>
     <ClInclude Include="AlternateGroupToggler.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraPosition.h" />
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
     <ClInclude Include="ContextMenu.h" />

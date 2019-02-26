@@ -2,6 +2,8 @@
 
 namespace trview
 {
+    Colour Colour::Transparent = Colour(0.0f, 0.0f, 0.0f, 0.0f);
+
     Colour::Colour()
         : Colour(1.0f, 1.0f, 1.0f)
     {

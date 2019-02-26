@@ -349,6 +349,8 @@ namespace trview
                     DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
             }
         };
+
+        _camera_position = std::make_unique<CameraPosition>(*_control);
     }
 
     void Viewer::generate_tool_window()
@@ -669,6 +671,8 @@ namespace trview
         }
 
         current_camera().update(_timer.elapsed());
+
+        _camera_position->set_position(current_camera().position());
     }
 
     void Viewer::open(const std::string& filename)
