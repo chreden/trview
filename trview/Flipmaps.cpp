@@ -16,7 +16,7 @@ namespace trview
     Flipmaps::Flipmaps(ui::Control& parent)
     {
         using namespace ui;
-        auto flips_group = std::make_unique<GroupBox>(Point(), Size(150, 45), Colour::Transparent, Colour::Gray, L"Flipmaps");
+        auto flips_group = std::make_unique<GroupBox>(Point(), Size(150, 45), Colour::Transparent, Colour::Grey, L"Flipmaps");
 
         // Shared panel size.
         const auto panel_size = Size(140, 20);

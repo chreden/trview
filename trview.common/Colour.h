@@ -23,8 +23,8 @@ namespace trview
         float a, r, g, b;
 
         static Colour Black;
-        static Colour Gray;
-        static Colour LightGray;
+        static Colour Grey;
+        static Colour LightGrey;
         static Colour Transparent;
         static Colour White;
     };

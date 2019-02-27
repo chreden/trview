@@ -16,7 +16,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 150), Colour::Transparent, Colour::Gray, L"Rooms");
+        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 150), Colour::Transparent, Colour::Grey, L"Rooms");
         auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), Colour::Transparent, L"Highlight");
         auto triggers = std::make_unique<Checkbox>(Point(86, 20), Size(16, 16), Colour::Transparent, L"Triggers");
         triggers->set_state(true);
@@ -29,7 +29,7 @@ namespace trview
         hidden_geometry->on_state_changed += on_show_hidden_geometry;
         water->on_state_changed += on_show_water;
 
-        auto room_box = std::make_unique<GroupBox>(Point(12, 72), Size(130, 70), Colour::Transparent, Colour::Gray, L"Room");
+        auto room_box = std::make_unique<GroupBox>(Point(12, 72), Size(130, 70), Colour::Transparent, Colour::Grey, L"Room");
         auto room_controls = std::make_unique<StackPanel>(Point(22, 17), Size(96, 60), Colour::Transparent);
         auto room_number_labels = std::make_unique<StackPanel>(Point(), Size(96, 30), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         auto room_number = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0);

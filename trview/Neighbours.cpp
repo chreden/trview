@@ -15,7 +15,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto group = std::make_unique<GroupBox>(Point(), Size(150, 50), Colour::Transparent, Colour::Gray, L"Neighbours");
+        auto group = std::make_unique<GroupBox>(Point(), Size(150, 50), Colour::Transparent, Colour::Grey, L"Neighbours");
         auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), Colour::Transparent, L"Depth");
         enabled->on_state_changed += on_enabled_changed;
 
