@@ -30,6 +30,9 @@ namespace trview
 
         /// Event raised when the user has clicked the remove waypoint button.
         Event<> on_remove_waypoint;
+
+        /// Event raised when the user has clicked the orbit here button.
+        Event<> on_orbit_here;
     private:
         ui::StackPanel* _menu;
         ui::Button*     _remove_button;
