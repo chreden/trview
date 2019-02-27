@@ -29,7 +29,7 @@ namespace trview
                 const float thickness = _button->border_thickness();
                 if (thickness)
                 {
-                    _render_target->clear(context, Colour::Transparent);
+                    _render_target->clear(context, Colour::Black);
                 }
 
                 graphics::RenderTargetStore rt_store(context);

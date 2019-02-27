@@ -8,7 +8,7 @@ namespace trview
     {
         namespace Colours
         {
-            const Colour Background{ 0.4f, 0.4f, 0.4f };
+            const Colour Background{ 0.25f, 0.25f, 0.25f };
             const Colour Highlight{ 0.0f, 0.05f, 0.05f, 0.05f };
         }
 

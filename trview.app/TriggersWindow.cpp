@@ -19,9 +19,9 @@ namespace trview
         namespace Colours
         {
             const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-            const Colour LeftPanel{ 1.0f, 0.4f, 0.4f, 0.4f };
-            const Colour ItemDetails{ 1.0f, 0.35f, 0.35f, 0.35f };
-            const Colour Triggers{ 1.0f, 0.3f, 0.3f, 0.3f };
+            const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
+            const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
+            const Colour Triggers{ 1.0f, 0.20f, 0.20f, 0.20f };
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
