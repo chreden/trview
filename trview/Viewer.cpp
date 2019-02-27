@@ -289,6 +289,12 @@ namespace trview
             remove_waypoint(_context_pick.index);
             _context_menu->set_visible(false);
         };
+        _token_store += _context_menu->on_orbit_here += [&]()
+        {
+            select_room(room_from_pick(_context_pick));
+            _target = _context_pick.position;
+            _context_menu->set_visible(false);
+        };
 
         _context_menu->set_remove_enabled(false);
 

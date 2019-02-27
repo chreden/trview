@@ -36,6 +36,11 @@ namespace trview
         };
         _remove_button = _menu->add_child(std::move(remove_button));
 
+        auto orbit_button = std::make_unique<Button>(Point(), Size(100, 24), L"Orbit Here");
+        orbit_button->set_text_background_colour(Colours::Button);
+        orbit_button->on_click += on_orbit_here;
+        _menu->add_child(std::move(orbit_button));
+
         _menu->set_visible(false);
     }
 
