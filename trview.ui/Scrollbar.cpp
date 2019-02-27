@@ -7,7 +7,7 @@ namespace trview
         Scrollbar::Scrollbar(const Point& position, const Size& size, const Colour& background_colour)
             : Window(position, size, background_colour)
         {
-            _blob = add_child(std::make_unique<Window>(Point(), Size(size.width, 10), Colour(1.0f, 0.2f, 0.2f, 0.2f)));
+            _blob = add_child(std::make_unique<Window>(Point(), Size(size.width, 10), Colour(1.0f, 0.15f, 0.15f, 0.15f)));
         }
 
         void Scrollbar::set_range(float range_start, float range_end, float maximum)

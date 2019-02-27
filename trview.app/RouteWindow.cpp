@@ -28,9 +28,10 @@ namespace trview
     namespace Colours
     {
         const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-        const Colour LeftPanel{ 1.0f, 0.4f, 0.4f, 0.4f };
-        const Colour ItemDetails{ 1.0f, 0.35f, 0.35f, 0.35f };
-        const Colour Notes{ 1.0f, 0.3f, 0.3f, 0.3f };
+        const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
+        const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
+        const Colour Notes{ 1.0f, 0.20f, 0.20f, 0.20f };
+        const Colour NotesTextArea{ 1.0f, 0.15f, 0.15f, 0.15f };
         const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
@@ -179,7 +180,7 @@ namespace trview
         // Notes area.
         auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
-        auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colour(0.2f, 0.2f, 0.2f), Colour(1.0f, 1.0f, 1.0f));
+        auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
 
         right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));

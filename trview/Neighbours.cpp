@@ -15,11 +15,11 @@ namespace trview
     {
         using namespace ui;
 
-        auto group = std::make_unique<GroupBox>(Point(), Size(150, 50), Colour(1.0f, 0.5f, 0.5f, 0.5f), Colour(1.0f, 0.0f, 0.0f, 0.0f), L"Neighbours");
-        auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), L"Depth");
+        auto group = std::make_unique<GroupBox>(Point(), Size(150, 50), Colour::Transparent, Colour::Grey, L"Neighbours");
+        auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), Colour::Transparent, L"Depth");
         enabled->on_state_changed += on_enabled_changed;
 
-        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour(1.0f, 0.4f, 0.4f, 0.4f), texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 10);
+        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 10);
         depth->set_value(1);
         depth->on_value_changed += on_depth_changed;
 

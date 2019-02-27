@@ -6,7 +6,7 @@ namespace trview
     namespace ui
     {
         GroupBox::GroupBox(const Point& point, const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text)
-            : Window(point, size, background_colour), _border_colour(border_colour), _text(text)
+            : Window(point, size, background_colour), _border_colour(border_colour)
         {
             auto top = std::make_unique<Window>(Point(0, 5), Size(size.width, 2), border_colour);
             auto left = std::make_unique<Window>(Point(0, 5), Size(2, size.height - 10), border_colour);

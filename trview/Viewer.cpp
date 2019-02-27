@@ -253,9 +253,7 @@ namespace trview
 
     void Viewer::generate_ui()
     {
-        // Create the user interface window. At the moment this is going to be a bar on the side, 
-        // but this can change over time. For now make a really boring gray window.
-        _control = std::make_unique<ui::Window>(Point(), _window.size(), Colour(0.f, 0.f, 0.f, 0.f)); 
+        _control = std::make_unique<ui::Window>(Point(), _window.size(), Colour::Transparent); 
         _control->set_handles_input(false);
 
         generate_tool_window();
@@ -358,7 +356,7 @@ namespace trview
         using namespace ui;
 
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 348.0f), Colour(1.f, 0.5f, 0.5f, 0.5f), Size(5, 5));
+        auto tool_window = std::make_unique<ui::StackPanel>(Point(), Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
         tool_window->set_margin(Size(5, 5));
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), *_texture_storage.get());

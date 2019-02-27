@@ -8,9 +8,10 @@ namespace trview
     namespace ui
     {
         Dropdown::Dropdown(const Point& position, const Size& size)
-            : Window(position, size, Colour(1.0f, 0.0f, 0.0f))
+            : Window(position, size, Colour::Transparent)
         {
             _button = add_child(std::make_unique<Button>(position, size, L""));
+            _button->set_background_colour(Colour(0.25f, 0.25f, 0.25f));
             _token_store += _button->on_click += [&]()
             {
                 _dropdown->set_visible(!_dropdown->visible());
@@ -21,7 +22,7 @@ namespace trview
 
         void Dropdown::set_dropdown_scope(ui::Control* scope)
         {
-            auto dropdown = std::make_unique<Listbox>(Point(), Size(size().width, size().height * _values.size()), Colour(0.4f, 0.4f, 0.4f));
+            auto dropdown = std::make_unique<Listbox>(Point(), Size(size().width, size().height * _values.size()), Colour(0.25f, 0.25f, 0.25f));
             dropdown->set_z(-1);
             dropdown->set_visible(false);
             dropdown->set_columns(

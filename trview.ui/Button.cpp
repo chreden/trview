@@ -8,12 +8,12 @@ namespace trview
     {
         namespace Colours
         {
-            const Colour Background{ 0.4f, 0.4f, 0.4f };
+            const Colour Background{ 0.25f, 0.25f, 0.25f };
             const Colour Highlight{ 0.0f, 0.05f, 0.05f, 0.05f };
         }
 
         Button::Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
-            : Control(position, size), _up_image(up_image), _down_image(down_image), _text(nullptr)
+            : Window(position, size, Colour::Transparent), _up_image(up_image), _down_image(down_image), _text(nullptr)
         {
             auto image = std::make_unique<Image>(Point(), size);
             image->set_texture(up_image);
@@ -21,14 +21,14 @@ namespace trview
         }
 
         Button::Button(Point position, Size size, const std::wstring& text)
-            : Control(position, size)
+            : Window(position, size, Colours::Background)
         {
             _text = add_child(std::make_unique<Label>(Point(2, 2), size - Size(4, 4), Colours::Background, text, 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
             set_handles_hover(true);
         }
 
         Button::Button(Point position, Size size)
-            : Control(position, size), _text(nullptr)
+            : Window(position, size, Colours::Background), _text(nullptr)
         {
         }
 

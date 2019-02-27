@@ -29,7 +29,7 @@ namespace trview
                 const float thickness = _button->border_thickness();
                 if (thickness)
                 {
-                    _render_target->clear(context, Color());
+                    _render_target->clear(context, Colour::Black);
                 }
 
                 graphics::RenderTargetStore rt_store(context);
@@ -38,7 +38,7 @@ namespace trview
                 _render_target->apply(context);
 
                 sprite.render(context, _blank, thickness, thickness, _button->size().width - 2.0f * thickness, _button->size().height - 2.0f * thickness,
-                    Color(0.4f, 0.4f, 0.4f));
+                    _button->background_colour());
             }
         }
     }

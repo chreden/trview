@@ -12,18 +12,18 @@ namespace trview
         }
 
         Slider::Slider(Point position, Size size)
-            : Window(position, size, Colour(0, 0, 0, 0))
+            : Window(position, size, Colour::Transparent)
         {
             // Create the child windows (and store them for later manipulation).
             auto line = std::make_unique<Window>(
                 Point(BlobWidth, size.height / 2.f - 1.f),
                 Size(size.width - BlobWidth * 2.f, 2.f),
-                Colour(1, 0, 0, 0));
+                Colour::LightGrey);
 
             auto blob = std::make_unique<Window>(
                 Point(0, 0),
                 Size(BlobWidth, size.height),
-                Colour(1.0f, 0.2f, 0.2f, 0.2f));
+                Colour::LightGrey);
 
             add_child(std::move(line));
             _blob = add_child(std::move(blob));

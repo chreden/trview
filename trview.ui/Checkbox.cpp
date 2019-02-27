@@ -9,12 +9,12 @@ namespace trview
     {
         namespace
         {
-            const Colour on_colour { 1.0f, 0.0f, 0.0f, 0.0f };
-            const Colour off_colour { 0.0f, 0.0f, 0.0f, 0.0f };
+            const Colour on_colour { Colour(0.5f, 0.5f, 0.5f) };
+            const Colour off_colour { Colour(0.2f, 0.2f, 0.2f) };
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size)
-            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal)
+            : StackPanel(position, size, Colour::Transparent, Size(), Direction::Horizontal)
         {
             create_image(size, Colour(1.0f, 0.5f, 0.5f, 0.5f));
         }
@@ -25,7 +25,7 @@ namespace trview
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size, const Colour& background_colour, const std::wstring& label_text)
-            : StackPanel(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(), Direction::Horizontal)
+            : StackPanel(position, size, Colour::Transparent, Size(), Direction::Horizontal)
         {
             create_image(size, background_colour);
 
@@ -38,12 +38,10 @@ namespace trview
 
         void Checkbox::create_image(const Size& size, const Colour& colour)
         {
-            auto outer = std::make_unique<Window>(Point(), size, Colour(1.0f, 0.0f, 0.0f, 0.0f));
-            auto inner = std::make_unique<Window>(Point(1, 1), size - Size(2, 2), colour);
-            auto fill = std::make_unique<Window>(Point(1, 1), size - Size(4, 4), off_colour);
+            auto outer = std::make_unique<Window>(Point(), size, Colour(0.6f, 0.6f, 0.6f));
+            auto fill = std::make_unique<Window>(Point(1, 1), size - Size(2, 2), off_colour);
 
-            _fill = inner->add_child(std::move(fill));
-            outer->add_child(std::move(inner));
+            _fill = outer->add_child(std::move(fill));
             add_child(std::move(outer));
         }
 
