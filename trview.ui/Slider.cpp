@@ -18,12 +18,12 @@ namespace trview
             auto line = std::make_unique<Window>(
                 Point(BlobWidth, size.height / 2.f - 1.f),
                 Size(size.width - BlobWidth * 2.f, 2.f),
-                Colour::Gray);
+                Colour::LightGray);
 
             auto blob = std::make_unique<Window>(
                 Point(0, 0),
                 Size(BlobWidth, size.height),
-                Colour::Gray);
+                Colour::LightGray);
 
             add_child(std::move(line));
             _blob = add_child(std::move(blob));
