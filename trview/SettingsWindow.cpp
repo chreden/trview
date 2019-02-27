@@ -73,7 +73,7 @@ namespace trview
                 Point(parent_size.width / 2.0f - half_size.width,
                       parent_size.height / 2.0f - half_size.height));
         };
-        parent.on_size_changed += centre_window;
+        _token_store += parent.on_size_changed += centre_window;
         centre_window(parent.size());
     }
 
