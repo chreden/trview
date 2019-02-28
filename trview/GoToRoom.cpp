@@ -17,27 +17,27 @@ namespace trview
     GoToRoom::GoToRoom(ui::Control& parent)
     {
         using namespace ui;
-        
+
         auto parent_size = parent.size();
 
         auto window = std::make_unique<Window>(
             Point(parent_size.width / 2.0f - WindowWidth / 2.0f, parent_size.height / 2.0f - WindowHeight / 2.0f),
             Size(WindowWidth, WindowHeight),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f));
+            Colour(0.5f, 0.0f, 0.0f, 0.0f));
         window->set_visible(false);
 
         auto box = std::make_unique<GroupBox>(
             Point(5, 0),
             Size(WindowWidth - 10, WindowHeight),
-            Colour(1.0f, 0.5f, 0.5f, 0.5f),
-            Colour(1.0f, 0.0f, 0.0f, 0.0f),
+            Colour::Transparent,
+            Colour::Grey,
             L"Go to Room");
 
         auto label = std::make_unique<Label>(
             Point((WindowWidth - 10) / 2.0f - Width / 2.0f,
-                  (WindowHeight) / 2.0f - Height / 2.0f),
+                  (WindowHeight) / 2.0f - Height / 2.0f + 2),
             Size(Width, Height),
-            Colour(1.0f, 0.4f, 0.4f, 0.4f),
+            Colour(1.0f, 0.2f, 0.2f, 0.2f),
             L"",
             8,
             graphics::TextAlignment::Centre,
