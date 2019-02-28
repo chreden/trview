@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Neighbours.h"
 
 #include <trview.app/ITextureStorage.h>

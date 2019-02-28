@@ -179,26 +179,17 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CameraControls.h" />
     <ClInclude Include="CameraInput.h" />
-    <ClInclude Include="CameraMode.h" />
     <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="Flipmaps.h" />
-    <ClInclude Include="GoToRoom.h" />
     <ClInclude Include="IMeshStorage.h" />
     <ClInclude Include="Level.h" />
-    <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="MeshStorage.h" />
-    <ClInclude Include="Neighbours.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="Room.h" />
-    <ClInclude Include="RoomInfo.h" />
-    <ClInclude Include="RoomNavigator.h" />
-    <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -209,24 +200,16 @@
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraControls.cpp" />
     <ClCompile Include="CameraInput.cpp" />
-    <ClCompile Include="CameraMode.cpp" />
     <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Flipmaps.cpp" />
-    <ClCompile Include="GoToRoom.cpp" />
     <ClCompile Include="IMeshStorage.cpp" />
     <ClCompile Include="Level.cpp" />
-    <ClCompile Include="LevelInfo.cpp" />
     <ClCompile Include="MeshStorage.cpp" />
-    <ClCompile Include="Neighbours.cpp" />
     <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="Room.cpp" />
-    <ClCompile Include="RoomNavigator.cpp" />
-    <ClCompile Include="SettingsWindow.cpp" />
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">

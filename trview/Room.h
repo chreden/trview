@@ -9,7 +9,7 @@
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
-#include "RoomInfo.h"
+#include <trview.app/RoomInfo.h>
 #include <trview.graphics/Texture.h>
 
 #include <trlevel/trtypes.h>

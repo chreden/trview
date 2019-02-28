@@ -21,7 +21,7 @@
 #include <trview.app/FreeCamera.h>
 #include <trview.app/OrbitCamera.h>
 #include "CameraInput.h"
-#include "CameraMode.h"
+#include <trview.app/CameraMode.h>
 #include "Level.h"
 #include "UserSettings.h"
 #include <trview.app/LevelSwitcher.h>
@@ -30,7 +30,6 @@
 #include <trview.app/FileDropper.h>
 #include <trview.app/ItemsWindowManager.h>
 #include <trview.app/TriggersWindowManager.h>
-#include <trview.app/Toolbar.h>
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
@@ -41,6 +40,7 @@
 #include <trview.app/Picking.h>
 #include <trview.app/SectorHighlight.h>
 #include <trview.app/CameraPosition.h>
+#include <trview.app/ViewerUI.h>
 
 namespace trview
 {
@@ -57,13 +57,10 @@ namespace trview
     }
 
     class CameraControls;
-    class GoToRoom;
     struct ITextureStorage;
     class LevelInfo;
     class Neighbours;
-    class RoomNavigator;
     class SettingsWindow;
-    class Flipmaps;
 
     namespace graphics
     {
@@ -102,8 +99,6 @@ namespace trview
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::string>> on_recent_files_changed;
     private:
-        void generate_ui();
-        void generate_tool_window();
         void initialise_camera_controls(ui::Control& parent);
         void initialise_input();
         void process_input_key(uint16_t key);
@@ -149,14 +144,10 @@ namespace trview
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
-        std::unique_ptr<GoToRoom> _go_to_room;
-        std::unique_ptr<ui::Control> _control;
-        std::unique_ptr<ui::render::Renderer> _ui_renderer;
+        std::unique_ptr<ViewerUI> _ui;
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
-        std::unique_ptr<RoomNavigator> _room_navigator;
-        std::unique_ptr<Flipmaps> _flipmaps;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<LevelInfo> _level_info;
@@ -179,14 +170,6 @@ namespace trview
         SectorHighlight _sector_highlight;
 
         // Tools:
-        std::unique_ptr<Toolbar> _toolbar;
-        std::unique_ptr<ContextMenu> _context_menu;
-
-        enum class Tool
-        {
-            None,
-            Measure
-        };
 
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;

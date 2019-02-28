@@ -109,6 +109,33 @@
     <ClCompile Include="CameraPosition.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="ViewerUI.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GoToRoom.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelInfo.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomNavigator.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsWindow.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Flipmaps.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Neighbours.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraControls.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMode.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -232,6 +259,34 @@
     <ClInclude Include="CameraPosition.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="ViewerUI.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GoToRoom.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelInfo.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomNavigator.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomInfo.h" />
+    <ClInclude Include="SettingsWindow.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Flipmaps.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Neighbours.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraControls.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMode.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -278,6 +333,12 @@
     </Filter>
     <Filter Include="Sector">
       <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer">
+      <UniqueIdentifier>{a1f3a16c-1012-436e-aa51-5a52542e63e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\UI">
+      <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

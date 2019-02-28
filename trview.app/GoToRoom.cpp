@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "GoToRoom.h"
 
+#include <Windows.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/GroupBox.h>
 
