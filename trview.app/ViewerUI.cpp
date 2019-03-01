@@ -152,14 +152,10 @@ namespace trview
     void ViewerUI::initialise_camera_controls(ui::Control& parent)
     {
         _camera_controls = std::make_unique<CameraControls>(parent);
-        // _token_store += _camera_controls->on_reset += [&]() { _camera.reset(); };
-        // _token_store += _camera_controls->on_mode_selected += [&](CameraMode mode) { set_camera_mode(mode); };
-        // _token_store += _camera_controls->on_sensitivity_changed += [&](float value) { _settings.camera_sensitivity = value; };
-        // _token_store += _camera_controls->on_movement_speed_changed += [&](float value) { _settings.camera_movement_speed = value; };
-
-        // _camera_controls->set_sensitivity(_settings.camera_sensitivity);
-        // _camera_controls->set_mode(CameraMode::Orbit);
-        // _camera_controls->set_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
+        _camera_controls->on_reset += on_camera_reset;
+        _camera_controls->on_mode_selected += on_camera_mode;
+        _camera_controls->on_sensitivity_changed += on_camera_sensitivity;
+        _camera_controls->on_movement_speed_changed += on_camera_movement_speed;
     }
 
     void ViewerUI::render(const graphics::Device& device)
@@ -177,9 +173,24 @@ namespace trview
         _flipmaps->set_alternate_groups(groups);
     }
 
+    void ViewerUI::set_camera_movement_speed(float value)
+    {
+        _camera_controls->set_movement_speed(value);
+    }
+
     void ViewerUI::set_camera_position(const DirectX::SimpleMath::Vector3& position)
     {
         _camera_position->set_position(position);
+    }
+
+    void ViewerUI::set_camera_sensitivity(float value)
+    {
+        _camera_controls->set_sensitivity(value);
+    }
+
+    void ViewerUI::set_camera_mode(CameraMode mode)
+    {
+        _camera_controls->set_mode(mode);
     }
 
     void ViewerUI::set_depth_enabled(bool value)
@@ -245,5 +256,10 @@ namespace trview
     bool ViewerUI::show_water() const
     {
         return _room_navigator->show_water();
+    }
+
+    void ViewerUI::toggle_settings_visibility()
+    {
+        _settings_window->toggle_visibility();
     }
 }

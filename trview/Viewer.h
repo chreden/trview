@@ -55,11 +55,7 @@ namespace trview
         }
     }
 
-    class CameraControls;
     struct ITextureStorage;
-    class LevelInfo;
-    class Neighbours;
-    class SettingsWindow;
 
     namespace graphics
     {
@@ -146,13 +142,9 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
-        std::unique_ptr<CameraControls> _camera_controls;
-        std::unique_ptr<Neighbours> _neighbours;
-        std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
         graphics::FontFactory _font_factory;
-        std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;

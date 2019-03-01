@@ -111,6 +111,14 @@ namespace trview
         _token_store += _ui->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); };
         _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value); } };
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+        _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
+        _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
+        _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
+
+        _ui->set_camera_mode(CameraMode::Orbit);
+        _ui->set_camera_sensitivity(_settings.camera_sensitivity);
+        _ui->set_camera_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
 
         // _measure = std::make_unique<Measure>(_device, *_control);
         // _compass = std::make_unique<Compass>(_device, *_shader_storage);
@@ -469,7 +477,7 @@ namespace trview
                     break;
                 }
                 case VK_F1:
-                    _settings_window->toggle_visibility();
+                    _ui->toggle_settings_visibility();
                     break;
                 case 'H':
                     toggle_highlight();
@@ -691,7 +699,7 @@ namespace trview
         }
 
         _camera_mode = camera_mode;
-        _camera_controls->set_mode(camera_mode);
+        _ui->set_camera_mode(camera_mode);
     }
 
     void Viewer::render_map()
