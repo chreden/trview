@@ -869,7 +869,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_triggers(show);
-            // _room_navigator->set_show_triggers(show);
+            _ui->set_show_triggers(show);
         }
     }
 

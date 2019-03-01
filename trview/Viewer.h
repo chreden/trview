@@ -99,7 +99,6 @@ namespace trview
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::string>> on_recent_files_changed;
     private:
-        void initialise_camera_controls(ui::Control& parent);
         void initialise_input();
         void process_input_key(uint16_t key);
         void process_char(uint16_t character);
