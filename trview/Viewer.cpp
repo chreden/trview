@@ -509,7 +509,7 @@ namespace trview
 
         current_camera().update(_timer.elapsed());
 
-        // _camera_position->set_position(current_camera().position());
+        _ui->set_camera_position(current_camera().position());
     }
 
     void Viewer::open(const std::string& filename)

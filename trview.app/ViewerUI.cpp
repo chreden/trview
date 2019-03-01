@@ -119,9 +119,8 @@ namespace trview
                     DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
             }
         };
-
-        _camera_position = std::make_unique<CameraPosition>(*_control);
         */
+        _camera_position = std::make_unique<CameraPosition>(*_control);
     }
 
     void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
@@ -176,6 +175,11 @@ namespace trview
     void ViewerUI::set_alternate_groups(const std::set<uint16_t>& groups)
     {
         _flipmaps->set_alternate_groups(groups);
+    }
+
+    void ViewerUI::set_camera_position(const DirectX::SimpleMath::Vector3& position)
+    {
+        _camera_position->set_position(position);
     }
 
     void ViewerUI::set_depth_enabled(bool value)

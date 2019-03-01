@@ -14,6 +14,7 @@
 #include "Flipmaps.h"
 #include "Neighbours.h"
 #include "CameraControls.h"
+#include "CameraPosition.h"
 
 namespace trview
 {
@@ -84,6 +85,10 @@ namespace trview
         /// @param groups The alternate groups for the level.
         void set_alternate_groups(const std::set<uint16_t>& groups);
 
+        /// Set the current camera position.
+        /// @param position The camera position.
+        void set_camera_position(const DirectX::SimpleMath::Vector3& position);
+
         /// Set whether depth is enabled.
         /// @param value Whether depth is enabled.
         void set_depth_enabled(bool value);
@@ -150,5 +155,6 @@ namespace trview
         std::unique_ptr<Flipmaps> _flipmaps;
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<CameraControls> _camera_controls;
+        std::unique_ptr<CameraPosition> _camera_position;
     };
 }

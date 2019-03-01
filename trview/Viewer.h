@@ -39,7 +39,6 @@
 #include <trview.app/ViewMenu.h>
 #include <trview.app/Picking.h>
 #include <trview.app/SectorHighlight.h>
-#include <trview.app/CameraPosition.h>
 #include <trview.app/ViewerUI.h>
 
 namespace trview
@@ -180,8 +179,6 @@ namespace trview
         std::unique_ptr<Route> _route;
         std::unique_ptr<RouteWindowManager> _route_window_manager;
         bool _show_route{ true };
-
-        std::unique_ptr<CameraPosition> _camera_position;
     };
 }
 
