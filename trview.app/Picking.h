@@ -18,7 +18,7 @@ namespace trview
     class Picking final
     {
     public:
-        explicit Picking(ui::Control& parent);
+        explicit Picking();
 
         /// Perform a pick operation.
         /// @param window The window that the scene is being rendered in.
