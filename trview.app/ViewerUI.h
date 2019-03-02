@@ -15,6 +15,8 @@
 #include "Neighbours.h"
 #include "CameraControls.h"
 #include "CameraPosition.h"
+#include "PickInfo.h"
+#include "PickResult.h"
 
 namespace trview
 {
@@ -133,9 +135,23 @@ namespace trview
         /// @param value Whether highlight is enabled.
         void set_highlight(bool value);
 
+        /// Set the level name and version.
+        /// @param name The filename.
+        /// @param version The version of the level.
+        void set_level(const std::string& name, trlevel::LevelVersion version);
+
+        /// Set the current pick result.
+        /// @param info The parameters for the pick.
+        /// @param pick_result The pick result.
+        void set_pick(const PickInfo& info, const PickResult& pick_result);
+
         /// Set whether hidden geometry is visible.
         /// @param value Whether hidden geometry is visible.
         void set_show_hidden_geometry(bool value);
+
+        /// Set whether to show the tooltip.
+        /// @param value Whether to show the tooltip.
+        void set_show_tooltip(bool value);
 
         /// Set whether triggers are visible.
         /// @param value Whether triggers are visible.
@@ -183,5 +199,7 @@ namespace trview
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
+        ui::Label* _tooltip;
+        bool _show_tooltip{ true };
     };
 }

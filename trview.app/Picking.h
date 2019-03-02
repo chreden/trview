@@ -6,20 +6,12 @@
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Label;
-    }
-
     class Window;
     struct ICamera;
 
     class Picking final
     {
     public:
-        explicit Picking();
-
         /// Perform a pick operation.
         /// @param window The window that the scene is being rendered in.
         /// @param camera The current scene camera.
@@ -33,10 +25,6 @@ namespace trview
         Event<PickInfo, PickResult&> pick_sources;
 
         /// Raise when something has been picked.
-        Event<PickResult> on_pick;
-    private:
-        ui::Label* _label;
-        bool       _show{ true };
-        PickResult _current_pick;
+        Event<PickInfo, PickResult> on_pick;
     };
 }

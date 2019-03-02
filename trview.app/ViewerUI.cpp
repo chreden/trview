@@ -39,6 +39,12 @@ namespace trview
                 on_tool_selected(Tool::Measure);
             }
         };
+
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        picking->set_visible(false);
+        picking->set_handles_input(false);
+        _tooltip = _control->add_child(std::move(picking));
+
         /*
         _context_menu = std::make_unique<ContextMenu>(*_control);
         _token_store += _context_menu->on_add_waypoint += [&]()
@@ -218,9 +224,37 @@ namespace trview
         _room_navigator->set_highlight(value);
     }
 
+    void ViewerUI::set_level(const std::string& name, trlevel::LevelVersion version)
+    {
+        _level_info->set_level(name);
+        _level_info->set_level_version(version);
+    }
+
+    void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
+    {
+        using namespace DirectX;
+        using namespace DirectX::SimpleMath;
+
+        // Show the tooltip.
+        _tooltip->set_visible(result.hit && _show_tooltip);
+        if (result.hit)
+        {
+            auto screen_pos = info.screen_position;
+            _tooltip->set_position(Point(screen_pos.x - _tooltip->size().width, screen_pos.y - _tooltip->size().height));
+            _tooltip->set_text(pick_to_string(result));
+            _tooltip->set_text_colour(pick_to_colour(result));
+        }
+    }
+
     void ViewerUI::set_show_hidden_geometry(bool value)
     {
         _room_navigator->set_show_hidden_geometry(value);
+    }
+
+    void ViewerUI::set_show_tooltip(bool value)
+    {
+        _show_tooltip = value;
+        _tooltip->set_visible(_tooltip->visible() && _show_tooltip);
     }
 
     void ViewerUI::set_show_triggers(bool value)

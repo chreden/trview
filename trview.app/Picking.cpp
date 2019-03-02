@@ -3,7 +3,6 @@
 
 #include <trview.common/Point.h>
 #include <trview.common/Window.h>
-#include <trview.ui/Label.h>
 #include <SimpleMath.h>
 
 using namespace DirectX;
@@ -11,14 +10,6 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Picking::Picking()
-    {
-        //auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        //picking->set_visible(false);
-        //picking->set_handles_input(false);
-        //_label = parent.add_child(std::move(picking));
-    }
-
     void Picking::pick(const Window& window, const ICamera& camera)
     {
         const Vector3 position = camera.position();
@@ -37,22 +28,6 @@ namespace trview
         PickResult result{};
         pick_sources(info, result);
 
-        // Show the tooltip.
-        // _label->set_visible(result.hit && _show);
-        // if (result.hit)
-        // {
-        //     Vector3 screen_pos = XMVector3Project(result.position, 0, 0, window_size.width, window_size.height, 0, 1.0f, projection, view, XMMatrixIdentity());
-        //     _label->set_position(Point(screen_pos.x - _label->size().width, screen_pos.y - _label->size().height));
-        //     _label->set_text(pick_to_string(result));
-        //     _label->set_text_colour(pick_to_colour(result));
-        // }
-
-        on_pick(result);
-    }
-
-    void Picking::set_show(bool value)
-    {
-        _show = value;
-        // _label->set_visible(_label->visible() && _show);
+        on_pick(info, result);
     }
 }

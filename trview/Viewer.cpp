@@ -150,7 +150,7 @@ namespace trview
         };
 
         // _token_store += _view_menu.on_show_minimap += [&](bool show) { _map_renderer->set_visible(show); };
-        // _token_store += _view_menu.on_show_tooltip += [&](bool show) { _picking->set_show(show); };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
@@ -215,9 +215,11 @@ namespace trview
             }
         };
 
-        _token_store += _picking->on_pick += [&](const PickResult& result)
+        _token_store += _picking->on_pick += [&](const PickInfo& info, const PickResult& result)
         {
             _current_pick = result;
+
+            _ui->set_pick(info, result);
 
             // Highlight sectors in the minimap.
             if (_level)
@@ -579,8 +581,7 @@ namespace trview
         // Strip the last part of the path away.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        // _level_info->set_level(name);        
-        // _level_info->set_level_version(_current_level->get_version());
+        _ui->set_level(name, _current_level->get_version());
         _window.set_title("trview - " + name);
         // _measure->reset();
         _route->clear();
