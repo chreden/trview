@@ -5,6 +5,7 @@
 #include <trview.ui/Control.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.input/Mouse.h>
+#include <trview.ui.render/MapRenderer.h>
 
 #include "Toolbar.h"
 #include "LevelInfo.h"
@@ -43,6 +44,16 @@ namespace trview
             const graphics::IShaderStorage& shader_storage,
             const graphics::FontFactory& font_factory,
             const ITextureStorage& texture_storage);
+
+        /// Get the currently hovered minimap sector, if any.
+        std::shared_ptr<Sector> current_minimap_sector() const;
+
+        /// Determiens if the cursor is over any ui element.
+        /// @returns Whether the cursor is over an element.
+        bool is_cursor_over() const;
+
+        /// Load the minimap from the specified room.
+        void load_minimap(trview::Room* room);
 
         /// Event raised when an alternate group is toggled.
         Event<uint16_t, bool> on_alternate_group;
@@ -135,6 +146,9 @@ namespace trview
         /// @param value Whether highlight is enabled.
         void set_highlight(bool value);
 
+        /// Set the size of the host window.
+        void set_host_size(const Size& size);
+
         /// Set the level name and version.
         /// @param name The filename.
         /// @param version The version of the level.
@@ -187,6 +201,7 @@ namespace trview
         TokenStore _token_store;
         input::Mouse _mouse;
 
+        Window _window;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ContextMenu> _context_menu;
@@ -199,6 +214,7 @@ namespace trview
         std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
+        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         ui::Label* _tooltip;
         bool _show_tooltip{ true };
     };

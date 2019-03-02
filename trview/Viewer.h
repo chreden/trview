@@ -47,12 +47,6 @@ namespace trview
     {
         class Control;
         class Label;
-
-        namespace render
-        {
-            class Renderer;
-            class MapRenderer;
-        }
     }
 
     struct ITextureStorage;
@@ -100,16 +94,11 @@ namespace trview
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void render_map(); 
         void select_room(uint32_t room);
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
         void remove_waypoint(uint32_t index);
-        // Determines whether the cursor is over a UI element that would take any input.
-        // Returns: True if there is any UI under the cursor that would take input.
-        bool over_ui() const;
-        bool over_map() const;
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -139,7 +128,6 @@ namespace trview
         input::Keyboard _keyboard;
         input::Mouse _mouse;
         std::unique_ptr<ViewerUI> _ui;
-        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         std::unique_ptr<ITextureStorage> _texture_storage;

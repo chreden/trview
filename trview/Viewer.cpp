@@ -333,13 +333,10 @@ namespace trview
         {
             if (button == Mouse::Button::Left)
             {
-                if (!over_ui() && !over_map())
+                if (!_ui->is_cursor_over())
                 {
                     // _context_menu->set_visible(false);
-                }
 
-                if (!over_ui() && !over_map())
-                {
                     if (_compass_axis.has_value())
                     {
                         align_camera_to_axis(current_camera(), _compass_axis.value());
@@ -379,38 +376,34 @@ namespace trview
                         }
                     }
                 }
-                else if (over_map())
+                else if (std::shared_ptr<Sector> sector = _ui->current_minimap_sector())
                 {
-                    std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
-                    if (sector)
+                    // Select the trigger (if it is a trigger).
+                    const auto triggers = _level->triggers();
+                    auto trigger = std::find_if(triggers.begin(), triggers.end(),
+                        [&](auto t)
                     {
-                        // Select the trigger (if it is a trigger).
-                        const auto triggers = _level->triggers();
-                        auto trigger = std::find_if(triggers.begin(), triggers.end(),
-                            [&](auto t)
-                        {
-                            return t->room() == sector->room() && t->sector_id() == sector->id();
-                        });
+                        return t->room() == sector->room() && t->sector_id() == sector->id();
+                    });
 
-                        if (trigger == triggers.end() || GetAsyncKeyState(VK_CONTROL))
+                    if (trigger == triggers.end() || GetAsyncKeyState(VK_CONTROL))
+                    {
+                        if (sector->flags & SectorFlag::Portal)
                         {
-                            if (sector->flags & SectorFlag::Portal)
-                            {
-                                select_room(sector->portal());
-                            }
-                            else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
-                            {
-                                select_room(sector->room_below());
-                            }
-                            else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
-                            {
-                                select_room(sector->room_above());
-                            }
+                            select_room(sector->portal());
                         }
-                        else
+                        else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
                         {
-                            select_trigger(*trigger);
+                            select_room(sector->room_below());
                         }
+                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                        {
+                            select_room(sector->room_above());
+                        }
+                    }
+                    else
+                    {
+                        select_trigger(*trigger);
                     }
                 }
             }
@@ -418,18 +411,15 @@ namespace trview
             {
                 // _context_menu->set_visible(false);
 
-                if (over_map())
+                if (auto sector = _ui->current_minimap_sector())
                 {
-                    std::shared_ptr<Sector> sector = _map_renderer->sector_at_cursor(); 
-                    if (sector) {
-                        if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
-                        {
-                            select_room(sector->room_above());
-                        }
-                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
-                        {
-                            select_room(sector->room_below());
-                        }
+                    if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                    {
+                        select_room(sector->room_above());
+                    }
+                    else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                    {
+                        select_room(sector->room_below());
                     }
                 }
             }
@@ -609,7 +599,6 @@ namespace trview
 
         render_scene();
         _ui->render(_device);
-        render_map();
 
         _main_window->present(_settings.vsync);
 
@@ -618,23 +607,9 @@ namespace trview
         _route_window_manager->render(_device, _settings.vsync);
     }
 
-    // Determines whether the cursor is over a UI element that would take any input.
-    // Returns: True if there is any UI under the cursor that would take input.
-    bool Viewer::over_ui() const
-    {
-        return false;
-        // return _control->is_mouse_over(client_cursor_position(_window));
-    }
-
-    bool Viewer::over_map() const 
-    {
-        return false;
-        // return _map_renderer->loaded() && _map_renderer->cursor_is_over_control();
-    }
-
     bool Viewer::should_pick() const
     {
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || over_ui() || over_map() || cursor_outside_window(_window));
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
     }
 
     void Viewer::render_scene()
@@ -701,13 +676,6 @@ namespace trview
         _ui->set_camera_mode(camera_mode);
     }
 
-    void Viewer::render_map()
-    {
-        Point point = client_cursor_position(_window);
-        // _map_renderer->set_cursor_position(point);
-        // _map_renderer->render(_device.context());
-    }
-
     void Viewer::toggle_highlight()
     {
         if (_level)
@@ -727,7 +695,7 @@ namespace trview
             // _room_navigator->set_selected_room(room);
             // _room_navigator->set_room_info(_level->room_info(room));
 
-            // _map_renderer->load(_level->room(_level->selected_room()));
+            _ui->load_minimap(_level->room(_level->selected_room()));
 
             if (_settings.auto_orbit)
             {
@@ -819,9 +787,7 @@ namespace trview
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
-        // _control->set_size(size);
-        // _ui_renderer->set_host_size(size);
-        _map_renderer->set_window_size(size);
+        _ui->set_host_size(size);
     }
 
     // Set up keyboard and mouse input for the camera.

@@ -10,7 +10,7 @@ using namespace trview::ui;
 namespace trview
 {
     ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage)
-        : _mouse(window)
+        : _mouse(window), _window(window)
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
         _control->set_handles_input(false);
@@ -114,19 +114,35 @@ namespace trview
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
         _ui_renderer->load(_control.get());
-        /*
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(_device, *_shader_storage.get(), _window.size());
-        _token_store += _map_renderer->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
-        {
-            if (_level)
-            {
-                const auto room_info = _current_level->get_room(_level->selected_room()).info;
-                _sector_highlight.set_sector(sector,
-                    DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-            }
-        };
-        */
+
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, window.size());
+        // _token_store += _map_renderer->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
+        // {
+        //     if (_level)
+        //     {
+        //         const auto room_info = _current_level->get_room(_level->selected_room()).info;
+        //         _sector_highlight.set_sector(sector,
+        //             DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+        //     }
+        // };
+
         _camera_position = std::make_unique<CameraPosition>(*_control);
+    }
+
+    std::shared_ptr<Sector> ViewerUI::current_minimap_sector() const
+    {
+        return _map_renderer->sector_at_cursor();
+    }
+
+    bool ViewerUI::is_cursor_over() const
+    {
+        return _control->is_mouse_over(client_cursor_position(_window))
+            || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
+    }
+
+    void ViewerUI::load_minimap(trview::Room* room)
+    {
+        _map_renderer->load(room);
     }
 
     void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
@@ -167,6 +183,10 @@ namespace trview
     void ViewerUI::render(const graphics::Device& device)
     {
         _ui_renderer->render(device.context());
+        
+        Point point = client_cursor_position(_window);
+        _map_renderer->set_cursor_position(point);
+        _map_renderer->render(device.context());
     }
 
     void ViewerUI::set_alternate_group(uint16_t value, bool enabled)
@@ -222,6 +242,11 @@ namespace trview
     void ViewerUI::set_highlight(bool value)
     {
         _room_navigator->set_highlight(value);
+    }
+
+    void ViewerUI::set_host_size(const Size& size)
+    {
+        _ui_renderer->set_host_size(size);
     }
 
     void ViewerUI::set_level(const std::string& name, trlevel::LevelVersion version)
