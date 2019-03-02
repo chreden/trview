@@ -116,17 +116,14 @@ namespace trview
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, window.size());
-        // _token_store += _map_renderer->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
-        // {
-        //     if (_level)
-        //     {
-        //         const auto room_info = _current_level->get_room(_level->selected_room()).info;
-        //         _sector_highlight.set_sector(sector,
-        //             DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-        //     }
-        // };
+        _map_renderer->on_sector_hover += on_sector_hover;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
+    }
+
+    void ViewerUI::clear_minimap_highlight()
+    {
+        _map_renderer->clear_highlight();
     }
 
     std::shared_ptr<Sector> ViewerUI::current_minimap_sector() const
@@ -255,6 +252,11 @@ namespace trview
         _level_info->set_level_version(version);
     }
 
+    void ViewerUI::set_minimap_highlight(uint16_t x, uint16_t z)
+    {
+        _map_renderer->set_highlight(x, z);
+    }
+
     void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
     {
         using namespace DirectX;
@@ -274,6 +276,11 @@ namespace trview
     void ViewerUI::set_show_hidden_geometry(bool value)
     {
         _room_navigator->set_show_hidden_geometry(value);
+    }
+
+    void ViewerUI::set_show_minimap(bool value)
+    {
+        _map_renderer->set_visible(value);
     }
 
     void ViewerUI::set_show_tooltip(bool value)

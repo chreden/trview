@@ -15,8 +15,6 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.ui.render/MapRenderer.h>
 
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
@@ -115,6 +113,15 @@ namespace trview
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
+        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
+            {
+                if (_level)
+                {
+                    const auto room_info = _current_level->get_room(_level->selected_room()).info;
+                    _sector_highlight.set_sector(sector,
+                        DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+                }
+            };
 
         _ui->set_camera_mode(CameraMode::Orbit);
         _ui->set_camera_sensitivity(_settings.camera_sensitivity);
@@ -149,7 +156,7 @@ namespace trview
             remove_waypoint(index);
         };
 
-        // _token_store += _view_menu.on_show_minimap += [&](bool show) { _map_renderer->set_visible(show); };
+        _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); };
         _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
@@ -241,13 +248,13 @@ namespace trview
 
                 if (!info.has_value())
                 {
-                    //_map_renderer->clear_highlight();
+                    _ui->clear_minimap_highlight();
                     return;
                 }
 
                 auto x = _current_pick.position.x - (info.value().x / trlevel::Scale_X);
                 auto z = _current_pick.position.z - (info.value().z / trlevel::Scale_Z);
-                //_map_renderer->set_highlight(x, z);
+                _ui->set_minimap_highlight(x, z);
             }
         };
     }
@@ -628,7 +635,7 @@ namespace trview
 
             if (_show_route)
             {
-                // _route->render(_device, current_camera(), _level->texture_storage());
+                _route->render(_device, current_camera(), _level->texture_storage());
             }
 
             _level->render_transparency(_device, current_camera());

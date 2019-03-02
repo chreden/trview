@@ -45,6 +45,9 @@ namespace trview
             const graphics::FontFactory& font_factory,
             const ITextureStorage& texture_storage);
 
+        /// Clear the highlighted minimap sector.
+        void clear_minimap_highlight();
+
         /// Get the currently hovered minimap sector, if any.
         std::shared_ptr<Sector> current_minimap_sector() const;
 
@@ -81,6 +84,9 @@ namespace trview
 
         /// Event raised when the higlight setting is changed.
         Event<bool> on_highlight;
+
+        /// Event raised when a minimap sector is hovered over.
+        Event<std::shared_ptr<Sector>> on_sector_hover;
 
         /// Event raised when a room is selected.
         Event<int32_t> on_select_room;
@@ -154,6 +160,11 @@ namespace trview
         /// @param version The version of the level.
         void set_level(const std::string& name, trlevel::LevelVersion version);
 
+        /// Set which square is highlighted on the minimap.
+        /// @param x The x coordinate.
+        /// @param z The z coordinate.
+        void set_minimap_highlight(uint16_t x, uint16_t z);
+
         /// Set the current pick result.
         /// @param info The parameters for the pick.
         /// @param pick_result The pick result.
@@ -162,6 +173,10 @@ namespace trview
         /// Set whether hidden geometry is visible.
         /// @param value Whether hidden geometry is visible.
         void set_show_hidden_geometry(bool value);
+
+        /// Set whether to show the minimap.
+        /// @param value Whether to show the minimap.
+        void set_show_minimap(bool value);
 
         /// Set whether to show the tooltip.
         /// @param value Whether to show the tooltip.
