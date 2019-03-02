@@ -43,12 +43,6 @@
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Label;
-    }
-
     struct ITextureStorage;
 
     namespace graphics

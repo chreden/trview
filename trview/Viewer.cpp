@@ -11,10 +11,6 @@
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/DeviceWindow.h>
-#include <trview.ui/Control.h>
-#include <trview.ui/StackPanel.h>
-#include <trview.ui/Window.h>
-#include <trview.ui/Label.h>
 
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
