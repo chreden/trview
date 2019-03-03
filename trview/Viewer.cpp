@@ -97,6 +97,7 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage);
+        _token_store += _ui->on_select_room += [&](uint32_t room) { select_room(room); };
         _token_store += _ui->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _ui->on_show_hidden_geometry += [&](bool value) { set_show_hidden_geometry(value); };
         _token_store += _ui->on_show_water += [&](bool value) { set_show_water(value); };
@@ -567,7 +568,7 @@ namespace trview
         _camera.reset();
 
         // Reset UI buttons
-        // _room_navigator->set_max_rooms(static_cast<uint32_t>(rooms.size()));
+        _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _ui->set_highlight(false);
         _ui->set_use_alternate_groups(_current_level->get_version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(_level->alternate_groups());
@@ -711,8 +712,8 @@ namespace trview
         {
             _level->set_selected_room(static_cast<uint16_t>(room));
 
-            // _room_navigator->set_selected_room(room);
-            // _room_navigator->set_room_info(_level->room_info(room));
+            _ui->set_selected_room(room);
+            _ui->set_room_info(_level->room_info(room));
 
             _ui->load_minimap(_level->room(_level->selected_room()));
 

@@ -239,6 +239,11 @@ namespace trview
         _level_info->set_level_version(version);
     }
 
+    void ViewerUI::set_max_rooms(uint32_t rooms)
+    {
+        _room_navigator->set_max_rooms(rooms);
+    }
+
     void ViewerUI::set_measure_distance(float distance)
     {
         std::wstringstream stream;
@@ -275,6 +280,16 @@ namespace trview
     void ViewerUI::set_remove_waypoint_enabled(bool value)
     {
         _context_menu->set_remove_enabled(value);
+    }
+
+    void ViewerUI::set_room_info(const RoomInfo& info)
+    {
+        _room_navigator->set_room_info(info);
+    }
+
+    void ViewerUI::set_selected_room(uint32_t room)
+    {
+        _room_navigator->set_selected_room(room);
     }
 
     void ViewerUI::set_show_context_menu(bool value)

@@ -167,6 +167,10 @@ namespace trview
         /// @param version The version of the level.
         void set_level(const std::string& name, trlevel::LevelVersion version);
 
+        /// Set the maximum number of rooms in the level.
+        /// @param rooms The number of rooms that are in the level.
+        void set_max_rooms(uint32_t rooms);
+
         /// Set the current measure distance to display on the label.
         /// @param distance The distance to measure.
         void set_measure_distance(float distance);
@@ -188,6 +192,14 @@ namespace trview
         /// Set whether the user can click the remove waypoint button.
         /// "param value Whether the button is enabled.
         void set_remove_waypoint_enabled(bool value);
+
+        /// Set the current room info.
+        /// @param info The current room information.
+        void set_room_info(const RoomInfo& info);
+
+        /// Set the selected room.
+        /// @param room The selected room.
+        void set_selected_room(uint32_t room);
 
         /// Set whether the context menu is visible.
         /// "param value Whether the context menu is visible.
