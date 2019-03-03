@@ -118,6 +118,19 @@ namespace trview
                         DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
                 }
             };
+        _token_store += _ui->on_add_waypoint += [&]()
+        {
+            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
+            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        };
+        _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
+        _token_store += _ui->on_orbit += [&]()
+        {
+            select_room(room_from_pick(_context_pick));
+            _target = _context_pick.position;
+        };
 
         _ui->set_camera_mode(CameraMode::Orbit);
         _ui->set_camera_sensitivity(_settings.camera_sensitivity);
@@ -342,7 +355,7 @@ namespace trview
             {
                 if (!_ui->is_cursor_over())
                 {
-                    // _context_menu->set_visible(false);
+                    _ui->set_show_context_menu(false);
 
                     if (_compass_axis.has_value())
                     {
@@ -416,7 +429,7 @@ namespace trview
             }
             else if (button == Mouse::Button::Right)
             {
-                // _context_menu->set_visible(false);
+                _ui->set_show_context_menu(false);
 
                 if (auto sector = _ui->current_minimap_sector())
                 {
@@ -437,9 +450,8 @@ namespace trview
             if (button == input::Mouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
             {
                 _context_pick = _current_pick;
-                // _context_menu->set_position(client_cursor_position(_window));
-                // _context_menu->set_visible(true);
-                // _context_menu->set_remove_enabled(_current_pick.type == PickResult::Type::Waypoint);
+                _ui->set_show_context_menu(true);
+                _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
             }
         };
     }
@@ -809,7 +821,7 @@ namespace trview
         {
             if (window_under_cursor() == _window)
             {
-                // _context_menu->set_visible(false);
+                _ui->set_show_context_menu(false);
                 _camera_input.mouse_scroll(scroll);
             }
         };

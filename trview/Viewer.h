@@ -33,7 +33,6 @@
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
-#include <trview.app/ContextMenu.h>
 #include <trview.app/Route.h>
 #include <trview.app/RouteWindowManager.h>
 #include <trview.app/ViewMenu.h>

@@ -18,12 +18,10 @@
 #include "CameraPosition.h"
 #include "PickInfo.h"
 #include "PickResult.h"
+#include "ContextMenu.h"
 
 namespace trview
 {
-    class ContextMenu;
-    struct ILevelTextureStorage;
-
     namespace graphics
     {
         struct IShaderStorage;
@@ -57,6 +55,15 @@ namespace trview
 
         /// Load the minimap from the specified room.
         void load_minimap(trview::Room* room);
+
+        /// Event raised when the add waypoint button is pressed.
+        Event<> on_add_waypoint;
+
+        /// Event raised when the remove waypoint button is pressed.
+        Event<> on_remove_waypoint;
+
+        /// Event raised when the orbit here button is pressed.
+        Event<> on_orbit;
 
         /// Event raised when an alternate group is toggled.
         Event<uint16_t, bool> on_alternate_group;
@@ -156,7 +163,7 @@ namespace trview
         void set_host_size(const Size& size);
 
         /// Set the level name and version.
-        /// @param name The filename.
+        /// @param name The file.
         /// @param version The version of the level.
         void set_level(const std::string& name, trlevel::LevelVersion version);
 
@@ -177,6 +184,14 @@ namespace trview
         /// @param info The parameters for the pick.
         /// @param pick_result The pick result.
         void set_pick(const PickInfo& info, const PickResult& pick_result);
+
+        /// Set whether the user can click the remove waypoint button.
+        /// "param value Whether the button is enabled.
+        void set_remove_waypoint_enabled(bool value);
+
+        /// Set whether the context menu is visible.
+        /// "param value Whether the context menu is visible.
+        void set_show_context_menu(bool value);
 
         /// Set whether hidden geometry is visible.
         /// @param value Whether hidden geometry is visible.

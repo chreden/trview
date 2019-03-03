@@ -51,30 +51,11 @@ namespace trview
         measure->set_visible(false);
         _measure = _control->add_child(std::move(measure));
 
-        /*
         _context_menu = std::make_unique<ContextMenu>(*_control);
-        _token_store += _context_menu->on_add_waypoint += [&]()
-        {
-            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
-            _context_menu->set_visible(false);
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
-        };
-        _token_store += _context_menu->on_remove_waypoint += [&]()
-        {
-            remove_waypoint(_context_pick.index);
-            _context_menu->set_visible(false);
-        };
-        _token_store += _context_menu->on_orbit_here += [&]()
-        {
-            select_room(room_from_pick(_context_pick));
-            _target = _context_pick.position;
-            _context_menu->set_visible(false);
-        };
-
+        _context_menu->on_add_waypoint += on_add_waypoint;
+        _context_menu->on_remove_waypoint += on_remove_waypoint;
+        _context_menu->on_orbit_here += on_orbit;
         _context_menu->set_remove_enabled(false);
-        */
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
@@ -288,6 +269,20 @@ namespace trview
             _tooltip->set_position(Point(screen_pos.x - _tooltip->size().width, screen_pos.y - _tooltip->size().height));
             _tooltip->set_text(pick_to_string(result));
             _tooltip->set_text_colour(pick_to_colour(result));
+        }
+    }
+
+    void ViewerUI::set_remove_waypoint_enabled(bool value)
+    {
+        _context_menu->set_remove_enabled(value);
+    }
+
+    void ViewerUI::set_show_context_menu(bool value)
+    {
+        _context_menu->set_visible(value);
+        if (value)
+        {
+            _context_menu->set_position(client_cursor_position(_window));
         }
     }
 

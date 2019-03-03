@@ -1,7 +1,7 @@
 #include "Measure.h"
 #include <trview.graphics/Device.h>
-#include <iomanip>
 #include <sstream>
+#include <iomanip>
 
 #include "ICamera.h"
 
