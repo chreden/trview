@@ -14,12 +14,6 @@ namespace trview
         class Device;
     }
 
-    namespace ui
-    {
-        class Control;
-        class Label;
-    }
-
     class Measure final
     {
     public:
