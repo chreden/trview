@@ -4,6 +4,8 @@
 #include "ILevelTextureStorage.h"
 #include "GoToRoom.h"
 #include "ContextMenu.h"
+#include <sstream>
+#include <iomanip>
 
 using namespace trview::ui;
 
@@ -44,6 +46,10 @@ namespace trview
         picking->set_visible(false);
         picking->set_handles_input(false);
         _tooltip = _control->add_child(std::move(picking));
+
+        auto measure = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        measure->set_visible(false);
+        _measure = _control->add_child(std::move(measure));
 
         /*
         _context_menu = std::make_unique<ContextMenu>(*_control);
@@ -252,6 +258,18 @@ namespace trview
         _level_info->set_level_version(version);
     }
 
+    void ViewerUI::set_measure_distance(float distance)
+    {
+        std::wstringstream stream;
+        stream << std::fixed << std::setprecision(2) << distance;
+        _measure->set_text(stream.str());
+    }
+
+    void ViewerUI::set_measure_position(const Point& position)
+    {
+        _measure->set_position(position);
+    }
+
     void ViewerUI::set_minimap_highlight(uint16_t x, uint16_t z)
     {
         _map_renderer->set_highlight(x, z);
@@ -276,6 +294,11 @@ namespace trview
     void ViewerUI::set_show_hidden_geometry(bool value)
     {
         _room_navigator->set_show_hidden_geometry(value);
+    }
+
+    void ViewerUI::set_show_measure(bool value)
+    {
+        _measure->set_visible(value);
     }
 
     void ViewerUI::set_show_minimap(bool value)

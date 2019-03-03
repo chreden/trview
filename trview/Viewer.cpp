@@ -123,9 +123,13 @@ namespace trview
         _ui->set_camera_sensitivity(_settings.camera_sensitivity);
         _ui->set_camera_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
 
-        // _measure = std::make_unique<Measure>(_device, *_control);
+        _measure = std::make_unique<Measure>(_device);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
         _route = std::make_unique<Route>(_device, *_shader_storage);
+
+        _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
+        _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
+        _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
         _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
@@ -158,7 +162,7 @@ namespace trview
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
-        // _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
+        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
 
         _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
@@ -576,7 +580,7 @@ namespace trview
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _current_level->get_version());
         _window.set_title("trview - " + name);
-        // _measure->reset();
+        _measure->reset();
         _route->clear();
         _route_window_manager->set_route(_route.get());
     }
@@ -627,7 +631,7 @@ namespace trview
             _level->render(_device, current_camera(), _show_selection);
             _sector_highlight.render(_device, current_camera(), _level->texture_storage());
 
-            // _measure->render(_device.context(), current_camera(), _level->texture_storage());
+            _measure->render(_device.context(), current_camera(), _level->texture_storage());
 
             if (_show_route)
             {

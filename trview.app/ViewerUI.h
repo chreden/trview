@@ -160,6 +160,14 @@ namespace trview
         /// @param version The version of the level.
         void set_level(const std::string& name, trlevel::LevelVersion version);
 
+        /// Set the current measure distance to display on the label.
+        /// @param distance The distance to measure.
+        void set_measure_distance(float distance);
+
+        /// Set the position of the measure label.
+        /// @param position The position of the label.
+        void set_measure_position(const Point& position);
+
         /// Set which square is highlighted on the minimap.
         /// @param x The x coordinate.
         /// @param z The z coordinate.
@@ -173,6 +181,10 @@ namespace trview
         /// Set whether hidden geometry is visible.
         /// @param value Whether hidden geometry is visible.
         void set_show_hidden_geometry(bool value);
+
+        /// Set whether to show the measure label.
+        /// @param value Whether to show the measure label.
+        void set_show_measure(bool value);
 
         /// Set whether to show the minimap.
         /// @param value Whether to show the minimap.
@@ -231,6 +243,7 @@ namespace trview
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         ui::Label* _tooltip;
+        ui::Label* _measure;
         bool _show_tooltip{ true };
     };
 }
