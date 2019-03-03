@@ -62,6 +62,7 @@
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="TriggersWindowManager.cpp" />
+    <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="ViewerUI.cpp" />
     <ClCompile Include="ViewMenu.cpp" />
     <ClCompile Include="Waypoint.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="UserSettings.h" />
     <ClInclude Include="ViewerUI.h" />
     <ClInclude Include="ViewMenu.h" />
     <ClInclude Include="Waypoint.h" />

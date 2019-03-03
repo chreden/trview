@@ -23,7 +23,7 @@
 #include "CameraInput.h"
 #include <trview.app/CameraMode.h>
 #include "Level.h"
-#include "UserSettings.h"
+#include <trview.app/UserSettings.h>
 #include <trview.app/LevelSwitcher.h>
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>

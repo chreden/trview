@@ -196,7 +196,6 @@
     <ClInclude Include="LevelTextureStorage.h" />
     <ClInclude Include="TextureStorage.h" />
     <ClInclude Include="trview.h" />
-    <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +209,6 @@
     <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="Room.cpp" />
-    <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

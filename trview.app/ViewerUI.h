@@ -19,6 +19,7 @@
 #include "PickInfo.h"
 #include "PickResult.h"
 #include "ContextMenu.h"
+#include "UserSettings.h"
 
 namespace trview
 {
@@ -97,6 +98,9 @@ namespace trview
 
         /// Event raised when a room is selected.
         Event<int32_t> on_select_room;
+
+        /// Event raised when the user settings are changed.
+        Event<UserSettings> on_settings;
 
         /// Event raised when the hidden geometry setting is changed.
         Event<bool> on_show_hidden_geometry;
@@ -201,6 +205,10 @@ namespace trview
         /// @param room The selected room.
         void set_selected_room(uint32_t room);
 
+        /// Set the user settings.
+        /// @param settings The user settings.
+        void set_settings(const UserSettings& settings);
+
         /// Set whether the context menu is visible.
         /// "param value Whether the context menu is visible.
         void set_show_context_menu(bool value);
@@ -254,8 +262,8 @@ namespace trview
 
         TokenStore _token_store;
         input::Mouse _mouse;
-
         Window _window;
+        UserSettings _settings;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ContextMenu> _context_menu;

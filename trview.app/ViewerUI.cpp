@@ -63,40 +63,34 @@ namespace trview
         _settings_window = std::make_unique<SettingsWindow>(*_control.get());
         _token_store += _settings_window->on_vsync += [&](bool value)
         {
-            // _settings.vsync = value;
-            // save_user_settings(_settings);
+            _settings.vsync = value;
+            on_settings(_settings);
         };
         _token_store += _settings_window->on_go_to_lara += [&](bool value)
         {
-            // _settings.go_to_lara = value;
-            // save_user_settings(_settings);
+            _settings.go_to_lara = value;
+            on_settings(_settings);
         };
         _token_store += _settings_window->on_invert_map_controls += [&](bool value)
         {
-            // _settings.invert_map_controls = value;
-            // save_user_settings(_settings);
+            _settings.invert_map_controls = value;
+            on_settings(_settings);
         };
         _token_store += _settings_window->on_items_startup += [&](bool value)
         {
-            // _settings.items_startup = value;
-            // save_user_settings(_settings);
+            _settings.items_startup = value;
+            on_settings(_settings);
         };
         _token_store += _settings_window->on_triggers_startup += [&](bool value)
         {
-            // _settings.triggers_startup = value;
-            // save_user_settings(_settings);
+            _settings.triggers_startup = value;
+            on_settings(_settings);
         };
         _token_store += _settings_window->on_auto_orbit += [&](bool value)
         {
-            // _settings.auto_orbit = value;
-            // save_user_settings(_settings);
+            _settings.auto_orbit = value;
+            on_settings(_settings);
         };
-        // _settings_window->set_vsync(_settings.vsync);
-        // _settings_window->set_go_to_lara(_settings.go_to_lara);
-        // _settings_window->set_invert_map_controls(_settings.invert_map_controls);
-        // _settings_window->set_items_startup(_settings.items_startup);
-        // _settings_window->set_triggers_startup(_settings.triggers_startup);
-        // _settings_window->set_auto_orbit(_settings.auto_orbit);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
@@ -285,6 +279,17 @@ namespace trview
     void ViewerUI::set_room_info(const RoomInfo& info)
     {
         _room_navigator->set_room_info(info);
+    }
+
+    void ViewerUI::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        _settings_window->set_auto_orbit(settings.auto_orbit);
+        _settings_window->set_go_to_lara(settings.go_to_lara);
+        _settings_window->set_invert_map_controls(settings.invert_map_controls);
+        _settings_window->set_items_startup(settings.items_startup);
+        _settings_window->set_triggers_startup(settings.triggers_startup);
+        _settings_window->set_vsync(settings.vsync);
     }
 
     void ViewerUI::set_selected_room(uint32_t room)

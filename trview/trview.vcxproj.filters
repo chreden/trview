@@ -76,9 +76,6 @@
     <ClInclude Include="TextureStorage.h">
       <Filter>View\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="UserSettings.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
@@ -128,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="TextureStorage.cpp">
       <Filter>View\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="UserSettings.cpp">
-      <Filter>Program</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>

@@ -136,6 +136,7 @@
     <ClCompile Include="CameraMode.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="UserSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -287,6 +288,7 @@
     <ClInclude Include="CameraMode.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="UserSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
