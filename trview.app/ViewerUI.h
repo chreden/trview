@@ -5,6 +5,7 @@
 #include <trview.ui/Control.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.input/Mouse.h>
+#include <trview.input/Keyboard.h>
 #include <trview.ui.render/MapRenderer.h>
 
 #include "Toolbar.h"
@@ -49,6 +50,10 @@ namespace trview
 
         /// Get the currently hovered minimap sector, if any.
         std::shared_ptr<Sector> current_minimap_sector() const;
+
+        /// Get whether go to room is visible.
+        /// @returns Whether the go to room window is visible.
+        bool go_to_room_visible() const;
 
         /// Determiens if the cursor is over any ui element.
         /// @returns Whether the cursor is over an element.
@@ -262,6 +267,7 @@ namespace trview
 
         TokenStore _token_store;
         input::Mouse _mouse;
+        input::Keyboard _keyboard;
         Window _window;
         UserSettings _settings;
         std::unique_ptr<ui::Control> _control;

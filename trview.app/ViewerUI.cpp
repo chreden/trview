@@ -12,7 +12,7 @@ using namespace trview::ui;
 namespace trview
 {
     ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage)
-        : _mouse(window), _window(window)
+        : _mouse(window), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
         _control->set_handles_input(false);
@@ -26,6 +26,27 @@ namespace trview
             // The client mouse coordinate is already relative to the root window (at present).
             _control->process_mouse_down(client_cursor_position(window));
         };
+
+        _token_store += _keyboard.on_key_down += [&](uint16_t key)
+        {
+            if (key == 'G' && _keyboard.control())
+            {
+                _go_to_room->toggle_visible();
+            }
+            else
+            {
+                _go_to_room->input(key);
+            }
+        };
+
+        _token_store += _keyboard.on_char += [&](uint16_t key)
+        {
+            if (_go_to_room->visible())
+            {
+                _go_to_room->character(key);
+            }
+        };
+
 
         generate_tool_window(texture_storage);
 
@@ -110,6 +131,11 @@ namespace trview
     std::shared_ptr<Sector> ViewerUI::current_minimap_sector() const
     {
         return _map_renderer->sector_at_cursor();
+    }
+
+    bool ViewerUI::go_to_room_visible() const
+    {
+        return _go_to_room->visible();
     }
 
     bool ViewerUI::is_cursor_over() const

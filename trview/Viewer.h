@@ -83,7 +83,6 @@ namespace trview
     private:
         void initialise_input();
         void process_input_key(uint16_t key);
-        void process_char(uint16_t character);
         void toggle_highlight();
         void update_camera();
         void render_scene();

@@ -85,10 +85,10 @@ namespace trview
 
         _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
         {
-            // if (!_go_to_room->visible())
-            // {
-            //     set_alternate_group(group, !alternate_group(group));
-            // }
+            if (!_ui->go_to_room_visible())
+            {
+                set_alternate_group(group, !alternate_group(group));
+            }
         };
 
         initialise_input();
@@ -289,7 +289,6 @@ namespace trview
     void Viewer::initialise_input()
     {
         _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
-        _token_store += _keyboard.on_char += std::bind(&Viewer::process_char, this, std::placeholders::_1);
 
         _token_store += _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
         _token_store += _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
@@ -462,28 +461,13 @@ namespace trview
 
     void Viewer::process_input_key(uint16_t key)
     {
-        // if (_go_to_room->visible())
-        // {
-        //     if (key == 'G' && _keyboard.control())
-        //     {
-        //         _go_to_room->toggle_visible();
-        //     }
-        //     else
-        //     {
-        //         _go_to_room->input(key);
-        //     }
-        // }
-        // else
+        if (!_ui->go_to_room_visible())
         {
             switch (key)
             {
                 case 'G':
                 {
-                    if (_keyboard.control())
-                    {
-                        // _go_to_room->toggle_visible();
-                    }
-                    else if(_level)
+                    if(_level && !_keyboard.control())
                     {
                         set_show_hidden_geometry(!_level->show_hidden_geometry());
                     }
@@ -505,14 +489,6 @@ namespace trview
                 }
             }
         }
-    }
-
-    void Viewer::process_char(uint16_t character)
-    {
-        // if (_go_to_room->visible())
-        // {
-        //     _go_to_room->character(character);
-        // }
     }
 
     void Viewer::update_camera()
