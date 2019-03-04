@@ -245,6 +245,7 @@ namespace trview
 
     void ViewerUI::set_host_size(const Size& size)
     {
+        _control->set_size(size);
         _ui_renderer->set_host_size(size);
     }
 
