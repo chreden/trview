@@ -690,11 +690,7 @@ namespace trview
         if (_current_level && room < _current_level->num_rooms())
         {
             _level->set_selected_room(static_cast<uint16_t>(room));
-
-            _ui->set_selected_room(room);
-            _ui->set_room_info(_level->room_info(room));
-
-            _ui->load_minimap(_level->room(_level->selected_room()));
+            _ui->set_selected_room(_level->room(_level->selected_room()));
 
             if (_settings.auto_orbit)
             {

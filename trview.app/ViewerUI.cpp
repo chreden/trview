@@ -144,11 +144,6 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::load_minimap(trview::Room* room)
-    {
-        _map_renderer->load(room);
-    }
-
     void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
     {
         // This is the main tool window on the side of the screen.
@@ -302,11 +297,6 @@ namespace trview
         _context_menu->set_remove_enabled(value);
     }
 
-    void ViewerUI::set_room_info(const RoomInfo& info)
-    {
-        _room_navigator->set_room_info(info);
-    }
-
     void ViewerUI::set_settings(const UserSettings& settings)
     {
         _settings = settings;
@@ -318,9 +308,11 @@ namespace trview
         _settings_window->set_vsync(settings.vsync);
     }
 
-    void ViewerUI::set_selected_room(uint32_t room)
+    void ViewerUI::set_selected_room(Room* room)
     {
-        _room_navigator->set_selected_room(room);
+        _room_navigator->set_selected_room(room->number());
+        _room_navigator->set_room_info(room->info());
+        _map_renderer->load(room);
     }
 
     void ViewerUI::set_show_context_menu(bool value)

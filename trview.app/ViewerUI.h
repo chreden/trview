@@ -59,9 +59,6 @@ namespace trview
         /// @returns Whether the cursor is over an element.
         bool is_cursor_over() const;
 
-        /// Load the minimap from the specified room.
-        void load_minimap(trview::Room* room);
-
         /// Event raised when the add waypoint button is pressed.
         Event<> on_add_waypoint;
 
@@ -202,13 +199,9 @@ namespace trview
         /// "param value Whether the button is enabled.
         void set_remove_waypoint_enabled(bool value);
 
-        /// Set the current room info.
-        /// @param info The current room information.
-        void set_room_info(const RoomInfo& info);
-
         /// Set the selected room.
         /// @param room The selected room.
-        void set_selected_room(uint32_t room);
+        void set_selected_room(Room* room);
 
         /// Set the user settings.
         /// @param settings The user settings.

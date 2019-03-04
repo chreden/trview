@@ -137,6 +137,8 @@ namespace trview
         const DirectX::BoundingBox& bounding_box() const;
 
         void generate_trigger_geometry();
+
+        uint32_t number() const;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
