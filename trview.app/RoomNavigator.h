@@ -86,6 +86,10 @@ namespace trview
         /// @param show Whether the hidden geometry is visible.
         void set_show_hidden_geometry(bool show);
 
+        /// Set whether water is visible or not.
+        /// @param show Whether water is visible.
+        void set_show_water(bool show);
+
         /// Get the current value of the show triggers checkbox.
         /// @returns The current value of the checkbox.
         bool show_triggers() const;

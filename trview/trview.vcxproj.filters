@@ -7,9 +7,6 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{94ba7176-10d8-4cf9-b2f2-e6a6d554e70a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Program\Windows">
-      <UniqueIdentifier>{d62d90a2-1cf3-46d2-9da2-e816606535dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Win">
       <UniqueIdentifier>{19537d19-9f7b-4110-a120-984dd4b941de}</UniqueIdentifier>
     </Filter>
@@ -61,15 +58,6 @@
     <ClInclude Include="Room.h">
       <Filter>View\Room</Filter>
     </ClInclude>
-    <ClInclude Include="RoomInfo.h">
-      <Filter>View\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomNavigator.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="GoToRoom.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Level.h">
       <Filter>View\Level</Filter>
     </ClInclude>
@@ -88,26 +76,11 @@
     <ClInclude Include="TextureStorage.h">
       <Filter>View\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="UserSettings.h">
-      <Filter>Program</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraControls.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="Neighbours.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelInfo.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraMode.h">
-      <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="CameraInput.h">
       <Filter>Camera</Filter>
@@ -115,17 +88,11 @@
     <ClInclude Include="DefaultTextures.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsWindow.h">
-      <Filter>Program\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="ResourceHelper.h">
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="DefaultFonts.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Flipmaps.h">
-      <Filter>Program\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -140,12 +107,6 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>View\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomNavigator.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="GoToRoom.cpp">
-      <Filter>Program\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>View\Level</Filter>
@@ -165,18 +126,6 @@
     <ClCompile Include="TextureStorage.cpp">
       <Filter>View\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="UserSettings.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraControls.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Neighbours.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelInfo.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
     </ClCompile>
@@ -189,20 +138,11 @@
     <ClCompile Include="DefaultTextures.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="SettingsWindow.cpp">
-      <Filter>Program\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceHelper.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="DefaultFonts.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMode.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Flipmaps.cpp">
-      <Filter>Program\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

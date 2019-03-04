@@ -21,49 +21,28 @@
 #include <trview.app/FreeCamera.h>
 #include <trview.app/OrbitCamera.h>
 #include "CameraInput.h"
-#include "CameraMode.h"
+#include <trview.app/CameraMode.h>
 #include "Level.h"
-#include "UserSettings.h"
+#include <trview.app/UserSettings.h>
 #include <trview.app/LevelSwitcher.h>
 #include <trview.app/WindowResizer.h>
 #include <trview.app/RecentFiles.h>
 #include <trview.app/FileDropper.h>
 #include <trview.app/ItemsWindowManager.h>
 #include <trview.app/TriggersWindowManager.h>
-#include <trview.app/Toolbar.h>
 #include <trview.app/Measure.h>
 #include <trview.app/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
-#include <trview.app/ContextMenu.h>
 #include <trview.app/Route.h>
 #include <trview.app/RouteWindowManager.h>
 #include <trview.app/ViewMenu.h>
 #include <trview.app/Picking.h>
 #include <trview.app/SectorHighlight.h>
-#include <trview.app/CameraPosition.h>
+#include <trview.app/ViewerUI.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Label;
-
-        namespace render
-        {
-            class Renderer;
-            class MapRenderer;
-        }
-    }
-
-    class CameraControls;
-    class GoToRoom;
     struct ITextureStorage;
-    class LevelInfo;
-    class Neighbours;
-    class RoomNavigator;
-    class SettingsWindow;
-    class Flipmaps;
 
     namespace graphics
     {
@@ -102,25 +81,16 @@ namespace trview
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::string>> on_recent_files_changed;
     private:
-        void generate_ui();
-        void generate_tool_window();
-        void initialise_camera_controls(ui::Control& parent);
         void initialise_input();
         void process_input_key(uint16_t key);
-        void process_char(uint16_t character);
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void render_map(); 
         void select_room(uint32_t room);
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
         void remove_waypoint(uint32_t index);
-        // Determines whether the cursor is over a UI element that would take any input.
-        // Returns: True if there is any UI under the cursor that would take input.
-        bool over_ui() const;
-        bool over_map() const;
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -149,21 +119,12 @@ namespace trview
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
-        std::unique_ptr<GoToRoom> _go_to_room;
-        std::unique_ptr<ui::Control> _control;
-        std::unique_ptr<ui::render::Renderer> _ui_renderer;
-        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
+        std::unique_ptr<ViewerUI> _ui;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
-        std::unique_ptr<RoomNavigator> _room_navigator;
-        std::unique_ptr<Flipmaps> _flipmaps;
-        std::unique_ptr<CameraControls> _camera_controls;
-        std::unique_ptr<Neighbours> _neighbours;
-        std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ITextureStorage> _texture_storage;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
         graphics::FontFactory _font_factory;
-        std::unique_ptr<SettingsWindow> _settings_window;
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;
@@ -179,14 +140,6 @@ namespace trview
         SectorHighlight _sector_highlight;
 
         // Tools:
-        std::unique_ptr<Toolbar> _toolbar;
-        std::unique_ptr<ContextMenu> _context_menu;
-
-        enum class Tool
-        {
-            None,
-            Measure
-        };
 
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
@@ -198,8 +151,6 @@ namespace trview
         std::unique_ptr<Route> _route;
         std::unique_ptr<RouteWindowManager> _route_window_manager;
         bool _show_route{ true };
-
-        std::unique_ptr<CameraPosition> _camera_position;
     };
 }
 

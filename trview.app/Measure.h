@@ -3,6 +3,7 @@
 #include <optional>
 #include <SimpleMath.h>
 #include "Mesh.h"
+#include <trview.common/Event.h>
 
 namespace trview
 {
@@ -13,19 +14,21 @@ namespace trview
         class Device;
     }
 
-    namespace ui
-    {
-        class Control;
-        class Label;
-    }
-
     class Measure final
     {
     public:
         /// Create a new measure tool.
         /// @param device The device to use to create graphics resources.
-        /// @param ui The control to add the measure label to.
-        Measure(const graphics::Device& device, ui::Control& ui);
+        explicit Measure(const graphics::Device& device);
+
+        /// Event raised when the measure distance has changed.
+        Event<float> on_distance;
+
+        /// Event raised when the measure visibility has changed.
+        Event<bool> on_visible;
+
+        /// Event raised when the measure label position has moved.
+        Event<Point> on_position;
 
         /// Start measuring or reset the current measurement.
         void reset();
@@ -58,7 +61,6 @@ namespace trview
     private:
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
-        ui::Label*                                  _label;
         std::unique_ptr<Mesh>                       _mesh;
         bool                                        _visible{ true };
     };

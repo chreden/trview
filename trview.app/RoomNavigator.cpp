@@ -1,6 +1,5 @@
-#include "stdafx.h"
 #include "RoomNavigator.h"
-#include <trview.app/ITextureStorage.h>
+#include "ITextureStorage.h"
 #include "RoomInfo.h"
 
 #include <trlevel/trtypes.h>
@@ -94,6 +93,11 @@ namespace trview
     void RoomNavigator::set_show_hidden_geometry(bool show)
     {
         _hidden_geometry->set_state(show);
+    }
+
+    void RoomNavigator::set_show_water(bool show)
+    {
+        _water->set_state(show);
     }
 
     bool RoomNavigator::show_triggers() const

@@ -21,7 +21,11 @@ namespace trview
         // Add waypoint button.
         auto button = std::make_unique<Button>(Point(), Size(100, 24), L"Add Waypoint");
         button->set_text_background_colour(Colours::Button);
-        button->on_click += on_add_waypoint;
+        _token_store += button->on_click += [&]()
+        {
+            on_add_waypoint();
+            set_visible(false);
+        };
         _menu->add_child(std::move(button));
 
         // Add the similar remove waypoint button 
@@ -32,13 +36,18 @@ namespace trview
             if (_remove_enabled)
             {
                 on_remove_waypoint();
+                set_visible(false);
             }
         };
         _remove_button = _menu->add_child(std::move(remove_button));
 
         auto orbit_button = std::make_unique<Button>(Point(), Size(100, 24), L"Orbit Here");
         orbit_button->set_text_background_colour(Colours::Button);
-        orbit_button->on_click += on_orbit_here;
+        _token_store += orbit_button->on_click += [&]()
+        {
+            on_orbit_here();
+            set_visible(false);
+        };
         _menu->add_child(std::move(orbit_button));
 
         _menu->set_visible(false);

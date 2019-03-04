@@ -643,4 +643,9 @@ namespace trview
             }
         }
     }
+
+    uint32_t Room::number() const
+    {
+        return _index;
+    }
 }

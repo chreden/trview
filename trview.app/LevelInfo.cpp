@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LevelInfo.h"
 
 #include <trview.ui/Control.h>
@@ -6,7 +5,7 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
-#include <trview.app/ITextureStorage.h>
+#include "ITextureStorage.h"
 #include <trview.common/Strings.h>
 
 namespace trview

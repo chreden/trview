@@ -1,6 +1,5 @@
 #include "Measure.h"
 #include <trview.graphics/Device.h>
-#include <trview.ui/Label.h>
 #include <sstream>
 #include <iomanip>
 
@@ -11,19 +10,16 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Measure::Measure(const Device& device, ui::Control& ui)
+    Measure::Measure(const Device& device)
         : _mesh(create_cube_mesh(device))
     {
-        auto label = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        label->set_visible(false);
-        _label = ui.add_child(std::move(label));
     }
 
     void Measure::reset()
     {
         _start.reset();
         _end.reset();
-        _label->set_visible(false);
+        on_visible(false);
     }
 
     bool Measure::add(const Vector3& position)
@@ -35,7 +31,7 @@ namespace trview
         else
         {
             _end = position;
-            _label->set_visible(true);
+            on_visible(true);
             return true;
         }
 
@@ -50,9 +46,7 @@ namespace trview
         }
 
         _end = position;
-        std::wstringstream stream;
-        stream << std::fixed << std::setprecision(2) << (_end.value() - _start.value()).Length();
-        _label->set_text(stream.str());
+        on_distance((_end.value() - _start.value()).Length());
     }
 
     void Measure::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
@@ -86,12 +80,14 @@ namespace trview
 
         Vector3 point = XMVector3Project(halfway, 0, 0, window_size.width, window_size.height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
 
-        _label->set_position(Point(point.x, point.y));
+        on_position(Point(point.x, point.y));
     }
 
     std::wstring Measure::distance() const
     {
-        return _label->text();
+        std::wstringstream stream;
+        stream << std::fixed << std::setprecision(2) << (_end.value() - _start.value()).Length();
+        return stream.str();
     }
 
     bool Measure::measuring() const
@@ -102,6 +98,6 @@ namespace trview
     void Measure::set_visible(bool value)
     {
         _visible = value;
-        _label->set_visible(value && _end.has_value());
+        on_visible(value && _end.has_value());
     }
 }

@@ -6,7 +6,7 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/Event.h>
 
-#include "CameraMode.h"
+#include <trview.app/CameraMode.h>
 
 namespace trview
 {

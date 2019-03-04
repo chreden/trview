@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Flipmaps.h"
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
