@@ -18,7 +18,7 @@ namespace trview
         auto enabled = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), Colour::Transparent, L"Depth");
         enabled->on_state_changed += on_enabled_changed;
 
-        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 10);
+        auto depth = std::make_unique<NumericUpDown>(Point(90, 16), Size(40, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20);
         depth->set_value(1);
         depth->on_value_changed += on_depth_changed;
 

@@ -358,29 +358,47 @@ namespace trview
 
     void Level::regenerate_neighbours()
     {
-        _neighbours = std::set<uint16_t>{ _selected_room };
+        _neighbours.clear();
         if (_selected_room < _level->num_rooms())
         {
-            generate_neighbours(_neighbours, _selected_room, _selected_room, 1, _neighbour_depth);
+            generate_neighbours(_neighbours, _selected_room, _neighbour_depth);
             _regenerate_transparency = true;
         }
     }
 
-    void Level::generate_neighbours(std::set<uint16_t>& all_rooms, uint16_t previous_room, uint16_t selected_room, int32_t current_depth, int32_t max_depth)
+    void Level::generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth)
     {
-        if (current_depth > max_depth)
-        {
-            return;
-        }
+        results.insert(selected_room);
 
-        const auto neighbours = _rooms[selected_room]->neighbours();
-        for (auto room = neighbours.begin(); room != neighbours.end(); ++room)
+        std::set<uint16_t> current_batch{ selected_room };
+        std::set<uint16_t> next_batch;
+
+        for (int32_t depth = 0; depth <= max_depth && !current_batch.empty(); ++depth)
         {
-            if (*room != previous_room)
+            for (uint16_t room : current_batch)
             {
-                all_rooms.insert(*room);
-                generate_neighbours(all_rooms, selected_room, *room, current_depth + 1, max_depth);
+                // Add the room to the final list of rooms.
+                results.insert(room);
+
+                // Get the neighbours of the room and add them to the next batch to be processed.
+                const auto neighbours = _rooms[room]->neighbours();
+                next_batch.insert(neighbours.begin(), neighbours.end());
             }
+
+            // Remove all entries from the current batch as they have been processed.
+            current_batch.clear();
+
+            // Add any entries that aren't already in the results to the list to be processed.
+            for (uint16_t room : next_batch)
+            {
+                if (results.find(room) == results.end())
+                {
+                    current_batch.insert(room);
+                }
+            }
+
+            // Clear the next batch.
+            next_batch.clear();
         }
     }
 
