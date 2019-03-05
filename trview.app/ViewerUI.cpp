@@ -19,34 +19,16 @@ namespace trview
 
         _token_store += _mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(window)); };
         _token_store += _mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(window)); };
-        // Add some extra handlers for the user interface. These will be merged in
-        // to one at some point so that the UI can take priority where appropriate.
-        _token_store += _mouse.mouse_down += [&](input::Mouse::Button)
+        _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { _control->process_mouse_down(client_cursor_position(window)); };
+        _token_store += _keyboard.on_key_down += [&](auto key)
         {
-            // The client mouse coordinate is already relative to the root window (at present).
-            _control->process_mouse_down(client_cursor_position(window));
-        };
-
-        _token_store += _keyboard.on_key_down += [&](uint16_t key)
-        {
+            _control->process_key_down(key);
             if (key == 'G' && _keyboard.control())
             {
                 _go_to_room->toggle_visible();
             }
-            else
-            {
-                _go_to_room->input(key);
-            }
         };
-
-        _token_store += _keyboard.on_char += [&](uint16_t key)
-        {
-            if (_go_to_room->visible())
-            {
-                _go_to_room->character(key);
-            }
-        };
-
+        _token_store += _keyboard.on_char += [&](auto key) { _control->process_char(key); };
 
         generate_tool_window(texture_storage);
 

@@ -35,6 +35,11 @@ namespace trview
                 return _font->measure(text);
             }
 
+            bool LabelNode::is_valid_character(wchar_t character) const
+            {
+                return _font->is_valid_character(character);
+            }
+
             void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);

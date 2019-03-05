@@ -372,6 +372,11 @@ namespace trview
 
         bool Control::inner_process_key_down(uint16_t key)
         {
+            if (!visible())
+            {
+                return false;
+            }
+
             for (auto& child : child_elements())
             {
                 if (child->inner_process_key_down(key))
@@ -396,6 +401,11 @@ namespace trview
 
         bool Control::inner_process_char(wchar_t key)
         {
+            if (!visible())
+            {
+                return false;
+            }
+
             for (auto& child : child_elements())
             {
                 if (child->inner_process_char(key))

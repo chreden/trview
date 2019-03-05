@@ -1,7 +1,7 @@
 #include "GoToRoom.h"
 
 #include <Windows.h>
-#include <trview.ui/Label.h>
+#include <trview.ui/TextArea.h>
 #include <trview.ui/GroupBox.h>
 
 namespace trview
@@ -33,17 +33,29 @@ namespace trview
             Colour::Grey,
             L"Go to Room");
 
-        auto label = std::make_unique<Label>(
-            Point((WindowWidth - 10) / 2.0f - Width / 2.0f,
-                  (WindowHeight) / 2.0f - Height / 2.0f + 2),
+        auto text_area = std::make_unique<TextArea>(
+            Point((WindowWidth - 10) / 2.0f - Width / 2.0f, (WindowHeight) / 2.0f - Height / 2.0f + 2),
             Size(Width, Height),
             Colour(1.0f, 0.2f, 0.2f, 0.2f),
-            L"",
-            8,
-            graphics::TextAlignment::Centre,
-            graphics::ParagraphAlignment::Centre);
+            Colour::White,
+            graphics::TextAlignment::Centre);
+        text_area->set_mode(TextArea::Mode::SingleLine);
+        _token_store += text_area->on_escape += [&]() { toggle_visible(); };
+        _token_store += text_area->on_enter += [&](const std::wstring& text)
+        {
+            try
+            {
+                auto room = std::stoul(text);
+                room_selected(room);
+                toggle_visible();
+            }
+            catch (...)
+            {
+                // Couldn't convert the number.
+            }
+        };
 
-        _label = box->add_child(std::move(label));
+        _text_area = box->add_child(std::move(text_area));
         window->add_child(std::move(box));
         _window = parent.add_child(std::move(window));
 
@@ -63,49 +75,7 @@ namespace trview
         _window->set_visible(!visible());
         if (visible())
         {
-            _input.clear();
-            _label->set_text(_input);
-        }
-    }
-
-    void GoToRoom::character(uint16_t character)
-    {
-        if (!visible())
-        {
-            return;
-        }
-
-        auto value = character - '0';
-        if (value >= 0 && value <= 9)
-        {
-            _input += character;
-            _label->set_text(_input);
-        }
-    }
-
-    void GoToRoom::input(uint16_t key)
-    {
-        if (!visible())
-        {
-            return;
-        }
-
-        if (key == VK_RETURN)
-        {
-            try
-            {
-                auto room = std::stoul(_input);
-                room_selected(room);
-                toggle_visible();
-            }
-            catch(...)
-            {
-                // Couldn't convert the number.
-            }
-        }
-        else if (key == VK_ESCAPE)
-        {
-            toggle_visible();
+            _text_area->set_text(L"");
         }
     }
 }

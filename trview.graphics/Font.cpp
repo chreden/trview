@@ -75,5 +75,10 @@ namespace trview
             XMStoreFloat2(&size, _font->MeasureString(sanitise(*_font, text).c_str()));
             return Size(size.x, size.y);
         }
+
+        bool Font::is_valid_character(wchar_t character) const
+        {
+            return _font->ContainsCharacter(character);
+        }
     }
 }
