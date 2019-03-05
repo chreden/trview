@@ -59,6 +59,12 @@ namespace trview
                         }
                         return;
                     }
+                    // VK_ESCAPE
+                    case 0x1B:
+                    {
+                        on_escape();
+                        break;
+                    }
                     default:
                     {
                         // Check if this is character we don't support.

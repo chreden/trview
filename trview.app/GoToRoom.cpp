@@ -40,6 +40,7 @@ namespace trview
             Colour::White,
             graphics::TextAlignment::Centre);
         text_area->set_mode(TextArea::Mode::SingleLine);
+        _token_store += text_area->on_escape += [&]() { toggle_visible(); };
         _token_store += text_area->on_enter += [&](const std::wstring& text)
         {
             try
