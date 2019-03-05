@@ -40,6 +40,9 @@ namespace trview
 
             /// Event raised when the user has pressed the enter button in single line mode.
             Event<std::wstring> on_enter;
+
+            /// Event raised when the user has pressed the escape button.
+            Event<> on_escape;
         protected:
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
