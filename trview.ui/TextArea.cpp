@@ -6,8 +6,8 @@ namespace trview
 {
     namespace ui
     {
-        TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour)
-            : Window(position, size, background_colour), _text_colour(text_colour)
+        TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
+            : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
             _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
@@ -48,8 +48,15 @@ namespace trview
                     // VK_RETURN
                     case 0xD:
                     {
-                        add_line();
-                        ++_cursor_line;
+                        if (_mode == Mode::SingleLine)
+                        {
+                            on_enter(text);
+                        }
+                        else
+                        {
+                            add_line();
+                            ++_cursor_line;
+                        }
                         return;
                     }
                     default:
@@ -64,6 +71,11 @@ namespace trview
                         // then create a new line and put the character on that line instead.
                         if (line->measure_text(text + character).width > _area->size().width)
                         {
+                            if (_mode == Mode::SingleLine)
+                            {
+                                return;
+                            }
+
                             add_line({ character });
                             ++_cursor_line;
                             return;
@@ -102,6 +114,11 @@ namespace trview
             _cursor_line = _lines.empty() ? 0 : _lines.size() - 1;
             _cursor_position = _lines.empty() ? 0 : _lines.back()->text().size();
             update_cursor(false);
+        }
+
+        void TextArea::set_mode(Mode mode)
+        {
+            _mode = mode;
         }
 
         bool TextArea::mouse_down(const Point& position)
@@ -200,7 +217,7 @@ namespace trview
 
         void TextArea::add_line(std::wstring text, bool raise_event)
         {
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto)));
+            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             if (raise_event)
             {
                 notify_text_updated();
@@ -251,10 +268,12 @@ namespace trview
             auto line = current_line(raise_event);
             auto text = line->text();
 
-            // Place the cursor based on the current cursor position and the size of the text
-            // as it would be renderered.
-            auto size = line->measure_text(text.substr(0, _cursor_position));
-            _cursor->set_position(Point(size.width + 2, line->position().y));
+            // Place the cursor based on the current cursor position and the size of the text as it would be renderered.
+            const auto size = line->measure_text(text.substr(0, _cursor_position));
+            const auto start = _alignment == graphics::TextAlignment::Left ?
+                Point(0, line->position().y) :
+                Point(line->size().width * 0.5f - size.width * 0.5f - 1, line->position().y);
+            _cursor->set_position(start + Point(size.width + 2, 0));
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
         }
 
