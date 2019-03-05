@@ -16,7 +16,7 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Label;
+        class TextArea;
     }
     
     /// This window presents the user with a box where they can enter the room number
@@ -36,23 +36,12 @@ namespace trview
         /// Toggle whether the window is visible.
         void toggle_visible();
 
-        /// Process an input character.
-        /// @param character The character that was pressed. If this is a number it will be appended to the text.
-        /// @remarks This is used for entry of the room number.
-        void character(uint16_t character);
-
-        /// Process the input key.
-        /// @param key The input key that was pressed.
-        /// @remarks This is used to control the shortcut for toggling visibility of the window and for enter/exit.
-        void input(uint16_t key);
-
         /// Event raised when the user selects a new room. The newly selected room is passed as
         /// a parameter when the event is raised.
         Event<uint32_t> room_selected;
     private:
-        std::wstring _input;
-        ui::Control* _window;
-        ui::Label*   _label;
-        TokenStore _token_store;
+        TokenStore    _token_store;
+        ui::Control*  _window;
+        ui::TextArea* _text_area;
     };
 }
