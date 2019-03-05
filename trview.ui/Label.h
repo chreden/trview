@@ -53,6 +53,9 @@ namespace trview
             /// Set the measurer used to measure how big text will be.
             /// @param measurer The measurer instance.
             void set_measurer(IFontMeasurer* measurer);
+
+            /// Determine whether the character specified is in the character set.
+            bool is_valid_character(wchar_t character) const;
         private:
             std::wstring                   _text;
             int                            _text_size;

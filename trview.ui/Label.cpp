@@ -66,5 +66,14 @@ namespace trview
         {
             _measurer = measurer;
         }
+
+        bool Label::is_valid_character(wchar_t character) const
+        {
+            if (!_measurer)
+            {
+                return true;
+            }
+            return _measurer->is_valid_character(character);
+        }
     }
 }
