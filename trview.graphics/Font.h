@@ -45,6 +45,11 @@ namespace trview
             /// @param text The text to measure.
             /// @returns The size in pixels required to render the specified text.
             Size measure(const std::wstring& text) const;
+
+            /// Determines whether the character is in the image set.
+            /// @param character The character to test.
+            /// @returns True if the character is in the image set.
+            bool is_valid_character(wchar_t character) const;
         private:
             std::shared_ptr<DirectX::SpriteFont> _font;
             std::unique_ptr<DirectX::SpriteBatch> _batch;

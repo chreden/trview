@@ -23,6 +23,7 @@ namespace trview
                 LabelNode(const graphics::Device& device, Label* label, const graphics::FontFactory& font_factory);
                 virtual ~LabelNode();
                 virtual Size measure(const std::wstring& text) const override;
+                virtual bool is_valid_character(wchar_t character) const override;
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
             private:

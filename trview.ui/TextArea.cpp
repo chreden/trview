@@ -53,9 +53,16 @@ namespace trview
                         return;
                     }
                     default:
+                    {
+                        // Check if this is character we don't support.
+                        if (!line->is_valid_character(character))
+                        {
+                            break;
+                        }
+
                         // Check if adding the character is going to make the text wider than the text area. If so,
                         // then create a new line and put the character on that line instead.
-                        if (line->measure_text(text + static_cast<wchar_t>(character)).width > _area->size().width)
+                        if (line->measure_text(text + character).width > _area->size().width)
                         {
                             add_line({ character });
                             ++_cursor_line;
@@ -63,9 +70,10 @@ namespace trview
                         }
 
                         // Add the character to the current line.
-                        text.insert(text.begin() + _cursor_position, static_cast<wchar_t>(character));
+                        text.insert(text.begin() + _cursor_position, character);
                         ++_cursor_position;
                         break;
+                    }
                 }
 
                 line->set_text(text);
