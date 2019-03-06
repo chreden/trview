@@ -321,4 +321,9 @@ namespace trview
         // Create an axis-aligned BB from the points of the oriented ones.
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
     }
+
+    DirectX::BoundingBox Entity::bounding_box() const
+    {
+        return _bounding_box;
+    }
 }

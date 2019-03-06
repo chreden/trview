@@ -50,6 +50,11 @@ namespace trview
         generate_triggers();
         generate_entities(device);
 
+        for (auto& room : _rooms)
+        {
+            room->update_bounding_box();
+        }
+
         _transparency = std::make_unique<TransparencyBuffer>(device);
 
         _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);

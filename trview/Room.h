@@ -139,6 +139,7 @@ namespace trview
         void generate_trigger_geometry();
 
         uint32_t number() const;
+        void update_bounding_box();
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
