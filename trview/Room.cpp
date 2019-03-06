@@ -89,7 +89,7 @@ namespace trview
     // direction: The direction of the ray.
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space.
-    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry, bool include_room_geometry) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -127,27 +127,30 @@ namespace trview
             }
         }
 
-        // Pick against the room geometry:
-        auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
-        PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
-        if (geometry_result.hit)
+        if (include_room_geometry)
         {
-            // Transform the position back in to world space. Also mark it as a room pick result.
-            geometry_result.type = PickResult::Type::Room;
-            geometry_result.index = _index;
-            geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
-            pick_results.push_back(geometry_result);
-        }
-
-        if (include_hidden_geometry)
-        {
-            PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
-            if (unmatched_result.hit)
+            // Pick against the room geometry:
+            auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
+            PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
+            if (geometry_result.hit)
             {
-                unmatched_result.type = PickResult::Type::Room;
-                unmatched_result.index = _index;
-                unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
-                pick_results.push_back(unmatched_result);
+                // Transform the position back in to world space. Also mark it as a room pick result.
+                geometry_result.type = PickResult::Type::Room;
+                geometry_result.index = _index;
+                geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+                pick_results.push_back(geometry_result);
+            }
+
+            if (include_hidden_geometry)
+            {
+                PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
+                if (unmatched_result.hit)
+                {
+                    unmatched_result.type = PickResult::Type::Room;
+                    unmatched_result.index = _index;
+                    unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
+                    pick_results.push_back(unmatched_result);
+                }
             }
         }
 
@@ -188,9 +191,9 @@ namespace trview
         render_contained(device, camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water)
+    void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
     {
-        Color colour = room_colour(_water && show_water, selected);
+        Color colour = room_colour((_water || force_water) && show_water, selected);
         render_contained(device, camera, texture_storage, colour);
     }
 
@@ -318,9 +321,9 @@ namespace trview
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
-    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water)
+    void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water)
     {
-        Color colour = room_colour(_water && show_water, selected);
+        Color colour = room_colour((force_water || _water) && show_water, selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
