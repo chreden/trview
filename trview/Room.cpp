@@ -255,8 +255,7 @@ namespace trview
         _unmatched_mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
 
         // Generate the bounding box based on the room dimensions.
-        const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
-        _bounding_box = DirectX::BoundingBox(centre(), extents);
+        update_bounding_box();
     }
 
     void Room::generate_adjacency()
@@ -647,5 +646,17 @@ namespace trview
     uint32_t Room::number() const
     {
         return _index;
+    }
+
+    void Room::update_bounding_box()
+    {
+        // Get the extents of the room from the information - doesn't take into account any entities.
+        const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
+        _bounding_box = DirectX::BoundingBox(centre(), extents);
+        // Merge all entity bounding boxes with the room bounding box.
+        for (const auto& entity : _entities)
+        {
+            _bounding_box.CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
+        }
     }
 }
