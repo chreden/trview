@@ -650,13 +650,14 @@ namespace trview
 
     void Room::update_bounding_box()
     {
+        using namespace DirectX;
         // Get the extents of the room from the information - doesn't take into account any entities.
         const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
-        _bounding_box = DirectX::BoundingBox(centre(), extents);
+        _bounding_box = BoundingBox(centre(), extents);
         // Merge all entity bounding boxes with the room bounding box.
         for (const auto& entity : _entities)
         {
-            _bounding_box.CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
+            BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
         }
     }
 }
