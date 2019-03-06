@@ -69,7 +69,7 @@ namespace trview
         // direction: The direction of the ray.
         // Returns: The result of the operation. If 'hit' is true, distance and position contain
         // how far along the ray the hit was and the position in world space.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false) const;
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const;
 
         // Render the level geometry and the objects contained in this room.
         // context: The D3D context.
@@ -78,7 +78,7 @@ namespace trview
         // selected: The selection mode to use to highlight geometry and objects.
         void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water);
 
-        void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water);
+        void render_contained(const graphics::Device& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false);
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
@@ -103,7 +103,7 @@ namespace trview
         // transparency: The buffer to add triangles to.
         // camera: The current viewpoint.
         // selected: The current selection mode.
-        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water);
+        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false);
 
         // Determines the alternate state of the room.
         AlternateMode alternate_mode() const;

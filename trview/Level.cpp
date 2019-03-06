@@ -201,13 +201,13 @@ namespace trview
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
-            if (_alternate_mode && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, _show_water);
+                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, _show_water, _show_water);
                 if (_regenerate_transparency)
                 {
-                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water);
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water, _show_water);
                 }
             }
         }
@@ -416,10 +416,9 @@ namespace trview
     PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
         PickResult final_result;
-        auto rooms = get_rooms_to_render(camera);
-        for (auto& room : rooms)
+        
+        auto choose = [&](PickResult result)
         {
-            auto result = room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry);
             // Choose the nearest pick - but if the previous closest was trigger an entity should take priority over it.
             if (result.hit && (result.distance < final_result.distance || (result.type == PickResult::Type::Entity && final_result.type == PickResult::Type::Trigger)))
             {
@@ -428,6 +427,17 @@ namespace trview
                 final_result.position = result.position;
                 final_result.index = result.index;
                 final_result.type = result.type;
+            }
+        };
+
+        auto rooms = get_rooms_to_render(camera);
+        for (auto& room : rooms)
+        {
+            choose(room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry));
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            {
+                auto& original_room = _rooms[room.room.alternate_room()];
+                choose(original_room->pick(position, direction, true, _show_triggers, _show_hidden_geometry, false));
             }
         }
         return final_result;
