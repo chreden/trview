@@ -18,7 +18,17 @@ namespace trview
             add_child(std::move(left));
             add_child(std::move(bottom));
             add_child(std::move(right));
-            add_child(std::move(label));
+            _label = add_child(std::move(label));
+        }
+
+        std::wstring GroupBox::title() const
+        {
+            return _label->text();
+        }
+
+        void GroupBox::set_title(const std::wstring& title)
+        {
+            _label->set_text(title);
         }
     }
 }

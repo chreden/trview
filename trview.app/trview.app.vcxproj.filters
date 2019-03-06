@@ -112,9 +112,6 @@
     <ClCompile Include="ViewerUI.cpp">
       <Filter>Viewer\UI</Filter>
     </ClCompile>
-    <ClCompile Include="GoToRoom.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
     <ClCompile Include="LevelInfo.cpp">
       <Filter>Viewer\UI</Filter>
     </ClCompile>
@@ -137,6 +134,9 @@
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
+    <ClCompile Include="GoTo.cpp">
+      <Filter>Viewer\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -263,9 +263,6 @@
     <ClInclude Include="ViewerUI.h">
       <Filter>Viewer\UI</Filter>
     </ClInclude>
-    <ClInclude Include="GoToRoom.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
     <ClInclude Include="LevelInfo.h">
       <Filter>Viewer\UI</Filter>
     </ClInclude>
@@ -289,6 +286,9 @@
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="UserSettings.h" />
+    <ClInclude Include="GoTo.h">
+      <Filter>Viewer\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">

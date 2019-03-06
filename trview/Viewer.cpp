@@ -97,6 +97,13 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage);
+        _token_store += _ui->on_select_item += [&](uint32_t index)
+        {
+            if (_level && index < _level->items().size())
+            {
+                select_item(_level->items()[index]);
+            }
+        };
         _token_store += _ui->on_select_room += [&](uint32_t room) { select_room(room); };
         _token_store += _ui->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _ui->on_show_hidden_geometry += [&](bool value) { set_show_hidden_geometry(value); };
@@ -295,7 +302,7 @@ namespace trview
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key)
         {
-            if (GetAsyncKeyState(VK_CONTROL))
+            if (_ui->go_to_room_visible() || GetAsyncKeyState(VK_CONTROL))
             {
                 return;
             }
