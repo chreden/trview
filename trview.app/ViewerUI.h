@@ -11,7 +11,7 @@
 #include "Toolbar.h"
 #include "LevelInfo.h"
 #include "RoomNavigator.h"
-#include "GoToRoom.h"
+#include "GoTo.h"
 #include "SettingsWindow.h"
 #include "Flipmaps.h"
 #include "Neighbours.h"
@@ -97,6 +97,9 @@ namespace trview
 
         /// Event raised when a minimap sector is hovered over.
         Event<std::shared_ptr<Sector>> on_sector_hover;
+
+        /// Event raised when an item is selected.
+        Event<uint32_t> on_select_item;
 
         /// Event raised when a room is selected.
         Event<int32_t> on_select_room;
@@ -266,7 +269,7 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ContextMenu> _context_menu;
-        std::unique_ptr<GoToRoom> _go_to_room;
+        std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;

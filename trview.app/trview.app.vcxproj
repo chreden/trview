@@ -31,7 +31,7 @@
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Flipmaps.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
-    <ClCompile Include="GoToRoom.cpp" />
+    <ClCompile Include="GoTo.cpp" />
     <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="IRenderable.cpp" />
@@ -81,7 +81,7 @@
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Flipmaps.h" />
     <ClInclude Include="FreeCamera.h" />
-    <ClInclude Include="GoToRoom.h" />
+    <ClInclude Include="GoTo.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="IRenderable.h" />

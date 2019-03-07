@@ -1,4 +1,4 @@
-#include "GoToRoom.h"
+#include "GoTo.h"
 
 #include <Windows.h>
 #include <trview.ui/TextArea.h>
@@ -14,7 +14,7 @@ namespace trview
         const float Height = 20.0f;
     }
 
-    GoToRoom::GoToRoom(ui::Control& parent)
+    GoTo::GoTo(ui::Control& parent)
     {
         using namespace ui;
 
@@ -45,8 +45,8 @@ namespace trview
         {
             try
             {
-                auto room = std::stoul(text);
-                room_selected(room);
+                auto index = std::stoul(text);
+                on_selected(index);
                 toggle_visible();
             }
             catch (...)
@@ -56,7 +56,7 @@ namespace trview
         };
 
         _text_area = box->add_child(std::move(text_area));
-        window->add_child(std::move(box));
+        _group = window->add_child(std::move(box));
         _window = parent.add_child(std::move(window));
 
         _token_store += parent.on_size_changed += [&](const Size& size)
@@ -65,17 +65,28 @@ namespace trview
         };
     }
 
-    bool GoToRoom::visible() const
+    bool GoTo::visible() const
     {
         return _window->visible();
     }
 
-    void GoToRoom::toggle_visible()
+    void GoTo::toggle_visible()
     {
         _window->set_visible(!visible());
         if (visible())
         {
             _text_area->set_text(L"");
         }
+    }
+
+    std::wstring GoTo::name() const
+    {
+        return _name;
+    }
+
+    void GoTo::set_name(const std::wstring& name)
+    {
+        _name = name;
+        _group->set_title(L"Go to " + name);
     }
 }

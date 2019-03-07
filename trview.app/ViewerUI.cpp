@@ -2,7 +2,7 @@
 #include <trview.ui/Window.h>
 #include <trview.graphics/IShaderStorage.h>
 #include "ILevelTextureStorage.h"
-#include "GoToRoom.h"
+#include "GoTo.h"
 #include "ContextMenu.h"
 #include <sstream>
 #include <iomanip>
@@ -23,17 +23,52 @@ namespace trview
         _token_store += _keyboard.on_key_down += [&](auto key)
         {
             _control->process_key_down(key);
-            if (key == 'G' && _keyboard.control())
+            if (_keyboard.control())
             {
-                _go_to_room->toggle_visible();
+                std::wstring name;
+                switch (key)
+                {
+                case 'G':
+                    name = L"Room";
+                    break;
+                case 'M':
+                    name = L"Item";
+                    break;
+                default:
+                    return;
+                }
+
+                if (!_go_to->visible())
+                {
+                    _go_to->set_name(name);
+                    _go_to->toggle_visible();
+                }
+                else if (_go_to->name() == name)
+                {
+                    _go_to->toggle_visible();
+                }
+                else
+                {
+                    _go_to->set_name(name);
+                }
             }
         };
         _token_store += _keyboard.on_char += [&](auto key) { _control->process_char(key); };
 
         generate_tool_window(texture_storage);
 
-        _go_to_room = std::make_unique<GoToRoom>(*_control.get());
-        _token_store += _go_to_room->room_selected += [&](uint32_t room) { on_select_room(room); };
+        _go_to = std::make_unique<GoTo>(*_control.get());
+        _token_store += _go_to->on_selected += [&](uint32_t index)
+        {
+            if (_go_to->name() == L"Item")
+            {
+                on_select_item(index);
+            }
+            else
+            {
+                on_select_room(index);
+            }
+        };
 
         _toolbar = std::make_unique<Toolbar>(*_control);
         _toolbar->add_tool(L"Measure", L"|....|");
@@ -117,7 +152,7 @@ namespace trview
 
     bool ViewerUI::go_to_room_visible() const
     {
-        return _go_to_room->visible();
+        return _go_to->visible();
     }
 
     bool ViewerUI::is_cursor_over() const
