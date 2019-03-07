@@ -119,7 +119,7 @@ Movement Speed      | How fast the camera moves in free mode
 
 ## Windows
 
-### 1
+### Go To Room
 Enter the room number - press enter to go to the room, escape to cancel.
 
 ### Go To Item
