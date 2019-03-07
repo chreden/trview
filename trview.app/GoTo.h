@@ -40,6 +40,7 @@ namespace trview
         /// a parameter when the event is raised.
         Event<uint32_t> on_selected;
 
+        /// Get the name of the type of thing being selected.
         std::wstring name() const;
 
         /// Set the name of the type of thing that is being gone to.
@@ -49,5 +50,6 @@ namespace trview
         ui::Control*  _window;
         ui::GroupBox* _group;
         ui::TextArea* _text_area;
+        std::wstring  _name;
     };
 }

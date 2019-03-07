@@ -81,11 +81,12 @@ namespace trview
 
     std::wstring GoTo::name() const
     {
-        return _group->title();
+        return _name;
     }
 
     void GoTo::set_name(const std::wstring& name)
     {
-        _group->set_title(name);
+        _name = name;
+        _group->set_title(L"Go to " + name);
     }
 }

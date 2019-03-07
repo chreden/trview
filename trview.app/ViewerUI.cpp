@@ -29,10 +29,10 @@ namespace trview
                 switch (key)
                 {
                 case 'G':
-                    name = L"Go to Room";
+                    name = L"Room";
                     break;
                 case 'M':
-                    name = L"Go to Item";
+                    name = L"Item";
                     break;
                 default:
                     return;
@@ -60,7 +60,7 @@ namespace trview
         _go_to = std::make_unique<GoTo>(*_control.get());
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
-            if (_go_to->name() == L"Go to Item")
+            if (_go_to->name() == L"Item")
             {
                 on_select_item(index);
             }
