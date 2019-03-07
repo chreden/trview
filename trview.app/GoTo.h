@@ -22,7 +22,7 @@ namespace trview
     
     /// This window presents the user with a box where they can enter the room number
     /// that they want to go to. Then when they press enter, that will be the selected room.
-    class GoTo
+    class GoTo final
     {
     public:
         /// Creates an instance of the GoTo class. This will add UI elements to the control provided.
