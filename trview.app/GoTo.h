@@ -20,8 +20,8 @@ namespace trview
         class TextArea;
     }
     
-    /// This window presents the user with a box where they can enter the room number
-    /// that they want to go to. Then when they press enter, that will be the selected room.
+    /// This window presents the user with a box where they can enter the number of the thing
+    /// that they want to go to. Then when they press enter, that will be the selected.
     class GoTo final
     {
     public:
