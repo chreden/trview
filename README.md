@@ -38,7 +38,7 @@ Key|Action
 ---|------
 CTRL + O    | Open file
 CTRL + G    | Show 'go to room' box
-CTRL + M	| Show 'go to item' box
+CTRL + M    | Show 'go to item' box
 CTRL + R    | Open Route window
 CTRL + T    | New Triggers window
 CTRL + I    | New Items window
@@ -119,7 +119,7 @@ Movement Speed      | How fast the camera moves in free mode
 
 ## Windows
 
-### Go To Room
+### 1
 Enter the room number - press enter to go to the room, escape to cancel.
 
 ### Go To Item
