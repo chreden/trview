@@ -26,6 +26,7 @@
     <ClInclude Include="GroupBox.h" />
     <ClInclude Include="IFontMeasurer.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Listbox.h" />
     <ClInclude Include="NumericUpDown.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="IFontMeasurer.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Listbox.cpp" />
     <ClCompile Include="ListboxColumn.cpp" />
