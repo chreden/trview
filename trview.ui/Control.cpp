@@ -120,37 +120,6 @@ namespace trview
             return output;
         }
 
-        bool Control::process_mouse_down(const Point& position)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->process_mouse_down(position - child->position()))
-                {
-                    return true;
-                }
-            }
-
-            // Promote controls to focus control, or clear if there are no controls that 
-            // accepted the event.
-            bool handled_by_self = _handles_input && mouse_down(position);
-            if (handled_by_self)
-            {
-                set_focus_control(this);
-            }
-            else if (!_parent)
-            {
-                set_focus_control(nullptr);
-            }
-            return handled_by_self;
-        }
-
         bool Control::process_mouse_up(const Point& position)
         {
             if (_focus_control && _focus_control != this)

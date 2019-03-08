@@ -17,12 +17,12 @@ namespace trview
             explicit Input(const trview::Window& window, Control& control);
         private:
             void     process_mouse_move();
-
-            /// Find the control at the cursor position that has hover enabled.
+            bool     process_mouse_move(Control* control, const Point& position);
             Control* hover_control_at_position(const Point& position);
             Control* hover_control_at_position(Control* control, const Point& position);
-            bool     process_mouse_move(Control* control, const Point& position);
-
+            void     process_mouse_down();
+            bool     process_mouse_down(Control* control, const Point& position);
+            void     set_focus_control(Control* control);
 
             TokenStore     _token_store;
             input::Mouse   _mouse;

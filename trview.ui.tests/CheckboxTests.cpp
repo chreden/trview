@@ -45,7 +45,7 @@ namespace trview
                         ++times;
                     };
 
-                    checkbox.process_mouse_down(Point());
+                    // checkbox.process_mouse_down(Point());
                     Assert::IsTrue(raised);
                     Assert::AreEqual(1u, times);
                     Assert::AreEqual(true, raised_state);
@@ -64,8 +64,8 @@ namespace trview
                         states.push_back(state);
                     };
 
-                    checkbox.process_mouse_down(Point());
-                    checkbox.process_mouse_down(Point());
+                    // checkbox.process_mouse_down(Point());
+                    // checkbox.process_mouse_down(Point());
                     Assert::AreEqual((std::size_t)2u, states.size());
                     Assert::AreEqual(true, static_cast<bool>(states[0]));
                     Assert::AreEqual(false, static_cast<bool>(states[1]));

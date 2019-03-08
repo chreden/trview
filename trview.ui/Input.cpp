@@ -1,6 +1,5 @@
 #include "Input.h"
 #include "Control.h"
-#include <stack>
 
 namespace trview
 {
@@ -18,6 +17,9 @@ namespace trview
             : _mouse(window), _window(window), _control(control)
         {
             _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
+            _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
+            // _token_store += _mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(window)); };
+            // _token_store += _mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(window)); };
         }
 
         void Input::process_mouse_move()
@@ -51,6 +53,28 @@ namespace trview
             process_mouse_move(&_control, position - _control.position());
         }
 
+        bool Input::process_mouse_move(Control* control, const Point& position)
+        {
+            // Bounds check - before child elements are checked.
+            if (!control->visible() || !in_bounds(position, control->size()))
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                // Convert the position into the coordinate space of the child element.
+                if (process_mouse_move(child, position - child->position()))
+                {
+                    return true;
+                }
+            }
+
+            // If none of the child elements have handled this event themselves, call the 
+            // move function of this control.
+            return control->move(position);
+        }
+
         Control* Input::hover_control_at_position(const Point& position)
         {
             return hover_control_at_position(&_control, position);
@@ -80,9 +104,14 @@ namespace trview
             return nullptr;
         }
 
-        bool Input::process_mouse_move(Control* control, const Point& position)
+        void Input::process_mouse_down()
         {
-            // Bounds check - before child elements are checked.
+            auto position = client_cursor_position(_window);
+            process_mouse_down(&_control, position);
+        }
+
+        bool Input::process_mouse_down(Control* control, const Point& position)
+        {
             if (!control->visible() || !in_bounds(position, control->size()))
             {
                 return false;
@@ -91,15 +120,33 @@ namespace trview
             for (auto& child : control->child_elements())
             {
                 // Convert the position into the coordinate space of the child element.
-                if (process_mouse_move(child, position - child->position()))
+                if (process_mouse_down(child, position - child->position()))
                 {
                     return true;
                 }
             }
 
-            // If none of the child elements have handled this event themselves, call the 
-            // move function of this control.
-            return control->move(position);
+            // Promote controls to focus control, or clear if there are no controls that 
+            // accepted the event.
+            bool handled_by_self = control->_handles_input && control->mouse_down(position);
+            if (handled_by_self)
+            {
+                set_focus_control(control);
+            }
+            else if (!control->parent())
+            {
+                set_focus_control(nullptr);
+            }
+            return handled_by_self;
+        }
+
+        void Input::set_focus_control(Control* control)
+        {
+            if (_focus_control)
+            {
+                _focus_control->clicked_off(control);
+            }
+            _focus_control = control;
         }
     }
 }

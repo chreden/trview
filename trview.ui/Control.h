@@ -95,11 +95,6 @@ namespace trview
             /// @returns The child elements.
             std::vector<Control*> child_elements(bool rendering_order = false) const;
 
-            /// Process a mouse_down event at the position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse down event was handled by the control.
-            bool process_mouse_down(const Point& position);
-
             /// Process a mouse_up event a tthe position specified.
             /// @param position The position of the mouse relative to the control.
             /// @returns Whether the mouse up event was handled by the control.
