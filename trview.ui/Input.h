@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/Window.h>
+#include <trview.input/Mouse.h>
 
 namespace trview
 {
@@ -14,7 +15,7 @@ namespace trview
         public:
             explicit Input(const trview::Window& window, Control& control);
         private:
-
+            input::Mouse _mouse;
         };
     }
 }
