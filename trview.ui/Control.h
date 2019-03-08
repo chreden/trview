@@ -19,6 +19,8 @@ namespace trview
         class Control
         {
         public:
+            friend class Input;
+
             /// Create a new control.
             /// @param position The position in the parent control.
             /// @param size The size of the control.
@@ -102,11 +104,6 @@ namespace trview
             /// @param position The position of the mouse relative to the control.
             /// @returns Whether the mouse up event was handled by the control.
             bool process_mouse_up(const Point& position);
-
-            /// Process a mouse_move event at the position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse move was handled by the control.
-            bool process_mouse_move(const Point& position);
 
             /// Process a mouse_scroll event.
             /// @param position The position of the mouse relative to the control.
@@ -232,10 +229,6 @@ namespace trview
             /// @param control The current focus control
             void set_focus_control(Control* control);
 
-            /// Set the control in the tree that is the hover element.
-            /// @param control The hovered over control.
-            void set_hover_control(Control* control);
-
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
@@ -245,14 +238,6 @@ namespace trview
             /// Set the focus control and recurse to child controls.
             /// @param control The new focus control.
             void inner_set_focus_control(Control* control);
-
-            /// Set the hover control and recurse to child controls.
-            /// @param control The new hover control.
-            void inner_set_hover_control(Control* control);
-
-            /// Process a mouse move and recurse to child controls.
-            /// @param position The position of the mouse relative to the control.
-            bool inner_process_mouse_move(const Point& position);
 
             /// Process a mouse up and recurse to child controls.
             /// @param position The position of the mouse relative to the control.
@@ -270,14 +255,10 @@ namespace trview
             /// @param delta The mouse scroll delta.
             bool inner_process_mouse_scroll(const Point& position, int delta);
 
-            /// Get the control at the specified mouse position.
-            Control* hover_control_at_position(const Point& position);
-
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };
             Control* _focus_control{ nullptr };
-            Control* _hover_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;

@@ -151,57 +151,6 @@ namespace trview
             return handled_by_self;
         }
 
-        bool Control::process_mouse_move(const Point& position)
-        {
-            // Get the control at the current mouse position.
-            Control* control = hover_control_at_position(position);
-            if (control != _hover_control)
-            {
-                if (_hover_control)
-                {
-                    _hover_control->mouse_leave();
-                }
-                set_hover_control(control);
-                if (_hover_control)
-                {
-                    _hover_control->mouse_enter();
-                }
-            }
-
-            if (_focus_control && _focus_control != this)
-            {
-                auto focus = _focus_control;
-                if (focus->move(position - focus->absolute_position()))
-                {
-                    return true;
-                }
-            }
-
-            return inner_process_mouse_move(position);
-        }
-
-        bool Control::inner_process_mouse_move(const Point& position)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->inner_process_mouse_move(position - child->position()))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the 
-            // move function of this control.
-            return move(position);
-        }
-
         bool Control::process_mouse_up(const Point& position)
         {
             if (_focus_control && _focus_control != this)
@@ -456,57 +405,12 @@ namespace trview
         {
         }
 
-        Control* Control::hover_control_at_position(const Point& position)
-        {
-            if (!visible() || !in_bounds(position, size()))
-            {
-                return nullptr;
-            }
-
-            for (const auto& control : child_elements())
-            {
-                auto result = control->hover_control_at_position(position - control->position());
-                if (result && result->_handles_hover)
-                {
-                    return result;
-                }
-            }
-
-            if (_handles_hover)
-            {
-                return this;
-            }
-
-            return nullptr;
-        }
-
         void Control::mouse_enter()
         {
         }
 
         void Control::mouse_leave()
         {
-        }
-
-        void Control::set_hover_control(Control* control)
-        {
-            if (_parent)
-            {
-                _parent->set_hover_control(control);
-            }
-            else
-            {
-                inner_set_hover_control(control);
-            }
-        }
-
-        void Control::inner_set_hover_control(Control* control)
-        {
-            _hover_control = control;
-            for (const auto& child : _child_elements)
-            {
-                child->inner_set_hover_control(control);
-            }
         }
 
         void Control::set_handles_hover(bool value)

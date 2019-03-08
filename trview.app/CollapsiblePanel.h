@@ -11,6 +11,7 @@
 #include <trview.common/TokenStore.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
+#include <trview.ui/Input.h>
 
 #include "WindowResizer.h"
 
@@ -85,6 +86,7 @@ namespace trview
         ui::Control* _left_panel;
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
+        std::unique_ptr<ui::Input> _input;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
