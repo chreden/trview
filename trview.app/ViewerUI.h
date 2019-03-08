@@ -4,6 +4,7 @@
 #include <trview.common/Window.h>
 #include <trview.ui/Control.h>
 #include <trview.ui.render/Renderer.h>
+#include <trview.ui/Input.h>
 #include <trview.input/Mouse.h>
 #include <trview.input/Keyboard.h>
 #include <trview.ui.render/MapRenderer.h>
@@ -268,6 +269,7 @@ namespace trview
         UserSettings _settings;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
+        std::unique_ptr<ui::Input> _ui_input;
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
