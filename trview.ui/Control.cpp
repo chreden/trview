@@ -22,6 +22,7 @@ namespace trview
 
         Control::~Control()
         {
+            on_deleting();
         }
 
         Align Control::horizontal_alignment() const
@@ -93,12 +94,6 @@ namespace trview
 
         void Control::clear_child_elements()
         {
-            auto focus = focus_control();
-            if (std::find_if(_child_elements.begin(), _child_elements.end(),
-                [&](const auto& control) { return control.get() == focus; }) != _child_elements.end())
-            {
-                set_focus_control(nullptr);
-            }
             _child_elements.clear();
             on_hierarchy_changed();
             on_invalidate();
@@ -232,31 +227,6 @@ namespace trview
         bool Control::key_char(wchar_t key)
         {
             return false;
-        }
-
-        void Control::set_focus_control(Control* control)
-        {
-            if (_parent)
-            {
-                _parent->set_focus_control(control);
-            }
-            else
-            {
-                if (_focus_control)
-                {
-                    _focus_control->clicked_off(control);
-                }
-                inner_set_focus_control(control);
-            }
-        }
-
-        void Control::inner_set_focus_control(Control* control)
-        {
-            _focus_control = control;
-            for (const auto& child : _child_elements)
-            {
-                child->inner_set_focus_control(control);
-            }
         }
 
         Control* Control::focus_control() const

@@ -169,6 +169,15 @@ namespace trview
 
             /// Event raised when there has been a change to the children of this control.
             Event<> on_hierarchy_changed;
+
+            /// Event raised when the control wants to become the focus control.
+            Event<> on_focus_requested;
+
+            /// Event raised when the control wants to clear the focus.
+            Event<> on_focus_clear_requested;
+
+            /// Event raised when the control is being deleted.
+            Event<> on_deleting;
         protected:
             /// To be called after a child element has been added to the control.
             /// @param child_element The element that was added.
@@ -220,20 +229,12 @@ namespace trview
             /// @returns True if the key char event was handled.
             virtual bool key_char(wchar_t key);
 
-            /// Set the control in the tree that has focus.
-            /// @param control The current focus control
-            void set_focus_control(Control* control);
-
             /// Get the currently focused control.
             /// @returns The currently focused control.
             Control* focus_control() const;
 
             TokenStore _token_store;
         private:
-            /// Set the focus control and recurse to child controls.
-            /// @param control The new focus control.
-            void inner_set_focus_control(Control* control);
-
             /// Process a mouse up and recurse to child controls.
             /// @param position The position of the mouse relative to the control.
             bool inner_process_mouse_up(const Point& position);

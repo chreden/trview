@@ -16,10 +16,31 @@ namespace trview
         Input::Input(const trview::Window& window, Control& control)
             : _mouse(window), _window(window), _control(control)
         {
+            register_focus_controls(&_control);
+
             _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             // _token_store += _mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(window)); };
             // _token_store += _mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(window)); };
+        }
+
+        void Input::register_focus_controls(Control* control)
+        {
+            _token_store += control->on_focus_requested += [&]() { set_focus_control(control); };
+            _token_store += control->on_focus_clear_requested += [&]() { set_focus_control(nullptr); };
+            _token_store += control->on_hierarchy_changed += [&]() { register_focus_controls(control); };
+            _token_store += control->on_deleting += [&]() 
+            {
+                if (_focus_control == control)
+                {
+                    _focus_control = nullptr;
+                }
+            };
+
+            for (auto& child : control->child_elements())
+            {
+                register_focus_controls(control);
+            }
         }
 
         void Input::process_mouse_move()
@@ -142,7 +163,7 @@ namespace trview
 
         void Input::set_focus_control(Control* control)
         {
-            if (_focus_control)
+            if (_focus_control && _focus_control != control)
             {
                 _focus_control->clicked_off(control);
             }
