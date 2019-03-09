@@ -95,12 +95,6 @@ namespace trview
             /// @returns The child elements.
             std::vector<Control*> child_elements(bool rendering_order = false) const;
 
-            /// Process a mouse_scroll event.
-            /// @param position The position of the mouse relative to the control.
-            /// @param delta The mouse wheel movement.
-            /// @returns Whether the mouse scroll was handled by the control.
-            bool mouse_scroll(const Point& position, int16_t delta);
-
             /// Determines whether the mouse is over the element or any child elements that are
             /// interested in taking input.
             /// @param position The mouse position.
@@ -237,10 +231,6 @@ namespace trview
             /// Process a character key press and recurse to child controls.
             /// @param key The character that was pressed.
             bool inner_process_char(wchar_t key);
-
-            /// Process a mouse scroll and recurse to child controls.
-            /// @param delta The mouse scroll delta.
-            bool inner_process_mouse_scroll(const Point& position, int delta);
 
             std::vector<std::unique_ptr<Control>> _child_elements;
 

@@ -28,6 +28,7 @@ namespace trview
             _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
+            _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
         }
 
         void Input::register_focus_controls(Control* control)
@@ -213,6 +214,41 @@ namespace trview
 
             // If none of the child elements have handled this event themselves, call the up of the control.
             return control->mouse_up(position);
+        }
+
+        void Input::process_mouse_scroll(int16_t delta)
+        {
+            auto position = client_cursor_position(_window);
+            if (_focus_control &&
+                _focus_control->visible() &&
+                in_bounds(position - _focus_control->absolute_position(), _focus_control->size()))
+            {
+                _focus_control->scroll(delta);
+                return;
+            }
+            process_mouse_scroll(&_control, position, delta);
+        }
+
+        bool Input::process_mouse_scroll(Control* control, const Point& position, int16_t delta)
+        {
+            // Bounds check - before child elements are checked.
+            if (!control->visible() || !in_bounds(position, control->size()))
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                // Convert the position into the coordinate space of the child element.
+                if (process_mouse_scroll(child, position - child->position(), delta))
+                {
+                    return true;
+                }
+            }
+
+            // If none of the child elements have handled this event themselves, call the 
+            // scroll function of this control.
+            return control->scroll(delta);
         }
 
         void Input::set_focus_control(Control* control)

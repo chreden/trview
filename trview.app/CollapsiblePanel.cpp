@@ -80,7 +80,6 @@ namespace trview
             _ui_renderer->set_host_size(window().size());
         };
 
-        _token_store += _mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); };
         _token_store += _keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); };
         _token_store += _keyboard.on_char += [&](auto key) { _ui->process_char(key); };
 

@@ -115,40 +115,6 @@ namespace trview
             return output;
         }
 
-        bool Control::mouse_scroll(const Point& position, int16_t delta)
-        {
-            if (_focus_control && _focus_control != this)
-            {
-                if (_focus_control->inner_process_mouse_scroll(position, delta))
-                {
-                    return true;
-                }
-            }
-            return inner_process_mouse_scroll(position, delta);
-        }
-
-        bool Control::inner_process_mouse_scroll(const Point& position, int delta)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->inner_process_mouse_scroll(position - child->position(), delta))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the 
-            // scroll function of this control.
-            return scroll(delta);
-        }
-
         bool Control::mouse_down(const Point&)
         {
             return false;

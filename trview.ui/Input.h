@@ -26,7 +26,10 @@ namespace trview
             bool     process_mouse_down(Control* control, const Point& position);
             void     process_mouse_up();
             bool     process_mouse_up(Control* control, const Point& position);
-            
+            void     process_mouse_scroll(int16_t delta);
+            bool     process_mouse_scroll(Control* control, const Point& position, int16_t delta);
+
+
             void     set_focus_control(Control* control);
 
             TokenStore     _token_store;
