@@ -22,6 +22,7 @@ namespace trview
 
         Control::~Control()
         {
+            on_deleting();
         }
 
         Align Control::horizontal_alignment() const
@@ -93,12 +94,6 @@ namespace trview
 
         void Control::clear_child_elements()
         {
-            auto focus = focus_control();
-            if (std::find_if(_child_elements.begin(), _child_elements.end(),
-                [&](const auto& control) { return control.get() == focus; }) != _child_elements.end())
-            {
-                set_focus_control(nullptr);
-            }
             _child_elements.clear();
             on_hierarchy_changed();
             on_invalidate();
@@ -118,163 +113,6 @@ namespace trview
                 std::sort(output.begin(), output.end(), [](const auto& l, const auto& r) { return l->z() < r->z(); });
             }
             return output;
-        }
-
-        bool Control::process_mouse_down(const Point& position)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->process_mouse_down(position - child->position()))
-                {
-                    return true;
-                }
-            }
-
-            // Promote controls to focus control, or clear if there are no controls that 
-            // accepted the event.
-            bool handled_by_self = _handles_input && mouse_down(position);
-            if (handled_by_self)
-            {
-                set_focus_control(this);
-            }
-            else if (!_parent)
-            {
-                set_focus_control(nullptr);
-            }
-            return handled_by_self;
-        }
-
-        bool Control::process_mouse_move(const Point& position)
-        {
-            // Get the control at the current mouse position.
-            Control* control = hover_control_at_position(position);
-            if (control != _hover_control)
-            {
-                if (_hover_control)
-                {
-                    _hover_control->mouse_leave();
-                }
-                set_hover_control(control);
-                if (_hover_control)
-                {
-                    _hover_control->mouse_enter();
-                }
-            }
-
-            if (_focus_control && _focus_control != this)
-            {
-                auto focus = _focus_control;
-                if (focus->move(position - focus->absolute_position()))
-                {
-                    return true;
-                }
-            }
-
-            return inner_process_mouse_move(position);
-        }
-
-        bool Control::inner_process_mouse_move(const Point& position)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->inner_process_mouse_move(position - child->position()))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the 
-            // move function of this control.
-            return move(position);
-        }
-
-        bool Control::process_mouse_up(const Point& position)
-        {
-            if (_focus_control && _focus_control != this)
-            {
-                const auto focus = _focus_control;
-                const auto control_space_position = position - focus->absolute_position();
-                bool focus_handled = focus->mouse_up(control_space_position);
-                if (focus_handled && in_bounds(control_space_position, focus->size()))
-                {
-                    focus->clicked(control_space_position);
-                }
-
-                if (focus_handled)
-                {
-                    return true;
-                }
-            }
-            return inner_process_mouse_up(position);
-        }
-
-        bool Control::inner_process_mouse_up(const Point& position)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->inner_process_mouse_up(position - child->position()))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the up of the control.
-            return mouse_up(position);
-        }
-
-        bool Control::mouse_scroll(const Point& position, int16_t delta)
-        {
-            if (_focus_control && _focus_control != this)
-            {
-                if (_focus_control->inner_process_mouse_scroll(position, delta))
-                {
-                    return true;
-                }
-            }
-            return inner_process_mouse_scroll(position, delta);
-        }
-
-        bool Control::inner_process_mouse_scroll(const Point& position, int delta)
-        {
-            // Bounds check - before child elements are checked.
-            if (!visible() || !in_bounds(position, _size))
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                // Convert the position into the coordinate space of the child element.
-                if (child->inner_process_mouse_scroll(position - child->position(), delta))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the 
-            // scroll function of this control.
-            return scroll(delta);
         }
 
         bool Control::mouse_down(const Point&)
@@ -316,38 +154,9 @@ namespace trview
             return false;
         }
 
-        void Control::set_focus_control(Control* control)
+        bool Control::handles_input() const
         {
-            if (_parent)
-            {
-                _parent->set_focus_control(control);
-            }
-            else
-            {
-                if (_focus_control)
-                {
-                    _focus_control->clicked_off(control);
-                }
-                inner_set_focus_control(control);
-            }
-        }
-
-        void Control::inner_set_focus_control(Control* control)
-        {
-            _focus_control = control;
-            for (const auto& child : _child_elements)
-            {
-                child->inner_set_focus_control(control);
-            }
-        }
-
-        Control* Control::focus_control() const
-        {
-            if (_parent)
-            {
-                return _parent->focus_control();
-            }
-            return _focus_control;
+            return _handles_input;
         }
 
         // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
@@ -355,65 +164,6 @@ namespace trview
         void Control::set_handles_input(bool value)
         {
             _handles_input = value;
-        }
-
-        bool Control::process_key_down(uint16_t key)
-        {
-            if (_focus_control && _focus_control != this)
-            {
-                if (_focus_control->key_down(key))
-                {
-                    return true;
-                }
-            }
-
-            return inner_process_key_down(key);
-        }
-
-        bool Control::inner_process_key_down(uint16_t key)
-        {
-            if (!visible())
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                if (child->inner_process_key_down(key))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the key_down
-            // event of the control.
-            return key_down(key);
-        }
-
-        bool Control::process_char(wchar_t key)
-        {
-            if (_focus_control && _focus_control != this && _focus_control->key_char(key))
-            {
-                return true;
-            }
-            return inner_process_char(key);
-        }
-
-        bool Control::inner_process_char(wchar_t key)
-        {
-            if (!visible())
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                if (child->inner_process_char(key))
-                {
-                    return true;
-                }
-            }
-            return key_char(key);
         }
 
         bool Control::is_mouse_over(const Point& position) const
@@ -456,30 +206,6 @@ namespace trview
         {
         }
 
-        Control* Control::hover_control_at_position(const Point& position)
-        {
-            if (!visible() || !in_bounds(position, size()))
-            {
-                return nullptr;
-            }
-
-            for (const auto& control : child_elements())
-            {
-                auto result = control->hover_control_at_position(position - control->position());
-                if (result && result->_handles_hover)
-                {
-                    return result;
-                }
-            }
-
-            if (_handles_hover)
-            {
-                return this;
-            }
-
-            return nullptr;
-        }
-
         void Control::mouse_enter()
         {
         }
@@ -488,25 +214,9 @@ namespace trview
         {
         }
 
-        void Control::set_hover_control(Control* control)
+        bool Control::handles_hover() const
         {
-            if (_parent)
-            {
-                _parent->set_hover_control(control);
-            }
-            else
-            {
-                inner_set_hover_control(control);
-            }
-        }
-
-        void Control::inner_set_hover_control(Control* control)
-        {
-            _hover_control = control;
-            for (const auto& child : _child_elements)
-            {
-                child->inner_set_hover_control(control);
-            }
+            return _handles_hover;
         }
 
         void Control::set_handles_hover(bool value)
@@ -529,6 +239,11 @@ namespace trview
         {
             _child_elements.erase(std::remove_if(_child_elements.begin(), _child_elements.end(), [&](const auto& element) { return element.get() == child_element; }), _child_elements.end());
             on_hierarchy_changed();
+        }
+
+        void Control::set_input_query(IInputQuery* query)
+        {
+            _input_query = query;
         }
     }
 }

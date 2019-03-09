@@ -10,6 +10,7 @@
 #include <trview.common/Point.h>
 #include <trview.common/TokenStore.h>
 #include "Align.h"
+#include "IInputQuery.h"
 
 namespace trview
 {
@@ -93,50 +94,25 @@ namespace trview
             /// @returns The child elements.
             std::vector<Control*> child_elements(bool rendering_order = false) const;
 
-            /// Process a mouse_down event at the position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse down event was handled by the control.
-            bool process_mouse_down(const Point& position);
-
-            /// Process a mouse_up event a tthe position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse up event was handled by the control.
-            bool process_mouse_up(const Point& position);
-
-            /// Process a mouse_move event at the position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse move was handled by the control.
-            bool process_mouse_move(const Point& position);
-
-            /// Process a mouse_scroll event.
-            /// @param position The position of the mouse relative to the control.
-            /// @param delta The mouse wheel movement.
-            /// @returns Whether the mouse scroll was handled by the control.
-            bool mouse_scroll(const Point& position, int16_t delta);
-
             /// Determines whether the mouse is over the element or any child elements that are
             /// interested in taking input.
             /// @param position The mouse position.
             /// @returns True if the control or any child elements are under the cursor and the control handles the event.
             bool is_mouse_over(const Point& position) const;
 
+            /// Gets whether this control handles input when tested in mouse over events.
+            bool handles_input() const;
+
             /// Set whether this control handles input when tested in is_mouse_over. Defaults to true.
             /// @param value Whether the control handles input.
             void set_handles_input(bool value);
 
+            /// Gets whether this control handles mouse hover events.
+            bool handles_hover() const;
+
             /// Set whether this control handles mouse hover events. Defaults to false.
             /// @param value Whether the control handles mouse hover events.
             void set_handles_hover(bool value);
-
-            /// Process a key down event.
-            /// @param key The key that was pressed down.
-            /// @returns True if the event was processed by the control.
-            bool process_key_down(uint16_t key);
-
-            /// Process a char event.
-            /// @param key The character that was pressed.
-            /// @returns True if the event was processed by the control.
-            bool process_char(wchar_t key);
 
             /// Set the size of the control.
             /// @param size The new size of the control.
@@ -177,10 +153,15 @@ namespace trview
 
             /// Event raised when there has been a change to the children of this control.
             Event<> on_hierarchy_changed;
-        protected:
-            /// To be called after a child element has been added to the control.
-            /// @param child_element The element that was added.
-            virtual void inner_add_child(Control* child_element);
+
+            /// Event raised when the control wants to become the focus control.
+            Event<> on_focus_requested;
+
+            /// Event raised when the control wants to clear the focus.
+            Event<> on_focus_clear_requested;
+
+            /// Event raised when the control is being deleted.
+            Event<> on_deleting;
 
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.
@@ -228,56 +209,18 @@ namespace trview
             /// @returns True if the key char event was handled.
             virtual bool key_char(wchar_t key);
 
-            /// Set the control in the tree that has focus.
-            /// @param control The current focus control
-            void set_focus_control(Control* control);
-
-            /// Set the control in the tree that is the hover element.
-            /// @param control The hovered over control.
-            void set_hover_control(Control* control);
-
-            /// Get the currently focused control.
-            /// @returns The currently focused control.
-            Control* focus_control() const;
+            void set_input_query(IInputQuery* query);
+        protected:
+            /// To be called after a child element has been added to the control.
+            /// @param child_element The element that was added.
+            virtual void inner_add_child(Control* child_element);
 
             TokenStore _token_store;
+            IInputQuery* _input_query{ nullptr };
         private:
-            /// Set the focus control and recurse to child controls.
-            /// @param control The new focus control.
-            void inner_set_focus_control(Control* control);
-
-            /// Set the hover control and recurse to child controls.
-            /// @param control The new hover control.
-            void inner_set_hover_control(Control* control);
-
-            /// Process a mouse move and recurse to child controls.
-            /// @param position The position of the mouse relative to the control.
-            bool inner_process_mouse_move(const Point& position);
-
-            /// Process a mouse up and recurse to child controls.
-            /// @param position The position of the mouse relative to the control.
-            bool inner_process_mouse_up(const Point& position);
-
-            /// Process a key down and recurse to child controls.
-            /// @param key The key that was pressed.
-            bool inner_process_key_down(uint16_t key);
-
-            /// Process a character key press and recurse to child controls.
-            /// @param key The character that was pressed.
-            bool inner_process_char(wchar_t key);
-
-            /// Process a mouse scroll and recurse to child controls.
-            /// @param delta The mouse scroll delta.
-            bool inner_process_mouse_scroll(const Point& position, int delta);
-
-            /// Get the control at the specified mouse position.
-            Control* hover_control_at_position(const Point& position);
-
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };
-            Control* _focus_control{ nullptr };
-            Control* _hover_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;

@@ -70,8 +70,7 @@ namespace trview
 
     CollapsiblePanel::CollapsiblePanel(const Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())),
-        _mouse(window()), _keyboard(window())
+        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size()))
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -80,14 +79,8 @@ namespace trview
             _ui_renderer->set_host_size(window().size());
         };
 
-        _token_store += _mouse.mouse_up += [&](auto) { _ui->process_mouse_up(client_cursor_position(window())); };
-        _token_store += _mouse.mouse_move += [&](auto, auto) { _ui->process_mouse_move(client_cursor_position(window())); };
-        _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { _ui->process_mouse_down(client_cursor_position(window())); };
-        _token_store += _mouse.mouse_wheel += [&](int16_t delta) { _ui->mouse_scroll(client_cursor_position(window()), delta); };
-        _token_store += _keyboard.on_key_down += [&](auto key) { _ui->process_key_down(key); };
-        _token_store += _keyboard.on_char += [&](auto key) { _ui->process_char(key); };
-
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        _input = std::make_unique<ui::Input>(window(), *_ui);
     }
 
     void CollapsiblePanel::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)

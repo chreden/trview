@@ -102,7 +102,7 @@ namespace trview
                 Event<Item> on_click;
 
                 void set_highlighted(bool value);
-            protected:
+
                 virtual void mouse_enter() override;
                 virtual void mouse_leave() override;
             private:

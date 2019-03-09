@@ -299,7 +299,7 @@ namespace trview
 
         void Listbox::select_item(const Item& item, bool raise_event)
         {
-            set_focus_control(this);
+            on_focus_requested();
             _selected_item = item;
             scroll_to_show(item);
             if (raise_event)

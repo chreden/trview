@@ -64,7 +64,7 @@ namespace trview
             /// Set the foreground colour of the text, if present.
             /// @param colour The foreground colour.
             void set_text_colour(const Colour& colour);
-        protected:
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
             virtual void mouse_enter() override;

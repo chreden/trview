@@ -16,13 +16,10 @@ namespace trview
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
         _control->set_handles_input(false);
+        _ui_input = std::make_unique<Input>(window, *_control);
 
-        _token_store += _mouse.mouse_up += [&](auto) { _control->process_mouse_up(client_cursor_position(window)); };
-        _token_store += _mouse.mouse_move += [&](auto, auto) { _control->process_mouse_move(client_cursor_position(window)); };
-        _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { _control->process_mouse_down(client_cursor_position(window)); };
         _token_store += _keyboard.on_key_down += [&](auto key)
         {
-            _control->process_key_down(key);
             if (_keyboard.control())
             {
                 std::wstring name;
@@ -53,7 +50,6 @@ namespace trview
                 }
             }
         };
-        _token_store += _keyboard.on_char += [&](auto key) { _control->process_char(key); };
 
         generate_tool_window(texture_storage);
 

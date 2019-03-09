@@ -44,7 +44,7 @@ namespace trview
 
         bool Slider::mouse_up(const Point&)
         {
-            set_focus_control(nullptr);
+            on_focus_clear_requested();
             return true;
         }
 
@@ -56,7 +56,7 @@ namespace trview
 
         bool Slider::move(Point position)
         {
-            if (focus_control() == this)
+            if (_input_query && _input_query->focus_control() == this)
             {
                 set_blob_position(position);
                 return true;

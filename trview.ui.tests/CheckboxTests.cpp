@@ -34,7 +34,7 @@ namespace trview
                 TEST_METHOD(StateChangeEventRaised)
                 {
                     Checkbox checkbox(Point(), Size(20, 20));
-                    
+
                     bool raised = false;
                     uint32_t times = 0;
                     bool raised_state = false;
@@ -45,7 +45,7 @@ namespace trview
                         ++times;
                     };
 
-                    checkbox.process_mouse_down(Point());
+                    checkbox.clicked(Point());
                     Assert::IsTrue(raised);
                     Assert::AreEqual(1u, times);
                     Assert::AreEqual(true, raised_state);
@@ -64,8 +64,8 @@ namespace trview
                         states.push_back(state);
                     };
 
-                    checkbox.process_mouse_down(Point());
-                    checkbox.process_mouse_down(Point());
+                    checkbox.clicked(Point());
+                    checkbox.clicked(Point());
                     Assert::AreEqual((std::size_t)2u, states.size());
                     Assert::AreEqual(true, static_cast<bool>(states[0]));
                     Assert::AreEqual(false, static_cast<bool>(states[1]));

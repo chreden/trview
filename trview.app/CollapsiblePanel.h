@@ -6,11 +6,10 @@
 #include <string>
 #include <trview.graphics/Device.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.input/Mouse.h>
-#include <trview.input/Keyboard.h>
 #include <trview.common/TokenStore.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
+#include <trview.ui/Input.h>
 
 #include "WindowResizer.h"
 
@@ -85,6 +84,7 @@ namespace trview
         ui::Control* _left_panel;
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
+        std::unique_ptr<ui::Input> _input;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
@@ -93,8 +93,6 @@ namespace trview
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
-        input::Mouse    _mouse;
-        input::Keyboard _keyboard;
         ui::Control* _divider;
         ui::Button* _expander;
         bool        _expanded{ true };

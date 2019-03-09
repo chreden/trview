@@ -19,7 +19,7 @@ namespace trview
                     Button button(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
                     bool raised = false;
                     auto token = button.on_click += [&raised]() { raised = true; };
-                    button.process_mouse_down(Point());
+                    button.clicked(Point());
                     Assert::IsTrue(raised);
                 }
             };

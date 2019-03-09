@@ -55,6 +55,12 @@
     <ClInclude Include="IFontMeasurer.h">
       <Filter>Controls\Label</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="IInputQuery.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -111,6 +117,12 @@
     <ClCompile Include="IFontMeasurer.cpp">
       <Filter>Controls\Label</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="IInputQuery.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -133,6 +145,9 @@
     </Filter>
     <Filter Include="Controls\Label">
       <UniqueIdentifier>{4a8f2bab-af56-45f4-acfd-cacd829e7763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{4ae4639a-c45d-428e-9104-b6604caaa0cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

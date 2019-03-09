@@ -30,13 +30,13 @@ namespace trview
 
         bool Scrollbar::mouse_up(const Point&)
         {
-            set_focus_control(nullptr);
+            on_focus_clear_requested();
             return true;
         }
 
         bool Scrollbar::move(Point position)
         {
-            if (focus_control() == this)
+            if (_input_query && _input_query->focus_control() == this)
             {
                 return clicked(position);
             }

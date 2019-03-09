@@ -15,7 +15,7 @@ namespace trview
             _token_store += _button->on_click += [&]()
             {
                 _dropdown->set_visible(!_dropdown->visible());
-                set_focus_control(this);
+                on_focus_requested();
                 update_dropdown();
             };
         }
