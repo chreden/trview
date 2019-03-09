@@ -109,11 +109,6 @@ namespace trview
             /// @param value Whether the control handles mouse hover events.
             void set_handles_hover(bool value);
 
-            /// Process a key down event.
-            /// @param key The key that was pressed down.
-            /// @returns True if the event was processed by the control.
-            bool process_key_down(uint16_t key);
-
             /// Process a char event.
             /// @param key The character that was pressed.
             /// @returns True if the event was processed by the control.
@@ -224,10 +219,6 @@ namespace trview
 
             TokenStore _token_store;
         private:
-            /// Process a key down and recurse to child controls.
-            /// @param key The key that was pressed.
-            bool inner_process_key_down(uint16_t key);
-
             /// Process a character key press and recurse to child controls.
             /// @param key The character that was pressed.
             bool inner_process_char(wchar_t key);

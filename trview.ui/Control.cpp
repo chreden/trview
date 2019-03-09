@@ -170,39 +170,6 @@ namespace trview
             _handles_input = value;
         }
 
-        bool Control::process_key_down(uint16_t key)
-        {
-            if (_focus_control && _focus_control != this)
-            {
-                if (_focus_control->key_down(key))
-                {
-                    return true;
-                }
-            }
-
-            return inner_process_key_down(key);
-        }
-
-        bool Control::inner_process_key_down(uint16_t key)
-        {
-            if (!visible())
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                if (child->inner_process_key_down(key))
-                {
-                    return true;
-                }
-            }
-
-            // If none of the child elements have handled this event themselves, call the key_down
-            // event of the control.
-            return key_down(key);
-        }
-
         bool Control::process_char(wchar_t key)
         {
             if (_focus_control && _focus_control != this && _focus_control->key_char(key))

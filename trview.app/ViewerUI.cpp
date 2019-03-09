@@ -22,7 +22,6 @@ namespace trview
 
         _token_store += _keyboard.on_key_down += [&](auto key)
         {
-            _control->process_key_down(key);
             if (_keyboard.control())
             {
                 std::wstring name;

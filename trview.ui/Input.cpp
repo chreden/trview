@@ -14,7 +14,7 @@ namespace trview
         }
 
         Input::Input(const trview::Window& window, Control& control)
-            : _mouse(window), _window(window), _control(control)
+            : _mouse(window), _keyboard(window), _window(window), _control(control)
         {
             register_events();
         }
@@ -29,6 +29,7 @@ namespace trview
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
+            _token_store += _keyboard.on_key_down += [&](auto key) { process_key_down(key); };
         }
 
         void Input::register_focus_controls(Control* control)
@@ -249,6 +250,35 @@ namespace trview
             // If none of the child elements have handled this event themselves, call the 
             // scroll function of this control.
             return control->scroll(delta);
+        }
+
+        void Input::process_key_down(uint16_t key)
+        {
+            if (_focus_control && _focus_control->key_down(key))
+            {
+                return;
+            }
+            process_key_down(&_control, key);
+        }
+
+        bool Input::process_key_down(Control* control, uint16_t key)
+        {
+            if (!control->visible())
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                if (process_key_down(child, key))
+                {
+                    return true;
+                }
+            }
+
+            // If none of the child elements have handled this event themselves, call the key_down
+            // event of the control.
+            return control->key_down(key);
         }
 
         void Input::set_focus_control(Control* control)

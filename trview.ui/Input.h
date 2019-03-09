@@ -3,6 +3,7 @@
 #include <trview.common/Window.h>
 #include <trview.common/TokenStore.h>
 #include <trview.input/Mouse.h>
+#include <trview.input/Keyboard.h>
 
 namespace trview
 {
@@ -28,13 +29,15 @@ namespace trview
             bool     process_mouse_up(Control* control, const Point& position);
             void     process_mouse_scroll(int16_t delta);
             bool     process_mouse_scroll(Control* control, const Point& position, int16_t delta);
-
+            void     process_key_down(uint16_t key);
+            bool     process_key_down(Control* control, uint16_t key);
 
             void     set_focus_control(Control* control);
 
-            TokenStore     _token_store;
-            input::Mouse   _mouse;
-            trview::Window _window;
+            TokenStore      _token_store;
+            input::Mouse    _mouse;
+            input::Keyboard _keyboard;
+            trview::Window  _window;
 
             Control&       _control;
             Control*       _hover_control{ nullptr };
