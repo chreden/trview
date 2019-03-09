@@ -16,6 +16,7 @@ namespace trview
         public:
             explicit Input(const trview::Window& window, Control& control);
         private:
+            void     register_events();
             void     register_focus_controls(Control* control);
             void     process_mouse_move();
             bool     process_mouse_move(Control* control, const Point& position);
