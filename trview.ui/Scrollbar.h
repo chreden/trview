@@ -31,7 +31,7 @@ namespace trview
 
             /// Event raised when the user has moved the blob in the scrollbar.
             Event<float> on_scroll;
-        protected:
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
             virtual bool move(Point position) override;

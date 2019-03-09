@@ -16,7 +16,6 @@ namespace trview
             Event<float> on_value_changed;
 
             void set_value(float value);
-        protected:
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
             virtual bool clicked(Point position) override;
