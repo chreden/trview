@@ -4,6 +4,7 @@
 #include <trview.common/TokenStore.h>
 #include <trview.input/Mouse.h>
 #include <trview.input/Keyboard.h>
+#include "IInputQuery.h"
 
 namespace trview
 {
@@ -12,10 +13,12 @@ namespace trview
         class Control;
 
         /// Manages the mouse and keyboard input state for a control tree.
-        class Input final
+        class Input final : public IInputQuery
         {
         public:
             explicit Input(const trview::Window& window, Control& control);
+            virtual ~Input() = default;
+            virtual Control* focus_control() const;
         private:
             void     register_events();
             void     register_focus_controls(Control* control);

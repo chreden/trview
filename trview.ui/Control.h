@@ -10,6 +10,7 @@
 #include <trview.common/Point.h>
 #include <trview.common/TokenStore.h>
 #include "Align.h"
+#include "IInputQuery.h"
 
 namespace trview
 {
@@ -19,8 +20,6 @@ namespace trview
         class Control
         {
         public:
-            friend class Input;
-
             /// Create a new control.
             /// @param position The position in the parent control.
             /// @param size The size of the control.
@@ -101,9 +100,15 @@ namespace trview
             /// @returns True if the control or any child elements are under the cursor and the control handles the event.
             bool is_mouse_over(const Point& position) const;
 
+            /// Gets whether this control handles input when tested in mouse over events.
+            bool handles_input() const;
+
             /// Set whether this control handles input when tested in is_mouse_over. Defaults to true.
             /// @param value Whether the control handles input.
             void set_handles_input(bool value);
+
+            /// Gets whether this control handles mouse hover events.
+            bool handles_hover() const;
 
             /// Set whether this control handles mouse hover events. Defaults to false.
             /// @param value Whether the control handles mouse hover events.
@@ -157,10 +162,6 @@ namespace trview
 
             /// Event raised when the control is being deleted.
             Event<> on_deleting;
-        protected:
-            /// To be called after a child element has been added to the control.
-            /// @param child_element The element that was added.
-            virtual void inner_add_child(Control* child_element);
 
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.
@@ -208,16 +209,18 @@ namespace trview
             /// @returns True if the key char event was handled.
             virtual bool key_char(wchar_t key);
 
-            /// Get the currently focused control.
-            /// @returns The currently focused control.
-            Control* focus_control() const;
+            void set_input_query(IInputQuery* query);
+        protected:
+            /// To be called after a child element has been added to the control.
+            /// @param child_element The element that was added.
+            virtual void inner_add_child(Control* child_element);
 
             TokenStore _token_store;
+            IInputQuery* _input_query{ nullptr };
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };
-            Control* _focus_control{ nullptr };
             Point    _position;
             Size     _size;
             bool     _visible;

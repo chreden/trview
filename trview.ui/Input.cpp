@@ -19,6 +19,11 @@ namespace trview
             register_events();
         }
 
+        Control* Input::focus_control() const
+        {
+            return _focus_control;
+        }
+
         void Input::register_events()
         {
             _token_store = TokenStore();
@@ -35,6 +40,8 @@ namespace trview
 
         void Input::register_focus_controls(Control* control)
         {
+            control->set_input_query(this);
+
             _token_store += control->on_focus_requested += [this, control]() { set_focus_control(control); };
             _token_store += control->on_focus_clear_requested += [&]() { set_focus_control(nullptr); };
             _token_store += control->on_hierarchy_changed += [this]() 
@@ -124,13 +131,13 @@ namespace trview
             for (const auto& child : control->child_elements())
             {
                 auto result = hover_control_at_position(child, position - child->position());
-                if (result && result->_handles_hover)
+                if (result && result->handles_hover())
                 {
                     return result;
                 }
             }
 
-            if (control->_handles_hover)
+            if (control->handles_hover())
             {
                 return control;
             }
@@ -162,7 +169,7 @@ namespace trview
 
             // Promote controls to focus control, or clear if there are no controls that 
             // accepted the event.
-            bool handled_by_self = control->_handles_input && control->mouse_down(position);
+            bool handled_by_self = control->handles_input() && control->mouse_down(position);
             if (handled_by_self)
             {
                 set_focus_control(control);

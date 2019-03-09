@@ -154,13 +154,9 @@ namespace trview
             return false;
         }
 
-        Control* Control::focus_control() const
+        bool Control::handles_input() const
         {
-            if (_parent)
-            {
-                return _parent->focus_control();
-            }
-            return _focus_control;
+            return _handles_input;
         }
 
         // Set whether this control handles input when tested in is_mouse_over. Defaults to true.
@@ -218,6 +214,11 @@ namespace trview
         {
         }
 
+        bool Control::handles_hover() const
+        {
+            return _handles_hover;
+        }
+
         void Control::set_handles_hover(bool value)
         {
             _handles_hover = value;
@@ -238,6 +239,11 @@ namespace trview
         {
             _child_elements.erase(std::remove_if(_child_elements.begin(), _child_elements.end(), [&](const auto& element) { return element.get() == child_element; }), _child_elements.end());
             on_hierarchy_changed();
+        }
+
+        void Control::set_input_query(IInputQuery* query)
+        {
+            _input_query = query;
         }
     }
 }

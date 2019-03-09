@@ -58,6 +58,9 @@
     <ClInclude Include="Input.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="IInputQuery.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -115,6 +118,9 @@
       <Filter>Controls\Label</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="IInputQuery.cpp">
       <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
