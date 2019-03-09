@@ -170,32 +170,6 @@ namespace trview
             _handles_input = value;
         }
 
-        bool Control::process_char(wchar_t key)
-        {
-            if (_focus_control && _focus_control != this && _focus_control->key_char(key))
-            {
-                return true;
-            }
-            return inner_process_char(key);
-        }
-
-        bool Control::inner_process_char(wchar_t key)
-        {
-            if (!visible())
-            {
-                return false;
-            }
-
-            for (auto& child : child_elements())
-            {
-                if (child->inner_process_char(key))
-                {
-                    return true;
-                }
-            }
-            return key_char(key);
-        }
-
         bool Control::is_mouse_over(const Point& position) const
         {
             if (!visible() || !in_bounds(position, _size))

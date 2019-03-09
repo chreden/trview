@@ -52,7 +52,6 @@ namespace trview
                 }
             }
         };
-        _token_store += _keyboard.on_char += [&](auto key) { _control->process_char(key); };
 
         generate_tool_window(texture_storage);
 

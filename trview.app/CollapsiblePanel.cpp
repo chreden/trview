@@ -80,10 +80,7 @@ namespace trview
             _ui_renderer->set_host_size(window().size());
         };
 
-        _token_store += _keyboard.on_char += [&](auto key) { _ui->process_char(key); };
-
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
-
         _input = std::make_unique<ui::Input>(window(), *_ui);
     }
 

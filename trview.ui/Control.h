@@ -109,11 +109,6 @@ namespace trview
             /// @param value Whether the control handles mouse hover events.
             void set_handles_hover(bool value);
 
-            /// Process a char event.
-            /// @param key The character that was pressed.
-            /// @returns True if the event was processed by the control.
-            bool process_char(wchar_t key);
-
             /// Set the size of the control.
             /// @param size The new size of the control.
             void set_size(Size size);
@@ -219,10 +214,6 @@ namespace trview
 
             TokenStore _token_store;
         private:
-            /// Process a character key press and recurse to child controls.
-            /// @param key The character that was pressed.
-            bool inner_process_char(wchar_t key);
-
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };

@@ -31,6 +31,9 @@ namespace trview
             bool     process_mouse_scroll(Control* control, const Point& position, int16_t delta);
             void     process_key_down(uint16_t key);
             bool     process_key_down(Control* control, uint16_t key);
+            void     process_char(uint16_t key);
+            bool     process_char(Control* control, uint16_t key);
+
 
             void     set_focus_control(Control* control);
 
