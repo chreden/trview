@@ -6,8 +6,6 @@
 #include <string>
 #include <trview.graphics/Device.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.input/Mouse.h>
-#include <trview.input/Keyboard.h>
 #include <trview.common/TokenStore.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
@@ -95,8 +93,6 @@ namespace trview
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
-        input::Mouse    _mouse;
-        input::Keyboard _keyboard;
         ui::Control* _divider;
         ui::Button* _expander;
         bool        _expanded{ true };

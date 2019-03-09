@@ -16,8 +16,6 @@ namespace trview
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
         _control->set_handles_input(false);
-
-        // This may need to move later.
         _ui_input = std::make_unique<Input>(window, *_control);
 
         _token_store += _keyboard.on_key_down += [&](auto key)
