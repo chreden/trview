@@ -95,11 +95,6 @@ namespace trview
             /// @returns The child elements.
             std::vector<Control*> child_elements(bool rendering_order = false) const;
 
-            /// Process a mouse_up event a tthe position specified.
-            /// @param position The position of the mouse relative to the control.
-            /// @returns Whether the mouse up event was handled by the control.
-            bool process_mouse_up(const Point& position);
-
             /// Process a mouse_scroll event.
             /// @param position The position of the mouse relative to the control.
             /// @param delta The mouse wheel movement.
@@ -235,10 +230,6 @@ namespace trview
 
             TokenStore _token_store;
         private:
-            /// Process a mouse up and recurse to child controls.
-            /// @param position The position of the mouse relative to the control.
-            bool inner_process_mouse_up(const Point& position);
-
             /// Process a key down and recurse to child controls.
             /// @param key The key that was pressed.
             bool inner_process_key_down(uint16_t key);

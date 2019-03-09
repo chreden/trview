@@ -24,6 +24,9 @@ namespace trview
             Control* hover_control_at_position(Control* control, const Point& position);
             void     process_mouse_down();
             bool     process_mouse_down(Control* control, const Point& position);
+            void     process_mouse_up();
+            bool     process_mouse_up(Control* control, const Point& position);
+            
             void     set_focus_control(Control* control);
 
             TokenStore     _token_store;
