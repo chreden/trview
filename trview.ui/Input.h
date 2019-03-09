@@ -44,7 +44,6 @@ namespace trview
             input::Mouse    _mouse;
             input::Keyboard _keyboard;
             trview::Window  _window;
-
             Control&       _control;
             Control*       _hover_control{ nullptr };
             Control*       _focus_control{ nullptr };
