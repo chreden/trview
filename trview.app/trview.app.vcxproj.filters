@@ -41,18 +41,6 @@
     <ClCompile Include="Measure.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="ICamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="OrbitCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
@@ -106,9 +94,6 @@
     <ClCompile Include="DirectoryListing.cpp">
       <Filter>Windows Menus</Filter>
     </ClCompile>
-    <ClCompile Include="CameraPosition.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="ViewerUI.cpp">
       <Filter>Viewer\UI</Filter>
     </ClCompile>
@@ -130,12 +115,30 @@
     <ClCompile Include="CameraControls.cpp">
       <Filter>Viewer\UI</Filter>
     </ClCompile>
-    <ClCompile Include="CameraMode.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="GoTo.cpp">
       <Filter>Viewer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\CameraControls.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\CameraMode.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\CameraPosition.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\FreeCamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\ICamera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\OrbitCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,18 +188,6 @@
     </ClInclude>
     <ClInclude Include="Measure.h">
       <Filter>Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="ICamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="FreeCamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="OrbitCamera.h">
-      <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
@@ -257,9 +248,6 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Windows Menus</Filter>
     </ClInclude>
-    <ClInclude Include="CameraPosition.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="ViewerUI.h">
       <Filter>Viewer\UI</Filter>
     </ClInclude>
@@ -282,12 +270,30 @@
     <ClInclude Include="CameraControls.h">
       <Filter>Viewer\UI</Filter>
     </ClInclude>
-    <ClInclude Include="CameraMode.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="GoTo.h">
       <Filter>Viewer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\CameraControls.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\CameraMode.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\CameraPosition.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\FreeCamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\ICamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\OrbitCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

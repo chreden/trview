@@ -18,10 +18,10 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/FreeCamera.h>
-#include <trview.app/OrbitCamera.h>
+#include <trview.app/Camera/FreeCamera.h>
+#include <trview.app/Camera/OrbitCamera.h>
 #include "CameraInput.h"
-#include <trview.app/CameraMode.h>
+#include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
 #include <trview.app/UserSettings.h>
 #include <trview.app/LevelSwitcher.h>

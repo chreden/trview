@@ -9,7 +9,7 @@
 #include <trview.app/Trigger.h>
 
 #include "IRenderable.h"
-#include "ICamera.h"
+#include "Camera/ICamera.h"
 #include "ILevelTextureStorage.h"
 
 using namespace Microsoft::WRL;

@@ -4,7 +4,7 @@
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Sprite.h>
 #include "Mesh.h"
-#include "OrbitCamera.h"
+#include "Camera/OrbitCamera.h"
 
 namespace trview
 {

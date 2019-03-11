@@ -4,7 +4,7 @@
 #include <trview.graphics/Device.h>
 #include "Mesh.h"
 #include "Sector.h"
-#include "ICamera.h"
+#include "Camera/ICamera.h"
 #include "ILevelTextureStorage.h"
 
 namespace trview

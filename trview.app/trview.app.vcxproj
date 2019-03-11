@@ -20,19 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlternateGroupToggler.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraControls.cpp" />
-    <ClCompile Include="CameraMode.cpp" />
-    <ClCompile Include="CameraPosition.cpp" />
+    <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Camera\CameraControls.cpp" />
+    <ClCompile Include="Camera\CameraMode.cpp" />
+    <ClCompile Include="Camera\CameraPosition.cpp" />
+    <ClCompile Include="Camera\FreeCamera.cpp" />
+    <ClCompile Include="Camera\ICamera.cpp" />
+    <ClCompile Include="Camera\OrbitCamera.cpp" />
     <ClCompile Include="CollapsiblePanel.cpp" />
     <ClCompile Include="Compass.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Flipmaps.cpp" />
-    <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="GoTo.cpp" />
-    <ClCompile Include="ICamera.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -44,7 +45,6 @@
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Neighbours.cpp" />
-    <ClCompile Include="OrbitCamera.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
@@ -70,19 +70,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlternateGroupToggler.h" />
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraControls.h" />
-    <ClInclude Include="CameraMode.h" />
-    <ClInclude Include="CameraPosition.h" />
+    <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Camera\CameraControls.h" />
+    <ClInclude Include="Camera\CameraMode.h" />
+    <ClInclude Include="Camera\CameraPosition.h" />
+    <ClInclude Include="Camera\FreeCamera.h" />
+    <ClInclude Include="Camera\ICamera.h" />
+    <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="CollapsiblePanel.h" />
     <ClInclude Include="Compass.h" />
     <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Flipmaps.h" />
-    <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="GoTo.h" />
-    <ClInclude Include="ICamera.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="Item.h" />
@@ -95,7 +97,6 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
-    <ClInclude Include="OrbitCamera.h" />
     <ClInclude Include="PickInfo.h" />
     <ClInclude Include="Picking.h" />
     <ClInclude Include="PickResult.h" />

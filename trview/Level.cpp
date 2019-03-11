@@ -9,7 +9,7 @@
 
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
-#include <trview.app/ICamera.h>
+#include <trview.app/Camera/ICamera.h>
 #include <trview.app/TransparencyBuffer.h>
 #include "ResourceHelper.h"
 #include "resource.h"

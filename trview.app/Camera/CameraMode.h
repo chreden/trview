@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <trview.app/FreeCamera.h>
+#include "FreeCamera.h"
 
 namespace trview
 {

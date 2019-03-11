@@ -1,6 +1,6 @@
 #include "TransparencyBuffer.h"
 
-#include <trview.app/ICamera.h>
+#include <trview.app/Camera/ICamera.h>
 #include <trview.app/ILevelTextureStorage.h>
 #include <trview.app/MeshVertex.h>
 

@@ -1,5 +1,5 @@
 #include "Compass.h"
-#include "ICamera.h"
+#include "Camera/ICamera.h"
 #include "MeshVertex.h"
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/IShaderStorage.h>

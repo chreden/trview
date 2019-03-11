@@ -1,5 +1,5 @@
 #include "Picking.h"
-#include "ICamera.h"
+#include "Camera/ICamera.h"
 
 #include <trview.common/Point.h>
 #include <trview.common/Window.h>
