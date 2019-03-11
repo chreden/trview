@@ -2,7 +2,7 @@
 #include <trview.app/Types.h>
 #include <unordered_map>
 #include <algorithm>
-#include "TransparencyBuffer.h"
+#include <trview.app/Geometry/TransparencyBuffer.h>
 
 using namespace Microsoft::WRL;
 

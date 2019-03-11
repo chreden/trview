@@ -8,7 +8,7 @@
 #include "IMeshStorage.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Mesh.h>
-#include <trview.app/TransparencyBuffer.h>
+#include <trview.app/Geometry/TransparencyBuffer.h>
 
 #include <SimpleMath.h>
 #include <DirectXCollision.h>

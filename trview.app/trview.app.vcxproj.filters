@@ -45,9 +45,6 @@
     <ClCompile Include="SelectionRenderer.cpp">
       <Filter>Selection</Filter>
     </ClCompile>
-    <ClCompile Include="TransparencyBuffer.cpp">
-      <Filter>Transparency</Filter>
-    </ClCompile>
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
     </ClCompile>
@@ -137,6 +134,9 @@
     <ClCompile Include="Geometry\TransparentTriangle.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\TransparencyBuffer.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -186,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="SelectionRenderer.h">
       <Filter>Selection</Filter>
-    </ClInclude>
-    <ClInclude Include="TransparencyBuffer.h">
-      <Filter>Transparency</Filter>
     </ClInclude>
     <ClInclude Include="RouteWindow.h">
       <Filter>Route</Filter>
@@ -292,6 +289,9 @@
     <ClInclude Include="Geometry\Triangle.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\TransparencyBuffer.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -326,9 +326,6 @@
     </Filter>
     <Filter Include="Selection">
       <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Transparency">
-      <UniqueIdentifier>{4605e9d0-57f6-40ec-906a-10828e27dad5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Windows Menus">
       <UniqueIdentifier>{df64e74e-be44-4213-b0eb-f5e3f2789c70}</UniqueIdentifier>

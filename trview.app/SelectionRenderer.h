@@ -12,7 +12,7 @@
 #include <wrl/client.h>
 #include <SimpleMath.h>
 
-#include "TransparencyBuffer.h"
+#include <trview.app/Geometry/TransparencyBuffer.h>
 #include <trview.graphics/RenderTarget.h>
 
 namespace trview
