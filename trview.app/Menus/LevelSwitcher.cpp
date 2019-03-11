@@ -1,5 +1,5 @@
 #include "LevelSwitcher.h"
-#include <trview.app/WindowIDs.h>
+#include <trview.app/Windows/WindowIDs.h>
 #include "DirectoryListing.h"
 #include <trview.common/Strings.h>
 

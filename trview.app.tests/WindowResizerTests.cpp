@@ -1,6 +1,6 @@
 #include "CppUnitTest.h"
 
-#include <trview.app/WindowResizer.h>
+#include <trview.app/Windows/WindowResizer.h>
 #include <trview.tests.common/Window.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

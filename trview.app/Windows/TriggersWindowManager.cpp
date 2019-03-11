@@ -1,5 +1,5 @@
 #include "TriggersWindowManager.h"
-#include <trview.app/WindowIDs.h>
+#include <trview.app/Windows/WindowIDs.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
 

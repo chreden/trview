@@ -25,7 +25,7 @@
 #include "Level.h"
 #include <trview.app/UserSettings.h>
 #include <trview.app/Menus/LevelSwitcher.h>
-#include <trview.app/WindowResizer.h>
+#include <trview.app/Windows/WindowResizer.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>

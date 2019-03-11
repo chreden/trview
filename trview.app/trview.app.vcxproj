@@ -59,7 +59,6 @@
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="Waypoint.cpp" />
-    <ClCompile Include="WindowResizer.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
@@ -67,6 +66,7 @@
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
+    <ClCompile Include="Windows\WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlternateGroupToggler.h" />
@@ -114,8 +114,6 @@
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Waypoint.h" />
-    <ClInclude Include="WindowIDs.h" />
-    <ClInclude Include="WindowResizer.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
@@ -123,6 +121,8 @@
     <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
+    <ClInclude Include="Windows\WindowIDs.h" />
+    <ClInclude Include="Windows\WindowResizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">

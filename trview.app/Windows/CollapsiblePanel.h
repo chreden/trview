@@ -11,7 +11,7 @@
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Input.h>
 
-#include <trview.app/WindowResizer.h>
+#include <trview.app/Windows/WindowResizer.h>
 
 namespace trview
 {
