@@ -1,5 +1,5 @@
 #include "RouteWindowManager.h"
-#include "WindowIDs.h"
+#include <trview.app/WindowIDs.h>
 
 namespace trview
 {

@@ -8,7 +8,7 @@
 
 #include <trview.common/Event.h>
 #include <trview.common/TokenStore.h>
-#include "CameraMode.h"
+#include <trview.app/Camera/CameraMode.h>
 
 namespace trview
 {

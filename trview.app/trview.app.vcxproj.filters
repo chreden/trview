@@ -5,23 +5,8 @@
     <ClCompile Include="Item.cpp">
       <Filter>Items</Filter>
     </ClCompile>
-    <ClCompile Include="ItemsWindow.cpp">
-      <Filter>Items</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemsWindowManager.cpp">
-      <Filter>Items</Filter>
-    </ClCompile>
     <ClCompile Include="Trigger.cpp">
       <Filter>Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="TriggersWindow.cpp">
-      <Filter>Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="TriggersWindowManager.cpp">
-      <Filter>Triggers</Filter>
-    </ClCompile>
-    <ClCompile Include="CollapsiblePanel.cpp">
-      <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="ILevelTextureStorage.cpp">
       <Filter>Textures</Filter>
@@ -46,12 +31,6 @@
       <Filter>Selection</Filter>
     </ClCompile>
     <ClCompile Include="Waypoint.cpp">
-      <Filter>Route</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteWindow.cpp">
-      <Filter>Route</Filter>
-    </ClCompile>
-    <ClCompile Include="RouteWindowManager.cpp">
       <Filter>Route</Filter>
     </ClCompile>
     <ClCompile Include="Compass.cpp" />
@@ -82,38 +61,11 @@
     <ClCompile Include="DirectoryListing.cpp">
       <Filter>Windows Menus</Filter>
     </ClCompile>
-    <ClCompile Include="ViewerUI.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelInfo.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomNavigator.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsWindow.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Flipmaps.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Neighbours.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
-    <ClCompile Include="GoTo.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Camera\CameraControls.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Camera\CameraMode.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera\CameraPosition.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="Camera\FreeCamera.cpp">
@@ -137,6 +89,54 @@
     <ClCompile Include="Geometry\TransparencyBuffer.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="UI\CameraControls.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Flipmaps.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GoTo.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\LevelInfo.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Neighbours.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\RoomNavigator.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\SettingsWindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ViewerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CameraPosition.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\CollapsiblePanel.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ItemsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ItemsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RouteWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RouteWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\TriggersWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\TriggersWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -144,23 +144,8 @@
     <ClInclude Include="Item.h">
       <Filter>Items</Filter>
     </ClInclude>
-    <ClInclude Include="ItemsWindow.h">
-      <Filter>Items</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemsWindowManager.h">
-      <Filter>Items</Filter>
-    </ClInclude>
     <ClInclude Include="Trigger.h">
       <Filter>Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="TriggersWindow.h">
-      <Filter>Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="TriggersWindowManager.h">
-      <Filter>Triggers</Filter>
-    </ClInclude>
-    <ClInclude Include="CollapsiblePanel.h">
-      <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="ILevelTextureStorage.h">
       <Filter>Textures</Filter>
@@ -186,12 +171,6 @@
     </ClInclude>
     <ClInclude Include="SelectionRenderer.h">
       <Filter>Selection</Filter>
-    </ClInclude>
-    <ClInclude Include="RouteWindow.h">
-      <Filter>Route</Filter>
-    </ClInclude>
-    <ClInclude Include="RouteWindowManager.h">
-      <Filter>Route</Filter>
     </ClInclude>
     <ClInclude Include="Compass.h" />
     <ClInclude Include="FileDropper.h">
@@ -227,42 +206,12 @@
     <ClInclude Include="DirectoryListing.h">
       <Filter>Windows Menus</Filter>
     </ClInclude>
-    <ClInclude Include="ViewerUI.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelInfo.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomNavigator.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
     <ClInclude Include="RoomInfo.h" />
-    <ClInclude Include="SettingsWindow.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Flipmaps.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Neighbours.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraControls.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
     <ClInclude Include="UserSettings.h" />
-    <ClInclude Include="GoTo.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Camera\CameraControls.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Camera\CameraMode.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera\CameraPosition.h">
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="Camera\FreeCamera.h">
@@ -291,6 +240,54 @@
     </ClInclude>
     <ClInclude Include="Geometry\TransparencyBuffer.h">
       <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CameraControls.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Flipmaps.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GoTo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\LevelInfo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Neighbours.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\RoomNavigator.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsWindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ViewerUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CameraPosition.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\CollapsiblePanel.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ItemsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ItemsWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RouteWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RouteWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\TriggersWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\TriggersWindowManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -336,10 +333,7 @@
     <Filter Include="Sector">
       <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Viewer">
-      <UniqueIdentifier>{a1f3a16c-1012-436e-aa51-5a52542e63e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Viewer\UI">
+    <Filter Include="UI">
       <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

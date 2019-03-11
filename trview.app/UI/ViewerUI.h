@@ -9,19 +9,19 @@
 #include <trview.input/Keyboard.h>
 #include <trview.ui.render/MapRenderer.h>
 
-#include "Toolbar.h"
-#include "LevelInfo.h"
-#include "RoomNavigator.h"
-#include "GoTo.h"
-#include "SettingsWindow.h"
-#include "Flipmaps.h"
-#include "Neighbours.h"
-#include <trview.app/Camera/CameraControls.h>
-#include <trview.app/Camera/CameraPosition.h>
-#include "PickInfo.h"
-#include "PickResult.h"
-#include "ContextMenu.h"
-#include "UserSettings.h"
+#include <trview.app/Toolbar.h>
+#include <trview.app/UI/LevelInfo.h>
+#include <trview.app/UI/RoomNavigator.h>
+#include <trview.app/UI/GoTo.h>
+#include <trview.app/UI/SettingsWindow.h>
+#include <trview.app/UI/Flipmaps.h>
+#include <trview.app/UI/Neighbours.h>
+#include <trview.app/UI/CameraControls.h>
+#include <trview.app/UI/CameraPosition.h>
+#include <trview.app/PickInfo.h>
+#include <trview.app/PickResult.h>
+#include <trview.app/ContextMenu.h>
+#include <trview.app/UserSettings.h>
 
 namespace trview
 {

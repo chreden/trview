@@ -4,8 +4,8 @@
 #include <trview.ui/TextArea.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
-#include "Waypoint.h"
-#include "Item.h"
+#include <trview.app/Waypoint.h>
+#include <trview.app/Item.h>
 
 namespace trview
 {
