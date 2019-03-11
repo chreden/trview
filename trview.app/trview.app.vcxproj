@@ -25,8 +25,6 @@
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\ICamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
-    <ClCompile Include="DirectoryListing.cpp" />
-    <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\TransparencyBuffer.cpp" />
@@ -34,10 +32,13 @@
     <ClCompile Include="ILevelTextureStorage.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
-    <ClCompile Include="LevelSwitcher.cpp" />
+    <ClCompile Include="Menus\DirectoryListing.cpp" />
+    <ClCompile Include="Menus\FileDropper.cpp" />
+    <ClCompile Include="Menus\LevelSwitcher.cpp" />
+    <ClCompile Include="Menus\RecentFiles.cpp" />
+    <ClCompile Include="Menus\ViewMenu.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="PickResult.cpp" />
-    <ClCompile Include="RecentFiles.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="Sector.cpp" />
     <ClCompile Include="SectorHighlight.cpp" />
@@ -57,7 +58,6 @@
     <ClCompile Include="UI\SettingsWindow.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UserSettings.cpp" />
-    <ClCompile Include="ViewMenu.cpp" />
     <ClCompile Include="Waypoint.cpp" />
     <ClCompile Include="WindowResizer.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
@@ -75,8 +75,6 @@
     <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
-    <ClInclude Include="DirectoryListing.h" />
-    <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\MeshVertex.h" />
@@ -86,11 +84,14 @@
     <ClInclude Include="ILevelTextureStorage.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ITextureStorage.h" />
-    <ClInclude Include="LevelSwitcher.h" />
+    <ClInclude Include="Menus\DirectoryListing.h" />
+    <ClInclude Include="Menus\FileDropper.h" />
+    <ClInclude Include="Menus\LevelSwitcher.h" />
+    <ClInclude Include="Menus\RecentFiles.h" />
+    <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="PickInfo.h" />
     <ClInclude Include="Picking.h" />
     <ClInclude Include="PickResult.h" />
-    <ClInclude Include="RecentFiles.h" />
     <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="Sector.h" />
@@ -112,7 +113,6 @@
     <ClInclude Include="UI\SettingsWindow.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UserSettings.h" />
-    <ClInclude Include="ViewMenu.h" />
     <ClInclude Include="Waypoint.h" />
     <ClInclude Include="WindowIDs.h" />
     <ClInclude Include="WindowResizer.h" />

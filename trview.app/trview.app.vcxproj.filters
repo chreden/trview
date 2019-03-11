@@ -26,15 +26,6 @@
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
     </ClCompile>
-    <ClCompile Include="FileDropper.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="RecentFiles.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewMenu.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
     <ClCompile Include="PickResult.cpp">
       <Filter>Picking</Filter>
     </ClCompile>
@@ -46,12 +37,6 @@
     </ClCompile>
     <ClCompile Include="Sector.cpp">
       <Filter>Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelSwitcher.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectoryListing.cpp">
-      <Filter>Windows Menus</Filter>
     </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="Camera\Camera.cpp">
@@ -141,6 +126,21 @@
     <ClCompile Include="UI\ContextMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\DirectoryListing.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\FileDropper.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\LevelSwitcher.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\RecentFiles.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\ViewMenu.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -169,15 +169,6 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>Selection</Filter>
     </ClInclude>
-    <ClInclude Include="FileDropper.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="RecentFiles.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewMenu.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
     <ClInclude Include="Picking.h">
       <Filter>Picking</Filter>
     </ClInclude>
@@ -195,12 +186,6 @@
     </ClInclude>
     <ClInclude Include="Types.h">
       <Filter>Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelSwitcher.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectoryListing.h">
-      <Filter>Windows Menus</Filter>
     </ClInclude>
     <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="UserSettings.h" />
@@ -297,6 +282,21 @@
     <ClInclude Include="UI\ContextMenu.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Menus\DirectoryListing.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\FileDropper.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\LevelSwitcher.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\RecentFiles.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\ViewMenu.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -329,9 +329,6 @@
     <Filter Include="Selection">
       <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Windows Menus">
-      <UniqueIdentifier>{df64e74e-be44-4213-b0eb-f5e3f2789c70}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Picking">
       <UniqueIdentifier>{17fe44c3-c618-433a-9014-24283b5ba6f1}</UniqueIdentifier>
     </Filter>
@@ -340,6 +337,9 @@
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{a87c6567-3a2e-42c4-bb55-c03b7670822b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

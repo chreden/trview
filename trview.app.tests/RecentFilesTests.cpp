@@ -1,6 +1,6 @@
 #include "CppUnitTest.h"
 
-#include <trview.app/RecentFiles.h>
+#include <trview.app/Menus/RecentFiles.h>
 #include <trview.tests.common/Window.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

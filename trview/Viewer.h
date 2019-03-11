@@ -24,10 +24,10 @@
 #include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
 #include <trview.app/UserSettings.h>
-#include <trview.app/LevelSwitcher.h>
+#include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/WindowResizer.h>
-#include <trview.app/RecentFiles.h>
-#include <trview.app/FileDropper.h>
+#include <trview.app/Menus/RecentFiles.h>
+#include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Tools/Measure.h>
@@ -35,7 +35,7 @@
 #include <trview.app/AlternateGroupToggler.h>
 #include <trview.app/Route.h>
 #include <trview.app/Windows/RouteWindowManager.h>
-#include <trview.app/ViewMenu.h>
+#include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Picking.h>
 #include <trview.app/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
