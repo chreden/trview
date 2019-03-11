@@ -2,10 +2,10 @@
 
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/ILevelTextureStorage.h>
-#include <trview.app/MeshVertex.h>
+#include <trview.app/Geometry/MeshVertex.h>
 
 #include <algorithm>
-#include "Mesh.h"
+#include <trview.app/Geometry/Mesh.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

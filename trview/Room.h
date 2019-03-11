@@ -17,7 +17,7 @@
 
 #include "StaticMesh.h"
 #include <trview.app/TransparencyBuffer.h>
-#include <trview.app/Mesh.h>
+#include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Sector.h>
 #include <trview.app/PickResult.h>
 

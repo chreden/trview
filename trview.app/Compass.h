@@ -3,7 +3,7 @@
 #include <trview.graphics/Device.h>
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Sprite.h>
-#include "Mesh.h"
+#include <trview.app/Geometry/Mesh.h>
 #include "Camera/OrbitCamera.h"
 
 namespace trview

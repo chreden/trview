@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "Room.h"
-#include <trview.app/MeshVertex.h>
+#include <trview.app/Geometry/MeshVertex.h>
 #include "Entity.h"
 #include "Level.h"
 
 #include <trview.app/ILevelTextureStorage.h>
 #include "IMeshStorage.h"
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Mesh.h>
+#include <trview.app/Geometry/Mesh.h>
 #include <trview.app/TransparencyBuffer.h>
 
 #include <SimpleMath.h>

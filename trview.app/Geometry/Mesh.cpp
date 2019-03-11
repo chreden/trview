@@ -5,7 +5,7 @@
 #include <array>
 #include <DirectXCollision.h>
 
-#include "ILevelTextureStorage.h"
+#include <trview.app/ILevelTextureStorage.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

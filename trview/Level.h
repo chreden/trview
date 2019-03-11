@@ -14,7 +14,7 @@
 
 #include "Room.h"
 #include "Entity.h"
-#include <trview.app/Mesh.h>
+#include <trview.app/Geometry/Mesh.h>
 #include "StaticMesh.h"
 #include <trview.app/Item.h>
 #include <trview.app/Trigger.h>

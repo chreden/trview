@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <trview.graphics/Device.h>
-#include "Mesh.h"
+#include <trview.app/Geometry/Mesh.h>
 #include "Sector.h"
 #include "Camera/ICamera.h"
 #include "ILevelTextureStorage.h"

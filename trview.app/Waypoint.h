@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SimpleMath.h>
-#include "IRenderable.h"
-#include "Mesh.h"
+#include <trview.app/Geometry/IRenderable.h>
+#include <trview.app/Geometry/Mesh.h>
 
 namespace trview
 {

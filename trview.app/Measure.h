@@ -2,7 +2,7 @@
 
 #include <optional>
 #include <SimpleMath.h>
-#include "Mesh.h"
+#include <trview.app/Geometry/Mesh.h>
 #include <trview.common/Event.h>
 
 namespace trview

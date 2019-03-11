@@ -23,12 +23,6 @@
     <ClCompile Include="CollapsiblePanel.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="TransparentTriangle.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="ILevelTextureStorage.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
@@ -53,9 +47,6 @@
     </ClCompile>
     <ClCompile Include="TransparencyBuffer.cpp">
       <Filter>Transparency</Filter>
-    </ClCompile>
-    <ClCompile Include="IRenderable.cpp">
-      <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
@@ -112,9 +103,6 @@
     <ClCompile Include="Neighbours.cpp">
       <Filter>Viewer\UI</Filter>
     </ClCompile>
-    <ClCompile Include="CameraControls.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="GoTo.cpp">
       <Filter>Viewer\UI</Filter>
@@ -140,6 +128,15 @@
     <ClCompile Include="Camera\OrbitCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\IRenderable.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Mesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\TransparentTriangle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -164,18 +161,6 @@
     </ClInclude>
     <ClInclude Include="CollapsiblePanel.h">
       <Filter>Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="TransparentTriangle.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshVertex.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="ILevelTextureStorage.h">
       <Filter>Textures</Filter>
@@ -204,9 +189,6 @@
     </ClInclude>
     <ClInclude Include="TransparencyBuffer.h">
       <Filter>Transparency</Filter>
-    </ClInclude>
-    <ClInclude Include="IRenderable.h">
-      <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="RouteWindow.h">
       <Filter>Route</Filter>
@@ -294,6 +276,21 @@
     </ClInclude>
     <ClInclude Include="Camera\OrbitCamera.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\IRenderable.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\MeshVertex.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\TransparentTriangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Triangle.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

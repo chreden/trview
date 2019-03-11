@@ -2,10 +2,10 @@
 
 #include <cstdint>
 #include <vector>
-#include "TransparentTriangle.h"
+#include <trview.app/Geometry/TransparentTriangle.h>
 #include "PickResult.h"
-#include "Mesh.h"
-#include "IRenderable.h"
+#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IRenderable.h>
 
 namespace trview
 {

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
-#include "Mesh.h"
+#include <trview.app/Geometry/Mesh.h>
 #include "SelectionRenderer.h"
 #include "Waypoint.h"
 

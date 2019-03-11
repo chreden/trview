@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <trview.app/PickResult.h>
-#include <trview.app/IRenderable.h>
+#include <trview.app/Geometry/IRenderable.h>
 
 namespace trlevel
 {

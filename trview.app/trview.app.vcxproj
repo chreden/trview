@@ -33,9 +33,11 @@
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Flipmaps.cpp" />
+    <ClCompile Include="Geometry\IRenderable.cpp" />
+    <ClCompile Include="Geometry\Mesh.cpp" />
+    <ClCompile Include="Geometry\TransparentTriangle.cpp" />
     <ClCompile Include="GoTo.cpp" />
     <ClCompile Include="ILevelTextureStorage.cpp" />
-    <ClCompile Include="IRenderable.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemsWindow.cpp" />
     <ClCompile Include="ItemsWindowManager.cpp" />
@@ -43,7 +45,6 @@
     <ClCompile Include="LevelInfo.cpp" />
     <ClCompile Include="LevelSwitcher.cpp" />
     <ClCompile Include="Measure.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Neighbours.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="PickResult.cpp" />
@@ -58,7 +59,6 @@
     <ClCompile Include="SettingsWindow.cpp" />
     <ClCompile Include="Toolbar.cpp" />
     <ClCompile Include="TransparencyBuffer.cpp" />
-    <ClCompile Include="TransparentTriangle.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TriggersWindow.cpp" />
     <ClCompile Include="TriggersWindowManager.cpp" />
@@ -84,9 +84,13 @@
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Flipmaps.h" />
+    <ClInclude Include="Geometry\IRenderable.h" />
+    <ClInclude Include="Geometry\Mesh.h" />
+    <ClInclude Include="Geometry\MeshVertex.h" />
+    <ClInclude Include="Geometry\TransparentTriangle.h" />
+    <ClInclude Include="Geometry\Triangle.h" />
     <ClInclude Include="GoTo.h" />
     <ClInclude Include="ILevelTextureStorage.h" />
-    <ClInclude Include="IRenderable.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemsWindow.h" />
     <ClInclude Include="ItemsWindowManager.h" />
@@ -94,8 +98,6 @@
     <ClInclude Include="LevelInfo.h" />
     <ClInclude Include="LevelSwitcher.h" />
     <ClInclude Include="Measure.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshVertex.h" />
     <ClInclude Include="Neighbours.h" />
     <ClInclude Include="PickInfo.h" />
     <ClInclude Include="Picking.h" />
@@ -112,8 +114,6 @@
     <ClInclude Include="SettingsWindow.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="TransparencyBuffer.h" />
-    <ClInclude Include="TransparentTriangle.h" />
-    <ClInclude Include="Triangle.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TriggersWindow.h" />
     <ClInclude Include="TriggersWindowManager.h" />

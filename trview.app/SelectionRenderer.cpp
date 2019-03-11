@@ -8,7 +8,7 @@
 #include <SimpleMath.h>
 #include <trview.app/Trigger.h>
 
-#include "IRenderable.h"
+#include <trview.app/Geometry/IRenderable.h>
 #include "Camera/ICamera.h"
 #include "ILevelTextureStorage.h"
 
