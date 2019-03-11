@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Camera/ICamera.h"
+#include <trview.app/Camera/ICamera.h>
 
 using namespace trview::graphics;
 using namespace DirectX::SimpleMath;

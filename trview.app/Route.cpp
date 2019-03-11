@@ -2,7 +2,7 @@
 #include "Route.h"
 #include <DirectXCollision.h>
 #include <algorithm>
-#include "Camera/ICamera.h"
+#include <trview.app/Camera/ICamera.h>
 #include "ILevelTextureStorage.h"
 #include <external/nlohmann/json.hpp>
 #include <fstream>
