@@ -25,7 +25,6 @@
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\ICamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
-    <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="FileDropper.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
@@ -49,6 +48,7 @@
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
+    <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\Flipmaps.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
@@ -75,7 +75,6 @@
     <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
-    <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="FileDropper.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
@@ -104,6 +103,7 @@
     <ClInclude Include="Types.h" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
+    <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\Flipmaps.h" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\LevelInfo.h" />

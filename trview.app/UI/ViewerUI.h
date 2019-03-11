@@ -20,7 +20,7 @@
 #include <trview.app/UI/CameraPosition.h>
 #include <trview.app/PickInfo.h>
 #include <trview.app/PickResult.h>
-#include <trview.app/ContextMenu.h>
+#include <trview.app/UI/ContextMenu.h>
 #include <trview.app/UserSettings.h>
 
 namespace trview

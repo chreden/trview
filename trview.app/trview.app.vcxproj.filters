@@ -17,7 +17,6 @@
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="Route.cpp">
       <Filter>Route</Filter>
     </ClCompile>
@@ -139,6 +138,9 @@
     <ClCompile Include="Tools\Toolbar.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ContextMenu.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -158,7 +160,6 @@
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="Route.h">
       <Filter>Route</Filter>
     </ClInclude>
@@ -292,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="Tools\Toolbar.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ContextMenu.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

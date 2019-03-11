@@ -3,7 +3,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/ILevelTextureStorage.h>
 #include "GoTo.h"
-#include <trview.app/ContextMenu.h>
+#include <trview.app/UI/ContextMenu.h>
 #include <sstream>
 #include <iomanip>
 
