@@ -14,12 +14,6 @@
     <ClCompile Include="ITextureStorage.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
-    <ClCompile Include="Toolbar.cpp">
-      <Filter>Toolbar</Filter>
-    </ClCompile>
-    <ClCompile Include="Measure.cpp">
-      <Filter>Tools</Filter>
-    </ClCompile>
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
@@ -33,7 +27,6 @@
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
     </ClCompile>
-    <ClCompile Include="Compass.cpp" />
     <ClCompile Include="FileDropper.cpp">
       <Filter>Windows Menus</Filter>
     </ClCompile>
@@ -137,6 +130,15 @@
     <ClCompile Include="Windows\TriggersWindowManager.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Tools\Compass.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Measure.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Toolbar.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowResizer.h" />
@@ -153,12 +155,6 @@
     <ClInclude Include="ITextureStorage.h">
       <Filter>Textures</Filter>
     </ClInclude>
-    <ClInclude Include="Toolbar.h">
-      <Filter>Toolbar</Filter>
-    </ClInclude>
-    <ClInclude Include="Measure.h">
-      <Filter>Tools</Filter>
-    </ClInclude>
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
     </ClInclude>
@@ -172,7 +168,6 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>Selection</Filter>
     </ClInclude>
-    <ClInclude Include="Compass.h" />
     <ClInclude Include="FileDropper.h">
       <Filter>Windows Menus</Filter>
     </ClInclude>
@@ -289,6 +284,15 @@
     <ClInclude Include="Windows\TriggersWindowManager.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\Compass.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Measure.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\Toolbar.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Items">
@@ -305,9 +309,6 @@
     </Filter>
     <Filter Include="Textures">
       <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Toolbar">
-      <UniqueIdentifier>{bf4d0359-b434-41b1-a3ba-f5400a2b5faa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tools">
       <UniqueIdentifier>{05ae82b5-00cf-4f47-b88f-e3cba6e9928f}</UniqueIdentifier>

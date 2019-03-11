@@ -9,7 +9,7 @@
 #include <trview.input/Keyboard.h>
 #include <trview.ui.render/MapRenderer.h>
 
-#include <trview.app/Toolbar.h>
+#include <trview.app/Tools/Toolbar.h>
 #include <trview.app/UI/LevelInfo.h>
 #include <trview.app/UI/RoomNavigator.h>
 #include <trview.app/UI/GoTo.h>

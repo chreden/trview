@@ -30,8 +30,8 @@
 #include <trview.app/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
-#include <trview.app/Measure.h>
-#include <trview.app/Compass.h>
+#include <trview.app/Tools/Measure.h>
+#include <trview.app/Tools/Compass.h>
 #include <trview.app/AlternateGroupToggler.h>
 #include <trview.app/Route.h>
 #include <trview.app/Windows/RouteWindowManager.h>

@@ -25,7 +25,6 @@
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\ICamera.cpp" />
     <ClCompile Include="Camera\OrbitCamera.cpp" />
-    <ClCompile Include="Compass.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="DirectoryListing.cpp" />
     <ClCompile Include="FileDropper.cpp" />
@@ -37,7 +36,6 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ITextureStorage.cpp" />
     <ClCompile Include="LevelSwitcher.cpp" />
-    <ClCompile Include="Measure.cpp" />
     <ClCompile Include="Picking.cpp" />
     <ClCompile Include="PickResult.cpp" />
     <ClCompile Include="RecentFiles.cpp" />
@@ -45,7 +43,9 @@
     <ClCompile Include="Sector.cpp" />
     <ClCompile Include="SectorHighlight.cpp" />
     <ClCompile Include="SelectionRenderer.cpp" />
-    <ClCompile Include="Toolbar.cpp" />
+    <ClCompile Include="Tools\Compass.cpp" />
+    <ClCompile Include="Tools\Measure.cpp" />
+    <ClCompile Include="Tools\Toolbar.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
@@ -75,7 +75,6 @@
     <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
-    <ClInclude Include="Compass.h" />
     <ClInclude Include="ContextMenu.h" />
     <ClInclude Include="DirectoryListing.h" />
     <ClInclude Include="FileDropper.h" />
@@ -89,7 +88,6 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="ITextureStorage.h" />
     <ClInclude Include="LevelSwitcher.h" />
-    <ClInclude Include="Measure.h" />
     <ClInclude Include="PickInfo.h" />
     <ClInclude Include="Picking.h" />
     <ClInclude Include="PickResult.h" />
@@ -99,7 +97,9 @@
     <ClInclude Include="Sector.h" />
     <ClInclude Include="SectorHighlight.h" />
     <ClInclude Include="SelectionRenderer.h" />
-    <ClInclude Include="Toolbar.h" />
+    <ClInclude Include="Tools\Compass.h" />
+    <ClInclude Include="Tools\Measure.h" />
+    <ClInclude Include="Tools\Toolbar.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UI\CameraControls.h" />

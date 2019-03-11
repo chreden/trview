@@ -1,5 +1,5 @@
 #include "PickResult.h"
-#include "Compass.h"
+#include <trview.app/Tools/Compass.h>
 #include <string>
 #include <trview.common/Colour.h>
 
