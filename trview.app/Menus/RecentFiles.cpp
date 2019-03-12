@@ -1,5 +1,5 @@
 #include "RecentFiles.h"
-#include "WindowIDs.h"
+#include <trview.app/Windows/WindowIDs.h>
 #include <trview.common/Strings.h>
 
 namespace trview
