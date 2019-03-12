@@ -21,7 +21,7 @@
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/UI/ContextMenu.h>
-#include <trview.app/UserSettings.h>
+#include <trview.app/Settings/UserSettings.h>
 
 namespace trview
 {

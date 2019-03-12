@@ -23,7 +23,7 @@
 #include "CameraInput.h"
 #include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
-#include <trview.app/UserSettings.h>
+#include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.app/Menus/RecentFiles.h>
@@ -32,8 +32,8 @@
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
-#include <trview.app/AlternateGroupToggler.h>
-#include <trview.app/Route.h>
+#include <trview.app/Menus/AlternateGroupToggler.h>
+#include <trview.app/Routing/Route.h>
 #include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Geometry/Picking.h>

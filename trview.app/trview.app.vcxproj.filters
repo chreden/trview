@@ -1,16 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="AlternateGroupToggler.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Route.cpp">
-      <Filter>Route</Filter>
-    </ClCompile>
-    <ClCompile Include="Waypoint.cpp">
-      <Filter>Route</Filter>
-    </ClCompile>
-    <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -143,18 +133,20 @@
     <ClCompile Include="Graphics\SelectionRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\Route.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\Waypoint.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\UserSettings.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\AlternateGroupToggler.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AlternateGroupToggler.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Route.h">
-      <Filter>Route</Filter>
-    </ClInclude>
-    <ClInclude Include="Waypoint.h">
-      <Filter>Route</Filter>
-    </ClInclude>
-    <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -305,6 +297,18 @@
     <ClInclude Include="Graphics\SelectionRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Routing\Route.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\Waypoint.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\UserSettings.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\AlternateGroupToggler.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -319,12 +323,6 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{d691a642-d434-42b6-b4d8-8fde59fea2af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{d7102050-10b8-49dc-bb00-6929c90f8339}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Route">
-      <UniqueIdentifier>{25d8b57c-1dd7-4694-82d4-d3841fe870d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
     </Filter>
@@ -336,6 +334,12 @@
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{3e3d8ae6-5683-4ac2-9989-10536004f690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Routing">
+      <UniqueIdentifier>{5ba48dd0-035c-4e1e-9bc1-39ee3cd175b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{174a7bd1-ab5d-446d-8632-f99a01c87815}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
