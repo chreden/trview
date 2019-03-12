@@ -16,8 +16,8 @@
 #include "Entity.h"
 #include <trview.app/Geometry/Mesh.h>
 #include "StaticMesh.h"
-#include <trview.app/Item.h>
-#include <trview.app/Trigger.h>
+#include <trview.app/Elements/Item.h>
+#include <trview.app/Elements/Trigger.h>
 
 #include "IMeshStorage.h"
 

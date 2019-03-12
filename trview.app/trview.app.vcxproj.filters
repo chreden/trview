@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Item.cpp">
-      <Filter>Items</Filter>
-    </ClCompile>
-    <ClCompile Include="Trigger.cpp">
-      <Filter>Triggers</Filter>
-    </ClCompile>
     <ClCompile Include="ILevelTextureStorage.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
@@ -25,16 +19,7 @@
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
     </ClCompile>
-    <ClCompile Include="PickResult.cpp">
-      <Filter>Picking</Filter>
-    </ClCompile>
-    <ClCompile Include="Picking.cpp">
-      <Filter>Picking</Filter>
-    </ClCompile>
     <ClCompile Include="SectorHighlight.cpp">
-      <Filter>Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Sector.cpp">
       <Filter>Sector</Filter>
     </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
@@ -143,14 +128,23 @@
     <ClCompile Include="Windows\WindowResizer.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Item.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Sector.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Trigger.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Picking.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\PickResult.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Item.h">
-      <Filter>Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Trigger.h">
-      <Filter>Triggers</Filter>
-    </ClInclude>
     <ClInclude Include="ILevelTextureStorage.h">
       <Filter>Textures</Filter>
     </ClInclude>
@@ -169,25 +163,9 @@
     <ClInclude Include="SelectionRenderer.h">
       <Filter>Selection</Filter>
     </ClInclude>
-    <ClInclude Include="Picking.h">
-      <Filter>Picking</Filter>
-    </ClInclude>
-    <ClInclude Include="PickResult.h">
-      <Filter>Picking</Filter>
-    </ClInclude>
-    <ClInclude Include="PickInfo.h">
-      <Filter>Picking</Filter>
-    </ClInclude>
     <ClInclude Include="SectorHighlight.h">
       <Filter>Sector</Filter>
     </ClInclude>
-    <ClInclude Include="Sector.h">
-      <Filter>Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomInfo.h" />
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
@@ -303,14 +281,32 @@
     <ClInclude Include="Windows\WindowResizer.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Elements\RoomInfo.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Item.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Sector.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Trigger.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Types.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\PickInfo.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Picking.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\PickResult.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Items">
-      <UniqueIdentifier>{9df8a21c-e6ca-4a3c-a1a2-2522d26ba2a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Triggers">
-      <UniqueIdentifier>{7226702e-a61c-4a0c-b912-71a229863270}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Windows">
       <UniqueIdentifier>{6c308ddd-f5fb-42e0-bc70-b07f3a0c1f1a}</UniqueIdentifier>
     </Filter>
@@ -335,9 +331,6 @@
     <Filter Include="Selection">
       <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Picking">
-      <UniqueIdentifier>{17fe44c3-c618-433a-9014-24283b5ba6f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sector">
       <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
     </Filter>
@@ -346,6 +339,9 @@
     </Filter>
     <Filter Include="Menus">
       <UniqueIdentifier>{a87c6567-3a2e-42c4-bb55-c03b7670822b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements">
+      <UniqueIdentifier>{7bf173fa-6035-4b14-96a3-844c16eb224c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

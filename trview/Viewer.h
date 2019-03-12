@@ -36,7 +36,7 @@
 #include <trview.app/Route.h>
 #include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Menus/ViewMenu.h>
-#include <trview.app/Picking.h>
+#include <trview.app/Geometry/Picking.h>
 #include <trview.app/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
 

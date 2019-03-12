@@ -4,8 +4,8 @@
 #pragma once
 
 #include <trview.ui/Listbox.h>
-#include <trview.app/Item.h>
-#include <trview.app/Trigger.h>
+#include <trview.app/Elements/Item.h>
+#include <trview.app/Elements/Trigger.h>
 #include "CollapsiblePanel.h"
 
 namespace trview

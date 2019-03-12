@@ -1,6 +1,6 @@
 #include "RoomNavigator.h"
 #include <trview.app/ITextureStorage.h>
-#include <trview.app/RoomInfo.h>
+#include <trview.app/Elements/RoomInfo.h>
 
 #include <trlevel/trtypes.h>
 #include <trview.ui/GroupBox.h>

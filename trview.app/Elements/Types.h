@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <trview.app/Trigger.h>
+#include <trview.app/Elements/Trigger.h>
 
 namespace trview
 {

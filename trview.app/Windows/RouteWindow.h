@@ -5,7 +5,7 @@
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Waypoint.h>
-#include <trview.app/Item.h>
+#include <trview.app/Elements/Item.h>
 
 namespace trview
 {

@@ -6,7 +6,7 @@
 #include <trview.graphics/VertexShaderStore.h>
 #include <trview.graphics/PixelShaderStore.h>
 #include <SimpleMath.h>
-#include <trview.app/Trigger.h>
+#include <trview.app/Elements/Trigger.h>
 
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Camera/ICamera.h>

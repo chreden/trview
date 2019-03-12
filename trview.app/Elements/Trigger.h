@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <trview.app/Geometry/TransparentTriangle.h>
-#include "PickResult.h"
+#include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/IRenderable.h>
 

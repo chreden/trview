@@ -18,8 +18,8 @@
 #include <trview.app/UI/Neighbours.h>
 #include <trview.app/UI/CameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.app/PickInfo.h>
-#include <trview.app/PickResult.h>
+#include <trview.app/Geometry/PickInfo.h>
+#include <trview.app/Geometry/PickResult.h>
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.app/UserSettings.h>
 

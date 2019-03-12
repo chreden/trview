@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-#include <trview.app/PickResult.h>
+#include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Geometry/IRenderable.h>
 
 namespace trlevel

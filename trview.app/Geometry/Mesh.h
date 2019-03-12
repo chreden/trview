@@ -11,7 +11,7 @@
 #include "MeshVertex.h"
 #include "TransparentTriangle.h"
 #include "Triangle.h"
-#include <trview.app/PickResult.h>
+#include <trview.app/Geometry/PickResult.h>
 
 namespace trview
 {
