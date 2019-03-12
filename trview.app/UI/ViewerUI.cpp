@@ -1,7 +1,7 @@
 #include "ViewerUI.h"
 #include <trview.ui/Window.h>
 #include <trview.graphics/IShaderStorage.h>
-#include <trview.app/ILevelTextureStorage.h>
+#include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"
 #include <trview.app/UI/ContextMenu.h>
 #include <sstream>

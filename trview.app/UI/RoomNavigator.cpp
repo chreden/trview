@@ -1,5 +1,5 @@
 #include "RoomNavigator.h"
-#include <trview.app/ITextureStorage.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.app/Elements/RoomInfo.h>
 
 #include <trlevel/trtypes.h>

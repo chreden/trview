@@ -3,7 +3,7 @@
 #include <DirectXCollision.h>
 #include <algorithm>
 #include <trview.app/Camera/ICamera.h>
-#include "ILevelTextureStorage.h"
+#include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <external/nlohmann/json.hpp>
 #include <fstream>
 #include <trview.common/Strings.h>

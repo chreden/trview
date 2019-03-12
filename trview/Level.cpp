@@ -13,7 +13,7 @@
 #include <trview.app/Geometry/TransparencyBuffer.h>
 #include "ResourceHelper.h"
 #include "resource.h"
-#include <trview.app/SelectionRenderer.h>
+#include <trview.app/Graphics/SelectionRenderer.h>
 
 #include <external/nlohmann/json.hpp>
 

@@ -4,7 +4,7 @@
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Geometry/Mesh.h>
-#include "SelectionRenderer.h"
+#include <trview.app/Graphics/SelectionRenderer.h>
 #include "Waypoint.h"
 
 namespace trview

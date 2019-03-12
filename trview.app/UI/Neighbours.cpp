@@ -1,6 +1,6 @@
 #include "Neighbours.h"
 
-#include <trview.app/ITextureStorage.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 
 #include <trview.ui/Control.h>
 #include <trview.ui/GroupBox.h>

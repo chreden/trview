@@ -1,26 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="ILevelTextureStorage.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="ITextureStorage.cpp">
-      <Filter>Textures</Filter>
-    </ClCompile>
     <ClCompile Include="AlternateGroupToggler.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Route.cpp">
       <Filter>Route</Filter>
     </ClCompile>
-    <ClCompile Include="SelectionRenderer.cpp">
-      <Filter>Selection</Filter>
-    </ClCompile>
     <ClCompile Include="Waypoint.cpp">
       <Filter>Route</Filter>
-    </ClCompile>
-    <ClCompile Include="SectorHighlight.cpp">
-      <Filter>Sector</Filter>
     </ClCompile>
     <ClCompile Include="UserSettings.cpp" />
     <ClCompile Include="Camera\Camera.cpp">
@@ -143,14 +131,20 @@
     <ClCompile Include="Geometry\PickResult.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ILevelTextureStorage.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ITextureStorage.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SectorHighlight.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SelectionRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ILevelTextureStorage.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="ITextureStorage.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
     <ClInclude Include="AlternateGroupToggler.h">
       <Filter>Input</Filter>
     </ClInclude>
@@ -159,12 +153,6 @@
     </ClInclude>
     <ClInclude Include="Waypoint.h">
       <Filter>Route</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectionRenderer.h">
-      <Filter>Selection</Filter>
-    </ClInclude>
-    <ClInclude Include="SectorHighlight.h">
-      <Filter>Sector</Filter>
     </ClInclude>
     <ClInclude Include="UserSettings.h" />
     <ClInclude Include="Camera\Camera.h">
@@ -305,6 +293,18 @@
     <ClInclude Include="Geometry\PickResult.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\ILevelTextureStorage.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ITextureStorage.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SectorHighlight.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\SelectionRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -312,9 +312,6 @@
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{7b41da32-5b52-4a13-a345-eb254e49683d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Textures">
-      <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tools">
       <UniqueIdentifier>{05ae82b5-00cf-4f47-b88f-e3cba6e9928f}</UniqueIdentifier>
@@ -328,12 +325,6 @@
     <Filter Include="Route">
       <UniqueIdentifier>{25d8b57c-1dd7-4694-82d4-d3841fe870d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Selection">
-      <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sector">
-      <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
     </Filter>
@@ -342,6 +333,9 @@
     </Filter>
     <Filter Include="Elements">
       <UniqueIdentifier>{7bf173fa-6035-4b14-96a3-844c16eb224c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{3e3d8ae6-5683-4ac2-9989-10536004f690}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
