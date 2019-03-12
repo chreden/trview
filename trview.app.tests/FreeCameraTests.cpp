@@ -1,7 +1,7 @@
 #include "CppUnitTest.h"
 #include "StringConversions.h"
 
-#include <trview.app/FreeCamera.h>
+#include <trview.app/Camera/FreeCamera.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace DirectX::SimpleMath;

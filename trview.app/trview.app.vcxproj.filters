@@ -1,313 +1,321 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="WindowResizer.cpp" />
-    <ClCompile Include="Item.cpp">
-      <Filter>Items</Filter>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="ItemsWindow.cpp">
-      <Filter>Items</Filter>
+    <ClCompile Include="Camera\CameraMode.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="ItemsWindowManager.cpp">
-      <Filter>Items</Filter>
+    <ClCompile Include="Camera\FreeCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Trigger.cpp">
-      <Filter>Triggers</Filter>
+    <ClCompile Include="Camera\ICamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="TriggersWindow.cpp">
-      <Filter>Triggers</Filter>
+    <ClCompile Include="Camera\OrbitCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="TriggersWindowManager.cpp">
-      <Filter>Triggers</Filter>
+    <ClCompile Include="Geometry\IRenderable.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="CollapsiblePanel.cpp">
+    <ClCompile Include="Geometry\Mesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\TransparentTriangle.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\TransparencyBuffer.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CameraControls.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Flipmaps.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GoTo.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\LevelInfo.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Neighbours.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\RoomNavigator.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\SettingsWindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ViewerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CameraPosition.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\CollapsiblePanel.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="TransparentTriangle.cpp">
-      <Filter>Geometry</Filter>
+    <ClCompile Include="Windows\ItemsWindow.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Geometry</Filter>
+    <ClCompile Include="Windows\ItemsWindowManager.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="ILevelTextureStorage.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="Windows\RouteWindow.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="ITextureStorage.cpp">
-      <Filter>Textures</Filter>
+    <ClCompile Include="Windows\RouteWindowManager.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Toolbar.cpp">
-      <Filter>Toolbar</Filter>
+    <ClCompile Include="Windows\TriggersWindow.cpp">
+      <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Measure.cpp">
+    <ClCompile Include="Windows\TriggersWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\Compass.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="ICamera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Tools\Measure.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Tools\Toolbar.cpp">
+      <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="UI\ContextMenu.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="OrbitCamera.cpp">
-      <Filter>Camera</Filter>
+    <ClCompile Include="Menus\DirectoryListing.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="AlternateGroupToggler.cpp">
-      <Filter>Input</Filter>
+    <ClCompile Include="Menus\FileDropper.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="ContextMenu.cpp" />
-    <ClCompile Include="Route.cpp">
-      <Filter>Route</Filter>
+    <ClCompile Include="Menus\LevelSwitcher.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="SelectionRenderer.cpp">
-      <Filter>Selection</Filter>
+    <ClCompile Include="Menus\RecentFiles.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="TransparencyBuffer.cpp">
-      <Filter>Transparency</Filter>
+    <ClCompile Include="Menus\ViewMenu.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
-    <ClCompile Include="IRenderable.cpp">
+    <ClCompile Include="Windows\WindowResizer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Item.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Sector.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Trigger.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Picking.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Waypoint.cpp">
-      <Filter>Route</Filter>
+    <ClCompile Include="Geometry\PickResult.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="RouteWindow.cpp">
-      <Filter>Route</Filter>
+    <ClCompile Include="Graphics\ILevelTextureStorage.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="RouteWindowManager.cpp">
-      <Filter>Route</Filter>
+    <ClCompile Include="Graphics\ITextureStorage.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Compass.cpp" />
-    <ClCompile Include="FileDropper.cpp">
-      <Filter>Windows Menus</Filter>
+    <ClCompile Include="Graphics\SectorHighlight.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="RecentFiles.cpp">
-      <Filter>Windows Menus</Filter>
+    <ClCompile Include="Graphics\SelectionRenderer.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="ViewMenu.cpp">
-      <Filter>Windows Menus</Filter>
+    <ClCompile Include="Routing\Route.cpp">
+      <Filter>Routing</Filter>
     </ClCompile>
-    <ClCompile Include="PickResult.cpp">
-      <Filter>Picking</Filter>
+    <ClCompile Include="Routing\Waypoint.cpp">
+      <Filter>Routing</Filter>
     </ClCompile>
-    <ClCompile Include="Picking.cpp">
-      <Filter>Picking</Filter>
+    <ClCompile Include="Settings\UserSettings.cpp">
+      <Filter>Settings</Filter>
     </ClCompile>
-    <ClCompile Include="SectorHighlight.cpp">
-      <Filter>Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="Sector.cpp">
-      <Filter>Sector</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelSwitcher.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectoryListing.cpp">
-      <Filter>Windows Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraPosition.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerUI.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelInfo.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="RoomNavigator.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsWindow.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Flipmaps.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Neighbours.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraControls.cpp">
-      <Filter>Viewer\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMode.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="UserSettings.cpp" />
-    <ClCompile Include="GoTo.cpp">
-      <Filter>Viewer\UI</Filter>
+    <ClCompile Include="Menus\AlternateGroupToggler.cpp">
+      <Filter>Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WindowResizer.h" />
-    <ClInclude Include="WindowIDs.h" />
-    <ClInclude Include="Item.h">
-      <Filter>Items</Filter>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="ItemsWindow.h">
-      <Filter>Items</Filter>
+    <ClInclude Include="Camera\CameraMode.h">
+      <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="ItemsWindowManager.h">
-      <Filter>Items</Filter>
+    <ClInclude Include="Camera\FreeCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Trigger.h">
-      <Filter>Triggers</Filter>
+    <ClInclude Include="Camera\ICamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="TriggersWindow.h">
-      <Filter>Triggers</Filter>
+    <ClInclude Include="Camera\OrbitCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="TriggersWindowManager.h">
-      <Filter>Triggers</Filter>
+    <ClInclude Include="Geometry\IRenderable.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="CollapsiblePanel.h">
+    <ClInclude Include="Geometry\Mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\MeshVertex.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\TransparentTriangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Triangle.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\TransparencyBuffer.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CameraControls.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Flipmaps.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\GoTo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\LevelInfo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Neighbours.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\RoomNavigator.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\SettingsWindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ViewerUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CameraPosition.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\CollapsiblePanel.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="TransparentTriangle.h">
-      <Filter>Geometry</Filter>
+    <ClInclude Include="Windows\ItemsWindow.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Geometry</Filter>
+    <ClInclude Include="Windows\ItemsWindowManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="MeshVertex.h">
-      <Filter>Geometry</Filter>
+    <ClInclude Include="Windows\RouteWindow.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>Geometry</Filter>
+    <ClInclude Include="Windows\RouteWindowManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="ILevelTextureStorage.h">
-      <Filter>Textures</Filter>
+    <ClInclude Include="Windows\TriggersWindow.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="ITextureStorage.h">
-      <Filter>Textures</Filter>
+    <ClInclude Include="Windows\TriggersWindowManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Toolbar.h">
-      <Filter>Toolbar</Filter>
-    </ClInclude>
-    <ClInclude Include="Measure.h">
+    <ClInclude Include="Tools\Compass.h">
       <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="ICamera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Tools\Measure.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Tools\Toolbar.h">
+      <Filter>Tools</Filter>
     </ClInclude>
-    <ClInclude Include="FreeCamera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="UI\ContextMenu.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="OrbitCamera.h">
-      <Filter>Camera</Filter>
+    <ClInclude Include="Menus\DirectoryListing.h">
+      <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="AlternateGroupToggler.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="Menus\FileDropper.h">
+      <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="ContextMenu.h" />
-    <ClInclude Include="Route.h">
-      <Filter>Route</Filter>
+    <ClInclude Include="Menus\LevelSwitcher.h">
+      <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Waypoint.h">
-      <Filter>Route</Filter>
+    <ClInclude Include="Menus\RecentFiles.h">
+      <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="SelectionRenderer.h">
-      <Filter>Selection</Filter>
+    <ClInclude Include="Menus\ViewMenu.h">
+      <Filter>Menus</Filter>
     </ClInclude>
-    <ClInclude Include="TransparencyBuffer.h">
-      <Filter>Transparency</Filter>
+    <ClInclude Include="Windows\WindowIDs.h">
+      <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderable.h">
+    <ClInclude Include="Windows\WindowResizer.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\RoomInfo.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Item.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Sector.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Trigger.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Types.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\PickInfo.h">
       <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="RouteWindow.h">
-      <Filter>Route</Filter>
+    <ClInclude Include="Geometry\Picking.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="RouteWindowManager.h">
-      <Filter>Route</Filter>
+    <ClInclude Include="Geometry\PickResult.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Compass.h" />
-    <ClInclude Include="FileDropper.h">
-      <Filter>Windows Menus</Filter>
+    <ClInclude Include="Graphics\ILevelTextureStorage.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="RecentFiles.h">
-      <Filter>Windows Menus</Filter>
+    <ClInclude Include="Graphics\ITextureStorage.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ViewMenu.h">
-      <Filter>Windows Menus</Filter>
+    <ClInclude Include="Graphics\SectorHighlight.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Picking.h">
-      <Filter>Picking</Filter>
+    <ClInclude Include="Graphics\SelectionRenderer.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="PickResult.h">
-      <Filter>Picking</Filter>
+    <ClInclude Include="Routing\Route.h">
+      <Filter>Routing</Filter>
     </ClInclude>
-    <ClInclude Include="PickInfo.h">
-      <Filter>Picking</Filter>
+    <ClInclude Include="Routing\Waypoint.h">
+      <Filter>Routing</Filter>
     </ClInclude>
-    <ClInclude Include="SectorHighlight.h">
-      <Filter>Sector</Filter>
+    <ClInclude Include="Settings\UserSettings.h">
+      <Filter>Settings</Filter>
     </ClInclude>
-    <ClInclude Include="Sector.h">
-      <Filter>Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
-      <Filter>Sector</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelSwitcher.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectoryListing.h">
-      <Filter>Windows Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraPosition.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerUI.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelInfo.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomNavigator.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="RoomInfo.h" />
-    <ClInclude Include="SettingsWindow.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Flipmaps.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Neighbours.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraControls.h">
-      <Filter>Viewer\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraMode.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="UserSettings.h" />
-    <ClInclude Include="GoTo.h">
-      <Filter>Viewer\UI</Filter>
+    <ClInclude Include="Menus\AlternateGroupToggler.h">
+      <Filter>Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Items">
-      <UniqueIdentifier>{9df8a21c-e6ca-4a3c-a1a2-2522d26ba2a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Triggers">
-      <UniqueIdentifier>{7226702e-a61c-4a0c-b912-71a229863270}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Windows">
       <UniqueIdentifier>{6c308ddd-f5fb-42e0-bc70-b07f3a0c1f1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{7b41da32-5b52-4a13-a345-eb254e49683d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Textures">
-      <UniqueIdentifier>{1e077074-1e7e-471c-bb8c-4163fb7d868d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Toolbar">
-      <UniqueIdentifier>{bf4d0359-b434-41b1-a3ba-f5400a2b5faa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tools">
       <UniqueIdentifier>{05ae82b5-00cf-4f47-b88f-e3cba6e9928f}</UniqueIdentifier>
@@ -315,32 +323,23 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{d691a642-d434-42b6-b4d8-8fde59fea2af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{d7102050-10b8-49dc-bb00-6929c90f8339}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Route">
-      <UniqueIdentifier>{25d8b57c-1dd7-4694-82d4-d3841fe870d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Selection">
-      <UniqueIdentifier>{4a52afd9-cdc2-43a4-b32c-10fd55eb3c71}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Transparency">
-      <UniqueIdentifier>{4605e9d0-57f6-40ec-906a-10828e27dad5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Windows Menus">
-      <UniqueIdentifier>{df64e74e-be44-4213-b0eb-f5e3f2789c70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Picking">
-      <UniqueIdentifier>{17fe44c3-c618-433a-9014-24283b5ba6f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sector">
-      <UniqueIdentifier>{51e83311-9349-47e9-b4ec-4992c415b522}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Viewer">
-      <UniqueIdentifier>{a1f3a16c-1012-436e-aa51-5a52542e63e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Viewer\UI">
+    <Filter Include="UI">
       <UniqueIdentifier>{e074444e-1361-4197-9e44-fa59827efd8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{a87c6567-3a2e-42c4-bb55-c03b7670822b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements">
+      <UniqueIdentifier>{7bf173fa-6035-4b14-96a3-844c16eb224c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{3e3d8ae6-5683-4ac2-9989-10536004f690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Routing">
+      <UniqueIdentifier>{5ba48dd0-035c-4e1e-9bc1-39ee3cd175b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{174a7bd1-ab5d-446d-8632-f99a01c87815}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

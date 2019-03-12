@@ -1,7 +1,7 @@
 #include "CppUnitTest.h"
 #include "StringConversions.h"
 
-#include <trview.app/OrbitCamera.h>
+#include <trview.app/Camera/OrbitCamera.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace DirectX::SimpleMath;

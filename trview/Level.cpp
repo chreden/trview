@@ -9,11 +9,11 @@
 
 #include "LevelTextureStorage.h"
 #include "MeshStorage.h"
-#include <trview.app/ICamera.h>
-#include <trview.app/TransparencyBuffer.h>
+#include <trview.app/Camera/ICamera.h>
+#include <trview.app/Geometry/TransparencyBuffer.h>
 #include "ResourceHelper.h"
 #include "resource.h"
-#include <trview.app/SelectionRenderer.h>
+#include <trview.app/Graphics/SelectionRenderer.h>
 
 #include <external/nlohmann/json.hpp>
 

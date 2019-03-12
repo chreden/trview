@@ -1,6 +1,6 @@
 #include "CppUnitTest.h"
 
-#include <trview.app/FileDropper.h>
+#include <trview.app/Menus/FileDropper.h>
 #include <trview.tests.common/Window.h>
 #include <shellapi.h>
 #include <ShlObj.h>

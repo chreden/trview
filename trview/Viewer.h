@@ -18,27 +18,27 @@
 #include <trview.input/Mouse.h>
 #include <trview.common/TokenStore.h>
 
-#include <trview.app/FreeCamera.h>
-#include <trview.app/OrbitCamera.h>
+#include <trview.app/Camera/FreeCamera.h>
+#include <trview.app/Camera/OrbitCamera.h>
 #include "CameraInput.h"
-#include <trview.app/CameraMode.h>
+#include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
-#include <trview.app/UserSettings.h>
-#include <trview.app/LevelSwitcher.h>
-#include <trview.app/WindowResizer.h>
-#include <trview.app/RecentFiles.h>
-#include <trview.app/FileDropper.h>
-#include <trview.app/ItemsWindowManager.h>
-#include <trview.app/TriggersWindowManager.h>
-#include <trview.app/Measure.h>
-#include <trview.app/Compass.h>
-#include <trview.app/AlternateGroupToggler.h>
-#include <trview.app/Route.h>
-#include <trview.app/RouteWindowManager.h>
-#include <trview.app/ViewMenu.h>
-#include <trview.app/Picking.h>
-#include <trview.app/SectorHighlight.h>
-#include <trview.app/ViewerUI.h>
+#include <trview.app/Settings/UserSettings.h>
+#include <trview.app/Menus/LevelSwitcher.h>
+#include <trview.app/Windows/WindowResizer.h>
+#include <trview.app/Menus/RecentFiles.h>
+#include <trview.app/Menus/FileDropper.h>
+#include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/TriggersWindowManager.h>
+#include <trview.app/Tools/Measure.h>
+#include <trview.app/Tools/Compass.h>
+#include <trview.app/Menus/AlternateGroupToggler.h>
+#include <trview.app/Routing/Route.h>
+#include <trview.app/Windows/RouteWindowManager.h>
+#include <trview.app/Menus/ViewMenu.h>
+#include <trview.app/Geometry/Picking.h>
+#include <trview.app/Graphics/SectorHighlight.h>
+#include <trview.app/UI/ViewerUI.h>
 
 namespace trview
 {

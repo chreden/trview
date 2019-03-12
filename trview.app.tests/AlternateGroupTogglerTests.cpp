@@ -1,5 +1,5 @@
 #include "CppUnitTest.h"
-#include <trview.app/AlternateGroupToggler.h>
+#include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.tests.common/Window.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

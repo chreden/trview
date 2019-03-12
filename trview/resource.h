@@ -2,7 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by trview.rc
 //
-#include <trview.app/WindowIDs.h>
+#include <trview.app/Windows/WindowIDs.h>
 
 #define IDC_MYICON                      2
 #define IDD_TRVIEW_DIALOG               102

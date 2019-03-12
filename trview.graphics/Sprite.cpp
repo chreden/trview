@@ -11,7 +11,7 @@
 #include "Texture.h"
 
 #include <SimpleMath.h>
-#include <trview.app/Mesh.h>
+#include <trview.app/Geometry/Mesh.h>
 
 using namespace Microsoft::WRL;
 

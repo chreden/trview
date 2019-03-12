@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/ITextureStorage.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 #include <unordered_map>
 #include <trview.graphics/Device.h>
 
