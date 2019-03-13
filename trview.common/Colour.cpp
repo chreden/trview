@@ -13,6 +13,11 @@ namespace trview
     {
     }
 
+    Colour::Colour(const DirectX::SimpleMath::Color& color)
+        : Colour(color.A(), color.R(), color.G(), color.B())
+    {
+    }
+
     Colour::Colour(float r, float g, float b)
         : Colour(1.0f, r, g, b)
     {

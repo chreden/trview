@@ -18,6 +18,8 @@
 #include "trview\Room.h"
 #include <trview.graphics/RenderTarget.h>
 #include <trview.common/Event.h>
+#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/Font.h>
 
 namespace trview
 {
@@ -47,7 +49,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& window_size);
+                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& window_size);
 
                 // Renders the map 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
@@ -125,9 +127,10 @@ namespace trview
                 bool                                _force_redraw = true;
 
                 const float                         _DRAW_MARGIN = 30.0f; 
-                const float                         _DRAW_SCALE = 14.0f; 
+                const float                         _DRAW_SCALE = 20.0f; 
 
                 std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
+                std::unique_ptr<graphics::Font> _font;
             };
         }
     }

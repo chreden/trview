@@ -130,7 +130,7 @@ namespace trview
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, window.size());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, window.size());
         _map_renderer->on_sector_hover += on_sector_hover;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
@@ -260,6 +260,7 @@ namespace trview
     {
         _control->set_size(size);
         _ui_renderer->set_host_size(size);
+        _map_renderer->set_window_size(size);
     }
 
     void ViewerUI::set_level(const std::string& name, trlevel::LevelVersion version)
