@@ -6,6 +6,7 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
+#include <trview.ui/Slider.h>
 
 using namespace trview::ui;
 
@@ -54,6 +55,19 @@ namespace trview
         auto auto_orbit = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Switch to orbit on selection");
         auto_orbit->on_state_changed += on_auto_orbit;
         _auto_orbit = panel->add_child(std::move(auto_orbit));
+
+        auto camera_panel = std::make_unique<StackPanel>(Point(), Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+        camera_panel->set_margin(Size(5, 5));
+
+        camera_panel->add_child(std::make_unique<Label>(Point(), Size(), Colour::Transparent, L"Sensitivity", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        _sensitivity = camera_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
+        camera_panel->add_child(std::make_unique<Label>(Point(), Size(), Colour::Transparent, L"Movement Speed", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        _movement_speed = camera_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
+
+        _sensitivity->on_value_changed += on_sensitivity_changed;
+        _movement_speed->on_value_changed += on_movement_speed_changed;
+
+        panel->add_child(std::move(camera_panel));
 
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
@@ -109,5 +123,15 @@ namespace trview
     void SettingsWindow::toggle_visibility()
     {
         _window->set_visible(!_window->visible());
+    }
+
+    void SettingsWindow::set_sensitivity(float value)
+    {
+        _sensitivity->set_value(value);
+    }
+
+    void SettingsWindow::set_movement_speed(float value)
+    {
+        _movement_speed->set_value(value);
     }
 }

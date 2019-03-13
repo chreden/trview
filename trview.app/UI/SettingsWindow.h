@@ -12,6 +12,7 @@ namespace trview
     {
         class Control;
         class Checkbox;
+        class Slider;
     }
     struct ITextureStorage;
 
@@ -34,6 +35,16 @@ namespace trview
 
         /// Event raised when the 'items window at startup' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_items_startup;
+
+        /// Event raised when the movement speed has been changed. The new movement speed value is passed
+        /// as a parameter when the event is raised.
+        /// @remarks This event is not raised by the set_movement_speed function.
+        Event<float> on_movement_speed_changed;
+
+        /// Event raised when the camera sensitivity has been changed by the user. The new sensitivity
+        /// value is passed as a parameter when the event is raised.
+        /// @remarks This event is not raised by the set_sensitivity function.
+        Event<float> on_sensitivity_changed;
 
         /// Event raised when the 'triggers window at startup' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_triggers_startup;
@@ -65,6 +76,16 @@ namespace trview
         /// @param value The new 'Switch to orbit on selection' setting.
         void set_auto_orbit(bool value);
 
+        /// Set the movement speed slider to specified value.
+        /// @param value The movement speed between 0 and 1.
+        /// @remarks This will not raise the on_movement_speed_changed event.
+        void set_movement_speed(float value);
+
+        /// Set the sensitivity slider to the specified value.
+        /// @param value The sensitivity value between 0 and 1.
+        /// @remarks This will not raise the on_sensitivity_changed event.
+        void set_sensitivity(float value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
@@ -74,6 +95,8 @@ namespace trview
         ui::Checkbox* _items_startup;
         ui::Checkbox* _triggers_startup;
         ui::Checkbox* _auto_orbit;
+        ui::Slider* _sensitivity;
+        ui::Slider* _movement_speed;
         ui::Control* _window;
         TokenStore _token_store;
     };

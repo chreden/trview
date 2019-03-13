@@ -131,6 +131,8 @@ namespace trview
             _settings.auto_orbit = value;
             on_settings(_settings);
         };
+        _settings_window->on_sensitivity_changed += on_camera_sensitivity;
+        _settings_window->on_movement_speed_changed += on_camera_movement_speed;
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
@@ -217,8 +219,6 @@ namespace trview
         _camera_controls = std::make_unique<CameraControls>(parent);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
-        _camera_controls->on_sensitivity_changed += on_camera_sensitivity;
-        _camera_controls->on_movement_speed_changed += on_camera_movement_speed;
     }
 
     void ViewerUI::render(const graphics::Device& device)
@@ -240,7 +240,7 @@ namespace trview
 
     void ViewerUI::set_camera_movement_speed(float value)
     {
-        _camera_controls->set_movement_speed(value);
+        _settings_window->set_movement_speed(value);
     }
 
     void ViewerUI::set_camera_position(const DirectX::SimpleMath::Vector3& position)
@@ -250,7 +250,7 @@ namespace trview
 
     void ViewerUI::set_camera_sensitivity(float value)
     {
-        _camera_controls->set_sensitivity(value);
+        _settings_window->set_sensitivity(value);
     }
 
     void ViewerUI::set_camera_mode(CameraMode mode)
