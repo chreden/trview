@@ -168,6 +168,7 @@ namespace trview
                 });
 
                 _previous_sector.reset();
+                on_sector_hover(nullptr);
             }
 
             Point MapRenderer::get_position(const Sector& sector)
