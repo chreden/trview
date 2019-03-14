@@ -166,6 +166,8 @@ namespace trview
                 std::for_each(sectors.begin(), sectors.end(), [&] (const auto& pair) {
                     _tiles.emplace_back(std::shared_ptr<Sector>(pair.second), get_position(*pair.second), get_size());
                 });
+
+                _previous_sector.reset();
             }
 
             Point MapRenderer::get_position(const Sector& sector)
@@ -211,13 +213,13 @@ namespace trview
 
             void MapRenderer::set_cursor_position(const Point& cursor)
             {
-                auto previous_sector = sector_at_cursor();
                 _cursor = cursor - _first;
 
                 auto sector = sector_at_cursor();
-                if(sector != previous_sector)
+                if(sector != _previous_sector)
                 {
                     on_sector_hover(sector);
+                    _previous_sector = sector;
                 }
             }
 

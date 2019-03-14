@@ -18,6 +18,15 @@ namespace trview
         _control->set_handles_input(false);
         _ui_input = std::make_unique<Input>(window, *_control);
 
+        _token_store += _mouse.mouse_move += [&](long, long)
+        {
+            if (_map_tooltip_container && _map_tooltip_container->visible())
+            {
+                auto pos = client_cursor_position(_window);
+                _map_tooltip_container->set_position(Point(pos.x - _map_tooltip_container->size().width, pos.y - _map_tooltip_container->size().height));
+            }
+        };
+
         _token_store += _keyboard.on_key_down += [&](auto key)
         {
             if (_keyboard.control())
@@ -81,6 +90,13 @@ namespace trview
         picking->set_handles_input(false);
         _tooltip = _control->add_child(std::move(picking));
 
+        auto map_tooltip_container = std::make_unique<StackPanel>(Point(), Size(), Colour(0.2f, 0.2f, 0.2f));
+        map_tooltip_container->set_margin(Size(5, 5));
+        auto map_tooltip = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
+        map_tooltip->set_handles_input(false);
+        _map_tooltip = map_tooltip_container->add_child(std::move(map_tooltip));
+        _map_tooltip_container = _control->add_child(std::move(map_tooltip_container));
+
         auto measure = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         measure->set_visible(false);
         _measure = _control->add_child(std::move(measure));
@@ -131,7 +147,31 @@ namespace trview
         _ui_renderer->load(_control.get());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, window.size());
-        _map_renderer->on_sector_hover += on_sector_hover;
+        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
+        {
+            on_sector_hover(sector);
+
+            if (!sector)
+            {
+                _map_tooltip_container->set_visible(false);
+                return;
+            }
+
+            std::wstring text;
+            if (sector->flags & SectorFlag::RoomAbove)
+            {
+                text += L"Above: " + std::to_wstring(sector->room_above());
+            }
+            if (sector->flags & SectorFlag::RoomBelow)
+            {
+                text += ((sector->flags & SectorFlag::RoomAbove) ? L", " : L"") +
+                    std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
+            }
+            _map_tooltip->set_text(text);
+            auto pos = client_cursor_position(_window);
+            _map_tooltip_container->set_position(Point(pos.x - _map_tooltip_container->size().width, pos.y - _map_tooltip_container->size().height));
+            _map_tooltip_container->set_visible(!text.empty());
+        };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
     }
@@ -194,11 +234,11 @@ namespace trview
 
     void ViewerUI::render(const graphics::Device& device)
     {
-        _ui_renderer->render(device.context());
-        
         Point point = client_cursor_position(_window);
         _map_renderer->set_cursor_position(point);
         _map_renderer->render(device.context());
+
+        _ui_renderer->render(device.context());
     }
 
     void ViewerUI::set_alternate_group(uint16_t value, bool enabled)
@@ -300,6 +340,8 @@ namespace trview
         _tooltip->set_visible(result.hit && _show_tooltip);
         if (result.hit)
         {
+            _map_tooltip_container->set_visible(false);
+
             auto screen_pos = info.screen_position;
             _tooltip->set_position(Point(screen_pos.x - _tooltip->size().width, screen_pos.y - _tooltip->size().height));
             _tooltip->set_text(pick_to_string(result));
@@ -358,6 +400,7 @@ namespace trview
     {
         _show_tooltip = value;
         _tooltip->set_visible(_tooltip->visible() && _show_tooltip);
+        _map_tooltip_container->set_visible(_map_tooltip_container->visible() && _show_tooltip);
     }
 
     void ViewerUI::set_show_triggers(bool value)

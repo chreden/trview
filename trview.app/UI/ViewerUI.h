@@ -282,6 +282,8 @@ namespace trview
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         ui::Label* _tooltip;
+        ui::StackPanel* _map_tooltip_container;
+        ui::Label* _map_tooltip;
         ui::Label* _measure;
         bool _show_tooltip{ true };
     };
