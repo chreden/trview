@@ -85,14 +85,14 @@ namespace trview
             }
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.5f, 0.0f, 0.0f, 0.0f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         picking->set_visible(false);
         picking->set_handles_input(false);
         _tooltip = _control->add_child(std::move(picking));
 
-        auto map_tooltip_container = std::make_unique<StackPanel>(Point(), Size(), Colour(0.2f, 0.2f, 0.2f));
+        auto map_tooltip_container = std::make_unique<StackPanel>(Point(), Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
         map_tooltip_container->set_margin(Size(5, 5));
-        auto map_tooltip = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
+        auto map_tooltip = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
         map_tooltip->set_handles_input(false);
         _map_tooltip = map_tooltip_container->add_child(std::move(map_tooltip));
         _map_tooltip_container = _control->add_child(std::move(map_tooltip_container));
