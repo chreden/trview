@@ -223,10 +223,8 @@ namespace trview
 
     void ViewerUI::render(const graphics::Device& device)
     {
-        Point point = client_cursor_position(_window);
-        _map_renderer->set_cursor_position(point);
+        _map_renderer->set_cursor_position(client_cursor_position(_window));
         _map_renderer->render(device.context());
-
         _ui_renderer->render(device.context());
     }
 

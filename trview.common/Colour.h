@@ -8,6 +8,7 @@ namespace trview
     {
         Colour();
 
+        /// Create a colour from a DirectX::SimpleMath::Color.
         Colour(const DirectX::SimpleMath::Color& colour);
 
         /// Create a colour with the specified rgb components and a fully opaque alpha value.
