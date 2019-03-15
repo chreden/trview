@@ -62,6 +62,23 @@ namespace trview
         /// @remarks This event is not raised by the set_show_water function.
         Event<bool> on_show_water;
 
+        /// Event raised when the user has enabled or disabled neighbour mode. The boolean passed to when the event is
+        /// raised indicates whether neighbours mode is enabled.
+        /// @remarks This event is not raised when the set_enabled function is called.
+        Event<bool> on_enabled_changed;
+
+        /// Event raised when the user has changed the depth of neighbour to display. The newly selected depth is passed
+        /// when the event is raised.
+        Event<int32_t> on_depth_changed;
+
+        /// Set whether neighbours are enabled. This will not raise the on_enabled_changed event.
+        /// @param value Whether neighbours are enabled.
+        void set_depth_enabled(bool value);
+
+        /// Set the value of the depth control. This will not raise the on_depth_changed event.
+        /// @param value The neighbour depth to use.
+        void set_depth(int32_t value);
+
         /// Set the room information for the current room. This will be used to populate the labels (eg position).
         /// @param room_info The room information.
         void set_room_info(RoomInfo room_info);
@@ -111,5 +128,7 @@ namespace trview
         ui::Label*         _max;
         ui::Label*         _x;
         ui::Label*         _z;
+        ui::Checkbox*      _enabled;
+        ui::NumericUpDown* _depth;
     };
 }

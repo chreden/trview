@@ -200,14 +200,12 @@ namespace trview
         _room_navigator->on_show_triggers += on_show_triggers;
         _room_navigator->on_show_hidden_geometry += on_show_hidden_geometry;
         _room_navigator->on_show_water += on_show_water;
+        _room_navigator->on_depth_changed += on_depth_level_changed;
+        _room_navigator->on_enabled_changed += on_depth;
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _flipmaps->on_flip += on_flip;
         _flipmaps->on_alternate_group += on_alternate_group;
-
-        _neighbours = std::make_unique<Neighbours>(*tool_window.get(), texture_storage);
-        _neighbours->on_depth_changed += on_depth_level_changed;
-        _neighbours->on_enabled_changed += on_depth;
 
         initialise_camera_controls(*tool_window);
 
@@ -260,12 +258,12 @@ namespace trview
 
     void ViewerUI::set_depth_enabled(bool value)
     {
-        _neighbours->set_enabled(value);
+        _room_navigator->set_depth_enabled(value);
     }
 
     void ViewerUI::set_depth_level(int32_t value)
     {
-        _neighbours->set_depth(value);
+        _room_navigator->set_depth(value);
     }
 
     void ViewerUI::set_flip(bool value)
