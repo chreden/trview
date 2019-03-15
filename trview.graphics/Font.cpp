@@ -37,6 +37,11 @@ namespace trview
 
         void Font::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour)
         {
+            render(context, text, 0, 0, width, height, colour);
+        }
+
+        void Font::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float x, float y, float width, float height, const Colour& colour)
+        {
             if (!_batch)
             {
                 _batch = std::make_unique<SpriteBatch>(context.Get());
@@ -48,17 +53,15 @@ namespace trview
 
             // Calculate the position at which to render the text based on the alignment settings.
             const auto size = measure(text);
-            float x = 0;
-            float y = 0;
 
             if (_text_alignment == TextAlignment::Centre)
             {
-                x = width * 0.5f - size.width * 0.5f;
+                x += width * 0.5f - size.width * 0.5f;
             }
 
             if (_paragraph_alignment == ParagraphAlignment::Centre)
             {
-                y = height * 0.5f - size.height * 0.5f;
+                y += height * 0.5f - size.height * 0.5f;
             }
 
             _batch->Begin(SpriteSortMode_Deferred, blend_state.Get());

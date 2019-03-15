@@ -58,6 +58,7 @@
     <ClCompile Include="UI\Neighbours.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
     <ClCompile Include="UI\SettingsWindow.cpp" />
+    <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="UI\Neighbours.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
+    <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />

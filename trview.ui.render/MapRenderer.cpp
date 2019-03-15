@@ -2,6 +2,7 @@
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.graphics/SpriteSizeStore.h>
+#include <trview.common/Colour.h>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
@@ -29,11 +30,12 @@ namespace trview
 
         namespace render
         {
-            MapRenderer::MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& window_size)
+            MapRenderer::MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& window_size)
                 : _device(device),
-                _window_width(static_cast<int>(window_size.width)), 
+                _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),
-                _sprite(device, shader_storage, window_size)
+                _sprite(device, shader_storage, window_size),
+                _font(font_factory.create_font("Arial", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre))
             {
                 TextureStorage texture_storage{ device };
                 _texture = texture_storage.coloured(0xFFFFFFFF);
@@ -79,6 +81,7 @@ namespace trview
                     // To determine the base colour we order the floor functions by the *minimum* enabled flag (ranked by order asc)
                     int minimum_flag_enabled = -1;
                     Color draw_color = Color(0.0f, 0.7f, 0.7f); // fallback 
+                    Color text_color = Colour::White;
 
                     if (!(tile.sector->flags & SectorFlag::Portal) && (tile.sector->flags & SectorFlag::Wall && tile.sector->flags & SectorFlag::FloorSlant)) // is it no-space?
                     {
@@ -106,6 +109,7 @@ namespace trview
                          _selected_sector.value().second == tile.sector->z()))
                     {
                         draw_color.Negate();
+                        text_color.Negate();
                     }
 
                     // Draw the base tile 
@@ -131,6 +135,11 @@ namespace trview
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
                     if (tile.sector->flags & SectorFlag::RoomAbove)
                         draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
+
+                    if (tile.sector->flags & SectorFlag::Portal)
+                    {
+                        _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
+                    }
                 });
             }
 
@@ -157,6 +166,9 @@ namespace trview
                 std::for_each(sectors.begin(), sectors.end(), [&] (const auto& pair) {
                     _tiles.emplace_back(std::shared_ptr<Sector>(pair.second), get_position(*pair.second), get_size());
                 });
+
+                _previous_sector.reset();
+                on_sector_hover(nullptr);
             }
 
             Point MapRenderer::get_position(const Sector& sector)
@@ -202,13 +214,13 @@ namespace trview
 
             void MapRenderer::set_cursor_position(const Point& cursor)
             {
-                auto previous_sector = sector_at_cursor();
                 _cursor = cursor - _first;
 
                 auto sector = sector_at_cursor();
-                if(sector != previous_sector)
+                if(sector != _previous_sector)
                 {
                     on_sector_hover(sector);
+                    _previous_sector = sector;
                 }
             }
 

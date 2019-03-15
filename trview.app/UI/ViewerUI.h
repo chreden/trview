@@ -22,6 +22,7 @@
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.app/Settings/UserSettings.h>
+#include <trview.app/UI/Tooltip.h>
 
 namespace trview
 {
@@ -281,7 +282,8 @@ namespace trview
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
-        ui::Label* _tooltip;
+        std::unique_ptr<Tooltip> _map_tooltip;
+        std::unique_ptr<Tooltip> _tooltip;
         ui::Label* _measure;
         bool _show_tooltip{ true };
     };
