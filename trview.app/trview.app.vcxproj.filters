@@ -145,6 +145,9 @@
     <ClCompile Include="Menus\AlternateGroupToggler.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Tooltip.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -308,6 +311,9 @@
     </ClInclude>
     <ClInclude Include="Menus\AlternateGroupToggler.h">
       <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Tooltip.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

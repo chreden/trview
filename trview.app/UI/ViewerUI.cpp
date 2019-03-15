@@ -20,10 +20,9 @@ namespace trview
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
-            if (_map_tooltip_container && _map_tooltip_container->visible())
+            if (_map_tooltip && _map_tooltip->visible())
             {
-                auto pos = client_cursor_position(_window);
-                _map_tooltip_container->set_position(Point(pos.x - _map_tooltip_container->size().width, pos.y - _map_tooltip_container->size().height));
+                _map_tooltip->set_position(client_cursor_position(_window));
             }
         };
 
@@ -85,17 +84,8 @@ namespace trview
             }
         };
 
-        auto picking = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour(0.5f, 0.0f, 0.0f, 0.0f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
-        picking->set_visible(false);
-        picking->set_handles_input(false);
-        _tooltip = _control->add_child(std::move(picking));
-
-        auto map_tooltip_container = std::make_unique<StackPanel>(Point(), Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        map_tooltip_container->set_margin(Size(5, 5));
-        auto map_tooltip = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
-        map_tooltip->set_handles_input(false);
-        _map_tooltip = map_tooltip_container->add_child(std::move(map_tooltip));
-        _map_tooltip_container = _control->add_child(std::move(map_tooltip_container));
+        _tooltip = std::make_unique<Tooltip>(*_control);
+        _map_tooltip = std::make_unique<Tooltip>(*_control);
 
         auto measure = std::make_unique<ui::Label>(Point(300, 100), Size(50, 30), Colour(1.0f, 0.2f, 0.2f, 0.2f), L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         measure->set_visible(false);
@@ -153,7 +143,7 @@ namespace trview
 
             if (!sector)
             {
-                _map_tooltip_container->set_visible(false);
+                _map_tooltip->set_visible(false);
                 return;
             }
 
@@ -168,9 +158,8 @@ namespace trview
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);
-            auto pos = client_cursor_position(_window);
-            _map_tooltip_container->set_position(Point(pos.x - _map_tooltip_container->size().width, pos.y - _map_tooltip_container->size().height));
-            _map_tooltip_container->set_visible(!text.empty());
+            _map_tooltip->set_position(client_cursor_position(_window));
+            _map_tooltip->set_visible(!text.empty());
         };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
@@ -340,11 +329,9 @@ namespace trview
         _tooltip->set_visible(result.hit && _show_tooltip);
         if (result.hit)
         {
-            _map_tooltip_container->set_visible(false);
-
-            auto screen_pos = info.screen_position;
-            _tooltip->set_position(Point(screen_pos.x - _tooltip->size().width, screen_pos.y - _tooltip->size().height));
+            _map_tooltip->set_visible(false);
             _tooltip->set_text(pick_to_string(result));
+            _tooltip->set_position(info.screen_position);
             _tooltip->set_text_colour(pick_to_colour(result));
         }
     }
@@ -400,7 +387,7 @@ namespace trview
     {
         _show_tooltip = value;
         _tooltip->set_visible(_tooltip->visible() && _show_tooltip);
-        _map_tooltip_container->set_visible(_map_tooltip_container->visible() && _show_tooltip);
+        _map_tooltip->set_visible(_map_tooltip->visible() && _show_tooltip);
     }
 
     void ViewerUI::set_show_triggers(bool value)
