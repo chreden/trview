@@ -194,14 +194,16 @@ namespace trview
         auto tool_window = std::make_unique<StackPanel>(Point(), Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
         tool_window->set_margin(Size(5, 5));
 
+        _view_options = std::make_unique<ViewOptions>(*tool_window, texture_storage);
+        _view_options->on_highlight += on_highlight;
+        _view_options->on_show_triggers += on_show_triggers;
+        _view_options->on_show_hidden_geometry += on_show_hidden_geometry;
+        _view_options->on_show_water += on_show_water;
+        _view_options->on_depth_changed += on_depth_level_changed;
+        _view_options->on_depth_enabled += on_depth;
+
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
         _room_navigator->on_room_selected += on_select_room;
-        _room_navigator->on_highlight += on_highlight;
-        _room_navigator->on_show_triggers += on_show_triggers;
-        _room_navigator->on_show_hidden_geometry += on_show_hidden_geometry;
-        _room_navigator->on_show_water += on_show_water;
-        _room_navigator->on_depth_changed += on_depth_level_changed;
-        _room_navigator->on_enabled_changed += on_depth;
 
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _flipmaps->on_flip += on_flip;
@@ -258,12 +260,12 @@ namespace trview
 
     void ViewerUI::set_depth_enabled(bool value)
     {
-        _room_navigator->set_depth_enabled(value);
+        _view_options->set_depth_enabled(value);
     }
 
     void ViewerUI::set_depth_level(int32_t value)
     {
-        _room_navigator->set_depth(value);
+        _view_options->set_depth(value);
     }
 
     void ViewerUI::set_flip(bool value)
@@ -278,7 +280,7 @@ namespace trview
 
     void ViewerUI::set_highlight(bool value)
     {
-        _room_navigator->set_highlight(value);
+        _view_options->set_highlight(value);
     }
 
     void ViewerUI::set_host_size(const Size& size)
@@ -366,7 +368,7 @@ namespace trview
 
     void ViewerUI::set_show_hidden_geometry(bool value)
     {
-        _room_navigator->set_show_hidden_geometry(value);
+        _view_options->set_show_hidden_geometry(value);
     }
 
     void ViewerUI::set_show_measure(bool value)
@@ -388,12 +390,12 @@ namespace trview
 
     void ViewerUI::set_show_triggers(bool value)
     {
-        _room_navigator->set_show_triggers(value);
+        _view_options->set_show_triggers(value);
     }
 
     void ViewerUI::set_show_water(bool value)
     {
-        _room_navigator->set_show_water(value);
+        _view_options->set_show_water(value);
     }
 
     void ViewerUI::set_use_alternate_groups(bool value)
@@ -408,17 +410,17 @@ namespace trview
 
     bool ViewerUI::show_hidden_geometry() const
     {
-        return _room_navigator->show_hidden_geometry();
+        return _view_options->show_hidden_geometry();
     }
 
     bool ViewerUI::show_triggers() const
     {
-        return _room_navigator->show_triggers();
+        return _view_options->show_triggers();
     }
 
     bool ViewerUI::show_water() const
     {
-        return _room_navigator->show_water();
+        return _view_options->show_water();
     }
 
     void ViewerUI::toggle_settings_visibility()

@@ -22,6 +22,7 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/UI/Tooltip.h>
+#include <trview.app/UI/ViewOptions.h>
 
 namespace trview
 {
@@ -273,6 +274,7 @@ namespace trview
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<ViewOptions> _view_options;
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<SettingsWindow> _settings_window;

@@ -60,6 +60,7 @@
     <ClCompile Include="UI\SettingsWindow.cpp" />
     <ClCompile Include="UI\Tooltip.cpp" />
     <ClCompile Include="UI\ViewerUI.cpp" />
+    <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="UI\SettingsWindow.h" />
     <ClInclude Include="UI\Tooltip.h" />
     <ClInclude Include="UI\ViewerUI.h" />
+    <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />

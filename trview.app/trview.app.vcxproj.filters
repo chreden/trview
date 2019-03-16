@@ -148,6 +148,9 @@
     <ClCompile Include="UI\Tooltip.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ViewOptions.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -313,6 +316,9 @@
       <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="UI\Tooltip.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ViewOptions.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
