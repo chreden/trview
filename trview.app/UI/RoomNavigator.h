@@ -17,6 +17,7 @@ namespace trview
         class Checkbox;
         class Label;
         class NumericUpDown;
+        class Listbox;
     }
 
     struct ITextureStorage;
@@ -51,7 +52,6 @@ namespace trview
     private:
         ui::NumericUpDown* _current;
         ui::Label*         _max;
-        ui::Label*         _x;
-        ui::Label*         _z;
+        ui::Listbox*       _listbox;
     };
 }
