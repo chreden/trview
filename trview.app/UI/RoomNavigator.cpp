@@ -16,7 +16,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 110), Colour::Transparent, Colour::Grey, L"Rooms");
+        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 110), Colour::Transparent, Colour::Grey, L"Room");
 
         auto listbox = std::make_unique<Listbox>(Point(4, 12), Size(140, 80), Colour::Transparent);
         listbox->set_show_scrollbar(false);

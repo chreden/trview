@@ -202,12 +202,12 @@ namespace trview
         _view_options->on_depth_changed += on_depth_level_changed;
         _view_options->on_depth_enabled += on_depth;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
-        _room_navigator->on_room_selected += on_select_room;
-
         _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
         _flipmaps->on_flip += on_flip;
         _flipmaps->on_alternate_group += on_alternate_group;
+
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
+        _room_navigator->on_room_selected += on_select_room;
 
         initialise_camera_controls(*tool_window);
 

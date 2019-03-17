@@ -25,7 +25,7 @@ namespace trview
 
     /// The room navigator control allows the user to select which room to look at and
     /// whether to highlight the current room.
-    class RoomNavigator
+    class RoomNavigator final
     {
     public:
         /// Create the RoomNavigator control and attach it as a child to the parent control specified.
