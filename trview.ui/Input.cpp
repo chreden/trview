@@ -54,7 +54,6 @@ namespace trview
                 {
                     _focus_control = nullptr;
                 }
-                register_events();
             };
 
             for (auto& child : control->child_elements())
