@@ -25,22 +25,20 @@ namespace trview
         hidden_geometry->on_state_changed += on_show_hidden_geometry;
         water->on_state_changed += on_show_water;
 
-        auto enabled = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Depth");
+        auto enabled = std::make_unique<Checkbox>(Point(12, 70), Size(16, 16), Colour::Transparent, L"Depth");
         enabled->on_state_changed += on_depth_enabled;
 
-        auto depth = std::make_unique<NumericUpDown>(Point(), Size(40, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20);
+        auto depth = std::make_unique<NumericUpDown>(Point(86, 70), Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20);
         depth->set_value(1);
         depth->on_value_changed += on_depth_changed;
 
-        auto neighbour_panel = std::make_unique<StackPanel>(Point(12, 72), Size(), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        _enabled = neighbour_panel->add_child(std::move(enabled));
-        _depth = neighbour_panel->add_child(std::move(depth));
+        _enabled = rooms_groups->add_child(std::move(enabled));
+        _depth = rooms_groups->add_child(std::move(depth));
 
         _highlight = rooms_groups->add_child(std::move(highlight));
         _triggers = rooms_groups->add_child(std::move(triggers));
         _hidden_geometry = rooms_groups->add_child(std::move(hidden_geometry));
         _water = rooms_groups->add_child(std::move(water));
-        rooms_groups->add_child(std::move(neighbour_panel));
 
         parent.add_child(std::move(rooms_groups));
     }
