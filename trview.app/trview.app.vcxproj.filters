@@ -37,9 +37,6 @@
     <ClCompile Include="UI\LevelInfo.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Neighbours.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\RoomNavigator.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -190,9 +187,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\LevelInfo.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Neighbours.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\RoomNavigator.h">
