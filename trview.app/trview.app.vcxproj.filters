@@ -31,9 +31,6 @@
     <ClCompile Include="UI\CameraControls.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Flipmaps.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\GoTo.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -187,9 +184,6 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="UI\CameraControls.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Flipmaps.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\GoTo.h">

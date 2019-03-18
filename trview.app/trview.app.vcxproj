@@ -52,7 +52,6 @@
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
-    <ClCompile Include="UI\Flipmaps.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
     <ClCompile Include="UI\Neighbours.cpp" />
@@ -109,7 +108,6 @@
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\ContextMenu.h" />
-    <ClInclude Include="UI\Flipmaps.h" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\LevelInfo.h" />
     <ClInclude Include="UI\Neighbours.h" />

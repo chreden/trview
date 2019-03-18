@@ -134,6 +134,8 @@ namespace trview
         _settings_window->on_sensitivity_changed += on_camera_sensitivity;
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
 
+        _camera_position = std::make_unique<CameraPosition>(*_control);
+
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
         _ui_renderer->load(_control.get());
@@ -163,8 +165,6 @@ namespace trview
             _map_tooltip->set_position(client_cursor_position(_window));
             _map_tooltip->set_visible(!text.empty());
         };
-
-        _camera_position = std::make_unique<CameraPosition>(*_control);
     }
 
     void ViewerUI::clear_minimap_highlight()
@@ -201,10 +201,8 @@ namespace trview
         _view_options->on_show_water += on_show_water;
         _view_options->on_depth_changed += on_depth_level_changed;
         _view_options->on_depth_enabled += on_depth;
-
-        _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
-        _flipmaps->on_flip += on_flip;
-        _flipmaps->on_alternate_group += on_alternate_group;
+        _view_options->on_flip += on_flip;
+        _view_options->on_alternate_group += on_alternate_group;
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
         _room_navigator->on_room_selected += on_select_room;
@@ -230,12 +228,12 @@ namespace trview
 
     void ViewerUI::set_alternate_group(uint16_t value, bool enabled)
     {
-        _flipmaps->set_alternate_group(value, enabled);
+        _view_options->set_alternate_group(value, enabled);
     }
 
     void ViewerUI::set_alternate_groups(const std::set<uint16_t>& groups)
     {
-        _flipmaps->set_alternate_groups(groups);
+        _view_options->set_alternate_groups(groups);
     }
 
     void ViewerUI::set_camera_movement_speed(float value)
@@ -270,12 +268,12 @@ namespace trview
 
     void ViewerUI::set_flip(bool value)
     {
-        _flipmaps->set_flip(value);
+        _view_options->set_flip(value);
     }
 
     void ViewerUI::set_flip_enabled(bool value)
     {
-        _flipmaps->set_flip_enabled(value);
+        _view_options->set_flip_enabled(value);
     }
 
     void ViewerUI::set_highlight(bool value)
@@ -400,7 +398,7 @@ namespace trview
 
     void ViewerUI::set_use_alternate_groups(bool value)
     {
-        _flipmaps->set_use_alternate_groups(value);
+        _view_options->set_use_alternate_groups(value);
     }
 
     void ViewerUI::set_visible(bool value)
