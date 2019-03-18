@@ -40,14 +40,11 @@ namespace trview
 
     void RoomNavigator::set_room_info(RoomInfo room_info)
     {
-        std::vector<ui::Listbox::Item> items;
-        items.push_back({{
-                        { L"Name", L"X" },
-                        { L"Value", std::to_wstring(static_cast<uint32_t>(room_info.x / trlevel::Scale_X))}}});
-        items.push_back({{
-                        { L"Name", L"Z" },
-                        { L"Value", std::to_wstring(static_cast<uint32_t>(room_info.z / trlevel::Scale_Z))}}});
-        _listbox->set_items(items);
+        _listbox->set_items(
+            {
+                {{{ L"Name", L"X" }, { L"Value", std::to_wstring(static_cast<uint32_t>(room_info.x / trlevel::Scale_X))}}},
+                {{{ L"Name", L"Z" }, { L"Value", std::to_wstring(static_cast<uint32_t>(room_info.z / trlevel::Scale_Z))}}}
+            });
     }
 
     void RoomNavigator::set_max_rooms(uint32_t max_rooms)
