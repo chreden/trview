@@ -59,7 +59,7 @@ namespace trview
             void create_image(const Size& size, const Colour& colour);
 
             ui::Label*  _label;
-            ui::Window* _fill;
+            ui::Label*  _check;
             bool        _state{ false };
             bool        _enabled{ true };
         };
