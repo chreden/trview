@@ -131,6 +131,10 @@ namespace trview
             _settings.auto_orbit = value;
             on_settings(_settings);
         };
+        _settings_window->on_sensitivity_changed += on_camera_sensitivity;
+        _settings_window->on_movement_speed_changed += on_camera_movement_speed;
+
+        _camera_position = std::make_unique<CameraPosition>(*_control);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
@@ -161,8 +165,6 @@ namespace trview
             _map_tooltip->set_position(client_cursor_position(_window));
             _map_tooltip->set_visible(!text.empty());
         };
-
-        _camera_position = std::make_unique<CameraPosition>(*_control);
     }
 
     void ViewerUI::clear_minimap_highlight()
@@ -192,20 +194,18 @@ namespace trview
         auto tool_window = std::make_unique<StackPanel>(Point(), Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
         tool_window->set_margin(Size(5, 5));
 
+        _view_options = std::make_unique<ViewOptions>(*tool_window, texture_storage);
+        _view_options->on_highlight += on_highlight;
+        _view_options->on_show_triggers += on_show_triggers;
+        _view_options->on_show_hidden_geometry += on_show_hidden_geometry;
+        _view_options->on_show_water += on_show_water;
+        _view_options->on_depth_changed += on_depth_level_changed;
+        _view_options->on_depth_enabled += on_depth;
+        _view_options->on_flip += on_flip;
+        _view_options->on_alternate_group += on_alternate_group;
+
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
         _room_navigator->on_room_selected += on_select_room;
-        _room_navigator->on_highlight += on_highlight;
-        _room_navigator->on_show_triggers += on_show_triggers;
-        _room_navigator->on_show_hidden_geometry += on_show_hidden_geometry;
-        _room_navigator->on_show_water += on_show_water;
-
-        _flipmaps = std::make_unique<Flipmaps>(*tool_window.get());
-        _flipmaps->on_flip += on_flip;
-        _flipmaps->on_alternate_group += on_alternate_group;
-
-        _neighbours = std::make_unique<Neighbours>(*tool_window.get(), texture_storage);
-        _neighbours->on_depth_changed += on_depth_level_changed;
-        _neighbours->on_enabled_changed += on_depth;
 
         initialise_camera_controls(*tool_window);
 
@@ -217,8 +217,6 @@ namespace trview
         _camera_controls = std::make_unique<CameraControls>(parent);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
-        _camera_controls->on_sensitivity_changed += on_camera_sensitivity;
-        _camera_controls->on_movement_speed_changed += on_camera_movement_speed;
     }
 
     void ViewerUI::render(const graphics::Device& device)
@@ -230,17 +228,17 @@ namespace trview
 
     void ViewerUI::set_alternate_group(uint16_t value, bool enabled)
     {
-        _flipmaps->set_alternate_group(value, enabled);
+        _view_options->set_alternate_group(value, enabled);
     }
 
     void ViewerUI::set_alternate_groups(const std::set<uint16_t>& groups)
     {
-        _flipmaps->set_alternate_groups(groups);
+        _view_options->set_alternate_groups(groups);
     }
 
     void ViewerUI::set_camera_movement_speed(float value)
     {
-        _camera_controls->set_movement_speed(value);
+        _settings_window->set_movement_speed(value);
     }
 
     void ViewerUI::set_camera_position(const DirectX::SimpleMath::Vector3& position)
@@ -250,7 +248,7 @@ namespace trview
 
     void ViewerUI::set_camera_sensitivity(float value)
     {
-        _camera_controls->set_sensitivity(value);
+        _settings_window->set_sensitivity(value);
     }
 
     void ViewerUI::set_camera_mode(CameraMode mode)
@@ -260,27 +258,27 @@ namespace trview
 
     void ViewerUI::set_depth_enabled(bool value)
     {
-        _neighbours->set_enabled(value);
+        _view_options->set_depth_enabled(value);
     }
 
     void ViewerUI::set_depth_level(int32_t value)
     {
-        _neighbours->set_depth(value);
+        _view_options->set_depth(value);
     }
 
     void ViewerUI::set_flip(bool value)
     {
-        _flipmaps->set_flip(value);
+        _view_options->set_flip(value);
     }
 
     void ViewerUI::set_flip_enabled(bool value)
     {
-        _flipmaps->set_flip_enabled(value);
+        _view_options->set_flip_enabled(value);
     }
 
     void ViewerUI::set_highlight(bool value)
     {
-        _room_navigator->set_highlight(value);
+        _view_options->set_highlight(value);
     }
 
     void ViewerUI::set_host_size(const Size& size)
@@ -368,7 +366,7 @@ namespace trview
 
     void ViewerUI::set_show_hidden_geometry(bool value)
     {
-        _room_navigator->set_show_hidden_geometry(value);
+        _view_options->set_show_hidden_geometry(value);
     }
 
     void ViewerUI::set_show_measure(bool value)
@@ -390,17 +388,17 @@ namespace trview
 
     void ViewerUI::set_show_triggers(bool value)
     {
-        _room_navigator->set_show_triggers(value);
+        _view_options->set_show_triggers(value);
     }
 
     void ViewerUI::set_show_water(bool value)
     {
-        _room_navigator->set_show_water(value);
+        _view_options->set_show_water(value);
     }
 
     void ViewerUI::set_use_alternate_groups(bool value)
     {
-        _flipmaps->set_use_alternate_groups(value);
+        _view_options->set_use_alternate_groups(value);
     }
 
     void ViewerUI::set_visible(bool value)
@@ -410,17 +408,17 @@ namespace trview
 
     bool ViewerUI::show_hidden_geometry() const
     {
-        return _room_navigator->show_hidden_geometry();
+        return _view_options->show_hidden_geometry();
     }
 
     bool ViewerUI::show_triggers() const
     {
-        return _room_navigator->show_triggers();
+        return _view_options->show_triggers();
     }
 
     bool ViewerUI::show_water() const
     {
-        return _room_navigator->show_water();
+        return _view_options->show_water();
     }
 
     void ViewerUI::toggle_settings_visibility()

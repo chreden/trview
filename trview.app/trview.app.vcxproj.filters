@@ -31,16 +31,10 @@
     <ClCompile Include="UI\CameraControls.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Flipmaps.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\GoTo.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="UI\LevelInfo.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Neighbours.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="UI\RoomNavigator.cpp">
@@ -148,6 +142,9 @@
     <ClCompile Include="UI\Tooltip.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ViewOptions.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -186,16 +183,10 @@
     <ClInclude Include="UI\CameraControls.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Flipmaps.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="UI\GoTo.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\LevelInfo.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Neighbours.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\RoomNavigator.h">
@@ -313,6 +304,9 @@
       <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="UI\Tooltip.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ViewOptions.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

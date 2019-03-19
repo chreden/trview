@@ -14,8 +14,6 @@
 #include <trview.app/UI/RoomNavigator.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/SettingsWindow.h>
-#include <trview.app/UI/Flipmaps.h>
-#include <trview.app/UI/Neighbours.h>
 #include <trview.app/UI/CameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
 #include <trview.app/Geometry/PickInfo.h>
@@ -23,6 +21,7 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/UI/Tooltip.h>
+#include <trview.app/UI/ViewOptions.h>
 
 namespace trview
 {
@@ -274,11 +273,10 @@ namespace trview
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
+        std::unique_ptr<ViewOptions> _view_options;
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<SettingsWindow> _settings_window;
-        std::unique_ptr<Flipmaps> _flipmaps;
-        std::unique_ptr<Neighbours> _neighbours;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
