@@ -9,8 +9,7 @@ namespace trview
     {
         namespace
         {
-            const Colour on_colour { Colour(0.5f, 0.5f, 0.5f) };
-            const Colour off_colour { Colour(0.2f, 0.2f, 0.2f) };
+            const Colour background_colour { Colour(0.2f, 0.2f, 0.2f) };
         }
 
         Checkbox::Checkbox(const Point& position, const Size& size)
@@ -39,7 +38,7 @@ namespace trview
         void Checkbox::create_image(const Size& size, const Colour& colour)
         {
             auto outer = std::make_unique<Window>(Point(), size, Colour(0.6f, 0.6f, 0.6f));
-            outer->add_child(std::make_unique<Window>(Point(1, 1), size - Size(2, 2), off_colour));
+            outer->add_child(std::make_unique<Window>(Point(1, 1), size - Size(2, 2), background_colour));
             _check = outer->add_child(std::make_unique<Label>(Point(), size - Size(2, 2), Colour::Transparent, L"", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
             add_child(std::move(outer));
         }
