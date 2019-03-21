@@ -151,6 +151,9 @@ namespace trview
         std::unique_ptr<Route> _route;
         std::unique_ptr<RouteWindowManager> _route_window_manager;
         bool _show_route{ true };
+
+        /// Was the room just changed due to an alternate group or flip being performed?
+        bool _was_alternate_select{ false };
     };
 }
 
