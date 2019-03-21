@@ -699,11 +699,12 @@ namespace trview
             _level->set_selected_room(static_cast<uint16_t>(room));
             _ui->set_selected_room(_level->room(_level->selected_room()));
 
-            if (_settings.auto_orbit)
+            if (_settings.auto_orbit && !_was_alternate_select)
             {
                 set_camera_mode(CameraMode::Orbit);
             }
 
+            _was_alternate_select = false;
             _target = _level->room(_level->selected_room())->centre();
 
             _items_windows->set_room(room);
@@ -760,6 +761,7 @@ namespace trview
     {
         if (_level)
         {
+            _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
             _ui->set_flip(enabled);
         }
@@ -769,6 +771,7 @@ namespace trview
     {
         if (_level)
         {
+            _was_alternate_select = true;
             _level->set_alternate_group(group, enabled);
             _ui->set_alternate_group(group, enabled);
         }
