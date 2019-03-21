@@ -140,6 +140,9 @@ namespace trview
 
         uint32_t number() const;
         void update_bounding_box();
+
+        /// Gets whether this room is a water room.
+        bool water() const;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
