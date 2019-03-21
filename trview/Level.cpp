@@ -204,10 +204,10 @@ namespace trview
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, _show_water, _show_water);
+                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
                 if (_regenerate_transparency)
                 {
-                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water, _show_water);
+                    original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, room.room.water(), _show_water);
                 }
             }
         }

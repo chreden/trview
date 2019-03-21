@@ -663,4 +663,9 @@ namespace trview
             BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
         }
     }
+
+    bool Room::water() const
+    {
+        return _water;
+    }
 }
