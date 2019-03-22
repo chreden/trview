@@ -89,22 +89,23 @@ Key|Action
 Right mouse + move      | Rotate around target
 Mouse wheel             | Zoom in/out
 
-### Rooms
+### View Options
 
 Input|Action
 ---|------
 Highlight           | Highlight the currently selected room
+Triggers            | Toggle trigger visibility
+Geometry            | Toggle hidden geometry visibility
+Water               | Toggle water in water rooms
+Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
+Depth Selector      | Choose the depth of neighbours to show.
 Flip                | Toggle the level flipmap (if present in the level)
+
+### Room
+
 Room Selector       | Go up/down through room numbers
 X                   | X coordinate of the room
 Z                   | Z coordinate of the room
-
-### Neighbours
-
-Input|Action
----|------
-Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
-Depth Selector      | Choose the depth of neighbours to show.
 
 ### Camera
 
@@ -114,8 +115,6 @@ Reset               | Reset the orbit camera
 Orbit               | Use orbit mode - this orbits a room or item
 Free                | Use free mode
 Axis                | Use axis mode - this is like free, but the controls map to X/Z/Y axis (rotation is ignored)
-Sensitivity         | How sensitive looking around is
-Movement Speed      | How fast the camera moves in free mode
 
 ## Windows
 
