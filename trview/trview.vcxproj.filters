@@ -216,5 +216,8 @@
     <None Include="resources\selection_pixel_shader.cso">
       <Filter>Resources</Filter>
     </None>
+    <None Include="resources\arial7.bin">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
 </Project>
