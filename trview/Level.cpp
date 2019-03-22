@@ -437,7 +437,7 @@ namespace trview
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                choose(original_room->pick(position, direction, true, _show_triggers, _show_hidden_geometry, false));
+                choose(original_room->pick(position, direction, true, false, false, false));
             }
         }
         return final_result;
