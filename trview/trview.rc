@@ -281,6 +281,7 @@ IDR_SELECTION_SHADER    SHADER                  "resources\\selection_pixel_shad
 //
 
 IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
+IDF_ARIAL7              SPRITEFONT              "resources\\arial7.bin"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////

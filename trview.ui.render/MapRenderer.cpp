@@ -35,7 +35,7 @@ namespace trview
                 _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),
                 _sprite(device, shader_storage, window_size),
-                _font(font_factory.create_font("Arial", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre))
+                _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre))
             {
                 TextureStorage texture_storage{ device };
                 _texture = texture_storage.coloured(0xFFFFFFFF);

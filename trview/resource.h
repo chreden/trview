@@ -53,6 +53,7 @@
 #define ID_VIEW_SELECTION               ID_APP_VIEW_SELECTION
 #define ID_VIEW_ROUTE                   ID_APP_VIEW_ROUTE
 #define ID_VIEW_TOOLS                   ID_APP_VIEW_TOOLS
+#define IDF_ARIAL7                      32793
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

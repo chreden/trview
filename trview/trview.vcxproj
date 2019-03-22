@@ -275,6 +275,7 @@
     <Text Include="resources\type_names.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\arial7.bin" />
     <None Include="resources\arial8.bin" />
     <None Include="resources\level_pixel_shader.cso" />
     <None Include="resources\level_vertex_shader.cso" />

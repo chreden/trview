@@ -127,7 +127,7 @@ namespace trview
                 bool                                _force_redraw = true;
 
                 const float                         _DRAW_MARGIN = 30.0f; 
-                const float                         _DRAW_SCALE = 20.0f; 
+                const float                         _DRAW_SCALE = 17.0f; 
 
                 std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
                 std::unique_ptr<graphics::Font> _font;
