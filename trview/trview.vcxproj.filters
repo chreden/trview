@@ -186,7 +186,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Controls.txt" />
     <Text Include="fontlist.txt">
       <Filter>Win\Resource Files</Filter>
     </Text>
