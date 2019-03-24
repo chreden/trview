@@ -12,6 +12,10 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/DeviceWindow.h>
 
+#include <trview.graphics/RenderTargetStore.h>
+#include <trview.graphics/Sprite.h>
+#include <trview.graphics/ViewportStore.h>
+
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
 #include "DefaultFonts.h"
@@ -35,6 +39,11 @@ namespace trview
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
+
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, window.size().width, window.size().height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_sprite = std::make_unique<graphics::Sprite>(_device, *_shader_storage, window.size());
+        _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
+        _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
         load_default_fonts(_device, _font_factory);
 
@@ -111,8 +120,22 @@ namespace trview
         _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
         _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
         _token_store += _ui->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value); } };
-        _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+        _token_store += _ui->on_depth += [&](bool value) 
+        {
+            if (_level) 
+            { 
+                _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value);
+                _scene_changed = true;
+            } 
+        };
+        _token_store += _ui->on_depth_level_changed += [&](int32_t value) 
+        { 
+            if (_level) 
+            { 
+                _level->set_neighbour_depth(value); 
+                _scene_changed = true;
+            }
+        };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
@@ -124,6 +147,7 @@ namespace trview
                     const auto room_info = _current_level->get_room(_level->selected_room()).info;
                     _sector_highlight.set_sector(sector,
                         DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+                    _scene_changed = true;
                 }
             };
         _token_store += _ui->on_add_waypoint += [&]()
@@ -582,6 +606,8 @@ namespace trview
         _measure->reset();
         _route->clear();
         _route_window_manager->set_route(_route.get());
+
+        _scene_changed = true;
     }
 
     void Viewer::render()
@@ -603,7 +629,23 @@ namespace trview
         _main_window->begin();
         _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
-        render_scene();
+        if (_scene_changed)
+        {
+            _scene_target->clear(_device.context(), Colour::Transparent);
+
+            graphics::RenderTargetStore rs_store(_device.context());
+            graphics::ViewportStore vp_store(_device.context());
+
+            _scene_target->apply(_device.context());
+
+            render_scene();
+
+            _scene_changed = false;
+        }
+
+        // Render the render target to the main screen.
+        _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+
         _ui->render(_device);
 
         _main_window->present(_settings.vsync);
@@ -689,6 +731,7 @@ namespace trview
             bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
             _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
             _ui->set_highlight(new_value);
+            _scene_changed = true;
         }
     }
 
@@ -709,6 +752,7 @@ namespace trview
 
             _items_windows->set_room(room);
             _triggers_windows->set_room(room);
+            _scene_changed = true;
         }
     }
 
@@ -721,6 +765,7 @@ namespace trview
             _target = entity.position();
             _level->set_selected_item(item.number());
             _items_windows->set_selected_item(item);
+            _scene_changed = true;
         }
     }
 
@@ -732,6 +777,7 @@ namespace trview
             _target = trigger->position();
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
+            _scene_changed = true;
         }
     }
 
@@ -745,6 +791,7 @@ namespace trview
         {
             set_camera_mode(CameraMode::Orbit);
         }
+        _scene_changed = true;
     }
 
     void Viewer::remove_waypoint(uint32_t index)
@@ -755,6 +802,7 @@ namespace trview
         {
             select_waypoint(_route->selected_waypoint());
         }
+        _scene_changed = true;
     }
 
     void Viewer::set_alternate_mode(bool enabled)
@@ -764,6 +812,7 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
             _ui->set_flip(enabled);
+            _scene_changed = true;
         }
     }
 
@@ -774,6 +823,7 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_group(group, enabled);
             _ui->set_alternate_group(group, enabled);
+            _scene_changed = true;
         }
     }
 
@@ -793,6 +843,9 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, size.width, size.height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_sprite->set_host_size(size);
+        _scene_changed = true;
     }
 
     // Set up keyboard and mouse input for the camera.
@@ -848,6 +901,7 @@ namespace trview
         {
             _level->set_show_triggers(show);
             _ui->set_show_triggers(show);
+            _scene_changed = true;
         }
     }
 
@@ -857,6 +911,7 @@ namespace trview
         {
             _level->set_show_hidden_geometry(show);
             _ui->set_show_hidden_geometry(show);
+            _scene_changed = true; 
         }
     }
 
@@ -865,6 +920,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_water(show);
+            _scene_changed = true;
         }
     }
 
