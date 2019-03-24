@@ -722,6 +722,7 @@ namespace trview
 
         _camera_mode = camera_mode;
         _ui->set_camera_mode(camera_mode);
+        _scene_changed = true;
     }
 
     void Viewer::toggle_highlight()
