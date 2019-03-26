@@ -281,17 +281,20 @@ namespace trview
             if (_level)
             {
                 std::optional<RoomInfo> info;
-                if (_current_pick.type == PickResult::Type::Room &&
-                    _current_pick.index == _level->selected_room())
+                if (result.hit)
                 {
-                    info = _level->room(_current_pick.index)->info();
-                }
-                else if (_current_pick.type == PickResult::Type::Trigger)
-                {
-                    auto trigger = _level->triggers()[_current_pick.index];
-                    if (trigger->room() == _level->selected_room())
+                    if (_current_pick.type == PickResult::Type::Room &&
+                        _current_pick.index == _level->selected_room())
                     {
-                        info = _level->room(trigger->room())->info();
+                        info = _level->room(_current_pick.index)->info();
+                    }
+                    else if (_current_pick.type == PickResult::Type::Trigger)
+                    {
+                        auto trigger = _level->triggers()[_current_pick.index];
+                        if (trigger->room() == _level->selected_room())
+                        {
+                            info = _level->room(trigger->room())->info();
+                        }
                     }
                 }
 

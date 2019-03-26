@@ -39,6 +39,10 @@ namespace trview
             {
                 TextureStorage texture_storage{ device };
                 _texture = texture_storage.coloured(0xFFFFFFFF);
+
+                D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
+                memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
+                device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
             }
 
             void
@@ -49,6 +53,8 @@ namespace trview
                     return;
                 }
 
+                context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
+
                 if (needs_redraw())
                 {
                     // Clear the render target to be transparent (as it may not be using the entire area).
@@ -58,7 +64,7 @@ namespace trview
                     graphics::ViewportStore vp_store(context);
                     // Set the host size to match the render target as we will have adjusted the viewport.
                     graphics::SpriteSizeStore s_store(_sprite, _render_target->size());
-
+ 
                     _render_target->apply(context);
                     render_internal(context);
                     _force_redraw = false;
@@ -286,12 +292,21 @@ namespace trview
 
             void MapRenderer::clear_highlight()
             {
-                _selected_sector.reset();
-                _force_redraw = true;
+                if (_selected_sector.has_value())
+                {
+                    _selected_sector.reset();
+                    _force_redraw = true;
+                }
             }
 
             void MapRenderer::set_highlight(uint16_t x, uint16_t z)
             {
+                if (x > _columns || z > _rows ||
+                    (_selected_sector.has_value() && x == _selected_sector.value().first && z == _selected_sector.value().second))
+                {
+                    return;
+                }
+
                 _selected_sector = { x, z };
                 _force_redraw = true;
             }
