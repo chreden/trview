@@ -207,10 +207,10 @@ namespace trview
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); };
         _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); };
         _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); };
+        _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); _scene_changed = true; };
+        _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; _scene_changed = true; };
+        _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; _scene_changed = true; };
+        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
 
         _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
@@ -259,6 +259,7 @@ namespace trview
             if (_active_tool == Tool::Measure && result.hit && !result.stop)
             {
                 _measure->set(result.position);
+                _scene_changed = true;
                 if (_measure->measuring())
                 {
                     result.text = _measure->distance();
