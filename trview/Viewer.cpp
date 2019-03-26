@@ -635,17 +635,13 @@ namespace trview
 
             graphics::RenderTargetStore rs_store(_device.context());
             graphics::ViewportStore vp_store(_device.context());
-
             _scene_target->apply(_device.context());
 
             render_scene();
-
             _scene_changed = false;
         }
 
-        // Render the render target to the main screen.
         _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
-
         _ui->render(_device);
 
         _main_window->present(_settings.vsync);
