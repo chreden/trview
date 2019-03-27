@@ -132,6 +132,7 @@ namespace trview
                 std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
                 std::unique_ptr<graphics::Font> _font;
                 std::shared_ptr<Sector> _previous_sector;
+                Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
             };
         }
     }

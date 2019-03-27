@@ -120,6 +120,7 @@ namespace trview
 
         regenerate_neighbours();
         _regenerate_transparency = true;
+        on_level_changed();
     }
 
     bool Level::highlight_mode_enabled(RoomHighlightMode mode) const
@@ -146,17 +147,21 @@ namespace trview
                 on_alternate_mode_selected(!_alternate_mode);
             }
         }
+
+        on_level_changed();
     }
 
     void Level::set_selected_item(uint16_t index)
     {
         _selected_item = _entities[index].get();
+        on_level_changed();
     }
 
     void Level::set_neighbour_depth(uint32_t depth)
     {
         _neighbour_depth = depth;
         regenerate_neighbours();
+        on_level_changed();
     }
 
     void Level::render(const graphics::Device& device, const ICamera& camera, bool render_selection)
@@ -474,6 +479,8 @@ namespace trview
         {
             on_room_selected(current_room.alternate_room());
         }
+
+        on_level_changed();
     }
 
     void Level::set_alternate_group(uint16_t group, bool enabled)
@@ -495,6 +502,8 @@ namespace trview
         {
             on_room_selected(current_room.alternate_room());
         }
+
+        on_level_changed();
     }
 
     bool Level::alternate_group(uint16_t group) const
@@ -580,11 +589,13 @@ namespace trview
     {
         _show_triggers = show;
         _regenerate_transparency = true;
+        on_level_changed();
     }
 
     void Level::set_show_hidden_geometry(bool show)
     {
         _show_hidden_geometry = show;
+        on_level_changed();
     }
 
     bool Level::show_hidden_geometry() const
@@ -596,6 +607,7 @@ namespace trview
     {
         _show_water = show;
         _regenerate_transparency = true;
+        on_level_changed();
     }
 
     bool Level::show_triggers() const
@@ -606,6 +618,7 @@ namespace trview
     void Level::set_selected_trigger(uint32_t number)
     {
         _selected_trigger = _triggers[number].get();
+        on_level_changed();
     }
 
     const ILevelTextureStorage& Level::texture_storage() const

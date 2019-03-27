@@ -21,6 +21,11 @@ namespace trview
 
         void Label::set_text(const std::wstring& text)
         {
+            if (text == _text)
+            {
+                return;
+            }
+
             _text = text;
             on_text_changed(text);
             on_invalidate();

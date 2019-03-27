@@ -147,6 +147,7 @@ namespace trview
         XMMATRIX inv_view_lh = XMMatrixInverse(&determinant, _view_lh);
         BoundingFrustum boundingFrustum(_projection_lh);
         boundingFrustum.Transform(_bounding_frustum, inv_view_lh);
+        on_view_changed();
     }
 
     void Camera::calculate_projection_matrix()

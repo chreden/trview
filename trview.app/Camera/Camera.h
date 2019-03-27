@@ -3,6 +3,7 @@
 #pragma once
 
 #include <optional>
+#include <trview.common/Event.h>
 #include "ICamera.h"
 
 namespace trview
@@ -32,6 +33,9 @@ namespace trview
         virtual const DirectX::SimpleMath::Matrix& view() const override;
         virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
         virtual const Size& view_size() const override;
+
+        /// Event raised when the view of the camera has changed.
+        Event<> on_view_changed;
     protected:
         /// Calculate the bounding frustum based on the view and projection matrices.
         void calculate_bounding_frustum();

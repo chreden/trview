@@ -94,6 +94,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
 
         viewer->render();
+        Sleep(0);
     }
 
     return (int) msg.wParam;

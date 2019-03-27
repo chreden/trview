@@ -154,6 +154,11 @@ namespace trview
 
         /// Was the room just changed due to an alternate group or flip being performed?
         bool _was_alternate_select{ false };
+
+        std::unique_ptr<graphics::RenderTarget> _scene_target;
+        std::unique_ptr<graphics::Sprite> _scene_sprite;
+        bool _scene_changed{ true };
+        bool _mouse_changed{ true };
     };
 }
 

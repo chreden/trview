@@ -54,8 +54,11 @@ namespace trview
                 if (_label->size_mode() == SizeMode::Auto)
                 {
                     auto new_size = _font->measure(_label->text());
-                    _label->set_size(new_size);
-                    regenerate_texture();
+                    if (new_size != _label->size())
+                    {
+                        _label->set_size(new_size);
+                        regenerate_texture();
+                    }
                 }
             }
         }
