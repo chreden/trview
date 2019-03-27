@@ -139,6 +139,10 @@ namespace trview
         /// Gets the alternate groups that exist in the level.
         /// @returns The set of alternate groups in the level.
         std::set<uint16_t> alternate_groups() const;
+
+        /// Event raised when something has changed in the appearance of the level or the
+        /// items that are contained within.
+        Event<> on_level_changed;
     private:
         void generate_rooms(const graphics::Device& device);
         void generate_triggers();

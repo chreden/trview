@@ -120,22 +120,8 @@ namespace trview
         _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
         _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
         _token_store += _ui->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_depth += [&](bool value) 
-        {
-            if (_level) 
-            { 
-                _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value);
-                _scene_changed = true;
-            } 
-        };
-        _token_store += _ui->on_depth_level_changed += [&](int32_t value) 
-        { 
-            if (_level) 
-            { 
-                _level->set_neighbour_depth(value); 
-                _scene_changed = true;
-            }
-        };
+        _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value); }};
+        _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); }};
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
@@ -565,6 +551,7 @@ namespace trview
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
+        _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
@@ -732,7 +719,6 @@ namespace trview
             bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
             _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
             _ui->set_highlight(new_value);
-            _scene_changed = true;
         }
     }
 
@@ -753,7 +739,6 @@ namespace trview
 
             _items_windows->set_room(room);
             _triggers_windows->set_room(room);
-            _scene_changed = true;
         }
     }
 
@@ -766,7 +751,6 @@ namespace trview
             _target = entity.position();
             _level->set_selected_item(item.number());
             _items_windows->set_selected_item(item);
-            _scene_changed = true;
         }
     }
 
@@ -778,7 +762,6 @@ namespace trview
             _target = trigger->position();
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
-            _scene_changed = true;
         }
     }
 
@@ -813,7 +796,6 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
             _ui->set_flip(enabled);
-            _scene_changed = true;
         }
     }
 
@@ -824,7 +806,6 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_group(group, enabled);
             _ui->set_alternate_group(group, enabled);
-            _scene_changed = true;
         }
     }
 
@@ -902,7 +883,6 @@ namespace trview
         {
             _level->set_show_triggers(show);
             _ui->set_show_triggers(show);
-            _scene_changed = true;
         }
     }
 
@@ -912,7 +892,6 @@ namespace trview
         {
             _level->set_show_hidden_geometry(show);
             _ui->set_show_hidden_geometry(show);
-            _scene_changed = true; 
         }
     }
 
@@ -921,7 +900,6 @@ namespace trview
         if (_level)
         {
             _level->set_show_water(show);
-            _scene_changed = true;
         }
     }
 
