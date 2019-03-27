@@ -158,6 +158,7 @@ namespace trview
         std::unique_ptr<graphics::RenderTarget> _scene_target;
         std::unique_ptr<graphics::Sprite> _scene_sprite;
         bool _scene_changed{ true };
+        bool _mouse_changed{ true };
     };
 }
 
