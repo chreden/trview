@@ -22,7 +22,11 @@ namespace trview
         {
             _position += movement;
         }
-        calculate_view_matrix();
+
+        if (movement.LengthSquared() > 0)
+        {
+            calculate_view_matrix();
+        }
     }
 
     void FreeCamera::set_alignment(Alignment alignment)
