@@ -9,11 +9,12 @@ namespace trview
     {
     public:
         explicit UpdateChecker(const Window& window);
-        virtual ~UpdateChecker() = default;
+        virtual ~UpdateChecker();
         void check_for_updates();
         virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
     private:
         std::thread _thread;
+        std::string _current_version;
     };
 }
 
