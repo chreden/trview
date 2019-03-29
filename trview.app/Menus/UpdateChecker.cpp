@@ -6,6 +6,11 @@
 
 namespace trview
 {
+    namespace
+    {
+        const DWORD id_update_available = 30000;
+    }
+
     UpdateChecker::UpdateChecker(const Window& window)
         : MessageHandler(window)
     {
@@ -35,14 +40,41 @@ namespace trview
 
     void UpdateChecker::check_for_updates()
     {
+        if (_thread.joinable())
+        {
+            _thread.join();
+        }
+
         _thread = std::thread(
             [](HWND window, const std::string& version)
         {
             HINTERNET internet = WinHttpOpen(L"trview", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, nullptr, nullptr, 0);
+            if (!internet)
+            {
+                return;
+            }
+
             HINTERNET connect = WinHttpConnect(internet, L"api.github.com", INTERNET_DEFAULT_HTTPS_PORT, 0);
+            if (!connect)
+            {
+                return;
+            }
+
             HINTERNET request = WinHttpOpenRequest(connect, nullptr, L"repos/chreden/trview/releases/latest", nullptr, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE);
-            BOOL success = WinHttpSendRequest(request, nullptr, 0, nullptr, 0, 0, 0);
-            success = WinHttpReceiveResponse(request, nullptr);
+            if (!request)
+            {
+                return;
+            }
+
+            if (!WinHttpSendRequest(request, nullptr, 0, nullptr, 0, 0, 0))
+            {
+                return;
+            }
+
+            if (!WinHttpReceiveResponse(request, nullptr))
+            {
+                return;
+            }
 
             std::vector<uint8_t> all_data;
 
@@ -60,13 +92,21 @@ namespace trview
             }
 
             std::string text(all_data.begin(), all_data.end());
-            auto json = nlohmann::json::parse(text);
-            auto tag = json["tag_name"].get<std::string>();
 
-            if (tag != version)
+            try
             {
-                HMENU menu = GetMenu(window);
-                AppendMenu(menu, MF_STRING, (UINT_PTR)30000, L"Update Available!");
+                auto json = nlohmann::json::parse(text);
+                auto tag = json["tag_name"].get<std::string>();
+
+                if (tag != version)
+                {
+                    HMENU menu = GetMenu(window);
+                    AppendMenu(menu, MF_STRING, id_update_available, L"Update Available!");
+                    DrawMenuBar(window);
+                }
+            }
+            catch (...)
+            {
             }
 
         }, window(), _current_version);
@@ -74,7 +114,7 @@ namespace trview
 
     void UpdateChecker::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        if (message == WM_COMMAND && LOWORD(wParam) == 30000)
+        if (message == WM_COMMAND && LOWORD(wParam) == id_update_available)
         {
             ShellExecute(0, 0, L"https://github.com/chreden/trview/releases/latest", 0, 0, SW_SHOW);
         }
