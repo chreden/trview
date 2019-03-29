@@ -21,8 +21,6 @@
 #include "DefaultFonts.h"
 #include "TextureStorage.h"
 
-#include <WinInet.h>
-
 namespace trview
 {
     namespace
@@ -35,30 +33,9 @@ namespace trview
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
-        _view_menu(window)
+        _view_menu(window), _update_checker(window)
     {
-        // Update check test code.
-        HINTERNET internet = InternetOpen(L"trview", INTERNET_OPEN_TYPE_DIRECT, nullptr, nullptr, 0);
-        HINTERNET connect = InternetConnect(internet, L"api.github.com", INTERNET_DEFAULT_HTTPS_PORT, nullptr, nullptr, INTERNET_SERVICE_HTTP, 0, 0);
-        HINTERNET request = HttpOpenRequest(connect, nullptr, L"repos/chreden/trview/releases/latest", nullptr, nullptr, nullptr, INTERNET_FLAG_SECURE, 0);
-        BOOL success = HttpSendRequest(request, nullptr, 0, nullptr, 0);
-
-        std::vector<uint8_t> all_data;
-        
-        DWORD bytesAvailable = 0;
-        while (InternetQueryDataAvailable(request, &bytesAvailable, 0, 0))
-        {
-            std::vector<uint8_t> data(bytesAvailable, 0);
-            if (!bytesAvailable)
-            {
-                break;
-            }
-            DWORD bytesRead = 0;
-            InternetReadFile(request, &data[0], bytesAvailable, &bytesRead);
-            std::copy(data.begin(), data.begin() + bytesRead, std::back_inserter(all_data));
-        }
-
-        std::string text(all_data.begin(), all_data.end());
+        _update_checker.check_for_updates();
 
         _settings = load_user_settings();
 

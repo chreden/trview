@@ -39,6 +39,7 @@
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
+#include <trview.app/Menus/UpdateChecker.h>
 
 namespace trview
 {
@@ -159,6 +160,8 @@ namespace trview
         std::unique_ptr<graphics::Sprite> _scene_sprite;
         bool _scene_changed{ true };
         bool _mouse_changed{ true };
+
+        UpdateChecker _update_checker;
     };
 }
 
