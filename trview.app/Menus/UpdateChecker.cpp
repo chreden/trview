@@ -16,12 +16,10 @@ namespace trview
     {
         TCHAR filename[MAX_PATH];
         GetModuleFileName(NULL, filename, MAX_PATH);
-        
+
         DWORD handle = 0;
-        auto size = GetFileVersionInfoSize(filename, &handle);
-        
-        std::vector<uint8_t> data(size, 0);
-        GetFileVersionInfo(filename, 0, size, &data[0]);
+        std::vector<uint8_t> data(GetFileVersionInfoSize(filename, &handle), 0);
+        GetFileVersionInfo(filename, 0, data.size(), &data[0]);
 
         LPBYTE buffer = nullptr;
         uint32_t value_size = 0;
@@ -29,8 +27,8 @@ namespace trview
         VS_FIXEDFILEINFO* info = reinterpret_cast<VS_FIXEDFILEINFO*>(buffer);
 
         _current_version = "v" + std::to_string(info->dwFileVersionMS >> 16 & 0xffff) + "." +
-                           std::to_string(info->dwFileVersionMS >> 0 & 0xffff) + "." +
-                           std::to_string(info->dwFileVersionLS >> 16 & 0xffff);
+                                 std::to_string(info->dwFileVersionMS >> 0 & 0xffff) + "." +
+                                 std::to_string(info->dwFileVersionLS >> 16 & 0xffff);
     }
 
     UpdateChecker::~UpdateChecker()
