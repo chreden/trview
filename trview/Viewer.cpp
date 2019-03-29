@@ -33,8 +33,10 @@ namespace trview
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
-        _view_menu(window)
+        _view_menu(window), _update_checker(window)
     {
+        _update_checker.check_for_updates();
+
         _settings = load_user_settings();
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
