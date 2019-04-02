@@ -75,7 +75,12 @@ namespace trview
 
                 if (input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
                 {
-                    raise_absolute_mouse_move(input.data.mouse.lLastX, input.data.mouse.lLastY);
+                    bool is_rdp = input.data.mouse.usFlags & MOUSE_VIRTUAL_DESKTOP;
+                    int width = GetSystemMetrics(is_rdp ? SM_CXVIRTUALSCREEN : SM_CXSCREEN);
+                    int height = GetSystemMetrics(is_rdp ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
+                    raise_absolute_mouse_move(
+                        (input.data.mouse.lLastX / static_cast<float>(USHRT_MAX)) * width,
+                        (input.data.mouse.lLastY / static_cast<float>(USHRT_MAX)) * height);
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_WHEEL)
