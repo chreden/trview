@@ -38,7 +38,7 @@ namespace trview
     class Level
     {
     public:
-        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
+        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -193,7 +193,7 @@ namespace trview
 
         bool is_alternate_group_set(uint16_t group) const;
 
-        const trlevel::ILevel*               _level;
+        std::unique_ptr<trlevel::ILevel> _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;

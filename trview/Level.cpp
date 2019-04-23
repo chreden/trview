@@ -22,8 +22,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level)
-        : _level(level)
+    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level)
+        : _level(std::move(level))
     {
         load_type_name_lookup();
 

@@ -534,9 +534,10 @@ namespace trview
 
     void Viewer::open(const std::string& filename)
     {
+        std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
-            _current_level = trlevel::load_level(filename);
+            new_level = trlevel::load_level(filename);
         }
         catch(...)
         {
@@ -549,7 +550,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level));
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
@@ -658,7 +659,7 @@ namespace trview
         if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
-            if (_current_level->num_rooms() > 0)
+            if (level->num_rooms() > 0)
             {
                 _camera.set_target(_target);
             }
