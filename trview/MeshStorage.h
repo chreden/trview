@@ -26,7 +26,6 @@ namespace trview
         virtual Mesh* mesh(uint32_t mesh_pointer) const override;
     private:
         const graphics::Device& _device;
-        const trlevel::ILevel& _level;
         const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;
     };

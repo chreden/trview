@@ -538,6 +538,11 @@ namespace trlevel
         return _static_meshes.find(mesh_id)->second;
     }
 
+    std::vector<uint32_t> Level::get_mesh_pointers() const
+    {
+        return _mesh_pointers;
+    }
+
     tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
     {
         auto index = _mesh_pointers[mesh_pointer];
