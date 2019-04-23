@@ -23,11 +23,10 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level)
-        : _level(std::move(level))
     {
         load_type_name_lookup();
 
-        _version = _level->get_version();
+        _version = level->get_version();
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
@@ -45,11 +44,11 @@ namespace trview
         // Create the texture sampler state.
         device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
 
-        _texture_storage = std::make_unique<LevelTextureStorage>(device, *_level);
-        _mesh_storage = std::make_unique<MeshStorage>(device, *_level, *_texture_storage.get());
-        generate_rooms(device);
+        _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
+        _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
+        generate_rooms(device, *level);
         generate_triggers();
-        generate_entities(device);
+        generate_entities(device, *level);
 
         for (auto& room : _rooms)
         {
@@ -144,7 +143,7 @@ namespace trview
         const auto& room = *_rooms[index];
         if (is_alternate_mismatch(room))
         {
-            if (_level->get_version() >= trlevel::LevelVersion::Tomb4)
+            if (version() >= trlevel::LevelVersion::Tomb4)
             {
                 on_alternate_group_selected(room.alternate_group(), !is_alternate_group_set(room.alternate_group()));
             }
@@ -296,13 +295,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const graphics::Device& device)
+    void Level::generate_rooms(const graphics::Device& device, const trlevel::ILevel& level)
     {
-        const uint16_t num_rooms = _level->num_rooms();
+        const uint16_t num_rooms = level.num_rooms();
         for (uint16_t i = 0; i < num_rooms; ++i)
         {
-            auto room = _level->get_room(i);
-            _rooms.push_back(std::make_unique<Room>(device, *_level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
+            auto room = level.get_room(i);
+            _rooms.push_back(std::make_unique<Room>(device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -346,14 +345,14 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const graphics::Device& device)
+    void Level::generate_entities(const graphics::Device& device, const trlevel::ILevel& level)
     {
-        const uint32_t num_entities = _level->num_entities();
+        const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             // Entity for rendering.
-            auto level_entity = _level->get_entity(i);
-            auto entity = std::make_unique<Entity>(device, *_level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
+            auto level_entity = level.get_entity(i);
+            auto entity = std::make_unique<Entity>(device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 
@@ -368,14 +367,14 @@ namespace trview
             }
 
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
         }
     }
 
     void Level::regenerate_neighbours()
     {
         _neighbours.clear();
-        if (_selected_room < _level->num_rooms())
+        if (_selected_room < number_of_rooms())
         {
             generate_neighbours(_neighbours, _selected_room, _neighbour_depth);
             _regenerate_transparency = true;
@@ -521,7 +520,7 @@ namespace trview
     // the alternate mode flag.
     bool Level::is_alternate_mismatch(const Room& room) const
     {
-        if (_level->get_version() >= trlevel::LevelVersion::Tomb4)
+        if (version() >= trlevel::LevelVersion::Tomb4)
         {
             return room.alternate_mode() == Room::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
                    room.alternate_mode() == Room::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
@@ -553,7 +552,7 @@ namespace trview
         auto json = nlohmann::json::parse(contents.begin(), contents.end());
 
         std::string game_name;
-        switch (_level->get_version())
+        switch (version())
         {
         case trlevel::LevelVersion::Tomb1:
             game_name = "tr1";
