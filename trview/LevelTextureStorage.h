@@ -3,6 +3,7 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <vector>
+#include <array>
 #include <memory>
 #include <SimpleMath.h>
 
@@ -35,6 +36,7 @@ namespace trview
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;
         mutable graphics::Texture _untextured_texture;
-        const trlevel::ILevel& _level;
+        std::array<DirectX::SimpleMath::Color, 256> _palette;
+        trlevel::LevelVersion _version;
     };
 }

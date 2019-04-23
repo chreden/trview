@@ -149,9 +149,9 @@ namespace trview
 
         trlevel::LevelVersion version() const;
     private:
-        void generate_rooms(const graphics::Device& device);
+        void generate_rooms(const graphics::Device& device, const trlevel::ILevel& level);
         void generate_triggers();
-        void generate_entities(const graphics::Device& device);
+        void generate_entities(const graphics::Device& device, const trlevel::ILevel& level);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
@@ -198,7 +198,6 @@ namespace trview
 
         bool is_alternate_group_set(uint16_t group) const;
 
-        std::unique_ptr<trlevel::ILevel> _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;
