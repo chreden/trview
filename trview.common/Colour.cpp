@@ -33,6 +33,14 @@ namespace trview
         return DirectX::SimpleMath::Color(r, g, b, a);
     }
 
+    Colour::operator uint32_t() const
+    {
+        return static_cast<uint32_t>(a * 255.0f) << 24 |
+               static_cast<uint32_t>(r * 255.0f) << 16 |
+               static_cast<uint32_t>(g * 255.0f) << 8 |
+               static_cast<uint32_t>(b * 255.0f);
+    }
+
     Colour& Colour::operator += (const Colour& other)
     {
         a += other.a;

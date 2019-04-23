@@ -21,6 +21,9 @@ namespace trview
 
         operator DirectX::SimpleMath::Color() const;
 
+        /// Convert the colour into a packed argb integer format.
+        operator uint32_t() const;
+
         Colour& operator += (const Colour& other);
 
         float a, r, g, b;

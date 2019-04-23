@@ -7,6 +7,7 @@
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.graphics/Device.h>
+#include <trview.graphics/Texture.h>
 
 namespace trview
 {
@@ -65,5 +66,6 @@ namespace trview
         };
 
         std::vector<TextureRun> _texture_run;
+        graphics::Texture _untextured;
     };
 }

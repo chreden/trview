@@ -93,5 +93,15 @@ namespace trview
         {
             return _view;
         }
+
+        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour)
+        {
+            return Texture(device, width, height, std::vector<uint32_t>(width * height, colour));
+        }
+
+        Texture create_texture(const graphics::Device& device, const Colour& colour)
+        {
+            return create_texture(device, 1, 1, colour);
+        }
     }
 }
