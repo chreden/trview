@@ -27,6 +27,7 @@ namespace trview
     {
         load_type_name_lookup();
 
+        _version = _level->get_version();
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
@@ -97,6 +98,11 @@ namespace trview
     const std::vector<Item>& Level::items() const
     {
         return _items;
+    }
+
+    uint32_t Level::number_of_rooms() const
+    {
+        return _rooms.size();
     }
 
     std::vector<Trigger*> Level::triggers() const
@@ -362,7 +368,7 @@ namespace trview
             }
 
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers);
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), _level->get_version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
         }
     }
 
@@ -643,6 +649,11 @@ namespace trview
     bool Level::is_alternate_group_set(uint16_t group) const
     {
         return _alternate_groups.find(group) != _alternate_groups.end();
+    }
+
+    trlevel::LevelVersion Level::version() const
+    {
+        return _version;
     }
 
     bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)

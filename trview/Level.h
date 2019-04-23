@@ -59,6 +59,9 @@ namespace trview
         /// @returns All items in the level.
         const std::vector<Item>& items() const;
 
+        /// Get the number of rooms in the level.
+        uint32_t number_of_rooms() const;
+
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
         std::vector<Trigger*> triggers() const;
@@ -143,6 +146,8 @@ namespace trview
         /// Event raised when something has changed in the appearance of the level or the
         /// items that are contained within.
         Event<> on_level_changed;
+
+        trlevel::LevelVersion version() const;
     private:
         void generate_rooms(const graphics::Device& device);
         void generate_triggers();
@@ -225,6 +230,7 @@ namespace trview
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
         std::set<uint16_t> _alternate_groups;
+        trlevel::LevelVersion _version;
     };
 
     /// Find the first item with the type id specified.
