@@ -73,9 +73,9 @@ namespace trview
     {
         if (_version > trlevel::LevelVersion::Tomb1)
         {
-            return _palette[texture & 0xff];
+            return _palette[texture >> 8];
         }
-        return _palette[texture >> 8];
+        return _palette[texture & 0xff];
     }
 
     graphics::Texture LevelTextureStorage::lookup(const std::string&) const
