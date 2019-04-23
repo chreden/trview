@@ -10,7 +10,6 @@
 #include <memory>
 #include <string>
 
-#include <trlevel/ILevel.h>
 #include <trview.common/Timer.h>
 #include <trview.common/Window.h>
 #include <trview.graphics/Device.h>
