@@ -35,11 +35,9 @@ namespace trview
                 _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),
                 _sprite(device, shader_storage, window_size),
-                _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre))
+                _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
+                _texture(create_texture(device, Colour::White))
             {
-                TextureStorage texture_storage{ device };
-                _texture = texture_storage.coloured(0xFFFFFFFF);
-
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
                 device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);

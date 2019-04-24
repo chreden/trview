@@ -86,10 +86,20 @@ namespace trview
                 _needs_redraw = true;
             }
 
+            Control* RenderNode::control() const
+            {
+                return _control;
+            }
+
             void RenderNode::clear_children()
             {
                 _child_nodes.clear();
                 _needs_redraw = true;
+            }
+
+            bool RenderNode::heirarchy_changed() const
+            {
+                return _hierarchy_changed;
             }
 
             Point RenderNode::position() const
@@ -112,6 +122,11 @@ namespace trview
                 auto size = _control->size();
                 size = Size(size.width == 0 ? 1 : size.width, size.height == 0 ? 1 : size.height);
                 _render_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
+            }
+
+            void RenderNode::set_hierarchy_changed(bool value)
+            {
+                _hierarchy_changed = value;
             }
 
             // Determines if the control itself needs to redraw.

@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <vector>
 #include <trview.graphics/Device.h>
+#include <trview.common/Colour.h>
 
 namespace trview
 {
@@ -86,5 +87,17 @@ namespace trview
             /// with the Bind::DepthStencil bind mode.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _view;
         };
+
+        /// Create a texture of the specified size filled with the specified colour.
+        /// @param device The device to use.
+        /// @param width The width of the texture.
+        /// @param height The height of the texture.
+        /// @param colour The colour to fill the texture.
+        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour);
+
+        /// Create a 1x1 texture filled with the specified colour.
+        /// @param device The device to use.
+        /// @param colour The colour to fill the texture.
+        Texture create_texture(const graphics::Device& device, const Colour& colour);
     }
 }

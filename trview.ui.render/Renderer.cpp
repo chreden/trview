@@ -78,15 +78,32 @@ namespace trview
                 auto* node_ptr = node.get();
                 node_ptr->_token_store += control->on_hierarchy_changed += [this, control, node_ptr]()
                 {
-                    node_ptr->clear_children();
-                    auto children = control->child_elements(true);
-                    for (auto child : children)
-                    {
-                        node_ptr->add_child(process_control(child));
-                    }
+                    node_ptr->set_hierarchy_changed(true);
+                    _hierarchy_changed = true;
                 };
 
                 return node;
+            }
+
+            void Renderer::update_hierarchy(RenderNode& node)
+            {
+                if (node.heirarchy_changed())
+                {
+                    node.clear_children();
+                    auto children = node.control()->child_elements(true);
+                    for (auto child : children)
+                    {
+                        node.add_child(process_control(child));
+                    }
+                    node.set_hierarchy_changed(false);
+                }
+                else
+                {
+                    for (auto& child : node._child_nodes)
+                    {
+                        update_hierarchy(*child);
+                    }
+                }
             }
 
             void Renderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
@@ -98,6 +115,13 @@ namespace trview
                 // drawing in turn.
                 if (_root_node && _root_node->visible())
                 {
+                    // Check for any changes in the hierarchy and regenerate if required.
+                    if (_hierarchy_changed)
+                    {
+                        update_hierarchy(*_root_node);
+                        _hierarchy_changed = false;
+                    }
+
                     {
                         graphics::RenderTargetStore render_target_store(context);
 

@@ -43,6 +43,10 @@ namespace trview
             private:
                 std::unique_ptr<RenderNode> process_control(Control* control);
 
+                /// Go through the hierarchy and regenerate any nodes that need to be updated.
+                /// @param node The node to process.
+                void update_hierarchy(RenderNode& node);
+
                 std::unique_ptr<RenderNode>                     _root_node;
                 std::unique_ptr<graphics::Sprite>               _sprite;
                 const graphics::Device&                         _device;
@@ -50,6 +54,7 @@ namespace trview
                 const graphics::FontFactory&                    _font_factory;
                 Size                                            _host_size;
                 TokenStore                                      _token_store;
+                bool                                            _hierarchy_changed{ false };
             };
         }
     }

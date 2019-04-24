@@ -13,7 +13,7 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     TransparencyBuffer::TransparencyBuffer(const graphics::Device& device)
-        : _device(device)
+        : _device(device), _untextured(create_texture(device, Colour::White))
     {
         create_matrix_buffer();
 
@@ -109,9 +109,6 @@ namespace trview
         uint32_t sum = 0;
         TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
 
-        // Untextured texture for transparent triangles that don't use the texture storage indexes.
-        auto untextured = texture_storage.coloured(0xffffffff);
-
         for (const auto& run : _texture_run)
         {
             if (run.mode != previous_mode && !ignore_blend)
@@ -120,7 +117,7 @@ namespace trview
             }
             previous_mode = run.mode;
 
-            auto texture = run.texture == TransparentTriangle::Untextured ? untextured : texture_storage.texture(run.texture);
+            auto texture = run.texture == TransparentTriangle::Untextured ? _untextured : texture_storage.texture(run.texture);
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
