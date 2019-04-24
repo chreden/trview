@@ -45,9 +45,15 @@ namespace trview
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
+                Control* control() const;
+
                 void clear_children();
 
+                bool heirarchy_changed() const;
+
                 Point position() const;
+
+                void set_hierarchy_changed(bool value);
 
                 Size size() const;
 
@@ -73,6 +79,7 @@ namespace trview
                 std::vector<std::unique_ptr<RenderNode>> _child_nodes;
                 Control*                                 _control;
                 bool                                     _needs_redraw{ true };
+                bool                                     _hierarchy_changed{ false };
             };
         }
     }
