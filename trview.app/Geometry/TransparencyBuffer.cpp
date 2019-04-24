@@ -109,7 +109,6 @@ namespace trview
         uint32_t sum = 0;
         TransparentTriangle::Mode previous_mode = TransparentTriangle::Mode::Normal;
 
-        // Untextured texture for transparent triangles that don't use the texture storage indexes.
         for (const auto& run : _texture_run)
         {
             if (run.mode != previous_mode && !ignore_blend)
