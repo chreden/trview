@@ -62,8 +62,9 @@ namespace trview
         /// Determines whether this is a walkable floor.
         bool is_floor() const;
     private:
-        bool parse();
+        bool parse(const trlevel::ILevel& level);
         void parse_slope();
+        void calculate_neighbours(const trlevel::ILevel& level);
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
         std::uint8_t _portal, _room_above, _room_below;
@@ -76,9 +77,6 @@ namespace trview
 
         // ID of the sector 
         int _sector_id; 
-
-        // Reference to the level this sector belongs to 
-        const trlevel::ILevel &_level;
 
         // Base sector structure 
         const trlevel::tr_room_sector _sector;
@@ -95,5 +93,7 @@ namespace trview
         uint32_t _room;
 
         TriangulationDirection _triangulation_function{ TriangulationDirection::None };
+
+        std::set<uint16_t> _neighbours;
     };
 }

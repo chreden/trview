@@ -4,11 +4,12 @@
 namespace trview
 {
     Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number)
-        : _level(level), _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
+        : _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
     {
         _x = sector_id / room.num_z_sectors;
         _z = sector_id % room.num_z_sectors;
-        parse();
+        parse(level);
+        calculate_neighbours(level);
     }
 
     std::uint16_t
@@ -23,29 +24,11 @@ namespace trview
     std::set<std::uint16_t> 
     Sector::neighbours() const
     {
-        std::set<std::uint16_t> neighbours; 
-
-        const auto add_neighbour = [&] (std::uint16_t room)
-        {
-            const auto &r = _level.get_room(room); 
-            if (r.alternate_room != -1)
-                neighbours.insert(r.alternate_room); 
-
-            neighbours.insert(room); 
-        }; 
-
-        if (flags & SectorFlag::Portal)
-            add_neighbour(_portal);
-        if (flags & SectorFlag::RoomAbove)
-            add_neighbour(_room_above); 
-        if (flags & SectorFlag::RoomBelow)
-            add_neighbour(_room_below); 
-
-        return neighbours; 
+        return _neighbours;
     }
 
     bool
-    Sector::parse()
+    Sector::parse(const trlevel::ILevel& level)
     {
         // Basic sector items 
         if (_sector.floor == -127 && _sector.ceiling == -127)
@@ -58,43 +41,43 @@ namespace trview
         // Start off the heights at the height of the floor (or in the case of a 
         // wall, at the bottom of the room).
         _corners.fill(flags & SectorFlag::Wall ?
-            _level.get_room(_room).info.yBottom / trlevel::Scale_Y :
+            level.get_room(_room).info.yBottom / trlevel::Scale_Y :
             _sector.floor * 0.25f);
 
         std::uint16_t cur_index = _sector.floordata_index;
         if (cur_index == 0x0)
             return true; 
 
-        const auto max_floordata = _level.num_floor_data();
+        const auto max_floordata = level.num_floor_data();
 
         for (;;)
         {
-            std::uint16_t floor = _level.get_floor_data(cur_index);
+            std::uint16_t floor = level.get_floor_data(cur_index);
             std::uint16_t subfunction = (floor & 0x7F00) >> 8; 
 
             switch (floor & 0x1f)
             {
             case 0x1:
-                _portal = _level.get_floor_data(++cur_index) & 0xFF;
+                _portal = level.get_floor_data(++cur_index) & 0xFF;
                 flags |= SectorFlag::Portal;
                 break; 
 
             case 0x2: 
             {
-                _floor_slant = _level.get_floor_data(++cur_index);
+                _floor_slant = level.get_floor_data(++cur_index);
                 flags |= SectorFlag::FloorSlant;
                 parse_slope();
                 break;
             }
             case 0x3:
-                _ceiling_slant = _level.get_floor_data(++cur_index);
+                _ceiling_slant = level.get_floor_data(++cur_index);
                 flags |= SectorFlag::CeilingSlant;
                 break;
 
             case 0x4:
             {
                 std::uint16_t command = 0; 
-                std::uint16_t setup = _level.get_floor_data(++cur_index);
+                std::uint16_t setup = level.get_floor_data(++cur_index);
 
                 // Basic trigger setup 
                 _trigger.timer = setup & 0xFF;
@@ -116,13 +99,13 @@ namespace trview
                 {
                     if (++cur_index < max_floordata)
                     {
-                        command = _level.get_floor_data(cur_index);
+                        command = level.get_floor_data(cur_index);
                         auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
                         _trigger.commands.emplace_back(action, command & 0x3FF);
                         if (action == TriggerCommandType::Camera)
                         {
                             // Camera has another uint16_t - skip for now.
-                            command = _level.get_floor_data(++cur_index);
+                            command = level.get_floor_data(++cur_index);
                         }
                     }
 
@@ -165,7 +148,7 @@ namespace trview
                     break;
                 }
 
-                const uint16_t corner_values = _level.get_floor_data(++cur_index);
+                const uint16_t corner_values = level.get_floor_data(++cur_index);
                 const uint16_t c00 = (corner_values & 0x00F0) >> 4;
                 const uint16_t c01 = (corner_values & 0x0F00) >> 8;
                 const uint16_t c10 = (corner_values & 0x000F);
@@ -186,7 +169,7 @@ namespace trview
             case 0x12:
             {
                 // Ceiling triangulation.
-                _level.get_floor_data(++cur_index);
+                level.get_floor_data(++cur_index);
                 break;
             }
             case 0x13: 
@@ -290,6 +273,35 @@ namespace trview
     bool Sector::is_floor() const
     {
         return room_below() == 0xff && !(flags & SectorFlag::Wall) && !(flags & SectorFlag::Portal);
+    }
+
+    void Sector::calculate_neighbours(const trlevel::ILevel& level)
+    {
+        const auto add_neighbour = [&](std::uint16_t room)
+        {
+            const auto &r = level.get_room(room);
+            if (r.alternate_room != -1)
+            {
+                _neighbours.insert(r.alternate_room);
+            }
+
+            _neighbours.insert(room);
+        };
+
+        if (flags & SectorFlag::Portal)
+        {
+            add_neighbour(_portal);
+        }
+
+        if (flags & SectorFlag::RoomAbove)
+        {
+            add_neighbour(_room_above);
+        }
+
+        if (flags & SectorFlag::RoomBelow)
+        {
+            add_neighbour(_room_below);
+        }
     }
 }
 
