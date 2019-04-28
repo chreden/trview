@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <vector>
 #include <trview.graphics/Device.h>
+#include <trview.common/Colour.h>
 
 namespace trview
 {
@@ -63,10 +64,6 @@ namespace trview
             /// @see Bind
             Texture(const graphics::Device& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
 
-            Texture(const Texture& other);
-
-            ~Texture();
-
             /// Indicates whether this texture has any texture content.
             /// @returns True if the texture has content.
             bool has_content() const;
@@ -89,8 +86,18 @@ namespace trview
             /// The resource view for the D3D texture. Can be empty if this was created with the default constructor or if this texture was created
             /// with the Bind::DepthStencil bind mode.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _view;
-
-            bool _real{ false };
         };
+
+        /// Create a texture of the specified size filled with the specified colour.
+        /// @param device The device to use.
+        /// @param width The width of the texture.
+        /// @param height The height of the texture.
+        /// @param colour The colour to fill the texture.
+        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour);
+
+        /// Create a 1x1 texture filled with the specified colour.
+        /// @param device The device to use.
+        /// @param colour The colour to fill the texture.
+        Texture create_texture(const graphics::Device& device, const Colour& colour);
     }
 }

@@ -8,10 +8,6 @@ namespace trview
     {
         namespace
         {
-            int created = 0;
-            int destroyed = 0;
-            int active = 0;
-
             // Convert the texture bind mode into the appropriate bind flags for a D3D texture.
             // bind: The bind mode to convert.
             // Returns: The UINT that contains the appropriate flags.
@@ -54,9 +50,6 @@ namespace trview
 
         Texture::Texture(const graphics::Device& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
         {
-            OutputDebugString((L"Created: " + std::to_wstring(++created) + L"(" + std::to_wstring(++active) + L")\n").c_str());
-            _real = true;
-
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
             srd.pSysMem = &pixels[0];
@@ -81,21 +74,6 @@ namespace trview
             }
         }
 
-        Texture::~Texture()
-        {
-            if (_real)
-            {
-                OutputDebugString((L"Destroyed: " + std::to_wstring(++destroyed) + L"(" + std::to_wstring(--active) + L")\n").c_str());
-            }
-        }
-
-        Texture::Texture(const Texture& other)
-        {
-            _texture = other._texture;
-            _view = other._view;
-            _real = false;
-        }
-
         bool Texture::has_content() const
         {
             return _texture;
@@ -114,6 +92,16 @@ namespace trview
         const ComPtr<ID3D11ShaderResourceView>& Texture::view() const
         {
             return _view;
+        }
+
+        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour)
+        {
+            return Texture(device, width, height, std::vector<uint32_t>(width * height, colour));
+        }
+
+        Texture create_texture(const graphics::Device& device, const Colour& colour)
+        {
+            return create_texture(device, 1, 1, colour);
         }
     }
 }
