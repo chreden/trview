@@ -5,7 +5,7 @@
 namespace trview
 {
     LevelTextureStorage::LevelTextureStorage(const graphics::Device& device, const trlevel::ILevel& level)
-        : _device(device), _level(level), _texture_storage(std::make_unique<TextureStorage>(device))
+        : _device(device), _texture_storage(std::make_unique<TextureStorage>(device))
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
@@ -17,6 +17,14 @@ namespace trview
         for (uint32_t i = 0; i < level.num_object_textures(); ++i)
         {
             _object_textures.push_back(level.get_object_texture(i));
+        }
+
+        // Get palette.
+        using namespace DirectX::SimpleMath;
+        for (uint32_t i = 0; i < 256; ++i)
+        {
+            auto entry = level.get_palette_entry(i);
+            _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
         }
     }
 
@@ -63,9 +71,11 @@ namespace trview
 
     DirectX::SimpleMath::Color LevelTextureStorage::palette_from_texture(uint32_t texture) const
     {
-        using namespace DirectX::SimpleMath;
-        auto palette = _level.get_palette_entry(texture & 0xff, texture >> 8);
-        return Color(palette.Red / 255.f, palette.Green / 255.f, palette.Blue / 255.f, 1.0f);
+        if (_version > trlevel::LevelVersion::Tomb1)
+        {
+            return _palette[texture >> 8];
+        }
+        return _palette[texture & 0xff];
     }
 
     graphics::Texture LevelTextureStorage::lookup(const std::string&) const

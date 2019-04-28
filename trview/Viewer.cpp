@@ -59,8 +59,7 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            auto entity = _current_level->get_entity(item.number());
-            uint32_t new_index = _route->insert(entity.position(), item.room(), Waypoint::Type::Entity, item.number());
+            uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -132,7 +131,7 @@ namespace trview
             {
                 if (_level)
                 {
-                    const auto room_info = _current_level->get_room(_level->selected_room()).info;
+                    const auto room_info = _level->room_info(_level->selected_room());
                     _sector_highlight.set_sector(sector,
                         DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
                     _scene_changed = true;
@@ -534,9 +533,10 @@ namespace trview
 
     void Viewer::open(const std::string& filename)
     {
+        std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
-            _current_level = trlevel::load_level(filename);
+            new_level = trlevel::load_level(filename);
         }
         catch(...)
         {
@@ -549,7 +549,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), _current_level.get());
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level));
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
@@ -573,7 +573,7 @@ namespace trview
         // Reset UI buttons
         _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
         _ui->set_highlight(false);
-        _ui->set_use_alternate_groups(_current_level->get_version() >= trlevel::LevelVersion::Tomb4);
+        _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(_level->alternate_groups());
         _ui->set_flip(false);
         _ui->set_flip_enabled(_level->any_alternates());
@@ -594,7 +594,7 @@ namespace trview
         // Strip the last part of the path away.
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        _ui->set_level(name, _current_level->get_version());
+        _ui->set_level(name, _level->version());
         _window.set_title("trview - " + name);
         _measure->reset();
         _route->clear();
@@ -658,7 +658,7 @@ namespace trview
         if (_level)
         {
             // Update the view matrix based on the room selected in the room window.
-            if (_current_level->num_rooms() > 0)
+            if (_level->number_of_rooms() > 0)
             {
                 _camera.set_target(_target);
             }
@@ -730,34 +730,37 @@ namespace trview
 
     void Viewer::select_room(uint32_t room)
     {
-        if (_current_level && room < _current_level->num_rooms())
+        if (!_level || room >= _level->number_of_rooms())
         {
-            _level->set_selected_room(static_cast<uint16_t>(room));
-            _ui->set_selected_room(_level->room(_level->selected_room()));
-
-            if (_settings.auto_orbit && !_was_alternate_select)
-            {
-                set_camera_mode(CameraMode::Orbit);
-            }
-
-            _was_alternate_select = false;
-            _target = _level->room(_level->selected_room())->centre();
-
-            _items_windows->set_room(room);
-            _triggers_windows->set_room(room);
+            return;
         }
+
+        _level->set_selected_room(static_cast<uint16_t>(room));
+        _ui->set_selected_room(_level->room(_level->selected_room()));
+
+        if (_settings.auto_orbit && !_was_alternate_select)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
+
+        _was_alternate_select = false;
+        _target = _level->room(_level->selected_room())->centre();
+
+        _items_windows->set_room(room);
+        _triggers_windows->set_room(room);
     }
 
     void Viewer::select_item(const Item& item)
     {
-        if (_current_level && item.number() < _current_level->num_entities())
+        if (!_level || item.number() >= _level->items().size())
         {
-            select_room(item.room());
-            auto entity = _current_level->get_entity(item.number());
-            _target = entity.position();
-            _level->set_selected_item(item.number());
-            _items_windows->set_selected_item(item);
+            return;
         }
+
+        select_room(item.room());
+        _target = item.position();
+        _level->set_selected_item(item.number());
+        _items_windows->set_selected_item(item);
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)

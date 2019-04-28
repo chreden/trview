@@ -10,7 +10,6 @@
 #include <memory>
 #include <string>
 
-#include <trlevel/ILevel.h>
 #include <trview.common/Timer.h>
 #include <trview.common/Window.h>
 #include <trview.graphics/Device.h>
@@ -112,7 +111,6 @@ namespace trview
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
-        std::unique_ptr<trlevel::ILevel> _current_level;
         std::unique_ptr<Level> _level;
         Window _window;
         Timer _timer;

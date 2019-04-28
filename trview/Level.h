@@ -38,7 +38,7 @@ namespace trview
     class Level
     {
     public:
-        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const trlevel::ILevel* level);
+        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level);
         ~Level();
 
         enum class RoomHighlightMode
@@ -58,6 +58,9 @@ namespace trview
         /// Get the items in this level.
         /// @returns All items in the level.
         const std::vector<Item>& items() const;
+
+        /// Get the number of rooms in the level.
+        uint32_t number_of_rooms() const;
 
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
@@ -143,10 +146,12 @@ namespace trview
         /// Event raised when something has changed in the appearance of the level or the
         /// items that are contained within.
         Event<> on_level_changed;
+
+        trlevel::LevelVersion version() const;
     private:
-        void generate_rooms(const graphics::Device& device);
+        void generate_rooms(const graphics::Device& device, const trlevel::ILevel& level);
         void generate_triggers();
-        void generate_entities(const graphics::Device& device);
+        void generate_entities(const graphics::Device& device, const trlevel::ILevel& level);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
@@ -193,7 +198,6 @@ namespace trview
 
         bool is_alternate_group_set(uint16_t group) const;
 
-        const trlevel::ILevel*               _level;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;
@@ -225,6 +229,7 @@ namespace trview
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
         std::set<uint16_t> _alternate_groups;
+        trlevel::LevelVersion _version;
     };
 
     /// Find the first item with the type id specified.
