@@ -118,8 +118,8 @@ namespace trlevel
         // Returns: The model.
         virtual tr_staticmesh get_static_mesh(uint32_t mesh_id) const override;
 
-        /// Get the mesh pointers in the level.
-        virtual std::vector<uint32_t> get_mesh_pointers() const override;
+        /// Get the number of mesh pointers in the level.
+        virtual uint32_t num_mesh_pointers() const override;
 
         // Get the mesh at the specified index.
         // index: The index of the mesh to get.
