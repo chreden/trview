@@ -20,6 +20,14 @@ namespace trview
         _control->on_invalidate += on_ui_changed;
         _control->on_hierarchy_changed += on_ui_changed;
 
+        std::function<void(Control*)> register_change_detection = [&](Control* child)
+        {
+            child->on_invalidate += on_ui_changed;
+            child->on_hierarchy_changed += on_ui_changed;
+            _token_store += child->on_add_child += register_change_detection;
+        };
+        _token_store += _control->on_add_child += register_change_detection;
+
         _control->set_handles_input(false);
         _ui_input = std::make_unique<Input>(window, *_control);
 

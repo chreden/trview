@@ -145,6 +145,9 @@ namespace trview
             /// @param child_element The element to remove.
             void remove_child(Control* child_element);
 
+            /// Event raised when a child is added.
+            Event<Control*> on_add_child;
+
             /// Event raised when the size of the control has changed.
             Event<Size> on_size_changed;
 

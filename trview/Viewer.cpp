@@ -623,7 +623,7 @@ namespace trview
             _mouse_changed = false;
         }
 
-        if (_scene_changed)
+        if (_scene_changed || _ui_changed)
         {
             _device.begin();
             _main_window->begin();
@@ -642,7 +642,12 @@ namespace trview
             }
 
             _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
-            _ui->render(_device);
+
+            if (_ui_changed)
+            {
+                _ui->render(_device);
+                _ui_changed = false;
+            }
 
             _main_window->present(_settings.vsync);
         }
