@@ -15,6 +15,11 @@ namespace trview
         : _mouse(window), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
+
+        // Change detection - need to add to children.
+        _control->on_invalidate += on_ui_changed;
+        _control->on_hierarchy_changed += on_ui_changed;
+
         _control->set_handles_input(false);
         _ui_input = std::make_unique<Input>(window, *_control);
 

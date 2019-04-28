@@ -120,6 +120,9 @@ namespace trview
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
+        /// Event raised when something in the ui has changed.
+        Event<> on_ui_changed;
+
         /// Render the UI.
         /// @param device The device to use to render the UI.
         void render(const graphics::Device& device);
