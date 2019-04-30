@@ -118,14 +118,16 @@ namespace trview
 
     void CollapsiblePanel::render(const Device& device, bool vsync)
     {
-        if (_ui_changed)
+        if (!_ui_changed)
         {
-            _device_window->begin();
-            _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
-            _ui_renderer->render(device.context());
-            _device_window->present(vsync);
-            _ui_changed = false;
+            return;
         }
+
+        _device_window->begin();
+        _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+        _ui_renderer->render(device.context());
+        _device_window->present(vsync);
+        _ui_changed = false;
     }
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
