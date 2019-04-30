@@ -264,6 +264,7 @@ namespace trview
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);
+        void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;
         input::Mouse _mouse;
