@@ -107,6 +107,7 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage);
+        _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
             if (_level && index < _level->items().size())
@@ -527,8 +528,6 @@ namespace trview
         }
 
         current_camera().update(_timer.elapsed());
-
-        _ui->set_camera_position(current_camera().position());
     }
 
     void Viewer::open(const std::string& filename)
@@ -622,26 +621,33 @@ namespace trview
             _mouse_changed = false;
         }
 
-        _device.begin();
-        _main_window->begin();
-        _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
-
-        if (_scene_changed)
+        if (_scene_changed || _ui_changed)
         {
-            _scene_target->clear(_device.context(), Colour::Transparent);
+            _ui->set_camera_position(current_camera().position());
 
-            graphics::RenderTargetStore rs_store(_device.context());
-            graphics::ViewportStore vp_store(_device.context());
-            _scene_target->apply(_device.context());
+            _device.begin();
+            _main_window->begin();
+            _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
 
-            render_scene();
-            _scene_changed = false;
+            if (_scene_changed)
+            {
+                _scene_target->clear(_device.context(), Colour::Transparent);
+
+                graphics::RenderTargetStore rs_store(_device.context());
+                graphics::ViewportStore vp_store(_device.context());
+                _scene_target->apply(_device.context());
+
+                render_scene();
+                _scene_changed = false;
+            }
+
+            _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+
+            _ui->render(_device);
+            _ui_changed = false;
+
+            _main_window->present(_settings.vsync);
         }
-
-        _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
-        _ui->render(_device);
-
-        _main_window->present(_settings.vsync);
 
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);

@@ -80,7 +80,22 @@ namespace trview
         };
 
         _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        register_change_detection(_ui.get());
+
         _input = std::make_unique<ui::Input>(window(), *_ui);
+    }
+
+    void CollapsiblePanel::register_change_detection(Control* control)
+    {
+        _token_store += control->on_invalidate += [&]() { _ui_changed = true; };
+        _token_store += control->on_hierarchy_changed += [&]() { _ui_changed = true; };
+        _token_store += control->on_add_child += std::bind(&CollapsiblePanel::register_change_detection, this, std::placeholders::_1);
+
+        // Go through all of the control's children, as they may have been added previously.
+        for (auto& child : control->child_elements())
+        {
+            register_change_detection(child);
+        }
     }
 
     void CollapsiblePanel::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
@@ -103,10 +118,16 @@ namespace trview
 
     void CollapsiblePanel::render(const Device& device, bool vsync)
     {
+        if (!_ui_changed)
+        {
+            return;
+        }
+
         _device_window->begin();
         _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
         _ui_renderer->render(device.context());
         _device_window->present(vsync);
+        _ui_changed = false;
     }
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)

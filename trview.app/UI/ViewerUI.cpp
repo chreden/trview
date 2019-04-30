@@ -15,11 +15,15 @@ namespace trview
         : _mouse(window), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
+
+        register_change_detection(_control.get());
+
         _control->set_handles_input(false);
         _ui_input = std::make_unique<Input>(window, *_control);
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
+            _map_renderer->set_cursor_position(client_cursor_position(_window));
             if (_map_tooltip && _map_tooltip->visible())
             {
                 _map_tooltip->set_position(client_cursor_position(_window));
@@ -143,6 +147,7 @@ namespace trview
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
         {
+            on_ui_changed();
             on_sector_hover(sector);
 
             if (!sector)
@@ -165,6 +170,19 @@ namespace trview
             _map_tooltip->set_position(client_cursor_position(_window));
             _map_tooltip->set_visible(!text.empty());
         };
+    }
+
+    void ViewerUI::register_change_detection(Control* control)
+    {
+        control->on_invalidate += on_ui_changed;
+        control->on_hierarchy_changed += on_ui_changed;
+        _token_store += control->on_add_child += std::bind(&ViewerUI::register_change_detection, this, std::placeholders::_1);
+
+        // Go through all of the control's children, as they may have been added previously.
+        for (auto& child : control->child_elements())
+        {
+            register_change_detection(child);
+        }
     }
 
     void ViewerUI::clear_minimap_highlight()
@@ -221,7 +239,6 @@ namespace trview
 
     void ViewerUI::render(const graphics::Device& device)
     {
-        _map_renderer->set_cursor_position(client_cursor_position(_window));
         _map_renderer->render(device.context());
         _ui_renderer->render(device.context());
     }

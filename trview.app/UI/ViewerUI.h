@@ -120,6 +120,9 @@ namespace trview
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
+        /// Event raised when something in the ui has changed.
+        Event<> on_ui_changed;
+
         /// Render the UI.
         /// @param device The device to use to render the UI.
         void render(const graphics::Device& device);
@@ -261,6 +264,7 @@ namespace trview
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);
+        void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;
         input::Mouse _mouse;

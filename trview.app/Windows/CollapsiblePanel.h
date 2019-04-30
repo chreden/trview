@@ -88,6 +88,7 @@ namespace trview
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
+        void register_change_detection(ui::Control* control);
 
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
@@ -96,5 +97,6 @@ namespace trview
         ui::Control* _divider;
         ui::Button* _expander;
         bool        _expanded{ true };
+        bool        _ui_changed{ true };
     };
 }

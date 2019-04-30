@@ -36,6 +36,7 @@ namespace trview
             inner_add_child(element);
             on_invalidate();
             on_hierarchy_changed();
+            on_add_child(static_cast<Control*>(element));
 
             return element;
         }
