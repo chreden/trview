@@ -107,10 +107,7 @@ namespace trview
         load_default_textures(_device, *_texture_storage.get());
 
         _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage);
-        _token_store += _ui->on_ui_changed += [&]() 
-        {
-            _ui_changed = true; 
-        };
+        _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
             if (_level && index < _level->items().size())
