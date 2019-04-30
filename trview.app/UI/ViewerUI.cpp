@@ -23,6 +23,7 @@ namespace trview
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
+            _map_renderer->set_cursor_position(client_cursor_position(_window));
             if (_map_tooltip && _map_tooltip->visible())
             {
                 _map_tooltip->set_position(client_cursor_position(_window));
@@ -146,6 +147,7 @@ namespace trview
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
         {
+            on_ui_changed();
             on_sector_hover(sector);
 
             if (!sector)
@@ -237,7 +239,6 @@ namespace trview
 
     void ViewerUI::render(const graphics::Device& device)
     {
-        _map_renderer->set_cursor_position(client_cursor_position(_window));
         _map_renderer->render(device.context());
         _ui_renderer->render(device.context());
     }
