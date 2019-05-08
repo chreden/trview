@@ -148,6 +148,9 @@
     <ClCompile Include="Menus\UpdateChecker.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Camera\CameraInput.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -314,6 +317,9 @@
     </ClInclude>
     <ClInclude Include="Menus\UpdateChecker.h">
       <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\CameraInput.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

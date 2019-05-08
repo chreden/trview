@@ -2,8 +2,6 @@
 
 namespace trview
 {
-    // Get the movement vector based on the current input state.
-    // Returns: The movement vector.
     DirectX::SimpleMath::Vector3 CameraInput::movement() const
     {
         return DirectX::SimpleMath::Vector3(
@@ -12,8 +10,6 @@ namespace trview
             _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
     }
 
-    // Process a key being pressed.
-    // key: The key that was pressed.
     void CameraInput::key_down(uint16_t key)
     {
         if (GetAsyncKeyState(VK_CONTROL))
@@ -71,8 +67,6 @@ namespace trview
         }
     }
 
-    // Process a key being released.
-    // key: The key that was released.
     void CameraInput::key_up(uint16_t key)
     {
         switch (key)
@@ -110,8 +104,6 @@ namespace trview
         }
     }
 
-    // Process a mouse button being pressed.
-    // button: The button that was pressed.
     void CameraInput::mouse_down(input::Mouse::Button button)
     {
         if (button == input::Mouse::Button::Right)
@@ -120,8 +112,6 @@ namespace trview
         }
     }
 
-    // Process a mouse button being released.
-    // button: The button that was released.
     void CameraInput::mouse_up(input::Mouse::Button button)
     {
         if (button == input::Mouse::Button::Right)
@@ -130,9 +120,6 @@ namespace trview
         }
     }
 
-    // Process the mouse being moved.
-    // x: The x movement.
-    // y: The y movement.
     void CameraInput::mouse_move(long x, long y)
     {
         if (_rotating)
@@ -141,8 +128,6 @@ namespace trview
         }
     }
 
-    // Process the mouse wheel being turned.
-    // scroll: The mouse wheel movement.
     void CameraInput::mouse_scroll(int16_t scroll)
     {
         on_zoom(scroll / -100.0f);

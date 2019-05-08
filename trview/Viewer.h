@@ -19,7 +19,7 @@
 
 #include <trview.app/Camera/FreeCamera.h>
 #include <trview.app/Camera/OrbitCamera.h>
-#include "CameraInput.h"
+#include <trview.app/Camera/CameraInput.h>
 #include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
 #include <trview.app/Settings/UserSettings.h>
