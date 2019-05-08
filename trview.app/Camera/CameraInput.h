@@ -10,7 +10,7 @@
 
 namespace trview
 {
-    class CameraInput
+    class CameraInput final
     {
     public:
         // Get the movement vector based on the current input state.
