@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
+    <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
