@@ -19,7 +19,7 @@
 
 #include <trview.app/Camera/FreeCamera.h>
 #include <trview.app/Camera/OrbitCamera.h>
-#include "CameraInput.h"
+#include <trview.app/Camera/CameraInput.h>
 #include <trview.app/Camera/CameraMode.h>
 #include "Level.h"
 #include <trview.app/Settings/UserSettings.h>
@@ -82,7 +82,7 @@ namespace trview
         Event<std::list<std::string>> on_recent_files_changed;
     private:
         void initialise_input();
-        void process_input_key(uint16_t key);
+        void process_input_key(uint16_t key, bool control);
         void toggle_highlight();
         void update_camera();
         void render_scene();

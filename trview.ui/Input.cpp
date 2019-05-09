@@ -34,7 +34,7 @@ namespace trview
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
-            _token_store += _keyboard.on_key_down += [&](auto key) { process_key_down(key); };
+            _token_store += _keyboard.on_key_down += [&](auto key, bool control) { process_key_down(key, control); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
         }
 
@@ -259,7 +259,7 @@ namespace trview
             return control->scroll(delta);
         }
 
-        void Input::process_key_down(uint16_t key)
+        void Input::process_key_down(uint16_t key, bool control)
         {
             if (_focus_control && _focus_control->key_down(key))
             {

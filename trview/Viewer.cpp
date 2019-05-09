@@ -311,14 +311,14 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1);
+        _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1, std::placeholders::_2);
 
-        _token_store += _keyboard.on_key_down += [&](auto key) {_camera_input.key_down(key); };
-        _token_store += _keyboard.on_key_up += [&](auto key) {_camera_input.key_up(key); };
+        _token_store += _keyboard.on_key_down += [&](auto key, bool control) {_camera_input.key_down(key, control); };
+        _token_store += _keyboard.on_key_up += [&](auto key, bool control) {_camera_input.key_up(key); };
 
-        _token_store += _keyboard.on_key_down += [&](uint16_t key)
+        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
         {
-            if (_ui->go_to_room_visible() || GetAsyncKeyState(VK_CONTROL))
+            if (_ui->go_to_room_visible() || control)
             {
                 return;
             }
@@ -482,7 +482,7 @@ namespace trview
         };
     }
 
-    void Viewer::process_input_key(uint16_t key)
+    void Viewer::process_input_key(uint16_t key, bool control)
     {
         if (!_ui->go_to_room_visible())
         {
@@ -490,7 +490,7 @@ namespace trview
             {
                 case 'G':
                 {
-                    if(_level && !_keyboard.control())
+                    if(_level && !control)
                     {
                         set_show_hidden_geometry(!_level->show_hidden_geometry());
                     }

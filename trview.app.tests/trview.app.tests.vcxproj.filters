@@ -10,6 +10,9 @@
     <ClCompile Include="AlternateGroupTogglerTests.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Camera\CameraInputTests.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StringConversions.h" />
@@ -17,6 +20,9 @@
   <ItemGroup>
     <Filter Include="Input">
       <UniqueIdentifier>{d3867a39-d160-4aeb-a8e2-02afcb4efbe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{ce341a85-c22f-4d9f-8275-93cfe4e2359e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -179,7 +179,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CameraInput.h" />
     <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
@@ -199,7 +198,6 @@
     <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CameraInput.cpp" />
     <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />

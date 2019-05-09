@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Camera\CameraMode.cpp" />
     <ClCompile Include="Camera\FreeCamera.cpp" />
     <ClCompile Include="Camera\ICamera.cpp" />
@@ -71,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Camera\CameraInput.h" />
     <ClInclude Include="Camera\CameraMode.h" />
     <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
