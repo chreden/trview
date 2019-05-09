@@ -30,9 +30,9 @@ namespace trview
             }
         };
 
-        _token_store += _keyboard.on_key_down += [&](auto key)
+        _token_store += _keyboard.on_key_down += [&](auto key, bool control)
         {
-            if (_keyboard.control())
+            if (control)
             {
                 std::wstring name;
                 switch (key)

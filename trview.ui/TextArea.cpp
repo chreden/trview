@@ -24,6 +24,11 @@ namespace trview
 
                 switch (character)
                 {
+                    // Reserved
+                    case 0x7:
+                    {
+                        return;
+                    }
                     // VK_BACK
                     case 0x8:
                     {

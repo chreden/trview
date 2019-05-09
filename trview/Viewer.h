@@ -82,7 +82,7 @@ namespace trview
         Event<std::list<std::string>> on_recent_files_changed;
     private:
         void initialise_input();
-        void process_input_key(uint16_t key);
+        void process_input_key(uint16_t key, bool control);
         void toggle_highlight();
         void update_camera();
         void render_scene();

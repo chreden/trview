@@ -20,7 +20,8 @@ namespace trview
 
         /// Process a key being pressed.
         /// @param key The key that was pressed.
-        void key_down(uint16_t key);
+        /// @param control Whether the control key is pressed.
+        void key_down(uint16_t key, bool control);
 
         /// Process a key being released.
         /// @param key The key that was released.

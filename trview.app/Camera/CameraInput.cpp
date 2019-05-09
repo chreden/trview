@@ -10,9 +10,9 @@ namespace trview
             _free_forward ? 1.0f : 0.0f + _free_backward ? -1.0f : 0.0f);
     }
 
-    void CameraInput::key_down(uint16_t key)
+    void CameraInput::key_down(uint16_t key, bool control)
     {
-        if (GetAsyncKeyState(VK_CONTROL))
+        if (control)
         {
             return;
         }

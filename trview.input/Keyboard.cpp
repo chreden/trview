@@ -20,11 +20,12 @@ namespace trview
 
         void Keyboard::process_message(HWND, UINT message, WPARAM wParam, LPARAM)
         {
+            bool control_pressed = control();
             switch (message)
             {
                 case WM_KEYDOWN:
                 {
-                    on_key_down(static_cast<uint16_t>(wParam));
+                    on_key_down(static_cast<uint16_t>(wParam), control_pressed);
                     break;
                 }
                 case WM_CHAR:
@@ -34,7 +35,7 @@ namespace trview
                 }
                 case WM_KEYUP:
                 {
-                    on_key_up(static_cast<uint16_t>(wParam));
+                    on_key_up(static_cast<uint16_t>(wParam), control_pressed);
                     break;
                 }
             }

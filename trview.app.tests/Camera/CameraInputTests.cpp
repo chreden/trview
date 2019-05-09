@@ -22,7 +22,7 @@ namespace trview
                     mode = new_mode;
                 };
 
-                subject.key_down(L'F');
+                subject.key_down(L'F', false);
 
                 Assert::IsTrue(mode.has_value());
                 Assert::AreEqual(CameraMode::Free, mode.value());
@@ -40,7 +40,7 @@ namespace trview
                     mode = new_mode;
                 };
 
-                subject.key_down(L'X');
+                subject.key_down(L'X', false);
 
                 Assert::IsTrue(mode.has_value());
                 Assert::AreEqual(CameraMode::Axis, mode.value());
@@ -58,7 +58,7 @@ namespace trview
                     mode = new_mode;
                 };
 
-                subject.key_down(L'O');
+                subject.key_down(L'O', false);
 
                 Assert::IsTrue(mode.has_value());
                 Assert::AreEqual(CameraMode::Orbit, mode.value());

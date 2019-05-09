@@ -34,11 +34,11 @@ namespace trview
 
             /// Event raised when the user presses a key. The key is passed as a parameter
             /// to the event listeners.
-            Event<uint16_t> on_key_down;
+            Event<uint16_t, bool> on_key_down;
 
             /// Event raised when the user releases a key. The key is passed as a parameter
             /// to the event listeners.
-            Event<uint16_t> on_key_up;
+            Event<uint16_t, bool> on_key_up;
 
             /// Event raised when the user enters a text character. The character is passed as
             /// a parameter to the event listener.
