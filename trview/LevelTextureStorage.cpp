@@ -5,7 +5,7 @@
 namespace trview
 {
     LevelTextureStorage::LevelTextureStorage(const graphics::Device& device, const trlevel::ILevel& level)
-        : _device(device), _texture_storage(std::make_unique<TextureStorage>(device))
+        : _device(device), _texture_storage(std::make_unique<TextureStorage>(device)), _version(level.get_version())
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
