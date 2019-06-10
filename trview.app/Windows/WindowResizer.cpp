@@ -19,7 +19,7 @@ namespace trview
             }
             case WM_SIZE:
             {
-                if (!_resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED) && has_size_changed())
+                if (!_resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED || has_size_changed()))
                 {
                     on_resize();
                 }
@@ -28,10 +28,7 @@ namespace trview
             case WM_EXITSIZEMOVE:
             {
                 _resizing = false;
-                if (has_size_changed())
-                {
-                    on_resize();
-                }
+                on_resize();
                 break;
             }
         }
