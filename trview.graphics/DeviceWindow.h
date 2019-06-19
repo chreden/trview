@@ -23,7 +23,7 @@ namespace trview
             /// Create a new device window.
             /// @param device The device to use to render.
             /// @param window The window to render to.
-            explicit DeviceWindow(const Device& device, const Window& window);
+            explicit DeviceWindow(Device& device, const Window& window);
 
             /// Begin rendering to the main render target.
             void begin();
@@ -41,7 +41,7 @@ namespace trview
         private:
             void create_render_target();
 
-            const Device&                               _device;
+            Device& _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<IDXGISwapChain> _swap_chain;
             std::unique_ptr<RenderTarget> _render_target;
