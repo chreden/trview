@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window)
+    RouteWindowManager::RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
     }

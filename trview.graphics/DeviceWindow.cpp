@@ -7,7 +7,7 @@ namespace trview
 {
     namespace graphics
     {
-        DeviceWindow::DeviceWindow(const Device& device, const Window& window)
+        DeviceWindow::DeviceWindow(Device& device, const Window& window)
             : _device(device), _context(device.context())
         {
             // Swap chain description.
@@ -46,6 +46,7 @@ namespace trview
 
         void DeviceWindow::begin()
         {
+            _device.begin();
             _render_target->apply(_context);
         }
 

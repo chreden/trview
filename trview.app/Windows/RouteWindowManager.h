@@ -13,7 +13,7 @@ namespace trview
     class RouteWindowManager final : public MessageHandler
     {
     public:
-        explicit RouteWindowManager(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window);
+        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window);
 
         virtual ~RouteWindowManager() = default;
 
@@ -64,7 +64,7 @@ namespace trview
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
     private:
-        const graphics::Device& _device;
+        graphics::Device& _device;
         const graphics::IShaderStorage& _shader_storage;
         const graphics::FontFactory& _font_factory;
         TokenStore _token_store;
