@@ -28,7 +28,7 @@ namespace trview
                     raised_file = file;
                 };
 
-                recent_files.process_message(window, WM_COMMAND, MAKEWPARAM(5000, 0), 0);
+                recent_files.process_message(WM_COMMAND, MAKEWPARAM(5000, 0), 0);
                 Assert::AreEqual(1u, times_called);
                 Assert::AreEqual(std::string("test2.tr2"), files.back());
             }

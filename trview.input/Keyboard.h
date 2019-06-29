@@ -7,10 +7,8 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
 #include <trview.common/Event.h>
 #include <trview.common/MessageHandler.h>
-#include <Windows.h>
 
 namespace trview
 {
@@ -22,7 +20,7 @@ namespace trview
         public:
             /// Create a keyboard to listen to keyboard messages for a specific window.
             /// @param window The window to listen to.
-            explicit Keyboard(HWND window);
+            explicit Keyboard(const Window& window);
 
             /// Destructor for Keyboard. This will remove the keyboard from the all keyboard
             /// map. This will stop messages being sent to this keyboard.
@@ -45,11 +43,10 @@ namespace trview
             Event<uint16_t> on_char;
 
             /// Handles a window message.
-            /// @param window The window that received the message.
             /// @param message The message that was received.
             /// @param wParam The WPARAM for the message.
             /// @param lParam The LPARAM for the message.
-            virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+            virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         };
     }
 }

@@ -17,17 +17,16 @@ namespace trview
     public:
         /// Create a new RecentFiles that will manage a menu on the window specified.
         /// @param window The window that has the recent files menu.
-        explicit RecentFiles(HWND window);
+        explicit RecentFiles(const Window& window);
 
         /// Destructor for RecentFiles.
         virtual ~RecentFiles() = default;
 
         /// Handles a window message.
-        /// @param window The window that received the message.
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when the user opens a file from the recent files list. The file that was opened
         /// is passed as a parameter.

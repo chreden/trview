@@ -2,12 +2,12 @@
 
 namespace trview
 {
-    AlternateGroupToggler::AlternateGroupToggler(HWND window)
+    AlternateGroupToggler::AlternateGroupToggler(const Window& window)
         : MessageHandler(window)
     {
     }
 
-    void AlternateGroupToggler::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void AlternateGroupToggler::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_CHAR)
         {

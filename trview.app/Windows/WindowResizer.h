@@ -16,17 +16,16 @@ namespace trview
     public:
         /// Create a WindowResizer.
         /// @param window The window to monitor.
-        explicit WindowResizer(HWND window);
+        explicit WindowResizer(const Window& window);
 
         /// Destructor for WindowResizer.
         virtual ~WindowResizer() = default;
 
         /// Handles a window message.
-        /// @param window The window that received the message.
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event that is raised when the window has resized.
         Event<> on_resize;

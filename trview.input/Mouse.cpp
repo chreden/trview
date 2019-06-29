@@ -11,7 +11,7 @@ namespace trview
             const uint32_t ClickDelta = 200;
         }
 
-        Mouse::Mouse(HWND window)
+        Mouse::Mouse(const Window& window)
             : MessageHandler(window)
         {
             // Register raw input devices so that the window
@@ -112,7 +112,7 @@ namespace trview
             _absolute_y = y;
         }
 
-        void Mouse::process_message(HWND, UINT message, WPARAM wParam, LPARAM lParam)
+        void Mouse::process_message(UINT message, WPARAM wParam, LPARAM lParam)
         {
             switch (message)
             {

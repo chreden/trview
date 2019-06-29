@@ -3,12 +3,12 @@
 
 namespace trview
 {
-    WindowResizer::WindowResizer(HWND window)
+    WindowResizer::WindowResizer(const Window& window)
         : MessageHandler(window), _previous_size(Window(window).size())
     {
     }
 
-    void WindowResizer::process_message(HWND, UINT message, WPARAM wParam, LPARAM)
+    void WindowResizer::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         switch (message)
         {

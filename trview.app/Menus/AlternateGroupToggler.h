@@ -15,14 +15,13 @@ namespace trview
     public:
         /// Create a new AlternateGroupToggler.
         /// @param window The window to monitor.
-        explicit AlternateGroupToggler(HWND window);
+        explicit AlternateGroupToggler(const Window& window);
 
         /// Handles a window message.
-        /// @param window The window that received the message.
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when an alternate group is toggled by the user. The group
         /// is passed as a parameter.

@@ -12,7 +12,7 @@ namespace trview
         /// Reset the menu to have no items in it.
         /// @param window The window that the menu bar belongs to.
         /// @param menu The menu to clear.
-        void reset_menu(HWND window, HMENU menu)
+        void reset_menu(const Window& window, HMENU menu)
         {
             int count = GetMenuItemCount(menu);
 
@@ -25,7 +25,7 @@ namespace trview
         /// Create the directory listing menu as a child of the menu in the specified window.
         /// @param window The window that owns the menu.
         /// @returns The new menu.
-        HMENU create_directory_listing_menu(HWND window)
+        HMENU create_directory_listing_menu(const Window& window)
         {
             HMENU menu = GetMenu(window);
             HMENU directory_listing_menu = CreatePopupMenu();
@@ -48,12 +48,12 @@ namespace trview
         }
     }
 
-    LevelSwitcher::LevelSwitcher(HWND window)
+    LevelSwitcher::LevelSwitcher(const Window& window)
         : MessageHandler(window), _directory_listing_menu(create_directory_listing_menu(window))
     {
     }
 
-    void LevelSwitcher::process_message(HWND, UINT message, WPARAM wParam, LPARAM)
+    void LevelSwitcher::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {

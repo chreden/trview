@@ -28,7 +28,7 @@ namespace trview
                         called_group = group;
                     };
 
-                    toggler.process_message(window, WM_CHAR, L'0' + i, 0);
+                    toggler.process_message(WM_CHAR, L'0' + i, 0);
 
                     Assert::IsTrue(called, L"Callback was not raised");
                     Assert::AreEqual(called_group, i);
@@ -50,7 +50,7 @@ namespace trview
                     called_group = group;
                 };
 
-                toggler.process_message(window, WM_CHAR, L'A', 0);
+                toggler.process_message(WM_CHAR, L'A', 0);
 
                 Assert::IsFalse(called, L"Callback should not be raised");
                 Assert::AreEqual(called_group, 0u);

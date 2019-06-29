@@ -49,7 +49,7 @@ namespace trview
                 strcpy_s(reinterpret_cast<char*>(dropfiles + 1), filename.size() + 1, filename.c_str());
                 GlobalUnlock(global);
 
-                dropper.process_message(window, WM_DROPFILES, (WPARAM)global, 0);
+                dropper.process_message(WM_DROPFILES, (WPARAM)global, 0);
 
                 GlobalFree(global);
 

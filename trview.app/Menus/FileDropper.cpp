@@ -3,14 +3,14 @@
 
 namespace trview
 {
-    FileDropper::FileDropper(HWND window)
+    FileDropper::FileDropper(const Window& window)
         : MessageHandler(window)
     {
         // Makes this window accept dropped files.
         DragAcceptFiles(window, TRUE);
     }
 
-    void FileDropper::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void FileDropper::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if(message == WM_DROPFILES)
         {
