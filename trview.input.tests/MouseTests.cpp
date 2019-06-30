@@ -162,8 +162,8 @@ namespace trview
                 input.header.dwType = RIM_TYPEMOUSE;
                 input.header.dwSize = sizeof(RAWINPUT);
                 input.data.mouse.usFlags |= MOUSE_MOVE_ABSOLUTE;
-                input.data.mouse.lLastX = 123;
-                input.data.mouse.lLastY = 456;
+                input.data.mouse.lLastX = static_cast<int>(std::round((123.0f / 1000.0f) * 65535.0f));
+                input.data.mouse.lLastY = static_cast<int>(std::round((456.0f / 1000.0f) * 65535.0f));
                 mouse.process_input(input);
 
                 Assert::AreEqual(123, static_cast<int>(mouse.x()));
@@ -184,6 +184,16 @@ namespace trview
                     virtual Window window_under_cursor() const override
                     {
                         return _window;
+                    }
+
+                    virtual int screen_width(bool) const override
+                    {
+                        return 1000;
+                    }
+
+                    virtual int screen_height(bool) const override
+                    {
+                        return 1000;
                     }
                 private:
                     Window _window;
