@@ -11,8 +11,8 @@ namespace trview
             const uint32_t ClickDelta = 200;
         }
 
-        Mouse::Mouse(const Window& window)
-            : MessageHandler(window)
+        Mouse::Mouse(const Window& window, std::unique_ptr<IWindowTester>&& window_tester)
+            : MessageHandler(window), _window_tester(std::move(window_tester))
         {
             // Register raw input devices so that the window
             // will receive the raw input messages.
@@ -35,8 +35,7 @@ namespace trview
         {
             if (input.header.dwType == RIM_TYPEMOUSE)
             {
-                auto active_window = window_under_cursor();
-
+                auto active_window = _window_tester->window_under_cursor();
                 if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
                     mouse_down(Button::Left);

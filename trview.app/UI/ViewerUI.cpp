@@ -6,13 +6,14 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <sstream>
 #include <iomanip>
+#include <trview.input/WindowTester.h>
 
 using namespace trview::ui;
 
 namespace trview
 {
     ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage)
-        : _mouse(window), _window(window), _keyboard(window)
+        : _mouse(window, std::make_unique<input::WindowTester>()), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(Point(), window.size(), Colour::Transparent);
 

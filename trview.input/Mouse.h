@@ -10,12 +10,14 @@
 #include <trview.common/MessageHandler.h>
 #include <cstdint>
 
+#include "IWindowTester.h"
+
 namespace trview
 {
     namespace input
     {
         /// Receives mouse input on a specific window.
-        class Mouse : public MessageHandler
+        class Mouse final : public MessageHandler
         {
         public:
             /// The mouse button that was pressed.
@@ -29,7 +31,8 @@ namespace trview
 
             /// Creates an instance of the Mouse class.
             /// @param window The window to monitor.
-            explicit Mouse(const Window& window);
+            /// @param window_tester The window tester to use.
+            explicit Mouse(const Window& window, std::unique_ptr<IWindowTester>&& window_tester);
 
             /// Destructor for Mouse. This will remove the mouse from the all mice
             /// map. This will stop messages being sent to this mouse.
@@ -74,6 +77,7 @@ namespace trview
         private:
             void raise_absolute_mouse_move(long x, long y);
 
+            std::unique_ptr<IWindowTester> _window_tester;
             bool _any_absolute_previous{ false };
             long _absolute_x;
             long _absolute_y;
