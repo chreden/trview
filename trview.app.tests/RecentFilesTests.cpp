@@ -14,8 +14,7 @@ namespace trview
             /// Tests that opening the first file triggers the event.
             TEST_METHOD(OpenFile)
             {
-                HWND window = create_test_window(L"TRViewRecentFilesTests");
-                RecentFiles recent_files(window);
+                RecentFiles recent_files(create_test_window(L"TRViewRecentFilesTests"));
 
                 const std::list<std::string> files{ "test.tr2", "test2.tr2" };
                 recent_files.set_recent_files(files);

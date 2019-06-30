@@ -13,11 +13,9 @@ namespace trview
             /// Tests that when a number key is pressed an alternate group is toggled.
             TEST_METHOD(NumberKeys)
             {
-                auto window = create_test_window(L"AlternateGroupToggler");
-
                 for (uint32_t i = 0; i < 10; ++i)
                 {
-                    AlternateGroupToggler toggler(window);
+                    AlternateGroupToggler toggler(create_test_window(L"AlternateGroupToggler"));
 
                     bool called = false;
                     uint32_t called_group = 0;
@@ -38,8 +36,7 @@ namespace trview
             /// Tests that if a non-numeric character is sent, no event is raised.
             TEST_METHOD(Characters)
             {
-                auto window = create_test_window(L"AlternateGroupToggler");
-                AlternateGroupToggler toggler(window);
+                AlternateGroupToggler toggler(create_test_window(L"AlternateGroupToggler"));
 
                 bool called = false;
                 uint32_t called_group = 0;

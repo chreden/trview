@@ -21,7 +21,7 @@ namespace trview
         /// Find the next available subclass id.
         /// @param window The window to subclass.
         /// @remarks This will test random subclass IDs until it finds one that isn't set.
-        uint32_t next_subclass_id(HWND window)
+        uint32_t next_subclass_id(const Window& window)
         {
             std::default_random_engine random;
             uint32_t id = random();

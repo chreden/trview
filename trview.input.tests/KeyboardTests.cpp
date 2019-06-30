@@ -20,8 +20,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t key_received = 0;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Keyboard keyboard(window);
+                Keyboard keyboard(create_test_window(L"TRViewInputTests"));
                 auto token = keyboard.on_key_down +=
                     [&times_called, &key_received](uint16_t key, bool control) 
                 {
@@ -29,7 +28,7 @@ namespace trview
                     key_received = key; 
                 };
 
-                SendMessage(window, WM_KEYDOWN, VK_SPACE, 0);
+                keyboard.process_message(WM_KEYDOWN, VK_SPACE, 0);
 
                 Assert::AreEqual(1, times_called);
                 Assert::AreEqual(static_cast<int>(VK_SPACE), static_cast<int>(key_received));
@@ -42,8 +41,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t key_received = 0;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Keyboard keyboard(window);
+                Keyboard keyboard(create_test_window(L"TRViewInputTests"));
                 auto token = keyboard.on_key_up +=
                     [&times_called, &key_received](uint16_t key, bool control)
                 {
@@ -51,7 +49,7 @@ namespace trview
                     key_received = key;
                 };
 
-                SendMessage(window, WM_KEYUP, VK_SPACE, 0);
+                keyboard.process_message(WM_KEYUP, VK_SPACE, 0);
 
                 Assert::AreEqual(1, times_called);
                 Assert::AreEqual(static_cast<int>(VK_SPACE), static_cast<int>(key_received));
@@ -64,8 +62,7 @@ namespace trview
                 int times_called = 0;
                 uint16_t char_received = 0;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Keyboard keyboard(window);
+                Keyboard keyboard(create_test_window(L"TRViewInputTests"));
                 auto token = keyboard.on_char +=
                     [&times_called, &char_received](uint16_t key)
                 {
@@ -73,7 +70,7 @@ namespace trview
                     char_received = key;
                 };
 
-                SendMessage(window, WM_CHAR, 'A', 0);
+                keyboard.process_message(WM_CHAR, 'A', 0);
 
                 Assert::AreEqual(1, times_called);
                 Assert::AreEqual(static_cast<int>('A'), static_cast<int>(char_received));

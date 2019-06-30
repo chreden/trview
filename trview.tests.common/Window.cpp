@@ -9,7 +9,7 @@ namespace trview
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
-        HWND create_test_window(const std::wstring& name)
+        Window create_test_window(const std::wstring& name)
         {
             HINSTANCE hInstance = GetModuleHandle(nullptr);
 

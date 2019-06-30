@@ -14,8 +14,7 @@ namespace trview
             // Tests that entering and exiting resizing raises the resize event.
             TEST_METHOD(SizeMove)
             {
-                HWND window = create_test_window(L"TRViewWindowResizerTests");
-                WindowResizer resizer(window);
+                WindowResizer resizer(create_test_window(L"TRViewWindowResizerTests"));
 
                 uint32_t times_called = 0;
                 auto token = resizer.on_resize += [&]() { ++times_called; };
@@ -29,8 +28,7 @@ namespace trview
             // Test that sending a maximize message triggers the event.
             TEST_METHOD(Maximise)
             {
-                HWND window = create_test_window(L"TRViewWindowResizerTests");
-                WindowResizer resizer(window);
+                WindowResizer resizer(create_test_window(L"TRViewWindowResizerTests"));
 
                 uint32_t times_called = 0;
                 auto token = resizer.on_resize += [&]() { ++times_called; };
@@ -43,8 +41,7 @@ namespace trview
             // Test that sending a minimise message triggers the event.
             TEST_METHOD(Minimise)
             {
-                HWND window = create_test_window(L"TRViewWindowResizerTests");
-                WindowResizer resizer(window);
+                WindowResizer resizer(create_test_window(L"TRViewWindowResizerTests"));
 
                 uint32_t times_called = 0;
                 auto token = resizer.on_resize += [&]() { ++times_called; };
@@ -57,8 +54,7 @@ namespace trview
             // Test that size messages during resize don't trigger the event.
             TEST_METHOD(Resizing)
             {
-                HWND window = create_test_window(L"TRViewWindowResizerTests");
-                WindowResizer resizer(window);
+                WindowResizer resizer(create_test_window(L"TRViewWindowResizerTests"));
 
                 uint32_t times_called = 0;
                 auto token = resizer.on_resize += [&]() { ++times_called; };
