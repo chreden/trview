@@ -30,8 +30,7 @@ namespace trview
             // Tests that sending a dropfile message to the dropper raises the event.
             TEST_METHOD(DropFile)
             {
-                HWND window = create_test_window(L"TRViewFileDropperTests");
-                FileDropper dropper(window);
+                FileDropper dropper(create_test_window(L"TRViewFileDropperTests"));
 
                 uint32_t times_called = 0;
                 std::string file_opened;
@@ -49,7 +48,7 @@ namespace trview
                 strcpy_s(reinterpret_cast<char*>(dropfiles + 1), filename.size() + 1, filename.c_str());
                 GlobalUnlock(global);
 
-                dropper.process_message(window, WM_DROPFILES, (WPARAM)global, 0);
+                dropper.process_message(WM_DROPFILES, (WPARAM)global, 0);
 
                 GlobalFree(global);
 
@@ -60,7 +59,7 @@ namespace trview
             // Tests that the class enables drag and drop
             TEST_METHOD(EnableDragDrop)
             {
-                HWND window = create_test_window(L"TRViewFileDropperTests");
+                Window window = create_test_window(L"TRViewFileDropperTests");
                 FileDropper dropper(window);
                 LONG_PTR style = GetWindowLongPtr(window, GWL_EXSTYLE);
                 Assert::AreEqual<LONG_PTR>(WS_EX_ACCEPTFILES, style & WS_EX_ACCEPTFILES);

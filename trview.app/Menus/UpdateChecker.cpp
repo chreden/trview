@@ -44,7 +44,7 @@ namespace trview
         }
 
         _thread = std::thread(
-            [](HWND window, const std::string& version)
+            [](Window window, const std::string& version)
         {
             HINTERNET internet = WinHttpOpen(L"trview", WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, nullptr, nullptr, 0);
             if (!internet)
@@ -110,7 +110,7 @@ namespace trview
         }, window(), _current_version);
     }
 
-    void UpdateChecker::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == id_update_available)
         {

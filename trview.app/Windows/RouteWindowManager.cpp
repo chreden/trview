@@ -3,12 +3,12 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window)
+    RouteWindowManager::RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
     }
 
-    void RouteWindowManager::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_COMMAND &&
             LOWORD(wParam) == ID_APP_WINDOWS_ROUTE ||

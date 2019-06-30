@@ -13,16 +13,15 @@ namespace trview
     class RouteWindowManager final : public MessageHandler
     {
     public:
-        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, HWND window);
+        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window);
 
         virtual ~RouteWindowManager() = default;
 
         /// Handles a window message.
-        /// @param window The window that received the message.
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render all of the route windows.
         /// @param device The device to use to render.

@@ -25,12 +25,12 @@ namespace trview
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
 
-            HWND init_instance(HWND parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
+            Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
             {
                 RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
-                HWND items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
+                Window items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
                     CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
 
                 ShowWindow(items_window, nCmdShow);
@@ -58,7 +58,7 @@ namespace trview
                 return RegisterClassExW(&wcex);
             }
 
-            HWND create_window(HWND parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+            Window create_window(const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
             {
                 HINSTANCE hInstance = GetModuleHandle(nullptr);
                 register_class(hInstance, window_class);
@@ -68,7 +68,7 @@ namespace trview
     }
 
 
-    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, HWND parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size()))
     {
@@ -98,7 +98,7 @@ namespace trview
         }
     }
 
-    void CollapsiblePanel::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void CollapsiblePanel::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_CLOSE)
         {

@@ -46,7 +46,7 @@ namespace trview
         explicit CollapsiblePanel(graphics::Device& device,
             const graphics::IShaderStorage& shader_storage,
             const graphics::FontFactory& font_factory,
-            HWND parent,
+            const Window& parent,
             const std::wstring& window_class,
             const std::wstring& title,
             const Size& size);
@@ -54,11 +54,10 @@ namespace trview
         virtual ~CollapsiblePanel() = default;
 
         /// Handles a window message.
-        /// @param window The window that received the message.
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render the window.
         /// @param device The device to render with.

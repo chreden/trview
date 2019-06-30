@@ -13,7 +13,7 @@ namespace trview
             MessageHandler* handler = reinterpret_cast<MessageHandler*>(dwRefData);
             if (handler)
             {
-                handler->process_message(hWnd, message, wParam, lParam);
+                handler->process_message(message, wParam, lParam);
             }
             return DefSubclassProc(hWnd, message, wParam, lParam);
         }
@@ -21,7 +21,7 @@ namespace trview
         /// Find the next available subclass id.
         /// @param window The window to subclass.
         /// @remarks This will test random subclass IDs until it finds one that isn't set.
-        uint32_t next_subclass_id(HWND window)
+        uint32_t next_subclass_id(const Window& window)
         {
             std::default_random_engine random;
             uint32_t id = random();
@@ -34,7 +34,7 @@ namespace trview
         }
     }
 
-    MessageHandler::MessageHandler(HWND window)
+    MessageHandler::MessageHandler(const Window& window)
         : _window(window), _subclass_id(next_subclass_id(window))
     {
         SetWindowSubclass(window, HandlerProc, _subclass_id, reinterpret_cast<DWORD_PTR>(this));
@@ -74,7 +74,7 @@ namespace trview
         RemoveWindowSubclass(_window, HandlerProc, _subclass_id);
     }
 
-    Window MessageHandler::window() const
+    const Window& MessageHandler::window() const
     {
         return _window;
     }

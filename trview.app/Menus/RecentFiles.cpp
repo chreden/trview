@@ -8,7 +8,7 @@ namespace trview
     {
         const int ID_RECENT_FILE_BASE = 5000;
 
-        void update_menu(HWND window, const std::vector<std::string>& recent_files)
+        void update_menu(const Window& window, const std::vector<std::string>& recent_files)
         {
             // Set up the recently used files menu.
             HMENU menu = GetMenu(window);
@@ -29,12 +29,12 @@ namespace trview
         }
     }
 
-    RecentFiles::RecentFiles(HWND window)
+    RecentFiles::RecentFiles(const Window& window)
         : MessageHandler(window)
     {
     }
 
-    void RecentFiles::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_COMMAND)
         {

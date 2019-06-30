@@ -42,8 +42,7 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Mouse mouse(window);
+                Mouse mouse(create_test_window(L"TRViewInputTests"));
 
                 auto token = mouse.mouse_down += 
                     [&times_called, &button_received](auto button)
@@ -70,8 +69,7 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Mouse mouse(window);
+                Mouse mouse(create_test_window(L"TRViewInputTests"));
 
                 auto token = mouse.mouse_up +=
                     [&times_called, &button_received](auto button)
@@ -98,8 +96,7 @@ namespace trview
                 int times_called = 0;
                 int16_t scroll_received = 0;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Mouse mouse(window);
+                Mouse mouse(create_test_window(L"TRViewInputTests"));
 
                 auto token = mouse.mouse_wheel +=
                     [&times_called, &scroll_received](auto scroll)
@@ -108,7 +105,7 @@ namespace trview
                     scroll_received = scroll;
                 };
 
-                SendMessage(window, WM_MOUSEWHEEL, MAKEWPARAM(0, 100), 0);
+                mouse.process_message(WM_MOUSEWHEEL, MAKEWPARAM(0, 100), 0);
 
                 Assert::AreEqual(1, times_called);
                 Assert::AreEqual(static_cast<int>(100), static_cast<int>(scroll_received));
@@ -121,8 +118,7 @@ namespace trview
                 int times_called = 0;
                 long x_received, y_received = 0;
 
-                HWND window = create_test_window(L"TRViewInputTests");
-                Mouse mouse(window);
+                Mouse mouse(create_test_window(L"TRViewInputTests"));
 
                 auto token = mouse.mouse_move +=
                     [&times_called, &x_received, &y_received](long x, long y)
@@ -154,8 +150,7 @@ namespace trview
             /// is sent to the window.
             TEST_METHOD(MousePosition)
             {
-                HWND window = create_test_window(L"TRViewInputTests");
-                Mouse mouse(window);
+                Mouse mouse(create_test_window(L"TRViewInputTests"));
 
                 RAWINPUT input;
                 memset(&input, 0, sizeof(input));

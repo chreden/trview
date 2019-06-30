@@ -4,7 +4,7 @@ namespace trview
 {
     namespace input
     {
-        Keyboard::Keyboard(HWND window)
+        Keyboard::Keyboard(const Window& window)
             : MessageHandler(window)
         {
         }
@@ -18,7 +18,7 @@ namespace trview
             return GetAsyncKeyState(VK_CONTROL);
         }
 
-        void Keyboard::process_message(HWND, UINT message, WPARAM wParam, LPARAM)
+        void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
         {
             bool control_pressed = control();
             switch (message)

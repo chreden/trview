@@ -65,7 +65,7 @@ namespace trview
             return _context;
         }
 
-        std::unique_ptr<DeviceWindow> Device::create_for_window(HWND window)
+        std::unique_ptr<DeviceWindow> Device::create_for_window(const Window& window)
         {
             return std::make_unique<DeviceWindow>(*this, window);
         }

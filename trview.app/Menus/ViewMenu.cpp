@@ -42,7 +42,7 @@ namespace trview
         }
     }
 
-    ViewMenu::ViewMenu(HWND window)
+    ViewMenu::ViewMenu(const Window& window)
         : MessageHandler(window)
     {
         // Set all of the items to be initially visible.
@@ -56,14 +56,14 @@ namespace trview
         set_checked(menu, ID_APP_VIEW_TOOLS, true);
     }
 
-    void ViewMenu::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message != WM_COMMAND)
         {
             return;
         }
 
-        HMENU menu = GetMenu(window);
+        HMENU menu = GetMenu(window());
         UINT id = LOWORD(wParam);
         bool enable = !is_checked(menu, id);
 

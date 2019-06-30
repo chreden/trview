@@ -5,12 +5,12 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, HWND window)
+    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
     }
 
-    void ItemsWindowManager::process_message(HWND window, UINT message, WPARAM wParam, LPARAM lParam)
+    void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (message == WM_COMMAND && 
             LOWORD(wParam) == ID_APP_WINDOWS_ITEMS || 

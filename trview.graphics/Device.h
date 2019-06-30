@@ -43,7 +43,7 @@ namespace trview
             /// Create a device window to render to a specific window.
             /// @param window The window to render to.
             /// @returns The device window object.
-            std::unique_ptr<DeviceWindow> create_for_window(HWND window);
+            std::unique_ptr<DeviceWindow> create_for_window(const Window& window);
         private:
             Microsoft::WRL::ComPtr<ID3D11Device>        _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
