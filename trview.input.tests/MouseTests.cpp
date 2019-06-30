@@ -173,7 +173,7 @@ namespace trview
         private:
             std::unique_ptr<input::IWindowTester> tester(const Window& window)
             {
-                class TestWindowTester : public IWindowTester
+                class TestWindowTester final : public IWindowTester
                 {
                 public:
                     TestWindowTester(const Window& window)
