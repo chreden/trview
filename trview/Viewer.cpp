@@ -15,6 +15,7 @@
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/ViewportStore.h>
+#include <trview.input/WindowTester.h>
 
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
@@ -31,7 +32,7 @@ namespace trview
 
     Viewer::Viewer(const Window& window)
         : _window(window), _camera(window.size()), _free_camera(window.size()),
-        _timer(default_time_source()), _keyboard(window), _mouse(window), _level_switcher(window),
+        _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>()), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window)
     {

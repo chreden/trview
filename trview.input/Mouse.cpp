@@ -11,8 +11,8 @@ namespace trview
             const uint32_t ClickDelta = 200;
         }
 
-        Mouse::Mouse(const Window& window)
-            : MessageHandler(window)
+        Mouse::Mouse(const Window& window, std::unique_ptr<IWindowTester>&& window_tester)
+            : MessageHandler(window), _window_tester(std::move(window_tester))
         {
             // Register raw input devices so that the window
             // will receive the raw input messages.
@@ -35,8 +35,7 @@ namespace trview
         {
             if (input.header.dwType == RIM_TYPEMOUSE)
             {
-                auto active_window = window_under_cursor();
-
+                auto active_window = _window_tester->window_under_cursor();
                 if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
                 {
                     mouse_down(Button::Left);
@@ -76,11 +75,9 @@ namespace trview
                 if (input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)
                 {
                     bool is_rdp = input.data.mouse.usFlags & MOUSE_VIRTUAL_DESKTOP;
-                    int width = GetSystemMetrics(is_rdp ? SM_CXVIRTUALSCREEN : SM_CXSCREEN);
-                    int height = GetSystemMetrics(is_rdp ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
                     raise_absolute_mouse_move(
-                        (input.data.mouse.lLastX / static_cast<float>(USHRT_MAX)) * width,
-                        (input.data.mouse.lLastY / static_cast<float>(USHRT_MAX)) * height);
+                        (input.data.mouse.lLastX / static_cast<float>(USHRT_MAX)) * _window_tester->screen_width(is_rdp),
+                        (input.data.mouse.lLastY / static_cast<float>(USHRT_MAX)) * _window_tester->screen_height(is_rdp));
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_WHEEL)

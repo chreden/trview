@@ -42,7 +42,8 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                Mouse mouse(create_test_window(L"TRViewInputTests"));
+                auto window = create_test_window(L"TRViewInputTests");
+                Mouse mouse(window, tester(window));
 
                 auto token = mouse.mouse_down += 
                     [&times_called, &button_received](auto button)
@@ -69,7 +70,8 @@ namespace trview
                 int times_called = 0;
                 Mouse::Button button_received = Mouse::Button::Left;
 
-                Mouse mouse(create_test_window(L"TRViewInputTests"));
+                auto window = create_test_window(L"TRViewInputTests");
+                Mouse mouse(window, tester(window));
 
                 auto token = mouse.mouse_up +=
                     [&times_called, &button_received](auto button)
@@ -96,7 +98,8 @@ namespace trview
                 int times_called = 0;
                 int16_t scroll_received = 0;
 
-                Mouse mouse(create_test_window(L"TRViewInputTests"));
+                auto window = create_test_window(L"TRViewInputTests");
+                Mouse mouse(window, tester(window));
 
                 auto token = mouse.mouse_wheel +=
                     [&times_called, &scroll_received](auto scroll)
@@ -118,7 +121,8 @@ namespace trview
                 int times_called = 0;
                 long x_received, y_received = 0;
 
-                Mouse mouse(create_test_window(L"TRViewInputTests"));
+                auto window = create_test_window(L"TRViewInputTests");
+                Mouse mouse(window, tester(window));
 
                 auto token = mouse.mouse_move +=
                     [&times_called, &x_received, &y_received](long x, long y)
@@ -150,19 +154,51 @@ namespace trview
             /// is sent to the window.
             TEST_METHOD(MousePosition)
             {
-                Mouse mouse(create_test_window(L"TRViewInputTests"));
+                auto window = create_test_window(L"TRViewInputTests");
+                Mouse mouse(window, tester(window));
 
                 RAWINPUT input;
                 memset(&input, 0, sizeof(input));
                 input.header.dwType = RIM_TYPEMOUSE;
                 input.header.dwSize = sizeof(RAWINPUT);
                 input.data.mouse.usFlags |= MOUSE_MOVE_ABSOLUTE;
-                input.data.mouse.lLastX = 123;
-                input.data.mouse.lLastY = 456;
+                input.data.mouse.lLastX = static_cast<int>(std::round((123.0f / 1000.0f) * 65535.0f));
+                input.data.mouse.lLastY = static_cast<int>(std::round((456.0f / 1000.0f) * 65535.0f));
                 mouse.process_input(input);
 
                 Assert::AreEqual(123, static_cast<int>(mouse.x()));
                 Assert::AreEqual(456, static_cast<int>(mouse.y()));
+            }
+
+        private:
+            std::unique_ptr<input::IWindowTester> tester(const Window& window)
+            {
+                class TestWindowTester final : public IWindowTester
+                {
+                public:
+                    TestWindowTester(const Window& window)
+                        : _window(window)
+                    {
+                    }
+
+                    virtual Window window_under_cursor() const override
+                    {
+                        return _window;
+                    }
+
+                    virtual int screen_width(bool) const override
+                    {
+                        return 1000;
+                    }
+
+                    virtual int screen_height(bool) const override
+                    {
+                        return 1000;
+                    }
+                private:
+                    Window _window;
+                };
+                return std::make_unique<TestWindowTester>(window);
             }
         };
     }
