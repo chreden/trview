@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include <trview.input/Mouse.h>
 #include <trview.tests.common/Window.h>
 
@@ -6,38 +6,16 @@ using namespace trview::tests;
 using namespace trview::input;
 using namespace trview;
 
-namespace
+using testing::Return;
+using testing::_;
+
+class MockWindowTester final : public IWindowTester
 {
-    std::unique_ptr<IWindowTester> tester(const Window& window)
-    {
-        class TestWindowTester final : public IWindowTester
-        {
-        public:
-            TestWindowTester(const Window& window)
-                : _window(window)
-            {
-            }
-
-            virtual Window window_under_cursor() const override
-            {
-                return _window;
-            }
-
-            virtual int screen_width(bool) const override
-            {
-                return 1000;
-            }
-
-            virtual int screen_height(bool) const override
-            {
-                return 1000;
-            }
-        private:
-            Window _window;
-        };
-        return std::make_unique<TestWindowTester>(window);
-    }
-}
+public:
+    MOCK_CONST_METHOD0(window_under_cursor, Window());
+    MOCK_CONST_METHOD1(screen_width, int(bool));
+    MOCK_CONST_METHOD1(screen_height, int(bool));
+};
 
 /// Tests that the mouse down event is raised when the mouse button message is
 /// sent to the target window.
@@ -47,7 +25,11 @@ TEST(Mouse, MouseDownEventRaised)
     Mouse::Button button_received = Mouse::Button::Left;
 
     auto window = create_test_window(L"TRViewInputTests");
-    Mouse mouse(window, tester(window));
+    auto mockTester = std::make_unique<MockWindowTester>();
+    EXPECT_CALL(*mockTester, window_under_cursor())
+        .WillRepeatedly(Return(window));
+
+    Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_down +=
         [&times_called, &button_received](auto button)
@@ -75,7 +57,10 @@ TEST(Mouse, MouseUpEventRaised)
     Mouse::Button button_received = Mouse::Button::Left;
 
     auto window = create_test_window(L"TRViewInputTests");
-    Mouse mouse(window, tester(window));
+    auto mockTester = std::make_unique<MockWindowTester>();
+    EXPECT_CALL(*mockTester, window_under_cursor())
+        .WillRepeatedly(Return(window));
+    Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_up +=
         [&times_called, &button_received](auto button)
@@ -103,7 +88,10 @@ TEST(Mouse, MouseWheelEventRaised)
     int16_t scroll_received = 0;
 
     auto window = create_test_window(L"TRViewInputTests");
-    Mouse mouse(window, tester(window));
+    auto mockTester = std::make_unique<MockWindowTester>();
+    EXPECT_CALL(*mockTester, window_under_cursor())
+        .WillRepeatedly(Return(window));
+    Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_wheel +=
         [&times_called, &scroll_received](auto scroll)
@@ -126,7 +114,10 @@ TEST(Mouse, MouseMoveEventRaised)
     long x_received, y_received = 0;
 
     auto window = create_test_window(L"TRViewInputTests");
-    Mouse mouse(window, tester(window));
+    auto mockTester = std::make_unique<MockWindowTester>();
+    EXPECT_CALL(*mockTester, window_under_cursor())
+        .WillRepeatedly(Return(window));
+    Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_move +=
         [&times_called, &x_received, &y_received](long x, long y)
@@ -159,7 +150,11 @@ TEST(Mouse, MouseMoveEventRaised)
 TEST(Mouse, MousePositionCorrect)
 {
     auto window = create_test_window(L"TRViewInputTests");
-    Mouse mouse(window, tester(window));
+    auto mockTester = std::make_unique<MockWindowTester>();
+    EXPECT_CALL(*mockTester, window_under_cursor()).WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, screen_width(_)).WillRepeatedly(Return(1000));
+    EXPECT_CALL(*mockTester, screen_height(_)).WillRepeatedly(Return(1000));
+    Mouse mouse(window, std::move(mockTester));
 
     RAWINPUT input;
     memset(&input, 0, sizeof(input));
