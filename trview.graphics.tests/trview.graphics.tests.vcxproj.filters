@@ -5,4 +5,7 @@
     <ClCompile Include="VertexShaderTests.cpp" />
     <ClCompile Include="PixelShaderTests.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

@@ -1,28 +1,15 @@
-#include "CppUnitTest.h"
-
+#include "gtest/gtest.h"
 #include <trview.ui/Button.h>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace trview;
+using namespace trview::ui;
 
-namespace trview
+/// Tests that the click event is raised when the button is clicked on.
+TEST(Button, ClickEventRaised)
 {
-    namespace ui
-    {
-        namespace tests
-        {
-            TEST_CLASS(ButtonTests)
-            {
-            public:
-                // Tests that the click event is raised when the button is clicked on.
-                TEST_METHOD(ClickEventRaised)
-                {
-                    Button button(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
-                    bool raised = false;
-                    auto token = button.on_click += [&raised]() { raised = true; };
-                    button.clicked(Point());
-                    Assert::IsTrue(raised);
-                }
-            };
-        }
-    }
+    Button button(Point(), Size(20, 20), graphics::Texture(), graphics::Texture());
+    bool raised = false;
+    auto token = button.on_click += [&raised]() { raised = true; };
+    button.clicked(Point());
+    ASSERT_TRUE(raised);
 }

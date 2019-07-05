@@ -24,6 +24,8 @@ https://github.com/chreden/trview/releases
 Open the project file (.sln) with Visual Studio Community 2017 and click on
 Build > Build Solution.
 
+To run the tests you will need to install the 'Test Adapter for Google Test' - it can be found in Individual Components in the Visual Studio Installer.
+
 ## Running
 
 Double click a level file (.TR2, .TR4, .TRC or .PHD) present in the game's data folder 

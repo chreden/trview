@@ -4,4 +4,7 @@
     <ClCompile Include="TimerTests.cpp" />
     <ClCompile Include="EventTests.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
