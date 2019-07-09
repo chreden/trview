@@ -3,6 +3,8 @@
   <ItemGroup>
     <ClCompile Include="KeyboardTests.cpp" />
     <ClCompile Include="MouseTests.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
