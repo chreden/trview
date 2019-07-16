@@ -1,15 +1,11 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11.h>
 #include <vector>
 #include <array>
 #include <memory>
 #include <SimpleMath.h>
-
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
-
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.graphics/Device.h>
 

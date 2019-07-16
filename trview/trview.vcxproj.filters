@@ -23,9 +23,6 @@
     <Filter Include="View\Level">
       <UniqueIdentifier>{93f99320-fae2-4478-8cf9-1cc514c4b144}</UniqueIdentifier>
     </Filter>
-    <Filter Include="View\Textures">
-      <UniqueIdentifier>{0ebffe13-9bad-4cf5-ab30-021d6dcc3553}</UniqueIdentifier>
-    </Filter>
     <Filter Include="View\Mesh">
       <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
     </Filter>
@@ -67,12 +64,6 @@
     <ClInclude Include="IMeshStorage.h">
       <Filter>View\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="LevelTextureStorage.h">
-      <Filter>View\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureStorage.h">
-      <Filter>View\Textures</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>View\Entity</Filter>
     </ClInclude>
@@ -113,12 +104,6 @@
     </ClCompile>
     <ClCompile Include="IMeshStorage.cpp">
       <Filter>View\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelTextureStorage.cpp">
-      <Filter>View\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureStorage.cpp">
-      <Filter>View\Textures</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>View\Entity</Filter>
