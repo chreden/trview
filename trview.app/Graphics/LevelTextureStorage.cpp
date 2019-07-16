@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LevelTextureStorage.h"
 #include "TextureStorage.h"
 
@@ -19,12 +18,14 @@ namespace trview
             _object_textures.push_back(level.get_object_texture(i));
         }
 
-        // Get palette.
-        using namespace DirectX::SimpleMath;
-        for (uint32_t i = 0; i < 256; ++i)
+        if (_version < trlevel::LevelVersion::Tomb4)
         {
-            auto entry = level.get_palette_entry(i);
-            _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
+            using namespace DirectX::SimpleMath;
+            for (uint32_t i = 0; i < 256; ++i)
+            {
+                auto entry = level.get_palette_entry(i);
+                _palette[i] = Color(entry.Red / 255.f, entry.Green / 255.f, entry.Blue / 255.f, 1.0f);
+            }
         }
     }
 

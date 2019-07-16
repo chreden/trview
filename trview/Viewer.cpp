@@ -20,7 +20,7 @@
 #include "DefaultTextures.h"
 #include "DefaultShaders.h"
 #include "DefaultFonts.h"
-#include "TextureStorage.h"
+#include <trview.app/Graphics/TextureStorage.h>
 
 namespace trview
 {

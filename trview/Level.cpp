@@ -7,7 +7,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
-#include "LevelTextureStorage.h"
+#include <trview.app/Graphics/LevelTextureStorage.h>
 #include "MeshStorage.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
