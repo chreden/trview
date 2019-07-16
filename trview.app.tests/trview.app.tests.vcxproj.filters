@@ -12,6 +12,11 @@
     <ClCompile Include="Camera\CameraInputTests.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
+    <ClCompile Include="Graphics\LevelTextureStorageTests.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -19,6 +24,9 @@
     </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{ce341a85-c22f-4d9f-8275-93cfe4e2359e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{f9007a99-8e00-4b17-9dab-6ab7323ed754}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
