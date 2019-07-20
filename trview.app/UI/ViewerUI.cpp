@@ -1,5 +1,6 @@
 #include "ViewerUI.h"
 #include <trview.ui/Window.h>
+#include <trview.ui/Label.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"

@@ -6,7 +6,7 @@
 #include <SimpleMath.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/StackPanel.h>
-#include <trview.ui/Label.h>
+#include <trview.ui/TextArea.h>
 #include <trview.common/TokenStore.h>
 
 namespace trview
@@ -25,8 +25,8 @@ namespace trview
     private:
         TokenStore _token_store;
         ui::StackPanel* _display;
-        ui::Label* _x;
-        ui::Label* _y;
-        ui::Label* _z;
+        ui::TextArea* _x;
+        ui::TextArea* _y;
+        ui::TextArea* _z;
     };
 }
