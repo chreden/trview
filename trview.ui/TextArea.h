@@ -47,6 +47,8 @@ namespace trview
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
             virtual bool key_char(wchar_t character) override;
+            virtual void clicked_on() override;
+            virtual void clicked_off(Control*) override;
         private:
             Label* current_line(bool raise_event = true);
 
@@ -70,6 +72,7 @@ namespace trview
             uint32_t            _cursor_position{ 0u };
             uint32_t            _cursor_line{ 0u };
             Mode                _mode{ Mode::MultiLine };
+            bool                _cursor_visible{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
         };
     }

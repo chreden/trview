@@ -322,6 +322,10 @@ namespace trview
                 _focus_control->clicked_off(control);
             }
             _focus_control = control;
+            if (_focus_control)
+            {
+                _focus_control->clicked_on();
+            }
         }
     }
 }

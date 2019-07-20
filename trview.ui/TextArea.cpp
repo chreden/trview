@@ -12,7 +12,20 @@ namespace trview
             _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
+            _cursor->set_visible(_cursor_visible);
             set_handles_input(true);
+        }
+
+        void TextArea::clicked_on()
+        {
+            _cursor_visible = true;
+            update_cursor();
+        }
+
+        void TextArea::clicked_off(Control*)
+        {
+            _cursor_visible = false;
+            update_cursor();
         }
 
         bool TextArea::key_char(wchar_t character)
@@ -286,6 +299,7 @@ namespace trview
                 Point(line->size().width * 0.5f - size.width * 0.5f - 1, line->position().y);
             _cursor->set_position(start + Point(size.width + 2, 0));
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
+            _cursor->set_visible(_cursor_visible);
         }
 
         void TextArea::notify_text_updated()

@@ -130,6 +130,10 @@ namespace trview
             return false;
         }
 
+        void Control::clicked_on()
+        {
+        }
+
         void Control::clicked_off(Control*)
         {
         }

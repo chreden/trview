@@ -187,6 +187,9 @@ namespace trview
             /// @param position The position of the click relative to the control.
             virtual bool clicked(Point position);
 
+            /// To be called when the control has become the new focus control.
+            virtual void clicked_on();
+
             /// To be called when the user clicks away from a focus control.
             virtual void clicked_off(Control* new_focus);
 
