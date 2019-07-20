@@ -51,6 +51,11 @@ namespace trview
 
         _token_store += parent.on_size_changed += update_position;
         update_position(parent.size());
+
+        // Bind manual camera position entry controls.
+        _token_store += _x->on_enter += [](const std::wstring& text) {};
+        _token_store += _y->on_enter += [](const std::wstring& text) {};
+        _token_store += _z->on_enter += [](const std::wstring& text) {};
     }
 
     void CameraPosition::set_position(const DirectX::SimpleMath::Vector3& position)
