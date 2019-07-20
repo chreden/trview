@@ -25,18 +25,21 @@ namespace trview
         x_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"X: ", 8));
         _x = x_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _x->set_text(L"X coordinate");
+        _x->set_mode(TextArea::Mode::SingleLine);
         display->add_child(std::move(x_line));
 
         auto y_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         y_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"Y: ", 8));
         _y = y_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _y->set_text(L"Y coordinate");
+        _y->set_mode(TextArea::Mode::SingleLine);
         display->add_child(std::move(y_line));
 
         auto z_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         z_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"Z: ", 8));
         _z = z_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _z->set_text(L"Z coordinate");
+        _z->set_mode(TextArea::Mode::SingleLine);
         display->add_child(std::move(z_line));
 
         _display = parent.add_child(std::move(display));
