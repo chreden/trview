@@ -22,6 +22,9 @@ namespace trview
         /// Update the position text.
         /// @param position The camera position.
         void set_position(const DirectX::SimpleMath::Vector3& position);
+
+        /// Test event for the X coordinate.
+        Event<float> on_x;
     private:
         TokenStore _token_store;
         ui::StackPanel* _display;

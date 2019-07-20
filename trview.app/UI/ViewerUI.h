@@ -123,6 +123,9 @@ namespace trview
         /// Event raised when something in the ui has changed.
         Event<> on_ui_changed;
 
+        /// Test event for x coordinate.
+        Event<float> on_x;
+
         /// Render the UI.
         /// @param device The device to use to render the UI.
         void render(const graphics::Device& device);
