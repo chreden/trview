@@ -35,6 +35,7 @@ namespace trview
         _y = y_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _y->set_text(L"Y coordinate");
         _y->set_mode(TextArea::Mode::SingleLine);
+        _token_store += _y->on_selected += [&]() { _y->set_text(L""); };
         display->add_child(std::move(y_line));
 
         auto z_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
@@ -42,6 +43,7 @@ namespace trview
         _z = z_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _z->set_text(L"Z coordinate");
         _z->set_mode(TextArea::Mode::SingleLine);
+        _token_store += _z->on_selected += [&]() { _z->set_text(L""); };
         display->add_child(std::move(z_line));
 
         _display = parent.add_child(std::move(display));
@@ -82,7 +84,13 @@ namespace trview
         {
             _x->set_text(convert_number(position.x * trlevel::Scale_X));
         }
-        _y->set_text(convert_number(position.y * trlevel::Scale_Y));
-        _z->set_text(convert_number(position.z * trlevel::Scale_Z));
+        if (!_y->focused())
+        {
+            _y->set_text(convert_number(position.y * trlevel::Scale_Y));
+        }
+        if (!_z->focused())
+        {
+            _z->set_text(convert_number(position.z * trlevel::Scale_Z));
+        }
     }
 }
