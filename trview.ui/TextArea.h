@@ -72,7 +72,7 @@ namespace trview
             uint32_t            _cursor_position{ 0u };
             uint32_t            _cursor_line{ 0u };
             Mode                _mode{ Mode::MultiLine };
-            bool                _cursor_visible{ false };
+            bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
         };
     }
