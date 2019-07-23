@@ -141,7 +141,7 @@ namespace trview
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
-        _camera_position->on_x += on_x;
+        _camera_position->on_position_changed += on_camera_position;
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());

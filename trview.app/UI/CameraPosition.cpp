@@ -1,7 +1,6 @@
 #include "CameraPosition.h"
 #include <trlevel/trlevel.h>
 #include <trview.ui/Label.h>
-#include <sstream>
 
 using namespace trview::ui;
 using namespace trview::graphics;
@@ -59,27 +58,49 @@ namespace trview
         // Bind manual camera position entry controls.
         _token_store += _x->on_enter += [&](const std::wstring& text) 
         {
-            std::wstringstream stream;
-            stream << text;
-            float coordinate = 0;
-            stream >> coordinate;
-
+            try
+            {
+                _position.x = std::stof(text) / trlevel::Scale_X;
+                on_position_changed(_position);
+            }
+            catch (...)
+            {
+                // Conversion failed.
+            }
             _x->on_focus_clear_requested();
-
-            on_x(coordinate / trlevel::Scale_X);
         };
         _token_store += _y->on_enter += [&](const std::wstring& text)
         {
+            try
+            {
+                _position.y = std::stof(text) / trlevel::Scale_Y;
+                on_position_changed(_position);
+            }
+            catch (...)
+            {
+                // Conversion failed.
+            }
             _y->on_focus_clear_requested(); 
         };
         _token_store += _z->on_enter += [&](const std::wstring& text)
         {
+            try
+            {
+                _position.z = std::stof(text) / trlevel::Scale_Z;
+                on_position_changed(_position);
+            }
+            catch (...)
+            {
+                // Conversion failed.
+            }
             _z->on_focus_clear_requested(); 
         };
     }
 
     void CameraPosition::set_position(const DirectX::SimpleMath::Vector3& position)
     {
+        _position = position;
+
         if (!_x->focused())
         {
             _x->set_text(convert_number(position.x * trlevel::Scale_X));

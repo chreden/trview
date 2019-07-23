@@ -153,13 +153,12 @@ namespace trview
             _target = _context_pick.position;
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
-        _token_store += _ui->on_x += [&](float x)
+        _token_store += _ui->on_camera_position += [&](const auto& position)
         {
             try
             {
                 FreeCamera& camera = dynamic_cast<FreeCamera&>(current_camera());
-                auto pos = camera.position();
-                camera.set_position(DirectX::SimpleMath::Vector3(x, pos.y, pos.z));
+                camera.set_position(position);
             }
             catch(...)
             {

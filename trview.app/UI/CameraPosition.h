@@ -23,13 +23,14 @@ namespace trview
         /// @param position The camera position.
         void set_position(const DirectX::SimpleMath::Vector3& position);
 
-        /// Test event for the X coordinate.
-        Event<float> on_x;
+        /// Event raised when the user changes the camera position.
+        Event<DirectX::SimpleMath::Vector3> on_position_changed;
     private:
         TokenStore _token_store;
         ui::StackPanel* _display;
         ui::TextArea* _x;
         ui::TextArea* _y;
         ui::TextArea* _z;
+        DirectX::SimpleMath::Vector3 _position;
     };
 }
