@@ -20,6 +20,7 @@ namespace trview
         {
             _focused = true;
             update_cursor();
+            on_selected();
         }
 
         void TextArea::clicked_off(Control*)
@@ -326,6 +327,11 @@ namespace trview
                 full_string += line->text();
             }
             on_text_changed(full_string);
+        }
+
+        bool TextArea::focused() const
+        {
+            return _focused;
         }
     }
 }

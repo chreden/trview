@@ -27,6 +27,7 @@ namespace trview
         _x = x_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         _x->set_text(L"X coordinate");
         _x->set_mode(TextArea::Mode::SingleLine);
+        _token_store += _x->on_selected += [&]() { _x->set_text(L""); };
         display->add_child(std::move(x_line));
 
         auto y_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
@@ -63,7 +64,6 @@ namespace trview
 
             _x->on_focus_clear_requested();
 
-            // Raise.
             on_x(coordinate / trlevel::Scale_X);
         };
         _token_store += _y->on_enter += [&](const std::wstring& text)
@@ -78,7 +78,10 @@ namespace trview
 
     void CameraPosition::set_position(const DirectX::SimpleMath::Vector3& position)
     {
-        // _x->set_text(L"X: " + convert_number(position.x * trlevel::Scale_X));
+        if (!_x->focused())
+        {
+            _x->set_text(convert_number(position.x * trlevel::Scale_X));
+        }
         _y->set_text(convert_number(position.y * trlevel::Scale_Y));
         _z->set_text(convert_number(position.z * trlevel::Scale_Z));
     }

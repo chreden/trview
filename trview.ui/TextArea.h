@@ -35,6 +35,9 @@ namespace trview
             /// @param mode The new mode.
             void set_mode(Mode mode);
 
+            /// Event raised when user has selected the control for text tinput.
+            Event<> on_selected;
+
             /// Event raised when the text in the text area has changed.
             Event<std::wstring> on_text_changed;
 
@@ -49,6 +52,8 @@ namespace trview
             virtual bool key_char(wchar_t character) override;
             virtual void clicked_on() override;
             virtual void clicked_off(Control*) override;
+
+            bool focused() const;
         private:
             Label* current_line(bool raise_event = true);
 
