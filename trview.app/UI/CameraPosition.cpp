@@ -37,6 +37,36 @@ namespace trview
         _z = create_coordinate_entry(_token_store, *display, L"Z");
         _display = parent.add_child(std::move(display));
 
+        _token_store += _x->on_tab += [&](const std::wstring& text) 
+        { 
+            try
+            {
+                _position.x = std::stof(text) / trlevel::Scale_X;
+                on_position_changed(_position);
+            }
+            catch (...)
+            {
+                // Conversion failed.
+            }
+            _x->on_focus_clear_requested();
+            _y->on_focus_requested(); 
+        };
+
+        _token_store += _y->on_tab += [&](const std::wstring& text)
+        {
+            try
+            {
+                _position.y = std::stof(text) / trlevel::Scale_Y;
+                on_position_changed(_position);
+            }
+            catch (...)
+            {
+                // Conversion failed.
+            }
+            _y->on_focus_clear_requested();
+            _z->on_focus_requested();
+        };
+
         auto update_position = [&](Size size)
         {
             _display->set_position(Point(_display->position().x, size.height - 10 - _display->size().height));
