@@ -69,6 +69,15 @@ namespace trview
                         }
                         break;
                     }
+                    // VK_TAB
+                    case 0x9:
+                    {
+                        if (_mode == Mode::SingleLine)
+                        {
+                            on_tab(text);
+                        }
+                        break;
+                    }
                     // VK_RETURN
                     case 0xD:
                     {

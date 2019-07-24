@@ -47,6 +47,9 @@ namespace trview
             /// Event raised when the user has pressed the escape button.
             Event<> on_escape;
 
+            /// Event raised when the user has pressed the tab button in single line mode.
+            Event<std::wstring> on_tab;
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
             virtual bool key_char(wchar_t character) override;
