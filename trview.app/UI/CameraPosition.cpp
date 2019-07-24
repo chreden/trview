@@ -14,6 +14,17 @@ namespace trview
         {
             return (value >= 0 ? L" " : L"") + std::to_wstring(value);
         }
+
+        ui::TextArea* create_coordinate_entry(TokenStore& token_store, Control& parent, const std::wstring& name)
+        {
+            auto line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+            line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
+            auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
+            entry->set_mode(TextArea::Mode::SingleLine);
+            token_store += entry->on_selected += [=]() { entry->set_text(L""); };
+            parent.add_child(std::move(line));
+            return entry;
+        }
     }
 
     CameraPosition::CameraPosition(Control& parent)
@@ -21,30 +32,9 @@ namespace trview
         auto display = std::make_unique<StackPanel>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f));
         display->set_margin(Size(5, 5));
 
-        auto x_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        x_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"X: ", 8));
-        _x = x_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
-        _x->set_text(L"X coordinate");
-        _x->set_mode(TextArea::Mode::SingleLine);
-        _token_store += _x->on_selected += [&]() { _x->set_text(L""); };
-        display->add_child(std::move(x_line));
-
-        auto y_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        y_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"Y: ", 8));
-        _y = y_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
-        _y->set_text(L"Y coordinate");
-        _y->set_mode(TextArea::Mode::SingleLine);
-        _token_store += _y->on_selected += [&]() { _y->set_text(L""); };
-        display->add_child(std::move(y_line));
-
-        auto z_line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        z_line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, L"Z: ", 8));
-        _z = z_line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
-        _z->set_text(L"Z coordinate");
-        _z->set_mode(TextArea::Mode::SingleLine);
-        _token_store += _z->on_selected += [&]() { _z->set_text(L""); };
-        display->add_child(std::move(z_line));
-
+        _x = create_coordinate_entry(_token_store, *display, L"X");
+        _y = create_coordinate_entry(_token_store, *display, L"Y");
+        _z = create_coordinate_entry(_token_store, *display, L"Z");
         _display = parent.add_child(std::move(display));
 
         auto update_position = [&](Size size)
