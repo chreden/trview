@@ -73,6 +73,7 @@ namespace trview
         line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
         auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         entry->set_mode(TextArea::Mode::SingleLine);
+        entry->set_text(convert_number(0));
         _token_store += entry->on_selected += [=]() { entry->set_text(L""); };
         _token_store += entry->on_escape += [=]()
         {
