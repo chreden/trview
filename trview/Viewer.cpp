@@ -639,8 +639,6 @@ namespace trview
 
         if (_scene_changed || _ui_changed)
         {
-            _ui->set_camera_position(current_camera().position());
-
             _device.begin();
             _main_window->begin();
             _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
@@ -658,6 +656,7 @@ namespace trview
             }
 
             _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+            _ui->set_camera_position(current_camera().position());
 
             _ui->render(_device);
             _ui_changed = false;
