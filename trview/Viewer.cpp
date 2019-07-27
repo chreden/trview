@@ -155,14 +155,11 @@ namespace trview
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
-            try
+            if (_camera_mode == CameraMode::Orbit)
             {
-                FreeCamera& camera = dynamic_cast<FreeCamera&>(current_camera());
-                camera.set_position(position);
+                set_camera_mode(CameraMode::Free);
             }
-            catch(...)
-            {
-            }
+            _free_camera.set_position(position);
         };
 
         _ui->set_settings(_settings);
