@@ -30,6 +30,9 @@ namespace trview
         /// If successful this will also raise the on_position_changed event.
         void update_coordinate(float& coordinate, const std::wstring& text);
 
+        /// Create a coordinate entry text field.
+        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name);
+
         TokenStore _token_store;
         ui::StackPanel* _display;
         ui::TextArea* _x;

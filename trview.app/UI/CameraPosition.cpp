@@ -14,17 +14,6 @@ namespace trview
         {
             return (value >= 0 ? L" " : L"") + std::to_wstring(value);
         }
-
-        ui::TextArea* create_coordinate_entry(TokenStore& token_store, Control& parent, const std::wstring& name)
-        {
-            auto line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-            line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
-            auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
-            entry->set_mode(TextArea::Mode::SingleLine);
-            token_store += entry->on_selected += [=]() { entry->set_text(L""); };
-            parent.add_child(std::move(line));
-            return entry;
-        }
     }
 
     CameraPosition::CameraPosition(Control& parent)
@@ -32,9 +21,9 @@ namespace trview
         auto display = std::make_unique<StackPanel>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f));
         display->set_margin(Size(5, 5));
 
-        _x = create_coordinate_entry(_token_store, *display, L"X");
-        _y = create_coordinate_entry(_token_store, *display, L"Y");
-        _z = create_coordinate_entry(_token_store, *display, L"Z");
+        _x = create_coordinate_entry(*display, _position.x, L"X");
+        _y = create_coordinate_entry(*display, _position.y, L"Y");
+        _z = create_coordinate_entry(*display, _position.z, L"Z");
         _display = parent.add_child(std::move(display));
 
         auto update_position = [&](Size size)
@@ -58,21 +47,6 @@ namespace trview
             _y->on_focus_clear_requested();
             _z->on_focus_requested();
         };
-        _token_store += _x->on_enter += [&](const std::wstring& text) 
-        {
-            update_coordinate(_position.x, text);
-            _x->on_focus_clear_requested();
-        };
-        _token_store += _y->on_enter += [&](const std::wstring& text)
-        {
-            update_coordinate(_position.y, text);
-            _y->on_focus_clear_requested(); 
-        };
-        _token_store += _z->on_enter += [&](const std::wstring& text)
-        {
-            update_coordinate(_position.z, text);
-            _z->on_focus_clear_requested(); 
-        };
     }
 
     void CameraPosition::set_position(const DirectX::SimpleMath::Vector3& position)
@@ -91,6 +65,27 @@ namespace trview
         {
             _z->set_text(convert_number(position.z * trlevel::Scale_Z));
         }
+    }
+
+    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name)
+    {
+        auto line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+        line->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
+        auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
+        entry->set_mode(TextArea::Mode::SingleLine);
+        _token_store += entry->on_selected += [=]() { entry->set_text(L""); };
+        _token_store += entry->on_escape += [=]()
+        {
+            entry->on_focus_clear_requested();
+            entry->set_text(convert_number(coordinate)); 
+        };
+        _token_store += entry->on_enter += [this, &coordinate, entry](const std::wstring& text)
+        {
+            update_coordinate(coordinate, text);
+            entry->on_focus_clear_requested();
+        };
+        parent.add_child(std::move(line));
+        return entry;
     }
 
     void CameraPosition::update_coordinate(float& coordinate, const std::wstring& text)
