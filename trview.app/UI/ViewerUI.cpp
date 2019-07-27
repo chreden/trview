@@ -198,9 +198,10 @@ namespace trview
         return _map_renderer->sector_at_cursor();
     }
 
-    bool ViewerUI::go_to_room_visible() const
+    bool ViewerUI::is_input_active() const
     {
-        return _go_to->visible();
+        const auto focus = _ui_input->focus_control();
+        return focus && focus->visible() && focus->handles_input();
     }
 
     bool ViewerUI::is_cursor_over() const

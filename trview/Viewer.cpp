@@ -96,7 +96,7 @@ namespace trview
 
         _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
         {
-            if (!_ui->go_to_room_visible())
+            if (!_ui->is_input_active())
             {
                 set_alternate_group(group, !alternate_group(group));
             }
@@ -323,17 +323,24 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1, std::placeholders::_2);
-
-        _token_store += _keyboard.on_key_down += [&](auto key, bool control) {_camera_input.key_down(key, control); };
-        _token_store += _keyboard.on_key_up += [&](auto key, bool control) {_camera_input.key_up(key); };
-
-        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
+        _token_store += _keyboard.on_key_up += [&](auto key, bool control) 
         {
-            if (_ui->go_to_room_visible() || control)
+            if (_ui->is_input_active())
             {
                 return;
             }
+            process_input_key(key, control);
+            _camera_input.key_up(key); 
+        };
+
+        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
+        {
+            if (control || _ui->is_input_active())
+            {
+                return;
+            }
+
+            _camera_input.key_down(key, control);
 
             switch (key)
             {
@@ -496,32 +503,29 @@ namespace trview
 
     void Viewer::process_input_key(uint16_t key, bool control)
     {
-        if (!_ui->go_to_room_visible())
+        switch (key)
         {
-            switch (key)
+            case 'G':
             {
-                case 'G':
+                if(_level && !control)
                 {
-                    if(_level && !control)
-                    {
-                        set_show_hidden_geometry(!_level->show_hidden_geometry());
-                    }
-                    break;
+                    set_show_hidden_geometry(!_level->show_hidden_geometry());
                 }
-                case VK_F1:
-                    _ui->toggle_settings_visibility();
-                    break;
-                case 'H':
-                    toggle_highlight();
-                    break;
-                case VK_INSERT:
-                {
-                    // Reset the camera to defaults.
-                    _camera.set_rotation_yaw(0.f);
-                    _camera.set_rotation_pitch(-0.78539f);
-                    _camera.set_zoom(8.f);
-                    break;
-                }
+                break;
+            }
+            case VK_F1:
+                _ui->toggle_settings_visibility();
+                break;
+            case 'H':
+                toggle_highlight();
+                break;
+            case VK_INSERT:
+            {
+                // Reset the camera to defaults.
+                _camera.set_rotation_yaw(0.f);
+                _camera.set_rotation_pitch(-0.78539f);
+                _camera.set_zoom(8.f);
+                break;
             }
         }
     }
