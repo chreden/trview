@@ -17,6 +17,9 @@
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="UI\CameraPositionTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -27,6 +30,9 @@
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{f9007a99-8e00-4b17-9dab-6ab7323ed754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{d7f73817-593e-4331-aadf-516ff57cec5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

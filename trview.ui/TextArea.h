@@ -35,6 +35,9 @@ namespace trview
             /// @param mode The new mode.
             void set_mode(Mode mode);
 
+            /// Get the text content of the text area.
+            std::wstring text() const;
+
             /// Event raised when the text in the text area has changed.
             Event<std::wstring> on_text_changed;
 

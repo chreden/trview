@@ -26,6 +26,7 @@
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
+    <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
   </ItemGroup>
   <ItemGroup>

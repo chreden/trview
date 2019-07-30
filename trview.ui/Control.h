@@ -133,6 +133,13 @@ namespace trview
             template <typename T>
             T* find(const std::string& name) const;
 
+            /// Find the first control with the specified name and type.
+            /// @param name The name to search for.
+            /// @returns The control with the given name as the specified type. If there is
+            ///          no control found, this returns null.
+            template <typename T>
+            T* find(const std::string& name);
+
             /// Get the z order of the control.
             /// @returns The z order.
             int z() const;

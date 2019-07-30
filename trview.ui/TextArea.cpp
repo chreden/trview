@@ -159,6 +159,22 @@ namespace trview
             _mode = mode;
         }
 
+        std::wstring TextArea::text() const
+        {
+            bool first = true;
+            std::wstring full_string;
+            for (const auto& line : _lines)
+            {
+                if (!first)
+                {
+                    full_string += L'\n';
+                }
+                first = false;
+                full_string += line->text();
+            }
+            return full_string;
+        }
+
         bool TextArea::mouse_down(const Point& position)
         {
             return true;
@@ -323,18 +339,7 @@ namespace trview
 
         void TextArea::notify_text_updated()
         {
-            bool first = true;
-            std::wstring full_string;
-            for (const auto& line : _lines)
-            {
-                if (!first)
-                {
-                    full_string += L'\n';
-                }
-                first = false;
-                full_string += line->text();
-            }
-            on_text_changed(full_string);
+            on_text_changed(text());
         }
     }
 }
