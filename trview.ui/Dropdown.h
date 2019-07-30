@@ -39,7 +39,7 @@ namespace trview
             /// Event raised when a value is selected. The selected value is passed as a parameter.
             Event<std::wstring> on_value_selected;
 
-            virtual void clicked_off(Control* new_focus) override;
+            virtual void lost_focus(Control* new_focus) override;
         private:
             void update_dropdown();
 

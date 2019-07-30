@@ -77,7 +77,7 @@ namespace trview
         auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         entry->set_mode(TextArea::Mode::SingleLine);
         entry->set_text(convert_number(0));
-        _token_store += entry->on_selected += [=]() { entry->set_text(L""); };
+        _token_store += entry->on_focused += [=]() { entry->set_text(L""); };
         _token_store += entry->on_escape += [=]()
         {
             entry->on_focus_clear_requested();

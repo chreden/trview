@@ -72,7 +72,7 @@ namespace trview
             _dropdown->set_items(items);
         }
 
-        void Dropdown::clicked_off(Control* new_focus)
+        void Dropdown::lost_focus(Control* new_focus)
         {
             if (!_dropdown)
             {

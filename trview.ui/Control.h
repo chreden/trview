@@ -166,6 +166,9 @@ namespace trview
             /// Event raised when the control is being deleted.
             Event<> on_deleting;
 
+            /// Event raised when user has selected the control for text tinput.
+            Event<> on_focused;
+
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.
             /// @return True if the event was handled by the element.
@@ -188,10 +191,10 @@ namespace trview
             virtual bool clicked(Point position);
 
             /// To be called when the control has become the new focus control.
-            virtual void clicked_on();
+            virtual void gained_focus();
 
             /// To be called when the user clicks away from a focus control.
-            virtual void clicked_off(Control* new_focus);
+            virtual void lost_focus(Control* new_focus);
 
             /// To be called when the mouse was moved over the element.
             /// This should be overriden by child elements to handle a move.
@@ -216,6 +219,8 @@ namespace trview
             virtual bool key_char(wchar_t key);
 
             void set_input_query(IInputQuery* query);
+
+            bool focused() const;
         protected:
             /// To be called after a child element has been added to the control.
             /// @param child_element The element that was added.
@@ -236,6 +241,7 @@ namespace trview
             Align    _vertical_alignment{ Align::Near };
             std::string _name;
             int      _z{ 0 };
+            bool     _focused{ false };
         };
     }
 }
