@@ -74,6 +74,8 @@ namespace trview
 
         void Dropdown::lost_focus(Control* new_focus)
         {
+            Window::lost_focus(new_focus);
+
             if (!_dropdown)
             {
                 return;
