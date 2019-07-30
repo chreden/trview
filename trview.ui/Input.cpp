@@ -319,9 +319,13 @@ namespace trview
         {
             if (_focus_control && _focus_control != control)
             {
-                _focus_control->clicked_off(control);
+                _focus_control->lost_focus(control);
             }
             _focus_control = control;
+            if (_focus_control)
+            {
+                _focus_control->gained_focus();
+            }
         }
     }
 }

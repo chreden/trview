@@ -130,8 +130,15 @@ namespace trview
             return false;
         }
 
-        void Control::clicked_off(Control*)
+        void Control::gained_focus()
         {
+            _focused = true;
+            on_focused();
+        }
+
+        void Control::lost_focus(Control*)
+        {
+            _focused = false;
         }
 
         bool Control::move(Point)
@@ -244,6 +251,11 @@ namespace trview
         void Control::set_input_query(IInputQuery* query)
         {
             _input_query = query;
+        }
+
+        bool Control::focused() const
+        {
+            return _focused;
         }
     }
 }

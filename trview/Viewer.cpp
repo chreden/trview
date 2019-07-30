@@ -96,7 +96,7 @@ namespace trview
 
         _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
         {
-            if (!_ui->go_to_room_visible())
+            if (!_ui->is_input_active())
             {
                 set_alternate_group(group, !alternate_group(group));
             }
@@ -130,15 +130,15 @@ namespace trview
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
+        {
+            if (_level)
             {
-                if (_level)
-                {
-                    const auto room_info = _level->room_info(_level->selected_room());
-                    _sector_highlight.set_sector(sector,
-                        DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-                    _scene_changed = true;
-                }
-            };
+                const auto room_info = _level->room_info(_level->selected_room());
+                _sector_highlight.set_sector(sector,
+                    DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+                _scene_changed = true;
+            }
+        };
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
@@ -153,6 +153,15 @@ namespace trview
             _target = _context_pick.position;
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
+        _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
+        _token_store += _ui->on_camera_position += [&](const auto& position)
+        {
+            if (_camera_mode == CameraMode::Orbit)
+            {
+                set_camera_mode(CameraMode::Free);
+            }
+            _free_camera.set_position(position);
+        };
 
         _ui->set_settings(_settings);
 
@@ -312,17 +321,24 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += std::bind(&Viewer::process_input_key, this, std::placeholders::_1, std::placeholders::_2);
-
-        _token_store += _keyboard.on_key_down += [&](auto key, bool control) {_camera_input.key_down(key, control); };
-        _token_store += _keyboard.on_key_up += [&](auto key, bool control) {_camera_input.key_up(key); };
-
-        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
+        _token_store += _keyboard.on_key_up += [&](auto key, bool control) 
         {
-            if (_ui->go_to_room_visible() || control)
+            if (_ui->is_input_active())
             {
                 return;
             }
+            process_input_key(key, control);
+            _camera_input.key_up(key); 
+        };
+
+        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
+        {
+            if (control || _ui->is_input_active())
+            {
+                return;
+            }
+
+            _camera_input.key_down(key, control);
 
             switch (key)
             {
@@ -485,32 +501,29 @@ namespace trview
 
     void Viewer::process_input_key(uint16_t key, bool control)
     {
-        if (!_ui->go_to_room_visible())
+        switch (key)
         {
-            switch (key)
+            case 'G':
             {
-                case 'G':
+                if(_level && !control)
                 {
-                    if(_level && !control)
-                    {
-                        set_show_hidden_geometry(!_level->show_hidden_geometry());
-                    }
-                    break;
+                    set_show_hidden_geometry(!_level->show_hidden_geometry());
                 }
-                case VK_F1:
-                    _ui->toggle_settings_visibility();
-                    break;
-                case 'H':
-                    toggle_highlight();
-                    break;
-                case VK_INSERT:
-                {
-                    // Reset the camera to defaults.
-                    _camera.set_rotation_yaw(0.f);
-                    _camera.set_rotation_pitch(-0.78539f);
-                    _camera.set_zoom(8.f);
-                    break;
-                }
+                break;
+            }
+            case VK_F1:
+                _ui->toggle_settings_visibility();
+                break;
+            case 'H':
+                toggle_highlight();
+                break;
+            case VK_INSERT:
+            {
+                // Reset the camera to defaults.
+                _camera.set_rotation_yaw(0.f);
+                _camera.set_rotation_pitch(-0.78539f);
+                _camera.set_zoom(8.f);
+                break;
             }
         }
     }
@@ -624,8 +637,6 @@ namespace trview
 
         if (_scene_changed || _ui_changed)
         {
-            _ui->set_camera_position(current_camera().position());
-
             _device.begin();
             _main_window->begin();
             _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
@@ -643,6 +654,7 @@ namespace trview
             }
 
             _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+            _ui->set_camera_position(current_camera().position());
 
             _ui->render(_device);
             _ui_changed = false;

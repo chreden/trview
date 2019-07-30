@@ -1,5 +1,6 @@
 #include "ViewerUI.h"
 #include <trview.ui/Window.h>
+#include <trview.ui/Label.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"
@@ -140,6 +141,7 @@ namespace trview
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
+        _camera_position->on_position_changed += on_camera_position;
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
@@ -196,9 +198,10 @@ namespace trview
         return _map_renderer->sector_at_cursor();
     }
 
-    bool ViewerUI::go_to_room_visible() const
+    bool ViewerUI::is_input_active() const
     {
-        return _go_to->visible();
+        const auto focus = _ui_input->focus_control();
+        return focus && focus->visible() && focus->handles_input();
     }
 
     bool ViewerUI::is_cursor_over() const

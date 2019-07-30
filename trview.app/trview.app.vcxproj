@@ -136,6 +136,9 @@
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
+      <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

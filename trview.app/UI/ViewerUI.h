@@ -52,9 +52,8 @@ namespace trview
         /// Get the currently hovered minimap sector, if any.
         std::shared_ptr<Sector> current_minimap_sector() const;
 
-        /// Get whether go to room is visible.
-        /// @returns Whether the go to room window is visible.
-        bool go_to_room_visible() const;
+        /// Get whether there is any text input currently active.
+        bool is_input_active() const;
 
         /// Determiens if the cursor is over any ui element.
         /// @returns Whether the cursor is over an element.
@@ -122,6 +121,9 @@ namespace trview
 
         /// Event raised when something in the ui has changed.
         Event<> on_ui_changed;
+
+        /// Event raised when user edits camera position.
+        Event<DirectX::SimpleMath::Vector3> on_camera_position;
 
         /// Render the UI.
         /// @param device The device to use to render the UI.

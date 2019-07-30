@@ -76,6 +76,11 @@ namespace trview
         if (visible())
         {
             _text_area->set_text(L"");
+            _text_area->on_focus_requested();
+        }
+        else
+        {
+            _text_area->on_focus_clear_requested();
         }
     }
 

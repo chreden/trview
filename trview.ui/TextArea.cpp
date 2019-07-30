@@ -12,11 +12,29 @@ namespace trview
             _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
+            _cursor->set_visible(focused());
             set_handles_input(true);
+        }
+
+        void TextArea::gained_focus()
+        {
+            Window::gained_focus();
+            update_cursor();
+        }
+
+        void TextArea::lost_focus(Control* new_focus)
+        {
+            Window::lost_focus(new_focus);
+            update_cursor();
         }
 
         bool TextArea::key_char(wchar_t character)
         {
+            if (!focused())
+            {
+                return false;
+            }
+
             auto process_char = [&]()
             {
                 auto line = current_line();
@@ -50,6 +68,15 @@ namespace trview
                         }
                         break;
                     }
+                    // VK_TAB
+                    case 0x9:
+                    {
+                        if (_mode == Mode::SingleLine)
+                        {
+                            on_tab(text);
+                        }
+                        break;
+                    }
                     // VK_RETURN
                     case 0xD:
                     {
@@ -68,7 +95,7 @@ namespace trview
                     case 0x1B:
                     {
                         on_escape();
-                        break;
+                        return;
                     }
                     default:
                     {
@@ -132,6 +159,22 @@ namespace trview
             _mode = mode;
         }
 
+        std::wstring TextArea::text() const
+        {
+            bool first = true;
+            std::wstring full_string;
+            for (const auto& line : _lines)
+            {
+                if (!first)
+                {
+                    full_string += L'\n';
+                }
+                first = false;
+                full_string += line->text();
+            }
+            return full_string;
+        }
+
         bool TextArea::mouse_down(const Point& position)
         {
             return true;
@@ -139,6 +182,11 @@ namespace trview
 
         bool TextArea::key_down(uint16_t key)
         {
+            if (!focused())
+            {
+                return false;
+            }
+
             auto line = current_line();
             auto text = line->text();
 
@@ -286,22 +334,12 @@ namespace trview
                 Point(line->size().width * 0.5f - size.width * 0.5f - 1, line->position().y);
             _cursor->set_position(start + Point(size.width + 2, 0));
             _cursor->set_size(Size(1, line->size().height == 0 ? _cursor->size().height : line->size().height));
+            _cursor->set_visible(focused());
         }
 
         void TextArea::notify_text_updated()
         {
-            bool first = true;
-            std::wstring full_string;
-            for (const auto& line : _lines)
-            {
-                if (!first)
-                {
-                    full_string += L'\n';
-                }
-                first = false;
-                full_string += line->text();
-            }
-            on_text_changed(full_string);
+            on_text_changed(text());
         }
     }
 }

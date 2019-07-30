@@ -35,6 +35,9 @@ namespace trview
             /// @param mode The new mode.
             void set_mode(Mode mode);
 
+            /// Get the text content of the text area.
+            std::wstring text() const;
+
             /// Event raised when the text in the text area has changed.
             Event<std::wstring> on_text_changed;
 
@@ -44,9 +47,14 @@ namespace trview
             /// Event raised when the user has pressed the escape button.
             Event<> on_escape;
 
+            /// Event raised when the user has pressed the tab button in single line mode.
+            Event<std::wstring> on_tab;
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key) override;
             virtual bool key_char(wchar_t character) override;
+            virtual void gained_focus() override;
+            virtual void lost_focus(Control*) override;
         private:
             Label* current_line(bool raise_event = true);
 
@@ -70,6 +78,7 @@ namespace trview
             uint32_t            _cursor_position{ 0u };
             uint32_t            _cursor_line{ 0u };
             Mode                _mode{ Mode::MultiLine };
+            bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
         };
     }
