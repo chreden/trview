@@ -1,6 +1,7 @@
 #include "CameraPosition.h"
 #include <trlevel/trlevel.h>
 #include <trview.ui/Label.h>
+#include <trview.common/Strings.h>
 
 using namespace trview::ui;
 using namespace trview::graphics;
@@ -77,6 +78,7 @@ namespace trview
         auto entry = line->add_child(std::make_unique<TextArea>(Point(), Size(80, 20), Colour::Transparent, Colour::White));
         entry->set_mode(TextArea::Mode::SingleLine);
         entry->set_text(convert_number(0));
+        entry->set_name(to_utf8(name));
         _token_store += entry->on_focused += [=]() { entry->set_text(L""); };
         _token_store += entry->on_escape += [=]()
         {
