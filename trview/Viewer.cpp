@@ -130,15 +130,15 @@ namespace trview
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
+        {
+            if (_level)
             {
-                if (_level)
-                {
-                    const auto room_info = _level->room_info(_level->selected_room());
-                    _sector_highlight.set_sector(sector,
-                        DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
-                    _scene_changed = true;
-                }
-            };
+                const auto room_info = _level->room_info(_level->selected_room());
+                _sector_highlight.set_sector(sector,
+                    DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
+                _scene_changed = true;
+            }
+        };
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
@@ -153,6 +153,7 @@ namespace trview
             _target = _context_pick.position;
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
+        _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
             if (_camera_mode == CameraMode::Orbit)

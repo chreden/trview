@@ -96,7 +96,7 @@ namespace trview
                     case 0x1B:
                     {
                         on_escape();
-                        break;
+                        return;
                     }
                     default:
                     {
