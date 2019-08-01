@@ -171,6 +171,8 @@ namespace trview
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);
 
+        void clamp_sectors(int& x, int& z);
+
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
         uint32_t _index;

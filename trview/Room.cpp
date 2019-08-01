@@ -622,6 +622,30 @@ namespace trview
         }
     }
 
+    void Room::clamp_sectors(int& x, int& z)
+    {
+        if (x <= 0)
+        {
+            x = 0;
+            if (z < 1)
+                z = 1;
+            else if (z > _num_z_sectors - 2)
+                z = _num_z_sectors - 2;
+        }
+        else if (x >= _num_x_sectors - 1)
+        {
+            x = _num_x_sectors - 1;
+            if (z < 1)
+                z = 1;
+            else if (z > _num_z_sectors - 2)
+                z = _num_z_sectors - 2;
+        }
+        else if (z < 0)
+            z = 0;
+        else if (z >= _num_z_sectors)
+            z = _num_z_sectors - 1;
+    }
+
     void Room::process_unmatched_geometry(
         const trlevel::tr3_room_data& data,
         const std::vector<trlevel::tr_vertex>& room_vertices,
@@ -650,17 +674,18 @@ namespace trview
             }
         }
 
-        for (int x = 0; x < _num_x_sectors + 20; ++x)
+        for (int x = -20; x < _num_x_sectors + 20; ++x)
         {
-            for (int z = 0; z < _num_z_sectors + 20; ++z)
+            for (int z = -20; z < _num_z_sectors + 20; ++z)
             {
-                if (x < _num_x_sectors && z < _num_z_sectors)
+                if (x >= 0 && x < _num_x_sectors && z >= 0 && z < _num_z_sectors)
                 {
                     continue;
                 }
 
-                int actual_x = std::min<int>(x, _num_x_sectors - 1);
-                int actual_z = std::min<int>(z, _num_z_sectors - 1);
+                int actual_x = x;
+                int actual_z = z;
+                clamp_sectors(actual_x, actual_z);
 
                 auto sector_id = get_sector_id(actual_x, actual_z);
                 auto& sector = _sectors[sector_id];
