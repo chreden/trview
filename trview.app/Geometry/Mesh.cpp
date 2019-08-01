@@ -136,7 +136,10 @@ namespace trview
             }
         }
 
-        const Vector3 half_size = (vertices.empty() && transparent_triangles.empty()) ? Vector3::Zero : (maximum - minimum) * 0.5f;
+        const bool no_vertices = vertices.empty() && transparent_triangles.empty();
+        const Vector3 half_size = no_vertices ? Vector3::Zero : (maximum - minimum) * 0.5f;
+        minimum = no_vertices ? Vector3::Zero : minimum;
+
         _bounding_box.Extents = half_size;
         _bounding_box.Center = minimum + half_size;
     }
