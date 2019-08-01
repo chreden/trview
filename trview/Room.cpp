@@ -38,11 +38,16 @@ namespace trview
                 : (water ? NotSelectedWater_Colour : NotSelected_Colour);
         }
 
+        Color get_unmatched_colour(uint32_t x, uint32_t z)
+        {
+            return (x + z) % 2 ? Unmatched_Colour : Unmatched_Colour + Color(0, 0.05f, 0.05f);
+        }
+
         Color get_unmatched_colour(const RoomInfo info, const Sector& sector)
         {
             uint32_t x = (sector.x() + info.x / 1024) % 2;
             uint32_t z = info.z / 1024 + sector.z();
-            return (x + z) % 2 ? Unmatched_Colour : Unmatched_Colour + Color(0, 0.05f, 0.05f);
+            return get_unmatched_colour(x, z);
         }
     }
 
@@ -644,6 +649,36 @@ namespace trview
                 }
             }
         }
+
+        for (int x = 0; x < _num_x_sectors + 20; ++x)
+        {
+            for (int z = 0; z < _num_z_sectors + 20; ++z)
+            {
+                if (x < _num_x_sectors && z < _num_z_sectors)
+                {
+                    continue;
+                }
+
+                int actual_x = std::min<int>(x, _num_x_sectors - 1);
+                int actual_z = std::min<int>(z, _num_z_sectors - 1);
+
+                auto sector_id = get_sector_id(actual_x, actual_z);
+                auto& sector = _sectors[sector_id];
+
+                auto tris = sector->triangles();
+
+                // Translate the triangles by... an amount.
+                for (auto& tri : tris)
+                {
+                    tri += Vector3(x - actual_x, 0, z - actual_z);
+                }
+
+                add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(x, z));
+                add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(x, z));
+            }
+        }
+
+
     }
 
     uint32_t Room::number() const
