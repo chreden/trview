@@ -25,7 +25,7 @@ namespace trview
     {
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
         const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
-        const Color Void_Colour{ 0.8f, 0.2f, 1.0f };
+        const Color Void_Colour{ 0.8f, 0.4f, 1.0f };
 
         const Color Selected_Colour{ 1, 1, 1 };
         const Color SelectedWater_Colour{ 0.4f, 0.9f, 1.0f };
@@ -629,28 +629,63 @@ namespace trview
         }
     }
 
-    void Room::clamp_sectors(int& x, int& z)
+    std::shared_ptr<Sector> Room::clamp_sectors(int& x, int& z, const std::vector<std::unique_ptr<Room>>& rooms)
     {
-        if (x <= 0)
+        const Room* current_room = this;
+        bool is_portal = false;
+        std::shared_ptr<Sector> sector;
+
+        int initial_x = x + _info.x / trlevel::Scale_X;
+        int initial_z = z + _info.z / trlevel::Scale_Z;
+
+        do
         {
-            x = 0;
-            if (z < 1)
-                z = 1;
-            else if (z > _num_z_sectors - 2)
-                z = _num_z_sectors - 2;
-        }
-        else if (x >= _num_x_sectors - 1)
-        {
-            x = _num_x_sectors - 1;
-            if (z < 1)
-                z = 1;
-            else if (z > _num_z_sectors - 2)
-                z = _num_z_sectors - 2;
-        }
-        else if (z < 0)
-            z = 0;
-        else if (z >= _num_z_sectors)
-            z = _num_z_sectors - 1;
+            x = initial_x - current_room->info().x / trlevel::Scale_X;
+            z = initial_z - current_room->info().z / trlevel::Scale_Z;
+
+            if (x <= 0)
+            {
+                x = 0;
+                if (z < 1)
+                {
+                    z = 1;
+                }
+                else if (z > current_room->num_z_sectors() - 2)
+                {
+                    z = current_room->num_z_sectors() - 2;
+                }
+            }
+            else if (x >= current_room->num_x_sectors() - 1)
+            {
+                x = current_room->num_x_sectors() - 1;
+                if (z < 1)
+                {
+                    z = 1;
+                }
+                else if (z > current_room->num_z_sectors() - 2)
+                {
+                    z = current_room->num_z_sectors() - 2;
+                }
+            }
+            else if (z < 0)
+            {
+                z = 0;
+            }
+            else if (z >= current_room->num_z_sectors())
+            {
+                z = current_room->num_z_sectors() - 1;
+            }
+
+            sector = current_room->sectors().at(current_room->get_sector_id(x, z));
+            is_portal = sector->flags & SectorFlag::Portal;
+            if (is_portal)
+            {
+                current_room = rooms[sector->portal()].get();
+            }
+
+        } while (is_portal);
+
+        return sector;
     }
 
     void Room::process_unmatched_geometry(
@@ -722,17 +757,14 @@ namespace trview
 
                 int actual_x = x;
                 int actual_z = z;
-                clamp_sectors(actual_x, actual_z);
-
-                auto sector_id = get_sector_id(actual_x, actual_z);
-                auto& sector = _sectors[sector_id];
-
+                auto sector = clamp_sectors(actual_x, actual_z, rooms);
                 auto tris = sector->triangles();
 
                 // Translate the triangles by... an amount.
                 for (auto& tri : tris)
                 {
-                    tri += Vector3(x - actual_x, 0, z - actual_z);
+                    tri -= Vector3(sector->x(), 0, sector->z());
+                    tri += Vector3(x, 0, z);
                 }
 
                 add_triangle({ tris.begin(), tris.begin() + 3 }, vertices, indices, collision_triangles, get_void_colour(x, z));
