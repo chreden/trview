@@ -25,6 +25,7 @@ namespace trview
     {
         const Color Trigger_Colour{ 1, 0, 1, 0.5f };
         const Color Unmatched_Colour{ 0, 0.75f, 0.75f };
+        const Color Void_Colour{ 0.8f, 0.2f, 1.0f };
 
         const Color Selected_Colour{ 1, 1, 1 };
         const Color SelectedWater_Colour{ 0.4f, 0.9f, 1.0f };
@@ -48,6 +49,11 @@ namespace trview
             uint32_t x = (sector.x() + info.x / 1024) % 2;
             uint32_t z = info.z / 1024 + sector.z();
             return get_unmatched_colour(x, z);
+        }
+
+        Color get_void_colour(uint32_t x, uint32_t z)
+        {
+            return (x + z) % 2 ? Void_Colour : Void_Colour + Color(0.08f, 0.02f, 0.1f);
         }
     }
 
@@ -186,6 +192,7 @@ namespace trview
         if (show_hidden_geometry)
         {
             _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+            _void_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
         }
 
         for (const auto& mesh : _static_meshes)
@@ -673,6 +680,36 @@ namespace trview
                 }
             }
         }
+    }
+
+    uint32_t Room::number() const
+    {
+        return _index;
+    }
+
+    void Room::update_bounding_box()
+    {
+        using namespace DirectX;
+        // Get the extents of the room from the information - doesn't take into account any entities.
+        const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
+        _bounding_box = BoundingBox(centre(), extents);
+        // Merge all entity bounding boxes with the room bounding box.
+        for (const auto& entity : _entities)
+        {
+            BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
+        }
+    }
+
+    bool Room::water() const
+    {
+        return _water;
+    }
+
+    void Room::generate_void_mesh(const graphics::Device& device, const std::vector<std::unique_ptr<Room>>& rooms)
+    {
+        std::vector<MeshVertex> vertices;
+        std::vector<Triangle> collision_triangles;
+        std::vector<uint32_t> indices;
 
         for (int x = -20; x < _num_x_sectors + 20; ++x)
         {
@@ -698,34 +735,11 @@ namespace trview
                     tri += Vector3(x - actual_x, 0, z - actual_z);
                 }
 
-                add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(x, z));
-                add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(x, z));
+                add_triangle({ tris.begin(), tris.begin() + 3 }, vertices, indices, collision_triangles, get_void_colour(x, z));
+                add_triangle({ tris.begin() + 3, tris.end() }, vertices, indices, collision_triangles, get_void_colour(x, z));
             }
         }
 
-
-    }
-
-    uint32_t Room::number() const
-    {
-        return _index;
-    }
-
-    void Room::update_bounding_box()
-    {
-        using namespace DirectX;
-        // Get the extents of the room from the information - doesn't take into account any entities.
-        const auto extents = Vector3(_num_x_sectors, (_info.yBottom - _info.yTop) / trlevel::Scale_Y, _num_z_sectors) * 0.5f;
-        _bounding_box = BoundingBox(centre(), extents);
-        // Merge all entity bounding boxes with the room bounding box.
-        for (const auto& entity : _entities)
-        {
-            BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
-        }
-    }
-
-    bool Room::water() const
-    {
-        return _water;
+        _void_mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>{}, indices, std::vector<TransparentTriangle>{}, collision_triangles);
     }
 }

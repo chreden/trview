@@ -322,6 +322,12 @@ namespace trview
                 }
             }
         }
+
+        // Generate void meshes for the level.
+        for (auto& room : _rooms)
+        {
+            room->generate_void_mesh(device, _rooms);
+        }
     }
 
     void Level::generate_triggers()

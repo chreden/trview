@@ -143,6 +143,9 @@ namespace trview
 
         /// Gets whether this room is a water room.
         bool water() const;
+
+        /// Generate the mesh for the void geometry.
+        void generate_void_mesh(const graphics::Device& device, const std::vector<std::unique_ptr<Room>>& rooms);
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
@@ -179,8 +182,9 @@ namespace trview
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
-        std::unique_ptr<Mesh>       _mesh;
-        std::unique_ptr<Mesh>       _unmatched_mesh;
+        std::unique_ptr<Mesh> _mesh;
+        std::unique_ptr<Mesh> _unmatched_mesh;
+        std::unique_ptr<Mesh> _void_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
         DirectX::BoundingBox  _bounding_box;
