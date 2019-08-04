@@ -629,7 +629,7 @@ namespace trview
         }
     }
 
-    std::shared_ptr<Sector> Room::clamp_sectors(int& x, int& z, const std::vector<std::unique_ptr<Room>>& rooms)
+    std::shared_ptr<Sector> Room::clamp_sectors(int x, int z, const std::vector<std::unique_ptr<Room>>& rooms)
     {
         const Room* current_room = this;
         bool is_portal = false;
@@ -755,9 +755,7 @@ namespace trview
                     continue;
                 }
 
-                int actual_x = x;
-                int actual_z = z;
-                auto sector = clamp_sectors(actual_x, actual_z, rooms);
+                auto sector = clamp_sectors(x, z, rooms);
                 auto tris = sector->triangles();
 
                 // Translate the triangles by... an amount.
