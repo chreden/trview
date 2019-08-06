@@ -110,6 +110,10 @@ namespace trview
         {
             _rotating = true;
         }
+        else if (button == input::Mouse::Button::Middle)
+        {
+            _panning = true;
+        }
     }
 
     void CameraInput::mouse_up(input::Mouse::Button button)
@@ -118,6 +122,10 @@ namespace trview
         {
             _rotating = false;
         }
+        else if (button == input::Mouse::Button::Middle)
+        {
+            _panning = false;
+        }
     }
 
     void CameraInput::mouse_move(long x, long y)
@@ -125,6 +133,11 @@ namespace trview
         if (_rotating)
         {
             on_rotate(static_cast<float>(x), static_cast<float>(y));
+        }
+
+        if (_panning)
+        {
+            on_pan(static_cast<float>(x), static_cast<float>(y));
         }
     }
 

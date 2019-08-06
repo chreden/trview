@@ -175,3 +175,23 @@ TEST(CameraInput, ControlBlocks)
     subject.key_down('D', true);
     ASSERT_EQ(Vector3::Zero, subject.movement());
 }
+
+/// Tests that the panning event is raised when the pan button is held down.
+TEST(CameraInput, Panning)
+{
+    CameraInput subject;
+
+    std::optional<std::tuple<float, float>> pan_movement;
+    auto token = subject.on_pan += [&pan_movement](float x, float y)
+    {
+        pan_movement = { x, y };
+    };
+
+    subject.mouse_down(input::Mouse::Button::Middle);
+    subject.mouse_move(100, 200);
+    subject.mouse_up(input::Mouse::Button::Middle);
+
+    ASSERT_TRUE(pan_movement.has_value());
+    ASSERT_EQ(100.0f, std::get<0>(pan_movement.value()));
+    ASSERT_EQ(200.0f, std::get<1>(pan_movement.value()));
+}
