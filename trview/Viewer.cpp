@@ -902,6 +902,27 @@ namespace trview
             }
         };
 
+        _token_store += _camera_input.on_pan += [&](float x, float y)
+        {
+            ICamera& camera = current_camera();
+
+            using namespace DirectX::SimpleMath;
+
+            // Rotate forward and right by the camera yaw...
+            const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
+            const auto forward = Vector3::Transform(Vector3::Forward, rotation);
+            const auto right = Vector3::Transform(Vector3::Right, rotation);
+
+            // Add them on to the position.
+            _target += 0.1f * (forward * -y + right * -x);
+
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+            _scene_changed = true;
+        };
+
         _token_store += _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };
     }
 
