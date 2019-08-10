@@ -51,6 +51,7 @@ namespace trview
         Event<float> on_zoom;
 
         /// Event raised when the user pans around the scene.
+        /// The boolean parameter indicates whether vertical panning is in effect.
         Event<bool, float, float> on_pan;
 
         /// Event raised when the camera mode needs to change.
