@@ -86,7 +86,7 @@ namespace trview
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_room(uint32_t room);
+        void select_room(uint32_t room, bool force_orbit = false);
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
