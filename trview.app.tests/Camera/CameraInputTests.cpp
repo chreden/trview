@@ -181,10 +181,10 @@ TEST(CameraInput, Panning)
 {
     CameraInput subject;
 
-    std::optional<std::tuple<float, float>> pan_movement;
+    std::optional<std::tuple<bool, float, float>> pan_movement;
     auto token = subject.on_pan += [&pan_movement](bool vertical, float x, float y)
     {
-        pan_movement = { x, y };
+        pan_movement = { vertical, x, y };
     };
 
     subject.mouse_down(input::Mouse::Button::Left);
@@ -192,6 +192,29 @@ TEST(CameraInput, Panning)
     subject.mouse_up(input::Mouse::Button::Left);
 
     ASSERT_TRUE(pan_movement.has_value());
-    ASSERT_EQ(100.0f, std::get<0>(pan_movement.value()));
-    ASSERT_EQ(200.0f, std::get<1>(pan_movement.value()));
+    ASSERT_EQ(false, std::get<0>(pan_movement.value()));
+    ASSERT_EQ(100.0f, std::get<1>(pan_movement.value()));
+    ASSERT_EQ(200.0f, std::get<2>(pan_movement.value()));
 }
+
+TEST(CameraInput, PanningVertical)
+{
+    CameraInput subject;
+
+    std::optional<std::tuple<bool, float, float>> pan_movement;
+    auto token = subject.on_pan += [&pan_movement](bool vertical, float x, float y)
+    {
+        pan_movement = { vertical, x, y };
+    };
+
+    subject.mouse_down(input::Mouse::Button::Left);
+    subject.mouse_down(input::Mouse::Button::Right);
+    subject.mouse_move(100, 200);
+    subject.mouse_up(input::Mouse::Button::Left);
+
+    ASSERT_TRUE(pan_movement.has_value());
+    ASSERT_EQ(true, std::get<0>(pan_movement.value()));
+    ASSERT_EQ(100.0f, std::get<1>(pan_movement.value()));
+    ASSERT_EQ(200.0f, std::get<2>(pan_movement.value()));
+}
+
