@@ -182,14 +182,14 @@ TEST(CameraInput, Panning)
     CameraInput subject;
 
     std::optional<std::tuple<float, float>> pan_movement;
-    auto token = subject.on_pan += [&pan_movement](float x, float y)
+    auto token = subject.on_pan += [&pan_movement](bool vertical, float x, float y)
     {
         pan_movement = { x, y };
     };
 
-    subject.mouse_down(input::Mouse::Button::Middle);
+    subject.mouse_down(input::Mouse::Button::Left);
     subject.mouse_move(100, 200);
-    subject.mouse_up(input::Mouse::Button::Middle);
+    subject.mouse_up(input::Mouse::Button::Left);
 
     ASSERT_TRUE(pan_movement.has_value());
     ASSERT_EQ(100.0f, std::get<0>(pan_movement.value()));

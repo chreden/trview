@@ -902,20 +902,27 @@ namespace trview
             }
         };
 
-        _token_store += _camera_input.on_pan += [&](float x, float y)
+        _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
             ICamera& camera = current_camera();
 
             using namespace DirectX::SimpleMath;
 
-            // Rotate forward and right by the camera yaw...
-            const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
-            const auto forward = Vector3::Transform(Vector3::Forward, rotation);
-            const auto right = Vector3::Transform(Vector3::Right, rotation);
+            if (vertical)
+            {
+                _target += 0.05f * Vector3::Up * -y;
+            }
+            else
+            {
+                // Rotate forward and right by the camera yaw...
+                const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
+                const auto forward = Vector3::Transform(Vector3::Forward, rotation);
+                const auto right = Vector3::Transform(Vector3::Right, rotation);
 
-            // Add them on to the position.
-            const auto movement = 0.05f * (forward * -y + right * -x);
-            _target += movement;
+                // Add them on to the position.
+                const auto movement = 0.05f * (forward * -y + right * -x);
+                _target += movement;
+            }
 
             if (_level)
             {

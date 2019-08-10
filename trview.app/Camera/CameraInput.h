@@ -51,7 +51,7 @@ namespace trview
         Event<float> on_zoom;
 
         /// Event raised when the user pans around the scene.
-        Event<float, float> on_pan;
+        Event<bool, float, float> on_pan;
 
         /// Event raised when the camera mode needs to change.
         Event<CameraMode> on_mode_change;
@@ -64,5 +64,6 @@ namespace trview
         bool _free_down{ false };
         bool _rotating{ false };
         bool _panning{ false };
+        bool _panning_vertical{ false };
     };
 }
