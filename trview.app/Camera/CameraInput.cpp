@@ -110,7 +110,7 @@ namespace trview
         {
             _rotating = true;
         }
-        else if (button == input::Mouse::Button::Middle)
+        else if (button == input::Mouse::Button::Left)
         {
             _panning = true;
         }
@@ -122,7 +122,7 @@ namespace trview
         {
             _rotating = false;
         }
-        else if (button == input::Mouse::Button::Middle)
+        else if (button == input::Mouse::Button::Left)
         {
             _panning = false;
         }

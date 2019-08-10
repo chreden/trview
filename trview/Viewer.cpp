@@ -392,7 +392,7 @@ namespace trview
 
         using namespace input;
 
-        _token_store += _mouse.mouse_down += [&](Mouse::Button button)
+        _token_store += _mouse.mouse_click += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
