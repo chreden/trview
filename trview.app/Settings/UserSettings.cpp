@@ -75,6 +75,7 @@ namespace trview
             settings.triggers_startup = json["triggersstartup"].get<bool>();
             settings.auto_orbit = json["autoorbit"].get<bool>();
             settings.recent_files = json["recent"].get<std::list<std::string>>();
+            settings.invert_vertical_pan = json["invertverticalpan"].get<bool>();
         }
         catch (...)
         {
@@ -113,6 +114,7 @@ namespace trview
             json["triggersstartup"] = settings.triggers_startup;
             json["autoorbit"] = settings.auto_orbit;
             json["recent"] = settings.recent_files;
+            json["invertverticalpan"] = settings.invert_vertical_pan;
 
             std::ofstream file(file_path);
             file << json;

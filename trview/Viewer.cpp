@@ -915,7 +915,7 @@ namespace trview
 
             if (vertical)
             {
-                _target += 0.05f * Vector3::Up * -y;
+                _target += 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f);
             }
             else
             {

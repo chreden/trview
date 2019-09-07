@@ -18,6 +18,7 @@ namespace trview
         bool                    items_startup{ false };
         bool                    triggers_startup{ false };
         bool                    auto_orbit{ true };
+        bool                    invert_vertical_pan{ true };
     };
 
     // Load the user settings from the settings file.

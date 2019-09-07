@@ -56,6 +56,10 @@ namespace trview
         auto_orbit->on_state_changed += on_auto_orbit;
         _auto_orbit = panel->add_child(std::move(auto_orbit));
 
+        auto invert_vertical_pan = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Invert vertical panning");
+        invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
+        _invert_vertical_pan = panel->add_child(std::move(invert_vertical_pan));
+
         auto camera_panel = std::make_unique<StackPanel>(Point(), Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         camera_panel->set_margin(Size(5, 5));
 
@@ -133,5 +137,10 @@ namespace trview
     void SettingsWindow::set_movement_speed(float value)
     {
         _movement_speed->set_value(value);
+    }
+
+    void SettingsWindow::set_invert_vertical_pan(bool value)
+    {
+        _invert_vertical_pan->set_state(value);
     }
 }
