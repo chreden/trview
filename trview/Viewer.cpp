@@ -904,6 +904,11 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
+            if (_camera_mode != CameraMode::Orbit)
+            {
+                return;
+            }
+
             ICamera& camera = current_camera();
 
             using namespace DirectX::SimpleMath;
