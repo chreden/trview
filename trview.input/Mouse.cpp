@@ -31,41 +31,33 @@ namespace trview
         {
         }
 
+        void Mouse::update_button(Button button, USHORT flags, USHORT down_mask, USHORT up_mask, DWORD& last_down)
+        {
+            auto active_window = _window_tester->window_under_cursor();
+            if (active_window == window() && flags & down_mask)
+            {
+                last_down = GetTickCount();
+                mouse_down(button);
+            }
+
+            if (flags & up_mask)
+            {
+                auto difference = GetTickCount() - last_down;
+                if (difference < ClickDelta)
+                {
+                    mouse_click(button);
+                }
+                mouse_up(button);
+            }
+        }
+
         void Mouse::process_input(const RAWINPUT& input)
         {
             if (input.header.dwType == RIM_TYPEMOUSE)
             {
-                auto active_window = _window_tester->window_under_cursor();
-                if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
-                {
-                    mouse_down(Button::Left);
-                }
-
-                if (input.data.mouse.usButtonFlags & RI_MOUSE_LEFT_BUTTON_UP)
-                {
-                    auto difference = GetTickCount() - _left_down;
-                    if (difference < ClickDelta)
-                    {
-                        mouse_click(Button::Left);
-                    }
-                    mouse_up(Button::Left);
-                }
-
-                if (active_window == window() && input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
-                {
-                    _right_down = GetTickCount();
-                    mouse_down(Button::Right);
-                }
-
-                if (input.data.mouse.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_UP)
-                {
-                    auto difference = GetTickCount() - _right_down;
-                    if (difference < ClickDelta)
-                    {
-                        mouse_click(Button::Right);
-                    }
-                    mouse_up(Button::Right);
-                }
+                update_button(Button::Left, input.data.mouse.usButtonFlags, RI_MOUSE_LEFT_BUTTON_DOWN, RI_MOUSE_LEFT_BUTTON_UP, _left_down);
+                update_button(Button::Middle, input.data.mouse.usButtonFlags, RI_MOUSE_MIDDLE_BUTTON_DOWN, RI_MOUSE_MIDDLE_BUTTON_UP, _middle_down);
+                update_button(Button::Right, input.data.mouse.usButtonFlags, RI_MOUSE_RIGHT_BUTTON_DOWN, RI_MOUSE_RIGHT_BUTTON_UP, _right_down);
 
                 if (input.data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
                 {
@@ -118,11 +110,15 @@ namespace trview
                     const auto mouse_message = HIWORD(lParam);
                     if (mouse_message == WM_LBUTTONDOWN)
                     {
-                        mouse_down(Mouse::Button::Left);
+                        mouse_down(Button::Left);
+                    }
+                    else if (mouse_message == WM_MBUTTONDOWN)
+                    {
+                        mouse_down(Button::Middle);
                     }
                     else if(mouse_message == WM_RBUTTONDOWN)
                     {
-                        mouse_down(Mouse::Button::Right);
+                        mouse_down(Button::Right);
                     }
                     break;
                 }

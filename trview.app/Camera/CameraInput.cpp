@@ -109,6 +109,12 @@ namespace trview
         if (button == input::Mouse::Button::Right)
         {
             _rotating = true;
+            _panning_vertical = _panning;
+        }
+        else if (button == input::Mouse::Button::Left)
+        {
+            _panning = true;
+            _panning_vertical = _rotating;
         }
     }
 
@@ -117,14 +123,25 @@ namespace trview
         if (button == input::Mouse::Button::Right)
         {
             _rotating = false;
+            _panning_vertical = false;
+        }
+        else if (button == input::Mouse::Button::Left)
+        {
+            _panning = false;
+            _panning_vertical = false;
         }
     }
 
     void CameraInput::mouse_move(long x, long y)
     {
-        if (_rotating)
+        if (_rotating && !_panning_vertical)
         {
             on_rotate(static_cast<float>(x), static_cast<float>(y));
+        }
+
+        if (_panning)
+        {
+            on_pan(_panning_vertical, static_cast<float>(x), static_cast<float>(y));
         }
     }
 

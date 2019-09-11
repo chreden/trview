@@ -149,7 +149,7 @@ namespace trview
         _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
         _token_store += _ui->on_orbit += [&]()
         {
-            select_room(room_from_pick(_context_pick));
+            select_room(room_from_pick(_context_pick), true);
             _target = _context_pick.position;
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
@@ -392,7 +392,7 @@ namespace trview
 
         using namespace input;
 
-        _token_store += _mouse.mouse_down += [&](Mouse::Button button)
+        _token_store += _mouse.mouse_click += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
@@ -747,7 +747,7 @@ namespace trview
         }
     }
 
-    void Viewer::select_room(uint32_t room)
+    void Viewer::select_room(uint32_t room, bool force_orbit)
     {
         if (!_level || room >= _level->number_of_rooms())
         {
@@ -757,7 +757,7 @@ namespace trview
         _level->set_selected_room(static_cast<uint16_t>(room));
         _ui->set_selected_room(_level->room(_level->selected_room()));
 
-        if (_settings.auto_orbit && !_was_alternate_select)
+        if (force_orbit || (_settings.auto_orbit && !_was_alternate_select))
         {
             set_camera_mode(CameraMode::Orbit);
         }
@@ -900,6 +900,40 @@ namespace trview
                     _level->on_camera_moved();
                 }
             }
+        };
+
+        _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
+        {
+            if (_camera_mode != CameraMode::Orbit)
+            {
+                return;
+            }
+
+            ICamera& camera = current_camera();
+
+            using namespace DirectX::SimpleMath;
+
+            if (vertical)
+            {
+                _target += 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f);
+            }
+            else
+            {
+                // Rotate forward and right by the camera yaw...
+                const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
+                const auto forward = Vector3::Transform(Vector3::Forward, rotation);
+                const auto right = Vector3::Transform(Vector3::Right, rotation);
+
+                // Add them on to the position.
+                const auto movement = 0.05f * (forward * -y + right * -x);
+                _target += movement;
+            }
+
+            if (_level)
+            {
+                _level->on_camera_moved();
+            }
+            _scene_changed = true;
         };
 
         _token_store += _camera_input.on_mode_change += [&](CameraMode mode) { set_camera_mode(mode); };

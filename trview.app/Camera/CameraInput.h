@@ -50,6 +50,10 @@ namespace trview
         /// Event raised when the zoom level needs to change.
         Event<float> on_zoom;
 
+        /// Event raised when the user pans around the scene.
+        /// The boolean parameter indicates whether vertical panning is in effect.
+        Event<bool, float, float> on_pan;
+
         /// Event raised when the camera mode needs to change.
         Event<CameraMode> on_mode_change;
     private:
@@ -60,5 +64,7 @@ namespace trview
         bool _free_up{ false };
         bool _free_down{ false };
         bool _rotating{ false };
+        bool _panning{ false };
+        bool _panning_vertical{ false };
     };
 }

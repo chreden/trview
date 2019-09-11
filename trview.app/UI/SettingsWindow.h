@@ -52,6 +52,9 @@ namespace trview
         /// Event raised when the 'Switch to orbit on selection' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_auto_orbit;
 
+        /// Event raised when the 'Invert vertical pan' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_invert_vertical_pan;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -86,6 +89,11 @@ namespace trview
         /// @remarks This will not raise the on_sensitivity_changed event.
         void set_sensitivity(float value);
 
+        /// Set the value of invert vertical pan.
+        /// @param value The new setting value.
+        /// @remarks This will not raise the on_invert_vertical_pan event.
+        void set_invert_vertical_pan(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
@@ -98,6 +106,7 @@ namespace trview
         ui::Slider* _sensitivity;
         ui::Slider* _movement_speed;
         ui::Control* _window;
+        ui::Checkbox* _invert_vertical_pan;
         TokenStore _token_store;
     };
 }

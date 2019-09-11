@@ -137,6 +137,11 @@ namespace trview
             _settings.auto_orbit = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_invert_vertical_pan += [&](bool value)
+        {
+            _settings.invert_vertical_pan = value;
+            on_settings(_settings);
+        };
         _settings_window->on_sensitivity_changed += on_camera_sensitivity;
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
 
@@ -367,6 +372,7 @@ namespace trview
         _settings_window->set_items_startup(settings.items_startup);
         _settings_window->set_triggers_startup(settings.triggers_startup);
         _settings_window->set_vsync(settings.vsync);
+        _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
     }
 
     void ViewerUI::set_selected_room(Room* room)

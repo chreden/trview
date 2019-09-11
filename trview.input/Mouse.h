@@ -25,6 +25,8 @@ namespace trview
             {
                 /// The left mouse button.
                 Left,
+                /// The middle mouse button.
+                Middle,
                 /// The right mouse button.
                 Right
             };
@@ -77,12 +79,21 @@ namespace trview
         private:
             void raise_absolute_mouse_move(long x, long y);
 
+            /// Update the state of the specified button and raise the appropriate events.
+            /// @param button The button to use in any events raised.
+            /// @flags The raw input flags to process.
+            /// @down_mask The flag mask for the button being down.
+            /// @up_mask The flag mask for the button being up.
+            /// @param last_down The timing variable to update to determine whether there was a click.
+            void update_button(Button button, USHORT flags, USHORT down_mask, USHORT up_mask, DWORD& last_down);
+
             std::unique_ptr<IWindowTester> _window_tester;
             bool _any_absolute_previous{ false };
             long _absolute_x;
             long _absolute_y;
 
             DWORD _left_down{ 0u };
+            DWORD _middle_down{ 0u };
             DWORD _right_down{ 0u };
         };
     }
