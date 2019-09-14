@@ -23,10 +23,10 @@ using namespace DirectX::SimpleMath;
 namespace trview
 {
     Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level)
+        : _version(level->get_version())
     {
         load_type_name_lookup();
 
-        _version = level->get_version();
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
