@@ -1,11 +1,10 @@
-#include "stdafx.h"
 #include "Entity.h"
 
 #include <stack>
 #include <algorithm>
 
 #include <trview.app/Graphics/ILevelTextureStorage.h>
-#include "IMeshStorage.h"
+#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
@@ -133,10 +132,10 @@ namespace trview
         using namespace DirectX::SimpleMath;
         std::vector<MeshVertex> vertices
         {
-            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Vector4(1,1,1,1) },
-            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Vector4(1,1,1,1) },
-            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Vector4(1,1,1,1) },
-            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Vector4(1,1,1,1) },
+            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1)  },
+            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
         };
 
         std::vector<TransparentTriangle> transparent_triangles

@@ -1,11 +1,10 @@
-#include "stdafx.h"
 #include "Room.h"
 #include <trview.app/Geometry/MeshVertex.h>
 #include "Entity.h"
-#include "Level.h"
+#include <trview.app/Elements/Level.h>
 
 #include <trview.app/Graphics/ILevelTextureStorage.h>
-#include "IMeshStorage.h"
+#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>

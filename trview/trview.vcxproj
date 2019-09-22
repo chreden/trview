@@ -182,14 +182,8 @@
     <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="DefaultShaders.h" />
     <ClInclude Include="DefaultTextures.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="IMeshStorage.h" />
-    <ClInclude Include="Level.h" />
-    <ClInclude Include="MeshStorage.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceHelper.h" />
-    <ClInclude Include="Room.h" />
-    <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="trview.h" />
@@ -199,13 +193,7 @@
     <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="DefaultShaders.cpp" />
     <ClCompile Include="DefaultTextures.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="IMeshStorage.cpp" />
-    <ClCompile Include="Level.cpp" />
-    <ClCompile Include="MeshStorage.cpp" />
     <ClCompile Include="ResourceHelper.cpp" />
-    <ClCompile Include="Room.cpp" />
-    <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Level.h"
 
 #include <sstream>
@@ -8,12 +7,13 @@
 #include <trview.graphics/IShader.h>
 
 #include <trview.app/Graphics/LevelTextureStorage.h>
-#include "MeshStorage.h"
+#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
-#include "ResourceHelper.h"
-#include "resource.h"
+#include <trview/ResourceHelper.h>
+#include <trview/resource.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
+#include <trview.app/Graphics/MeshStorage.h>
 
 #include <external/nlohmann/json.hpp>
 

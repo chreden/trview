@@ -21,7 +21,7 @@
 #include <trview.app/Camera/OrbitCamera.h>
 #include <trview.app/Camera/CameraInput.h>
 #include <trview.app/Camera/CameraMode.h>
-#include "Level.h"
+#include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>

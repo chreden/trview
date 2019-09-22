@@ -19,7 +19,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
 
-#include "IMeshStorage.h"
+#include <trview.app/Graphics/IMeshStorage.h>
 
 #include <trview.graphics/RenderTarget.h>
 
