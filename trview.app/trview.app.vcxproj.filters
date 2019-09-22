@@ -175,6 +175,9 @@
     <ClCompile Include="Graphics\MeshStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\TypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -368,6 +371,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\MeshStorage.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\TypeNameLookup.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

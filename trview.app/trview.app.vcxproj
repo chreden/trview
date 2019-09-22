@@ -32,6 +32,7 @@
     <ClCompile Include="Elements\Sector.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
+    <ClCompile Include="Elements\TypeNameLookup.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="Elements\Sector.h" />
     <ClInclude Include="Elements\StaticMesh.h" />
     <ClInclude Include="Elements\Trigger.h" />
+    <ClInclude Include="Elements\TypeNameLookup.h" />
     <ClInclude Include="Elements\Types.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\Mesh.h" />
