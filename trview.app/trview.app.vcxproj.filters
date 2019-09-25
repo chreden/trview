@@ -178,6 +178,9 @@
     <ClCompile Include="Elements\TypeNameLookup.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ITypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -373,6 +376,9 @@
       <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Elements\TypeNameLookup.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ITypeNameLookup.h">
       <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>

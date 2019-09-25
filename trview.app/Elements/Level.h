@@ -4,7 +4,6 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <vector>
-#include <unordered_map>
 #include <SimpleMath.h>
 #include <set>
 
@@ -28,6 +27,7 @@ namespace trview
     struct ILevelTextureStorage;
     struct ICamera;
     class SelectionRenderer;
+    struct ITypeNameLookup;
 
     namespace graphics
     {
@@ -38,7 +38,7 @@ namespace trview
     class Level
     {
     public:
-        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level);
+        Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names);
         ~Level();
 
         enum class RoomHighlightMode
@@ -151,7 +151,7 @@ namespace trview
     private:
         void generate_rooms(const graphics::Device& device, const trlevel::ILevel& level);
         void generate_triggers();
-        void generate_entities(const graphics::Device& device, const trlevel::ILevel& level);
+        void generate_entities(const graphics::Device& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
@@ -187,15 +187,6 @@ namespace trview
         // the alternate mode flag.
         bool is_alternate_mismatch(const Room& room) const;
 
-        /// Load the type name lookup table from resources.
-        void load_type_name_lookup();
-
-        /// Look up the type name of the specified type id.
-        /// @param type_id The type id to look up.
-        /// @returns The type name of the item.
-        /// @remarks If the type id is not found, this will return the string version of the type id.
-        std::wstring lookup_type_name(uint32_t type_id) const;
-
         bool is_alternate_group_set(uint16_t group) const;
 
         std::vector<std::unique_ptr<Room>>   _rooms;
@@ -224,8 +215,6 @@ namespace trview
         bool _show_triggers{ true };
         bool _show_hidden_geometry{ false };
         bool _show_water{ true };
-
-        std::unordered_map<uint32_t, std::wstring> _type_names;
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
         std::set<uint16_t> _alternate_groups;

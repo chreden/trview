@@ -39,6 +39,7 @@
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/Elements/ITypeNameLookup.h>
 
 namespace trview
 {
@@ -161,6 +162,7 @@ namespace trview
         bool _ui_changed{ true };
 
         UpdateChecker _update_checker;
+        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
     };
 }
 
