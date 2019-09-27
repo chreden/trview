@@ -20,6 +20,9 @@
     <ClCompile Include="UI\CameraPositionTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\TypeNameLookupTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -33,6 +36,9 @@
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{d7f73817-593e-4331-aadf-516ff57cec5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Elements">
+      <UniqueIdentifier>{511e3bad-c463-4037-83d1-c079ea951456}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
