@@ -14,23 +14,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="View">
-      <UniqueIdentifier>{80fe0e35-9ed7-4088-8057-4058bcaf4ed6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="View\Room">
-      <UniqueIdentifier>{7ae20e87-1039-4dde-a495-b220a370043d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="View\Level">
-      <UniqueIdentifier>{93f99320-fae2-4478-8cf9-1cc514c4b144}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="View\Mesh">
-      <UniqueIdentifier>{0f146f28-87f0-47e0-8847-d5fac15cc507}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{bb6233b6-2218-4c3e-8934-1ef700a66256}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="View\Entity">
-      <UniqueIdentifier>{de962a03-c92e-459f-b33a-cdd5927fe5bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,24 +33,6 @@
     </ClInclude>
     <ClInclude Include="trview.h">
       <Filter>Win</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>View\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>View\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticMesh.h">
-      <Filter>View</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshStorage.h">
-      <Filter>View\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="IMeshStorage.h">
-      <Filter>View\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>View\Entity</Filter>
     </ClInclude>
     <ClInclude Include="DefaultShaders.h">
       <Filter>Graphics</Filter>
@@ -89,24 +56,6 @@
     </ClCompile>
     <ClCompile Include="trview.cpp">
       <Filter>Win</Filter>
-    </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>View\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>View\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticMesh.cpp">
-      <Filter>View</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshStorage.cpp">
-      <Filter>View\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="IMeshStorage.cpp">
-      <Filter>View\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>View\Entity</Filter>
     </ClCompile>
     <ClCompile Include="DefaultShaders.cpp">
       <Filter>Graphics</Filter>

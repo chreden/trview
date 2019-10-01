@@ -157,6 +157,30 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Level.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Entity.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\Room.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\StaticMesh.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\IMeshStorage.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MeshStorage.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\TypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ITypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -332,6 +356,30 @@
     </ClInclude>
     <ClInclude Include="Graphics\TextureStorage.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Level.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Entity.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Room.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\StaticMesh.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\IMeshStorage.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\MeshStorage.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\TypeNameLookup.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ITypeNameLookup.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

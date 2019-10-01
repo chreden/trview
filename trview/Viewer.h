@@ -21,7 +21,7 @@
 #include <trview.app/Camera/OrbitCamera.h>
 #include <trview.app/Camera/CameraInput.h>
 #include <trview.app/Camera/CameraMode.h>
-#include "Level.h"
+#include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>
@@ -39,6 +39,7 @@
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/Elements/ITypeNameLookup.h>
 
 namespace trview
 {
@@ -161,6 +162,7 @@ namespace trview
         bool _ui_changed{ true };
 
         UpdateChecker _update_checker;
+        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
     };
 }
 

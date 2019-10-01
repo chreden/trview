@@ -21,6 +21,9 @@
 #include "DefaultShaders.h"
 #include "DefaultFonts.h"
 #include <trview.app/Graphics/TextureStorage.h>
+#include <trview.app/Elements/TypeNameLookup.h>
+#include "ResourceHelper.h"
+#include "resource.h"
 
 namespace trview
 {
@@ -39,6 +42,9 @@ namespace trview
         _update_checker.check_for_updates();
 
         _settings = load_user_settings();
+
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
@@ -562,7 +568,7 @@ namespace trview
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level));
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };

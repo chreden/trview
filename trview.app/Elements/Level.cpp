@@ -1,32 +1,24 @@
-#include "stdafx.h"
 #include "Level.h"
 
-#include <sstream>
-
-#include <trview.common/FileLoader.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 
 #include <trview.app/Graphics/LevelTextureStorage.h>
-#include "MeshStorage.h"
+#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
-#include "ResourceHelper.h"
-#include "resource.h"
 #include <trview.app/Graphics/SelectionRenderer.h>
-
-#include <external/nlohmann/json.hpp>
+#include <trview.app/Graphics/MeshStorage.h>
+#include <trview.app/Elements/ITypeNameLookup.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level)
+    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names)
         : _version(level->get_version())
     {
-        load_type_name_lookup();
-
         _vertex_shader = shader_storage.get("level_vertex_shader");
         _pixel_shader = shader_storage.get("level_pixel_shader");
 
@@ -48,7 +40,7 @@ namespace trview
         _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
         generate_rooms(device, *level);
         generate_triggers();
-        generate_entities(device, *level);
+        generate_entities(device, *level, type_names);
 
         for (auto& room : _rooms)
         {
@@ -345,7 +337,7 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const graphics::Device& device, const trlevel::ILevel& level)
+    void Level::generate_entities(const graphics::Device& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
@@ -367,7 +359,7 @@ namespace trview
             }
 
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, lookup_type_name(level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
         }
     }
 
@@ -542,52 +534,6 @@ namespace trview
         {
             return room->alternate_mode() != Room::AlternateMode::None;
         });
-    }
-
-    void Level::load_type_name_lookup()
-    {
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-
-        auto contents = std::string(type_list.data, type_list.data + type_list.size);
-        auto json = nlohmann::json::parse(contents.begin(), contents.end());
-
-        std::string game_name;
-        switch (version())
-        {
-        case trlevel::LevelVersion::Tomb1:
-            game_name = "tr1";
-            break;
-        case trlevel::LevelVersion::Tomb2:
-            game_name = "tr2";
-            break;
-        case trlevel::LevelVersion::Tomb3:
-            game_name = "tr3";
-            break;
-        case trlevel::LevelVersion::Tomb4:
-            game_name = "tr4";
-            break;
-        case trlevel::LevelVersion::Tomb5:
-            game_name = "tr5";
-            break;
-        default:
-            return;
-        }
-
-        for (const auto& element : json["games"][game_name])
-        {
-            auto name = element.at("name").get<std::string>();
-            _type_names.insert({ element.at("id").get<uint32_t>(), std::wstring(name.begin(), name.end()) });
-        }
-    }
-
-    std::wstring Level::lookup_type_name(uint32_t type_id) const
-    {
-        const auto found = _type_names.find(type_id);
-        if (found == _type_names.end())
-        {
-            return std::to_wstring(type_id);
-        }
-        return found->second;
     }
 
     void Level::set_show_triggers(bool show)
