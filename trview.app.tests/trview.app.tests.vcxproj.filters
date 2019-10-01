@@ -23,6 +23,9 @@
     <ClCompile Include="Elements\TypeNameLookupTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\LevelTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
