@@ -64,13 +64,6 @@ namespace
     };
 }
 
-
-struct nop
-{
-    template <typename T>
-    void operator() (T const &) const noexcept { }
-};
-
 // Tests that the level class loads the type names with the correct level version.
 TEST(Level, LoadTypeNames)
 {
