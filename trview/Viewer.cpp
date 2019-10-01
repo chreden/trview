@@ -22,8 +22,8 @@
 #include "DefaultFonts.h"
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/Elements/TypeNameLookup.h>
-#include <trview/ResourceHelper.h>
-#include <trview/resource.h>
+#include "ResourceHelper.h"
+#include "resource.h"
 
 namespace trview
 {
