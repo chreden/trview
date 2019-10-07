@@ -40,7 +40,7 @@ namespace trview
     RouteWindow::RouteWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const trview::Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(device), create_right_panel());
     }
 
     void RouteWindow::set_route(Route* route) 
@@ -57,12 +57,18 @@ namespace trview
         load_waypoint_details(_selected_index);
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel()
+    std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
     {
         auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
-        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Import"));
+        auto colour = buttons->add_child(std::make_unique<Button>(Point(), Size(20, 20), create_texture(device, Colour::Green), create_texture(device, Colour::Green)));
+        _token_store += colour->on_click += [&]()
+        {
+            // Show the colour picker window (popout)
+            // Similar to dropdown logic.
+        };
+        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -82,7 +88,7 @@ namespace trview
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
+        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Export"));
         _token_store += export_button->on_click += [&]()
         {
             OPENFILENAME ofn;

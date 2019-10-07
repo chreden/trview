@@ -33,6 +33,7 @@ namespace trview
         static Colour LightGrey;
         static Colour Transparent;
         static Colour White;
+        static Colour Green;
     };
 
     Colour operator+(const Colour& left, const Colour& right);
