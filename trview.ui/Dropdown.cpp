@@ -68,6 +68,11 @@ namespace trview
             _button->set_text(value);
         }
 
+        void Dropdown::set_text_colour(const Colour& colour)
+        {
+            _button->set_text_colour(colour);
+        }
+
         void Dropdown::set_text_background_colour(const Colour& colour)
         {
             _button->set_text_background_colour(colour);

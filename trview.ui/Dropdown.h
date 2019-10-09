@@ -48,6 +48,10 @@ namespace trview
             /// @param value The new value.
             void set_selected_value(const std::wstring& value);
 
+            /// Set the foreground colour of the selected text box.
+            /// @param colour The new value.
+            void set_text_colour(const Colour& colour);
+
             /// Set the background colour of the selected text box.
             /// @param colour The new value.
             void set_text_background_colour(const Colour& colour);
