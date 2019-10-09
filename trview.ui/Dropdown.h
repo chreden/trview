@@ -15,6 +15,14 @@ namespace trview
         class Dropdown final : public Window
         {
         public:
+            /// A value element for the dropdown.
+            struct Value
+            {
+                std::wstring text;
+                Colour       foreground;
+                Colour       background;
+            };
+
             /// Create a new dropdown box.
             /// @param position The position of the control.
             /// @param size The size of the control.
@@ -29,8 +37,12 @@ namespace trview
             void set_dropdown_scope(Control* scope);
 
             /// Set the values to show in the dropdown.
+            /// @param value_names The values to show.
+            void set_values(const std::vector<std::wstring>& value_names);
+
+            /// Set the values to show in the dropdown.
             /// @param values The values to show.
-            void set_values(const std::vector<std::wstring>& values);
+            void set_values(const std::vector<Value>& values);
 
             /// Set the selected value. This will not raise the on_value_selected event.
             /// @param value The new value.
@@ -47,9 +59,9 @@ namespace trview
         private:
             void update_dropdown();
 
-            std::vector<std::wstring> _values;
-            ui::Button*               _button;
-            ui::Listbox*              _dropdown;
+            std::vector<Value> _values;
+            ui::Button* _button;
+            ui::Listbox* _dropdown;
         };
     }
 }
