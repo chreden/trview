@@ -64,15 +64,16 @@ namespace trview
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
 
-        auto colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        auto colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(100, 20)));
         colour->set_text_background_colour(Colour::Green);
-        colour->set_dropdown_scope(_ui.get());
         colour->set_values(
             {
-                Dropdown::Value { L"", Colour::Green, Colour::Green },
-                { L"", Colour::Red, Colour::Red },
-                { L"", Colour::Blue, Colour::Blue }
-            });;
+                Dropdown::Value { L"Green", Colour::Green, Colour::Green },
+                { L"Red", Colour::Red, Colour::Red },
+                { L"Blue", Colour::Blue, Colour::Blue }
+            });
+        colour->set_selected_value(L"Green");
+        colour->set_dropdown_scope(_ui.get());
 
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()

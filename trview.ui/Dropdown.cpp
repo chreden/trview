@@ -87,7 +87,7 @@ namespace trview
             std::vector<Listbox::Item> items;
             for (const auto& value : _values)
             {
-                items.push_back({{{ L"Name", value.text }}});
+                items.push_back({{{ L"Name", value.text }}, value.foreground, value.background});
             }
             _dropdown->set_items(items);
         }
