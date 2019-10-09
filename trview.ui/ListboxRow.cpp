@@ -27,6 +27,7 @@ namespace trview
         void Listbox::Row::set_item(const Item& item)
         {
             _item = item;
+            set_background_colour(item.background());
 
             const auto columns = child_elements();
             for (auto c = 0; c < _columns.size(); ++c)
