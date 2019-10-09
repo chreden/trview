@@ -65,7 +65,7 @@ namespace trview
             }
 
             _batch->Begin(SpriteSortMode_Deferred, blend_state.Get());
-            _font->DrawString(_batch.get(), sanitise(*_font, text).c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.b, colour.g, colour.r, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
+            _font->DrawString(_batch.get(), sanitise(*_font, text).c_str(), XMVectorSet(round(x), round(y), 0, 0), XMVectorSet(colour.r, colour.g, colour.b, colour.a), 0, XMVectorZero(), XMVectorSet(1, 1, 1, 1));
             _batch->End();
         }
 
