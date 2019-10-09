@@ -36,6 +36,10 @@ namespace trview
             /// @param value The new value.
             void set_selected_value(const std::wstring& value);
 
+            /// Set the background colour of the selected text box.
+            /// @param colour The new value.
+            void set_text_background_colour(const Colour& colour);
+
             /// Event raised when a value is selected. The selected value is passed as a parameter.
             Event<std::wstring> on_value_selected;
 

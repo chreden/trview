@@ -5,6 +5,7 @@
 #include <trview.ui/TextArea.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.ui/Dropdown.h>
 
 namespace trview
 {
@@ -62,12 +63,10 @@ namespace trview
         auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
-        auto colour = buttons->add_child(std::make_unique<Button>(Point(), Size(20, 20), create_texture(device, Colour::Green), create_texture(device, Colour::Green)));
-        _token_store += colour->on_click += [&]()
-        {
-            // Show the colour picker window (popout)
-            // Similar to dropdown logic.
-        };
+
+        auto colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        colour->set_text_background_colour(Colour::Green);
+
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()
         {

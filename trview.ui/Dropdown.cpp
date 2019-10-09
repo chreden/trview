@@ -14,6 +14,10 @@ namespace trview
             _button->set_background_colour(Colour(0.25f, 0.25f, 0.25f));
             _token_store += _button->on_click += [&]()
             {
+                if (!_dropdown)
+                {
+                    return;
+                }
                 _dropdown->set_visible(!_dropdown->visible());
                 on_focus_requested();
                 update_dropdown();
@@ -51,6 +55,11 @@ namespace trview
         void Dropdown::set_selected_value(const std::wstring& value)
         {
             _button->set_text(value);
+        }
+
+        void Dropdown::set_text_background_colour(const Colour& colour)
+        {
+            _button->set_text_background_colour(colour);
         }
 
         void Dropdown::update_dropdown()
