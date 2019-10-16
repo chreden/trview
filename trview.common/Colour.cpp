@@ -10,6 +10,9 @@ namespace trview
     Colour Colour::Green = Colour(0.0f, 1.0f, 0.0f);
     Colour Colour::Blue = Colour(0.0f, 0.0f, 1.0f);
     Colour Colour::Red = Colour(1.0f, 0.0f, 0.0f);
+    Colour Colour::Yellow = Colour(1.0f, 1.0f, 0.0f);
+    Colour Colour::Magenta = Colour(1.0f, 0.0f, 1.0f);
+    Colour Colour::Cyan = Colour(0.0f, 1.0f, 1.0f);
 
     Colour::Colour()
         : Colour(1.0f, 1.0f, 1.0f)
@@ -51,6 +54,40 @@ namespace trview
         g += other.g;
         b += other.b;
         return *this;
+    }
+
+    Colour named_colour(const std::wstring& name)
+    {
+        if (name == L"Red")
+        {
+            return Colour::Red;
+        }
+        else if (name == L"Green")
+        {
+            return Colour::Green;
+        }
+        else if (name == L"Blue")
+        {
+            return Colour::Blue;
+        }
+        else if (name == L"Magenta")
+        {
+            return Colour::Magenta;
+        }
+        else if (name == L"White")
+        {
+            return Colour::White;
+        }
+        else if (name == L"Yellow")
+        {
+            return Colour::Yellow;
+        }
+        else if (name == L"Cyan")
+        {
+            return Colour::Cyan;
+        }
+
+        return Colour::Black;
     }
 
     Colour operator+(const Colour& left, const Colour& right)

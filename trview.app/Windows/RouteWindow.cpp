@@ -71,28 +71,21 @@ namespace trview
             {
                 Dropdown::Value { L"Green", Colour::Green, Colour::Green },
                 { L"Red", Colour::Red, Colour::Red },
-                { L"Blue", Colour::Blue, Colour::Blue }
+                { L"Blue", Colour::Blue, Colour::Blue },
+                { L"Yellow", Colour::Yellow, Colour::Yellow },
+                { L"Cyan", Colour::Cyan, Colour::Cyan },
+                { L"Magenta", Colour::Magenta, Colour::Magenta },
+                { L"Black", Colour::Black, Colour::Black },
+                { L"White", Colour::White, Colour::White }
             });
         colour->set_selected_value(L"Green");
         colour->set_dropdown_scope(_ui.get());
 
         _token_store += colour->on_value_selected += [=](const auto& value)
         {
-            if (value == L"Green") 
-            {
-                colour->set_text_colour(Colour::Green);
-                colour->set_text_background_colour(Colour::Green);
-            }
-            else if (value == L"Red")
-            {
-                colour->set_text_colour(Colour::Red);
-                colour->set_text_background_colour(Colour::Red);
-            }
-            else if (value == L"Blue")
-            {
-                colour->set_text_colour(Colour::Blue);
-                colour->set_text_background_colour(Colour::Blue);
-            }
+            const auto new_colour = named_colour(value);
+            colour->set_text_colour(new_colour);
+            colour->set_text_background_colour(new_colour);
         };
 
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));

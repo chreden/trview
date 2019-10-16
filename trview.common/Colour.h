@@ -36,7 +36,12 @@ namespace trview
         static Colour Green;
         static Colour Blue;
         static Colour Red;
+        static Colour Yellow;
+        static Colour Magenta;
+        static Colour Cyan;
     };
+
+    Colour named_colour(const std::wstring& name);
 
     Colour operator+(const Colour& left, const Colour& right);
 
