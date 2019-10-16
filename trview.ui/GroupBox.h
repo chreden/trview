@@ -16,6 +16,7 @@ namespace trview
             void set_title(const std::wstring& title);
         private:
             Colour _border_colour;
+            Window* _top_right;
             Label* _label;
         };
     }
