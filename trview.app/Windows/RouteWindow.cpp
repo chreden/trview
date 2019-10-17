@@ -56,8 +56,6 @@ namespace trview
         }
         _waypoints->set_items(items);
         load_waypoint_details(_selected_index);
-
-        // Set the colour...
         _colour->set_selected_value(route->colour().name());
     }
 

@@ -23,7 +23,6 @@ namespace trview
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
         : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
     {
-        _colour = Colour::Green;
     }
 
     void Route::add(const Vector3& position, uint32_t room)
@@ -33,7 +32,7 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index);
+        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
     }
 
     Colour Route::colour() const
@@ -65,7 +64,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index));
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
@@ -129,7 +128,7 @@ namespace trview
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(device.context(), to_wvp, texture_storage, Color(0.0f, 1.0f, 0.0f));
+                _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
             }
         }
 
@@ -153,6 +152,10 @@ namespace trview
     void Route::set_colour(const Colour& colour)
     {
         _colour = colour;
+        for (auto& waypoint : _waypoints)
+        {
+            waypoint.set_route_colour(colour);
+        }
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const

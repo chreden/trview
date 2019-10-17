@@ -3,6 +3,7 @@
 #include <SimpleMath.h>
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/Mesh.h>
+#include <trview.common/Colour.h>
 
 namespace trview
 {
@@ -33,7 +34,8 @@ namespace trview
         /// @param room The room that waypoint is in.
         /// @param type The type of waypoint.
         /// @param index The index of the entity or trigger being referenced if this is a non-position type.
-        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index);
+        /// @param route_colour The colour of the route.
+        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
 
         /// Destructor for waypoint.
         virtual ~Waypoint() = default;
@@ -69,6 +71,8 @@ namespace trview
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         void set_notes(const std::wstring& notes);
+
+        void set_route_colour(const Colour& colour);
     private:
         std::wstring                 _notes;
         DirectX::SimpleMath::Vector3 _position;
@@ -76,6 +80,7 @@ namespace trview
         Type                         _type;
         uint32_t                     _index;
         uint32_t                     _room;
+        Colour                       _route_colour;
     };
 
     Waypoint::Type waypoint_type_from_string(const std::string& value);

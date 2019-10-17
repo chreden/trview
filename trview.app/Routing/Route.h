@@ -109,7 +109,7 @@ namespace trview
         std::unique_ptr<Mesh> _waypoint_mesh;
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
-        Colour                _colour;
+        Colour                _colour{ Colour::Green };
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
