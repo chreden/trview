@@ -45,6 +45,9 @@ namespace trview
 
         void select_waypoint(uint32_t index);
 
+        /// Event raised when the route colour has changed.
+        Event<Colour> on_colour_changed;
+
         /// Event raised when a route is imported.
         Event<std::string> on_route_import;
 

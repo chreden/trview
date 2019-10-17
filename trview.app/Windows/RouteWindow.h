@@ -1,7 +1,9 @@
+
 #pragma once
 
 #include <trview.ui/Listbox.h>
 #include <trview.ui/TextArea.h>
+#include <trview.ui/Dropdown.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Routing/Waypoint.h>
@@ -37,6 +39,9 @@ namespace trview
         /// Event raised when a trigger is selected.
         Event<Trigger*> on_trigger_selected;
 
+        /// Event raised when the route colour has been changed.
+        Event<Colour> on_colour_changed;
+
         /// Event raised when a route file is opened.
         Event<std::string> on_route_import;
 
@@ -63,6 +68,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint);
 
+        ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
         ui::TextArea* _notes_area;

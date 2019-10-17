@@ -207,6 +207,10 @@ namespace trview
         {
             remove_waypoint(index);
         };
+        _token_store += _route_window_manager->on_colour_changed += [&](const Colour& colour)
+        {
+            _route->set_colour(colour);
+        };
 
         _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); };
         _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); };

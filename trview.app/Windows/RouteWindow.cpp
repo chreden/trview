@@ -56,6 +56,9 @@ namespace trview
         }
         _waypoints->set_items(items);
         load_waypoint_details(_selected_index);
+
+        // Set the colour...
+        _colour->set_selected_value(route->colour().name());
     }
 
     std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
@@ -64,28 +67,29 @@ namespace trview
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
 
-        auto colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
-        colour->set_text_colour(Colour::Green);
-        colour->set_text_background_colour(Colour::Green);
-        colour->set_values(
+        _colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        _colour->set_text_colour(Colour::Green);
+        _colour->set_text_background_colour(Colour::Green);
+        _colour->set_values(
             {
-                Dropdown::Value { L"Green", Colour::Green, Colour::Green },
-                { L"Red", Colour::Red, Colour::Red },
-                { L"Blue", Colour::Blue, Colour::Blue },
-                { L"Yellow", Colour::Yellow, Colour::Yellow },
-                { L"Cyan", Colour::Cyan, Colour::Cyan },
-                { L"Magenta", Colour::Magenta, Colour::Magenta },
-                { L"Black", Colour::Black, Colour::Black },
-                { L"White", Colour::White, Colour::White }
+                Dropdown::Value { Colour::Green.name(), Colour::Green, Colour::Green },
+                { Colour::Red.name(), Colour::Red, Colour::Red },
+                { Colour::Blue.name(), Colour::Blue, Colour::Blue },
+                { Colour::Yellow.name(), Colour::Yellow, Colour::Yellow },
+                { Colour::Cyan.name(), Colour::Cyan, Colour::Cyan },
+                { Colour::Magenta.name(), Colour::Magenta, Colour::Magenta },
+                { Colour::Black.name(), Colour::Black, Colour::Black },
+                { Colour::White.name(), Colour::White, Colour::White }
             });
-        colour->set_selected_value(L"Green");
-        colour->set_dropdown_scope(_ui.get());
+        _colour->set_selected_value(Colour::Green.name());
+        _colour->set_dropdown_scope(_ui.get());
 
-        _token_store += colour->on_value_selected += [=](const auto& value)
+        _token_store += _colour->on_value_selected += [=](const auto& value)
         {
             const auto new_colour = named_colour(value);
-            colour->set_text_colour(new_colour);
-            colour->set_text_background_colour(new_colour);
+            _colour->set_text_colour(new_colour);
+            _colour->set_text_background_colour(new_colour);
+            on_colour_changed(new_colour);
         };
 
         auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));

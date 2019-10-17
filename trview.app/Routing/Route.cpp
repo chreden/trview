@@ -23,6 +23,7 @@ namespace trview
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
         : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
     {
+        _colour = Colour::Green;
     }
 
     void Route::add(const Vector3& position, uint32_t room)
@@ -33,6 +34,11 @@ namespace trview
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index);
+    }
+
+    Colour Route::colour() const
+    {
+        return _colour;
     }
 
     void Route::clear()
@@ -142,6 +148,11 @@ namespace trview
     void Route::select_waypoint(uint32_t index)
     {
         _selected_index = index;
+    }
+
+    void Route::set_colour(const Colour& colour)
+    {
+        _colour = colour;
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const

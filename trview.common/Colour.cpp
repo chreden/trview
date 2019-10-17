@@ -1,4 +1,5 @@
 #include "Colour.h"
+#include <string>
 
 namespace trview
 {
@@ -34,6 +35,12 @@ namespace trview
     {
     }
 
+    std::wstring Colour::name() const
+    {
+        uint32_t value = *this;
+        return std::to_wstring(value);
+    }
+
     Colour::operator DirectX::SimpleMath::Color() const
     {
         return DirectX::SimpleMath::Color(r, g, b, a);
@@ -58,36 +65,12 @@ namespace trview
 
     Colour named_colour(const std::wstring& name)
     {
-        if (name == L"Red")
-        {
-            return Colour::Red;
-        }
-        else if (name == L"Green")
-        {
-            return Colour::Green;
-        }
-        else if (name == L"Blue")
-        {
-            return Colour::Blue;
-        }
-        else if (name == L"Magenta")
-        {
-            return Colour::Magenta;
-        }
-        else if (name == L"White")
-        {
-            return Colour::White;
-        }
-        else if (name == L"Yellow")
-        {
-            return Colour::Yellow;
-        }
-        else if (name == L"Cyan")
-        {
-            return Colour::Cyan;
-        }
-
-        return Colour::Black;
+        uint32_t value = std::stoul(name);
+        return Colour(
+            ((value >> 24) & 0xff) / 255.0f,
+            ((value >> 16) & 0xff) / 255.0f,
+            ((value >> 8) & 0xff) / 255.0f,
+            (value & 0xff) / 255.0f);
     }
 
     Colour operator+(const Colour& left, const Colour& right)
