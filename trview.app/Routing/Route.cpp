@@ -202,9 +202,9 @@ namespace trview
             nlohmann::json json;
             file >> json;
 
-            if (json["colour"].is_number_unsigned())
+            if (json["colour"].is_string())
             {
-                route->set_colour(named_colour(json["colour"].get<std::wstring>()));
+                route->set_colour(named_colour(to_utf16(json["colour"].get<std::string>())));
             }
 
             for (const auto& waypoint : json["waypoints"])
@@ -247,6 +247,8 @@ namespace trview
         try
         {
             nlohmann::json json;
+
+            json["colour"] = to_utf8(route.colour().name());
 
             std::vector<nlohmann::json> waypoints;
 

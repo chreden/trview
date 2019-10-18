@@ -56,7 +56,11 @@ namespace trview
         }
         _waypoints->set_items(items);
         load_waypoint_details(_selected_index);
-        _colour->set_selected_value(route->colour().name());
+
+        const auto colour = route->colour();
+        _colour->set_text_colour(colour);
+        _colour->set_text_background_colour(colour);
+        _colour->set_selected_value(colour.name());
     }
 
     std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
