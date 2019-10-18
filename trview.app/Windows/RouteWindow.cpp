@@ -1,11 +1,8 @@
 #include "RouteWindow.h"
-#include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.ui/GroupBox.h>
-#include <trview.ui/TextArea.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
-#include <trview.ui/Dropdown.h>
 
 namespace trview
 {

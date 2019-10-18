@@ -72,6 +72,8 @@ namespace trview
         /// @param notes The notes to save.
         void set_notes(const std::wstring& notes);
 
+        /// Set the route colour for the waypoint blob.
+        /// @param colour The colour of the route.
         void set_route_colour(const Colour& colour);
     private:
         std::wstring                 _notes;
