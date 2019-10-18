@@ -67,10 +67,24 @@ namespace trview
                 /// @param values The column index values for the item.
                 Item(const std::unordered_map<std::wstring, std::wstring>& values);
 
+                /// Create an item.
+                /// @param values The column index values for the item.
+                /// @param foreground The foreground text colour.
+                /// @param background The background colour of the box.
+                Item(const std::unordered_map<std::wstring, std::wstring>& values, const Colour& foreground, const Colour& background);
+
                 /// Get the value that the item has for the specified key.
                 /// @param key The key to search for.
                 /// @returns The value for the key.
                 std::wstring value(const std::wstring& key) const;
+
+                /// Get the foreground colour.
+                /// @returns The foreground text colour.
+                Colour foreground() const;
+
+                /// Get the background colour.
+                /// @returns The backround colour.
+                Colour background() const;
 
                 /// Determines whether two items are equal.
                 /// @param other The item to compare.
@@ -78,6 +92,8 @@ namespace trview
                 bool operator == (const Item& other) const;
             private:
                 std::unordered_map<std::wstring, std::wstring> _values;
+                Colour _foreground;
+                Colour _background;
             };
 
             /// A row in the list box.

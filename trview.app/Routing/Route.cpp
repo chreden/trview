@@ -32,7 +32,12 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index);
+        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+    }
+
+    Colour Route::colour() const
+    {
+        return _colour;
     }
 
     void Route::clear()
@@ -59,7 +64,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index));
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
@@ -123,7 +128,7 @@ namespace trview
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(device.context(), to_wvp, texture_storage, Color(0.0f, 1.0f, 0.0f));
+                _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
             }
         }
 
@@ -142,6 +147,15 @@ namespace trview
     void Route::select_waypoint(uint32_t index)
     {
         _selected_index = index;
+    }
+
+    void Route::set_colour(const Colour& colour)
+    {
+        _colour = colour;
+        for (auto& waypoint : _waypoints)
+        {
+            waypoint.set_route_colour(colour);
+        }
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const
@@ -188,6 +202,11 @@ namespace trview
             nlohmann::json json;
             file >> json;
 
+            if (json["colour"].is_string())
+            {
+                route->set_colour(named_colour(to_utf16(json["colour"].get<std::string>())));
+            }
+
             for (const auto& waypoint : json["waypoints"])
             {
                 auto type_string = waypoint["type"].get<std::string>();
@@ -228,6 +247,8 @@ namespace trview
         try
         {
             nlohmann::json json;
+
+            json["colour"] = to_utf8(route.colour().name());
 
             std::vector<nlohmann::json> waypoints;
 

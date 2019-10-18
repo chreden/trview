@@ -16,8 +16,8 @@ namespace trview
     {
     }
 
-    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index)
-        : _mesh(mesh), _position(position), _type(type), _index(index), _room(room)
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
+        : _mesh(mesh), _position(position), _type(type), _index(index), _room(room), _route_colour(route_colour)
     {
     }
 
@@ -34,7 +34,7 @@ namespace trview
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * camera.view_projection();
-        _mesh->render(device.context(), blob_wvp, texture_storage, Color(0.0f, 1.0f, 0.0f));
+        _mesh->render(device.context(), blob_wvp, texture_storage, _route_colour);
     }
 
     void Waypoint::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
@@ -69,6 +69,11 @@ namespace trview
     void Waypoint::set_notes(const std::wstring& notes)
     {
         _notes = notes;
+    }
+
+    void Waypoint::set_route_colour(const Colour& colour)
+    {
+        _route_colour = colour;
     }
 
     Waypoint::Type waypoint_type_from_string(const std::string& value)

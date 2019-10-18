@@ -27,11 +27,15 @@ namespace trview
         void Listbox::Row::set_item(const Item& item)
         {
             _item = item;
+            set_background_colour(item.background());
 
             const auto columns = child_elements();
             for (auto c = 0; c < _columns.size(); ++c)
             {
-                static_cast<Button*>(columns[c])->set_text(item.value(_columns[c].name()));
+                Button* button = static_cast<Button*>(columns[c]);
+                button->set_text(item.value(_columns[c].name()));
+                button->set_text_background_colour(item.background());
+                button->set_text_colour(item.foreground());
             }
         }
 

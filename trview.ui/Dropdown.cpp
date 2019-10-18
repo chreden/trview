@@ -14,6 +14,10 @@ namespace trview
             _button->set_background_colour(Colour(0.25f, 0.25f, 0.25f));
             _token_store += _button->on_click += [&]()
             {
+                if (!_dropdown)
+                {
+                    return;
+                }
                 _dropdown->set_visible(!_dropdown->visible());
                 on_focus_requested();
                 update_dropdown();
@@ -42,7 +46,18 @@ namespace trview
             update_dropdown();
         }
 
-        void Dropdown::set_values(const std::vector<std::wstring>& values)
+        void Dropdown::set_values(const std::vector<std::wstring>& value_names)
+        {
+            std::vector<Value> values;
+            std::transform(value_names.begin(), value_names.end(), std::back_inserter(values), 
+                [](const std::wstring& name) -> Value
+            {
+                return { name, { 0.25f, 0.25f, 0.25f }, Colour::White };
+            });
+            set_values(values);
+        }
+
+        void Dropdown::set_values(const std::vector<Value>& values)
         {
             _values = values;
             update_dropdown();
@@ -51,6 +66,16 @@ namespace trview
         void Dropdown::set_selected_value(const std::wstring& value)
         {
             _button->set_text(value);
+        }
+
+        void Dropdown::set_text_colour(const Colour& colour)
+        {
+            _button->set_text_colour(colour);
+        }
+
+        void Dropdown::set_text_background_colour(const Colour& colour)
+        {
+            _button->set_text_background_colour(colour);
         }
 
         void Dropdown::update_dropdown()
@@ -67,7 +92,7 @@ namespace trview
             std::vector<Listbox::Item> items;
             for (const auto& value : _values)
             {
-                items.push_back({{{ L"Name", value }}});
+                items.push_back({{{ L"Name", value.text }}, value.foreground, value.background});
             }
             _dropdown->set_items(items);
         }

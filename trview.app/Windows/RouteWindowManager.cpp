@@ -29,6 +29,7 @@ namespace trview
 
         // Otherwise create the window.
         _route_window = std::make_unique<RouteWindow>(_device, _shader_storage, _font_factory, window());
+        _route_window->on_colour_changed += on_colour_changed;
         _route_window->on_route_import += on_route_import;
         _route_window->on_route_export += on_route_export;
         _route_window->on_item_selected += on_item_selected;

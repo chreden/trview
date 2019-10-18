@@ -1,8 +1,6 @@
 #include "RouteWindow.h"
-#include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.ui/GroupBox.h>
-#include <trview.ui/TextArea.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 
@@ -40,7 +38,7 @@ namespace trview
     RouteWindow::RouteWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const trview::Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(device), create_right_panel());
     }
 
     void RouteWindow::set_route(Route* route) 
@@ -55,14 +53,45 @@ namespace trview
         }
         _waypoints->set_items(items);
         load_waypoint_details(_selected_index);
+
+        const auto colour = route->colour();
+        _colour->set_text_colour(colour);
+        _colour->set_text_background_colour(colour);
+        _colour->set_selected_value(colour.name());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel()
+    std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
     {
         auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
-        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Import"));
+
+        _colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        _colour->set_text_colour(Colour::Green);
+        _colour->set_text_background_colour(Colour::Green);
+        _colour->set_values(
+            {
+                Dropdown::Value { Colour::Green.name(), Colour::Green, Colour::Green },
+                { Colour::Red.name(), Colour::Red, Colour::Red },
+                { Colour::Blue.name(), Colour::Blue, Colour::Blue },
+                { Colour::Yellow.name(), Colour::Yellow, Colour::Yellow },
+                { Colour::Cyan.name(), Colour::Cyan, Colour::Cyan },
+                { Colour::Magenta.name(), Colour::Magenta, Colour::Magenta },
+                { Colour::Black.name(), Colour::Black, Colour::Black },
+                { Colour::White.name(), Colour::White, Colour::White }
+            });
+        _colour->set_selected_value(Colour::Green.name());
+        _colour->set_dropdown_scope(_ui.get());
+
+        _token_store += _colour->on_value_selected += [=](const auto& value)
+        {
+            const auto new_colour = named_colour(value);
+            _colour->set_text_colour(new_colour);
+            _colour->set_text_background_colour(new_colour);
+            on_colour_changed(new_colour);
+        };
+
+        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -82,7 +111,7 @@ namespace trview
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(100, 20), L"Export"));
+        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Export"));
         _token_store += export_button->on_click += [&]()
         {
             OPENFILENAME ofn;

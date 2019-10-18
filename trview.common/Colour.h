@@ -19,6 +19,8 @@ namespace trview
 
         Colour(float a, float r, float g, float b);
 
+        std::wstring name() const;
+
         operator DirectX::SimpleMath::Color() const;
 
         /// Convert the colour into a packed argb integer format.
@@ -33,7 +35,15 @@ namespace trview
         static Colour LightGrey;
         static Colour Transparent;
         static Colour White;
+        static Colour Green;
+        static Colour Blue;
+        static Colour Red;
+        static Colour Yellow;
+        static Colour Magenta;
+        static Colour Cyan;
     };
+
+    Colour named_colour(const std::wstring& name);
 
     Colour operator+(const Colour& left, const Colour& right);
 

@@ -5,7 +5,12 @@ namespace trview
     namespace ui
     {
         Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values)
-            : _values(values)
+            : Item(values, Colour::White, { 0.25f, 0.25f, 0.25f })
+        {
+        }
+
+        Listbox::Item::Item(const std::unordered_map<std::wstring, std::wstring>& values, const Colour& foreground, const Colour& background)
+            : _values(values), _foreground(foreground), _background(background)
         {
         }
 
@@ -17,6 +22,16 @@ namespace trview
                 return std::wstring();
             }
             return item->second;
+        }
+
+        Colour Listbox::Item::foreground() const
+        {
+            return _foreground;
+        }
+
+        Colour Listbox::Item::background() const
+        {
+            return _background;
         }
 
         bool Listbox::Item::operator == (const Item& other) const

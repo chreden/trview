@@ -1,4 +1,5 @@
 #include "Colour.h"
+#include <string>
 
 namespace trview
 {
@@ -7,6 +8,12 @@ namespace trview
     Colour Colour::LightGrey = Colour(0.7f, 0.7f, 0.7f);
     Colour Colour::Transparent = Colour(0.0f, 0.0f, 0.0f, 0.0f);
     Colour Colour::White = Colour(1.0f, 1.0f, 1.0f);
+    Colour Colour::Green = Colour(0.0f, 1.0f, 0.0f);
+    Colour Colour::Blue = Colour(0.0f, 0.0f, 1.0f);
+    Colour Colour::Red = Colour(1.0f, 0.0f, 0.0f);
+    Colour Colour::Yellow = Colour(1.0f, 1.0f, 0.0f);
+    Colour Colour::Magenta = Colour(1.0f, 0.0f, 1.0f);
+    Colour Colour::Cyan = Colour(0.0f, 1.0f, 1.0f);
 
     Colour::Colour()
         : Colour(1.0f, 1.0f, 1.0f)
@@ -26,6 +33,12 @@ namespace trview
     Colour::Colour(float a, float r, float g, float b)
         : a(a), r(r), g(g), b(b)
     {
+    }
+
+    std::wstring Colour::name() const
+    {
+        uint32_t value = *this;
+        return std::to_wstring(value);
     }
 
     Colour::operator DirectX::SimpleMath::Color() const
@@ -48,6 +61,16 @@ namespace trview
         g += other.g;
         b += other.b;
         return *this;
+    }
+
+    Colour named_colour(const std::wstring& name)
+    {
+        uint32_t value = std::stoul(name);
+        return Colour(
+            ((value >> 24) & 0xff) / 255.0f,
+            ((value >> 16) & 0xff) / 255.0f,
+            ((value >> 8) & 0xff) / 255.0f,
+            (value & 0xff) / 255.0f);
     }
 
     Colour operator+(const Colour& left, const Colour& right)

@@ -35,6 +35,9 @@ namespace trview
         /// Remove all of the waypoints from the route.
         void clear();
 
+        /// Get the colour of the route.
+        Colour colour() const;
+
         /// Insert the new waypoint into the route.
         /// @param position The new waypoint.
         /// @param room The room that the waypoint is in.
@@ -85,6 +88,10 @@ namespace trview
         /// @param index The index to select.
         void select_waypoint(uint32_t index);
 
+        /// Set the colour for the route.
+        /// @param colour The colour to use.
+        void set_colour(const Colour& colour);
+
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
         const Waypoint& waypoint(uint32_t index) const;
@@ -102,6 +109,7 @@ namespace trview
         std::unique_ptr<Mesh> _waypoint_mesh;
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
+        Colour                _colour{ Colour::Green };
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
