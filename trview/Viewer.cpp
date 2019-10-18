@@ -197,6 +197,7 @@ namespace trview
             {
                 _route = std::move(route);
                 _route_window_manager->set_route(_route.get());
+                _scene_changed = true;
             }
         };
         _token_store += _route_window_manager->on_route_export += [&](const std::string& path)
