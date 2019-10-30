@@ -140,6 +140,11 @@ namespace trview
                     if (tile.sector->flags & SectorFlag::RoomAbove)
                         draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
 
+                    if (tile.sector->flags & SectorFlag::Death && tile.sector->flags & SectorFlag::Trigger)
+                    {
+                        draw(context, tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, default_colours[SectorFlag::Death]);
+                    }
+
                     if (tile.sector->flags & SectorFlag::Portal)
                     {
                         _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
