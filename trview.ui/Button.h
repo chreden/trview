@@ -39,6 +39,10 @@ namespace trview
             /// @param size The size of the new element.
             Button(Point position, Size size);
 
+            /// Creates a new button.
+            /// @param size The size of the new element.
+            explicit Button(const Size& size);
+
             /// Destructor for the button.
             virtual ~Button() = default;
 

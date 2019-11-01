@@ -53,7 +53,7 @@ namespace trview
         // Add two methods of controlling flipmaps:
         // The TR1-3 method:
         auto tr1_3_panel = std::make_unique<ui::Window>(Point(12, 96), panel_size, Colour::Transparent);
-        auto flip = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Flip");
+        auto flip = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Flip");
         flip->on_state_changed += on_flip;
         _flip = tr1_3_panel->add_child(std::move(flip));
         _tr1_3_panel = rooms_groups->add_child(std::move(tr1_3_panel));
@@ -90,7 +90,7 @@ namespace trview
         {
             _alternate_group_values.insert({ group, false });
 
-            auto button = std::make_unique<ui::Button>(Point(), Size(16, 16), std::to_wstring(group));
+            auto button = std::make_unique<ui::Button>(Size(16, 16), std::to_wstring(group));
             button->set_text_background_colour(Colours::FlipOff);
             auto group_button = _alternate_groups->add_child(std::move(button));
 

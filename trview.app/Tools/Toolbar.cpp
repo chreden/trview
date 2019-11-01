@@ -31,7 +31,7 @@ namespace trview
 
     void Toolbar::add_tool(const std::wstring& name, const std::wstring& text)
     {
-        auto tool = std::make_unique<Button>(Point(), Size(32, 32), text);
+        auto tool = std::make_unique<Button>(Size(32, 32), text);
         _token_store += tool->on_click += [=]()
         {
             on_tool_clicked(name);

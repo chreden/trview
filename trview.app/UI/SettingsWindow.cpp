@@ -32,31 +32,31 @@ namespace trview
         panel->set_auto_size_dimension(SizeDimension::Height);
         panel->set_margin(Size(5, 5));
 
-        auto vsync = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Vsync");
+        auto vsync = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Vsync");
         vsync->on_state_changed += on_vsync;
         _vsync = panel->add_child(std::move(vsync));
 
-        auto go_to_lara = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Go to Lara");
+        auto go_to_lara = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Go to Lara");
         go_to_lara->on_state_changed += on_go_to_lara;
         _go_to_lara = panel->add_child(std::move(go_to_lara));
 
-        auto invert_map_controls = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Invert map controls");
+        auto invert_map_controls = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Invert map controls");
         invert_map_controls->on_state_changed += on_invert_map_controls;
         _invert_map_controls = panel->add_child(std::move(invert_map_controls));
 
-        auto items_startup = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Open Items Window at startup");
+        auto items_startup = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Open Items Window at startup");
         items_startup->on_state_changed += on_items_startup;
         _items_startup = panel->add_child(std::move(items_startup));
 
-        auto triggers_startup = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Open Triggers Window at startup");
+        auto triggers_startup = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Open Triggers Window at startup");
         triggers_startup->on_state_changed += on_triggers_startup;
         _triggers_startup = panel->add_child(std::move(triggers_startup));
 
-        auto auto_orbit = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Switch to orbit on selection");
+        auto auto_orbit = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Switch to orbit on selection");
         auto_orbit->on_state_changed += on_auto_orbit;
         _auto_orbit = panel->add_child(std::move(auto_orbit));
 
-        auto invert_vertical_pan = std::make_unique<Checkbox>(Point(), Size(16, 16), Colour::Transparent, L"Invert vertical panning");
+        auto invert_vertical_pan = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Invert vertical panning");
         invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
         _invert_vertical_pan = panel->add_child(std::move(invert_vertical_pan));
 

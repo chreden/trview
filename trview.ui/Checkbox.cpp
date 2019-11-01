@@ -12,6 +12,11 @@ namespace trview
             const Colour bg_colour { Colour(0.2f, 0.2f, 0.2f) };
         }
 
+        Checkbox::Checkbox(const Size& size)
+            : Checkbox(Point(), size)
+        {
+        }
+
         Checkbox::Checkbox(const Point& position, const Size& size)
             : StackPanel(position, size, Colour::Transparent, Size(), Direction::Horizontal)
         {

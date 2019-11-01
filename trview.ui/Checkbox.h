@@ -16,6 +16,10 @@ namespace trview
         {
         public:
             /// Creates a checkbox.
+            /// @param size The size of the checkbox.
+            explicit Checkbox(const Size& size);
+
+            /// Creates a checkbox.
             /// @param position The position of the checkbox.
             /// @param size The size of the checkbox.
             Checkbox(const Point& position, const Size& size);

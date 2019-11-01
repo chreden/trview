@@ -98,7 +98,7 @@ namespace trview
         // Control modes:.
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
+        auto track_room = std::make_unique<Checkbox>(Size(16, 16), Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
         {
             set_track_room(value);
@@ -109,7 +109,7 @@ namespace trview
         // Spacing between checkboxes.
         controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
 
-        auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
+        auto sync_item = std::make_unique<Checkbox>(Size(16, 16), Colours::LeftPanel, L"Sync Item");
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
         controls->add_child(std::move(sync_item));
@@ -174,7 +174,7 @@ namespace trview
         stats_list->set_show_highlight(false);
 
         _stats_list = details_panel->add_child(std::move(stats_list));
-        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
+        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())

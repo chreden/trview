@@ -269,7 +269,7 @@ namespace trview
             auto headers_element = std::make_unique<StackPanel>(Point(), size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
-                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
+                auto header_element = std::make_unique<Button>(Size(column.width(), 20), column.name());
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {

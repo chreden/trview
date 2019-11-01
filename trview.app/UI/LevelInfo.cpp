@@ -41,7 +41,7 @@ namespace trview
         auto name = std::make_unique<Label>(Point(), Size(74, 16), Colour::Transparent, L"No level", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
         name->set_vertical_alignment(Align::Centre);
 
-        auto settings = std::make_unique<Button>(Point(), Size(16, 16), texture_storage.lookup("settings"), texture_storage.lookup("settings"));
+        auto settings = std::make_unique<Button>(Size(16, 16), texture_storage.lookup("settings"), texture_storage.lookup("settings"));
         settings->on_click += on_toggle_settings;
 
         _version = panel->add_child(std::move(version));

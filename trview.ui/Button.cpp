@@ -32,6 +32,11 @@ namespace trview
         {
         }
 
+        Button::Button(const Size& size)
+            : Button(Point(), size)
+        {
+        }
+
         bool Button::mouse_down(const Point&)
         {
             return true;

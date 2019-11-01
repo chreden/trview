@@ -91,7 +91,7 @@ namespace trview
             on_colour_changed(new_colour);
         };
 
-        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
+        auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -111,7 +111,7 @@ namespace trview
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Export"));
+        auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
         _token_store += export_button->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -194,7 +194,7 @@ namespace trview
         };
         _stats = details_panel->add_child(std::move(stats_box));
 
-        auto delete_button = details_panel->add_child(std::make_unique<Button>(Point(), Size(panel_width - 20, 20), L"Delete Waypoint"));
+        auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
         _token_store += delete_button->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
