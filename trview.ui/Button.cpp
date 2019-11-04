@@ -37,6 +37,16 @@ namespace trview
         {
         }
 
+        Button::Button(const Size& size, const std::wstring& text)
+            : Button(Point(), size, text)
+        {
+        }
+
+        Button::Button(const Size& size, graphics::Texture up_image, graphics::Texture down_image)
+            : Button(Point(), size, up_image, down_image)
+        {
+        }
+
         bool Button::mouse_down(const Point&)
         {
             return true;

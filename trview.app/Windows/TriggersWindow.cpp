@@ -58,7 +58,7 @@ namespace trview
         controls_box->set_margin(Size(2, 2));
         auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Size(16, 16), Colours::LeftPanel, L"Track Room");
+        auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
         {
             set_track_room(value);
@@ -69,7 +69,7 @@ namespace trview
         // Spacing between checkboxes.
         controls->add_child(std::make_unique<ui::Window>(Point(), Size(5, 20), Colours::LeftPanel));
 
-        auto sync_trigger = std::make_unique<Checkbox>(Size(16, 16), Colours::LeftPanel, L"Sync Trigger");
+        auto sync_trigger = std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger");
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
         controls->add_child(std::move(sync_trigger));

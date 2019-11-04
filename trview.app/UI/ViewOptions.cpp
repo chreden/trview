@@ -20,11 +20,11 @@ namespace trview
         using namespace ui;
 
         auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options");
-        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Size(16, 16), Colour::Transparent, L"Highlight");
-        auto triggers = std::make_unique<Checkbox>(Point(86, 20), Size(16, 16), Colour::Transparent, L"Triggers");
+        auto highlight = std::make_unique<Checkbox>(Point(12, 20), Colour::Transparent, L"Highlight");
+        auto triggers = std::make_unique<Checkbox>(Point(86, 20), Colour::Transparent, L"Triggers");
         triggers->set_state(true);
-        auto hidden_geometry = std::make_unique<Checkbox>(Point(12, 45), Size(16, 16), Colour::Transparent, L"Geometry");
-        auto water = std::make_unique<Checkbox>(Point(86, 45), Size(16, 16), Colour::Transparent, L"Water");
+        auto hidden_geometry = std::make_unique<Checkbox>(Point(12, 45), Colour::Transparent, L"Geometry");
+        auto water = std::make_unique<Checkbox>(Point(86, 45), Colour::Transparent, L"Water");
         water->set_state(true);
 
         highlight->on_state_changed += on_highlight;
@@ -32,7 +32,7 @@ namespace trview
         hidden_geometry->on_state_changed += on_show_hidden_geometry;
         water->on_state_changed += on_show_water;
 
-        auto enabled = std::make_unique<Checkbox>(Point(12, 70), Size(16, 16), Colour::Transparent, L"Depth");
+        auto enabled = std::make_unique<Checkbox>(Point(12, 70), Colour::Transparent, L"Depth");
         enabled->on_state_changed += on_depth_enabled;
 
         auto depth = std::make_unique<NumericUpDown>(Point(86, 70), Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20);
@@ -53,7 +53,7 @@ namespace trview
         // Add two methods of controlling flipmaps:
         // The TR1-3 method:
         auto tr1_3_panel = std::make_unique<ui::Window>(Point(12, 96), panel_size, Colour::Transparent);
-        auto flip = std::make_unique<Checkbox>(Size(16, 16), Colour::Transparent, L"Flip");
+        auto flip = std::make_unique<Checkbox>(Colour::Transparent, L"Flip");
         flip->on_state_changed += on_flip;
         _flip = tr1_3_panel->add_child(std::move(flip));
         _tr1_3_panel = rooms_groups->add_child(std::move(tr1_3_panel));

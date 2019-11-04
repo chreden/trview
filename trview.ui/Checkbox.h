@@ -16,26 +16,27 @@ namespace trview
         {
         public:
             /// Creates a checkbox.
-            /// @param size The size of the checkbox.
-            explicit Checkbox(const Size& size);
+            explicit Checkbox();
 
             /// Creates a checkbox.
             /// @param position The position of the checkbox.
-            /// @param size The size of the checkbox.
-            Checkbox(const Point& position, const Size& size);
+            Checkbox(const Point& position);
 
             /// Creates a checkox with an associated label.
             /// @param position The position of the checkbox.
-            /// @param size The size of the checkbox.
             /// @param label_text The text for the associated label.
-            Checkbox(const Point& position, const Size& size, const std::wstring& label_text);
+            Checkbox(const Point& position, const std::wstring& label_text);
 
             /// Creates a checkox with an associated label.
             /// @param position The position of the checkbox.
-            /// @param size The size of the checkbox.
             /// @param background_colour Background colour of the label.
             /// @param label_text The text for the associated label.
-            Checkbox(const Point& position, const Size& size, const Colour& background_colour, const std::wstring& label_text);
+            Checkbox(const Point& position, const Colour& background_colour, const std::wstring& label_text);
+
+            /// Creates a checkbox with an associated label.
+            /// @param background_colour Background colour of the label.
+            /// @param label_text The text for the associated label.
+            Checkbox(const Colour& background_colour, const std::wstring& label_text);
 
             /// Destructor for the checkbox.
             virtual ~Checkbox() = default;
