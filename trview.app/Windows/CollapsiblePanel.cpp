@@ -132,7 +132,7 @@ namespace trview
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
-        auto panel = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto panel = std::make_unique<StackPanel>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _left_panel = panel->add_child(std::move(left_panel));
         _divider = panel->add_child(create_divider());
         _right_panel = panel->add_child(std::move(right_panel));

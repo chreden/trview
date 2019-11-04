@@ -8,7 +8,7 @@ namespace trview
     Toolbar::Toolbar(Control& control)
     {
         // Create a panel at the bottom of the parent control - have to add it to the control first so we can find out where to put it.
-        auto toolbar = std::make_unique<StackPanel>(Point(), Size(100, 40), Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(5,5), StackPanel::Direction::Horizontal);
+        auto toolbar = std::make_unique<StackPanel>(Size(100, 40), Colour(0.0f, 0.0f, 0.0f, 0.0f), Size(5,5), StackPanel::Direction::Horizontal);
         _toolbar = control.add_child(std::move(toolbar));
 
         // Put the toolbar in the middle bottom of the window.

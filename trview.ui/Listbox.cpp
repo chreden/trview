@@ -76,9 +76,9 @@ namespace trview
             }
             else
             {
-                auto rows_container = std::make_unique<StackPanel>(Point(), Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
+                auto rows_container = std::make_unique<StackPanel>(Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
 
-                auto rows_element = std::make_unique<StackPanel>(Point(), Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
+                auto rows_element = std::make_unique<StackPanel>(Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
                 _rows_element = rows_container->add_child(std::move(rows_element));
 
                 if (_show_scrollbar)
@@ -266,7 +266,7 @@ namespace trview
                 return;
             }
 
-            auto headers_element = std::make_unique<StackPanel>(Point(), size(), background_colour(), Size(), Direction::Horizontal);
+            auto headers_element = std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
                 auto header_element = std::make_unique<Button>(Size(column.width(), 20), column.name());

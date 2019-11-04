@@ -9,7 +9,7 @@ namespace trview
         TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
             : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
-            _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+            _area = add_child(std::make_unique<StackPanel>(size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
             _cursor->set_visible(focused());

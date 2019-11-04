@@ -70,8 +70,8 @@ namespace trview
 
     TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name)
     {
-        auto line = std::make_unique<StackPanel>(Point(), Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        auto line_area = std::make_unique<StackPanel>(Point(), Size(10, 20), Colour::Transparent);
+        auto line = std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+        auto line_area = std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent);
         line_area->add_child(std::make_unique<Window>(Point(), Size(10, 1), Colour::Transparent));
         line_area->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
         line->add_child(std::move(line_area));

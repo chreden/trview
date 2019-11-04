@@ -60,7 +60,7 @@ namespace trview
 
         // The TR4-5 method:
         auto tr4_5_panel = std::make_unique<ui::Window>(Point(12, 96), panel_size, Colour::Transparent);
-        auto alternate_groups = std::make_unique<StackPanel>(Point(), Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto alternate_groups = std::make_unique<StackPanel>(Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _alternate_groups = tr4_5_panel->add_child(std::move(alternate_groups));
         tr4_5_panel->set_visible(false);
         _tr4_5_panel = rooms_groups->add_child(std::move(tr4_5_panel));

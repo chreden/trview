@@ -21,14 +21,14 @@ namespace trview
         window->set_visible(false);
 
         // Create the title bar.
-        auto title_bar = std::make_unique<StackPanel>(Point(), Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto title_bar = std::make_unique<StackPanel>(Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto title = std::make_unique<Label>(Point(), Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         title->set_horizontal_alignment(Align::Centre);
         title_bar->add_child(std::move(title));
         window->add_child(std::move(title_bar));
 
         // Create the rest of the window contents.
-        auto panel = std::make_unique<StackPanel>(Point(), Size(400, 250), Colour::Transparent , Size(5, 5));
+        auto panel = std::make_unique<StackPanel>(Size(400, 250), Colour::Transparent , Size(5, 5));
         panel->set_auto_size_dimension(SizeDimension::Height);
         panel->set_margin(Size(5, 5));
 
@@ -60,7 +60,7 @@ namespace trview
         invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
         _invert_vertical_pan = panel->add_child(std::move(invert_vertical_pan));
 
-        auto camera_panel = std::make_unique<StackPanel>(Point(), Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+        auto camera_panel = std::make_unique<StackPanel>(Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         camera_panel->set_margin(Size(5, 5));
 
         camera_panel->add_child(std::make_unique<Label>(Point(), Size(), Colour::Transparent, L"Sensitivity", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));

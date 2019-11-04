@@ -50,13 +50,13 @@ namespace trview
     {
         using namespace ui;
 
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
-        auto controls_box = std::make_unique<StackPanel>(Point(), Size(200, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto controls_box = std::make_unique<StackPanel>(Size(200, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         controls_box->set_margin(Size(2, 2));
-        auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
@@ -81,7 +81,7 @@ namespace trview
         add_expander(*controls);
 
         // Command filter:
-        auto controls_row2 = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls_row2 = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls_row2->set_margin(Size(2, 0));
 
         auto command_filter = std::make_unique<Dropdown>(Point(), Size(186, 20));
@@ -139,7 +139,7 @@ namespace trview
     {
         using namespace ui;
         const float panel_width = 270;
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details");
 
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual);

@@ -218,7 +218,7 @@ namespace trview
     void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
     {
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<StackPanel>(Point(), Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
+        auto tool_window = std::make_unique<StackPanel>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
         tool_window->set_margin(Size(5, 5));
 
         _view_options = std::make_unique<ViewOptions>(*tool_window, texture_storage);

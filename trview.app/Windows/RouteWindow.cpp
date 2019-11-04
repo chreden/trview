@@ -62,9 +62,9 @@ namespace trview
 
     std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
     {
-        auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
+        auto buttons = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
 
         _colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
         _colour->set_text_colour(Colour::Green);
@@ -158,7 +158,7 @@ namespace trview
     std::unique_ptr<Control> RouteWindow::create_right_panel()
     {
         const float panel_width = 270;
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
         auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
