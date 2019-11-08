@@ -84,7 +84,7 @@ namespace trview
         auto controls_row2 = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls_row2->set_margin(Size(2, 0));
 
-        auto command_filter = std::make_unique<Dropdown>(Point(), Size(186, 20));
+        auto command_filter = std::make_unique<Dropdown>(Size(186, 20));
         command_filter->set_values({L"All"});
         command_filter->set_dropdown_scope(_ui.get());
         command_filter->set_selected_value(L"All");

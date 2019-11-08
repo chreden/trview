@@ -26,7 +26,11 @@ namespace trview
             /// Create a new dropdown box.
             /// @param position The position of the control.
             /// @param size The size of the control.
-            explicit Dropdown(const Point& position, const Size& size);
+            Dropdown(const Point& position, const Size& size);
+
+            /// Create a new dropdown box.
+            /// @param size The size of the control.
+            explicit Dropdown(const Size& size);
 
             /// Destructor for Dropdown.
             virtual ~Dropdown() = default;

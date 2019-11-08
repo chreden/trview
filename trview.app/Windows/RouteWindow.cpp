@@ -66,7 +66,7 @@ namespace trview
 
         auto buttons = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
 
-        _colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
         _colour->set_text_colour(Colour::Green);
         _colour->set_text_background_colour(Colour::Green);
         _colour->set_values(

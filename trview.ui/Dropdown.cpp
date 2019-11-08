@@ -24,6 +24,11 @@ namespace trview
             };
         }
 
+        Dropdown::Dropdown(const Size& size)
+            : Dropdown(Point(), size)
+        {
+        }
+
         void Dropdown::set_dropdown_scope(ui::Control* scope)
         {
             auto dropdown = std::make_unique<Listbox>(Point(), Size(size().width, size().height * _values.size()), Colour(0.25f, 0.25f, 0.25f));
