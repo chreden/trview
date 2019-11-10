@@ -10,7 +10,9 @@ namespace trview
         class Image : public Window
         {
         public:
-            explicit Image(Point position, Size size);
+            explicit Image(const Size& size);
+
+            Image(Point position, Size size);
 
             virtual ~Image() = default;
 

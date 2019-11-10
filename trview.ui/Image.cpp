@@ -4,6 +4,11 @@ namespace trview
 {
     namespace ui
     {
+        Image::Image(const Size& size)
+            : Image(Point(), size)
+        {
+        }
+
         Image::Image(Point position, Size size)
             : Window(position, size, Colour(0.0f, 0.0f, 0.0f, 0.0f))
         {

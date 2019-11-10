@@ -14,6 +14,14 @@ namespace trview
         {
         public:
             NumericUpDown(
+                Size size,
+                Colour background_colour,
+                graphics::Texture up_texture,
+                graphics::Texture down_texture,
+                int32_t minimum,
+                int32_t maximum);
+
+            NumericUpDown(
                 Point point, 
                 Size size, 
                 Colour background_colour, 

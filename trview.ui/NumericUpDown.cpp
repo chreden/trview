@@ -10,6 +10,11 @@ namespace trview
 {
     namespace ui
     {
+        NumericUpDown::NumericUpDown(Size size, Colour background_colour, graphics::Texture up_texture, graphics::Texture down_texture, int32_t minimum, int32_t maximum)
+            : NumericUpDown(Point(), size, background_colour, up_texture, down_texture, minimum, maximum)
+        {
+        }
+
         NumericUpDown::NumericUpDown(Point point, Size size, Colour background_colour, graphics::Texture up_texture, graphics::Texture down_texture, int32_t minimum, int32_t maximum)
             : Window(point, size, background_colour), _minimum(minimum), _maximum(maximum)
         {

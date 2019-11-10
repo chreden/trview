@@ -15,7 +15,7 @@ namespace trview
         Button::Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
             : Window(position, size, Colour::Transparent), _up_image(up_image), _down_image(down_image), _text(nullptr)
         {
-            auto image = std::make_unique<Image>(Point(), size);
+            auto image = std::make_unique<Image>(size);
             image->set_texture(up_image);
             add_child(std::move(image));
         }
