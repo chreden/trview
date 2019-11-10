@@ -8,6 +8,11 @@ namespace trview
 {
     namespace ui
     {
+        Listbox::Listbox(const Size& size, const Colour& background_colour)
+            : Listbox(Point(), size, background_colour)
+        {
+        }
+
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
             : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {

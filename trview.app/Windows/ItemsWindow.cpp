@@ -122,7 +122,7 @@ namespace trview
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto items_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -162,7 +162,7 @@ namespace trview
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 160), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Size(180, 160), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },

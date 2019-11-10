@@ -134,7 +134,7 @@ namespace trview
         auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
+        auto waypoints = std::make_unique<Listbox>(Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
         waypoints->set_enable_sorting(false);
         waypoints->set_columns(
             {
