@@ -161,7 +161,7 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
 
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 120), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
@@ -207,12 +207,12 @@ namespace trview
         right_panel->add_child(std::move(group_box));
 
         // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
+        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
         auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
 
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)

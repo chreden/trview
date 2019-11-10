@@ -107,7 +107,7 @@ namespace trview
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
         // Spacing between checkboxes.
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
 
         auto sync_item = std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item");
         sync_item->set_state(_sync_item);
@@ -115,7 +115,7 @@ namespace trview
         controls->add_child(std::move(sync_item));
 
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(15, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
 
         // Add the expander button at this point.
         add_expander(*controls);
@@ -157,7 +157,7 @@ namespace trview
         const float height = 400;
 
         auto right_panel = std::make_unique<StackPanel>(Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
+        auto group_box = std::make_unique<GroupBox>(Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
@@ -185,14 +185,14 @@ namespace trview
 
         group_box->add_child(std::move(details_panel));
 
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
         right_panel->add_child(std::move(group_box));
 
         // Spacer element.
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
+        auto trigger_group_box = std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
 
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 130), Colours::Triggers);
         trigger_list->set_columns(

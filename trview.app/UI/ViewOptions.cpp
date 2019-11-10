@@ -19,7 +19,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options");
+        auto rooms_groups = std::make_unique<GroupBox>(Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options");
         auto highlight = std::make_unique<Checkbox>(Point(12, 20), Colour::Transparent, L"Highlight");
         auto triggers = std::make_unique<Checkbox>(Point(86, 20), Colour::Transparent, L"Triggers");
         triggers->set_state(true);

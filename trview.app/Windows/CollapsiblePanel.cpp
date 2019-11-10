@@ -79,7 +79,7 @@ namespace trview
             _ui_renderer->set_host_size(window().size());
         };
 
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
         register_change_detection(_ui.get());
 
         _input = std::make_unique<ui::Input>(window(), *_ui);
@@ -142,7 +142,7 @@ namespace trview
 
     std::unique_ptr<Control> CollapsiblePanel::create_divider()
     {
-        return std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colours::Divider);
+        return std::make_unique<ui::Window>(Size(1, window().size().height), Colours::Divider);
     }
 
     void CollapsiblePanel::update_layout()

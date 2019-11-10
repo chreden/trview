@@ -72,7 +72,7 @@ namespace trview
     {
         auto line = std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         auto line_area = std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent);
-        line_area->add_child(std::make_unique<Window>(Point(), Size(10, 1), Colour::Transparent));
+        line_area->add_child(std::make_unique<Window>(Size(10, 1), Colour::Transparent));
         line_area->add_child(std::make_unique<Label>(Point(), Size(10, 20), Colour::Transparent, name + L": ", 8));
         line->add_child(std::move(line_area));
         auto entry = line->add_child(std::make_unique<TextArea>(Size(80, 20), Colour::Transparent, Colour::White));

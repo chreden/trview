@@ -298,7 +298,7 @@ namespace trview
             }
 
             // Add the spacer to make the scrollbar look ok.
-            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), background_colour()));
+            headers_element->add_child(std::make_unique<Window>(Size(10, 20), background_colour()));
             _headers_element = add_child(std::move(headers_element));
         }
 

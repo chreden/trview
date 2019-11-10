@@ -16,7 +16,7 @@ namespace trview
         {
             _area = add_child(std::make_unique<StackPanel>(size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
-            _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
+            _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
             set_handles_input(true);
         }

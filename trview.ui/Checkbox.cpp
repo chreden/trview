@@ -34,7 +34,7 @@ namespace trview
         {
             create_image(default_size, background_colour);
 
-            add_child(std::make_unique<Window>(Point(), Size(3, default_size.height), background_colour));
+            add_child(std::make_unique<Window>(Size(3, default_size.height), background_colour));
 
             auto label = std::make_unique<Label>(Point(), Size(1, 1), background_colour, label_text, 8, TextAlignment::Left, ParagraphAlignment::Centre, SizeMode::Auto);
             label->set_vertical_alignment(Align::Centre);
@@ -43,7 +43,7 @@ namespace trview
 
         void Checkbox::create_image(const Size& size, const Colour& colour)
         {
-            auto outer = std::make_unique<Window>(Point(), size, Colour(0.6f, 0.6f, 0.6f));
+            auto outer = std::make_unique<Window>(size, Colour(0.6f, 0.6f, 0.6f));
             outer->add_child(std::make_unique<Window>(Point(1, 1), size - Size(2, 2), bg_colour));
             _check = outer->add_child(std::make_unique<Label>(Point(), size - Size(2, 2), Colour::Transparent, L"", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
             add_child(std::move(outer));
