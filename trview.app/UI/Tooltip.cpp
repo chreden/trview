@@ -8,7 +8,7 @@ namespace trview
 {
     Tooltip::Tooltip(ui::Control& control)
     {
-        auto container = std::make_unique<StackPanel>(Point(), Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
+        auto container = std::make_unique<StackPanel>(Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
         container->set_margin(Size(5, 5));
         container->set_visible(false);
         container->set_handles_input(false);

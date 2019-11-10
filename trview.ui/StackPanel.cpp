@@ -5,6 +5,11 @@ namespace trview
 {
     namespace ui
     {
+        StackPanel::StackPanel(Size size, Colour colour, Size padding, Direction direction, SizeMode size_mode)
+            : StackPanel(Point(), size, colour, padding, direction, size_mode)
+        {
+        }
+
         StackPanel::StackPanel(Point position, Size size, Colour colour, Size padding, Direction direction, SizeMode size_mode)
             : Window(position, size, colour), _padding(padding), _direction(direction), _size_mode(size_mode)
         {

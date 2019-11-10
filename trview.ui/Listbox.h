@@ -131,6 +131,11 @@ namespace trview
             };
 
             /// Create a new Listbox.
+            /// @param size The size of the listbox.
+            /// @param background_colour The background colour for the list box.
+            Listbox(const Size& size, const Colour& background_colour);
+
+            /// Create a new Listbox.
             /// @param position The position of the listbox.
             /// @param size The size of the listbox.
             /// @param background_colour The background colour for the list box.

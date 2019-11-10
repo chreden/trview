@@ -19,7 +19,7 @@ namespace trview
         _menu = parent.add_child(std::make_unique<StackPanel>(Point(300, 300), Size(200, 100), Colours::Background, Size()));
 
         // Add waypoint button.
-        auto button = std::make_unique<Button>(Point(), Size(100, 24), L"Add Waypoint");
+        auto button = std::make_unique<Button>(Size(100, 24), L"Add Waypoint");
         button->set_text_background_colour(Colours::Button);
         _token_store += button->on_click += [&]()
         {
@@ -29,7 +29,7 @@ namespace trview
         _menu->add_child(std::move(button));
 
         // Add the similar remove waypoint button 
-        auto remove_button = std::make_unique<Button>(Point(), Size(100, 24), L"Remove Waypoint");
+        auto remove_button = std::make_unique<Button>(Size(100, 24), L"Remove Waypoint");
         remove_button->set_text_background_colour(Colours::Button);
         _token_store += remove_button->on_click += [&]()
         {
@@ -41,7 +41,7 @@ namespace trview
         };
         _remove_button = _menu->add_child(std::move(remove_button));
 
-        auto orbit_button = std::make_unique<Button>(Point(), Size(100, 24), L"Orbit Here");
+        auto orbit_button = std::make_unique<Button>(Size(100, 24), L"Orbit Here");
         orbit_button->set_text_background_colour(Colours::Button);
         _token_store += orbit_button->on_click += [&]()
         {

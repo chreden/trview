@@ -10,10 +10,15 @@ namespace trview
 {
     namespace ui
     {
+        NumericUpDown::NumericUpDown(Size size, Colour background_colour, graphics::Texture up_texture, graphics::Texture down_texture, int32_t minimum, int32_t maximum)
+            : NumericUpDown(Point(), size, background_colour, up_texture, down_texture, minimum, maximum)
+        {
+        }
+
         NumericUpDown::NumericUpDown(Point point, Size size, Colour background_colour, graphics::Texture up_texture, graphics::Texture down_texture, int32_t minimum, int32_t maximum)
             : Window(point, size, background_colour), _minimum(minimum), _maximum(maximum)
         {
-            auto label = std::make_unique<Label>(Point(), Size(size.width - 16, size.height), background_colour, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+            auto label = std::make_unique<Label>(Size(size.width - 16, size.height), background_colour, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
             auto up = std::make_unique<Button>(Point(size.width - 16, 0), Size(16, size.height / 2), up_texture, up_texture);
             auto down = std::make_unique<Button>(Point(size.width - 16, size.height / 2), Size(16, size.height / 2), down_texture, down_texture);
 

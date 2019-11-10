@@ -6,12 +6,17 @@ namespace trview
 {
     namespace ui
     {
+        TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
+            : TextArea(Point(), size, background_colour, text_colour, text_alignment)
+        {
+        }
+
         TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
             : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
-            _area = add_child(std::make_unique<StackPanel>(Point(), size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+            _area = add_child(std::make_unique<StackPanel>(size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
-            _cursor = add_child(std::make_unique<Window>(Point(), Size(1, 14), text_colour));
+            _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
             set_handles_input(true);
         }
@@ -276,7 +281,7 @@ namespace trview
 
         void TextArea::add_line(std::wstring text, bool raise_event)
         {
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+            _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             if (raise_event)
             {
                 notify_text_updated();

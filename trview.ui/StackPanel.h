@@ -25,6 +25,14 @@ namespace trview
             };
 
             /// Creates a new StackPanel instance.
+            /// @param size The initial size of the stack panel.
+            /// @param colour The background colour of the stack panel.
+            /// @param padding The amount of padding to place between each element.
+            /// @param direction The direction in which to stack elements. Defaults to Vertical.
+            /// @param size_mode Whether or not to resize the panel automatically.
+            StackPanel(Size size, Colour colour, Size padding = Size(), Direction direction = Direction::Vertical, SizeMode size_mode = SizeMode::Auto);
+
+            /// Creates a new StackPanel instance.
             /// @param position The position of the stack panel inside the parent control.
             /// @param size The initial size of the stack panel.
             /// @param colour The background colour of the stack panel.

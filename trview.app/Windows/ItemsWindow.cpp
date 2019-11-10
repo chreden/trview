@@ -92,13 +92,13 @@ namespace trview
     std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
-        auto controls = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Track Room");
+        auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
         {
             set_track_room(value);
@@ -107,22 +107,22 @@ namespace trview
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
         // Spacing between checkboxes.
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(10, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
 
-        auto sync_item = std::make_unique<Checkbox>(Point(), Size(16, 16), Colours::LeftPanel, L"Sync Item");
+        auto sync_item = std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item");
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
         controls->add_child(std::move(sync_item));
 
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Point(), Size(15, 20), Colours::LeftPanel));
+        controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
 
         // Add the expander button at this point.
         add_expander(*controls);
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto items_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -156,13 +156,13 @@ namespace trview
 
         const float height = 400;
 
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
+        auto right_panel = std::make_unique<StackPanel>(Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Point(), Size(180, 160), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Size(180, 160), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
@@ -174,7 +174,7 @@ namespace trview
         stats_list->set_show_highlight(false);
 
         _stats_list = details_panel->add_child(std::move(stats_list));
-        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Point(), Size(180, 20), L"Add to Route"));
+        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())
@@ -185,14 +185,14 @@ namespace trview
 
         group_box->add_child(std::move(details_panel));
 
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 8), Colours::ItemDetails));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
         right_panel->add_child(std::move(group_box));
 
         // Spacer element.
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(200, 5), Colours::Triggers));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto trigger_group_box = std::make_unique<GroupBox>(Point(), Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
+        auto trigger_group_box = std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
 
         auto trigger_list = std::make_unique<Listbox>(Point(10, 21), Size(190, 130), Colours::Triggers);
         trigger_list->set_columns(

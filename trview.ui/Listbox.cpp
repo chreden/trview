@@ -8,6 +8,11 @@ namespace trview
 {
     namespace ui
     {
+        Listbox::Listbox(const Size& size, const Colour& background_colour)
+            : Listbox(Point(), size, background_colour)
+        {
+        }
+
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
             : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
         {
@@ -76,14 +81,14 @@ namespace trview
             }
             else
             {
-                auto rows_container = std::make_unique<StackPanel>(Point(), Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
+                auto rows_container = std::make_unique<StackPanel>(Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
 
-                auto rows_element = std::make_unique<StackPanel>(Point(), Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
+                auto rows_element = std::make_unique<StackPanel>(Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
                 _rows_element = rows_container->add_child(std::move(rows_element));
 
                 if (_show_scrollbar)
                 {
-                    auto rows_scrollbar = std::make_unique<Scrollbar>(Point(), Size(scrollbar_width, remaining_height), background_colour());
+                    auto rows_scrollbar = std::make_unique<Scrollbar>(Size(scrollbar_width, remaining_height), background_colour());
                     _token_store += rows_scrollbar->on_scroll += [&](float value)
                     {
                         scroll_to(value * _items.size());
@@ -266,10 +271,10 @@ namespace trview
                 return;
             }
 
-            auto headers_element = std::make_unique<StackPanel>(Point(), size(), background_colour(), Size(), Direction::Horizontal);
+            auto headers_element = std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
-                auto header_element = std::make_unique<Button>(Point(), Size(column.width(), 20), column.name());
+                auto header_element = std::make_unique<Button>(Size(column.width(), 20), column.name());
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {
@@ -293,7 +298,7 @@ namespace trview
             }
 
             // Add the spacer to make the scrollbar look ok.
-            headers_element->add_child(std::make_unique<Window>(Point(), Size(10, 20), background_colour()));
+            headers_element->add_child(std::make_unique<Window>(Size(10, 20), background_colour()));
             _headers_element = add_child(std::move(headers_element));
         }
 

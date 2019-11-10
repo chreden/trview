@@ -4,6 +4,11 @@ namespace trview
 {
     namespace ui
     {
+        Label::Label(Size size, Colour background_colour, std::wstring text, int text_size, graphics::TextAlignment text_alignment, graphics::ParagraphAlignment paragraph_alignment, SizeMode mode)
+            : Label(Point(), size, background_colour, text, text_size, text_alignment, paragraph_alignment, mode)
+        {
+        }
+
         Label::Label(Point position, Size size, Colour background_colour, std::wstring text, int text_size, graphics::TextAlignment text_alignment, graphics::ParagraphAlignment paragraph_alignment, SizeMode mode)
             : Window(position, size, background_colour), _text(text), _text_size(text_size), _text_alignment(text_alignment), _paragraph_alignment(paragraph_alignment), _size_mode(mode), _text_colour(1.0f, 1.0f, 1.0f, 1.0f)
         {

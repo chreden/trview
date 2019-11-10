@@ -39,6 +39,21 @@ namespace trview
             /// @param size The size of the new element.
             Button(Point position, Size size);
 
+            /// Creates a new button.
+            /// @param size The size of the new element.
+            explicit Button(const Size& size);
+
+            /// Creates a new button with a label.
+            /// @param size The size of the new element.
+            /// @param text The text to display on the button.
+            Button(const Size& size, const std::wstring& text);
+
+            /// Creates a new button with provided textures.
+            /// @param size The size of the new element.
+            /// @param up_image The texture to use when the button is in the up state.
+            /// @param down_image The texture to use when the button is in the down state.
+            Button(const Size& size, graphics::Texture up_image, graphics::Texture down_image);
+
             /// Destructor for the button.
             virtual ~Button() = default;
 

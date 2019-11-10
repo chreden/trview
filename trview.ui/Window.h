@@ -11,7 +11,9 @@ namespace trview
         class Window : public Control
         {
         public:
-            explicit Window(Point position, Size size, Colour background_colour);
+            Window(const Size& size, const Colour& background_colour);
+
+            explicit Window(const Point& position, const Size& size, const Colour& background_colour);
 
             virtual ~Window() = default;
 

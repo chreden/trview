@@ -8,7 +8,7 @@ using namespace trview::ui;
 /// is called rather than the user clicking on the control.
 TEST(Checkbox, StateChangeEventNotRaised)
 {
-    Checkbox checkbox(Point(), Size(20, 20));
+    Checkbox checkbox;
     bool raised = false;
     auto token = checkbox.on_state_changed += [&](bool)
     {
@@ -24,7 +24,7 @@ TEST(Checkbox, StateChangeEventNotRaised)
 /// Tests that the state change event is raised when the user clicks on the control.
 TEST(Checkbox, StateChangeEventRaised)
 {
-    Checkbox checkbox(Point(), Size(20, 20));
+    Checkbox checkbox;
 
     bool raised = false;
     uint32_t times = 0;
@@ -47,7 +47,7 @@ TEST(Checkbox, StateChangeEventRaised)
 /// an event each time the state changes.
 TEST(Checkbox, StateChangeCycle)
 {
-    Checkbox checkbox(Point(), Size(20, 20));
+    Checkbox checkbox;
 
     std::vector<bool> states;
     auto token = checkbox.on_state_changed += [&states](bool state)

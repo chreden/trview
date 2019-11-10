@@ -4,7 +4,12 @@ namespace trview
 {
     namespace ui
     {
-        Window::Window(Point point, Size size, Colour background_colour)
+        Window::Window(const Size& size, const Colour& background_colour)
+            : Window(Point(), size, background_colour)
+        {
+        }
+
+        Window::Window(const Point& point, const Size& size, const Colour& background_colour)
             : Control(point, size), _background_colour(background_colour)
         {
         }

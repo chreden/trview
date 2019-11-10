@@ -79,7 +79,7 @@ namespace trview
             _ui_renderer->set_host_size(window().size());
         };
 
-        _ui = std::make_unique<ui::Window>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
+        _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
         register_change_detection(_ui.get());
 
         _input = std::make_unique<ui::Input>(window(), *_ui);
@@ -132,7 +132,7 @@ namespace trview
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
-        auto panel = std::make_unique<StackPanel>(Point(), window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto panel = std::make_unique<StackPanel>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         _left_panel = panel->add_child(std::move(left_panel));
         _divider = panel->add_child(create_divider());
         _right_panel = panel->add_child(std::move(right_panel));
@@ -142,7 +142,7 @@ namespace trview
 
     std::unique_ptr<Control> CollapsiblePanel::create_divider()
     {
-        return std::make_unique<ui::Window>(Point(), Size(1, window().size().height), Colours::Divider);
+        return std::make_unique<ui::Window>(Size(1, window().size().height), Colours::Divider);
     }
 
     void CollapsiblePanel::update_layout()
@@ -169,7 +169,7 @@ namespace trview
 
     void CollapsiblePanel::add_expander(Control& parent)
     {
-        auto expander = std::make_unique<Button>(Point(), Size(16, 16), L"<<");
+        auto expander = std::make_unique<Button>(Size(16, 16), L"<<");
         _token_store += expander->on_click += [this]()
         {
             toggle_expand();

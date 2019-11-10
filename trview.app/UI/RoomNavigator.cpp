@@ -16,14 +16,14 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Point(), Size(150, 90), Colour::Transparent, Colour::Grey, L"Room");
+        auto rooms_groups = std::make_unique<GroupBox>(Size(150, 90), Colour::Transparent, Colour::Grey, L"Room");
 
         auto room_controls = std::make_unique<StackPanel>(Point(4, 12), Size(140, 30), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        _current = room_controls->add_child(std::make_unique<NumericUpDown>(Point(), Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0));
+        _current = room_controls->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0));
         _current->on_value_changed += on_room_selected;
 
-        room_controls->add_child(std::make_unique<Label>(Point(), Size(40, 20), Colour::Transparent, L"of", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
-        _max = room_controls->add_child(std::make_unique<Label>(Point(), Size(50, 20), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
+        room_controls->add_child(std::make_unique<Label>(Size(40, 20), Colour::Transparent, L"of", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
+        _max = room_controls->add_child(std::make_unique<Label>(Size(50, 20), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
         rooms_groups->add_child(std::move(room_controls));
 
         auto listbox = std::make_unique<Listbox>(Point(4, 36), Size(140, 80), Colour::Transparent);

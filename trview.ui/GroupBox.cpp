@@ -5,6 +5,11 @@ namespace trview
 {
     namespace ui
     {
+        GroupBox::GroupBox(const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text)
+            : GroupBox(Point(), size, background_colour, border_colour, text)
+        {
+        }
+
         GroupBox::GroupBox(const Point& point, const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text)
             : Window(point, size, background_colour), _border_colour(border_colour)
         {

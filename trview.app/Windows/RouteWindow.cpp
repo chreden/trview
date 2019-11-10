@@ -62,11 +62,11 @@ namespace trview
 
     std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
     {
-        auto left_panel = std::make_unique<StackPanel>(Point(), Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto buttons = std::make_unique<StackPanel>(Point(), Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
+        auto buttons = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
 
-        _colour = buttons->add_child(std::make_unique<Dropdown>(Point(), Size(20, 20)));
+        _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
         _colour->set_text_colour(Colour::Green);
         _colour->set_text_background_colour(Colour::Green);
         _colour->set_values(
@@ -91,7 +91,7 @@ namespace trview
             on_colour_changed(new_colour);
         };
 
-        auto import = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Import"));
+        auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
         _token_store += import->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -111,7 +111,7 @@ namespace trview
                 on_route_import(trview::to_utf8(ofn.lpstrFile));
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Point(), Size(90, 20), L"Export"));
+        auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
         _token_store += export_button->on_click += [&]()
         {
             OPENFILENAME ofn;
@@ -134,7 +134,7 @@ namespace trview
         auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Point(), Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
+        auto waypoints = std::make_unique<Listbox>(Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
         waypoints->set_enable_sorting(false);
         waypoints->set_columns(
             {
@@ -158,10 +158,10 @@ namespace trview
     std::unique_ptr<Control> RouteWindow::create_right_panel()
     {
         const float panel_width = 270;
-        auto right_panel = std::make_unique<StackPanel>(Point(), Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Point(), Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
 
         auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 120), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
@@ -194,7 +194,7 @@ namespace trview
         };
         _stats = details_panel->add_child(std::move(stats_box));
 
-        auto delete_button = details_panel->add_child(std::make_unique<Button>(Point(), Size(panel_width - 20, 20), L"Delete Waypoint"));
+        auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
         _token_store += delete_button->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
@@ -207,12 +207,12 @@ namespace trview
         right_panel->add_child(std::move(group_box));
 
         // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Point(), Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
+        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
         auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
 
-        right_panel->add_child(std::make_unique<ui::Window>(Point(), Size(panel_width, 5), Colours::Notes));
+        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
