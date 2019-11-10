@@ -20,6 +20,13 @@ namespace trview
             };
 
             /// Create a text area.
+            /// @param size The size of the control.
+            /// @param background_colour The background colour of the text area.
+            /// @param text_colour The text colour for the text area.
+            /// @param text_alignment The text alignment of the label.
+            TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment = graphics::TextAlignment::Left);
+
+            /// Create a text area.
             /// @param position The position to place the control.
             /// @param size The size of the control.
             /// @param background_colour The background colour of the text area.
