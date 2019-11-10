@@ -6,7 +6,7 @@ namespace trview
 {
     namespace ui
     {
-        TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment = graphics::TextAlignment::Left)
+        TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
             : TextArea(Point(), size, background_colour, text_colour, text_alignment)
         {
         }
