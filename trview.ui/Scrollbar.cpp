@@ -4,6 +4,11 @@ namespace trview
 {
     namespace ui
     {
+        Scrollbar::Scrollbar(const Size& size, const Colour& background_colour)
+            : Scrollbar(Point(), size, background_colour)
+        {
+        }
+
         Scrollbar::Scrollbar(const Point& position, const Size& size, const Colour& background_colour)
             : Window(position, size, background_colour)
         {
