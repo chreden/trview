@@ -22,7 +22,7 @@ namespace trview
 
         // Create the title bar.
         auto title_bar = std::make_unique<StackPanel>(Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto title = std::make_unique<Label>(Point(), Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        auto title = std::make_unique<Label>(Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
         title->set_horizontal_alignment(Align::Centre);
         title_bar->add_child(std::move(title));
         window->add_child(std::move(title_bar));
@@ -63,9 +63,9 @@ namespace trview
         auto camera_panel = std::make_unique<StackPanel>(Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
         camera_panel->set_margin(Size(5, 5));
 
-        camera_panel->add_child(std::make_unique<Label>(Point(), Size(), Colour::Transparent, L"Sensitivity", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        camera_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, L"Sensitivity", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
         _sensitivity = camera_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
-        camera_panel->add_child(std::make_unique<Label>(Point(), Size(), Colour::Transparent, L"Movement Speed", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        camera_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, L"Movement Speed", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
         _movement_speed = camera_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
 
         _sensitivity->on_value_changed += on_sensitivity_changed;

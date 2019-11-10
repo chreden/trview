@@ -17,6 +17,14 @@ namespace trview
         class Label : public Window
         {
         public:
+            Label(Size size,
+                Colour background_colour,
+                std::wstring text,
+                int text_size,
+                graphics::TextAlignment text_alignment = graphics::TextAlignment::Left,
+                graphics::ParagraphAlignment paragraph_alignment = graphics::ParagraphAlignment::Near,
+                SizeMode mode = SizeMode::Manual);
+
             Label(Point position, 
                 Size size, 
                 Colour background_colour, 

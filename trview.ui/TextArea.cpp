@@ -281,7 +281,7 @@ namespace trview
 
         void TextArea::add_line(std::wstring text, bool raise_event)
         {
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Point(), Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+            _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             if (raise_event)
             {
                 notify_text_updated();
