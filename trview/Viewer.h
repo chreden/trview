@@ -140,7 +140,6 @@ namespace trview
         bool _show_selection{ true };
         SectorHighlight _sector_highlight;
         MenuDetector _menu_detector;
-        bool _menu_active{ false };
 
         // Tools:
 

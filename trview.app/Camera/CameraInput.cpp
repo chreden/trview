@@ -149,4 +149,17 @@ namespace trview
     {
         on_zoom(scroll / -100.0f);
     }
+
+    void CameraInput::reset()
+    {
+        _free_forward = false;
+        _free_left = false;
+        _free_right = false;
+        _free_backward = false;
+        _free_up = false;
+        _free_down = false;
+        _rotating = false;
+        _panning = false;
+        _panning_vertical = false;
+    }
 }

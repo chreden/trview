@@ -9,10 +9,13 @@ namespace trview
 
     void MenuDetector::process_message(UINT message, WPARAM wParam, LPARAM lParam) 
     {
-        if (message == WM_MENUSELECT)
+        if (message == WM_ENTERMENULOOP)
         {
-            bool closing = HIWORD(wParam) == 0xffff;
-            on_menu_toggled(!closing);
+            on_menu_toggled(true);
+        }
+        else if (message == WM_EXITMENULOOP)
+        {
+            on_menu_toggled(false);
         }
     }
 }

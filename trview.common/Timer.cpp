@@ -30,6 +30,7 @@ namespace trview
     {
         _elapsed = 0.0f;
         _total = 0.0f;
+        _previous = _time_source();
     }
 
     std::function<float()> default_time_source()

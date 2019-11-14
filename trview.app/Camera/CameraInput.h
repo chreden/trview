@@ -44,6 +44,9 @@ namespace trview
         /// @param scroll The mouse wheel movement.
         void mouse_scroll(int16_t scroll);
 
+        /// Reset all input states.
+        void reset();
+
         /// Event raised when the camera needs to be rotated.
         Event<float, float> on_rotate;
 

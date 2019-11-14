@@ -322,7 +322,8 @@ namespace trview
 
         _token_store += _menu_detector.on_menu_toggled += [&](bool open)
         {
-            _menu_active = open;
+            _timer.reset();
+            _camera_input.reset();
         };
     }
 
@@ -643,13 +644,6 @@ namespace trview
         }
 
         _timer.update();
-
-        // Keep updating the camera, but don't do anything.
-        if (_menu_active)
-        {
-            return;
-        }
-
         update_camera();
 
         if (_mouse_changed || _scene_changed)

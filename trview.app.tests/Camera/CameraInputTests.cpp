@@ -218,3 +218,17 @@ TEST(CameraInput, PanningVertical)
     ASSERT_EQ(200.0f, std::get<2>(pan_movement.value()));
 }
 
+TEST(CameraInput, Reset)
+{
+    using namespace DirectX::SimpleMath;
+
+    CameraInput subject;
+
+    subject.key_down('W', false);
+    subject.key_down('A', false);
+    ASSERT_NE(Vector3::Zero, subject.movement());
+
+    subject.reset();
+    ASSERT_EQ(Vector3::Zero, subject.movement());
+}
+
