@@ -37,7 +37,7 @@ namespace trview
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>()), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
-        _view_menu(window), _update_checker(window)
+        _view_menu(window), _update_checker(window), _menu_detector(window)
     {
         _update_checker.check_for_updates();
 
@@ -318,6 +318,11 @@ namespace trview
                 auto z = _current_pick.position.z - (info.value().z / trlevel::Scale_Z);
                 _ui->set_minimap_highlight(x, z);
             }
+        };
+
+        _token_store += _menu_detector.on_menu_toggled += [&](bool open)
+        {
+            _menu_active = open;
         };
     }
 
@@ -638,6 +643,12 @@ namespace trview
         }
 
         _timer.update();
+
+        // Keep updating the camera, but don't do anything.
+        if (_menu_active)
+        {
+            return;
+        }
 
         update_camera();
 

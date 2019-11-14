@@ -40,6 +40,7 @@
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
+#include <trview.app/Menus/MenuDetector.h>
 
 namespace trview
 {
@@ -138,6 +139,8 @@ namespace trview
         ViewMenu _view_menu;
         bool _show_selection{ true };
         SectorHighlight _sector_highlight;
+        MenuDetector _menu_detector;
+        bool _menu_active{ false };
 
         // Tools:
 
