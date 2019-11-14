@@ -152,12 +152,12 @@ namespace trview
 
     void CameraInput::reset()
     {
-        _free_forward = false;
-        _free_left = false;
-        _free_right = false;
-        _free_backward = false;
-        _free_up = false;
-        _free_down = false;
+        _free_forward = GetAsyncKeyState('W');
+        _free_left = GetAsyncKeyState('A');
+        _free_right = GetAsyncKeyState('D');
+        _free_backward = GetAsyncKeyState('S');;
+        _free_up = GetAsyncKeyState('E');
+        _free_down = GetAsyncKeyState('Q');
         _rotating = false;
         _panning = false;
         _panning_vertical = false;
