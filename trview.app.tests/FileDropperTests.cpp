@@ -8,7 +8,7 @@ using namespace trview;
 using namespace trview::tests;
 
 // Tests that sending a dropfile message to the dropper raises the event.
-TEST(FileDroper, DropFile)
+TEST(FileDropper, DropFile)
 {
     FileDropper dropper(create_test_window(L"TRViewFileDropperTests"));
 
@@ -37,7 +37,7 @@ TEST(FileDroper, DropFile)
 }
 
 // Tests that the class enables drag and drop
-TEST(FileDroper, EnableDragDrop)
+TEST(FileDropper, EnableDragDrop)
 {
     Window window = create_test_window(L"TRViewFileDropperTests");
     FileDropper dropper(window);
