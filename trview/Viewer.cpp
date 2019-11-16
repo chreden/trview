@@ -467,7 +467,7 @@ namespace trview
                         return t->room() == sector->room() && t->sector_id() == sector->id();
                     });
 
-                    if (trigger == triggers.end() || GetAsyncKeyState(VK_CONTROL))
+                    if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                     {
                         if (sector->flags & SectorFlag::Portal)
                         {

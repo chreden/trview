@@ -15,7 +15,7 @@ namespace trview
 
         bool Keyboard::control() const
         {
-            return GetAsyncKeyState(VK_CONTROL);
+            return GetAsyncKeyState(VK_CONTROL) & 0x8000;
         }
 
         void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
