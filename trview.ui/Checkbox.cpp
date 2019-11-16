@@ -68,6 +68,7 @@ namespace trview
         {
             set_state(!_state);
             on_state_changed(_state);
+            on_focus_clear_requested();
             return true;
         }
 
