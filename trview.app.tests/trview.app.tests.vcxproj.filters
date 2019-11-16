@@ -26,6 +26,9 @@
     <ClCompile Include="Elements\LevelTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\MenuDetectorTests.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -42,6 +45,9 @@
     </Filter>
     <Filter Include="Elements">
       <UniqueIdentifier>{511e3bad-c463-4037-83d1-c079ea951456}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{1f416bd8-ff05-4720-81cd-5666b82a28e2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -37,7 +37,7 @@ namespace trview
         : _window(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>()), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
-        _view_menu(window), _update_checker(window)
+        _view_menu(window), _update_checker(window), _menu_detector(window)
     {
         _update_checker.check_for_updates();
 
@@ -319,6 +319,12 @@ namespace trview
                 _ui->set_minimap_highlight(x, z);
             }
         };
+
+        _token_store += _menu_detector.on_menu_toggled += [&](bool open)
+        {
+            _timer.reset();
+            _camera_input.reset();
+        };
     }
 
     Viewer::~Viewer()
@@ -461,7 +467,7 @@ namespace trview
                         return t->room() == sector->room() && t->sector_id() == sector->id();
                     });
 
-                    if (trigger == triggers.end() || GetAsyncKeyState(VK_CONTROL))
+                    if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                     {
                         if (sector->flags & SectorFlag::Portal)
                         {
@@ -638,7 +644,6 @@ namespace trview
         }
 
         _timer.update();
-
         update_camera();
 
         if (_mouse_changed || _scene_changed)

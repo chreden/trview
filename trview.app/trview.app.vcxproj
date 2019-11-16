@@ -52,6 +52,7 @@
     <ClCompile Include="Menus\DirectoryListing.cpp" />
     <ClCompile Include="Menus\FileDropper.cpp" />
     <ClCompile Include="Menus\LevelSwitcher.cpp" />
+    <ClCompile Include="Menus\MenuDetector.cpp" />
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
     <ClInclude Include="Menus\LevelSwitcher.h" />
+    <ClInclude Include="Menus\MenuDetector.h" />
     <ClInclude Include="Menus\RecentFiles.h" />
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
