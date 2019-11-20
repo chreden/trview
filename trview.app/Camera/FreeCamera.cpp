@@ -32,12 +32,32 @@ namespace trview
     void FreeCamera::set_alignment(Alignment alignment)
     {
         _alignment = alignment;
+        calculate_projection_matrix();
     }
 
     void FreeCamera::set_position(const Vector3& position)
     {
         _position = position;
         calculate_view_matrix();
+    }
+
+    void FreeCamera::calculate_projection_matrix()
+    {
+        if (_alignment != Alignment::Axis)
+        {
+            Camera::calculate_projection_matrix();
+            return;
+        }
+
+        using namespace DirectX;
+
+        auto width = 10;
+        auto height = 10.0f * (_view_size.height / _view_size.width);
+
+        _projection = XMMatrixOrthographicRH(width, height, 0.1f, 10000.0f);
+        _projection_lh = XMMatrixOrthographicLH(width, height, 0.1f, 10000.0f);
+        _view_projection = _view * _projection;
+        calculate_bounding_frustum();
     }
 
     void FreeCamera::update_vectors()

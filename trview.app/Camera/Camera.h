@@ -41,7 +41,7 @@ namespace trview
         void calculate_bounding_frustum();
         
         /// Calculate the projection matrix based on the viewport size.
-        void calculate_projection_matrix();
+        virtual void calculate_projection_matrix();
 
         /// Calculate the view matrix based on the forward, up and rotation fields.
         void calculate_view_matrix();
@@ -58,7 +58,6 @@ namespace trview
         DirectX::SimpleMath::Vector3 _up;
         float _rotation_yaw{ default_yaw };
         float _rotation_pitch{ default_pitch };
-    private:
         Size _view_size;
         DirectX::SimpleMath::Matrix _view;
         DirectX::SimpleMath::Matrix _view_lh;

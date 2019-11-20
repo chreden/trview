@@ -39,6 +39,7 @@ namespace trview
         /// @param position The new camera position.
         void set_position(const DirectX::SimpleMath::Vector3& position);
     protected:
+        virtual void calculate_projection_matrix() override;
         virtual void update_vectors() override;
     private:
         Alignment _alignment{ Alignment::Axis };
