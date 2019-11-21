@@ -255,7 +255,7 @@ namespace trview
 
         auto in_view = [&](const Room& room)
         {
-            return true || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
+            return camera.projection_mode() == ProjectionMode::Orthographic || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
     
         bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);
