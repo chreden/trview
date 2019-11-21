@@ -30,6 +30,10 @@ namespace trview
         /// @returns The projection matrix.
         virtual const DirectX::SimpleMath::Matrix& projection() const = 0;
 
+        /// Gets the current projection mode for the camera.
+        /// @returns The projection mode.
+        virtual ProjectionMode projection_mode() const = 0;
+
         /// Gets the pitch rotation of the camera in radians.
         /// @returns The pitch rotation.
         virtual float rotation_pitch() const = 0;
@@ -62,6 +66,10 @@ namespace trview
         /// @param size The new size of the viewport.
         virtual void set_view_size(const Size& size) = 0;
 
+        /// Sets the zoom for the camera.
+        /// @param zoom The zoom level.
+        virtual void set_zoom(float zoom) = 0;
+
         /// Gets the direction that the camera considers to be 'up'.
         /// @returns The up direction.
         virtual DirectX::SimpleMath::Vector3 up() const = 0;
@@ -81,5 +89,9 @@ namespace trview
         /// Gets the current size of the viewport for the camera.
         /// @returns The viewport size.
         virtual const Size& view_size() const = 0;
+
+        /// Gets the zoom level.
+        /// @returns The zoom level.
+        virtual float zoom() const = 0;
     };
 }

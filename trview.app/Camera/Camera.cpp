@@ -7,6 +7,9 @@ namespace trview
 
     namespace
     {
+        const float max_zoom = 100.0f;
+        const float min_zoom = 0.1f;
+
         float angle_to(float current, float target)
         {
             return atan2(sin(target - current), cos(target - current));
@@ -41,6 +44,11 @@ namespace trview
     const Matrix& Camera::projection() const
     {
         return _projection;
+    }
+
+    ProjectionMode Camera::projection_mode() const
+    {
+        return _projection_mode;
     }
 
     float Camera::rotation_pitch() const
@@ -89,6 +97,20 @@ namespace trview
     {
         _view_size = size;
         calculate_projection_matrix();
+    }
+
+    void Camera::set_zoom(float zoom)
+    {
+        if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            _ortho_size = std::min(std::max(zoom, 1.0f), 100.0f);
+            calculate_projection_matrix();
+        }
+        else
+        {
+            _zoom = std::min(std::max(zoom, min_zoom), max_zoom);
+            update_vectors();
+        }
     }
 
     Vector3 Camera::up() const
@@ -146,6 +168,11 @@ namespace trview
         return _view_size;
     }
 
+    float Camera::zoom() const
+    {
+        return _projection_mode == ProjectionMode::Orthographic ? _ortho_size : _zoom;
+    }
+
     void Camera::calculate_bounding_frustum()
     {
         using namespace DirectX;
@@ -168,7 +195,7 @@ namespace trview
         }
         else if (_projection_mode == ProjectionMode::Orthographic)
         {
-            auto width = 30;
+            auto width = _ortho_size;
             auto height = width * (_view_size.height / _view_size.width);
 
             _projection = XMMatrixOrthographicRH(width, height, 0.1f, 10000.0f);

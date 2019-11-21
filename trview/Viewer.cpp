@@ -926,6 +926,14 @@ namespace trview
                     _level->on_camera_moved();
                 }
             }
+            else if (_free_camera.projection_mode() == ProjectionMode::Orthographic)
+            {
+                _free_camera.set_zoom(_free_camera.zoom() + zoom);
+                if (_level)
+                {
+                    _level->on_camera_moved();
+                }
+            }
         };
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
