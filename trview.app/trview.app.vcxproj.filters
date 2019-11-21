@@ -387,6 +387,9 @@
     <ClInclude Include="Menus\MenuDetector.h">
       <Filter>Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Camera\ProjectionMode.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

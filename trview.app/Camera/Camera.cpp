@@ -63,6 +63,12 @@ namespace trview
         _target_rotation_yaw = rotation;
     }
 
+    void Camera::set_projection_mode(ProjectionMode mode)
+    {
+        _projection_mode = mode;
+        calculate_projection_matrix();
+    }
+
     void Camera::set_rotation_pitch(float rotation)
     {
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
@@ -153,9 +159,22 @@ namespace trview
     void Camera::calculate_projection_matrix()
     {
         using namespace DirectX;
-        float aspect_ratio = _view_size.width / _view_size.height;
-        _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
-        _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+
+        if (_projection_mode == ProjectionMode::Perspective)
+        {
+            float aspect_ratio = _view_size.width / _view_size.height;
+            _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+            _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        }
+        else if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            auto width = 30;
+            auto height = width * (_view_size.height / _view_size.width);
+
+            _projection = XMMatrixOrthographicRH(width, height, 0.1f, 10000.0f);
+            _projection_lh = XMMatrixOrthographicLH(width, height, 0.1f, 10000.0f);
+        }
+
         _view_projection = _view * _projection;
         calculate_bounding_frustum();
     }

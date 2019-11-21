@@ -4,6 +4,7 @@
 
 #include <SimpleMath.h>
 #include <trview.common/Size.h>
+#include "ProjectionMode.h"
 
 namespace trview
 {
@@ -44,6 +45,10 @@ namespace trview
         /// Rotate to the specified yaw.
         /// @param rotation The angle to rotate to.
         virtual void rotate_to_yaw(float rotation) = 0;
+
+        /// Set the projection mode of the camera.
+        /// @param mode The new projection mode.
+        virtual void set_projection_mode(ProjectionMode mode) = 0;
 
         /// Set the pitch rotation of the camera.
         /// @param rotation The rotation around the right vector in radians.

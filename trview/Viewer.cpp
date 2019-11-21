@@ -133,6 +133,7 @@ namespace trview
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
@@ -751,6 +752,14 @@ namespace trview
 
         _camera_mode = camera_mode;
         _ui->set_camera_mode(camera_mode);
+        _scene_changed = true;
+    }
+
+    void Viewer::set_camera_projection_mode(ProjectionMode projection_mode)
+    {
+        _free_camera.set_projection_mode(projection_mode);
+        _camera.set_projection_mode(projection_mode);
+        _ui->set_camera_projection_mode(projection_mode);
         _scene_changed = true;
     }
 

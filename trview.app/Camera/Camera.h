@@ -25,6 +25,7 @@ namespace trview
         virtual float rotation_yaw() const override;
         virtual void rotate_to_pitch(float rotation) override;
         virtual void rotate_to_yaw(float rotation) override;
+        virtual void set_projection_mode(ProjectionMode mode) override;
         virtual void set_rotation_pitch(float rotation) override;
         virtual void set_rotation_yaw(float rotation) override;
         virtual void set_view_size(const Size& size) override;
@@ -41,7 +42,7 @@ namespace trview
         void calculate_bounding_frustum();
         
         /// Calculate the projection matrix based on the viewport size.
-        virtual void calculate_projection_matrix();
+        void calculate_projection_matrix();
 
         /// Calculate the view matrix based on the forward, up and rotation fields.
         void calculate_view_matrix();
@@ -67,5 +68,6 @@ namespace trview
         DirectX::BoundingFrustum _bounding_frustum;
         std::optional<float> _target_rotation_yaw;
         std::optional<float> _target_rotation_pitch;
+        ProjectionMode _projection_mode{ ProjectionMode::Perspective };
     };
 }

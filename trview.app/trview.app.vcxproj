@@ -88,6 +88,7 @@
     <ClInclude Include="Camera\FreeCamera.h" />
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
+    <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\Item.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />
