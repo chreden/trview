@@ -208,8 +208,17 @@ namespace trview
 
     void Camera::calculate_view_matrix()
     {
-        _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
-        _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
+        if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            // Scale the position back so that the level doesn't get clipped near the camera.
+            _view = XMMatrixLookAtRH(_position - _forward * 100, _position + _forward, _up);
+            _view_lh = XMMatrixLookAtLH(_position - _forward * 100, _position + _forward, _up);
+        }
+        else
+        {
+            _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
+            _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
+        }
         _view_projection = _view * _projection;
         calculate_bounding_frustum();
     }
