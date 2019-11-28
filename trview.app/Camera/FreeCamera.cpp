@@ -13,14 +13,22 @@ namespace trview
 
     void FreeCamera::move(const Vector3& movement)
     {
-        if (_alignment == Alignment::Camera)
+        if (_projection_mode == ProjectionMode::Orthographic)
         {
             auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-            _position += Vector3(0, movement.y, 0) + Vector3::Transform(Vector3(movement.x, 0, movement.z), rotate);
+            _position += Vector3::Transform(Vector3(movement.x, -movement.z, 0), rotate);
         }
-        else if (_alignment == Alignment::Axis)
+        else
         {
-            _position += movement;
+            if (_alignment == Alignment::Camera)
+            {
+                auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
+                _position += Vector3(0, movement.y, 0) + Vector3::Transform(Vector3(movement.x, 0, movement.z), rotate);
+            }
+            else if (_alignment == Alignment::Axis)
+            {
+                _position += movement;
+            }
         }
 
         if (movement.LengthSquared() > 0)
