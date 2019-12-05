@@ -5,9 +5,14 @@ namespace trview
 {
     namespace input
     {
-        Window WindowTester::window_under_cursor() const
+        WindowTester::WindowTester(const Window& window)
+            : MessageHandler(window)
         {
-            return trview::window_under_cursor();
+        }
+
+        bool WindowTester::is_window_under_cursor() const
+        {
+            return _mouse_in_window;
         }
 
         int WindowTester::screen_width(bool rdp) const
@@ -18,6 +23,22 @@ namespace trview
         int WindowTester::screen_height(bool rdp) const
         {
             return GetSystemMetrics(rdp ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
+        }
+
+        void WindowTester::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+        {
+            if (message == WM_MOUSEMOVE && !_mouse_in_window)
+            {
+                _mouse_in_window = true;
+                TRACKMOUSEEVENT track = { sizeof(track) };
+                track.dwFlags = TME_LEAVE;
+                track.hwndTrack = window();
+                TrackMouseEvent(&track);
+            }
+            else if (message == WM_MOUSELEAVE)
+            {
+                _mouse_in_window = false;
+            }
         }
     }
 }
