@@ -80,6 +80,15 @@ namespace trview
 
     void Camera::set_projection_mode(ProjectionMode mode)
     {
+        if (mode == ProjectionMode::Perspective && _projection_mode == ProjectionMode::Orthographic)
+        {
+            _zoom = _ortho_size;
+        }
+        else if (mode == ProjectionMode::Orthographic && _projection_mode == ProjectionMode::Perspective)
+        {
+            _ortho_size = _zoom;
+        }
+
         _projection_mode = mode;
         calculate_view_matrix();
         calculate_projection_matrix();
