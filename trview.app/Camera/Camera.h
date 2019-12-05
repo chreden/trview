@@ -20,6 +20,7 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 forward() const override;
         virtual const DirectX::BoundingFrustum& frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
+        virtual DirectX::SimpleMath::Vector3 rendering_position() const override;
         virtual const DirectX::SimpleMath::Matrix& projection() const override;
         virtual ProjectionMode projection_mode() const override;
         virtual float rotation_pitch() const override;

@@ -12,7 +12,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto camera_window = std::make_unique<GroupBox>(Size(150, 102), Colour::Transparent, Colour::Grey, L"Camera");
+        auto camera_window = std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16));
         reset_camera->on_click += on_reset;

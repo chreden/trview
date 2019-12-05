@@ -41,6 +41,13 @@ namespace trview
         return _position;
     }
 
+    Vector3 Camera::rendering_position() const
+    {
+        return _projection_mode == ProjectionMode::Orthographic
+            ? _position - _forward * 100
+            : _position;
+    }
+
     const Matrix& Camera::projection() const
     {
         return _projection;
@@ -74,6 +81,7 @@ namespace trview
     void Camera::set_projection_mode(ProjectionMode mode)
     {
         _projection_mode = mode;
+        calculate_view_matrix();
         calculate_projection_matrix();
     }
 
@@ -211,8 +219,8 @@ namespace trview
         if (_projection_mode == ProjectionMode::Orthographic)
         {
             // Scale the position back so that the level doesn't get clipped near the camera.
-            _view = XMMatrixLookAtRH(_position - _forward * 100, _position + _forward, _up);
-            _view_lh = XMMatrixLookAtLH(_position - _forward * 100, _position + _forward, _up);
+            _view = XMMatrixLookAtRH(rendering_position(), _position + _forward, _up);
+            _view_lh = XMMatrixLookAtLH(rendering_position(), _position + _forward, _up);
         }
         else
         {

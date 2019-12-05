@@ -26,6 +26,10 @@ namespace trview
         /// @returns The position of the camera.
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
 
+        /// Gets the position that the camera is rendering from, after adjusting for projection mode for example.
+        /// @returns The position from which the camera is rendering.
+        virtual DirectX::SimpleMath::Vector3 rendering_position() const = 0;
+
         /// Gets the current projection matrix for the camera.
         /// @returns The projection matrix.
         virtual const DirectX::SimpleMath::Matrix& projection() const = 0;

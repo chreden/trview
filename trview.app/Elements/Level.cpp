@@ -217,7 +217,7 @@ namespace trview
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
-            _transparency->sort(camera.position());
+            _transparency->sort(camera.rendering_position());
         }
 
         _regenerate_transparency = false;
