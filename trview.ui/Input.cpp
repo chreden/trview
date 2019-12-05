@@ -15,7 +15,7 @@ namespace trview
         }
 
         Input::Input(const trview::Window& window, Control& control)
-            : _mouse(window, std::make_unique<input::WindowTester>()), _keyboard(window), _window(window), _control(control)
+            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control)
         {
             register_events();
         }

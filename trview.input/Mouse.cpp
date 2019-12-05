@@ -33,8 +33,7 @@ namespace trview
 
         void Mouse::update_button(Button button, USHORT flags, USHORT down_mask, USHORT up_mask, DWORD& last_down)
         {
-            auto active_window = _window_tester->window_under_cursor();
-            if (active_window == window() && flags & down_mask)
+            if (_window_tester->is_window_under_cursor() && flags & down_mask)
             {
                 last_down = GetTickCount();
                 mouse_down(button);

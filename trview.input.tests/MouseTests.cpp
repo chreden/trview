@@ -12,7 +12,7 @@ using testing::_;
 class MockWindowTester final : public IWindowTester
 {
 public:
-    MOCK_CONST_METHOD0(window_under_cursor, Window());
+    MOCK_CONST_METHOD0(is_window_under_cursor, bool());
     MOCK_CONST_METHOD1(screen_width, int(bool));
     MOCK_CONST_METHOD1(screen_height, int(bool));
 };
@@ -26,8 +26,8 @@ TEST(Mouse, MouseDownEventRaised)
 
     auto window = create_test_window(L"TRViewInputTests");
     auto mockTester = std::make_unique<MockWindowTester>();
-    EXPECT_CALL(*mockTester, window_under_cursor())
-        .WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, is_window_under_cursor())
+        .WillRepeatedly(Return(true));
 
     Mouse mouse(window, std::move(mockTester));
 
@@ -58,8 +58,8 @@ TEST(Mouse, MouseUpEventRaised)
 
     auto window = create_test_window(L"TRViewInputTests");
     auto mockTester = std::make_unique<MockWindowTester>();
-    EXPECT_CALL(*mockTester, window_under_cursor())
-        .WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, is_window_under_cursor())
+        .WillRepeatedly(Return(true));
     Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_up +=
@@ -89,8 +89,8 @@ TEST(Mouse, MouseWheelEventRaised)
 
     auto window = create_test_window(L"TRViewInputTests");
     auto mockTester = std::make_unique<MockWindowTester>();
-    EXPECT_CALL(*mockTester, window_under_cursor())
-        .WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, is_window_under_cursor())
+        .WillRepeatedly(Return(true));
     Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_wheel +=
@@ -115,8 +115,8 @@ TEST(Mouse, MouseMoveEventRaised)
 
     auto window = create_test_window(L"TRViewInputTests");
     auto mockTester = std::make_unique<MockWindowTester>();
-    EXPECT_CALL(*mockTester, window_under_cursor())
-        .WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, is_window_under_cursor())
+        .WillRepeatedly(Return(true));
     Mouse mouse(window, std::move(mockTester));
 
     auto token = mouse.mouse_move +=
@@ -151,7 +151,7 @@ TEST(Mouse, MousePositionCorrect)
 {
     auto window = create_test_window(L"TRViewInputTests");
     auto mockTester = std::make_unique<MockWindowTester>();
-    EXPECT_CALL(*mockTester, window_under_cursor()).WillRepeatedly(Return(window));
+    EXPECT_CALL(*mockTester, is_window_under_cursor()).WillRepeatedly(Return(true));
     EXPECT_CALL(*mockTester, screen_width(_)).WillRepeatedly(Return(1000));
     EXPECT_CALL(*mockTester, screen_height(_)).WillRepeatedly(Return(1000));
     Mouse mouse(window, std::move(mockTester));

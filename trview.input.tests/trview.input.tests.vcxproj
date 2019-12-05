@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="KeyboardTests.cpp" />
     <ClCompile Include="MouseTests.cpp" />
+    <ClCompile Include="WindowTesterTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.input\trview.input.vcxproj">
