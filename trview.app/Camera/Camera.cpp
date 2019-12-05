@@ -111,7 +111,7 @@ namespace trview
     {
         if (_projection_mode == ProjectionMode::Orthographic)
         {
-            _ortho_size = std::min(std::max(zoom, 1.0f), 100.0f);
+            _ortho_size = std::min(std::max(zoom, 1.0f), 200.0f);
             calculate_projection_matrix();
         }
         else
