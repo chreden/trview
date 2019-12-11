@@ -4,6 +4,7 @@
 
 #include <SimpleMath.h>
 #include <trview.common/Size.h>
+#include "ProjectionMode.h"
 
 namespace trview
 {
@@ -25,9 +26,17 @@ namespace trview
         /// @returns The position of the camera.
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
 
+        /// Gets the position that the camera is rendering from, after adjusting for projection mode for example.
+        /// @returns The position from which the camera is rendering.
+        virtual DirectX::SimpleMath::Vector3 rendering_position() const = 0;
+
         /// Gets the current projection matrix for the camera.
         /// @returns The projection matrix.
         virtual const DirectX::SimpleMath::Matrix& projection() const = 0;
+
+        /// Gets the current projection mode for the camera.
+        /// @returns The projection mode.
+        virtual ProjectionMode projection_mode() const = 0;
 
         /// Gets the pitch rotation of the camera in radians.
         /// @returns The pitch rotation.
@@ -45,6 +54,10 @@ namespace trview
         /// @param rotation The angle to rotate to.
         virtual void rotate_to_yaw(float rotation) = 0;
 
+        /// Set the projection mode of the camera.
+        /// @param mode The new projection mode.
+        virtual void set_projection_mode(ProjectionMode mode) = 0;
+
         /// Set the pitch rotation of the camera.
         /// @param rotation The rotation around the right vector in radians.
         virtual void set_rotation_pitch(float rotation) = 0;
@@ -56,6 +69,10 @@ namespace trview
         /// Sets the viewport size for the camera. This will update the projection matrix.
         /// @param size The new size of the viewport.
         virtual void set_view_size(const Size& size) = 0;
+
+        /// Sets the zoom for the camera.
+        /// @param zoom The zoom level.
+        virtual void set_zoom(float zoom) = 0;
 
         /// Gets the direction that the camera considers to be 'up'.
         /// @returns The up direction.
@@ -76,5 +93,9 @@ namespace trview
         /// Gets the current size of the viewport for the camera.
         /// @returns The viewport size.
         virtual const Size& view_size() const = 0;
+
+        /// Gets the zoom level.
+        /// @returns The zoom level.
+        virtual float zoom() const = 0;
     };
 }

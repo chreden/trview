@@ -20,19 +20,24 @@ namespace trview
         virtual DirectX::SimpleMath::Vector3 forward() const override;
         virtual const DirectX::BoundingFrustum& frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
+        virtual DirectX::SimpleMath::Vector3 rendering_position() const override;
         virtual const DirectX::SimpleMath::Matrix& projection() const override;
+        virtual ProjectionMode projection_mode() const override;
         virtual float rotation_pitch() const override;
         virtual float rotation_yaw() const override;
         virtual void rotate_to_pitch(float rotation) override;
         virtual void rotate_to_yaw(float rotation) override;
+        virtual void set_projection_mode(ProjectionMode mode) override;
         virtual void set_rotation_pitch(float rotation) override;
         virtual void set_rotation_yaw(float rotation) override;
         virtual void set_view_size(const Size& size) override;
+        virtual void set_zoom(float zoom) override;
         virtual DirectX::SimpleMath::Vector3 up() const override;
         virtual void update(float elapsed) override;
         virtual const DirectX::SimpleMath::Matrix& view() const override;
         virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
         virtual const Size& view_size() const override;
+        virtual float zoom() const override;
 
         /// Event raised when the view of the camera has changed.
         Event<> on_view_changed;
@@ -52,12 +57,15 @@ namespace trview
 
         const float default_pitch = -0.78539f;
         const float default_yaw = 0.0f;
+        const float default_zoom = 8.0f;
 
         DirectX::SimpleMath::Vector3 _position;
         DirectX::SimpleMath::Vector3 _forward;
         DirectX::SimpleMath::Vector3 _up;
         float _rotation_yaw{ default_yaw };
         float _rotation_pitch{ default_pitch };
+        float _zoom{ default_zoom };
+        ProjectionMode _projection_mode{ ProjectionMode::Perspective };
     private:
         Size _view_size;
         DirectX::SimpleMath::Matrix _view;
@@ -68,5 +76,6 @@ namespace trview
         DirectX::BoundingFrustum _bounding_frustum;
         std::optional<float> _target_rotation_yaw;
         std::optional<float> _target_rotation_pitch;
+        float _ortho_size{ 10.0f };
     };
 }

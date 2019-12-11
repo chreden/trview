@@ -133,6 +133,7 @@ namespace trview
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
+        _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
@@ -754,6 +755,14 @@ namespace trview
         _scene_changed = true;
     }
 
+    void Viewer::set_camera_projection_mode(ProjectionMode projection_mode)
+    {
+        _free_camera.set_projection_mode(projection_mode);
+        _camera.set_projection_mode(projection_mode);
+        _ui->set_camera_projection_mode(projection_mode);
+        _scene_changed = true;
+    }
+
     void Viewer::toggle_highlight()
     {
         if (_level)
@@ -917,6 +926,14 @@ namespace trview
                     _level->on_camera_moved();
                 }
             }
+            else if (_free_camera.projection_mode() == ProjectionMode::Orthographic)
+            {
+                _free_camera.set_zoom(_free_camera.zoom() + zoom);
+                if (_level)
+                {
+                    _level->on_camera_moved();
+                }
+            }
         };
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
@@ -930,20 +947,28 @@ namespace trview
 
             using namespace DirectX::SimpleMath;
 
-            if (vertical)
+            if (camera.projection_mode() == ProjectionMode::Perspective)
             {
-                _target += 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f);
+                if (vertical)
+                {
+                    _target += 0.05f * Vector3::Up * y * (_settings.invert_vertical_pan ? -1.0f : 1.0f);
+                }
+                else
+                {
+                    // Rotate forward and right by the camera yaw...
+                    const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
+                    const auto forward = Vector3::Transform(Vector3::Forward, rotation);
+                    const auto right = Vector3::Transform(Vector3::Right, rotation);
+
+                    // Add them on to the position.
+                    const auto movement = 0.05f * (forward * -y + right * -x);
+                    _target += movement;
+                }
             }
             else
             {
-                // Rotate forward and right by the camera yaw...
-                const auto rotation = Matrix::CreateRotationY(camera.rotation_yaw());
-                const auto forward = Vector3::Transform(Vector3::Forward, rotation);
-                const auto right = Vector3::Transform(Vector3::Right, rotation);
-
-                // Add them on to the position.
-                const auto movement = 0.05f * (forward * -y + right * -x);
-                _target += movement;
+                auto rotate = Matrix::CreateFromYawPitchRoll(camera.rotation_yaw(), camera.rotation_pitch(), 0);
+                _target += 0.05f * Vector3::Transform(Vector3(-x, y * (_settings.invert_vertical_pan ? -1.0f : 1.0f), 0), rotate);
             }
 
             if (_level)

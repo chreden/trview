@@ -24,23 +24,12 @@ namespace trview
         /// @param target The position that the camera will orbit around.
         void set_target(const DirectX::SimpleMath::Vector3& target);
 
-        /// Set the distance from the orbit target.
-        /// @param zoom The distance from the orbit target.
-        void set_zoom(float zoom);
-
         /// Get the current orbit target.
         /// @returns The orbit target.
         const DirectX::SimpleMath::Vector3& target() const;
-
-        /// Get the current distance from the orbit target.
-        /// @returns The distance from the orbit target.
-        float zoom() const;
     protected:
         virtual void update_vectors() override;
     private:
-        const float default_zoom = 8.0f;
-
         DirectX::SimpleMath::Vector3 _target;
-        float _zoom{ default_zoom };
     };
 }

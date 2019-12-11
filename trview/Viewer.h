@@ -97,6 +97,7 @@ namespace trview
         const ICamera& current_camera() const;
         ICamera& current_camera();
         void set_camera_mode(CameraMode camera_mode);
+        void set_camera_projection_mode(ProjectionMode projection_mode);
         void set_alternate_mode(bool enabled);
         void set_alternate_group(uint16_t group, bool enabled);
         bool alternate_group(uint16_t group) const;

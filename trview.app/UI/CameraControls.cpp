@@ -12,7 +12,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto camera_window = std::make_unique<GroupBox>(Size(150, 72), Colour::Transparent, Colour::Grey, L"Camera");
+        auto camera_window = std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera");
 
         auto reset_camera = std::make_unique<Button>(Point(12, 20), Size(16, 16));
         reset_camera->on_click += on_reset;
@@ -28,11 +28,15 @@ namespace trview
         auto axis_camera = std::make_unique<Checkbox>(Point(86, 42), Colour::Transparent, L"Axis");
         _token_store += axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
 
+        auto ortho = std::make_unique<Checkbox>(Point(12, 64), Colour::Transparent, L"Ortho");
+        _token_store += ortho->on_state_changed += [&](auto ortho_enabled) { change_projection(ortho_enabled ? ProjectionMode::Orthographic : ProjectionMode::Perspective); };
+
         camera_window->add_child(std::move(reset_camera));
         camera_window->add_child(std::move(reset_camera_label));
         _orbit = camera_window->add_child(std::move(orbit_camera));
         _free = camera_window->add_child(std::move(free_camera));
         _axis = camera_window->add_child(std::move(axis_camera));
+        _ortho = camera_window->add_child(std::move(ortho));
 
         parent.add_child(std::move(camera_window));
     }
@@ -45,6 +49,12 @@ namespace trview
         on_mode_selected(mode);
     }
 
+    void CameraControls::change_projection(ProjectionMode mode)
+    {
+        set_projection_mode(mode);
+        on_projection_mode_selected(mode);
+    }
+
     // Set the current camera mode. This will not raise the on_mode_selected event.
     // mode: The camera mode to change to.
     void CameraControls::set_mode(CameraMode mode)
@@ -52,5 +62,10 @@ namespace trview
         _orbit->set_state(mode == CameraMode::Orbit);
         _free->set_state(mode == CameraMode::Free);
         _axis->set_state(mode == CameraMode::Axis);
+    }
+
+    void CameraControls::set_projection_mode(ProjectionMode mode)
+    {
+        _ortho->set_state(mode == ProjectionMode::Orthographic);
     }
 }

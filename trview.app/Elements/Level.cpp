@@ -217,7 +217,7 @@ namespace trview
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
-            _transparency->sort(camera.position());
+            _transparency->sort(camera.rendering_position());
         }
 
         _regenerate_transparency = false;
@@ -255,7 +255,7 @@ namespace trview
 
         auto in_view = [&](const Room& room)
         {
-            return frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
+            return camera.projection_mode() == ProjectionMode::Orthographic || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
     
         bool highlight = highlight_mode_enabled(RoomHighlightMode::Highlight);

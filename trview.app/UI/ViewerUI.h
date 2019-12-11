@@ -74,6 +74,9 @@ namespace trview
         /// Event raised when the camera mode is set.
         Event<CameraMode> on_camera_mode;
 
+        /// Event raised when the camera projection mode is set.
+        Event<ProjectionMode> on_camera_projection_mode;
+
         /// Event raised when the camera is reset.
         Event<> on_camera_reset;
 
@@ -153,6 +156,10 @@ namespace trview
         /// Set the camera mode.
         /// @param mode The current camera mode.
         void set_camera_mode(CameraMode mode);
+
+        /// Set the camera projection mode.
+        /// @param mode The current camera projection mode.
+        void set_camera_projection_mode(ProjectionMode mode);
 
         /// Set whether depth is enabled.
         /// @param value Whether depth is enabled.

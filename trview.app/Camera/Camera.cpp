@@ -7,6 +7,9 @@ namespace trview
 
     namespace
     {
+        const float max_zoom = 100.0f;
+        const float min_zoom = 0.1f;
+
         float angle_to(float current, float target)
         {
             return atan2(sin(target - current), cos(target - current));
@@ -38,9 +41,21 @@ namespace trview
         return _position;
     }
 
+    Vector3 Camera::rendering_position() const
+    {
+        return _projection_mode == ProjectionMode::Orthographic
+            ? _position - _forward * 100
+            : _position;
+    }
+
     const Matrix& Camera::projection() const
     {
         return _projection;
+    }
+
+    ProjectionMode Camera::projection_mode() const
+    {
+        return _projection_mode;
     }
 
     float Camera::rotation_pitch() const
@@ -63,6 +78,22 @@ namespace trview
         _target_rotation_yaw = rotation;
     }
 
+    void Camera::set_projection_mode(ProjectionMode mode)
+    {
+        if (mode == ProjectionMode::Perspective && _projection_mode == ProjectionMode::Orthographic)
+        {
+            _zoom = _ortho_size;
+        }
+        else if (mode == ProjectionMode::Orthographic && _projection_mode == ProjectionMode::Perspective)
+        {
+            _ortho_size = _zoom;
+        }
+
+        _projection_mode = mode;
+        calculate_view_matrix();
+        calculate_projection_matrix();
+    }
+
     void Camera::set_rotation_pitch(float rotation)
     {
         _rotation_pitch = std::max(-DirectX::XM_PIDIV2, std::min(rotation, DirectX::XM_PIDIV2));
@@ -83,6 +114,20 @@ namespace trview
     {
         _view_size = size;
         calculate_projection_matrix();
+    }
+
+    void Camera::set_zoom(float zoom)
+    {
+        if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            _ortho_size = std::min(std::max(zoom, 1.0f), 200.0f);
+            calculate_projection_matrix();
+        }
+        else
+        {
+            _zoom = std::min(std::max(zoom, min_zoom), max_zoom);
+            update_vectors();
+        }
     }
 
     Vector3 Camera::up() const
@@ -140,6 +185,11 @@ namespace trview
         return _view_size;
     }
 
+    float Camera::zoom() const
+    {
+        return _projection_mode == ProjectionMode::Orthographic ? _ortho_size : _zoom;
+    }
+
     void Camera::calculate_bounding_frustum()
     {
         using namespace DirectX;
@@ -153,17 +203,39 @@ namespace trview
     void Camera::calculate_projection_matrix()
     {
         using namespace DirectX;
-        float aspect_ratio = _view_size.width / _view_size.height;
-        _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
-        _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+
+        if (_projection_mode == ProjectionMode::Perspective)
+        {
+            float aspect_ratio = _view_size.width / _view_size.height;
+            _projection = XMMatrixPerspectiveFovRH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+            _projection_lh = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.1f, 10000.0f);
+        }
+        else if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            auto width = _ortho_size;
+            auto height = width * (_view_size.height / _view_size.width);
+
+            _projection = XMMatrixOrthographicRH(width, height, 0.1f, 10000.0f);
+            _projection_lh = XMMatrixOrthographicLH(width, height, 0.1f, 10000.0f);
+        }
+
         _view_projection = _view * _projection;
         calculate_bounding_frustum();
     }
 
     void Camera::calculate_view_matrix()
     {
-        _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
-        _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
+        if (_projection_mode == ProjectionMode::Orthographic)
+        {
+            // Scale the position back so that the level doesn't get clipped near the camera.
+            _view = XMMatrixLookAtRH(rendering_position(), _position + _forward, _up);
+            _view_lh = XMMatrixLookAtLH(rendering_position(), _position + _forward, _up);
+        }
+        else
+        {
+            _view = XMMatrixLookAtRH(_position, _position + _forward, _up);
+            _view_lh = XMMatrixLookAtLH(_position, _position + _forward, _up);
+        }
         _view_projection = _view * _projection;
         calculate_bounding_frustum();
     }

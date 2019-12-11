@@ -244,6 +244,7 @@ namespace trview
         _camera_controls = std::make_unique<CameraControls>(parent);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
+        _camera_controls->on_projection_mode_selected += on_camera_projection_mode;
     }
 
     void ViewerUI::render(const graphics::Device& device)
@@ -280,6 +281,11 @@ namespace trview
     void ViewerUI::set_camera_mode(CameraMode mode)
     {
         _camera_controls->set_mode(mode);
+    }
+
+    void ViewerUI::set_camera_projection_mode(ProjectionMode mode)
+    {
+        _camera_controls->set_projection_mode(mode);
     }
 
     void ViewerUI::set_depth_enabled(bool value)

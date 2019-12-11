@@ -133,7 +133,7 @@ namespace trview
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
-            _transparency->sort(camera.position());
+            _transparency->sort(camera.rendering_position());
             _transparency->render(context, camera, texture_storage, true);
         }
 
