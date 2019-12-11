@@ -64,6 +64,9 @@ namespace trview
         DirectX::SimpleMath::Vector3 _up;
         float _rotation_yaw{ default_yaw };
         float _rotation_pitch{ default_pitch };
+        float _zoom{ default_zoom };
+        ProjectionMode _projection_mode{ ProjectionMode::Perspective };
+    private:
         Size _view_size;
         DirectX::SimpleMath::Matrix _view;
         DirectX::SimpleMath::Matrix _view_lh;
@@ -73,8 +76,6 @@ namespace trview
         DirectX::BoundingFrustum _bounding_frustum;
         std::optional<float> _target_rotation_yaw;
         std::optional<float> _target_rotation_pitch;
-        ProjectionMode _projection_mode{ ProjectionMode::Perspective };
         float _ortho_size{ 10.0f };
-        float _zoom{ default_zoom };
     };
 }
