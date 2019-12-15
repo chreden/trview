@@ -260,7 +260,7 @@ namespace trview
             return control->scroll(delta);
         }
 
-        void Input::process_key_down(uint16_t key, bool control)
+        void Input::process_key_down(uint16_t key, bool)
         {
             if (_focus_control && _focus_control->key_down(key))
             {

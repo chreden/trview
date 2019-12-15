@@ -61,7 +61,7 @@ namespace trview
             virtual bool mouse_up(const Point& position) override;
             virtual bool clicked(Point position) override;
         private:
-            void create_image(const Size& size, const Colour& colour);
+            void create_image(const Size& size);
 
             ui::Label*  _label;
             ui::Label*  _check;

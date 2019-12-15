@@ -156,7 +156,7 @@ namespace trview
             return false;
         }
 
-        bool Control::key_char(wchar_t key)
+        bool Control::key_char(wchar_t)
         {
             return false;
         }
