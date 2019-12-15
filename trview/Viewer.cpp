@@ -224,7 +224,7 @@ namespace trview
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
 
         _picking = std::make_unique<Picking>();
-        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || _active_tool != Tool::None)
@@ -265,7 +265,7 @@ namespace trview
             }
             result = nearest_result(result, _route->pick(info.position, info.direction));
         };
-        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result)
         {
             if (_active_tool == Tool::Measure && result.hit && !result.stop)
             {
@@ -321,7 +321,7 @@ namespace trview
             }
         };
 
-        _token_store += _menu_detector.on_menu_toggled += [&](bool open)
+        _token_store += _menu_detector.on_menu_toggled += [&](bool)
         {
             _timer.reset();
             _camera_input.reset();
