@@ -316,7 +316,7 @@ namespace trview
             const uint16_t texture = rect.texture & texture_mask(level_version);
 
             std::array<Vector2, 4> uvs;
-            for (int i = 0; i < uvs.size(); ++i)
+            for (auto i = 0u; i < uvs.size(); ++i)
             {
                 uvs[i] = texture_storage.uv(texture, i);
             }
@@ -405,7 +405,7 @@ namespace trview
             // Select UVs - otherwise they will be 0.
             const uint16_t texture = tri.texture & texture_mask(level_version);
             std::array<Vector2, 3> uvs;
-            for (int i = 0; i < uvs.size(); ++i)
+            for (auto i = 0u; i < uvs.size(); ++i)
             {
                 uvs[i] = texture_storage.uv(texture, i);
             }

@@ -580,7 +580,7 @@ namespace trview
     std::set<uint16_t> Level::alternate_groups() const
     {
         std::set<uint16_t> groups;
-        for (int16_t i = 0; i < _rooms.size(); ++i)
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             if (room->alternate_mode() != Room::AlternateMode::None)
