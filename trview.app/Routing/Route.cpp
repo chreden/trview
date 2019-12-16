@@ -236,7 +236,7 @@ namespace trview
 
             return route;
         }
-        catch (std::exception& e)
+        catch (std::exception&)
         {
             return std::unique_ptr<Route>();
         }
