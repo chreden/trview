@@ -264,8 +264,10 @@ namespace trview
     {
         _neighbours.clear(); 
 
-        std::for_each(_sectors.begin(), _sectors.end(), [&] (const auto& pair) {
-            const std::set<std::uint16_t> n = pair.second->neighbours(); 
+        std::for_each(_sectors.begin(), _sectors.end(),
+            [&] (const auto& sector)
+        {
+            const std::set<std::uint16_t> n = sector->neighbours(); 
             _neighbours.insert(n.begin(), n.end());
         });
     }
@@ -283,12 +285,10 @@ namespace trview
     void 
     Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room)
     {
-        for (int i = 0; i < room.sector_list.size(); ++i)
+        for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
-            const trlevel::tr_room_sector &sector = room.sector_list.at(i);
-            _sectors.emplace(std::make_pair(
-                i, std::make_shared<Sector>(level, room, sector, i, _index)
-            ));
+            const trlevel::tr_room_sector &sector = room.sector_list[i];
+            _sectors.push_back(std::make_shared<Sector>(level, room, sector, i, _index));
         }
     }
 
@@ -591,14 +591,14 @@ namespace trview
         {
             for (const auto& sector : _sectors)
             {
-                if (!sector.second->is_floor())
+                if (!sector->is_floor())
                 {
                     continue;
                 }
 
-                const float x = sector.second->x() + 0.5f;
-                const float z = sector.second->z() + 0.5f;
-                const auto corners = sector.second->corners();
+                const float x = sector->x() + 0.5f;
+                const float z = sector->z() + 0.5f;
+                const auto corners = sector->corners();
 
                 if (triangle_contained(
                     { triangle.vertices, triangle.vertices + 3 },
@@ -629,17 +629,17 @@ namespace trview
 
         for (const auto& sector : _sectors)
         {
-            if (sector.second->is_floor())
+            if (sector->is_floor())
             {
-                const auto tris = sector.second->triangles();
+                const auto tris = sector->triangles();
                 if (!geometry_matched({ tris.begin(), tris.begin() + 3 }, data, transformed_room_vertices, transparent_triangles))
                 {
-                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second));
+                    add_triangle({ tris.begin(), tris.begin() + 3 }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
                 }
 
                 if (!geometry_matched({ tris.begin() + 3, tris.end() }, data, transformed_room_vertices, transparent_triangles))
                 {
-                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector.second));
+                    add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
                 }
             }
         }
@@ -666,5 +666,10 @@ namespace trview
     bool Room::water() const
     {
         return _water;
+    }
+
+    const std::vector<std::shared_ptr<Sector>>& Room::sectors() const
+    {
+        return _sectors; 
     }
 }

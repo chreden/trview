@@ -172,8 +172,10 @@ namespace trview
                 _tiles.clear(); 
 
                 const auto& sectors = room->sectors(); 
-                std::for_each(sectors.begin(), sectors.end(), [&] (const auto& pair) {
-                    _tiles.emplace_back(std::shared_ptr<Sector>(pair.second), get_position(*pair.second), get_size());
+                std::for_each(sectors.begin(), sectors.end(), 
+                    [&] (const auto& sector) 
+                {
+                    _tiles.emplace_back(sector, get_position(*sector), get_size());
                 });
 
                 _previous_sector.reset();

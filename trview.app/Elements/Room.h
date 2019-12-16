@@ -89,7 +89,7 @@ namespace trview
         void add_trigger(Trigger* trigger);
 
         // Returns all sectors 
-        const inline std::map<int, std::shared_ptr<Sector>>& sectors() const { return _sectors; }
+        const std::vector<std::shared_ptr<Sector>>& sectors() const;
 
         /// Add the transparent triangles to the specified transparency buffer.
         /// @param transparency The buffer to add triangles to.
@@ -186,7 +186,7 @@ namespace trview
         std::vector<Entity*> _entities;
 
         // Maps a sector to its sector ID 
-        std::map<int, std::shared_ptr<Sector>> _sectors; 
+        std::vector<std::shared_ptr<Sector>> _sectors; 
 
         // Number of sectors for both X and Z (required by map renderer) 
         std::uint16_t       _num_x_sectors, _num_z_sectors; 
