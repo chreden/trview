@@ -152,6 +152,8 @@ namespace trview
     /// @retrurns The scaled vector.
     DirectX::SimpleMath::Vector3 convert_vertex(const trlevel::tr_vertex& vertex);
 
+#pragma warning(push)
+#pragma warning(disable : 4324)
     __declspec(align(16)) struct MeshData
     {
         DirectX::SimpleMath::Matrix matrix;
@@ -159,4 +161,5 @@ namespace trview
         DirectX::SimpleMath::Vector4 light_dir;
         int light_enabled{ 0 };
     };
+#pragma warning(pop)
 }

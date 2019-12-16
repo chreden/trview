@@ -14,7 +14,7 @@ namespace trview
             HMENU menu = GetMenu(window);
             HMENU popup = CreatePopupMenu();
 
-            for (int i = 0; i < recent_files.size(); ++i)
+            for (auto i = 0u; i < recent_files.size(); ++i)
             {
                 AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, to_utf16(recent_files[i]).c_str());
             }

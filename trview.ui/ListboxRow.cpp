@@ -30,7 +30,7 @@ namespace trview
             set_background_colour(item.background());
 
             const auto columns = child_elements();
-            for (auto c = 0; c < _columns.size(); ++c)
+            for (auto c = 0u; c < _columns.size(); ++c)
             {
                 Button* button = static_cast<Button*>(columns[c]);
                 button->set_text(item.value(_columns[c].name()));

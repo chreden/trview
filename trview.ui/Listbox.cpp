@@ -122,7 +122,7 @@ namespace trview
 
             _fully_visible_rows = 0;
             const auto rows = _rows_element->child_elements();
-            for (auto r = 0; r < rows.size(); ++r)
+            for (auto r = 0u; r < rows.size(); ++r)
             {
                 const auto index = r + _current_top;
                 auto row = static_cast<Row*>(rows[r]);
@@ -316,9 +316,9 @@ namespace trview
         void Listbox::highlight_item()
         {
             const auto rows = _rows_element->child_elements();
-            for (auto i = 0; i < rows.size(); ++i)
+            for (auto& row_element : rows)
             {
-                auto row = static_cast<Row*>(rows[i]);
+                auto row = static_cast<Row*>(row_element);
                 row->set_highlighted(_show_highlight && row->item() == _selected_item);
             }
         }
