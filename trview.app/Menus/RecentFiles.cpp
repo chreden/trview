@@ -39,10 +39,10 @@ namespace trview
         if (message == WM_COMMAND)
         {
             int wmId = LOWORD(wParam);
-            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + _recent_files.size())
+            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + static_cast<int>(_recent_files.size()))
             {
                 int index = wmId - ID_RECENT_FILE_BASE;
-                if (index >= 0 && index < _recent_files.size())
+                if (index >= 0 && index < static_cast<int>(_recent_files.size()))
                 {
                     on_file_open(_recent_files[index]);
                 }
