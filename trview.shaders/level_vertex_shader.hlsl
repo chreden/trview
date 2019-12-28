@@ -30,7 +30,7 @@ VertexOutput main( VertexInput input )
 
     if (light_enable != 0)
     {
-        output.colour *= max(0.2f, dot(light_dir, normalize(input.normal)));
+        output.colour *= max(0.2f, dot(light_dir, normalize(float4(input.normal, 1))));
         output.colour.a = 1.0f;
     }
 

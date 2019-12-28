@@ -206,7 +206,7 @@ namespace trview
             StackPanel* _rows_container;
             StackPanel* _rows_element;
             Scrollbar* _rows_scrollbar;
-            int32_t _current_top{ 0 };
+            uint32_t _current_top{ 0u };
             Column _current_sort;
             bool _current_sort_direction;
             bool _show_scrollbar{ true };

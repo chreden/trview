@@ -188,8 +188,13 @@ namespace trview
                 return true;
             }
 
-            _current_top = std::max(0, _current_top + direction);
-            populate_rows();
+            // Don't do a negative on the unsigned index.
+            if (_current_top > 0 || direction == 1)
+            {
+                _current_top += direction;
+                populate_rows();
+            }
+
             return true;
         }
 

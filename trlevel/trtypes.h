@@ -588,6 +588,8 @@ namespace trlevel
         uint8_t water_scheme;
         uint8_t reverb_info;
         uint8_t alternate_group;
+
+        uint32_t room_colour;
     };
 
     struct tr2_frame

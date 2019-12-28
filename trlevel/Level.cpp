@@ -135,7 +135,7 @@ namespace trlevel
 
             if (version == LevelVersion::Tomb4)
             {
-                uint32_t room_colour = read<uint32_t>(file);
+                room.room_colour = read<uint32_t>(file);
             }
             else
             {
@@ -252,7 +252,6 @@ namespace trlevel
             }
 
             file.seekg(data_start + header.vertices_offset, std::ios::beg);
-            uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
             for (const auto& layer : layers)
             {
                 auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
@@ -685,8 +684,8 @@ namespace trlevel
 
         if (_version == LevelVersion::Tomb5)
         {
-            uint16_t lara_type = read<uint16_t>(file);
-            uint16_t weather_type = read<uint16_t>(file);
+            _lara_type = read<uint16_t>(file);
+            _weather_type = read<uint16_t>(file);
             file.seekg(28, std::ios::cur);
         }
 

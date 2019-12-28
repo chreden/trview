@@ -300,7 +300,7 @@ namespace trview
 
         // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
         // This can only be done once all the rooms are loaded.
-        for (int16_t i = 0; i < _rooms.size(); ++i)
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
@@ -310,7 +310,7 @@ namespace trview
                 int16_t alternate = room->alternate_room();
                 if (alternate != -1)
                 {
-                    _rooms[alternate]->set_is_alternate(i);
+                    _rooms[alternate]->set_is_alternate(static_cast<int16_t>(i));
                 }
             }
         }
