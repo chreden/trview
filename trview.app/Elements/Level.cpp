@@ -148,7 +148,7 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_selected_item(uint16_t index)
+    void Level::set_selected_item(uint32_t index)
     {
         _selected_item = _entities[index].get();
         on_level_changed();
@@ -318,7 +318,7 @@ namespace trview
 
     void Level::generate_triggers()
     {
-        for (auto i = 0; i < _rooms.size(); ++i)
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             for (auto sector : room->sectors())

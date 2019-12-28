@@ -88,7 +88,7 @@ namespace trview
         void set_highlight_mode(RoomHighlightMode mode, bool enabled);
         bool highlight_mode_enabled(RoomHighlightMode mode) const;
         void set_selected_room(uint16_t index);
-        void set_selected_item(uint16_t index);
+        void set_selected_item(uint32_t index);
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
 

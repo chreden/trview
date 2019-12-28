@@ -67,8 +67,8 @@ namespace trview
                 {
                     bool is_rdp = input.data.mouse.usFlags & MOUSE_VIRTUAL_DESKTOP;
                     raise_absolute_mouse_move(
-                        (input.data.mouse.lLastX / static_cast<float>(USHRT_MAX)) * _window_tester->screen_width(is_rdp),
-                        (input.data.mouse.lLastY / static_cast<float>(USHRT_MAX)) * _window_tester->screen_height(is_rdp));
+                        static_cast<long>((input.data.mouse.lLastX / static_cast<float>(USHRT_MAX)) * _window_tester->screen_width(is_rdp)),
+                        static_cast<long>((input.data.mouse.lLastY / static_cast<float>(USHRT_MAX)) * _window_tester->screen_height(is_rdp)));
                 }
 
                 if (input.data.mouse.usButtonFlags & RI_MOUSE_WHEEL)

@@ -352,7 +352,7 @@ namespace trview
                 return;
             }
 
-            auto index = iter - _items.begin();
+            auto index = static_cast<uint32_t>(iter - _items.begin());
 
             // Scroll the list so that the selected item is visible. If it is already on the 
             // same page, then no need to scroll.
