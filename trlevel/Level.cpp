@@ -91,7 +91,7 @@ namespace trlevel
             }
 
             std::wstring transformed;
-            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), toupper);
+            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), towupper);
             return transformed.find(L".TRC") != filename.npos;
         }
 
@@ -189,7 +189,7 @@ namespace trlevel
         {
             skip_xela(file);
             uint32_t room_data_size = read<uint32_t>(file);
-            const uint32_t room_start = file.tellg();
+            const uint32_t room_start = static_cast<uint32_t>(file.tellg());
             const uint32_t room_end = room_start + room_data_size;
 
             const auto header = read<tr5_room_header>(file);
@@ -206,7 +206,7 @@ namespace trlevel
             room.flags = header.flags;
 
             // The offsets start measuring from this position, after all the header information.
-            const uint32_t data_start = file.tellg();
+            const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
             // Discard lights as they are not currently used:
             skip(file, sizeof(tr5_room_light) * header.num_lights);
@@ -836,7 +836,9 @@ namespace trlevel
 
         if (_version >= LevelVersion::Tomb4)
         {
-            uint8_t animated_textures_uv_count = read<uint8_t>(file);
+            // Animated textures uv count - not yet used:
+            skip(file, 1);
+
             file.seekg(3, std::ios::cur);
             if (_version == LevelVersion::Tomb5)
             {

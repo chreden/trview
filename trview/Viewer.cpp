@@ -49,7 +49,7 @@ namespace trview
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
 
-        _scene_target = std::make_unique<graphics::RenderTarget>(_device, window.size().width, window.size().height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = std::make_unique<graphics::Sprite>(_device, *_shader_storage, window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
@@ -317,7 +317,7 @@ namespace trview
 
                 auto x = _current_pick.position.x - (info.value().x / trlevel::Scale_X);
                 auto z = _current_pick.position.z - (info.value().z / trlevel::Scale_Z);
-                _ui->set_minimap_highlight(x, z);
+                _ui->set_minimap_highlight(static_cast<uint16_t>(x), static_cast<uint16_t>(z));
             }
         };
 
@@ -879,7 +879,7 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
-        _scene_target = std::make_unique<graphics::RenderTarget>(_device, size.width, size.height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
         _scene_changed = true;
     }

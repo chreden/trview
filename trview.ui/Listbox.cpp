@@ -101,7 +101,7 @@ namespace trview
 
             // Add as many rows as can be seen.
             const float row_height = 20;
-            const int32_t total_required_rows = std::min<int32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t total_required_rows = std::min<int32_t>(static_cast<int32_t>(std::ceil(remaining_height / row_height)), static_cast<int32_t>(_items.size()));
             const int32_t existing_rows = _rows_element->child_elements().size();
             const int32_t remaining_rows = total_required_rows - existing_rows;
 
@@ -145,7 +145,7 @@ namespace trview
 
             if (!_items.empty() && _rows_scrollbar)
             {
-                _rows_scrollbar->set_range(_current_top, _current_top + _fully_visible_rows, _items.size());
+                _rows_scrollbar->set_range(static_cast<float>(_current_top), static_cast<float>(_current_top + _fully_visible_rows), static_cast<float>(_items.size()));
             }
 
             highlight_item();
@@ -279,7 +279,7 @@ namespace trview
             auto headers_element = std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
-                auto header_element = std::make_unique<Button>(Size(column.width(), 20), column.name());
+                auto header_element = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), column.name());
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {

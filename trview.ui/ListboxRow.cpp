@@ -12,7 +12,7 @@ namespace trview
 
             for (const auto& column : columns)
             {
-                auto button = std::make_unique<Button>(Size(column.width(), 20), L" ");
+                auto button = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" ");
                 _token_store += button->on_click += [this]
                 {
                     if (_item.has_value())

@@ -44,7 +44,7 @@ namespace trview
         : _mesh_camera(Size(View_Size, View_Size)),
           _mesh(create_cube_mesh(device)),
           _sprite(std::make_unique<Sprite>(device, shader_storage, Size(View_Size, View_Size))),
-          _render_target(std::make_unique<RenderTarget>(device, View_Size, View_Size, RenderTarget::DepthStencilMode::Enabled))
+          _render_target(std::make_unique<RenderTarget>(device, static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), RenderTarget::DepthStencilMode::Enabled))
     {
     }
 
