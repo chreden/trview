@@ -289,8 +289,8 @@ namespace trview
 
     void Level::generate_rooms(const graphics::Device& device, const trlevel::ILevel& level)
     {
-        const uint16_t num_rooms = level.num_rooms();
-        for (uint16_t i = 0; i < num_rooms; ++i)
+        const auto num_rooms = level.num_rooms();
+        for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
             _rooms.push_back(std::make_unique<Room>(device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));

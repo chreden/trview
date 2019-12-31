@@ -69,7 +69,7 @@ namespace trview
         Event<> on_orbit;
 
         /// Event raised when an alternate group is toggled.
-        Event<uint16_t, bool> on_alternate_group;
+        Event<uint32_t, bool> on_alternate_group;
 
         /// Event raised when the camera mode is set.
         Event<CameraMode> on_camera_mode;

@@ -463,7 +463,7 @@ namespace trlevel
         return _rooms.size();
     }
 
-    tr3_room Level::get_room(uint16_t index) const
+    tr3_room Level::get_room(uint32_t index) const
     {
         return _rooms[index];
     }

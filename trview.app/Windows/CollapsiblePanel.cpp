@@ -98,7 +98,7 @@ namespace trview
         }
     }
 
-    void CollapsiblePanel::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void CollapsiblePanel::process_message(UINT message, WPARAM, LPARAM lParam)
     {
         if (message == WM_CLOSE)
         {

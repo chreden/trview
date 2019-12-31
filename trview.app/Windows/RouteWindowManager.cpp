@@ -8,7 +8,7 @@ namespace trview
     {
     }
 
-    void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND &&
             LOWORD(wParam) == ID_APP_WINDOWS_ROUTE ||

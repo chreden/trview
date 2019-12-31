@@ -64,7 +64,7 @@ namespace trview
         void set_triggers(const std::vector<Trigger*>& triggers);
     private:
         void load_waypoint_details(uint32_t index);
-        std::unique_ptr<ui::Control> create_left_panel(const graphics::Device& device);
+        std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint);
 

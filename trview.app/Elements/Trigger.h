@@ -42,14 +42,14 @@ namespace trview
     class Trigger final : public IRenderable
     {
     public:
-        explicit Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
         virtual ~Trigger() = default;
 
         uint32_t    number() const;
-        uint16_t    room() const;
+        uint32_t    room() const;
         uint16_t    x() const;
         uint16_t    z() const;
-        bool        triggers_item(uint16_t index) const;
+        bool        triggers_item(uint32_t index) const;
         TriggerType type() const;
         bool        only_once() const;
         uint16_t    flags() const;
@@ -72,7 +72,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _position;
         TriggerType _type;
         uint32_t _number;
-        uint16_t _room;
+        uint32_t _room;
         uint16_t _x;
         uint16_t _z;
         bool _only_once;

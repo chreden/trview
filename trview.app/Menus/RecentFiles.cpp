@@ -34,7 +34,7 @@ namespace trview
     {
     }
 
-    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {

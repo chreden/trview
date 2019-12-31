@@ -88,7 +88,7 @@ namespace trview
         return _index;
     }
 
-    Trigger::Trigger(uint32_t number, uint16_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
+    Trigger::Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
         : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer), _sector_id(trigger_info.sector_id)
     {
         uint32_t command_index = 0;
@@ -108,7 +108,7 @@ namespace trview
         return _number;
     }
 
-    uint16_t Trigger::room() const
+    uint32_t Trigger::room() const
     {
         return _room;
     }
@@ -123,7 +123,7 @@ namespace trview
         return _z;
     }
 
-    bool Trigger::triggers_item(uint16_t index) const
+    bool Trigger::triggers_item(uint32_t index) const
     {
         return std::find(_objects.begin(), _objects.end(), index) != _objects.end();
     }
@@ -192,11 +192,11 @@ namespace trview
         return std::any_of(_commands.begin(), _commands.end(), [&](const auto& c) { return c.type() == type; });
     }
 
-    void Trigger::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Trigger::render(const graphics::Device&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
     {
     }
 
-    void Trigger::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    void Trigger::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera&, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())

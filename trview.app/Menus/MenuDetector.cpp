@@ -7,7 +7,7 @@ namespace trview
     {
     }
 
-    void MenuDetector::process_message(UINT message, WPARAM wParam, LPARAM lParam) 
+    void MenuDetector::process_message(UINT message, WPARAM, LPARAM) 
     {
         if (message == WM_ENTERMENULOOP)
         {

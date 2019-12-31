@@ -61,7 +61,7 @@ namespace trlevel
 
         // Get the room at the specified index.
         // Returns: The room.
-        virtual tr3_room get_room(uint16_t index) const override;
+        virtual tr3_room get_room(uint32_t index) const override;
 
         // Get the number of object textures in the level.
         // Returns: The number of object textures.
