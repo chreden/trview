@@ -853,7 +853,7 @@ namespace trview
         }
     }
 
-    void Viewer::set_alternate_group(uint16_t group, bool enabled)
+    void Viewer::set_alternate_group(uint32_t group, bool enabled)
     {
         if (_level)
         {
@@ -863,7 +863,7 @@ namespace trview
         }
     }
 
-    bool Viewer::alternate_group(uint16_t group) const
+    bool Viewer::alternate_group(uint32_t group) const
     {
         if (_level)
         {

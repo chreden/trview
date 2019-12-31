@@ -99,8 +99,8 @@ namespace trview
         void set_camera_mode(CameraMode camera_mode);
         void set_camera_projection_mode(ProjectionMode projection_mode);
         void set_alternate_mode(bool enabled);
-        void set_alternate_group(uint16_t group, bool enabled);
-        bool alternate_group(uint16_t group) const;
+        void set_alternate_group(uint32_t group, bool enabled);
+        bool alternate_group(uint32_t group) const;
         // Tell things that need to be resized that they should resize.
         void resize_elements();
         // Set up keyboard and mouse input for the camera.
