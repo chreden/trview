@@ -91,7 +91,7 @@ namespace trview
                     auto rows_scrollbar = std::make_unique<Scrollbar>(Size(scrollbar_width, remaining_height), background_colour());
                     _token_store += rows_scrollbar->on_scroll += [&](float value)
                     {
-                        scroll_to(value * _items.size());
+                        scroll_to(static_cast<uint32_t>(value * _items.size()));
                     };
                     _rows_scrollbar = rows_container->add_child(std::move(rows_scrollbar));
                 }

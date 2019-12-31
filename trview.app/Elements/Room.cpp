@@ -504,8 +504,8 @@ namespace trview
         auto world_z = (_info.z / trlevel::Scale_Z) + z;
 
         // Convert the world position into the space of the other room.
-        auto other_x = world_x - (room->_info.x / trlevel::Scale_X);
-        auto other_z = world_z - (room->_info.z / trlevel::Scale_Z);
+        auto other_x = static_cast<int32_t>(world_x - (room->_info.x / trlevel::Scale_X));
+        auto other_z = static_cast<int32_t>(world_z - (room->_info.z / trlevel::Scale_Z));
 
         auto other_sector_id = room->get_sector_id(other_x, other_z);
         auto other_trigger = room->_triggers.find(other_sector_id);

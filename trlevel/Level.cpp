@@ -225,7 +225,7 @@ namespace trlevel
             auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
 
             file.seekg(data_start + header.poly_offset, std::ios::beg);
-            uint32_t vertex_offset = 0;
+            uint16_t vertex_offset = 0;
             for (const auto& layer : layers)
             {
                 auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
@@ -458,9 +458,9 @@ namespace trlevel
         return results;
     }
 
-    uint16_t Level::num_rooms() const
+    uint32_t Level::num_rooms() const
     {
-        return _num_rooms;
+        return _rooms.size();
     }
 
     tr3_room Level::get_room(uint16_t index) const
@@ -698,8 +698,9 @@ namespace trlevel
         }
         else
         {
-            uint32_t leveldata_uncompressed = read<uint32_t>(file);
-            uint32_t leveldata_compressed = read<uint32_t>(file);
+            // Skip size of uncompressed and compressed level data as they are
+            // unused in TR5.
+            skip(file, 8);
             load_level_data(file);
         }
 
@@ -723,16 +724,17 @@ namespace trlevel
         // Read unused value.
         read<uint32_t>(file);
 
+        uint32_t num_rooms = 0;
         if (_version == LevelVersion::Tomb5)
         {
-            _num_rooms = read<uint32_t>(file);
+            num_rooms = read<uint32_t>(file);
         }
         else
         {
-            _num_rooms = read<uint16_t>(file);
+            num_rooms = read<uint16_t>(file);
         }
 
-        for (uint16_t i = 0; i < _num_rooms; ++i)
+        for (auto i = 0u; i < num_rooms; ++i)
         {
             tr3_room room;
             if (_version == LevelVersion::Tomb5)

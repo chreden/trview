@@ -51,7 +51,7 @@ namespace trlevel
 
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
-        virtual uint16_t num_rooms() const = 0;
+        virtual uint32_t num_rooms() const = 0;
 
         // Get the room at the specified index.
         // Returns: The room.

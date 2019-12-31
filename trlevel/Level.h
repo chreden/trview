@@ -57,7 +57,7 @@ namespace trlevel
 
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
-        virtual uint16_t num_rooms() const override;
+        virtual uint32_t num_rooms() const override;
 
         // Get the room at the specified index.
         // Returns: The room.
@@ -181,7 +181,6 @@ namespace trlevel
         std::vector<tr_textile16> _textile16;
         std::vector<tr_textile32> _textile32;
 
-        uint16_t                       _num_rooms;
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
         std::vector<uint16_t>          _floor_data;

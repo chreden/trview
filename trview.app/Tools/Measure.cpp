@@ -62,12 +62,12 @@ namespace trview
         const auto scale = Matrix::CreateScale(0.05f);
         const auto view_projection = camera.view_projection();
 
-        int blobs = to.Length() / 0.25f;
+        int blobs = static_cast<int>(to.Length() / 0.25f);
 
         to.Normalize();
         for (int i = 0; i <= blobs; ++i)
         {
-            auto pos = _start.value() + to * 0.25f * i;
+            auto pos = _start.value() + to * 0.25f * static_cast<float>(i);
             auto wvp = scale * Matrix::CreateTranslation(pos) * view_projection;
             _mesh->render(context, wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
         }
