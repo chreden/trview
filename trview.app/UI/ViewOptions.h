@@ -65,11 +65,11 @@ namespace trview
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint16_t value, bool enabled);
+        void set_alternate_group(uint32_t value, bool enabled);
 
         /// Set the alternate groups that are in the level.
         /// @param groups The groups in the level.
-        void set_alternate_groups(const std::set<uint16_t>& groups);
+        void set_alternate_groups(const std::set<uint32_t>& groups);
 
         /// Set the value of the depth control. This will not raise the on_depth_changed event.
         /// @param value The neighbour depth to use.

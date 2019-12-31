@@ -68,7 +68,7 @@ namespace trview
         parent.add_child(std::move(rooms_groups));
     }
 
-    void ViewOptions::set_alternate_group(uint16_t value, bool enabled)
+    void ViewOptions::set_alternate_group(uint32_t value, bool enabled)
     {
         _alternate_group_values[value] = enabled;
 
@@ -80,7 +80,7 @@ namespace trview
         }
     }
 
-    void ViewOptions::set_alternate_groups(const std::set<uint16_t>& groups)
+    void ViewOptions::set_alternate_groups(const std::set<uint32_t>& groups)
     {
         _alternate_groups->clear_child_elements();
         _alternate_group_values.clear();

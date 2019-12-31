@@ -253,12 +253,12 @@ namespace trview
         _ui_renderer->render(device.context());
     }
 
-    void ViewerUI::set_alternate_group(uint16_t value, bool enabled)
+    void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
     {
         _view_options->set_alternate_group(value, enabled);
     }
 
-    void ViewerUI::set_alternate_groups(const std::set<uint16_t>& groups)
+    void ViewerUI::set_alternate_groups(const std::set<uint32_t>& groups)
     {
         _view_options->set_alternate_groups(groups);
     }

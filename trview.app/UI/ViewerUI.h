@@ -135,11 +135,11 @@ namespace trview
         /// Set whether an alternate group is enabled.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint16_t value, bool enabled);
+        void set_alternate_group(uint32_t value, bool enabled);
 
         /// Set the alternate groups for the level.
         /// @param groups The alternate groups for the level.
-        void set_alternate_groups(const std::set<uint16_t>& groups);
+        void set_alternate_groups(const std::set<uint32_t>& groups);
 
         /// Set the camera movement speed.
         /// @param value The camera movement speed.

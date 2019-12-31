@@ -480,7 +480,7 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_alternate_group(uint16_t group, bool enabled)
+    void Level::set_alternate_group(uint32_t group, bool enabled)
     {
         _regenerate_transparency = true;
         if (enabled)
@@ -503,7 +503,7 @@ namespace trview
         on_level_changed();
     }
 
-    bool Level::alternate_group(uint16_t group) const
+    bool Level::alternate_group(uint32_t group) const
     {
         return _alternate_groups.find(group) != _alternate_groups.end();
     }
@@ -577,9 +577,9 @@ namespace trview
         return *_texture_storage;
     }
 
-    std::set<uint16_t> Level::alternate_groups() const
+    std::set<uint32_t> Level::alternate_groups() const
     {
-        std::set<uint16_t> groups;
+        std::set<uint32_t> groups;
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
