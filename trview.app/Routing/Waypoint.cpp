@@ -37,7 +37,7 @@ namespace trview
         _mesh->render(device.context(), blob_wvp, texture_storage, _route_colour);
     }
 
-    void Waypoint::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    void Waypoint::get_transparent_triangles(TransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
     {
     }
 

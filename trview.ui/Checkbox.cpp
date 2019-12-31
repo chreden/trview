@@ -21,7 +21,7 @@ namespace trview
         Checkbox::Checkbox(const Point& position)
             : StackPanel(position, default_size, Colour::Transparent, Size(), Direction::Horizontal)
         {
-            create_image(default_size, Colour(1.0f, 0.5f, 0.5f, 0.5f));
+            create_image(default_size);
         }
 
         Checkbox::Checkbox(const Point& position, const std::wstring& label_text)
@@ -32,7 +32,7 @@ namespace trview
         Checkbox::Checkbox(const Point& position, const Colour& background_colour, const std::wstring& label_text)
             : StackPanel(position, default_size, Colour::Transparent, Size(), Direction::Horizontal)
         {
-            create_image(default_size, background_colour);
+            create_image(default_size);
 
             add_child(std::make_unique<Window>(Size(3, default_size.height), background_colour));
 
@@ -41,7 +41,7 @@ namespace trview
             _label = add_child(std::move(label));
         }
 
-        void Checkbox::create_image(const Size& size, const Colour& colour)
+        void Checkbox::create_image(const Size& size)
         {
             auto outer = std::make_unique<Window>(size, Colour(0.6f, 0.6f, 0.6f));
             outer->add_child(std::make_unique<Window>(Point(1, 1), size - Size(2, 2), bg_colour));

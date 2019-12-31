@@ -32,8 +32,8 @@ namespace
         MOCK_CONST_METHOD1(get_textile8, tr_textile8(uint32_t));
         MOCK_CONST_METHOD1(get_textile16, tr_textile16(uint32_t));
         MOCK_CONST_METHOD1(get_textile, std::vector<uint32_t>(uint32_t));
-        MOCK_CONST_METHOD0(num_rooms, uint16_t());
-        MOCK_CONST_METHOD1(get_room, tr3_room(uint16_t));
+        MOCK_CONST_METHOD0(num_rooms, uint32_t());
+        MOCK_CONST_METHOD1(get_room, tr3_room(uint32_t));
         MOCK_CONST_METHOD0(num_object_textures, uint32_t());
         MOCK_CONST_METHOD1(get_object_texture, tr_object_texture(uint32_t));
         MOCK_CONST_METHOD0(num_floor_data, uint32_t());

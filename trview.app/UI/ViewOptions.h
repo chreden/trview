@@ -26,7 +26,7 @@ namespace trview
         explicit ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage);
 
         /// Event raised when an alternate group is toggled. The group number and the new state are passed as parameters.
-        Event<uint16_t, bool> on_alternate_group;
+        Event<uint32_t, bool> on_alternate_group;
 
         /// Event raised when the user has changed the depth of neighbour to display. The newly selected depth is passed
         /// when the event is raised.
@@ -65,11 +65,11 @@ namespace trview
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint16_t value, bool enabled);
+        void set_alternate_group(uint32_t value, bool enabled);
 
         /// Set the alternate groups that are in the level.
         /// @param groups The groups in the level.
-        void set_alternate_groups(const std::set<uint16_t>& groups);
+        void set_alternate_groups(const std::set<uint32_t>& groups);
 
         /// Set the value of the depth control. This will not raise the on_depth_changed event.
         /// @param value The neighbour depth to use.
@@ -130,7 +130,7 @@ namespace trview
         ui::Window* _tr1_3_panel;
         ui::Window* _tr4_5_panel;
         ui::StackPanel* _alternate_groups;
-        std::unordered_map<uint16_t, bool> _alternate_group_values;
-        std::unordered_map<uint16_t, ui::Button*> _alternate_group_buttons;
+        std::unordered_map<uint32_t, bool> _alternate_group_values;
+        std::unordered_map<uint32_t, ui::Button*> _alternate_group_buttons;
     };
 }

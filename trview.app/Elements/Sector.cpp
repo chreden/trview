@@ -4,10 +4,10 @@
 namespace trview
 {
     Sector::Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number)
-        : _sector(sector), _sector_id(sector_id), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
+        : _sector(sector), _sector_id(static_cast<uint16_t>(sector_id)), _room_above(sector.room_above), _room_below(sector.room_below), _room(room_number)
     {
-        _x = sector_id / room.num_z_sectors;
-        _z = sector_id % room.num_z_sectors;
+        _x = static_cast<uint16_t>(sector_id / room.num_z_sectors);
+        _z = static_cast<uint16_t>(sector_id % room.num_z_sectors);
         parse(level);
         calculate_neighbours(level);
     }
@@ -101,7 +101,7 @@ namespace trview
                     {
                         command = level.get_floor_data(cur_index);
                         auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
-                        _trigger.commands.emplace_back(action, command & 0x3FF);
+                        _trigger.commands.emplace_back(action, static_cast<uint16_t>(command & 0x3FF));
                         if (action == TriggerCommandType::Camera)
                         {
                             // Camera has another uint16_t - skip for now.

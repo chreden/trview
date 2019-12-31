@@ -240,8 +240,8 @@ namespace trview
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             // Try and pick against the bounding box.
-            float box_distance = 0;
-            if (_oriented_boxes[i].Intersects(position, direction, box_distance))
+            float obb_distance = 0;
+            if (_oriented_boxes[i].Intersects(position, direction, obb_distance))
             {
                 // Pick against the triangles in this mesh.
                 pick_meshes.push_back(i);

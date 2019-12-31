@@ -57,11 +57,11 @@ namespace trlevel
 
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
-        virtual uint16_t num_rooms() const override;
+        virtual uint32_t num_rooms() const override;
 
         // Get the room at the specified index.
         // Returns: The room.
-        virtual tr3_room get_room(uint16_t index) const override;
+        virtual tr3_room get_room(uint32_t index) const override;
 
         // Get the number of object textures in the level.
         // Returns: The number of object textures.
@@ -181,13 +181,15 @@ namespace trlevel
         std::vector<tr_textile16> _textile16;
         std::vector<tr_textile32> _textile32;
 
-        uint16_t                       _num_rooms;
         std::vector<tr3_room>          _rooms;
         std::vector<tr_object_texture> _object_textures;
         std::vector<uint16_t>          _floor_data;
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;
         std::unordered_map<uint32_t, tr_staticmesh> _static_meshes;
+
+        uint16_t _lara_type{ 0u };
+        uint16_t _weather_type{ 0u };
 
         // Mesh management.
         std::unordered_map<uint32_t, tr_mesh> _meshes;

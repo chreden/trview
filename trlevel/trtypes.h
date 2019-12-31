@@ -585,9 +585,11 @@ namespace trlevel
         int16_t alternate_room;
         int16_t flags;
 
-        uint8_t water_scheme;
+        uint16_t water_scheme;
         uint8_t reverb_info;
         uint8_t alternate_group;
+
+        uint32_t room_colour;
     };
 
     struct tr2_frame

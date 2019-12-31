@@ -10,7 +10,7 @@ namespace trview
         DragAcceptFiles(window, TRUE);
     }
 
-    void FileDropper::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void FileDropper::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if(message == WM_DROPFILES)
         {

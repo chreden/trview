@@ -12,7 +12,7 @@ namespace trview
 
             for (const auto& column : columns)
             {
-                auto button = std::make_unique<Button>(Size(column.width(), 20), L" ");
+                auto button = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" ");
                 _token_store += button->on_click += [this]
                 {
                     if (_item.has_value())
@@ -30,7 +30,7 @@ namespace trview
             set_background_colour(item.background());
 
             const auto columns = child_elements();
-            for (auto c = 0; c < _columns.size(); ++c)
+            for (auto c = 0u; c < _columns.size(); ++c)
             {
                 Button* button = static_cast<Button*>(columns[c]);
                 button->set_text(item.value(_columns[c].name()));

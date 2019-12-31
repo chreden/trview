@@ -3,7 +3,10 @@
 #include <ShlObj.h>
 #include <fstream>
 #include <algorithm>
+#pragma warning(push)
+#pragma warning(disable : 4127)
 #include <external/nlohmann/json.hpp>
+#pragma warning(pop)
 
 namespace trview
 {

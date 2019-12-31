@@ -66,7 +66,7 @@ namespace trlevel
         std::transform(vertices.begin(), vertices.end(),
             std::back_inserter(new_vertices), [](const auto& vert)
         {
-            tr_vertex vertex{ vert.vertex.x, vert.vertex.y, vert.vertex.z };
+            tr_vertex vertex{ static_cast<int16_t>(vert.vertex.x), static_cast<int16_t>(vert.vertex.y), static_cast<int16_t>(vert.vertex.z) };
             return tr3_room_vertex { vertex, 0, 0, 0xffff };
         });
         return new_vertices;

@@ -13,7 +13,7 @@ namespace trview
     {
         RECT rectangle;
         GetClientRect(_window, &rectangle);
-        return Size(rectangle.right - rectangle.left, rectangle.bottom - rectangle.top);
+        return Size(static_cast<float>(rectangle.right - rectangle.left), static_cast<float>(rectangle.bottom - rectangle.top));
     }
 
     HWND Window::window() const

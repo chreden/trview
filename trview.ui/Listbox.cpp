@@ -91,7 +91,7 @@ namespace trview
                     auto rows_scrollbar = std::make_unique<Scrollbar>(Size(scrollbar_width, remaining_height), background_colour());
                     _token_store += rows_scrollbar->on_scroll += [&](float value)
                     {
-                        scroll_to(value * _items.size());
+                        scroll_to(static_cast<uint32_t>(value * _items.size()));
                     };
                     _rows_scrollbar = rows_container->add_child(std::move(rows_scrollbar));
                 }
@@ -101,7 +101,7 @@ namespace trview
 
             // Add as many rows as can be seen.
             const float row_height = 20;
-            const int32_t total_required_rows = std::min<int32_t>(std::ceil(remaining_height / row_height), _items.size());
+            const int32_t total_required_rows = std::min<int32_t>(static_cast<int32_t>(std::ceil(remaining_height / row_height)), static_cast<int32_t>(_items.size()));
             const int32_t existing_rows = _rows_element->child_elements().size();
             const int32_t remaining_rows = total_required_rows - existing_rows;
 
@@ -122,7 +122,7 @@ namespace trview
 
             _fully_visible_rows = 0;
             const auto rows = _rows_element->child_elements();
-            for (auto r = 0; r < rows.size(); ++r)
+            for (auto r = 0u; r < rows.size(); ++r)
             {
                 const auto index = r + _current_top;
                 auto row = static_cast<Row*>(rows[r]);
@@ -145,7 +145,7 @@ namespace trview
 
             if (!_items.empty() && _rows_scrollbar)
             {
-                _rows_scrollbar->set_range(_current_top, _current_top + _fully_visible_rows, _items.size());
+                _rows_scrollbar->set_range(static_cast<float>(_current_top), static_cast<float>(_current_top + _fully_visible_rows), static_cast<float>(_items.size()));
             }
 
             highlight_item();
@@ -188,8 +188,13 @@ namespace trview
                 return true;
             }
 
-            _current_top = std::max(0, _current_top + direction);
-            populate_rows();
+            // Don't do a negative on the unsigned index.
+            if (_current_top > 0 || direction == 1)
+            {
+                _current_top += direction;
+                populate_rows();
+            }
+
             return true;
         }
 
@@ -274,7 +279,7 @@ namespace trview
             auto headers_element = std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal);
             for (const auto column : _columns)
             {
-                auto header_element = std::make_unique<Button>(Size(column.width(), 20), column.name());
+                auto header_element = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), column.name());
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {
@@ -316,9 +321,9 @@ namespace trview
         void Listbox::highlight_item()
         {
             const auto rows = _rows_element->child_elements();
-            for (auto i = 0; i < rows.size(); ++i)
+            for (auto& row_element : rows)
             {
-                auto row = static_cast<Row*>(rows[i]);
+                auto row = static_cast<Row*>(row_element);
                 row->set_highlighted(_show_highlight && row->item() == _selected_item);
             }
         }
@@ -347,7 +352,7 @@ namespace trview
                 return;
             }
 
-            auto index = iter - _items.begin();
+            auto index = static_cast<uint32_t>(iter - _items.begin());
 
             // Scroll the list so that the selected item is visible. If it is already on the 
             // same page, then no need to scroll.

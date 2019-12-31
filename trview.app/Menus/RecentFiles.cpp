@@ -14,7 +14,7 @@ namespace trview
             HMENU menu = GetMenu(window);
             HMENU popup = CreatePopupMenu();
 
-            for (int i = 0; i < recent_files.size(); ++i)
+            for (auto i = 0u; i < recent_files.size(); ++i)
             {
                 AppendMenu(popup, MF_STRING, ID_RECENT_FILE_BASE + i, to_utf16(recent_files[i]).c_str());
             }
@@ -34,15 +34,15 @@ namespace trview
     {
     }
 
-    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {
             int wmId = LOWORD(wParam);
-            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + _recent_files.size())
+            if (wmId >= ID_RECENT_FILE_BASE && wmId <= ID_RECENT_FILE_BASE + static_cast<int>(_recent_files.size()))
             {
                 int index = wmId - ID_RECENT_FILE_BASE;
-                if (index >= 0 && index < _recent_files.size())
+                if (index >= 0 && index < static_cast<int>(_recent_files.size()))
                 {
                     on_file_open(_recent_files[index]);
                 }

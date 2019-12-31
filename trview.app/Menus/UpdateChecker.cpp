@@ -1,6 +1,9 @@
 #include "UpdateChecker.h"
 #include <WinHttp.h>
+#pragma warning(push)
+#pragma warning(disable : 4127)
 #include <external/nlohmann/json.hpp>
+#pragma warning(pop)
 #include <trview.common/Strings.h>
 #include <shellapi.h>
 
@@ -110,7 +113,7 @@ namespace trview
         }, window(), _current_version);
     }
 
-    void UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == id_update_available)
         {

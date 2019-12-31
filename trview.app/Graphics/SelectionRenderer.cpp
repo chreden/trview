@@ -117,7 +117,7 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
-            _texture = std::make_unique<RenderTarget>(device, viewport.Width, viewport.Height, RenderTarget::DepthStencilMode::Enabled);
+            _texture = std::make_unique<RenderTarget>(device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.

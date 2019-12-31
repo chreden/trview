@@ -10,7 +10,7 @@ namespace trview
     {
     }
 
-    void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && 
             LOWORD(wParam) == ID_APP_WINDOWS_ITEMS || 

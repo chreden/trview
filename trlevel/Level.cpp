@@ -91,7 +91,7 @@ namespace trlevel
             }
 
             std::wstring transformed;
-            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), toupper);
+            std::transform(filename.begin(), filename.end(), std::back_inserter(transformed), towupper);
             return transformed.find(L".TRC") != filename.npos;
         }
 
@@ -135,7 +135,7 @@ namespace trlevel
 
             if (version == LevelVersion::Tomb4)
             {
-                uint32_t room_colour = read<uint32_t>(file);
+                room.room_colour = read<uint32_t>(file);
             }
             else
             {
@@ -189,7 +189,7 @@ namespace trlevel
         {
             skip_xela(file);
             uint32_t room_data_size = read<uint32_t>(file);
-            const uint32_t room_start = file.tellg();
+            const uint32_t room_start = static_cast<uint32_t>(file.tellg());
             const uint32_t room_end = room_start + room_data_size;
 
             const auto header = read<tr5_room_header>(file);
@@ -206,7 +206,7 @@ namespace trlevel
             room.flags = header.flags;
 
             // The offsets start measuring from this position, after all the header information.
-            const uint32_t data_start = file.tellg();
+            const uint32_t data_start = static_cast<uint32_t>(file.tellg());
 
             // Discard lights as they are not currently used:
             skip(file, sizeof(tr5_room_light) * header.num_lights);
@@ -225,7 +225,7 @@ namespace trlevel
             auto layers = read_vector<tr5_room_layer>(file, header.num_layers);
 
             file.seekg(data_start + header.poly_offset, std::ios::beg);
-            uint32_t vertex_offset = 0;
+            uint16_t vertex_offset = 0;
             for (const auto& layer : layers)
             {
                 auto rects = read_vector<tr4_mesh_face4>(file, layer.num_rectangles);
@@ -252,7 +252,6 @@ namespace trlevel
             }
 
             file.seekg(data_start + header.vertices_offset, std::ios::beg);
-            uint32_t num_vertices = header.vertices_size / sizeof(tr5_room_vertex);
             for (const auto& layer : layers)
             {
                 auto verts = convert_vertices(read_vector<tr5_room_vertex>(file, layer.num_vertices));
@@ -459,12 +458,12 @@ namespace trlevel
         return results;
     }
 
-    uint16_t Level::num_rooms() const
+    uint32_t Level::num_rooms() const
     {
-        return _num_rooms;
+        return _rooms.size();
     }
 
-    tr3_room Level::get_room(uint16_t index) const
+    tr3_room Level::get_room(uint32_t index) const
     {
         return _rooms[index];
     }
@@ -685,8 +684,8 @@ namespace trlevel
 
         if (_version == LevelVersion::Tomb5)
         {
-            uint16_t lara_type = read<uint16_t>(file);
-            uint16_t weather_type = read<uint16_t>(file);
+            _lara_type = read<uint16_t>(file);
+            _weather_type = read<uint16_t>(file);
             file.seekg(28, std::ios::cur);
         }
 
@@ -699,8 +698,9 @@ namespace trlevel
         }
         else
         {
-            uint32_t leveldata_uncompressed = read<uint32_t>(file);
-            uint32_t leveldata_compressed = read<uint32_t>(file);
+            // Skip size of uncompressed and compressed level data as they are
+            // unused in TR5.
+            skip(file, 8);
             load_level_data(file);
         }
 
@@ -724,16 +724,17 @@ namespace trlevel
         // Read unused value.
         read<uint32_t>(file);
 
+        uint32_t num_rooms = 0;
         if (_version == LevelVersion::Tomb5)
         {
-            _num_rooms = read<uint32_t>(file);
+            num_rooms = read<uint32_t>(file);
         }
         else
         {
-            _num_rooms = read<uint16_t>(file);
+            num_rooms = read<uint16_t>(file);
         }
 
-        for (uint16_t i = 0; i < _num_rooms; ++i)
+        for (auto i = 0u; i < num_rooms; ++i)
         {
             tr3_room room;
             if (_version == LevelVersion::Tomb5)
@@ -835,7 +836,9 @@ namespace trlevel
 
         if (_version >= LevelVersion::Tomb4)
         {
-            uint8_t animated_textures_uv_count = read<uint8_t>(file);
+            // Animated textures uv count - not yet used:
+            skip(file, 1);
+
             file.seekg(3, std::ios::cur);
             if (_version == LevelVersion::Tomb5)
             {

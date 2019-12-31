@@ -56,7 +56,7 @@ namespace trview
         set_checked(menu, ID_APP_VIEW_TOOLS, true);
     }
 
-    void ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message != WM_COMMAND)
         {

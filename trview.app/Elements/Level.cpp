@@ -148,7 +148,7 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_selected_item(uint16_t index)
+    void Level::set_selected_item(uint32_t index)
     {
         _selected_item = _entities[index].get();
         on_level_changed();
@@ -289,8 +289,8 @@ namespace trview
 
     void Level::generate_rooms(const graphics::Device& device, const trlevel::ILevel& level)
     {
-        const uint16_t num_rooms = level.num_rooms();
-        for (uint16_t i = 0; i < num_rooms; ++i)
+        const auto num_rooms = level.num_rooms();
+        for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
             _rooms.push_back(std::make_unique<Room>(device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
@@ -300,7 +300,7 @@ namespace trview
 
         // Fix up the IsAlternate status of the rooms that are referenced by HasAlternate rooms.
         // This can only be done once all the rooms are loaded.
-        for (int16_t i = 0; i < _rooms.size(); ++i)
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
@@ -310,7 +310,7 @@ namespace trview
                 int16_t alternate = room->alternate_room();
                 if (alternate != -1)
                 {
-                    _rooms[alternate]->set_is_alternate(i);
+                    _rooms[alternate]->set_is_alternate(static_cast<int16_t>(i));
                 }
             }
         }
@@ -318,14 +318,14 @@ namespace trview
 
     void Level::generate_triggers()
     {
-        for (auto i = 0; i < _rooms.size(); ++i)
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             for (auto sector : room->sectors())
             {
-                if (sector.second->flags & SectorFlag::Trigger)
+                if (sector->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector.second->x(), sector.second->z(), sector.second->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector->x(), sector->z(), sector->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
             }
@@ -480,7 +480,7 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::set_alternate_group(uint16_t group, bool enabled)
+    void Level::set_alternate_group(uint32_t group, bool enabled)
     {
         _regenerate_transparency = true;
         if (enabled)
@@ -503,7 +503,7 @@ namespace trview
         on_level_changed();
     }
 
-    bool Level::alternate_group(uint16_t group) const
+    bool Level::alternate_group(uint32_t group) const
     {
         return _alternate_groups.find(group) != _alternate_groups.end();
     }
@@ -577,10 +577,10 @@ namespace trview
         return *_texture_storage;
     }
 
-    std::set<uint16_t> Level::alternate_groups() const
+    std::set<uint32_t> Level::alternate_groups() const
     {
-        std::set<uint16_t> groups;
-        for (int16_t i = 0; i < _rooms.size(); ++i)
+        std::set<uint32_t> groups;
+        for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
             if (room->alternate_mode() != Room::AlternateMode::None)

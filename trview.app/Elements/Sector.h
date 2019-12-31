@@ -76,7 +76,7 @@ namespace trview
         TriggerInfo _trigger;
 
         // ID of the sector 
-        int _sector_id; 
+        uint16_t _sector_id; 
 
         // Base sector structure 
         const trlevel::tr_room_sector _sector;

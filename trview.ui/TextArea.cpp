@@ -180,7 +180,7 @@ namespace trview
             return full_string;
         }
 
-        bool TextArea::mouse_down(const Point& position)
+        bool TextArea::mouse_down(const Point&)
         {
             return true;
         }

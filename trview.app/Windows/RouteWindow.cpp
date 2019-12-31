@@ -38,7 +38,7 @@ namespace trview
     RouteWindow::RouteWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const trview::Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
-        set_panels(create_left_panel(device), create_right_panel());
+        set_panels(create_left_panel(), create_right_panel());
     }
 
     void RouteWindow::set_route(Route* route) 
@@ -60,7 +60,7 @@ namespace trview
         _colour->set_selected_value(colour.name());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel(const Device& device)
+    std::unique_ptr<Control> RouteWindow::create_left_panel()
     {
         auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
@@ -173,7 +173,7 @@ namespace trview
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 150 }
             });
-        _token_store += stats_box->on_item_selected += [&](const auto& item)
+        _token_store += stats_box->on_item_selected += [&](const auto&)
         {
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)

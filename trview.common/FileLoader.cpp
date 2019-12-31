@@ -16,7 +16,7 @@ namespace trview
         else if (length == (std::streampos)-1)
             throw new std::runtime_error("-1 returned from tellg(), read error likely");
 
-        std::vector<uint8_t> data (length);
+        std::vector<uint8_t> data (static_cast<uint32_t>(length));
 
         ifs.seekg(0, std::ios::beg); 
         ifs.read(reinterpret_cast<char*>(&data[0]), length);

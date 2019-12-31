@@ -7,7 +7,7 @@ namespace trview
     {
     }
 
-    void AlternateGroupToggler::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    void AlternateGroupToggler::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_CHAR)
         {

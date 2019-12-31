@@ -49,7 +49,7 @@ namespace trview
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
 
-        _scene_target = std::make_unique<graphics::RenderTarget>(_device, window.size().width, window.size().height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = std::make_unique<graphics::Sprite>(_device, *_shader_storage, window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
@@ -128,7 +128,7 @@ namespace trview
         _token_store += _ui->on_show_water += [&](bool value) { set_show_water(value); };
         _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
         _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
-        _token_store += _ui->on_alternate_group += [&](uint16_t group, bool value) { set_alternate_group(group, value); };
+        _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
         _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value); } };
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
@@ -224,7 +224,7 @@ namespace trview
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
 
         _picking = std::make_unique<Picking>();
-        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result) { result.stop = !should_pick(); };
+        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
             if (result.stop || _active_tool != Tool::None)
@@ -265,7 +265,7 @@ namespace trview
             }
             result = nearest_result(result, _route->pick(info.position, info.direction));
         };
-        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result)
         {
             if (_active_tool == Tool::Measure && result.hit && !result.stop)
             {
@@ -282,11 +282,11 @@ namespace trview
             }
         };
 
-        _token_store += _picking->on_pick += [&](const PickInfo& info, const PickResult& result)
+        _token_store += _picking->on_pick += [&](const PickInfo& pickInfo, const PickResult& result)
         {
             _current_pick = result;
 
-            _ui->set_pick(info, result);
+            _ui->set_pick(pickInfo, result);
 
             // Highlight sectors in the minimap.
             if (_level)
@@ -317,11 +317,11 @@ namespace trview
 
                 auto x = _current_pick.position.x - (info.value().x / trlevel::Scale_X);
                 auto z = _current_pick.position.z - (info.value().z / trlevel::Scale_Z);
-                _ui->set_minimap_highlight(x, z);
+                _ui->set_minimap_highlight(static_cast<uint16_t>(x), static_cast<uint16_t>(z));
             }
         };
 
-        _token_store += _menu_detector.on_menu_toggled += [&](bool open)
+        _token_store += _menu_detector.on_menu_toggled += [&](bool)
         {
             _timer.reset();
             _camera_input.reset();
@@ -853,7 +853,7 @@ namespace trview
         }
     }
 
-    void Viewer::set_alternate_group(uint16_t group, bool enabled)
+    void Viewer::set_alternate_group(uint32_t group, bool enabled)
     {
         if (_level)
         {
@@ -863,7 +863,7 @@ namespace trview
         }
     }
 
-    bool Viewer::alternate_group(uint16_t group) const
+    bool Viewer::alternate_group(uint32_t group) const
     {
         if (_level)
         {
@@ -879,7 +879,7 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
-        _scene_target = std::make_unique<graphics::RenderTarget>(_device, size.width, size.height, graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
         _scene_changed = true;
     }

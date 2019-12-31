@@ -51,11 +51,11 @@ namespace trlevel
 
         // Gets the number of rooms in the level.
         // Returns: The number of rooms.
-        virtual uint16_t num_rooms() const = 0;
+        virtual uint32_t num_rooms() const = 0;
 
         // Get the room at the specified index.
         // Returns: The room.
-        virtual tr3_room get_room(uint16_t index) const = 0;
+        virtual tr3_room get_room(uint32_t index) const = 0;
 
         // Get the number of object textures in the level.
         // Returns: The number of object textures.

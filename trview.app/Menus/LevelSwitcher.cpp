@@ -79,9 +79,9 @@ namespace trview
 
         // Clear all items from menu and repopulate
         reset_menu(window(), _directory_listing_menu);
-        for (int i = 0; i < _file_switcher_list.size(); ++i)
+        for (auto i = 0u; i < _file_switcher_list.size(); ++i)
         {
-            AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + i, to_utf16(_file_switcher_list[i].friendly_name).c_str());
+            AppendMenu(_directory_listing_menu, MF_STRING, ID_SWITCHFILE_BASE + static_cast<int>(i), to_utf16(_file_switcher_list[i].friendly_name).c_str());
         }
 
         DrawMenuBar(window());

@@ -88,7 +88,7 @@ namespace trview
         void set_highlight_mode(RoomHighlightMode mode, bool enabled);
         bool highlight_mode_enabled(RoomHighlightMode mode) const;
         void set_selected_room(uint16_t index);
-        void set_selected_item(uint16_t index);
+        void set_selected_item(uint32_t index);
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
 
@@ -99,12 +99,12 @@ namespace trview
         /// Set whether to render the alternate group specified.
         /// @param group The group to toggle.
         /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint16_t group, bool enabled);
+        void set_alternate_group(uint32_t group, bool enabled);
 
         /// Gets whether the specified alternate group is active.
         /// @param group The group to check.
         /// @returns True if the group is active.
-        bool alternate_group(uint16_t group) const;
+        bool alternate_group(uint32_t group) const;
 
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;
@@ -141,7 +141,7 @@ namespace trview
 
         /// Gets the alternate groups that exist in the level.
         /// @returns The set of alternate groups in the level.
-        std::set<uint16_t> alternate_groups() const;
+        std::set<uint32_t> alternate_groups() const;
 
         /// Event raised when something has changed in the appearance of the level or the
         /// items that are contained within.
@@ -217,7 +217,7 @@ namespace trview
         bool _show_water{ true };
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
-        std::set<uint16_t> _alternate_groups;
+        std::set<uint32_t> _alternate_groups;
         trlevel::LevelVersion _version;
     };
 
