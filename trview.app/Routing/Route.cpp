@@ -245,6 +245,17 @@ namespace trview
         }
     }
 
+    std::string to_base64(const std::vector<uint8_t>& bytes)
+    {
+        DWORD required_length = 0;
+        CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
+
+        std::vector<wchar_t> output_string(required_length);
+        CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &output_string[0], &required_length);
+
+        return to_utf8(std::wstring(&output_string[0]));
+    }
+
     void export_route(const Route& route, const std::string& filename)
     {
         try
@@ -269,6 +280,12 @@ namespace trview
                 waypoint_json["room"] = waypoint.room();
                 waypoint_json["index"] = waypoint.index();
                 waypoint_json["notes"] = to_utf8(waypoint.notes());
+
+                auto data = waypoint.save_file();
+                if (!data.empty())
+                {
+                    waypoint_json["save"] = to_base64(data);
+                }
 
                 waypoints.push_back(waypoint_json);
             }

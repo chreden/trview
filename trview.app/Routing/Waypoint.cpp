@@ -66,6 +66,11 @@ namespace trview
         return _notes;
     }
 
+    std::vector<uint8_t> Waypoint::save_file() const
+    {
+        return _save_data;
+    }
+
     void Waypoint::set_notes(const std::wstring& notes)
     {
         _notes = notes;
@@ -76,7 +81,7 @@ namespace trview
         _route_colour = colour;
     }
 
-    void Waypoint::set_save_file(const std::string& data)
+    void Waypoint::set_save_file(const std::vector<uint8_t>& data)
     {
         _save_data = data;
     }

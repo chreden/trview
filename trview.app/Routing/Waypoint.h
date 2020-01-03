@@ -68,6 +68,8 @@ namespace trview
         /// Get any notes associated with the waypoint.
         std::wstring notes() const;
 
+        std::vector<uint8_t> save_file() const;
+
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         void set_notes(const std::wstring& notes);
@@ -76,10 +78,10 @@ namespace trview
         /// @param colour The colour of the route.
         void set_route_colour(const Colour& colour);
 
-        void set_save_file(const std::string& data);
+        void set_save_file(const std::vector<uint8_t>& data);
     private:
         std::wstring                 _notes;
-        std::string                  _save_data;
+        std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
         Mesh*                        _mesh;
         Type                         _type;

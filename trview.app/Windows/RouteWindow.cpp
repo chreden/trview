@@ -232,15 +232,7 @@ namespace trview
                     {
                         std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
                         infile.read(reinterpret_cast<char*>(&bytes[0]), length);
-
-                        DWORD required_length = 0;
-                        CryptBinaryToString(&bytes[0], static_cast<DWORD>(length), CRYPT_STRING_BASE64, nullptr, &required_length);
-
-                        std::vector<wchar_t> output_string(required_length);
-                        CryptBinaryToString(&bytes[0], static_cast<DWORD>(length), CRYPT_STRING_BASE64, &output_string[0], &required_length);
-
-                        auto final_string = trview::to_utf8(std::wstring(&output_string[0]));
-                        _route->waypoint(_selected_index).set_save_file(final_string);
+                        _route->waypoint(_selected_index).set_save_file(bytes);
                     }
                 }
                 catch(...)
