@@ -276,7 +276,7 @@ namespace trview
                 auto pos = waypoint.position();
                 pos_string << pos.x << "," << pos.y << "," << pos.z;
                 waypoint_json["position"] = pos_string.str();
-                
+
                 waypoint_json["room"] = waypoint.room();
                 waypoint_json["index"] = waypoint.index();
                 waypoint_json["notes"] = to_utf8(waypoint.notes());

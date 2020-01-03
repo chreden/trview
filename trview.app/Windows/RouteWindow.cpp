@@ -198,45 +198,80 @@ namespace trview
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
         auto attach_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
-        _token_store += attach_save->on_click += [&]()
+        _token_store += attach_save->on_click += [&, attach_save]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
             {
                 return;
             }
 
-            OPENFILENAME ofn;
-            memset(&ofn, 0, sizeof(ofn));
-
-            wchar_t path[MAX_PATH];
-            memset(&path, 0, sizeof(path));
-
-            ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"Savegame File\0*.*\0";
-            ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrTitle = L"Select Save";
-            ofn.Flags = OFN_FILEMUSTEXIST;
-            ofn.lpstrFile = path;
-            if (GetOpenFileName(&ofn))
+            if (_route->waypoint(_selected_index).save_file().empty())
             {
-                // Load bytes from file.
-                auto filename = trview::to_utf8(ofn.lpstrFile);
-                try
-                {
-                    std::ifstream infile;
-                    infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
-                    auto length = infile.tellg();
-                    infile.seekg(0, std::ios::beg);
+                OPENFILENAME ofn;
+                memset(&ofn, 0, sizeof(ofn));
 
-                    if (length)
+                wchar_t path[MAX_PATH];
+                memset(&path, 0, sizeof(path));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.lpstrFilter = L"Savegame File\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.lpstrTitle = L"Select Save";
+                ofn.Flags = OFN_FILEMUSTEXIST;
+                ofn.lpstrFile = path;
+                if (GetOpenFileName(&ofn))
+                {
+                    // Load bytes from file.
+                    auto filename = trview::to_utf8(ofn.lpstrFile);
+                    try
                     {
-                        std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
-                        infile.read(reinterpret_cast<char*>(&bytes[0]), length);
-                        _route->waypoint(_selected_index).set_save_file(bytes);
+                        std::ifstream infile;
+                        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+                        auto length = infile.tellg();
+                        infile.seekg(0, std::ios::beg);
+
+                        if (length)
+                        {
+                            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
+                            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
+                            _route->waypoint(_selected_index).set_save_file(bytes);
+
+                            attach_save->set_text(L"SAVEGAME.0");
+                        }
+                    }
+                    catch (...)
+                    {
                     }
                 }
-                catch(...)
+            }
+            else
+            {
+                OPENFILENAME ofn;
+                memset(&ofn, 0, sizeof(ofn));
+
+                wchar_t path[MAX_PATH];
+                memset(&path, 0, sizeof(path));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.lpstrFilter = L"Savegame File\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.lpstrTitle = L"Export Save";
+                ofn.lpstrFile = path;
+                ofn.lpstrDefExt = L"0";
+                if (GetSaveFileName(&ofn))
                 {
+                    auto filename = trview::to_utf8(ofn.lpstrFile);
+                    try
+                    {
+                        std::ofstream outfile;
+                        outfile.open(filename, std::ios::out | std::ios::binary);
+
+                        auto bytes = _route->waypoint(_selected_index).save_file();
+                        outfile.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
+                    }
+                    catch (...)
+                    {
+                    }
                 }
             }
         };
