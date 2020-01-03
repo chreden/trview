@@ -51,12 +51,6 @@ namespace trview
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
 
-        /// Event raised when a save file is attached.
-        Event<std::string> on_save_attached;
-
-        /// Event raised when a save file is cleared.
-        Event<> on_save_cleared;
-
         /// Select the specified waypoint.
         /// @param index The index of the waypoint to select.
         void select_waypoint(uint32_t index);

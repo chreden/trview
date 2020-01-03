@@ -76,6 +76,11 @@ namespace trview
         _route_colour = colour;
     }
 
+    void Waypoint::set_save_file(const std::string& data)
+    {
+        _save_data = data;
+    }
+
     Waypoint::Type waypoint_type_from_string(const std::string& value)
     {
         if (value == "Trigger")

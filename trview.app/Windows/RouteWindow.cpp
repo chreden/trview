@@ -3,6 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <fstream>
 
 namespace trview
 {
@@ -199,6 +200,11 @@ namespace trview
         auto attach_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
         _token_store += attach_save->on_click += [&]()
         {
+            if (!(_route && _selected_index < _route->waypoints()))
+            {
+                return;
+            }
+
             OPENFILENAME ofn;
             memset(&ofn, 0, sizeof(ofn));
 
@@ -213,12 +219,40 @@ namespace trview
             ofn.lpstrFile = path;
             if (GetOpenFileName(&ofn))
             {
-                on_save_attached(trview::to_utf8(ofn.lpstrFile));
+                // Load bytes from file.
+                auto filename = trview::to_utf8(ofn.lpstrFile);
+                try
+                {
+                    std::ifstream infile;
+                    infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+                    auto length = infile.tellg();
+                    infile.seekg(0, std::ios::beg);
+
+                    if (length)
+                    {
+                        std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
+                        infile.read(reinterpret_cast<char*>(&bytes[0]), length);
+
+                        DWORD required_length = 0;
+                        CryptBinaryToString(&bytes[0], static_cast<DWORD>(length), CRYPT_STRING_BASE64, nullptr, &required_length);
+
+                        std::vector<wchar_t> output_string(required_length);
+                        CryptBinaryToString(&bytes[0], static_cast<DWORD>(length), CRYPT_STRING_BASE64, &output_string[0], &required_length);
+
+                        auto final_string = trview::to_utf8(std::wstring(&output_string[0]));
+                        _route->waypoint(_selected_index).set_save_file(final_string);
+                    }
+                }
+                catch(...)
+                {
+                }
             }
         };
 
         auto clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
-        _token_store += clear_save->on_click += [&]() { on_save_cleared(); };
+        _token_store += clear_save->on_click += [&]()
+        {
+        };
 
         auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
         _token_store += delete_button->on_click += [&]()
