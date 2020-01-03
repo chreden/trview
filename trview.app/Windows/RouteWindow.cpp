@@ -195,8 +195,30 @@ namespace trview
         _stats = details_panel->add_child(std::move(stats_box));
 
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
+
         auto attach_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
+        _token_store += attach_save->on_click += [&]()
+        {
+            OPENFILENAME ofn;
+            memset(&ofn, 0, sizeof(ofn));
+
+            wchar_t path[MAX_PATH];
+            memset(&path, 0, sizeof(path));
+
+            ofn.lStructSize = sizeof(ofn);
+            ofn.lpstrFilter = L"Savegame File\0*.*\0";
+            ofn.nMaxFile = MAX_PATH;
+            ofn.lpstrTitle = L"Select Save";
+            ofn.Flags = OFN_FILEMUSTEXIST;
+            ofn.lpstrFile = path;
+            if (GetOpenFileName(&ofn))
+            {
+                on_save_attached(trview::to_utf8(ofn.lpstrFile));
+            }
+        };
+
         auto clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
+        _token_store += clear_save->on_click += [&]() { on_save_cleared(); };
 
         auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
         _token_store += delete_button->on_click += [&]()
