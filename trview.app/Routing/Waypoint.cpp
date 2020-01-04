@@ -51,6 +51,11 @@ namespace trview
         return _type;
     }
 
+    bool Waypoint::has_save() const
+    {
+        return !_save_data.empty();
+    }
+
     uint32_t Waypoint::index() const
     {
         return _index;

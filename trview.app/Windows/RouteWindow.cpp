@@ -197,8 +197,8 @@ namespace trview
 
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
-        auto attach_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
-        _token_store += attach_save->on_click += [&, attach_save]()
+        _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
+        _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
             {
@@ -236,7 +236,7 @@ namespace trview
                             infile.read(reinterpret_cast<char*>(&bytes[0]), length);
                             _route->waypoint(_selected_index).set_save_file(bytes);
 
-                            attach_save->set_text(L"SAVEGAME.0");
+                            _select_save->set_text(L"SAVEGAME.0");
                         }
                     }
                     catch (...)
@@ -276,19 +276,23 @@ namespace trview
             }
         };
 
-        auto clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
-        _token_store += clear_save->on_click += [&]()
+        _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
+        _token_store += _clear_save->on_click += [&]()
         {
         };
 
-        auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
-        _token_store += delete_button->on_click += [&]()
+        _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
+        _token_store += _delete_waypoint->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
             {
                 on_waypoint_deleted(_selected_index);
             }
         };
+
+        _select_save->set_visible(false);
+        _clear_save->set_visible(false);
+        _delete_waypoint->set_visible(false);
 
         group_box->add_child(std::move(details_panel));
         right_panel->add_child(std::move(group_box));
@@ -348,8 +352,15 @@ namespace trview
         {
             _stats->set_items({});
             _notes_area->set_text(L"");
+            _select_save->set_visible(false);
+            _clear_save->set_visible(false);
+            _delete_waypoint->set_visible(false);
             return;
         }
+
+        _select_save->set_visible(true);
+        _clear_save->set_visible(true);
+        _delete_waypoint->set_visible(true);
 
         const auto& waypoint = _route->waypoint(index);
         std::vector<Listbox::Item> stats;
@@ -385,6 +396,15 @@ namespace trview
         _stats->set_items(stats);
 
         _notes_area->set_text(waypoint.notes());
+
+        if (waypoint.has_save())
+        {
+            _select_save->set_text(L"SAVEGAME.0");
+        }
+        else
+        {
+            _select_save->set_text(L"Attach Save...");
+        }
     }
 
     void RouteWindow::select_waypoint(uint32_t index)
