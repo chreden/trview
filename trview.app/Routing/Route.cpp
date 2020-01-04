@@ -21,6 +21,31 @@ namespace trview
     {
         const float PoleThickness = 0.05f;
         const float RopeThickness = 0.015f;
+
+        std::vector<uint8_t> from_base64(const std::string& text)
+        {
+            const auto b64 = to_utf16(text);
+            DWORD required_length = 0;
+            CryptStringToBinary(b64.c_str(), 0, CRYPT_STRING_BASE64, nullptr, &required_length, nullptr, nullptr);
+
+            std::vector<uint8_t> data(required_length);
+            if (required_length)
+            {
+                CryptStringToBinary(b64.c_str(), 0, CRYPT_STRING_BASE64, &data[0], &required_length, nullptr, nullptr);
+            }
+            return data;
+        }
+
+        std::string to_base64(const std::vector<uint8_t>& bytes)
+        {
+            DWORD required_length = 0;
+            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
+
+            std::vector<wchar_t> output_string(required_length);
+            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &output_string[0], &required_length);
+
+            return to_utf8(std::wstring(&output_string[0]));
+        }
     }
 
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
@@ -234,7 +259,10 @@ namespace trview
                 auto notes = waypoint["notes"].get<std::string>();
 
                 route->add(position, room, type, index);
-                route->waypoint(route->waypoints() - 1).set_notes(to_utf16(notes));
+
+                auto& new_waypoint = route->waypoint(route->waypoints() - 1);
+                new_waypoint.set_notes(to_utf16(notes));
+                new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
 
             return route;
@@ -243,17 +271,6 @@ namespace trview
         {
             return std::unique_ptr<Route>();
         }
-    }
-
-    std::string to_base64(const std::vector<uint8_t>& bytes)
-    {
-        DWORD required_length = 0;
-        CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
-
-        std::vector<wchar_t> output_string(required_length);
-        CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &output_string[0], &required_length);
-
-        return to_utf8(std::wstring(&output_string[0]));
     }
 
     void export_route(const Route& route, const std::string& filename)
