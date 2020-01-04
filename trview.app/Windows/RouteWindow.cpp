@@ -205,7 +205,7 @@ namespace trview
                 return;
             }
 
-            if (_route->waypoint(_selected_index).save_file().empty())
+            if (!_route->waypoint(_selected_index).has_save())
             {
                 OPENFILENAME ofn;
                 memset(&ofn, 0, sizeof(ofn));
@@ -279,6 +279,17 @@ namespace trview
         _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
         _token_store += _clear_save->on_click += [&]()
         {
+            if (!(_route && _selected_index < _route->waypoints()))
+            {
+                return;
+            }
+
+            auto& waypoint = _route->waypoint(_selected_index);
+            if (waypoint.has_save())
+            {
+                waypoint.set_save_file({});
+                _select_save->set_text(L"Attach Save...");
+            }
         };
 
         _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
