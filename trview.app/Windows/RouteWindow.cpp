@@ -241,6 +241,7 @@ namespace trview
                     }
                     catch (...)
                     {
+                        MessageBox(window(), L"Failed to attach save", L"Error", MB_OK);
                     }
                 }
             }
@@ -271,6 +272,7 @@ namespace trview
                     }
                     catch (...)
                     {
+                        MessageBox(window(), L"Failed to export save", L"Error", MB_OK);
                     }
                 }
             }
