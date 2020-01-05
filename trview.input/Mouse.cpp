@@ -106,6 +106,11 @@ namespace trview
             {
                 case WM_MOUSEACTIVATE:
                 {
+                    if (LOWORD(lParam) != HTCLIENT)
+                    {
+                        break;
+                    }
+
                     const auto mouse_message = HIWORD(lParam);
                     if (mouse_message == WM_LBUTTONDOWN)
                     {
