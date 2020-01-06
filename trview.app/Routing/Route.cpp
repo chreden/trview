@@ -38,6 +38,11 @@ namespace trview
 
         std::string to_base64(const std::vector<uint8_t>& bytes)
         {
+            if (bytes.empty())
+            {
+                return std::string();
+            }
+
             DWORD required_length = 0;
             CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
 
