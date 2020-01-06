@@ -298,15 +298,13 @@ namespace trview
                 auto pos = waypoint.position();
                 pos_string << pos.x << "," << pos.y << "," << pos.z;
                 waypoint_json["position"] = pos_string.str();
-
                 waypoint_json["room"] = waypoint.room();
                 waypoint_json["index"] = waypoint.index();
                 waypoint_json["notes"] = to_utf8(waypoint.notes());
 
-                auto data = waypoint.save_file();
-                if (!data.empty())
+                if (waypoint.has_save())
                 {
-                    waypoint_json["save"] = to_base64(data);
+                    waypoint_json["save"] = to_base64(waypoint.save_file());
                 }
 
                 waypoints.push_back(waypoint_json);
