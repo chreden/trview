@@ -72,6 +72,9 @@ namespace trview
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
         ui::TextArea* _notes_area;
+        ui::Button* _select_save;
+        ui::Button* _delete_waypoint;
+        ui::Button* _clear_save;
         Route* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;

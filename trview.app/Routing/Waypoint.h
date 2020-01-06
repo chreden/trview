@@ -59,6 +59,9 @@ namespace trview
         /// Get the type of the waypoint.
         Type type() const;
 
+        /// Get whether the waypoint has an attached save file.
+        bool has_save() const;
+
         /// Gets the index of the entity or trigger that the waypoint refers to.
         uint32_t index() const;
 
@@ -68,6 +71,9 @@ namespace trview
         /// Get any notes associated with the waypoint.
         std::wstring notes() const;
 
+        /// Get the contents of the attached save file.
+        std::vector<uint8_t> save_file() const;
+
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         void set_notes(const std::wstring& notes);
@@ -75,8 +81,12 @@ namespace trview
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         void set_route_colour(const Colour& colour);
+
+        /// Set the contents of the attached save file.
+        void set_save_file(const std::vector<uint8_t>& data);
     private:
         std::wstring                 _notes;
+        std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
         Mesh*                        _mesh;
         Type                         _type;

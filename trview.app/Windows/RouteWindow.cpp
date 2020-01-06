@@ -3,6 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <fstream>
 
 namespace trview
 {
@@ -161,9 +162,9 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
 
-        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 120), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 140), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         auto stats_box = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 80), Colours::ItemDetails);
         stats_box->set_show_headers(false);
@@ -194,8 +195,107 @@ namespace trview
         };
         _stats = details_panel->add_child(std::move(stats_box));
 
-        auto delete_button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
-        _token_store += delete_button->on_click += [&]()
+        auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
+
+        _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save..."));
+        _token_store += _select_save->on_click += [&]()
+        {
+            if (!(_route && _selected_index < _route->waypoints()))
+            {
+                return;
+            }
+
+            if (!_route->waypoint(_selected_index).has_save())
+            {
+                OPENFILENAME ofn;
+                memset(&ofn, 0, sizeof(ofn));
+
+                wchar_t path[MAX_PATH];
+                memset(&path, 0, sizeof(path));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.lpstrFilter = L"Savegame File\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.lpstrTitle = L"Select Save";
+                ofn.Flags = OFN_FILEMUSTEXIST;
+                ofn.lpstrFile = path;
+                if (GetOpenFileName(&ofn))
+                {
+                    // Load bytes from file.
+                    auto filename = trview::to_utf8(ofn.lpstrFile);
+                    try
+                    {
+                        std::ifstream infile;
+                        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+                        auto length = infile.tellg();
+                        infile.seekg(0, std::ios::beg);
+
+                        if (length)
+                        {
+                            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
+                            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
+                            _route->waypoint(_selected_index).set_save_file(bytes);
+
+                            _select_save->set_text(L"SAVEGAME.0");
+                        }
+                    }
+                    catch (...)
+                    {
+                        MessageBox(window(), L"Failed to attach save", L"Error", MB_OK);
+                    }
+                }
+            }
+            else
+            {
+                OPENFILENAME ofn;
+                memset(&ofn, 0, sizeof(ofn));
+
+                wchar_t path[MAX_PATH];
+                memset(&path, 0, sizeof(path));
+
+                ofn.lStructSize = sizeof(ofn);
+                ofn.lpstrFilter = L"Savegame File\0*.*\0";
+                ofn.nMaxFile = MAX_PATH;
+                ofn.lpstrTitle = L"Export Save";
+                ofn.lpstrFile = path;
+                ofn.lpstrDefExt = L"0";
+                if (GetSaveFileName(&ofn))
+                {
+                    auto filename = trview::to_utf8(ofn.lpstrFile);
+                    try
+                    {
+                        std::ofstream outfile;
+                        outfile.open(filename, std::ios::out | std::ios::binary);
+
+                        auto bytes = _route->waypoint(_selected_index).save_file();
+                        outfile.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
+                    }
+                    catch (...)
+                    {
+                        MessageBox(window(), L"Failed to export save", L"Error", MB_OK);
+                    }
+                }
+            }
+        };
+
+        _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
+        _token_store += _clear_save->on_click += [&]()
+        {
+            if (!(_route && _selected_index < _route->waypoints()))
+            {
+                return;
+            }
+
+            auto& waypoint = _route->waypoint(_selected_index);
+            if (waypoint.has_save())
+            {
+                waypoint.set_save_file({});
+                _select_save->set_text(L"Attach Save...");
+            }
+        };
+
+        _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
+        _token_store += _delete_waypoint->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
             {
@@ -203,11 +303,15 @@ namespace trview
             }
         };
 
+        _select_save->set_visible(false);
+        _clear_save->set_visible(false);
+        _delete_waypoint->set_visible(false);
+
         group_box->add_child(std::move(details_panel));
         right_panel->add_child(std::move(group_box));
 
         // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 140), Colours::Notes, Colours::DetailsBorder, L"Notes");
+        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes");
 
         auto notes_area = std::make_unique<TextArea>(Point(10, 21), Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
@@ -261,8 +365,15 @@ namespace trview
         {
             _stats->set_items({});
             _notes_area->set_text(L"");
+            _select_save->set_visible(false);
+            _clear_save->set_visible(false);
+            _delete_waypoint->set_visible(false);
             return;
         }
+
+        _select_save->set_visible(true);
+        _clear_save->set_visible(true);
+        _delete_waypoint->set_visible(true);
 
         const auto& waypoint = _route->waypoint(index);
         std::vector<Listbox::Item> stats;
@@ -298,6 +409,15 @@ namespace trview
         _stats->set_items(stats);
 
         _notes_area->set_text(waypoint.notes());
+
+        if (waypoint.has_save())
+        {
+            _select_save->set_text(L"SAVEGAME.0");
+        }
+        else
+        {
+            _select_save->set_text(L"Attach Save...");
+        }
     }
 
     void RouteWindow::select_waypoint(uint32_t index)

@@ -21,6 +21,36 @@ namespace trview
     {
         const float PoleThickness = 0.05f;
         const float RopeThickness = 0.015f;
+
+        std::vector<uint8_t> from_base64(const std::string& text)
+        {
+            const auto b64 = to_utf16(text);
+            DWORD required_length = 0;
+            CryptStringToBinary(b64.c_str(), 0, CRYPT_STRING_BASE64, nullptr, &required_length, nullptr, nullptr);
+
+            std::vector<uint8_t> data(required_length);
+            if (required_length)
+            {
+                CryptStringToBinary(b64.c_str(), 0, CRYPT_STRING_BASE64, &data[0], &required_length, nullptr, nullptr);
+            }
+            return data;
+        }
+
+        std::string to_base64(const std::vector<uint8_t>& bytes)
+        {
+            if (bytes.empty())
+            {
+                return std::string();
+            }
+
+            DWORD required_length = 0;
+            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
+
+            std::vector<wchar_t> output_string(required_length);
+            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &output_string[0], &required_length);
+
+            return to_utf8(std::wstring(&output_string[0]));
+        }
     }
 
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
@@ -234,7 +264,10 @@ namespace trview
                 auto notes = waypoint["notes"].get<std::string>();
 
                 route->add(position, room, type, index);
-                route->waypoint(route->waypoints() - 1).set_notes(to_utf16(notes));
+
+                auto& new_waypoint = route->waypoint(route->waypoints() - 1);
+                new_waypoint.set_notes(to_utf16(notes));
+                new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
 
             return route;
@@ -265,10 +298,14 @@ namespace trview
                 auto pos = waypoint.position();
                 pos_string << pos.x << "," << pos.y << "," << pos.z;
                 waypoint_json["position"] = pos_string.str();
-                
                 waypoint_json["room"] = waypoint.room();
                 waypoint_json["index"] = waypoint.index();
                 waypoint_json["notes"] = to_utf8(waypoint.notes());
+
+                if (waypoint.has_save())
+                {
+                    waypoint_json["save"] = to_base64(waypoint.save_file());
+                }
 
                 waypoints.push_back(waypoint_json);
             }

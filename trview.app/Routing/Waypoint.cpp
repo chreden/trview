@@ -51,6 +51,11 @@ namespace trview
         return _type;
     }
 
+    bool Waypoint::has_save() const
+    {
+        return !_save_data.empty();
+    }
+
     uint32_t Waypoint::index() const
     {
         return _index;
@@ -66,6 +71,11 @@ namespace trview
         return _notes;
     }
 
+    std::vector<uint8_t> Waypoint::save_file() const
+    {
+        return _save_data;
+    }
+
     void Waypoint::set_notes(const std::wstring& notes)
     {
         _notes = notes;
@@ -74,6 +84,11 @@ namespace trview
     void Waypoint::set_route_colour(const Colour& colour)
     {
         _route_colour = colour;
+    }
+
+    void Waypoint::set_save_file(const std::vector<uint8_t>& data)
+    {
+        _save_data = data;
     }
 
     Waypoint::Type waypoint_type_from_string(const std::string& value)
