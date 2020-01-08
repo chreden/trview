@@ -215,9 +215,9 @@ namespace trview
             _scene_changed = true;
         };
 
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); };
+        _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); _ui_changed = true; };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); _ui_changed = true; };
+        _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); _ui_changed = true; };
         _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); _scene_changed = true; };
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; _scene_changed = true; };
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; _scene_changed = true; };
