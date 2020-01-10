@@ -70,7 +70,7 @@ namespace trview
 
     CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size()))
+        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent)
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -103,6 +103,7 @@ namespace trview
         if (message == WM_CLOSE)
         {
             on_window_closed();
+            SetFocus(_parent);
         }
         else if (message == WM_GETMINMAXINFO)
         {

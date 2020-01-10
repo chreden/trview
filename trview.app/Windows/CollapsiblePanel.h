@@ -89,6 +89,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_divider();
         void register_change_detection(ui::Control* control);
 
+        Window _parent;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
