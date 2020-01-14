@@ -195,8 +195,12 @@ namespace trview
 
                 // Render the action sprite above the midpoint of the path.
                 // Figure out which way the route is going....
+                auto to = next_waypoint - current;
+                to.Normalize();
+                to *= 0.1f;
+
                 Vector3 first = XMVector3Project(current, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
-                Vector3 second = XMVector3Project(next_waypoint, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
+                Vector3 second = XMVector3Project(current + to, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
                 bool flip = first.x < second.x;
                 float scale = 0.4f;
 
