@@ -34,5 +34,6 @@ namespace trview
         mutable graphics::Texture _untextured_texture;
         std::array<DirectX::SimpleMath::Color, 256> _palette;
         trlevel::LevelVersion _version;
+        std::unordered_map<std::string, graphics::Texture> _textures;
     };
 }

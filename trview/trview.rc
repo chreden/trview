@@ -246,6 +246,7 @@ IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
 
 IDB_SETTINGS            PNG                     "resources\\settings.png"
 
+IDB_ACTION_RUN          PNG                     "resources\\run.png"
 
 /////////////////////////////////////////////////////////////////////////////
 //

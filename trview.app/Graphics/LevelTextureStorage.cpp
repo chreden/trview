@@ -79,12 +79,18 @@ namespace trview
         return _palette[texture & 0xff];
     }
 
-    graphics::Texture LevelTextureStorage::lookup(const std::string&) const
+    graphics::Texture LevelTextureStorage::lookup(const std::string& key) const
     {
-        return graphics::Texture();
+        auto found = _textures.find(key);
+        if (found == _textures.end())
+        {
+            return graphics::Texture();
+        }
+        return found->second;
     }
 
-    void LevelTextureStorage::store(const std::string&, const graphics::Texture&)
+    void LevelTextureStorage::store(const std::string& key, const graphics::Texture& texture)
     {
+        _textures.insert({ key, texture });
     }
 }

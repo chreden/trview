@@ -17,6 +17,13 @@ namespace trview
     {
     }
 
+    TransparentTriangle::TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
+        const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2, const std::string& key)
+        : TransparentTriangle(v0, v1, v2, uv0, uv1, uv2, Lookup, Mode::Normal)
+    {
+        texture_key = key;
+    }
+
     Vector3 TransparentTriangle::normal() const
     {
         auto first = vertices[1] - vertices[0];
@@ -34,6 +41,16 @@ namespace trview
             Vector3::Transform(vertices[1], matrix),
             Vector3::Transform(vertices[2], matrix),
             uvs[0], uvs[1], uvs[2], texture, mode, colour_override);
+    }
+
+    TransparentTriangle TransparentTriangle::transform(const DirectX::SimpleMath::Matrix& matrix, const std::string& lookup) const
+    {
+        using namespace DirectX::SimpleMath;
+        return TransparentTriangle(
+            Vector3::Transform(vertices[0], matrix),
+            Vector3::Transform(vertices[1], matrix),
+            Vector3::Transform(vertices[2], matrix),
+            uvs[0], uvs[1], uvs[2], lookup);
     }
 
     // Determine whether the face should be transparent give the attribute and effects values. The 

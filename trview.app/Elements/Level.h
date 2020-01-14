@@ -138,6 +138,8 @@ namespace trview
         void set_selected_trigger(uint32_t number);
 
         const ILevelTextureStorage& texture_storage() const;
+        
+        ILevelTextureStorage& texture_storage();
 
         /// Gets the alternate groups that exist in the level.
         /// @returns The set of alternate groups in the level.

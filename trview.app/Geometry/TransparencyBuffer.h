@@ -63,6 +63,7 @@ namespace trview
             uint32_t texture;
             TransparentTriangle::Mode mode;
             uint32_t count;
+            std::string key;
         };
 
         std::vector<TextureRun> _texture_run;

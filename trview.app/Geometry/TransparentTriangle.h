@@ -14,6 +14,7 @@ namespace trview
 
         // Use the untextured texture instead of a texture from the level textures.
         const static uint32_t Untextured{ 0xffffffff };
+        const static uint32_t Lookup{ 0xfffffffe };
 
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
             const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
@@ -26,9 +27,14 @@ namespace trview
         /// @param colour The colour for the triangle.
         TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Color& colour);
 
+        TransparentTriangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
+            const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2, const std::string& key);
+
         DirectX::SimpleMath::Vector3 normal() const;
 
         TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const DirectX::SimpleMath::Color& colour_override) const;
+
+        TransparentTriangle transform(const DirectX::SimpleMath::Matrix& matrix, const std::string& lookup) const;
 
         // The world space positions that make up the triangle.
         DirectX::SimpleMath::Vector3 vertices[3];
@@ -38,7 +44,9 @@ namespace trview
         DirectX::SimpleMath::Vector3 position;
         // The level texture index to use.
         uint32_t                     texture;
-        
+
+        std::string                  texture_key;
+
         Mode                         mode;
 
         DirectX::SimpleMath::Color   colour{ 1, 1, 1, 1 };

@@ -582,6 +582,8 @@ namespace trview
         save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        load_default_textures(_device, _level->texture_storage());
+
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };

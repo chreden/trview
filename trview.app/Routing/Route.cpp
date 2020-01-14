@@ -195,10 +195,10 @@ namespace trview
 
                 // Render the action sprite above the midpoint of the path.
                 Vector3 forward = camera.forward();
-                auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward);
+                auto billboard = Matrix::CreateScale(0.4f) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
                 for (const auto& triangle : _action_mesh->transparent_triangles())
                 {
-                    _transparency_buffer.add(triangle.transform(billboard, _colour + Colour(0.0f, 0.2f, 0.0f, 0.0f)));
+                    _transparency_buffer.add(triangle.transform(billboard, "action_run"));
                 }
             }
         }

@@ -577,6 +577,11 @@ namespace trview
         return *_texture_storage;
     }
 
+    ILevelTextureStorage& Level::texture_storage()
+    {
+        return *_texture_storage;
+    }
+
     std::set<uint32_t> Level::alternate_groups() const
     {
         std::set<uint32_t> groups;

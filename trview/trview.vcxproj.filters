@@ -109,6 +109,9 @@
     <Image Include="resources\settings.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\run.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fontlist.txt">

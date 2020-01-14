@@ -117,7 +117,9 @@ namespace trview
             }
             previous_mode = run.mode;
 
-            auto texture = run.texture == TransparentTriangle::Untextured ? _untextured : texture_storage.texture(run.texture);
+            auto texture = run.texture == TransparentTriangle::Untextured ? _untextured :
+                run.texture == TransparentTriangle::Lookup ?
+                texture_storage.lookup(run.key) : texture_storage.texture(run.texture);
             context->PSSetShaderResources(0, 1, texture.view().GetAddressOf());
             context->Draw(run.count * 3, sum);
             sum += run.count * 3;
@@ -183,9 +185,10 @@ namespace trview
         {
             if (_texture_run.empty() ||
                 _texture_run.back().texture != triangle.texture || 
-                _texture_run.back().mode != triangle.mode) 
+                _texture_run.back().mode != triangle.mode ||
+                _texture_run.back().key != triangle.texture_key)
             {
-                _texture_run.push_back({ triangle.texture, triangle.mode, 1 });
+                _texture_run.push_back({ triangle.texture, triangle.mode, 1, triangle.texture_key });
             }
             else
             {
