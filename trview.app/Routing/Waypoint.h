@@ -1,9 +1,13 @@
 #pragma once
 
+#include <optional>
 #include <SimpleMath.h>
+
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.common/Colour.h>
+
+#include "Action.h"
 
 namespace trview
 {
@@ -93,6 +97,7 @@ namespace trview
         uint32_t                     _index;
         uint32_t                     _room;
         Colour                       _route_colour;
+        std::optional<Action>        _action_to_next_waypoint;
     };
 
     Waypoint::Type waypoint_type_from_string(const std::string& value);

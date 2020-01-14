@@ -390,6 +390,9 @@
     <ClInclude Include="Camera\ProjectionMode.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Routing\Action.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

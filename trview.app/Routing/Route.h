@@ -107,6 +107,7 @@ namespace trview
 
         std::vector<Waypoint> _waypoints;
         std::unique_ptr<Mesh> _waypoint_mesh;
+        std::unique_ptr<Mesh> _action_mesh;
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };

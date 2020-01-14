@@ -56,6 +56,35 @@ namespace trview
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
         : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
     {
+        // Load the sprite mesh (temporarily here)
+        // Get the first sprite image.
+        // auto sprite = level.get_sprite_texture(sprite_sequence.Offset);
+        // auto texture = texture_storage.texture(sprite.Tile);
+
+        // Calculate UVs.
+        float u = 0.0f;
+        float v = 0.0f;
+        float width = 1.0f;
+        float height = 1.0f;
+
+        // Generate quad.
+        using namespace DirectX::SimpleMath;
+        std::vector<MeshVertex> vertices
+        {
+            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1) },
+            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
+        };
+
+        std::vector<TransparentTriangle> transparent_triangles
+        {
+            { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal },
+            { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal },
+        };
+
+        std::vector<Triangle> collision_triangles;
+        _action_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
     }
 
     void Route::add(const Vector3& position, uint32_t room)
@@ -162,6 +191,12 @@ namespace trview
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
+
+                // Render the action sprite above the midpoint of the path.
+                Vector3 forward = camera.forward();
+                auto billboard = Matrix::CreateBillboard(mid, camera.position(), camera.up(), &forward);
+                auto wvp = billboard * camera.view_projection();
+                _action_mesh->render(device.context(), wvp, texture_storage, _colour);
             }
         }
 

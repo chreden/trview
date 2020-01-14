@@ -125,6 +125,7 @@
     <ClInclude Include="Menus\RecentFiles.h" />
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
+    <ClInclude Include="Routing\Action.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
     <ClInclude Include="Settings\UserSettings.h" />
