@@ -710,6 +710,13 @@ namespace trview
             }
 
             _level->render_transparency(_device, current_camera());
+
+            if (_show_route)
+            {
+                _scene_target->clear_depth(_device.context());
+                _route->render_transparency(_device, current_camera(), _level->texture_storage());
+            }
+
             _compass->render(_device, current_camera(), _level->texture_storage());
         }
     }

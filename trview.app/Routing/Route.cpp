@@ -54,7 +54,7 @@ namespace trview
     }
 
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
-        : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
+        : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage), _transparency_buffer(device)
     {
         // Load the sprite mesh (temporarily here)
         // Get the first sprite image.
@@ -176,6 +176,7 @@ namespace trview
 
     void Route::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
+        _transparency_buffer.reset();
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
@@ -194,9 +195,11 @@ namespace trview
 
                 // Render the action sprite above the midpoint of the path.
                 Vector3 forward = camera.forward();
-                auto billboard = Matrix::CreateBillboard(mid, camera.position(), camera.up(), &forward);
-                auto wvp = billboard * camera.view_projection();
-                _action_mesh->render(device.context(), wvp, texture_storage, _colour);
+                auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward);
+                for (const auto& triangle : _action_mesh->transparent_triangles())
+                {
+                    _transparency_buffer.add(triangle.transform(billboard, _colour + Colour(0.0f, 0.2f, 0.0f, 0.0f)));
+                }
             }
         }
 
@@ -205,6 +208,12 @@ namespace trview
         {
             _selection_renderer.render(device, camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
         }
+    }
+
+    void Route::render_transparency(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    {
+        _transparency_buffer.sort(camera.rendering_position());
+        _transparency_buffer.render(device.context(), camera, texture_storage);
     }
 
     uint32_t Route::selected_waypoint() const

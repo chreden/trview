@@ -48,6 +48,10 @@ namespace trview
             // colour: The colour with which to clear the render target.
             void clear(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Color& colour);
 
+            /// Clear the depth stencil.
+            /// @param context The D3D device context.
+            void clear_depth(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+
             // Set the render target as the current render target. This will also apply a viewport that matches the 
             // dimensions of the render target.
             // context: The D3D device context.

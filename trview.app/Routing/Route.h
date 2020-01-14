@@ -81,6 +81,11 @@ namespace trview
         /// @param texture_storage Texture storage for the mesh.
         void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
 
+        /// Render the transparency in the route.
+        /// @param device The graphics device.
+        /// @param camera The current camera.
+        void render_transparency(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+
         /// Get the index of the currently selected waypoint.
         uint32_t selected_waypoint() const;
 
@@ -111,6 +116,7 @@ namespace trview
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };
+        TransparencyBuffer    _transparency_buffer;
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);

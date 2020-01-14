@@ -75,6 +75,14 @@ namespace trview
             }
         }
 
+        void RenderTarget::clear_depth(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+        {
+            if (_depth_stencil)
+            {
+                _depth_stencil->clear(context);
+            }
+        }
+
         // Set the render target as the current render target. This will also apply a viewport that matches the 
         // dimensions of the render target.
         // context: The D3D device context.
