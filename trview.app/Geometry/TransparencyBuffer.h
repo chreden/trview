@@ -38,7 +38,7 @@ namespace trview
         /// @param camera The current camera.
         /// @param texture_storage Texture storage for the level.
         /// @param ignore_blend Optional. Set to true to render this without transparency.
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false);
+        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false, bool no_cull = false);
 
         // Reset the triangles buffer.
         void reset();
@@ -54,6 +54,7 @@ namespace trview
         Microsoft::WRL::ComPtr<ID3D11BlendState> _alpha_blend;
         Microsoft::WRL::ComPtr<ID3D11BlendState> _additive_blend;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _transparency_depth_state;
+        Microsoft::WRL::ComPtr<ID3D11RasterizerState> _rasterizer_state;
 
         std::vector<TransparentTriangle> _triangles;
         std::vector<MeshVertex> _vertices;

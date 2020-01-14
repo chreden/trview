@@ -59,6 +59,13 @@ namespace trview
         stencil_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
         stencil_desc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
         _device.device()->CreateDepthStencilState(&stencil_desc, &_transparency_depth_state);
+
+        D3D11_RASTERIZER_DESC rasterizer_desc;
+        memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
+        rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+        rasterizer_desc.CullMode = D3D11_CULL_NONE;
+        rasterizer_desc.DepthClipEnable = TRUE;
+        _device.device()->CreateRasterizerState(&rasterizer_desc, &_rasterizer_state);
     }
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
@@ -76,11 +83,19 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend)
+    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend, bool no_cull)
     {
         if (!_vertices.size())
         {
             return;
+        }
+
+        ComPtr<ID3D11RasterizerState> old_rasterizer_state;
+        context->RSGetState(&old_rasterizer_state);
+
+        if (no_cull)
+        {
+            context->RSSetState(_rasterizer_state.Get());
         }
 
         ComPtr<ID3D11DepthStencilState> old_depth_state;
@@ -127,6 +142,11 @@ namespace trview
 
         context->OMSetDepthStencilState(old_depth_state.Get(), 1);
         context->OMSetBlendState(old_blend_state.Get(), nullptr, 0xffffffff);
+
+        if (no_cull)
+        {
+            context->RSSetState(old_rasterizer_state.Get());
+        }
     }
 
     void TransparencyBuffer::reset()

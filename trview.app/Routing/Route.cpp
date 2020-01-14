@@ -194,8 +194,14 @@ namespace trview
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
 
                 // Render the action sprite above the midpoint of the path.
+                // Figure out which way the route is going....
+                Vector3 first = XMVector3Project(current, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
+                Vector3 second = XMVector3Project(next_waypoint, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
+                bool flip = first.x < second.x;
+                float scale = 0.4f;
+
                 Vector3 forward = camera.forward();
-                auto billboard = Matrix::CreateScale(0.4f) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
+                auto billboard = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
                 for (const auto& triangle : _action_mesh->transparent_triangles())
                 {
                     _transparency_buffer.add(triangle.transform(billboard, "action_run"));
@@ -213,7 +219,7 @@ namespace trview
     void Route::render_transparency(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         _transparency_buffer.sort(camera.rendering_position());
-        _transparency_buffer.render(device.context(), camera, texture_storage);
+        _transparency_buffer.render(device.context(), camera, texture_storage, false, true);
     }
 
     uint32_t Route::selected_waypoint() const
