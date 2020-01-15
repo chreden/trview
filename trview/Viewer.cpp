@@ -847,6 +847,11 @@ namespace trview
     {
         select_waypoint(index);
         _target = _route->action_node_position(index);
+
+        // Show UI centered at that position to allow selection of other actions.
+        auto centre = current_camera().view_size() / 2.0f;
+        _ui->show_action_menu(Point(centre.width, centre.height));
+        _ui_changed = true;
     }
 
     void Viewer::remove_waypoint(uint32_t index)

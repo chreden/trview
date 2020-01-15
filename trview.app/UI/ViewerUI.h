@@ -22,6 +22,7 @@
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/ViewOptions.h>
+#include <trview.app/UI/ActionMenu.h>
 
 namespace trview
 {
@@ -259,6 +260,8 @@ namespace trview
         /// @param value Whether the UI is visible.
         void set_visible(bool value);
 
+        void show_action_menu(const Point& position);
+
         /// Get whether hidden geometry is visible.
         bool show_hidden_geometry() const;
 
@@ -295,6 +298,7 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
+        std::unique_ptr<ActionMenu> _action_menu;
         ui::Label* _measure;
         bool _show_tooltip{ true };
     };
