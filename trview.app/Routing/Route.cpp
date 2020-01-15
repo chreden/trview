@@ -156,6 +156,23 @@ namespace trview
                 result.position = position + direction * distance;
                 result.type = PickResult::Type::Waypoint;
             }
+
+            // Also check the action node.
+            if (i < _waypoints.size() - 1)
+            {
+                const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+                const auto pos = Vector3::Lerp(current, next_waypoint, 0.5f) + Vector3(0, -0.1f, 0);
+                auto sphere = BoundingSphere(pos, 0.175f);
+                if (sphere.Intersects(position, direction, distance) && (!result.hit || distance < result.distance))
+                {
+                    result.distance = distance;
+                    result.hit = true;
+                    result.index = i;
+                    result.position = pos;
+                    result.type = PickResult::Type::ActionNode;
+                }
+            }
         }
 
         return result;

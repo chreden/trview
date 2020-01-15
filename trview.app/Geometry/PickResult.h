@@ -15,7 +15,8 @@ namespace trview
             Mesh,
             Trigger,
             Waypoint,
-            Compass
+            Compass,
+            ActionNode
         };
 
         bool                         hit{ false };
