@@ -202,7 +202,7 @@ namespace trview
                 Vector3 first = XMVector3Project(current, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
                 Vector3 second = XMVector3Project(current + to, 0, 0, camera.view_size().width, camera.view_size().height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
                 bool flip = first.x < second.x;
-                float scale = 0.4f;
+                float scale = 0.35f;
 
                 Vector3 forward = camera.forward();
                 auto billboard = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
