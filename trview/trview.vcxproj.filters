@@ -112,6 +112,9 @@
     <Image Include="resources\run.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\sprint.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fontlist.txt">

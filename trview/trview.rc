@@ -248,6 +248,8 @@ IDB_SETTINGS            PNG                     "resources\\settings.png"
 
 IDB_ACTION_RUN          PNG                     "resources\\run.png"
 
+IDB_ACTION_SPRINT       PNG                     "resources\\sprint.png"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXT

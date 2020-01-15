@@ -8,3 +8,4 @@ numeric_up 137
 numeric_down 138
 settings 142
 action_run 150
+action_sprint 151

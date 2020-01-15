@@ -211,6 +211,7 @@
     <Image Include="resources\numericup.png" />
     <Image Include="resources\run.png" />
     <Image Include="resources\settings.png" />
+    <Image Include="resources\sprint.png" />
     <Image Include="resources\tomb1.png" />
     <Image Include="resources\tomb2.png" />
     <Image Include="resources\tomb3.png">
