@@ -92,6 +92,7 @@ namespace trview
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
+        void select_action_node(uint32_t index);
         void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;

@@ -449,6 +449,9 @@ namespace trview
                             case PickResult::Type::Waypoint:
                                 select_waypoint(_current_pick.index);
                                 break;
+                            case PickResult::Type::ActionNode:
+                                select_action_node(_current_pick.index);
+                                break;
                             }
 
                             if (_settings.auto_orbit)
@@ -715,7 +718,6 @@ namespace trview
 
             if (_show_route)
             {
-                _scene_target->clear_depth(_device.context());
                 _route->render_transparency(_device, current_camera(), _level->texture_storage());
             }
 
@@ -839,6 +841,12 @@ namespace trview
             set_camera_mode(CameraMode::Orbit);
         }
         _scene_changed = true;
+    }
+
+    void Viewer::select_action_node(uint32_t index)
+    {
+        select_waypoint(index);
+        _target = _route->action_node_position(index);
     }
 
     void Viewer::remove_waypoint(uint32_t index)

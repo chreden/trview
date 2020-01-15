@@ -290,6 +290,14 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
+    Vector3 Route::action_node_position(uint32_t index) const
+    {
+        const auto& waypoint = _waypoints[index];
+        const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto next_waypoint = _waypoints[index + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        return Vector3::Lerp(current, next_waypoint, 0.5f) + Vector3(0, -0.1f, 0);
+    }
+
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
     {
         try

@@ -107,6 +107,8 @@ namespace trview
 
         /// Get the number of waypoints in the route.
         uint32_t waypoints() const;
+
+        DirectX::SimpleMath::Vector3 action_node_position(uint32_t index) const;
     private:
         uint32_t next_index() const;
 
