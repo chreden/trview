@@ -142,16 +142,32 @@ namespace trview
 
         void TextArea::set_text(const std::wstring& text)
         {
-            while (!_lines.empty())
-            {
-                remove_line(false);
-            }
-
             std::wstringstream stream(text);
+            std::vector<std::wstring> newlines;
             std::wstring line;
             while (std::getline(stream, line, L'\n'))
             {
-                add_line(line, false);
+                newlines.push_back(line);
+            }
+
+            if (newlines.size() == _lines.size())
+            {
+                for (std::size_t i = 0; i < newlines.size(); ++i)
+                {
+                    _lines[i]->set_text(newlines[i]);
+                }
+            }
+            else
+            {
+                while (!_lines.empty())
+                {
+                    remove_line(false);
+                }
+
+                for (const auto& line : newlines)
+                {
+                    add_line(line, false);
+                }
             }
 
             _cursor_line = _lines.empty() ? 0 : _lines.size() - 1;
