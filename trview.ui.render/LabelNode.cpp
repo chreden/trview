@@ -23,11 +23,18 @@ namespace trview
                     };
                 }
                 _label->set_measurer(this);
+                _token_store += _label->on_deleting += [&]()
+                {
+                    _label = nullptr;
+                };
             }
 
             LabelNode::~LabelNode()
             {
-                _label->set_measurer(nullptr);
+                if (_label)
+                {
+                    _label->set_measurer(nullptr);
+                }
             }
 
             Size LabelNode::measure(const std::wstring& text) const
@@ -43,6 +50,11 @@ namespace trview
             void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
+                if (!_label)
+                {
+                    return;
+                }
+
                 const auto size = _label->size();
                 _font->render(context, _label->text(), size.width, size.height, _label->text_colour());
             }
@@ -51,6 +63,11 @@ namespace trview
             // resize the label if the label has been set to auto size mode.
             void LabelNode::generate_font_texture()
             {
+                if (!_label)
+                {
+                    return;
+                }
+
                 if (_label->size_mode() == SizeMode::Auto)
                 {
                     auto new_size = _font->measure(_label->text());
