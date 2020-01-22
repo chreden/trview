@@ -221,8 +221,10 @@ namespace trview
                 float scale = 0.35f;
 
                 Vector3 forward = camera.forward();
-                auto billboard = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
-                _selected_action->render(billboard, _transparency_buffer);
+                auto scaling = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale);
+                auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
+                auto world = scaling * billboard;
+                _selected_action->render(world, _transparency_buffer);
             }
         }
 
