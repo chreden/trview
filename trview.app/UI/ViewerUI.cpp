@@ -148,8 +148,6 @@ namespace trview
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
 
-        _action_menu = std::make_unique<ActionMenu>(*_control);
-
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
         _ui_renderer->load(_control.get());
@@ -439,11 +437,6 @@ namespace trview
     void ViewerUI::set_visible(bool value)
     {
         _control->set_visible(value);
-    }
-
-    void ViewerUI::show_action_menu(const Point& position)
-    {
-        _action_menu->show(position);
     }
 
     bool ViewerUI::show_hidden_geometry() const

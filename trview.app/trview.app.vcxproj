@@ -62,7 +62,6 @@
     <ClCompile Include="Tools\Compass.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
-    <ClCompile Include="UI\ActionMenu.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
@@ -133,7 +132,6 @@
     <ClInclude Include="Tools\Compass.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
-    <ClInclude Include="UI\ActionMenu.h" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\ContextMenu.h" />
