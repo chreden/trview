@@ -83,8 +83,7 @@ namespace trview
             { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, TransparentTriangle::Untextured, TransparentTriangle::Mode::Normal },
         };
 
-        std::vector<Triangle> collision_triangles;
-        _action_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+        _selected_action = std::make_unique<ActionNodeOption>(transparent_triangles);
     }
 
     void Route::add(const Vector3& position, uint32_t room)
@@ -223,10 +222,7 @@ namespace trview
 
                 Vector3 forward = camera.forward();
                 auto billboard = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale) * Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
-                for (const auto& triangle : _action_mesh->transparent_triangles())
-                {
-                    _transparency_buffer.add(triangle.transform(billboard, "action_run"));
-                }
+                _selected_action->render(billboard, _transparency_buffer);
             }
         }
 

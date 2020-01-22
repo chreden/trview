@@ -56,6 +56,7 @@
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
+    <ClCompile Include="Routing\ActionNodeOption.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Routing\Action.h" />
+    <ClInclude Include="Routing\ActionNodeOption.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
     <ClInclude Include="Settings\UserSettings.h" />

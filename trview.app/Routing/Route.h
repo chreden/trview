@@ -5,6 +5,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
+#include "ActionNodeOption.h"
 #include "Waypoint.h"
 
 namespace trview
@@ -114,7 +115,7 @@ namespace trview
 
         std::vector<Waypoint> _waypoints;
         std::unique_ptr<Mesh> _waypoint_mesh;
-        std::unique_ptr<Mesh> _action_mesh;
+        std::unique_ptr<ActionNodeOption> _selected_action;
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };
