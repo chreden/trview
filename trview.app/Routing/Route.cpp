@@ -225,6 +225,23 @@ namespace trview
                 auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
                 auto world = scaling * billboard;
                 _selected_action->render(world, _transparency_buffer);
+
+                float scale2 = 0.2f;
+                auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
+
+                for (int i = 0; i < 8; ++i)
+                {
+                    // Render another one...
+                    float angle = DirectX::g_XMTwoPi[0] / 8.0f * static_cast<float>(i);
+                    auto rotation = Matrix::CreateRotationZ(angle);
+
+                    auto transform = rotation * camera.view().Invert();
+                    auto offset = Vector3::TransformNormal(Vector3(0, -0.4f, 0), transform);
+
+                    auto billboard2 = Matrix::CreateBillboard(mid + offset, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
+                    auto world2 = scaling2 * billboard2;
+                    _selected_action->render(world2, _transparency_buffer);
+                }
             }
         }
 
