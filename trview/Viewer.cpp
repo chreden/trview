@@ -845,7 +845,10 @@ namespace trview
 
     void Viewer::select_action_node(uint32_t index)
     {
-        select_waypoint(index);
+        select_room(_route->waypoint(index).room());
+        _scene_changed = true;
+
+        _route->select_action(index);
         _target = _route->action_node_position(index);
 
         // Show UI centered at that position to allow selection of other actions.

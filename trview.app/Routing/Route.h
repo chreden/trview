@@ -94,6 +94,8 @@ namespace trview
         /// @param index The index to select.
         void select_waypoint(uint32_t index);
 
+        void select_action(uint32_t index);
+
         /// Set the colour for the route.
         /// @param colour The colour to use.
         void set_colour(const Colour& colour);
@@ -118,6 +120,7 @@ namespace trview
         std::unique_ptr<ActionNodeOption> _selected_action;
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
+        std::optional<uint32_t> _selected_action_index;
         Colour                _colour{ Colour::Green };
         TransparencyBuffer    _transparency_buffer;
     };
