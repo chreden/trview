@@ -187,6 +187,9 @@
     <ClCompile Include="Routing\ActionNodeOption.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\ActionMenu.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -397,6 +400,9 @@
       <Filter>Routing</Filter>
     </ClInclude>
     <ClInclude Include="Routing\ActionNodeOption.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\ActionMenu.h">
       <Filter>Routing</Filter>
     </ClInclude>
   </ItemGroup>
