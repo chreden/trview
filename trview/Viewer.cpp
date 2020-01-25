@@ -848,14 +848,15 @@ namespace trview
 
     void Viewer::select_action_node(uint32_t index)
     {
-        select_room(_route->waypoint(index).room());
+        select_room(_route->waypoint(index).room(), true);
         _scene_changed = true;
-
+        
         _route->select_action(index);
         _target = _route->action_node_position(index);
 
         // Show UI centered at that position to allow selection of other actions.
         auto centre = current_camera().view_size() / 2.0f;
+        _camera.set_zoom(4.f);
     }
 
     void Viewer::remove_waypoint(uint32_t index)
