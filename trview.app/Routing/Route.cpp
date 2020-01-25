@@ -210,6 +210,7 @@ namespace trview
     void Route::select_action(uint32_t index)
     {
         _selected_action_index = index;
+        _action_menu.select();
     }
 
     void Route::set_colour(const Colour& colour)
@@ -219,6 +220,11 @@ namespace trview
         {
             waypoint.set_route_colour(colour);
         }
+    }
+
+    void Route::update(float elapsed)
+    {
+        _action_menu.update(elapsed);
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const

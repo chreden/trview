@@ -19,9 +19,14 @@ namespace trview
             const DirectX::SimpleMath::Vector3& previous_waypoint,
             const DirectX::SimpleMath::Vector3& next_waypoint,
             bool selected);
+
+        void select();
+
+        void update(float elapsed);
     private:
         void generate_geometry();
 
         std::unique_ptr<ActionNodeOption> _action;
+        float _time { 0.0f };
     };
 }

@@ -1,6 +1,8 @@
+#define NOMINMAX
 #include "ActionMenu.h"
 #include <trview.app/Geometry/TransparencyBuffer.h>
 #include <trview.app/Camera/ICamera.h>
+#include <algorithm>
 
 using namespace trview::graphics;
 using namespace DirectX::SimpleMath;
@@ -59,24 +61,45 @@ namespace trview
         auto world = scaling * billboard;
         _action->render(world, transparency_buffer);
 
+        const float spacing_scale = 0.01f;
+        const float expansion_scale = 75.0f;
+
         if (selected)
         {
-            float scale2 = 0.2f;
-            auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
-
             for (int i = 0; i < 8; ++i)
             {
+                // float scale2 = std::min((_time- i * spacing_scale) * 0.2f * expansion_scale, 0.2f);
+                // if (scale2 < 0)
+                // {
+                //     continue;
+                // }
+
+                float scale2 = 0.2f;
+                auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
+
                 // Render another one...
-                float angle = DirectX::g_XMTwoPi[0] / 8.0f * static_cast<float>(i);
+                float angle = DirectX::g_XMTwoPi[0] / -8.0f * static_cast<float>(i);
                 auto rotation = Matrix::CreateRotationZ(angle);
 
                 auto transform = rotation * camera.view().Invert();
-                auto offset = Vector3::TransformNormal(Vector3(0, -0.4f, 0), transform);
+
+                float length = std::min(0.4f, _time * 3.0f);
+                auto offset = Vector3::TransformNormal(Vector3(0, length, 0), transform);
 
                 auto billboard2 = Matrix::CreateBillboard(mid + offset, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
                 auto world2 = scaling2 * billboard2;
                 _action->render(world2, transparency_buffer);
             }
         }
+    }
+
+    void ActionMenu::select()
+    {
+        _time = 0.0f;
+    }
+
+    void ActionMenu::update(float elapsed)
+    {
+        _time += elapsed;
     }
 }

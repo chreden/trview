@@ -652,6 +652,9 @@ namespace trview
         _timer.update();
         update_camera();
 
+        _scene_changed = true;
+        _route->update(_timer.elapsed());
+
         if (_mouse_changed || _scene_changed)
         {
             _picking->pick(_window, current_camera());
