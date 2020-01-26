@@ -721,6 +721,7 @@ namespace trview
 
             if (_show_route)
             {
+                _scene_target->clear_depth(_device.context());
                 _route->render_transparency(_device, current_camera(), _level->texture_storage());
             }
 
@@ -850,7 +851,7 @@ namespace trview
     {
         select_room(_route->waypoint(index).room(), true);
         _scene_changed = true;
-        
+
         _route->select_action(index);
         _target = _route->action_node_position(index);
 
