@@ -251,19 +251,19 @@ namespace trview
         };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
-            if (result.stop || !_level)
-            {
-                return;
-            }
-            result = nearest_result(result, _level->pick(current_camera(), info.position, info.direction));
-        };
-        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
-        {
             if (result.stop)
             {
                 return;
             }
             result = nearest_result(result, _route->pick(info.position, info.direction));
+        };
+        _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
+        {
+            if (result.stop || !_level)
+            {
+                return;
+            }
+            result = nearest_result(result, _level->pick(current_camera(), info.position, info.direction));
         };
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result)
         {
@@ -451,6 +451,9 @@ namespace trview
                                 break;
                             case PickResult::Type::ActionNode:
                                 select_action_node(_current_pick.index);
+                                break;
+                            case PickResult::Type::ActionSubNode:
+                                _route->select_sub_node(_current_pick.index);
                                 break;
                             }
 

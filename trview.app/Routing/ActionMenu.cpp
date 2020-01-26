@@ -6,6 +6,7 @@
 
 using namespace trview::graphics;
 using namespace DirectX::SimpleMath;
+using namespace DirectX;
 
 namespace trview
 {
@@ -68,12 +69,6 @@ namespace trview
         {
             for (int i = 0; i < 8; ++i)
             {
-                // float scale2 = std::min((_time- i * spacing_scale) * 0.2f * expansion_scale, 0.2f);
-                // if (scale2 < 0)
-                // {
-                //     continue;
-                // }
-
                 float scale2 = 0.2f;
                 auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
 
@@ -86,7 +81,10 @@ namespace trview
                 float length = std::min(0.4f, _time * 3.0f);
                 auto offset = Vector3::TransformNormal(Vector3(0, length, 0), transform);
 
-                auto billboard2 = Matrix::CreateBillboard(mid + offset, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
+                auto subpos = mid + offset + Vector3(0, -0.1f, 0);
+                _sub_nodes[i] = subpos;
+
+                auto billboard2 = Matrix::CreateBillboard(subpos, camera.rendering_position(), camera.up(), &forward);
                 auto world2 = scaling2 * billboard2;
                 _action->render(world2, transparency_buffer);
             }
@@ -101,5 +99,27 @@ namespace trview
     void ActionMenu::update(float elapsed)
     {
         _time += elapsed;
+    }
+
+    PickResult ActionMenu::pick(const Vector3& position, const Vector3& direction) const
+    {
+        PickResult result;
+        result.hit = false;
+        float distance = 0;
+
+        for (int i = 0; i < 8; ++i)
+        {
+            auto subsphere = BoundingSphere(_sub_nodes[i], 0.1f);
+            if (subsphere.Intersects(position, direction, distance) && (!result.hit || distance < result.distance))
+            {
+                result.distance = distance;
+                result.hit = true;
+                result.index = i;
+                result.position = _sub_nodes[i];
+                result.type = PickResult::Type::ActionSubNode;
+            }
+        }
+
+        return result;
     }
 }

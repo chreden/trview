@@ -1,7 +1,9 @@
 #pragma once
 
 #include <trview.graphics/Device.h>
+#include <trview.app/Geometry/PickResult.h>
 #include "ActionNodeOption.h"
+#include <array>
 
 namespace trview
 {
@@ -23,10 +25,13 @@ namespace trview
         void select();
 
         void update(float elapsed);
+
+        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
     private:
         void generate_geometry();
 
         std::unique_ptr<ActionNodeOption> _action;
         float _time { 0.0f };
+        std::array<DirectX::SimpleMath::Vector3, 8> _sub_nodes;
     };
 }

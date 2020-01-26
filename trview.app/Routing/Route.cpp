@@ -143,6 +143,12 @@ namespace trview
                     result.position = pos;
                     result.type = PickResult::Type::ActionNode;
                 }
+
+                auto sub_node_pick = _action_menu.pick(position, direction);
+                if (sub_node_pick.hit && (!result.hit || sub_node_pick.distance < result.distance))
+                {
+                    result = sub_node_pick;
+                }
             }
         }
 
@@ -261,6 +267,11 @@ namespace trview
         const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
         const auto next_waypoint = _waypoints[index + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
         return Vector3::Lerp(current, next_waypoint, 0.5f) + Vector3(0, -0.1f, 0);
+    }
+
+    void Route::select_sub_node(uint32_t index)
+    {
+
     }
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)

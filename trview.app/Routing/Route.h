@@ -114,6 +114,8 @@ namespace trview
         uint32_t waypoints() const;
 
         DirectX::SimpleMath::Vector3 action_node_position(uint32_t index) const;
+
+        void select_sub_node(uint32_t index);
     private:
         uint32_t next_index() const;
 

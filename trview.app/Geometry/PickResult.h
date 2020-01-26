@@ -16,7 +16,8 @@ namespace trview
             Trigger,
             Waypoint,
             Compass,
-            ActionNode
+            ActionNode,
+            ActionSubNode
         };
 
         bool                         hit{ false };
