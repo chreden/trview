@@ -216,8 +216,15 @@ namespace trview
 
     void Route::select_action(uint32_t index)
     {
+        if (_selected_action_index == index)
+        {
+            _action_menu.expand();
+        }
+        else
+        {
+            _action_menu.close();
+        }
         _selected_action_index = index;
-        _action_menu.select();
     }
 
     void Route::set_colour(const Colour& colour)
@@ -273,6 +280,7 @@ namespace trview
     void Route::select_sub_node(uint32_t index)
     {
         _waypoints[_selected_action_index.value()].set_action_to_next_waypoint(_action_menu.action_at(index));
+        _action_menu.collapse();
     }
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)

@@ -76,7 +76,7 @@ namespace trview
         const float spacing_scale = 0.01f;
         const float expansion_scale = 75.0f;
 
-        if (selected)
+        if (selected && _expand)
         {
             auto page_size = 8;
             auto pages = all_actions.size() / page_size + 1;
@@ -108,14 +108,38 @@ namespace trview
         }
     }
 
-    void ActionMenu::select()
+    void ActionMenu::expand()
     {
+        if (!_expand)
+        {
+            _expand = true;
+            _time = 0.0f;
+            _time_scale = 1.0f;
+        }
+    }
+
+    void ActionMenu::close()
+    {
+        _expand = false;
         _time = 0.0f;
+    }
+
+    void ActionMenu::collapse()
+    {
+        _time_scale = -1.0f;
+        _time = 0.1333333f;
     }
 
     void ActionMenu::update(float elapsed)
     {
-        _time += elapsed;
+        if (_expand)
+        {
+            _time += elapsed * _time_scale;
+            if (_time_scale < 0 && _time < 0)
+            {
+                _expand = false;
+            }
+        }
     }
 
     PickResult ActionMenu::pick(const Vector3& position, const Vector3& direction) const

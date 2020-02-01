@@ -25,7 +25,11 @@ namespace trview
 
         Action action_at(uint32_t index) const;
 
-        void select();
+        void expand();
+
+        void close();
+
+        void collapse();
 
         void update(float elapsed);
 
@@ -36,5 +40,7 @@ namespace trview
         std::unique_ptr<ActionNodeOption> _action;
         float _time { 0.0f };
         std::array<DirectX::SimpleMath::Vector3, 8> _sub_nodes;
+        bool _expand{ false };
+        float _time_scale{ 1.0f };
     };
 }
