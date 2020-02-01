@@ -20,6 +20,7 @@ namespace trview
             TransparencyBuffer& transparency_buffer,
             const DirectX::SimpleMath::Vector3& previous_waypoint,
             const DirectX::SimpleMath::Vector3& next_waypoint,
+            Action action,
             bool selected);
 
         void select();

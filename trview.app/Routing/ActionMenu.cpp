@@ -42,7 +42,7 @@ namespace trview
         _action = std::make_unique<ActionNodeOption>(transparent_triangles);
     }
 
-    void ActionMenu::render(const Device& device, const ICamera& camera, TransparencyBuffer& transparency_buffer, const Vector3& previous_waypoint, const Vector3& next_waypoint, bool selected)
+    void ActionMenu::render(const Device& device, const ICamera& camera, TransparencyBuffer& transparency_buffer, const Vector3& previous_waypoint, const Vector3& next_waypoint, Action action, bool selected)
     {
         // Render the action sprite above the midpoint of the path.
         // Figure out which way the route is going....
@@ -61,7 +61,7 @@ namespace trview
         auto scaling = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale);
         auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
         auto world = scaling * billboard;
-        _action->render(world, transparency_buffer, Action::Run);
+        _action->render(world, transparency_buffer, action);
 
         const float spacing_scale = 0.01f;
         const float expansion_scale = 75.0f;

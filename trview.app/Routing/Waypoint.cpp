@@ -21,6 +21,11 @@ namespace trview
     {
     }
 
+    Action Waypoint::action_to_next_waypoint() const
+    {
+        return _action_to_next_waypoint;
+    }
+
     void Waypoint::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         using namespace DirectX::SimpleMath;
@@ -74,6 +79,11 @@ namespace trview
     std::vector<uint8_t> Waypoint::save_file() const
     {
         return _save_data;
+    }
+
+    void Waypoint::set_action_to_next_waypoint(Action action)
+    {
+        _action_to_next_waypoint = action;
     }
 
     void Waypoint::set_notes(const std::wstring& notes)

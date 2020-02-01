@@ -44,6 +44,8 @@ namespace trview
         /// Destructor for waypoint.
         virtual ~Waypoint() = default;
 
+        Action action_to_next_waypoint() const;
+
         /// Render the waypoint in the 3D view.
         /// @param device The device to use to render the waypoint.
         /// @param camera The current camera being used for rendering.
@@ -78,6 +80,8 @@ namespace trview
         /// Get the contents of the attached save file.
         std::vector<uint8_t> save_file() const;
 
+        void set_action_to_next_waypoint(Action action);
+
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         void set_notes(const std::wstring& notes);
@@ -97,7 +101,7 @@ namespace trview
         uint32_t                     _index;
         uint32_t                     _room;
         Colour                       _route_colour;
-        std::optional<Action>        _action_to_next_waypoint;
+        Action                       _action_to_next_waypoint{ Action::Run };
     };
 
     Waypoint::Type waypoint_type_from_string(const std::string& value);
