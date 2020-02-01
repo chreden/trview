@@ -148,6 +148,7 @@ namespace trview
                 if (sub_node_pick.hit && (!result.hit || sub_node_pick.distance < result.distance))
                 {
                     result = sub_node_pick;
+                    result.stop = true;
                 }
             }
         }
