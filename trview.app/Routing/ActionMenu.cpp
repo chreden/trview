@@ -11,6 +11,11 @@ using namespace DirectX;
 
 namespace trview
 {
+    namespace
+    {
+        const std::vector<Action> all_actions{ Action::Run, Action::Walk, Action::Sprint };
+    }
+
     ActionMenu::ActionMenu()
     {
         generate_geometry();
@@ -42,6 +47,11 @@ namespace trview
         _action = std::make_unique<ActionNodeOption>(transparent_triangles);
     }
 
+    Action ActionMenu::action_at(uint32_t index) const
+    {
+        return all_actions[index];
+    }
+
     void ActionMenu::render(const Device& device, const ICamera& camera, TransparencyBuffer& transparency_buffer, const Vector3& previous_waypoint, const Vector3& next_waypoint, Action action, bool selected)
     {
         // Render the action sprite above the midpoint of the path.
@@ -68,8 +78,6 @@ namespace trview
 
         if (selected)
         {
-            const std::vector<Action> all_actions { Action::Run, Action::Walk, Action::Sprint };
-
             auto page_size = 8;
             auto pages = all_actions.size() / page_size + 1;
             auto current_page = 0;

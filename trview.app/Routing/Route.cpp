@@ -271,7 +271,7 @@ namespace trview
 
     void Route::select_sub_node(uint32_t index)
     {
-
+        _waypoints[_selected_action_index.value()].set_action_to_next_waypoint(_action_menu.action_at(index));
     }
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)

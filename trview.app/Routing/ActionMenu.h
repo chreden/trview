@@ -23,6 +23,8 @@ namespace trview
             Action action,
             bool selected);
 
+        Action action_at(uint32_t index) const;
+
         void select();
 
         void update(float elapsed);
