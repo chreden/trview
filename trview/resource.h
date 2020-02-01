@@ -34,6 +34,7 @@
 #define IDR_TYPE_NAMES                  149
 #define IDB_ACTION_RUN                  150
 #define IDB_ACTION_SPRINT               151
+#define IDB_ACTION_WALK                 152
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773

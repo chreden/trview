@@ -222,6 +222,7 @@
     <Image Include="resources\unknown.png">
       <DeploymentContent>true</DeploymentContent>
     </Image>
+    <Image Include="resources\walk.png" />
     <Image Include="small.ico" />
     <Image Include="trview.ico" />
   </ItemGroup>

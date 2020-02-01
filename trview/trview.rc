@@ -250,6 +250,8 @@ IDB_ACTION_RUN          PNG                     "resources\\run.png"
 
 IDB_ACTION_SPRINT       PNG                     "resources\\sprint.png"
 
+IDB_ACTION_WALK         PNG                     "resources\\walk.png"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXT

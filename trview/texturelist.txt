@@ -9,3 +9,4 @@ numeric_down 138
 settings 142
 action_run 150
 action_sprint 151
+action_walk 152

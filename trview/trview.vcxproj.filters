@@ -115,6 +115,9 @@
     <Image Include="resources\sprint.png">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="resources\walk.png">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fontlist.txt">

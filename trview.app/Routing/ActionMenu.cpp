@@ -3,6 +3,7 @@
 #include <trview.app/Geometry/TransparencyBuffer.h>
 #include <trview.app/Camera/ICamera.h>
 #include <algorithm>
+#include "Action.h"
 
 using namespace trview::graphics;
 using namespace DirectX::SimpleMath;
@@ -60,20 +61,28 @@ namespace trview
         auto scaling = Matrix::CreateScale(scale * (flip ? -1.0f : 1.0f), scale, scale);
         auto billboard = Matrix::CreateBillboard(mid, camera.rendering_position(), camera.up(), &forward) * Matrix::CreateTranslation(0, -0.1f, 0);
         auto world = scaling * billboard;
-        _action->render(world, transparency_buffer);
+        _action->render(world, transparency_buffer, Action::Run);
 
         const float spacing_scale = 0.01f;
         const float expansion_scale = 75.0f;
 
         if (selected)
         {
-            for (int i = 0; i < 8; ++i)
+            const std::vector<Action> all_actions { Action::Run, Action::Walk, Action::Sprint };
+
+            auto page_size = 8;
+            auto pages = all_actions.size() / page_size + 1;
+            auto current_page = 0;
+            auto base = current_page * page_size;
+            auto on_page = std::min<uint32_t>(8, all_actions.size() - base);
+            
+            for (int i = 0; i < on_page; ++i)
             {
                 float scale2 = 0.2f;
                 auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
 
                 // Render another one...
-                float angle = DirectX::g_XMTwoPi[0] / -8.0f * static_cast<float>(i);
+                float angle = DirectX::g_XMTwoPi[0] / -static_cast<float>(on_page) * static_cast<float>(i);
                 auto rotation = Matrix::CreateRotationZ(angle);
 
                 auto transform = rotation * camera.view().Invert();
@@ -86,7 +95,7 @@ namespace trview
 
                 auto billboard2 = Matrix::CreateBillboard(subpos, camera.rendering_position(), camera.up(), &forward);
                 auto world2 = scaling2 * billboard2;
-                _action->render(world2, transparency_buffer);
+                _action->render(world2, transparency_buffer, all_actions[base + i]);
             }
         }
     }

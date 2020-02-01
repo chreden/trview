@@ -2,10 +2,11 @@
 
 namespace trview
 {
+    /// Actions that can be performed at a node in between waypoints.
     enum class Action
     {
-        Walk,
         Run,
-        Sprint
+        Sprint,
+        Walk
     };
 }
