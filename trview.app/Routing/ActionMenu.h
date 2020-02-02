@@ -15,8 +15,7 @@ namespace trview
     public:
         ActionMenu();
 
-        void render(const graphics::Device& device,
-            const ICamera& camera,
+        void render(const ICamera& camera,
             TransparencyBuffer& transparency_buffer,
             const DirectX::SimpleMath::Vector3& previous_waypoint,
             const DirectX::SimpleMath::Vector3& next_waypoint,

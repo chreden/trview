@@ -52,7 +52,7 @@ namespace trview
         return all_actions[index];
     }
 
-    void ActionMenu::render(const Device& device, const ICamera& camera, TransparencyBuffer& transparency_buffer, const Vector3& previous_waypoint, const Vector3& next_waypoint, Action action, bool selected)
+    void ActionMenu::render(const ICamera& camera, TransparencyBuffer& transparency_buffer, const Vector3& previous_waypoint, const Vector3& next_waypoint, Action action, bool selected)
     {
         // Render the action sprite above the midpoint of the path.
         // Figure out which way the route is going....

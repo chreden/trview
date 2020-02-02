@@ -187,7 +187,7 @@ namespace trview
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
-                _action_menu.render(device, camera, _transparency_buffer, current, next_waypoint, waypoint.action_to_next_waypoint(), _selected_action_index == i);
+                _action_menu.render(camera, _transparency_buffer, current, next_waypoint, waypoint.action_to_next_waypoint(), _selected_action_index == i);
             }
         }
 
