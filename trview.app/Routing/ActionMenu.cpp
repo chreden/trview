@@ -86,7 +86,7 @@ namespace trview
             
             for (int i = 0; i < on_page; ++i)
             {
-                float scale2 = 0.2f;
+                float scale2 = std::min(0.2f, 0.2f * (_time * 6.0f));
                 auto scaling2 = Matrix::CreateScale(scale2 * (flip ? -1.0f : 1.0f), scale2, scale2);
 
                 // Render another one...
