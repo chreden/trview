@@ -48,9 +48,15 @@ namespace trview
         _selected_index = 0u;
 
         std::vector<Listbox::Item> items;
+
+        uint32_t index = 0;
         for (uint32_t i = 0; i < _route->waypoints(); ++i)
         {
-            items.push_back(create_listbox_item(i, _route->waypoint(i)));
+            items.push_back(create_listbox_item(index++, _route->waypoint(i)));
+            if (i < _route->waypoints() - 1)
+            {
+                items.push_back(create_listbox_item(index++, _route->waypoint(i).action_to_next_waypoint()));
+            }
         }
         _waypoints->set_items(items);
         load_waypoint_details(_selected_index);
@@ -354,6 +360,25 @@ namespace trview
             {
                 type = L"Invalid trigger";
             }
+        }
+        return { {{ L"#", std::to_wstring(index) },
+                 { L"Type", type}} };
+    }
+
+    ui::Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const Action& action)
+    {
+        std::wstring type;
+        switch (action)
+        {
+        case Action::Run:
+            type = L"Run";
+            break;
+        case Action::Sprint:
+            type = L"Sprint";
+            break;
+        case Action::Walk:
+            type = L"Walk";
+            break;
         }
         return { {{ L"#", std::to_wstring(index) },
                  { L"Type", type}} };
