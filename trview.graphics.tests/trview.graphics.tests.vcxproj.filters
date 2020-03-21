@@ -4,6 +4,8 @@
     <ClCompile Include="ShaderStorageTests.cpp" />
     <ClCompile Include="VertexShaderTests.cpp" />
     <ClCompile Include="PixelShaderTests.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
