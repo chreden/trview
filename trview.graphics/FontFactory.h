@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
+#include <stdexcept>
 
 #include <external/DirectXTK/Inc/SpriteFont.h>
 
