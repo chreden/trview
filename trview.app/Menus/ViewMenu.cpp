@@ -148,7 +148,7 @@ namespace trview
                 if (ChooseColor(&cc) == TRUE)
                 {
                     rgb = cc.rgbResult;
-                    on_colour_change(Colour(rgb));
+                    on_colour_change(Colour(GetRValue(rgb) / 255.0f, GetGValue(rgb) / 255.0f, GetBValue(rgb) / 255.0f));
                 }
 
                 return; // Do not set checked
