@@ -19,6 +19,7 @@ namespace trview
         bool                    triggers_startup{ false };
         bool                    auto_orbit{ true };
         bool                    invert_vertical_pan{ true };
+        uint32_t                background_colour = 0x003366;
     };
 
     // Load the user settings from the settings file.

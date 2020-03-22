@@ -222,6 +222,11 @@ namespace trview
         _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; _scene_changed = true; };
         _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; _scene_changed = true; };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
+        _token_store += _view_menu.on_colour_change += [&](Colour colour) 
+        { 
+            _settings.background_colour = static_cast<uint32_t>(colour);
+            _scene_changed = true; 
+        };
 
         _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
@@ -657,7 +662,7 @@ namespace trview
         {
             _device.begin();
             _main_window->begin();
-            _main_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
+            _main_window->clear(Colour(_settings.background_colour));
 
             if (_scene_changed)
             {

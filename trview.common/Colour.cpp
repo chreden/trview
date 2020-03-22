@@ -35,6 +35,11 @@ namespace trview
     {
     }
 
+    Colour::Colour(uint32_t colour)
+        : Colour((colour >> 16 & 0xFF) / 255.0f, (colour >> 8 & 0xFF) / 255.0f, (colour & 0xFF) / 255.0f)
+    {
+    }
+
     std::wstring Colour::name() const
     {
         uint32_t value = *this;
