@@ -52,6 +52,7 @@ namespace trview
 
     void ItemsWindow::clear_selected_item()
     {
+        _selected_item.reset();
         _stats_list->set_items({});
     }
 

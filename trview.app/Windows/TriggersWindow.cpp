@@ -229,6 +229,9 @@ namespace trview
 
     void TriggersWindow::clear_selected_trigger()
     {
+        _selected_trigger.reset();
+        _stats_list->set_items({});
+        _command_list->set_items({});
     }
 
     void TriggersWindow::populate_triggers(const std::vector<Trigger*>& triggers)
