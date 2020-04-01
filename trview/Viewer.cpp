@@ -158,7 +158,10 @@ namespace trview
         {
             select_room(room_from_pick(_context_pick), true);
             _target = _context_pick.position;
-            add_recent_orbit(_context_pick);
+
+            auto stored_pick = _context_pick;
+            stored_pick.override_centre = true;
+            add_recent_orbit(stored_pick);
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
@@ -446,22 +449,8 @@ namespace trview
                         }
                         else
                         {
-                            switch (_current_pick.type)
-                            {
-                            case PickResult::Type::Room:
-                                select_room(_current_pick.index);
-                                break;
-                            case PickResult::Type::Entity:
-                                select_item(_level->items()[_current_pick.index]);
-                                break;
-                            case PickResult::Type::Trigger:
-                                select_trigger(_level->triggers()[_current_pick.index]);
-                                break;
-                            case PickResult::Type::Waypoint:
-                                select_waypoint(_current_pick.index);
-                                break;
-                            }
-
+                            select_pick(_current_pick);
+                            
                             if (_settings.auto_orbit)
                             {
                                 set_camera_mode(CameraMode::Orbit);
@@ -1060,8 +1049,7 @@ namespace trview
         if (_recent_orbit_index < _recent_orbits.size())
         {
             const auto& pick = _recent_orbits[_recent_orbit_index];
-            select_room(room_from_pick(pick), true);
-            _target = pick.position;
+            select_pick(pick);
         }
     }
 
@@ -1071,8 +1059,35 @@ namespace trview
         {
             ++_recent_orbit_index;
             const auto& pick = _recent_orbits[_recent_orbit_index];
-            select_room(room_from_pick(pick), true);
-            _target = pick.position;
+            select_pick(pick);
+        }
+    }
+
+    void Viewer::select_pick(const PickResult& pick)
+    {
+        switch (pick.type)
+        {
+        case PickResult::Type::Room:
+            select_room(pick.index);
+            if (pick.override_centre)
+            {
+                _target = pick.position;
+            }
+            break;
+        case PickResult::Type::Entity:
+            select_item(_level->items()[pick.index]);
+            break;
+        case PickResult::Type::Trigger:
+            select_trigger(_level->triggers()[pick.index]);
+            break;
+        case PickResult::Type::Waypoint:
+            select_waypoint(pick.index);
+            break;
+        }
+
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
         }
     }
 }

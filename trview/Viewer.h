@@ -112,6 +112,7 @@ namespace trview
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();
         void select_next_orbit();
+        void select_pick(const PickResult& pick);
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
