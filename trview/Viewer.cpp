@@ -161,6 +161,7 @@ namespace trview
 
             auto stored_pick = _context_pick;
             stored_pick.override_centre = true;
+            stored_pick.type = PickResult::Type::Room;
             add_recent_orbit(stored_pick);
         };
         _token_store += _ui->on_settings += [&](auto settings) { _settings = settings; };
