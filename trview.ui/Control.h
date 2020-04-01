@@ -65,8 +65,9 @@ namespace trview
             /// Gets whether the control and its child controls are visible. Invisible
             /// controls will not be rendered and will not accept input.
             /// To set the visibility state of a control, use set_visible(bool);
+            /// @param check_tree Whether to check up from this control.
             /// @returns Whether the control is visible.
-            bool visible() const;
+            bool visible(bool check_tree = false) const;
 
             /// Sets whether the control and its child controls are visible. Invisible
             /// controls will not be rendered and will not accept input.

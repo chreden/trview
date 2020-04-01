@@ -206,7 +206,7 @@ namespace trview
     bool ViewerUI::is_input_active() const
     {
         const auto focus = _ui_input->focus_control();
-        return focus && focus->visible() && focus->handles_input();
+        return focus && focus->visible(true) && focus->handles_input();
     }
 
     bool ViewerUI::is_cursor_over() const
