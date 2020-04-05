@@ -214,6 +214,10 @@ namespace trview
             std::shared_ptr<Sector> 
             MapRenderer::sector_at_cursor() const
             {
+                if (!_visible)
+                {
+                    return nullptr;
+                }
                 return sector_at(_cursor);
             }
 
