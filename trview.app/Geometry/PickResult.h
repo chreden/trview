@@ -25,6 +25,7 @@ namespace trview
         uint32_t                     index{ 0u };
         bool                         stop{ false };
         std::wstring                 text;
+        bool                         override_centre{ false };
     };
 
     /// Convert the pick result to a display string.

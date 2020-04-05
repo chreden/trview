@@ -109,6 +109,10 @@ namespace trview
         void set_show_hidden_geometry(bool show);
         void set_show_water(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
+        void add_recent_orbit(const PickResult& pick);
+        void select_previous_orbit();
+        void select_next_orbit();
+        void select_pick(const PickResult& pick);
 
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
@@ -166,6 +170,9 @@ namespace trview
 
         UpdateChecker _update_checker;
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
+
+        std::vector<PickResult> _recent_orbits;
+        std::size_t _recent_orbit_index{ 0u };
     };
 }
 

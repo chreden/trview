@@ -72,8 +72,12 @@ namespace trview
             return _size;
         }
 
-        bool Control::visible() const
+        bool Control::visible(bool check_tree) const
         {
+            if (check_tree && _parent)  
+            {
+                return _parent->visible(true) && _visible;
+            }
             return _visible;
         }
 
