@@ -52,7 +52,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const auto& vert = _object_textures[texture_index].Vertices[uv_index];
-        return Vector2(static_cast<float>(vert.Xpixel + vert.Xcoordinate), static_cast<float>(vert.Ypixel + vert.Ycoordinate)) / 255.0f;
+        return Vector2(static_cast<float>(vert.Xpixel), static_cast<float>(vert.Ypixel)) / 255.0f;
     }
 
     uint32_t LevelTextureStorage::tile(uint32_t texture_index) const
