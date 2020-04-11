@@ -19,6 +19,8 @@ namespace trview
 
         Colour(float a, float r, float g, float b);
 
+        Colour(uint32_t colour);
+
         std::wstring name() const;
 
         operator DirectX::SimpleMath::Color() const;

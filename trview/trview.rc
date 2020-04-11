@@ -59,6 +59,8 @@ BEGIN
         MENUITEM "Selection",                   ID_VIEW_SELECTION
         MENUITEM "Route",                       ID_VIEW_ROUTE
         MENUITEM "Tools",                       ID_VIEW_TOOLS
+        MENUITEM SEPARATOR
+        MENUITEM "Background &Colour...",       ID_VIEW_BACKGROUNDCOLOUR
     END
     POPUP "Windows"
     BEGIN
@@ -82,12 +84,13 @@ END
 
 IDC_TRVIEW ACCELERATORS
 BEGIN
-    "/",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
-    "?",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
-    "O",            ID_ACCEL_FILE_OPEN,       ASCII,  CONTROL, NOINVERT, VIRTKEY
-    "I",            ID_ACCEL_ITEM_WINDOW,     ASCII,  CONTROL, NOINVERT, VIRTKEY
-    "T",            ID_ACCEL_TRIGGERS_WINDOW, ASCII,  CONTROL, NOINVERT, VIRTKEY 
-    "R",            ID_ACCEL_ROUTE_WINDOW,    ASCII,  CONTROL, NOINVERT, VIRTKEY
+    "/",            IDM_ABOUT,                  ASCII,  ALT, NOINVERT
+    "?",            IDM_ABOUT,                  ASCII,  ALT, NOINVERT
+    "O",            ID_ACCEL_FILE_OPEN,         ASCII, CONTROL, NOINVERT, VIRTKEY
+    "I",            ID_ACCEL_ITEM_WINDOW,       ASCII, CONTROL, NOINVERT, VIRTKEY
+    "T",            ID_ACCEL_TRIGGERS_WINDOW,   ASCII, CONTROL, NOINVERT, VIRTKEY 
+    "R",            ID_ACCEL_ROUTE_WINDOW,      ASCII, CONTROL, NOINVERT, VIRTKEY
+    "C",            ID_VIEW_BACKGROUNDCOLOUR,   ASCII, CONTROL, NOINVERT, VIRTKEY
 END
 
 
@@ -281,6 +284,7 @@ IDR_SELECTION_SHADER    SHADER                  "resources\\selection_pixel_shad
 //
 
 IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
+
 IDF_ARIAL7              SPRITEFONT              "resources\\arial7.bin"
 
 #endif    // English (United Kingdom) resources

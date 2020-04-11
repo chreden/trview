@@ -133,6 +133,26 @@ namespace trview
                 }
                 break;
             }
+            case ID_APP_VIEW_BACKGROUNDCOLOUR:
+            {
+                static DWORD rgb;
+                static COLORREF custColours[16];
+                CHOOSECOLOR cc;
+
+                ZeroMemory(&cc, sizeof(cc));
+                cc.lStructSize = sizeof(cc);
+                cc.rgbResult = rgb;
+                cc.Flags = CC_ANYCOLOR | CC_RGBINIT | CC_FULLOPEN;
+                cc.lpCustColors = custColours;
+
+                if (ChooseColor(&cc) == TRUE)
+                {
+                    rgb = cc.rgbResult;
+                    on_colour_change(Colour(GetRValue(rgb) / 255.0f, GetGValue(rgb) / 255.0f, GetBValue(rgb) / 255.0f));
+                }
+
+                return; // Do not set checked
+            }
             default:
             {
                 return;

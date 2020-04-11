@@ -2,6 +2,7 @@
 
 #include <trview.common/MessageHandler.h>
 #include <trview.common/Event.h>
+#include <trview.common/Colour.h>
 
 namespace trview
 {
@@ -32,5 +33,8 @@ namespace trview
 
         /// Event raised when the show tools option is toggled.
         Event<bool> on_show_tools;
+
+        /// Event raised when the background colour is changed.
+        Event<Colour> on_colour_change; 
     };
 }
