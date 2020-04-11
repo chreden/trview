@@ -85,6 +85,9 @@ namespace trview
             select_waypoint(new_index);
         };
 
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _rooms_windows->create_window();
+
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
@@ -695,6 +698,7 @@ namespace trview
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
         _route_window_manager->render(_device, _settings.vsync);
+        _rooms_windows->render(_device, _settings.vsync);
     }
 
     bool Viewer::should_pick() const

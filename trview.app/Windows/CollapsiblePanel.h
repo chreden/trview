@@ -10,6 +10,7 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Input.h>
+#include <trview.ui/Window.h>
 
 #include <trview.app/Windows/WindowResizer.h>
 
@@ -25,7 +26,6 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Window;
         class Button;
         class StackPanel;
         namespace render

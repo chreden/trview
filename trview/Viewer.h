@@ -29,6 +29,7 @@
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
+#include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
@@ -118,6 +119,7 @@ namespace trview
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
+        std::unique_ptr<RoomsWindowManager> _rooms_windows;
         std::unique_ptr<Level> _level;
         Window _window;
         Timer _timer;

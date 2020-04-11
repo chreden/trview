@@ -184,6 +184,12 @@
     <ClCompile Include="Menus\MenuDetector.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\RoomsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\RoomsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -389,6 +395,12 @@
     </ClInclude>
     <ClInclude Include="Camera\ProjectionMode.h">
       <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RoomsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\RoomsWindowManager.h">
+      <Filter>Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
