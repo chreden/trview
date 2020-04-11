@@ -895,9 +895,20 @@ namespace trlevel
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 256);
         }
-        else if (_version < LevelVersion::Tomb5)
+        else if (_version < LevelVersion::Tomb4)
         {
             std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+        }
+        else if (_version == LevelVersion::Tomb4)
+        {
+            if (demo_data.size() == 2048)
+            {
+                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 1024);
+            }
+            else
+            {
+                std::vector<int16_t> sound_map = read_vector<int16_t>(file, 370);
+            }
         }
         else
         {
