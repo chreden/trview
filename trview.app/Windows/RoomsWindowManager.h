@@ -16,6 +16,8 @@
 
 namespace trview
 {
+    class Room;
+
     /// Controls and creates RoomsWindows.
     class RoomsWindowManager final : public MessageHandler
     {
@@ -41,8 +43,14 @@ namespace trview
         /// @param vsync Whether to use vsync.
         void render(graphics::Device& device, bool vsync);
 
+        /// Set the rooms to display in the window.
+        /// @param rooms The rooms to show.
+        void set_rooms(const std::vector<Room*>& items);
+
         /// Create a new rooms window.
         void create_window();
+
+        Event<uint32_t> on_room_selected;
     private:
         std::vector<std::unique_ptr<RoomsWindow>> _windows;
         std::vector<RoomsWindow*> _closing_windows;

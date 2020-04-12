@@ -1,10 +1,14 @@
 #pragma once
 
 #include <trview.common/Window.h>
+#include <trview.ui/Listbox.h>
+#include <trview.ui/Checkbox.h>
 #include "CollapsiblePanel.h"
 
 namespace trview
 {
+    class Room;
+
     class RoomsWindow final : public CollapsiblePanel
     {
     public:
@@ -15,10 +19,23 @@ namespace trview
         /// @param parent The parent window.
         explicit RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent);
 
-        /// Destructor for triggers window
+        /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
+
+        /// Set the rooms to display in the window.
+        /// @param rooms The rooms to show.
+        void set_rooms(const std::vector<Room*>& rooms);
+
+        Event<uint32_t> on_room_selected;
     private:
+        void load_room_details(const Room& room);
+
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
+        std::vector<Room*> _all_rooms;
+        ui::Listbox* _rooms_list;
+        ui::Checkbox* _track_room_checkbox;
+        ui::Window* _controls;
+        bool _sync_room{ true };
     };
 }

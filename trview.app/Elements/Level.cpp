@@ -96,6 +96,13 @@ namespace trview
         return _rooms.size();
     }
 
+    std::vector<Room*> Level::rooms() const
+    {
+        std::vector<Room*> rooms;
+        std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](const auto& room) { return room.get(); });
+        return rooms;
+    }
+
     std::vector<Trigger*> Level::triggers() const
     {
         std::vector<Trigger*> triggers;

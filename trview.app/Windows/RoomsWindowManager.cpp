@@ -35,9 +35,18 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_rooms(const std::vector<Room*>& rooms)
+    {
+        for (auto& window : _windows)
+        {
+            window->set_rooms(rooms);
+        }
+    }
+
     void RoomsWindowManager::create_window()
     {
         auto rooms_window = std::make_unique<RoomsWindow>(_device, _shader_storage, _font_factory, window());
+        rooms_window->on_room_selected += on_room_selected;
 
         const auto window = rooms_window.get();
         _token_store += rooms_window->on_window_closed += [window, this]()

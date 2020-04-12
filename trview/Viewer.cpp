@@ -88,6 +88,8 @@ namespace trview
         _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
         _rooms_windows->create_window();
 
+        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
+
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
@@ -605,6 +607,7 @@ namespace trview
         _triggers_windows->set_triggers(_level->triggers());
         _route_window_manager->set_items(_level->items());
         _route_window_manager->set_triggers(_level->triggers());
+        _rooms_windows->set_rooms(_level->rooms());
 
         _level->set_show_triggers(_ui->show_triggers());
         _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
