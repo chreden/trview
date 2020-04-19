@@ -2,6 +2,7 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.app/Elements/Item.h>
+#include <trview.app/Elements/Trigger.h>
 #include <numeric>
 
 namespace trview
@@ -17,15 +18,17 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const Room* const room, const std::vector<Item>& items)
+        ui::Listbox::Item create_listbox_item(const Room* const room, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
         {
             auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
+            auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) { return trigger->room() == room->number(); });
 
             return 
             { 
                 {
                     { L"#", std::to_wstring(room->number()) },
-                    { L"Items", std::to_wstring(item_count) }
+                    { L"Items", std::to_wstring(item_count) },
+                    { L"Triggers", std::to_wstring(trigger_count) }
                 } 
             };
         }
@@ -58,7 +61,8 @@ namespace trview
         rooms_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Items", 50 }
+                { Listbox::Column::Type::Number, L"Items", 50 },
+                { Listbox::Column::Type::Number, L"Triggers", 50 }
             }
         );
         _token_store += rooms_list->on_item_selected += [&](const auto& item)
@@ -88,9 +92,14 @@ namespace trview
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](const auto& room) { return create_listbox_item(room, _all_items); });
+        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](const auto& room) { return create_listbox_item(room, _all_items, _all_triggers); });
         _rooms_list->set_items(list_items);
         _all_rooms = rooms;
+    }
+
+    void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    {
+        _all_triggers = triggers;
     }
 
     void RoomsWindow::load_room_details(const Room& room)

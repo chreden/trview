@@ -51,6 +51,8 @@ namespace trview
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& items);
 
+        void set_triggers(const std::vector<Trigger*>& triggers);
+
         /// Create a new rooms window.
         void create_window();
 
@@ -60,6 +62,7 @@ namespace trview
         std::vector<RoomsWindow*> _closing_windows;
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
+        std::vector<Trigger*> _all_triggers;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;

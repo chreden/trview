@@ -53,6 +53,15 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
+    {
+        _all_triggers = triggers;
+        for (auto& window : _windows)
+        {
+            window->set_triggers(_all_triggers);
+        }
+    }
+
     void RoomsWindowManager::create_window()
     {
         auto rooms_window = std::make_unique<RoomsWindow>(_device, _shader_storage, _font_factory, window());
@@ -65,6 +74,7 @@ namespace trview
         };
 
         rooms_window->set_items(_all_items);
+        rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
 
         _windows.push_back(std::move(rooms_window));

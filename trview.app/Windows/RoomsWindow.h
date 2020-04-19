@@ -9,6 +9,7 @@
 namespace trview
 {
     class Room;
+    class Trigger;
 
     class RoomsWindow final : public CollapsiblePanel
     {
@@ -29,6 +30,8 @@ namespace trview
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& rooms);
 
+        void set_triggers(const std::vector<Trigger*>& triggers);
+
         Event<uint32_t> on_room_selected;
     private:
         void load_room_details(const Room& room);
@@ -37,6 +40,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_right_panel();
         std::vector<Room*> _all_rooms;
         std::vector<Item> _all_items;
+        std::vector<Trigger*> _all_triggers;
         ui::Listbox* _rooms_list;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;
