@@ -13,6 +13,7 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.common/TokenStore.h>
 #include "RoomsWindow.h"
+#include <trview.app/Elements/Item.h>
 
 namespace trview
 {
@@ -43,6 +44,9 @@ namespace trview
         /// @param vsync Whether to use vsync.
         void render(graphics::Device& device, bool vsync);
 
+        /// Set the items in the current level.
+        void set_items(const std::vector<Item>& items);
+
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& items);
@@ -54,6 +58,8 @@ namespace trview
     private:
         std::vector<std::unique_ptr<RoomsWindow>> _windows;
         std::vector<RoomsWindow*> _closing_windows;
+        std::vector<Item> _all_items;
+        std::vector<Room*> _all_rooms;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;

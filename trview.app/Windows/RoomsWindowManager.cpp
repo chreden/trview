@@ -35,11 +35,21 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_rooms(const std::vector<Room*>& rooms)
+    void RoomsWindowManager::set_items(const std::vector<Item>& items)
     {
+        _all_items = items;
         for (auto& window : _windows)
         {
-            window->set_rooms(rooms);
+            window->set_items(_all_items);
+        }
+    }
+
+    void RoomsWindowManager::set_rooms(const std::vector<Room*>& rooms)
+    {
+        _all_rooms = rooms;
+        for (auto& window : _windows)
+        {
+            window->set_rooms(_all_rooms);
         }
     }
 
@@ -53,6 +63,9 @@ namespace trview
         {
             _closing_windows.push_back(window);
         };
+
+        rooms_window->set_items(_all_items);
+        rooms_window->set_rooms(_all_rooms);
 
         _windows.push_back(std::move(rooms_window));
     }

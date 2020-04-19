@@ -4,6 +4,7 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/Checkbox.h>
 #include "CollapsiblePanel.h"
+#include <trview.app/Elements/Item.h>
 
 namespace trview
 {
@@ -22,6 +23,8 @@ namespace trview
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
 
+        void set_items(const std::vector<Item>& items);
+
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& rooms);
@@ -33,6 +36,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         std::vector<Room*> _all_rooms;
+        std::vector<Item> _all_items;
         ui::Listbox* _rooms_list;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;

@@ -1,6 +1,8 @@
 #include "RoomsWindow.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.app/Elements/Room.h>
+#include <trview.app/Elements/Item.h>
+#include <numeric>
 
 namespace trview
 {
@@ -15,9 +17,17 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const Room* const room)
+        ui::Listbox::Item create_listbox_item(const Room* const room, const std::vector<Item>& items)
         {
-            return { {{ L"#", std::to_wstring(room->number()) }} };
+            auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
+
+            return 
+            { 
+                {
+                    { L"#", std::to_wstring(room->number()) },
+                    { L"Items", std::to_wstring(item_count) }
+                } 
+            };
         }
     }
 
@@ -47,7 +57,8 @@ namespace trview
         auto rooms_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
         rooms_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 }
+                { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"Items", 50 }
             }
         );
         _token_store += rooms_list->on_item_selected += [&](const auto& item)
@@ -68,11 +79,16 @@ namespace trview
         return left_panel;
     }
 
+    void RoomsWindow::set_items(const std::vector<Item>& items)
+    {
+        _all_items = items;
+    }
+
     void RoomsWindow::set_rooms(const std::vector<Room*>& rooms)
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), create_listbox_item);
+        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](const auto& room) { return create_listbox_item(room, _all_items); });
         _rooms_list->set_items(list_items);
         _all_rooms = rooms;
     }
