@@ -27,15 +27,17 @@ namespace trview
             { 
                 {
                     { L"#", std::to_wstring(room->number()) },
+                    { L"X", std::to_wstring(room->info().x) },
+                    { L"Z", std::to_wstring(room->info().z) },
                     { L"Items", std::to_wstring(item_count) },
                     { L"Triggers", std::to_wstring(trigger_count) }
-                } 
+                }
             };
         }
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(470, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(520, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -43,9 +45,9 @@ namespace trview
     std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
@@ -57,10 +59,12 @@ namespace trview
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto rooms_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto rooms_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
         rooms_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"X", 50 },
+                { Listbox::Column::Type::Number, L"Z", 50 },
                 { Listbox::Column::Type::Number, L"Items", 50 },
                 { Listbox::Column::Type::Number, L"Triggers", 50 }
             }
@@ -78,7 +82,7 @@ namespace trview
         _rooms_list = left_panel->add_child(std::move(rooms_list));
 
         // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(200, left_panel->size().height - _rooms_list->position().y));
+        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
 
         return left_panel;
     }
