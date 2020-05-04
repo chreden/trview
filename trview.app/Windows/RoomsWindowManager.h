@@ -59,6 +59,8 @@ namespace trview
         Event<uint32_t> on_room_selected;
 
         Event<Item> on_item_selected;
+
+        Event<Trigger*> on_trigger_selected;
     private:
         std::vector<std::unique_ptr<RoomsWindow>> _windows;
         std::vector<RoomsWindow*> _closing_windows;

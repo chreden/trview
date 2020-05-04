@@ -43,6 +43,12 @@ namespace trview
                      { L"Room", std::to_wstring(item.room()) },
                      { L"Type", item.type() }} };
         }
+
+        ui::Listbox::Item create_listbox_item(const Trigger& item)
+        {
+            return { {{ L"#", std::to_wstring(item.number()) },
+                     { L"Type", trigger_type_name(item.type()) }} };
+        }
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
@@ -105,7 +111,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto group_box = std::make_unique<GroupBox>(Size(160, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
+        auto group_box = std::make_unique<GroupBox>(Size(150, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
         auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(140, window().size().height - 21), Colours::LeftPanel);
         items_list->set_columns(
             {
@@ -125,9 +131,34 @@ namespace trview
         parent.add_child(std::move(group_box));
     }
 
+    void RoomsWindow::create_triggers_list(ui::Control& parent)
+    {
+        using namespace ui;
+
+        auto group_box = std::make_unique<GroupBox>(Size(150, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Triggers");
+        auto triggers_list = std::make_unique<Listbox>(Point(10, 21), Size(140, window().size().height - 21), Colours::LeftPanel);
+        triggers_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"Type", 100 }
+            }
+        );
+        _token_store += triggers_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            if (_sync_trigger)
+            {
+                on_trigger_selected(_all_triggers[index]);
+            }
+        };
+        _triggers_list = group_box->add_child(std::move(triggers_list));
+        parent.add_child(std::move(group_box));
+    }
+
     void RoomsWindow::set_items(const std::vector<Item>& items)
     {
         using namespace ui;
+        _items_list->set_items({});
         _all_items = items;
     }
 
@@ -142,6 +173,7 @@ namespace trview
 
     void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
+        _triggers_list->set_items({});
         _all_triggers = triggers;
     }
 
@@ -158,6 +190,16 @@ namespace trview
             }
         }
         _items_list->set_items(list_items);
+
+        std::vector<Listbox::Item> list_triggers;
+        for (const auto& trigger : _all_triggers)
+        {
+            if (trigger->room() == room.number())
+            {
+                list_triggers.push_back(create_listbox_item(*trigger));
+            }
+        }
+        _triggers_list->set_items(list_triggers);
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_right_panel()
@@ -168,6 +210,7 @@ namespace trview
         right_panel->set_margin(Size(0, 2));
 
         create_items_list(*right_panel);
+        create_triggers_list(*right_panel);
 
         return right_panel;
     }

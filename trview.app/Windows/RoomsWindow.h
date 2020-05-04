@@ -35,12 +35,15 @@ namespace trview
         Event<uint32_t> on_room_selected;
 
         Event<Item> on_item_selected;
+
+        Event<Trigger*> on_trigger_selected;
     private:
         void load_room_details(const Room& room);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         std::unique_ptr<ui::Listbox> create_rooms_list();
         void create_items_list(ui::Control& parent);
+        void create_triggers_list(ui::Control& parent);
 
 
         std::vector<Room*> _all_rooms;
@@ -49,9 +52,11 @@ namespace trview
 
         ui::Listbox* _rooms_list;
         ui::Listbox* _items_list;
+        ui::Listbox* _triggers_list;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;
         bool _sync_room{ true };
         bool _sync_item{ true };
+        bool _sync_trigger{ true };
     };
 }

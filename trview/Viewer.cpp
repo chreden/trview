@@ -90,6 +90,7 @@ namespace trview
 
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
 
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
