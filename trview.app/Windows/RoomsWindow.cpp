@@ -1,5 +1,6 @@
 #include "RoomsWindow.h"
 #include <trview.ui/StackPanel.h>
+#include <trview.ui/GroupBox.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
@@ -23,8 +24,8 @@ namespace trview
             auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
             auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) { return trigger->room() == room->number(); });
 
-            return 
-            { 
+            return
+            {
                 {
                     { L"#", std::to_wstring(room->number()) },
                     { L"X", std::to_wstring(room->info().x) },
@@ -34,10 +35,18 @@ namespace trview
                 }
             };
         }
+
+        ui::Listbox::Item create_listbox_item(const Item& item)
+        {
+            return { {{ L"#", std::to_wstring(item.number()) },
+                     { L"ID", std::to_wstring(item.type_id()) },
+                     { L"Room", std::to_wstring(item.room()) },
+                     { L"Type", item.type() }} };
+        }
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(520, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(850, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -58,6 +67,17 @@ namespace trview
         _track_room_checkbox = controls->add_child(std::move(track_room));
 
         _controls = left_panel->add_child(std::move(controls));
+        _rooms_list = left_panel->add_child(create_rooms_list());
+
+        // Fix items list size now that it has been added to the panel.
+        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
+
+        return left_panel;
+    }
+
+    std::unique_ptr<ui::Listbox> RoomsWindow::create_rooms_list()
+    {
+        using namespace ui;
 
         auto rooms_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
         rooms_list->set_columns(
@@ -78,17 +98,36 @@ namespace trview
                 on_room_selected(index);
             }
         };
+        return rooms_list;
+    }
 
-        _rooms_list = left_panel->add_child(std::move(rooms_list));
+    void RoomsWindow::create_items_list(ui::Control& parent)
+    {
+        using namespace ui;
 
-        // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
-
-        return left_panel;
+        auto group_box = std::make_unique<GroupBox>(Size(160, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
+        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(140, window().size().height - 21), Colours::LeftPanel);
+        items_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::Type::Number, L"Type", 100 }
+            }
+        );
+        _token_store += items_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            if (_sync_item)
+            {
+                on_item_selected(_all_items[index]);
+            }
+        };
+        _items_list = group_box->add_child(std::move(items_list));
+        parent.add_child(std::move(group_box));
     }
 
     void RoomsWindow::set_items(const std::vector<Item>& items)
     {
+        using namespace ui;
         _all_items = items;
     }
 
@@ -108,14 +147,28 @@ namespace trview
 
     void RoomsWindow::load_room_details(const Room& room)
     {
+        using namespace ui;
 
+        std::vector<Listbox::Item> list_items;
+        for (const auto& item : _all_items)
+        {
+            if (item.room() == room.number())
+            {
+                list_items.push_back(create_listbox_item(item));
+            }
+        }
+        _items_list->set_items(list_items);
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_right_panel()
     {
         using namespace ui;
-        const float panel_width = 270;
-        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        const float panel_width = 600;
+        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        right_panel->set_margin(Size(0, 2));
+
+        create_items_list(*right_panel);
+
         return right_panel;
     }
 }

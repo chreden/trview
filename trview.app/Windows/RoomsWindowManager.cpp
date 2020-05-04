@@ -66,6 +66,7 @@ namespace trview
     {
         auto rooms_window = std::make_unique<RoomsWindow>(_device, _shader_storage, _font_factory, window());
         rooms_window->on_room_selected += on_room_selected;
+        rooms_window->on_item_selected += on_item_selected;
 
         const auto window = rooms_window.get();
         _token_store += rooms_window->on_window_closed += [window, this]()
