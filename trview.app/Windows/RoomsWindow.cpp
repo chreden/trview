@@ -117,7 +117,7 @@ namespace trview
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Type", 100 }
+                { Listbox::Column::Type::String, L"Type", 100 }
             }
         );
         _token_store += items_list->on_item_selected += [&](const auto& item)
@@ -141,7 +141,7 @@ namespace trview
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Type", 100 }
+                { Listbox::Column::Type::String, L"Type", 100 }
             }
         );
         _token_store += triggers_list->on_item_selected += [&](const auto& item)
@@ -243,7 +243,6 @@ namespace trview
         auto lower_panel = std::make_unique<ui::StackPanel>(Size(panel_width, window().size().height - upper_height - 2), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         lower_panel->set_margin(Size(0, 2));
 
-        // Add the area for room stats
         auto room_stats = std::make_unique<GroupBox>(Size(300, 300), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
         lower_panel->add_child(std::move(room_stats));
 
