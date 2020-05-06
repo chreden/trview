@@ -213,16 +213,34 @@ namespace trview
             }
         }
         _triggers_list->set_items(list_triggers);
+        const Size map_size(17 * room.num_x_sectors() + 1, 17 * room.num_z_sectors() + 1);
+        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+        _minimap->set_size(map_size);
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_right_panel()
     {
         using namespace ui;
         const float panel_width = 600;
-        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        right_panel->set_margin(Size(0, 2));
-        create_items_list(*right_panel);
-        create_triggers_list(*right_panel);
+        const float upper_height = 380;
+        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+
+        auto upper_panel = std::make_unique<ui::StackPanel>(Size(panel_width, upper_height), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        upper_panel->set_margin(Size(5, 5));
+        auto minimap_group = std::make_unique<GroupBox>(Size(370, 370), Colours::Triggers, Colours::DetailsBorder, L"Minimap");
+        _minimap = minimap_group->add_child(std::make_unique<ui::Window>(Point(10, 21), Size(341, 341), Colour(0.4f, 0.4f, 0)));
+        upper_panel->add_child(std::move(minimap_group));
+
+        right_panel->add_child(std::move(upper_panel));
+
+        auto divider = std::make_unique<ui::Window>(Size(panel_width, 2), Colours::Divider);
+        right_panel->add_child(std::move(divider));
+
+        auto lower_panel = std::make_unique<ui::StackPanel>(Size(panel_width, window().size().height - upper_height - 2), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        lower_panel->set_margin(Size(0, 2));
+        create_items_list(*lower_panel);
+        create_triggers_list(*lower_panel);
+        right_panel->add_child(std::move(lower_panel));
 
         return right_panel;
     }

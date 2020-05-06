@@ -57,6 +57,7 @@ namespace trview
         ui::Listbox* _triggers_list;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;
+        ui::Window* _minimap;
         bool _track_room{ true };
         bool _sync_item{ true };
         bool _sync_trigger{ true };
