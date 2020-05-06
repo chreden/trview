@@ -194,6 +194,24 @@ namespace trview
     {
         using namespace ui;
 
+        // Minimap stuff 
+        const Size map_size(17 * room.num_x_sectors() + 1, 17 * room.num_z_sectors() + 1);
+        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+        _minimap->set_size(map_size);
+
+        // Load the stats for the room.
+
+        auto make_item = [](const auto& name, const auto& value)
+        {
+            return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
+        };
+
+        std::vector<Listbox::Item> stats;
+        stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
+        stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
+        _stats_box->set_items(stats);
+
+        // Contents of the room.
         std::vector<Listbox::Item> list_items;
         for (const auto& item : _all_items)
         {
@@ -213,9 +231,6 @@ namespace trview
             }
         }
         _triggers_list->set_items(list_triggers);
-        const Size map_size(17 * room.num_x_sectors() + 1, 17 * room.num_z_sectors() + 1);
-        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
-        _minimap->set_size(map_size);
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_right_panel()
@@ -244,6 +259,15 @@ namespace trview
         lower_panel->set_margin(Size(0, 2));
 
         auto room_stats = std::make_unique<GroupBox>(Size(300, 300), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
+        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(250, lower_panel->size().height - 21), Colours::LeftPanel));
+        _stats_box->set_columns(
+            {
+                { Listbox::Column::Type::String, L"Name", 30 },
+                { Listbox::Column::Type::String, L"Value", 50 },
+            }
+        );
+        _stats_box->set_show_headers(false);
+        _stats_box->set_show_scrollbar(false);
         lower_panel->add_child(std::move(room_stats));
 
         auto contents = std::make_unique<StackPanel>(Size(300, 300), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
