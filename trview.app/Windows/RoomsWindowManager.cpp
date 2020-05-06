@@ -44,6 +44,15 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_room(uint32_t room)
+    {
+        _current_room = room;
+        for (auto& window : _windows)
+        {
+            window->set_current_room(room);
+        }
+    }
+
     void RoomsWindowManager::set_rooms(const std::vector<Room*>& rooms)
     {
         _all_rooms = rooms;
@@ -78,6 +87,7 @@ namespace trview
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
+        rooms_window->set_current_room(_current_room);
 
         _windows.push_back(std::move(rooms_window));
     }

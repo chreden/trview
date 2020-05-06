@@ -67,7 +67,7 @@ namespace trview
         auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
         {
-            // set_track_room(value);
+            set_track_room(value);
         };
 
         _track_room_checkbox = controls->add_child(std::move(track_room));
@@ -99,7 +99,7 @@ namespace trview
         {
             auto index = std::stoi(item.value(L"#"));
             load_room_details(*_all_rooms[index]);
-            if (_sync_room)
+            if (_track_room)
             {
                 on_room_selected(index);
             }
@@ -153,6 +153,18 @@ namespace trview
         };
         _triggers_list = group_box->add_child(std::move(triggers_list));
         parent.add_child(std::move(group_box));
+    }
+
+    void RoomsWindow::set_current_room(uint32_t room)
+    {
+        _current_room = room;
+        if (_track_room && _current_room < _all_rooms.size())
+        {
+            auto item = create_listbox_item(_all_rooms[room], _all_items, _all_triggers);
+            _rooms_list->set_selected_item(item);
+
+            load_room_details(*_all_rooms[_current_room]);
+        }
     }
 
     void RoomsWindow::set_items(const std::vector<Item>& items)
@@ -213,5 +225,19 @@ namespace trview
         create_triggers_list(*right_panel);
 
         return right_panel;
+    }
+
+    void RoomsWindow::set_track_room(bool value)
+    {
+        if (_track_room != value)
+        {
+            _track_room = value;
+            set_current_room(_current_room);
+        }
+
+        if (_track_room_checkbox->state() != _track_room)
+        {
+            _track_room_checkbox->set_state(_track_room);
+        }
     }
 }

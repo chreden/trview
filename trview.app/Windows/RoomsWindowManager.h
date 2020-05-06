@@ -47,6 +47,8 @@ namespace trview
         /// Set the items in the current level.
         void set_items(const std::vector<Item>& items);
 
+        void set_room(uint32_t room);
+
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& items);
@@ -71,6 +73,7 @@ namespace trview
         graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory& _font_factory;
         TokenStore _token_store;
+        uint32_t _current_room;
     };
 }
 

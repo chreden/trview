@@ -816,6 +816,7 @@ namespace trview
 
         _items_windows->set_room(room);
         _triggers_windows->set_room(room);
+        _rooms_windows->set_room(room);
     }
 
     void Viewer::select_item(const Item& item)

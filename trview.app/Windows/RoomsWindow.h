@@ -24,6 +24,8 @@ namespace trview
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
 
+        void set_current_room(uint32_t room);
+
         void set_items(const std::vector<Item>& items);
 
         /// Set the rooms to display in the window.
@@ -44,7 +46,7 @@ namespace trview
         std::unique_ptr<ui::Listbox> create_rooms_list();
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
-
+        void set_track_room(bool value);
 
         std::vector<Room*> _all_rooms;
         std::vector<Item> _all_items;
@@ -55,8 +57,9 @@ namespace trview
         ui::Listbox* _triggers_list;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;
-        bool _sync_room{ true };
+        bool _track_room{ true };
         bool _sync_item{ true };
         bool _sync_trigger{ true };
+        uint32_t _current_room{ 0u };
     };
 }
