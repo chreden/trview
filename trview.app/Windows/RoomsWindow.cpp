@@ -52,7 +52,7 @@ namespace trview
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(850, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(850, 800))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -60,11 +60,12 @@ namespace trview
     std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         auto controls = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
+        track_room->set_state(true);
         _token_store += track_room->on_state_changed += [this](bool value)
         {
             set_track_room(value);
@@ -220,7 +221,6 @@ namespace trview
         const float panel_width = 600;
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         right_panel->set_margin(Size(0, 2));
-
         create_items_list(*right_panel);
         create_triggers_list(*right_panel);
 
