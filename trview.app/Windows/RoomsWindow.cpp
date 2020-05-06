@@ -52,7 +52,7 @@ namespace trview
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(850, 800))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(850, 670))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -112,8 +112,8 @@ namespace trview
     {
         using namespace ui;
 
-        auto group_box = std::make_unique<GroupBox>(Size(150, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
-        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(140, window().size().height - 21), Colours::LeftPanel);
+        auto group_box = std::make_unique<GroupBox>(Size(150, parent.size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
+        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(140, parent.size().height - 21), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -136,8 +136,8 @@ namespace trview
     {
         using namespace ui;
 
-        auto group_box = std::make_unique<GroupBox>(Size(150, window().size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Triggers");
-        auto triggers_list = std::make_unique<Listbox>(Point(10, 21), Size(140, window().size().height - 21), Colours::LeftPanel);
+        auto group_box = std::make_unique<GroupBox>(Size(150, parent.size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Triggers");
+        auto triggers_list = std::make_unique<Listbox>(Point(10, 21), Size(140, parent.size().height), Colours::LeftPanel);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -227,9 +227,13 @@ namespace trview
 
         auto upper_panel = std::make_unique<ui::StackPanel>(Size(panel_width, upper_height), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         upper_panel->set_margin(Size(5, 5));
+
         auto minimap_group = std::make_unique<GroupBox>(Size(370, 370), Colours::Triggers, Colours::DetailsBorder, L"Minimap");
         _minimap = minimap_group->add_child(std::make_unique<ui::Window>(Point(10, 21), Size(341, 341), Colour(0.4f, 0.4f, 0)));
         upper_panel->add_child(std::move(minimap_group));
+
+        auto sector_stats = std::make_unique<GroupBox>(Size(panel_width - 370 - 10, 370), Colours::ItemDetails, Colours::DetailsBorder, L"Sector Details");
+        upper_panel->add_child(std::move(sector_stats));
 
         right_panel->add_child(std::move(upper_panel));
 
@@ -238,10 +242,17 @@ namespace trview
 
         auto lower_panel = std::make_unique<ui::StackPanel>(Size(panel_width, window().size().height - upper_height - 2), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         lower_panel->set_margin(Size(0, 2));
-        create_items_list(*lower_panel);
-        create_triggers_list(*lower_panel);
-        right_panel->add_child(std::move(lower_panel));
 
+        // Add the area for room stats
+        auto room_stats = std::make_unique<GroupBox>(Size(300, 300), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
+        lower_panel->add_child(std::move(room_stats));
+
+        auto contents = std::make_unique<StackPanel>(Size(300, 300), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        create_items_list(*contents);
+        create_triggers_list(*contents);
+        lower_panel->add_child(std::move(contents));
+
+        right_panel->add_child(std::move(lower_panel));
         return right_panel;
     }
 
