@@ -44,6 +44,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         std::unique_ptr<ui::Listbox> create_rooms_list();
+        void create_neighbours_list(ui::Control& parent);
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
         void set_track_room(bool value);
@@ -53,6 +54,7 @@ namespace trview
         std::vector<Trigger*> _all_triggers;
 
         ui::Listbox* _rooms_list;
+        ui::Listbox* _neighbours_list;
         ui::Listbox* _items_list;
         ui::Listbox* _triggers_list;
         ui::Listbox* _stats_box;

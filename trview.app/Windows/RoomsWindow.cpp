@@ -104,6 +104,29 @@ namespace trview
         return rooms_list;
     }
 
+    void RoomsWindow::create_neighbours_list(ui::Control& parent)
+    {
+        using namespace ui;
+
+        auto group_box = std::make_unique<GroupBox>(Size(80, parent.size().height), Colours::ItemDetails, Colours::DetailsBorder, L"Neighbours");
+        auto neighbours_list = std::make_unique<Listbox>(Point(10, 21), Size(60, parent.size().height - 21), Colours::LeftPanel);
+        neighbours_list->set_columns(
+            {
+                { Listbox::Column::Type::Number, L"#", 30 }
+            }
+        );
+        _token_store += neighbours_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            if (_sync_item)
+            {
+                on_room_selected(index);
+            }
+        };
+        _neighbours_list = group_box->add_child(std::move(neighbours_list));
+        parent.add_child(std::move(group_box));
+    }
+
     void RoomsWindow::create_items_list(ui::Control& parent)
     {
         using namespace ui;
@@ -196,7 +219,6 @@ namespace trview
         _minimap->set_size(map_size);
 
         // Load the stats for the room.
-
         auto make_item = [](const auto& name, const auto& value)
         {
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
@@ -205,7 +227,23 @@ namespace trview
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
         stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
+        stats.push_back(make_item(L"Water", std::to_wstring(room.water())));
+        if (room.alternate_mode() != Room::AlternateMode::None)
+        {
+            stats.push_back(make_item(L"Alternate", std::to_wstring(room.alternate_room())));
+            if (room.alternate_group() != 0xff)
+            {
+                stats.push_back(make_item(L"Alternate Group", std::to_wstring(room.alternate_group())));
+            }
+        }
         _stats_box->set_items(stats);
+
+        std::vector<Listbox::Item> list_neighbours;
+        for (auto& neighbour : room.neighbours())
+        {
+            list_neighbours.push_back({{{{ L"#", std::to_wstring(neighbour)}}}});
+        }
+        _neighbours_list->set_items(list_neighbours);
 
         // Contents of the room.
         std::vector<Listbox::Item> list_items;
@@ -254,19 +292,28 @@ namespace trview
         auto lower_panel = std::make_unique<ui::StackPanel>(Size(panel_width, window().size().height - upper_height - 2), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
         lower_panel->set_margin(Size(0, 2));
 
-        auto room_stats = std::make_unique<GroupBox>(Size(300, 300), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
+        auto room_stats = std::make_unique<GroupBox>(Size(200, 300), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
         _stats_box = room_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(250, lower_panel->size().height - 21), Colours::LeftPanel));
         _stats_box->set_columns(
             {
-                { Listbox::Column::Type::String, L"Name", 30 },
+                { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 50 },
             }
         );
         _stats_box->set_show_headers(false);
         _stats_box->set_show_scrollbar(false);
+
+        _token_store += _stats_box->on_item_selected += [this](const auto& item)
+        {
+            if (item.value(L"Name") == L"Alternate")
+            {
+                on_room_selected(std::stoi(item.value(L"Value")));
+            }
+        };
         lower_panel->add_child(std::move(room_stats));
 
-        auto contents = std::make_unique<StackPanel>(Size(300, 300), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto contents = std::make_unique<StackPanel>(Size(500, 300), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        create_neighbours_list(*contents);
         create_items_list(*contents);
         create_triggers_list(*contents);
         lower_panel->add_child(std::move(contents));
