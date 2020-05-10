@@ -44,7 +44,7 @@ namespace trview
             }
 
             void
-            MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context)
+            MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context, bool to_screen)
             {
                 if (!_render_target || !_visible)
                 {
@@ -68,9 +68,12 @@ namespace trview
                     _force_redraw = false;
                 }
 
-                // Now render the render target in the correct position.
-                auto p = Point(_first.x - 1, _first.y - 1);
-                _sprite.render(context, _render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+                if (to_screen)
+                {
+                    // Now render the render target in the correct position.
+                    auto p = Point(_first.x - 1, _first.y - 1);
+                    _sprite.render(context, _render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+                }
             }
 
             void
@@ -159,7 +162,7 @@ namespace trview
             }
 
             void
-            MapRenderer::load(trview::Room *room)
+            MapRenderer::load(const trview::Room* room)
             {
                 // Set window position and size 
                 _columns = room->num_x_sectors();
@@ -318,6 +321,11 @@ namespace trview
 
                 _selected_sector = { x, z };
                 _force_redraw = true;
+            }
+
+            graphics::Texture MapRenderer::texture() const
+            {
+                return _render_target->texture();
             }
         }
     }

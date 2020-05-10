@@ -38,6 +38,8 @@ namespace trview
 
             /// Resizes the device and any associated resources.
             void resize();
+
+            Microsoft::WRL::ComPtr<ID3D11DeviceContext> context() const;
         private:
             void create_render_target();
 

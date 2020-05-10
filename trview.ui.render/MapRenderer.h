@@ -51,10 +51,10 @@ namespace trview
                 MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& window_size);
 
                 // Renders the map 
-                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true);
 
                 // Changes the room to specified room, reloads map
-                void load(trview::Room *room);
+                void load(const trview::Room* room);
 
                 // Returns the total area of the room 
                 inline std::uint16_t area() const { return _columns * _rows; }
@@ -86,6 +86,8 @@ namespace trview
 
                 /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
                 Event<std::shared_ptr<Sector>> on_sector_hover;
+
+                graphics::Texture texture() const;
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 

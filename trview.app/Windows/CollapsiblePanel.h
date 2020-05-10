@@ -84,13 +84,13 @@ namespace trview
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::Input> _input;
+        std::unique_ptr<graphics::DeviceWindow> _device_window;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
         void register_change_detection(ui::Control* control);
 
         Window _parent;
-        std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;

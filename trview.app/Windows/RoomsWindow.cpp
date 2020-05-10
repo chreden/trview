@@ -1,6 +1,7 @@
 #include "RoomsWindow.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/GroupBox.h>
+#include <trview.ui/Image.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
@@ -53,6 +54,8 @@ namespace trview
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(750, 670))
     {
         set_panels(create_left_panel(), create_right_panel());
+
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, Size(341, 341));
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
@@ -214,9 +217,19 @@ namespace trview
         using namespace ui;
 
         // Minimap stuff 
-        const Size map_size(17 * room.num_x_sectors() + 1, 17 * room.num_z_sectors() + 1);
-        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+        _map_renderer->load(&room);
+
+        auto context = _device_window->context();
+        _map_renderer->render(context, false);
+        
+        auto texture = _map_renderer->texture();
+        D3D11_TEXTURE2D_DESC desc;
+        texture.texture()->GetDesc(&desc);
+        auto map_size = Size(desc.Width, desc.Height);
+
+        _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
+        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
 
         // Load the stats for the room.
         auto make_item = [](const auto& name, const auto& value)
@@ -278,7 +291,7 @@ namespace trview
         upper_panel->set_margin(Size(5, 5));
 
         auto minimap_group = std::make_unique<GroupBox>(Size(370, 370), Colours::Triggers, Colours::DetailsBorder, L"Minimap");
-        _minimap = minimap_group->add_child(std::make_unique<ui::Window>(Point(10, 21), Size(341, 341), Colour(0.4f, 0.4f, 0)));
+        _minimap = minimap_group->add_child(std::make_unique<ui::Image>(Point(10, 21), Size(341, 341)));
         upper_panel->add_child(std::move(minimap_group));
 
         auto sector_stats = std::make_unique<GroupBox>(Size(panel_width - 370 - 10, 370), Colours::ItemDetails, Colours::DetailsBorder, L"Sector Details");

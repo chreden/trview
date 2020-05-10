@@ -3,8 +3,10 @@
 #include <trview.common/Window.h>
 #include <trview.ui/Listbox.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/Image.h>
 #include "CollapsiblePanel.h"
 #include <trview.app/Elements/Item.h>
+#include <trview.ui.render/MapRenderer.h>
 
 namespace trview
 {
@@ -60,10 +62,12 @@ namespace trview
         ui::Listbox* _stats_box;
         ui::Checkbox* _track_room_checkbox;
         ui::Window* _controls;
-        ui::Window* _minimap;
+        ui::Image* _minimap;
         bool _track_room{ true };
         bool _sync_item{ true };
         bool _sync_trigger{ true };
         uint32_t _current_room{ 0u };
+
+        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
     };
 }
