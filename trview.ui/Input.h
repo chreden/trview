@@ -19,6 +19,7 @@ namespace trview
             explicit Input(const trview::Window& window, Control& control);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
+            input::Mouse& mouse();
         private:
             void     register_events();
             void     register_focus_controls(Control* control);

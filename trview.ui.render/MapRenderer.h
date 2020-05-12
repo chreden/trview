@@ -88,6 +88,8 @@ namespace trview
                 Event<std::shared_ptr<Sector>> on_sector_hover;
 
                 graphics::Texture texture() const;
+
+                Point first() const;
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 

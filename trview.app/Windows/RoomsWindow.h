@@ -50,6 +50,7 @@ namespace trview
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
         void set_track_room(bool value);
+        void render_minimap();
 
         std::vector<Room*> _all_rooms;
         std::vector<Item> _all_items;

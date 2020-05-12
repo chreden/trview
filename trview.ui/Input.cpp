@@ -25,6 +25,11 @@ namespace trview
             return _focus_control;
         }
 
+        input::Mouse& Input::mouse()
+        {
+            return _mouse;
+        }
+
         void Input::register_events()
         {
             _token_store = TokenStore();

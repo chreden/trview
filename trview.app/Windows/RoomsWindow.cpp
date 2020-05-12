@@ -56,6 +56,22 @@ namespace trview
         set_panels(create_left_panel(), create_right_panel());
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, Size(341, 341));
+
+        _token_store += _input->mouse().mouse_move += [&](long, long)
+        {
+            // Only do work if we have actually loaded a map.
+            if (_map_renderer->loaded())
+            {
+                // Adjust mouse coordinates to be relative to what the map renderer thinks is going on.
+                auto ccp = client_cursor_position(window());
+                _map_renderer->set_cursor_position(ccp - _minimap->absolute_position() + _map_renderer->first());
+                // if (_map_tooltip && _map_tooltip->visible())
+                // {
+                //     _map_tooltip->set_position(client_cursor_position(_window));
+                // }
+                render_minimap();
+            }
+        };
     }
 
     std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
@@ -212,16 +228,11 @@ namespace trview
         _all_triggers = triggers;
     }
 
-    void RoomsWindow::load_room_details(const Room& room)
+    void RoomsWindow::render_minimap()
     {
-        using namespace ui;
-
-        // Minimap stuff 
-        _map_renderer->load(&room);
-
         auto context = _device_window->context();
         _map_renderer->render(context, false);
-        
+
         auto texture = _map_renderer->texture();
         D3D11_TEXTURE2D_DESC desc;
         texture.texture()->GetDesc(&desc);
@@ -230,6 +241,15 @@ namespace trview
         _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
         _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+    }
+
+    void RoomsWindow::load_room_details(const Room& room)
+    {
+        using namespace ui;
+
+        // Minimap stuff 
+        _map_renderer->load(&room);
+        render_minimap();
 
         // Load the stats for the room.
         auto make_item = [](const auto& name, const auto& value)

@@ -251,6 +251,11 @@ namespace trview
                 update_map_position();
             }
 
+            Point MapRenderer::first() const
+            {
+                return _first;
+            }
+
             void 
             MapRenderer::update_map_position()
             {
