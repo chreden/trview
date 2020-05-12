@@ -57,6 +57,44 @@ namespace trview
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, Size(341, 341));
 
+        using namespace input;
+        using namespace ui;
+
+        _token_store += _input->mouse().mouse_click += [&](Mouse::Button button)
+        {
+            if (button != Mouse::Button::Left)
+            {
+                return;
+            }
+
+            auto sector = _map_renderer->sector_at_cursor();
+            if (sector)
+            {
+                // Load some stats.
+                auto make_item = [](const auto& name, const auto& value)
+                {
+                    return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
+                };
+
+                std::vector<Listbox::Item> stats;
+                stats.push_back(make_item(L"FD Index", std::to_wstring(sector->floordata_index())));
+                _sector_stats_box->set_items(stats);
+
+                for (const auto& trigger : _all_triggers)
+                {
+                    if (trigger->room() == _current_room && trigger->sector_id() == sector->id())
+                    {
+                        _triggers_list->set_selected_item(create_listbox_item(*trigger));
+                        if (_sync_trigger)
+                        {
+                            on_trigger_selected(trigger);
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+
         _token_store += _input->mouse().mouse_move += [&](long, long)
         {
             // Only do work if we have actually loaded a map.
@@ -196,6 +234,11 @@ namespace trview
 
     void RoomsWindow::set_current_room(uint32_t room)
     {
+        if (room == _current_room)
+        {
+            return;
+        }
+
         _current_room = room;
         if (_track_room && _current_room < _all_rooms.size())
         {
@@ -220,6 +263,7 @@ namespace trview
         std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](const auto& room) { return create_listbox_item(room, _all_items, _all_triggers); });
         _rooms_list->set_items(list_items);
         _all_rooms = rooms;
+        _current_room = 0xffffffff;
     }
 
     void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
@@ -250,6 +294,8 @@ namespace trview
         // Minimap stuff 
         _map_renderer->load(&room);
         render_minimap();
+
+        _sector_stats_box->set_items({});
 
         // Load the stats for the room.
         auto make_item = [](const auto& name, const auto& value)
@@ -315,6 +361,15 @@ namespace trview
         upper_panel->add_child(std::move(minimap_group));
 
         auto sector_stats = std::make_unique<GroupBox>(Size(panel_width - 370 - 10, 370), Colours::ItemDetails, Colours::DetailsBorder, L"Sector Details");
+        _sector_stats_box = sector_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(250, upper_panel->size().height - 21), Colours::LeftPanel));
+        _sector_stats_box->set_columns(
+            {
+                { Listbox::Column::Type::String, L"Name", 100 },
+                { Listbox::Column::Type::String, L"Value", 50 },
+            }
+        );
+        _sector_stats_box->set_show_headers(false);
+        _sector_stats_box->set_show_scrollbar(false);
         upper_panel->add_child(std::move(sector_stats));
 
         right_panel->add_child(std::move(upper_panel));

@@ -275,6 +275,11 @@ namespace trview
         return room_below() == 0xff && !(flags & SectorFlag::Wall) && !(flags & SectorFlag::Portal);
     }
 
+    uint16_t Sector::floordata_index() const
+    {
+        return _sector.floordata_index;
+    }
+
     void Sector::calculate_neighbours(const trlevel::ILevel& level)
     {
         const auto add_neighbour = [&](std::uint16_t room)

@@ -61,6 +61,8 @@ namespace trview
 
         /// Determines whether this is a walkable floor.
         bool is_floor() const;
+
+        uint16_t floordata_index() const;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
