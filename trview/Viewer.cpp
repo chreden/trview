@@ -86,7 +86,10 @@ namespace trview
         };
 
         _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
-        _rooms_windows->create_window();
+        if (_settings.rooms_startup)
+        {
+            _rooms_windows->create_window();
+        }
 
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };

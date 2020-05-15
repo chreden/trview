@@ -132,6 +132,11 @@ namespace trview
             _settings.triggers_startup = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_rooms_startup += [&](bool value)
+        {
+            _settings.rooms_startup = value;
+            on_settings(_settings);
+        };
         _token_store += _settings_window->on_auto_orbit += [&](bool value)
         {
             _settings.auto_orbit = value;
@@ -377,6 +382,7 @@ namespace trview
         _settings_window->set_invert_map_controls(settings.invert_map_controls);
         _settings_window->set_items_startup(settings.items_startup);
         _settings_window->set_triggers_startup(settings.triggers_startup);
+        _settings_window->set_rooms_startup(settings.rooms_startup);
         _settings_window->set_vsync(settings.vsync);
         _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
     }

@@ -52,6 +52,9 @@ namespace trview
         triggers_startup->on_state_changed += on_triggers_startup;
         _triggers_startup = panel->add_child(std::move(triggers_startup));
 
+        _rooms_startup = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Open Rooms Window at startup"));
+        _rooms_startup->on_state_changed += on_rooms_startup;
+
         auto auto_orbit = std::make_unique<Checkbox>(Colour::Transparent, L"Switch to orbit on selection");
         auto_orbit->on_state_changed += on_auto_orbit;
         _auto_orbit = panel->add_child(std::move(auto_orbit));
@@ -117,6 +120,11 @@ namespace trview
     void SettingsWindow::set_triggers_startup(bool value)
     {
         _triggers_startup->set_state(value);
+    }
+
+    void SettingsWindow::set_rooms_startup(bool value)
+    {
+        _rooms_startup->set_state(value);
     }
 
     void SettingsWindow::set_auto_orbit(bool value)
