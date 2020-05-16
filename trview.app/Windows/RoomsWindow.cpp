@@ -51,7 +51,7 @@ namespace trview
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(530, 670))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(530, 680))
     {
         set_panels(create_left_panel(), create_right_panel());
 
@@ -184,8 +184,8 @@ namespace trview
     {
         using namespace ui;
 
-        auto group_box = std::make_unique<GroupBox>(Size(190, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
-        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 140 - 21), Colours::LeftPanel);
+        auto group_box = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
+        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 150 - 21), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -364,8 +364,8 @@ namespace trview
         lower_panel->set_margin(Size(0, 2));
 
         auto lower_left = std::make_unique<StackPanel>(Size(190, 300), Colours::ItemDetails, Size(0, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto room_stats = std::make_unique<GroupBox>(Size(190, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
-        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(180, 140), Colours::LeftPanel));
+        auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
+        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(180, 150), Colours::LeftPanel));
         _stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
