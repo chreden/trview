@@ -51,7 +51,7 @@ namespace trview
     }
 
     RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(530, 680))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(630, 680))
     {
         set_panels(create_left_panel(), create_right_panel());
 
@@ -111,24 +111,37 @@ namespace trview
     std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<StackPanel>(Size(150, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto controls = std::make_unique<StackPanel>(Size(150, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(6, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
-        track_room->set_state(true);
-        _token_store += track_room->on_state_changed += [this](bool value)
+
+        _track_room_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
+        _track_room_checkbox->set_state(true);
+        _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
         };
 
-        _track_room_checkbox = controls->add_child(std::move(track_room));
+        _sync_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
+        _sync_item_checkbox->set_state(false);
+        _token_store += _sync_item_checkbox->on_state_changed += [this](bool value)
+        {
+            set_sync_item(value);
+        };
+
+        _sync_trigger_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger"));
+        _sync_trigger_checkbox->set_state(false);
+        _token_store += _sync_trigger_checkbox->on_state_changed += [this](bool value)
+        {
+            set_sync_trigger(value);
+        };
 
         _controls = left_panel->add_child(std::move(controls));
         _rooms_list = left_panel->add_child(create_rooms_list());
 
         // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(150, left_panel->size().height - _rooms_list->position().y));
+        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
 
         return left_panel;
     }
@@ -137,12 +150,12 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_list = std::make_unique<Listbox>(Size(150, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto rooms_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
         rooms_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Items", 50 },
-                { Listbox::Column::Type::Number, L"Triggers", 50 }
+                { Listbox::Column::Type::Number, L"#", 40 },
+                { Listbox::Column::Type::Number, L"Items", 100 },
+                { Listbox::Column::Type::Number, L"Triggers", 100 }
             }
         );
         _token_store += rooms_list->on_item_selected += [&](const auto& item)
@@ -287,6 +300,10 @@ namespace trview
     {
         using namespace ui;
 
+        // Clear lists.
+        _items_list->clear_selection();
+        _triggers_list->clear_selection();
+
         // Minimap stuff 
         _map_renderer->load(&room);
         render_minimap();
@@ -407,6 +424,32 @@ namespace trview
         if (_track_room_checkbox->state() != _track_room)
         {
             _track_room_checkbox->set_state(_track_room);
+        }
+    }
+
+    void RoomsWindow::set_sync_item(bool value)
+    {
+        if (_sync_item != value)
+        {
+            _sync_item = value;
+        }
+
+        if (_sync_item_checkbox->state() != _sync_item)
+        {
+            _sync_item_checkbox->set_state(_sync_item);
+        }
+    }
+
+    void RoomsWindow::set_sync_trigger(bool value)
+    {
+        if (_sync_trigger != value)
+        {
+            _sync_trigger = value;
+        }
+
+        if (_sync_trigger_checkbox->state() != _sync_trigger)
+        {
+            _sync_trigger_checkbox->set_state(_sync_trigger);
         }
     }
 }

@@ -27,6 +27,11 @@ namespace trview
         {
         }
 
+        void Listbox::clear_selection()
+        {
+            _selected_item.reset();
+        }
+
         void Listbox::set_columns(const std::vector<Column>& columns)
         {
             _columns = columns;
