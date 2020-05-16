@@ -833,6 +833,7 @@ namespace trview
         _target = item.position();
         _level->set_selected_item(item.number());
         _items_windows->set_selected_item(item);
+        _rooms_windows->set_selected_item(item);
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
@@ -843,6 +844,7 @@ namespace trview
             _target = trigger->position();
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
+            _rooms_windows->set_selected_trigger(trigger);
         }
     }
 

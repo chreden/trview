@@ -275,6 +275,28 @@ namespace trview
         _current_room = 0xffffffff;
     }
 
+    void RoomsWindow::set_selected_item(const Item& item)
+    {
+        _selected_item = item;
+        if (_sync_item)
+        {
+            load_room_details(*_all_rooms[item.room()]);
+            const auto& list_item = create_listbox_item(item);
+            _items_list->set_selected_item(list_item);
+        }
+    }
+
+    void RoomsWindow::set_selected_trigger(const Trigger* const trigger)
+    {
+        _selected_trigger = trigger;
+        if (_sync_trigger)
+        {
+            load_room_details(*_all_rooms[trigger->room()]);
+            const auto& list_item = create_listbox_item(*trigger);
+            _triggers_list->set_selected_item(list_item);
+        }
+    }
+
     void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _triggers_list->set_items({});
@@ -432,6 +454,10 @@ namespace trview
         if (_sync_item != value)
         {
             _sync_item = value;
+            if (_selected_item.has_value())
+            {
+                set_selected_item(_selected_item.value());
+            }
         }
 
         if (_sync_item_checkbox->state() != _sync_item)
@@ -445,6 +471,10 @@ namespace trview
         if (_sync_trigger != value)
         {
             _sync_trigger = value;
+            if (_selected_trigger.has_value())
+            {
+                set_selected_trigger(_selected_trigger.value());
+            }
         }
 
         if (_sync_trigger_checkbox->state() != _sync_trigger)

@@ -34,6 +34,10 @@ namespace trview
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& rooms);
 
+        void set_selected_item(const Item& item);
+
+        void set_selected_trigger(const Trigger* const trigger);
+
         void set_triggers(const std::vector<Trigger*>& triggers);
 
         Event<uint32_t> on_room_selected;
@@ -72,6 +76,8 @@ namespace trview
         bool _sync_item{ false };
         bool _sync_trigger{ false };
         uint32_t _current_room{ 0u };
+        std::optional<Item> _selected_item;
+        std::optional<const Trigger*> _selected_trigger;
 
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
     };

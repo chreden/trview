@@ -62,6 +62,24 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_selected_item(const Item& item)
+    {
+        _selected_item = item;
+        for (auto& window : _windows)
+        {
+            window->set_selected_item(item);
+        }
+    }
+
+    void RoomsWindowManager::set_selected_trigger(const Trigger* const trigger)
+    {
+        _selected_trigger = trigger;
+        for (auto& window : _windows)
+        {
+            window->set_selected_trigger(trigger);
+        }
+    }
+
     void RoomsWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;

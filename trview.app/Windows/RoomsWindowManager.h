@@ -53,6 +53,10 @@ namespace trview
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& items);
 
+        void set_selected_item(const Item& item);
+
+        void set_selected_trigger(const Trigger* const trigger);
+
         void set_triggers(const std::vector<Trigger*>& triggers);
 
         /// Create a new rooms window.
@@ -74,6 +78,8 @@ namespace trview
         graphics::FontFactory& _font_factory;
         TokenStore _token_store;
         uint32_t _current_room;
+        std::optional<const Trigger*> _selected_trigger;
+        std::optional<Item> _selected_item;
     };
 }
 
