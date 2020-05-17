@@ -90,10 +90,7 @@ namespace trview
                     if (trigger->room() == _current_room && trigger->sector_id() == sector->id())
                     {
                         _triggers_list->set_selected_item(create_listbox_item(*trigger));
-                        if (_sync_trigger)
-                        {
-                            on_trigger_selected(trigger);
-                        }
+                        on_trigger_selected(trigger);
                         break;
                     }
                 }
@@ -164,18 +161,18 @@ namespace trview
             set_track_room(value);
         };
 
-        _sync_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
-        _sync_item_checkbox->set_state(false);
-        _token_store += _sync_item_checkbox->on_state_changed += [this](bool value)
+        _track_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Item"));
+        _track_item_checkbox->set_state(false);
+        _token_store += _track_item_checkbox->on_state_changed += [this](bool value)
         {
-            set_sync_item(value);
+            set_track_item(value);
         };
 
-        _sync_trigger_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger"));
-        _sync_trigger_checkbox->set_state(false);
-        _token_store += _sync_trigger_checkbox->on_state_changed += [this](bool value)
+        _track_trigger_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Trigger"));
+        _track_trigger_checkbox->set_state(false);
+        _token_store += _track_trigger_checkbox->on_state_changed += [this](bool value)
         {
-            set_sync_trigger(value);
+            set_track_trigger(value);
         };
 
         _controls = left_panel->add_child(std::move(controls));
@@ -247,10 +244,7 @@ namespace trview
         _token_store += items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            if (_sync_item)
-            {
-                on_item_selected(_all_items[index]);
-            }
+            on_item_selected(_all_items[index]);
         };
         _items_list = group_box->add_child(std::move(items_list));
         parent.add_child(std::move(group_box));
@@ -271,10 +265,7 @@ namespace trview
         _token_store += triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            if (_sync_trigger)
-            {
-                on_trigger_selected(_all_triggers[index]);
-            }
+            on_trigger_selected(_all_triggers[index]);
         };
         _triggers_list = group_box->add_child(std::move(triggers_list));
         parent.add_child(std::move(group_box));
@@ -317,7 +308,7 @@ namespace trview
     void RoomsWindow::set_selected_item(const Item& item)
     {
         _selected_item = item;
-        if (_sync_item)
+        if (_track_item)
         {
             load_room_details(*_all_rooms[item.room()]);
             const auto& list_item = create_listbox_item(item);
@@ -328,7 +319,7 @@ namespace trview
     void RoomsWindow::set_selected_trigger(const Trigger* const trigger)
     {
         _selected_trigger = trigger;
-        if (_sync_trigger)
+        if (_track_trigger)
         {
             load_room_details(*_all_rooms[trigger->room()]);
             const auto& list_item = create_listbox_item(*trigger);
@@ -489,37 +480,37 @@ namespace trview
         }
     }
 
-    void RoomsWindow::set_sync_item(bool value)
+    void RoomsWindow::set_track_item(bool value)
     {
-        if (_sync_item != value)
+        if (_track_item != value)
         {
-            _sync_item = value;
+            _track_item = value;
             if (_selected_item.has_value())
             {
                 set_selected_item(_selected_item.value());
             }
         }
 
-        if (_sync_item_checkbox->state() != _sync_item)
+        if (_track_item_checkbox->state() != _track_item)
         {
-            _sync_item_checkbox->set_state(_sync_item);
+            _track_item_checkbox->set_state(_track_item);
         }
     }
 
-    void RoomsWindow::set_sync_trigger(bool value)
+    void RoomsWindow::set_track_trigger(bool value)
     {
-        if (_sync_trigger != value)
+        if (_track_trigger != value)
         {
-            _sync_trigger = value;
+            _track_trigger = value;
             if (_selected_trigger.has_value())
             {
                 set_selected_trigger(_selected_trigger.value());
             }
         }
 
-        if (_sync_trigger_checkbox->state() != _sync_trigger)
+        if (_track_trigger_checkbox->state() != _track_trigger)
         {
-            _sync_trigger_checkbox->set_state(_sync_trigger);
+            _track_trigger_checkbox->set_state(_track_trigger);
         }
     }
 }

@@ -55,8 +55,8 @@ namespace trview
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
         void set_track_room(bool value);
-        void set_sync_item(bool value);
-        void set_sync_trigger(bool value);
+        void set_track_item(bool value);
+        void set_track_trigger(bool value);
         void render_minimap();
 
         std::vector<Room*> _all_rooms;
@@ -69,13 +69,13 @@ namespace trview
         ui::Listbox* _triggers_list;
         ui::Listbox* _stats_box;
         ui::Checkbox* _track_room_checkbox;
-        ui::Checkbox* _sync_trigger_checkbox;
-        ui::Checkbox* _sync_item_checkbox;
+        ui::Checkbox* _track_trigger_checkbox;
+        ui::Checkbox* _track_item_checkbox;
         ui::Window* _controls;
         ui::Image* _minimap;
         bool _track_room{ true };
-        bool _sync_item{ false };
-        bool _sync_trigger{ false };
+        bool _track_item{ false };
+        bool _track_trigger{ false };
         uint32_t _current_room{ 0u };
         std::optional<Item> _selected_item;
         std::optional<const Trigger*> _selected_trigger;
