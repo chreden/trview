@@ -4,6 +4,7 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Image.h>
+#include <trview.app/UI/Tooltip.h>
 #include "CollapsiblePanel.h"
 #include <trview.app/Elements/Item.h>
 #include <trview.ui.render/MapRenderer.h>
@@ -80,5 +81,6 @@ namespace trview
         std::optional<const Trigger*> _selected_trigger;
 
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
+        std::unique_ptr<Tooltip> _map_tooltip;
     };
 }

@@ -99,12 +99,35 @@ namespace trview
                 // Adjust mouse coordinates to be relative to what the map renderer thinks is going on.
                 auto ccp = client_cursor_position(window());
                 _map_renderer->set_cursor_position(ccp - _minimap->absolute_position() + _map_renderer->first());
-                // if (_map_tooltip && _map_tooltip->visible())
-                // {
-                //     _map_tooltip->set_position(client_cursor_position(_window));
-                // }
+                if (_map_tooltip && _map_tooltip->visible())
+                {
+                    _map_tooltip->set_position(client_cursor_position(window()) - _minimap->parent()->absolute_position());
+                }
                 render_minimap();
             }
+        };
+
+        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
+        {
+            if (!sector)
+            {
+                _map_tooltip->set_visible(false);
+                return;
+            }
+
+            std::wstring text;
+            if (sector->flags & SectorFlag::RoomAbove)
+            {
+                text += L"Above: " + std::to_wstring(sector->room_above());
+            }
+            if (sector->flags & SectorFlag::RoomBelow)
+            {
+                text += ((sector->flags & SectorFlag::RoomAbove) ? L", " : L"") +
+                    std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
+            }
+            _map_tooltip->set_text(text);
+            _map_tooltip->set_position(client_cursor_position(window()) - _minimap->parent()->absolute_position());
+            _map_tooltip->set_visible(!text.empty());
         };
     }
 
@@ -184,10 +207,7 @@ namespace trview
         _token_store += neighbours_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            if (_sync_item)
-            {
-                on_room_selected(index);
-            }
+            on_room_selected(index);
         };
         _neighbours_list = group_box->add_child(std::move(neighbours_list));
         parent.add_child(std::move(group_box));
@@ -392,6 +412,7 @@ namespace trview
 
         auto minimap_group = std::make_unique<GroupBox>(Size(370, 370), Colours::Triggers, Colours::DetailsBorder, L"Minimap");
         _minimap = minimap_group->add_child(std::make_unique<ui::Image>(Point(10, 21), Size(341, 341)));
+        _map_tooltip = std::make_unique<Tooltip>(*minimap_group);
         upper_panel->add_child(std::move(minimap_group));
 
         right_panel->add_child(std::move(upper_panel));
