@@ -62,20 +62,29 @@ namespace trview
 
         _token_store += _input->mouse().mouse_click += [&](Mouse::Button button)
         {
-            if (button != Mouse::Button::Left)
+            auto sector = _map_renderer->sector_at_cursor();
+            if (!sector)
             {
                 return;
             }
 
-            auto sector = _map_renderer->sector_at_cursor();
-            if (sector)
+            if (button == Mouse::Button::Left)
             {
-                // Load some stats.
-                auto make_item = [](const auto& name, const auto& value)
+                if (sector->flags & SectorFlag::Portal)
                 {
-                    return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
-                };
+                    load_room_details(*_all_rooms[sector->portal()]);
+                    on_room_selected(sector->portal());
+                    return;
+                }
 
+                if (sector->room_below() != 0xff)
+                {
+                    load_room_details(*_all_rooms[sector->room_below()]);
+                    on_room_selected(sector->room_below());
+                    return;
+                }
+
+                // Select triggers
                 for (const auto& trigger : _all_triggers)
                 {
                     if (trigger->room() == _current_room && trigger->sector_id() == sector->id())
@@ -87,6 +96,15 @@ namespace trview
                         }
                         break;
                     }
+                }
+            }
+            else if (button == Mouse::Button::Right)
+            {
+                if (sector->room_above() != 0xff)
+                {
+                    load_room_details(*_all_rooms[sector->room_above()]);
+                    on_room_selected(sector->room_above());
+                    return;
                 }
             }
         };
@@ -207,6 +225,7 @@ namespace trview
         _token_store += neighbours_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
+            load_room_details(*_all_rooms[index]);
             on_room_selected(index);
         };
         _neighbours_list = group_box->add_child(std::move(neighbours_list));
