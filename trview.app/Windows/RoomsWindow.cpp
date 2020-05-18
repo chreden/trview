@@ -356,6 +356,7 @@ namespace trview
         // Clear lists.
         _items_list->clear_selection();
         _triggers_list->clear_selection();
+        _neighbours_list->clear_selection();
 
         // Minimap stuff 
         _map_renderer->load(&room);
