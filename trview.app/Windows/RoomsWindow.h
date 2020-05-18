@@ -54,7 +54,7 @@ namespace trview
         void create_neighbours_list(ui::Control& parent);
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
-        void set_track_room(bool value);
+        void set_sync_room(bool value);
         void set_track_item(bool value);
         void set_track_trigger(bool value);
         void render_minimap();
@@ -68,12 +68,12 @@ namespace trview
         ui::Listbox* _items_list;
         ui::Listbox* _triggers_list;
         ui::Listbox* _stats_box;
-        ui::Checkbox* _track_room_checkbox;
+        ui::Checkbox* _sync_room_checkbox;
         ui::Checkbox* _track_trigger_checkbox;
         ui::Checkbox* _track_item_checkbox;
         ui::Window* _controls;
         ui::Image* _minimap;
-        bool _track_room{ true };
+        bool _sync_room{ true };
         bool _track_item{ false };
         bool _track_trigger{ false };
         uint32_t _current_room{ 0u };

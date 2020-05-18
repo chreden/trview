@@ -154,11 +154,11 @@ namespace trview
         auto controls = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(6, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
 
-        _track_room_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
-        _track_room_checkbox->set_state(true);
-        _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
+        _sync_room_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Room"));
+        _sync_room_checkbox->set_state(true);
+        _token_store += _sync_room_checkbox->on_state_changed += [this](bool value)
         {
-            set_track_room(value);
+            set_sync_room(value);
         };
 
         _track_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Item"));
@@ -200,7 +200,7 @@ namespace trview
         {
             auto index = std::stoi(item.value(L"#"));
             load_room_details(*_all_rooms[index]);
-            if (_track_room)
+            if (_sync_room)
             {
                 on_room_selected(index);
             }
@@ -279,7 +279,7 @@ namespace trview
         }
 
         _current_room = room;
-        if (_track_room && _current_room < _all_rooms.size())
+        if (_sync_room && _current_room < _all_rooms.size())
         {
             auto item = create_listbox_item(_all_rooms[room], _all_items, _all_triggers);
             _rooms_list->set_selected_item(item);
@@ -466,17 +466,17 @@ namespace trview
         return right_panel;
     }
 
-    void RoomsWindow::set_track_room(bool value)
+    void RoomsWindow::set_sync_room(bool value)
     {
-        if (_track_room != value)
+        if (_sync_room != value)
         {
-            _track_room = value;
+            _sync_room = value;
             set_current_room(_current_room);
         }
 
-        if (_track_room_checkbox->state() != _track_room)
+        if (_sync_room_checkbox->state() != _sync_room)
         {
-            _track_room_checkbox->set_state(_track_room);
+            _sync_room_checkbox->set_state(_sync_room);
         }
     }
 
