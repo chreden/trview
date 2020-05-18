@@ -79,6 +79,8 @@ namespace trview
         /// element as it will also generate the ui.
         void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
 
+        void set_allow_increase_height(bool value);
+
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;
@@ -96,6 +98,8 @@ namespace trview
         WindowResizer   _window_resizer;
         ui::Control* _divider;
         ui::Button* _expander;
+        Size        _initial_size;
+        bool        _allow_increase_height{ true };
         bool        _expanded{ true };
         bool        _ui_changed{ true };
     };

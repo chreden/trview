@@ -54,6 +54,7 @@ namespace trview
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(630, 680))
     {
         set_panels(create_left_panel(), create_right_panel());
+        set_allow_increase_height(false);
 
         _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, Size(341, 341));
 
