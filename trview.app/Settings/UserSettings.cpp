@@ -80,6 +80,7 @@ namespace trview
             settings.recent_files = json["recent"].get<std::list<std::string>>();
             settings.invert_vertical_pan = json["invertverticalpan"].get<bool>();
             settings.background_colour = json["background"].get<uint32_t>();
+            settings.rooms_startup = json["roomsstartup"].get<bool>();
         }
         catch (...)
         {
@@ -120,6 +121,7 @@ namespace trview
             json["recent"] = settings.recent_files;
             json["invertverticalpan"] = settings.invert_vertical_pan;
             json["background"] = settings.background_colour;
+            json["roomsstartup"] = settings.rooms_startup;
 
             std::ofstream file(file_path);
             file << json;

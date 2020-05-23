@@ -68,5 +68,10 @@ namespace trview
         {
             _swap_chain->Present(vsync ? 1 : 0, 0);
         }
+
+        Microsoft::WRL::ComPtr<ID3D11DeviceContext> DeviceWindow::context() const
+        {
+            return _context;
+        }
     }
 }

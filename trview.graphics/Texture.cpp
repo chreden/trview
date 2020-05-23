@@ -84,6 +84,13 @@ namespace trview
             return _view;
         }
 
+        Size Texture::size() const
+        {
+            D3D11_TEXTURE2D_DESC desc;
+            _texture->GetDesc(&desc);
+            return Size(desc.Width, desc.Height);
+        }
+
         const ComPtr<ID3D11Texture2D>& Texture::texture() const
         {
             return _texture;

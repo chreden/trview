@@ -62,6 +62,8 @@ namespace trview
         /// Get the number of rooms in the level.
         uint32_t number_of_rooms() const;
 
+        std::vector<Room*> rooms() const;
+
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
         std::vector<Trigger*> triggers() const;

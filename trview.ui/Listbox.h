@@ -144,6 +144,9 @@ namespace trview
             /// Destructor for Listbox.
             virtual ~Listbox();
 
+            /// Clear the selected item.
+            void clear_selection();
+
             /// Set the columns that will be used for sorting and filtering items.
             /// @param columns The column names.
             void set_columns(const std::vector<Column>& columns);

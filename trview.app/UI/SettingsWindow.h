@@ -49,6 +49,9 @@ namespace trview
         /// Event raised when the 'triggers window at startup' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_triggers_startup;
 
+        /// Event raised when the 'rooms window at startup' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_rooms_startup;
+
         /// Event raised when the 'Switch to orbit on selection' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_auto_orbit;
 
@@ -74,6 +77,10 @@ namespace trview
         /// Set the new value of the 'triggers window at startup' setting. This will not raise the on_triggers_startup event.
         /// @param value The new 'triggers window at startup' setting.
         void set_triggers_startup(bool value);
+
+        /// Set the new value of the 'rooms window at startup' setting. This will not raise the on_rooms_startup event.
+        /// @param value The new 'rooms window at startup' setting.
+        void set_rooms_startup(bool value);
 
         /// Set the new value of the 'Switch to orbit on selection' setting. This will not raise the on_auto_orbit event.
         /// @param value The new 'Switch to orbit on selection' setting.
@@ -102,6 +109,7 @@ namespace trview
         ui::Checkbox* _invert_map_controls;
         ui::Checkbox* _items_startup;
         ui::Checkbox* _triggers_startup;
+        ui::Checkbox* _rooms_startup;
         ui::Checkbox* _auto_orbit;
         ui::Slider* _sensitivity;
         ui::Slider* _movement_speed;

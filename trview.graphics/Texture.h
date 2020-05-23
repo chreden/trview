@@ -13,6 +13,7 @@
 #include <vector>
 #include <trview.graphics/Device.h>
 #include <trview.common/Colour.h>
+#include <trview.common/Size.h>
 
 namespace trview
 {
@@ -71,6 +72,9 @@ namespace trview
             /// Indicates whether this texture can be used as an input to a render operation.
             /// @returns True if this can be used as a shader resource.
             bool can_use_as_resource() const;
+
+            /// Get the size of the texture.
+            Size size() const;
 
             /// Gets the D3D texture for the texture.
             /// @returns The D3D texture.

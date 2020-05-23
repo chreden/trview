@@ -70,7 +70,7 @@ namespace trview
 
     CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent)
+        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size)
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -107,13 +107,17 @@ namespace trview
         }
         else if (message == WM_GETMINMAXINFO)
         {
-            RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), 400 };
+            RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), _initial_size.height };
             AdjustWindowRect(&rect, window_style, FALSE);
 
             MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
             info->ptMinTrackSize.x = rect.right - rect.left;
             info->ptMaxTrackSize.x = rect.right - rect.left;
             info->ptMinTrackSize.y = rect.bottom - rect.top;
+            if (!_allow_increase_height)
+            {
+                info->ptMaxTrackSize.y = rect.bottom - rect.top;
+            }
         }
     }
 
@@ -139,6 +143,11 @@ namespace trview
         _right_panel = panel->add_child(std::move(right_panel));
         _panels = _ui->add_child(std::move(panel));
         _ui_renderer->load(_ui.get());
+    }
+
+    void CollapsiblePanel::set_allow_increase_height(bool value)
+    {
+        _allow_increase_height = value;
     }
 
     std::unique_ptr<Control> CollapsiblePanel::create_divider()

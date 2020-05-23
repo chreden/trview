@@ -85,6 +85,16 @@ namespace trview
             select_waypoint(new_index);
         };
 
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        if (_settings.rooms_startup)
+        {
+            _rooms_windows->create_window();
+        }
+
+        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
+        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
@@ -602,6 +612,9 @@ namespace trview
         _triggers_windows->set_triggers(_level->triggers());
         _route_window_manager->set_items(_level->items());
         _route_window_manager->set_triggers(_level->triggers());
+        _rooms_windows->set_items(_level->items());
+        _rooms_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_rooms(_level->rooms());
 
         _level->set_show_triggers(_ui->show_triggers());
         _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
@@ -695,6 +708,7 @@ namespace trview
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
         _route_window_manager->render(_device, _settings.vsync);
+        _rooms_windows->render(_device, _settings.vsync);
     }
 
     bool Viewer::should_pick() const
@@ -805,6 +819,7 @@ namespace trview
 
         _items_windows->set_room(room);
         _triggers_windows->set_room(room);
+        _rooms_windows->set_room(room);
     }
 
     void Viewer::select_item(const Item& item)
@@ -818,6 +833,7 @@ namespace trview
         _target = item.position();
         _level->set_selected_item(item.number());
         _items_windows->set_selected_item(item);
+        _rooms_windows->set_selected_item(item);
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
@@ -828,6 +844,7 @@ namespace trview
             _target = trigger->position();
             _level->set_selected_trigger(trigger->number());
             _triggers_windows->set_selected_trigger(trigger);
+            _rooms_windows->set_selected_trigger(trigger);
         }
     }
 

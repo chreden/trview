@@ -75,6 +75,8 @@
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\RoomsWindow.cpp" />
+    <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
@@ -144,6 +146,8 @@
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
+    <ClInclude Include="Windows\RoomsWindow.h" />
+    <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />

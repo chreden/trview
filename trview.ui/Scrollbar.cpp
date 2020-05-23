@@ -17,6 +17,12 @@ namespace trview
 
         void Scrollbar::set_range(float range_start, float range_end, float maximum)
         {
+            if (!maximum)
+            {
+                _blob->set_visible(false);
+                return;
+            }
+
             float range_start_percentage = range_start / maximum;
             float range_end_percentage = range_end / maximum;
             const float range = range_end_percentage - range_start_percentage;
@@ -26,6 +32,7 @@ namespace trview
 
             const auto blob_height = range * current_size.height;
             _blob->set_position(Point(0, range_start_percentage * current_size.height));
+            _blob->set_visible(blob_height != current_size.height);
         }
 
         bool Scrollbar::mouse_down(const Point&)

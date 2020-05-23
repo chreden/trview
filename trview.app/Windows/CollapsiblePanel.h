@@ -10,6 +10,7 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Input.h>
+#include <trview.ui/Window.h>
 
 #include <trview.app/Windows/WindowResizer.h>
 
@@ -25,7 +26,6 @@ namespace trview
     namespace ui
     {
         class Control;
-        class Window;
         class Button;
         class StackPanel;
         namespace render
@@ -79,23 +79,29 @@ namespace trview
         /// element as it will also generate the ui.
         void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
 
+        /// Set whether the window can be made taller.
+        /// @param Whether the window can be made taller.
+        void set_allow_increase_height(bool value);
+
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::Input> _input;
+        std::unique_ptr<graphics::DeviceWindow> _device_window;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
         void register_change_detection(ui::Control* control);
 
         Window _parent;
-        std::unique_ptr<graphics::DeviceWindow> _device_window;
         std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
         ui::Control* _divider;
         ui::Button* _expander;
+        Size        _initial_size;
+        bool        _allow_increase_height{ true };
         bool        _expanded{ true };
         bool        _ui_changed{ true };
     };

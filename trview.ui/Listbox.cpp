@@ -27,6 +27,11 @@ namespace trview
         {
         }
 
+        void Listbox::clear_selection()
+        {
+            _selected_item.reset();
+        }
+
         void Listbox::set_columns(const std::vector<Column>& columns)
         {
             _columns = columns;
@@ -143,7 +148,7 @@ namespace trview
                 }
             }
 
-            if (!_items.empty() && _rows_scrollbar)
+            if (_rows_scrollbar)
             {
                 _rows_scrollbar->set_range(static_cast<float>(_current_top), static_cast<float>(_current_top + _fully_visible_rows), static_cast<float>(_items.size()));
             }
