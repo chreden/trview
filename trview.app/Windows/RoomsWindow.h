@@ -27,24 +27,37 @@ namespace trview
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
 
+        /// Set the current room that the viewer is focusing on.
+        /// @param room The current room.
         void set_current_room(uint32_t room);
 
+        /// Set the items in the level.
+        /// @param items The items in the level.
         void set_items(const std::vector<Item>& items);
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
         void set_rooms(const std::vector<Room*>& rooms);
 
+        /// Set the item currently selected in the viewer.
+        /// @param item The item currently selected.
         void set_selected_item(const Item& item);
 
+        /// Set the trigger currently selected in the viewer.
+        /// @param trigger The trigger currently selected.
         void set_selected_trigger(const Trigger* const trigger);
 
+        /// Set the triggers in the level.
+        /// @param triggers The triggers in the level.
         void set_triggers(const std::vector<Trigger*>& triggers);
 
+        /// Event raised when the user has selected a room in the room window.
         Event<uint32_t> on_room_selected;
 
+        /// Event raised when the user has selected an item in the room window.
         Event<Item> on_item_selected;
 
+        /// Event raised when the user has selected a trigger in the room window.
         Event<Trigger*> on_trigger_selected;
     private:
         void load_room_details(const Room& room);

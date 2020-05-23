@@ -79,6 +79,8 @@ namespace trview
         /// element as it will also generate the ui.
         void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
 
+        /// Set whether the window can be made taller.
+        /// @param Whether the window can be made taller.
         void set_allow_increase_height(bool value);
 
         TokenStore   _token_store;

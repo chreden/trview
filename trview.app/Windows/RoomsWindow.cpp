@@ -336,13 +336,8 @@ namespace trview
 
     void RoomsWindow::render_minimap()
     {
-        auto context = _device_window->context();
-        _map_renderer->render(context, false);
-
-        auto texture = _map_renderer->texture();
-        D3D11_TEXTURE2D_DESC desc;
-        texture.texture()->GetDesc(&desc);
-        auto map_size = Size(desc.Width, desc.Height);
+        _map_renderer->render(_device_window->context(), false);
+        auto map_size = _map_renderer->texture().size();
 
         _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
