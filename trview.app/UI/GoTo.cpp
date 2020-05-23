@@ -9,8 +9,8 @@ namespace trview
     namespace
     {
         const float WindowWidth = 87.0f;
-        const float WindowHeight = 50.0f;
-        const float Width = 50.0f;
+        const float WindowHeight = 60.0f;
+        const float Width = 57.0f;
         const float Height = 20.0f;
     }
 
@@ -34,7 +34,6 @@ namespace trview
             L"Go to Room");
 
         auto text_area = std::make_unique<TextArea>(
-            Point((WindowWidth - 10) / 2.0f - Width / 2.0f, (WindowHeight) / 2.0f - Height / 2.0f + 2),
             Size(Width, Height),
             Colour(1.0f, 0.2f, 0.2f, 0.2f),
             Colour::White,
