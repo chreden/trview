@@ -142,7 +142,7 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto group_box = std::make_unique<GroupBox>(Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details");
 
-        auto details_panel = std::make_unique<StackPanel>(Point(10, 21), Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<StackPanel>(Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
         auto stats_list = std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails);
@@ -177,7 +177,7 @@ namespace trview
         // Add the trigger details group box.
         auto command_group_box = std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands");
 
-        auto command_list = std::make_unique<Listbox>(Point(10, 21), Size(panel_width - 20, 160), Colours::Triggers);
+        auto command_list = std::make_unique<Listbox>(Size(panel_width - 20, 160), Colours::Triggers);
         command_list->set_columns(
             {
                 { Listbox::Column::Type::String, L"Type", 80 },
