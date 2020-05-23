@@ -33,6 +33,9 @@ namespace trview
                 _top_right->set_position(_label->position() + Point(new_size.width + 1, 5));
                 _top_right->set_size(Size(this->size().width - _top_right->position().x - 1, 2));
             };
+
+            // Inner area.
+            _area = add_child(std::make_unique<Window>(Point(10, 21), size - Size(10, 21), background_colour));
         }
 
         std::wstring GroupBox::title() const
@@ -43,6 +46,17 @@ namespace trview
         void GroupBox::set_title(const std::wstring& title)
         {
             _label->set_text(title);
+        }
+
+        void GroupBox::inner_add_child(Control* child_element)
+        {
+            if (_area == nullptr)
+            {
+                return;
+            }
+
+            auto child = remove_child(child_element);
+            _area->add_child(std::move(child));
         }
     }
 }
