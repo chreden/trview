@@ -151,7 +151,7 @@ namespace trview
 
             /// Remove the specified child element.
             /// @param child_element The element to remove.
-            void remove_child(Control* child_element);
+            std::unique_ptr<Control> remove_child(Control* child_element);
 
             /// Event raised when a child is added.
             Event<Control*> on_add_child;

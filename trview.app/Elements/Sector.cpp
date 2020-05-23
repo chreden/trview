@@ -1,5 +1,6 @@
 #define NOMINMAX
 #include "Sector.h"
+#include <stdexcept>
 
 namespace trview
 {

@@ -246,10 +246,21 @@ namespace trview
             on_invalidate();
         }
 
-        void Control::remove_child(Control* child_element)
+        std::unique_ptr<Control> Control::remove_child(Control* child_element)
         {
-            _child_elements.erase(std::remove_if(_child_elements.begin(), _child_elements.end(), [&](const auto& element) { return element.get() == child_element; }), _child_elements.end());
-            on_hierarchy_changed();
+            std::unique_ptr<Control> child;
+            for (auto i = 0u; i < _child_elements.size(); ++i)
+            {
+                auto& element = _child_elements[i];
+                if (element.get() == child_element)
+                {
+                    child = std::move(element);
+                    _child_elements.erase(_child_elements.begin() + i);
+                    on_hierarchy_changed();
+                    break;
+                }
+            }
+            return child;
         }
 
         void Control::set_input_query(IInputQuery* query)

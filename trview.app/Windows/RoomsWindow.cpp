@@ -214,7 +214,7 @@ namespace trview
         using namespace ui;
 
         auto group_box = std::make_unique<GroupBox>(Size(190, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Neighbours");
-        auto neighbours_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 140 - 21), Colours::LeftPanel);
+        auto neighbours_list = std::make_unique<Listbox>(Size(180, 140 - 21), Colours::LeftPanel);
         neighbours_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 170 }
@@ -235,7 +235,7 @@ namespace trview
         using namespace ui;
 
         auto group_box = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Items");
-        auto items_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 150 - 21), Colours::LeftPanel);
+        auto items_list = std::make_unique<Listbox>(Size(180, 150 - 21), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -256,7 +256,7 @@ namespace trview
         using namespace ui;
 
         auto group_box = std::make_unique<GroupBox>(Size(190, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Triggers");
-        auto triggers_list = std::make_unique<Listbox>(Point(10, 21), Size(180, 140 - 21), Colours::LeftPanel);
+        auto triggers_list = std::make_unique<Listbox>(Size(180, 140 - 21), Colours::LeftPanel);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -418,7 +418,7 @@ namespace trview
         upper_panel->set_margin(Size(5, 5));
 
         auto minimap_group = std::make_unique<GroupBox>(Size(370, 370), Colours::Triggers, Colours::DetailsBorder, L"Minimap");
-        _minimap = minimap_group->add_child(std::make_unique<ui::Image>(Point(10, 21), Size(341, 341)));
+        _minimap = minimap_group->add_child(std::make_unique<ui::Image>(Size(341, 341)));
         _map_tooltip = std::make_unique<Tooltip>(*minimap_group);
         upper_panel->add_child(std::move(minimap_group));
 
@@ -432,7 +432,7 @@ namespace trview
 
         auto lower_left = std::make_unique<StackPanel>(Size(190, 300), Colours::ItemDetails, Size(0, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
-        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Point(10, 21), Size(180, 150), Colours::LeftPanel));
+        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150), Colours::LeftPanel));
         _stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
