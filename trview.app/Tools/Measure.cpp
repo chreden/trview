@@ -87,7 +87,6 @@ namespace trview
         auto wvp = scale * Matrix::CreateTranslation(_end.value()) * view_projection;
         _mesh->render(context, wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
-        
         const auto window_size = camera.view_size();
 
         Vector3 point = XMVector3Project(halfway, 0, 0, window_size.width, window_size.height, 0, 1.0f, camera.projection(), camera.view(), Matrix::Identity);
