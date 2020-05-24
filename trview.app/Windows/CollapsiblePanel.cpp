@@ -107,7 +107,7 @@ namespace trview
         }
         else if (message == WM_GETMINMAXINFO)
         {
-            RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), _initial_size.height };
+            RECT rect{ 0, 0, static_cast<LONG>(_ui->size().width), static_cast<LONG>(_initial_size.height) };
             AdjustWindowRect(&rect, window_style, FALSE);
 
             MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
