@@ -341,7 +341,7 @@ namespace trview
 
         _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
-        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+        _minimap->set_position(Point((341 - map_size.width) / 2.0f, (341 - map_size.height) / 2.0f));
     }
 
     void RoomsWindow::load_room_details(const Room& room)
