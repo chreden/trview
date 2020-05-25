@@ -58,6 +58,7 @@ namespace trview
         _num_x_sectors(room.num_x_sectors),
         _num_z_sectors(room.num_z_sectors),
         _index(index),
+        _outside(room.flags & 0x8),
         _water(room.flags & 0x1),
         _level(parent_level)
     {
@@ -661,6 +662,11 @@ namespace trview
         {
             BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
         }
+    }
+
+    bool Room::outside() const
+    {
+        return _outside;
     }
 
     bool Room::water() const
