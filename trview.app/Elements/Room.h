@@ -141,6 +141,9 @@ namespace trview
         uint32_t number() const;
         void update_bounding_box();
 
+        /// Gets whether this room is outside (can see the skybox).
+        bool outside() const;
+
         /// Gets whether this room is a water room.
         bool water() const;
     private:
@@ -197,6 +200,7 @@ namespace trview
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
         bool _water{ false };
+        bool _outside{ false };
         Level& _level;
     };
 }

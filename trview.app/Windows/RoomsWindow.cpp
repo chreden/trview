@@ -368,6 +368,7 @@ namespace trview
         stats.push_back(make_item(L"Y", std::to_wstring(room.info().y)));
         stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
         stats.push_back(make_item(L"Water", std::to_wstring(room.water())));
+        stats.push_back(make_item(L"Outside", std::to_wstring(room.outside())));
         if (room.alternate_mode() != Room::AlternateMode::None)
         {
             stats.push_back(make_item(L"Alternate", std::to_wstring(room.alternate_room())));
@@ -432,15 +433,14 @@ namespace trview
 
         auto lower_left = std::make_unique<StackPanel>(Size(190, 300), Colours::ItemDetails, Size(0, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
-        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150), Colours::LeftPanel));
+        _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150 - 21), Colours::LeftPanel));
         _stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
-                { Listbox::Column::Type::String, L"Value", 80 },
+                { Listbox::Column::Type::String, L"Value", 70 },
             }
         );
         _stats_box->set_show_headers(false);
-        _stats_box->set_show_scrollbar(false);
 
         _token_store += _stats_box->on_item_selected += [this](const auto& item)
         {
