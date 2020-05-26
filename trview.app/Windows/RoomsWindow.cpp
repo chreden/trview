@@ -341,7 +341,7 @@ namespace trview
 
         _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
-        _minimap->set_position(Point(10 + ((341 - map_size.width) / 2.0f), 21 + ((341 - map_size.height) / 2.0f)));
+        _minimap->set_position(Point((341 - map_size.width) / 2.0f, (341 - map_size.height) / 2.0f));
     }
 
     void RoomsWindow::load_room_details(const Room& room)
@@ -365,7 +365,7 @@ namespace trview
 
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
-        stats.push_back(make_item(L"Y", std::to_wstring(room.info().y)));
+        stats.push_back(make_item(L"Y", std::to_wstring(room.info().yBottom)));
         stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
         stats.push_back(make_item(L"Water", std::to_wstring(room.water())));
         stats.push_back(make_item(L"Outside", std::to_wstring(room.outside())));
