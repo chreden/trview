@@ -83,6 +83,6 @@ namespace trview
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
         std::optional<const Trigger*> _selected_trigger;
-        std::optional<TriggerCommandType> _selected_command;
+        std::vector<TriggerCommandType> _selected_commands;
     };
 }

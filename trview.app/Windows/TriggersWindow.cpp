@@ -85,18 +85,22 @@ namespace trview
         controls_row2->set_margin(Size(2, 0));
 
         auto command_filter = std::make_unique<Dropdown>(Size(186, 20));
-        command_filter->set_values({L"All"});
+        std::vector<std::wstring> default_commands { L"All", L"Flipmaps" };
+        command_filter->set_values(default_commands);
         command_filter->set_dropdown_scope(_ui.get());
         command_filter->set_selected_value(L"All");
         _token_store += command_filter->on_value_selected += [&](const auto& value) 
         {
-            if (value == L"All")
+            _selected_commands.clear();
+            if (value == L"Flipmaps")
             {
-                _selected_command.reset();
+                _selected_commands.push_back(TriggerCommandType::FlipMap);
+                _selected_commands.push_back(TriggerCommandType::FlipOff);
+                _selected_commands.push_back(TriggerCommandType::FlipOn);
             }
-            else
+            else if (value != L"All")
             {
-                _selected_command = command_from_name(value);
+                _selected_commands.push_back(command_from_name(value));
             }
             apply_filters();
         };
@@ -212,7 +216,7 @@ namespace trview
         populate_triggers(triggers);
 
         // Populate command filter dropdown.
-        _selected_command.reset();
+        _selected_commands.clear();
         std::set<TriggerCommandType> command_set;
         for (const auto& trigger : triggers)
         {
@@ -221,7 +225,7 @@ namespace trview
                 command_set.insert(command.type());
             }
         }
-        std::vector<std::wstring> all_commands{ L"All" };
+        std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
         std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
         _command_filter->set_values(all_commands);
         _command_filter->set_selected_value(L"All");
@@ -259,9 +263,9 @@ namespace trview
         _selected_trigger = trigger;
         if (_sync_trigger)
         {
-            if (_selected_command.has_value() && !trigger->has_command(_selected_command.value()))
+            if (!_selected_commands.empty() && !trigger->has_command(_selected_commands))
             {
-                _selected_command.reset();
+                _selected_commands.clear();
                 _command_filter->set_selected_value(L"All");
                 apply_filters();
             }
@@ -393,7 +397,7 @@ namespace trview
 
         auto command_filter = [&](const auto& trigger)
         {
-            return !_selected_command.has_value() || trigger->has_command(_selected_command.value());
+            return _selected_commands.empty() || trigger->has_command(_selected_commands);
         };
 
         std::vector<Trigger*> filtered_triggers;

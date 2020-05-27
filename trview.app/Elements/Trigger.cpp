@@ -187,9 +187,12 @@ namespace trview
         return PickResult();
     }
 
-    bool Trigger::has_command(TriggerCommandType type) const
+    bool Trigger::has_command(const std::vector<TriggerCommandType>& types) const
     {
-        return std::any_of(_commands.begin(), _commands.end(), [&](const auto& c) { return c.type() == type; });
+        return std::any_of(_commands.begin(), _commands.end(), [&](const auto& c) 
+        { 
+            return std::any_of(types.begin(), types.end(), [&](const auto& type) { return c.type() == type; });
+        });
     }
 
     void Trigger::render(const graphics::Device&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
