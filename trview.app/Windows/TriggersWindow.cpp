@@ -263,7 +263,7 @@ namespace trview
         _selected_trigger = trigger;
         if (_sync_trigger)
         {
-            if (!_selected_commands.empty() && !trigger->has_command(_selected_commands))
+            if (!_selected_commands.empty() && !trigger->has_any_command(_selected_commands))
             {
                 _selected_commands.clear();
                 _command_filter->set_selected_value(L"All");
@@ -397,7 +397,7 @@ namespace trview
 
         auto command_filter = [&](const auto& trigger)
         {
-            return _selected_commands.empty() || trigger->has_command(_selected_commands);
+            return _selected_commands.empty() || trigger->has_any_command(_selected_commands);
         };
 
         std::vector<Trigger*> filtered_triggers;
