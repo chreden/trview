@@ -60,6 +60,7 @@ namespace trview
         void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
         bool has_command(TriggerCommandType type) const;
+        bool has_any_command(const std::vector<TriggerCommandType>& type) const;
         void set_position(const DirectX::SimpleMath::Vector3& position);
         DirectX::SimpleMath::Vector3 position() const;
 
