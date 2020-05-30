@@ -7,6 +7,7 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
+#include <trview.common/Strings.h>
 
 using namespace trview::graphics;
 
@@ -222,21 +223,6 @@ namespace trview
 
     void ItemsWindow::load_item_details(const Item& item)
     {
-        auto format_bool = [](bool value)
-        {
-            std::wstringstream stream;
-            stream << std::boolalpha << value;
-            return stream.str();
-        };
-
-        auto format_binary = [](uint16_t value)
-        {
-            std::wstringstream stream;
-            stream << std::bitset<5>(value);
-            const auto result = stream.str();
-            return std::wstring(result.rbegin(), result.rend());
-        };
-
         auto make_item = [](const auto& name, const auto& value)
         {
             return Listbox::Item { { { L"Name", name }, { L"Value", value } } };

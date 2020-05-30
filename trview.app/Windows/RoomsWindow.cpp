@@ -5,6 +5,7 @@
 #include <trview.app/Elements/Room.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
+#include <trview.common/Strings.h>
 #include <numeric>
 
 namespace trview
@@ -367,8 +368,8 @@ namespace trview
         stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
         stats.push_back(make_item(L"Y", std::to_wstring(room.info().yBottom)));
         stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
-        stats.push_back(make_item(L"Water", std::to_wstring(room.water())));
-        stats.push_back(make_item(L"Outside", std::to_wstring(room.outside())));
+        stats.push_back(make_item(L"Water", format_bool(room.water())));
+        stats.push_back(make_item(L"Outside", format_bool(room.outside())));
         if (room.alternate_mode() != Room::AlternateMode::None)
         {
             stats.push_back(make_item(L"Alternate", std::to_wstring(room.alternate_room())));
