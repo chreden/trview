@@ -58,8 +58,7 @@ namespace trview
         _num_x_sectors(room.num_x_sectors),
         _num_z_sectors(room.num_z_sectors),
         _index(index),
-        _outside(room.flags & 0x8),
-        _water(room.flags & 0x1),
+        _flags(room.flags),
         _level(parent_level)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
@@ -173,7 +172,7 @@ namespace trview
     // render_mode: The type of geometry and object geometry to render.
     void Room::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
     {
-        Color colour = room_colour(_water && show_water, selected);
+        Color colour = room_colour(water() && show_water, selected);
 
         auto context = device.context();
 
@@ -193,7 +192,7 @@ namespace trview
 
     void Room::render_contained(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
     {
-        Color colour = room_colour((_water || force_water) && show_water, selected);
+        Color colour = room_colour((water() || force_water) && show_water, selected);
         render_contained(device, camera, texture_storage, colour);
     }
 
@@ -295,7 +294,7 @@ namespace trview
 
     void Room::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water)
     {
-        Color colour = room_colour(_water && show_water, selected);
+        Color colour = room_colour(water() && show_water, selected);
 
         for (const auto& triangle : _mesh->transparent_triangles())
         {
@@ -323,7 +322,7 @@ namespace trview
 
     void Room::get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water)
     {
-        Color colour = room_colour((force_water || _water) && show_water, selected);
+        Color colour = room_colour((force_water || water()) && show_water, selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
@@ -666,12 +665,17 @@ namespace trview
 
     bool Room::outside() const
     {
-        return _outside;
+        return _flags & 0x8;
     }
 
     bool Room::water() const
     {
-        return _water;
+        return _flags & 0x1;
+    }
+
+    bool Room::quicksand() const
+    {
+        return _level.version() == trlevel::LevelVersion::Tomb3 && (_flags & 0x80);
     }
 
     const std::vector<std::shared_ptr<Sector>>& Room::sectors() const

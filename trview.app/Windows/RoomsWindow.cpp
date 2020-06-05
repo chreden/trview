@@ -368,8 +368,18 @@ namespace trview
         stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
         stats.push_back(make_item(L"Y", std::to_wstring(room.info().yBottom)));
         stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
-        stats.push_back(make_item(L"Water", format_bool(room.water())));
-        stats.push_back(make_item(L"Outside", format_bool(room.outside())));
+        if (room.water())
+        {
+            stats.push_back(make_item(L"Water", format_bool(room.water())));
+        }
+        if (room.outside())
+        {
+            stats.push_back(make_item(L"Outside", format_bool(room.outside())));
+        }
+        if (room.quicksand())
+        {
+            stats.push_back(make_item(L"Quicksand", format_bool(room.quicksand())));
+        }
         if (room.alternate_mode() != Room::AlternateMode::None)
         {
             stats.push_back(make_item(L"Alternate", std::to_wstring(room.alternate_room())));

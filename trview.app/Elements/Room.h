@@ -146,6 +146,9 @@ namespace trview
 
         /// Gets whether this room is a water room.
         bool water() const;
+
+        /// Gets whether this room is a quicksand room.
+        bool quicksand() const;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const graphics::Device& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
@@ -199,8 +202,7 @@ namespace trview
         AlternateMode        _alternate_mode;
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
-        bool _water{ false };
-        bool _outside{ false };
+        uint16_t _flags{ 0 };
         Level& _level;
     };
 }
