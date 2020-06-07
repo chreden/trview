@@ -42,7 +42,7 @@ namespace trview
                 case 'G':
                     name = L"Room";
                     break;
-                case 'M':
+                case 'E':
                     name = L"Item";
                     break;
                 default:
