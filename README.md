@@ -40,10 +40,11 @@ Key|Action
 ---|------
 CTRL + O    | Open file
 CTRL + G    | Show 'go to room' box
-CTRL + M    | Show 'go to item' box
+CTRL + E    | Show 'go to item' box
 CTRL + R    | Open Route window
 CTRL + T    | New Triggers window
 CTRL + I    | New Items window
+CTRL + M    | New Rooms window
 F1          | Toggle settings window
 H           | Toggle room highlighting
 G           | Toggle hidden geometry
@@ -133,21 +134,21 @@ Enter the item number - press enter to go to the item, escape to cancel.
 Input|Action
 ---|------
 Track Room          | Whether to show the items that are in the currently selected room
-Sync Item           | Whether an the item selected in the window will be synced with the item selected in the view (bidirectional)
+Sync Item           | Whether the item selected in the window will be synced with the item selected in the view (bidirectional)
 
 The column headers can be clicked to sort the items by that column. Clicking an item in the list will focus the camera on it in the viewer. The details of the item will be displayed in the Item Details panel.
 The 'Triggered By' list shows the triggers that can trigger the item. Clicking a trigger in the list will select that trigger.
 
 <</>>               This button collapses or expands the side panel.
 
-Multiple Item windows can be active at once.
+
 
 ### Triggers Window
 
 Input|Action
 ---|------
 Track Room          | Whether to show the triggers that are in the currently selected room
-Sync Item           | Whether an the trigger selected in the window will be synced with the item selected in the view (bidirectional)
+Sync Item           | Whether the trigger selected in the window will be synced with the item selected in the view (bidirectional)
 
 The column headers can be clicked to sort the items by that column. Clicking a trigger in the list will focus the camera on it in the viewer. The details of the trigger will be displayed in the Trigger Details panel.
 The 'Commands' list shows the commands carried out when the trigger executes. Clicking on 'Object' or 'Look at Item' commands will select the item.
@@ -155,6 +156,16 @@ The 'Commands' list shows the commands carried out when the trigger executes. Cl
 <</>>               This button collapses or expands the side panel.
 
 Multiple Trigger windows can be active at once.
+
+### Rooms Window
+
+Input|Action
+---|------
+Sync Room           | Whether the room selected in the window will be synced with the room selected in the view (bidirectional)
+Track Item          | Whether to show the items that are selected in the currently selected room.
+Track Triggers      | Whether to show the items that are selected in the currently selected room.
+
+Multiple Room windows can be active at once.
 
 ### Route Window
 
