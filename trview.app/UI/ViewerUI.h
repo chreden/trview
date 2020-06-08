@@ -297,5 +297,6 @@ namespace trview
         std::unique_ptr<Tooltip> _tooltip;
         ui::Label* _measure;
         bool _show_tooltip{ true };
+        ui::Window* _console;
     };
 }

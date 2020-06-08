@@ -63,6 +63,13 @@ namespace trview
                     _go_to->set_name(name);
                 }
             }
+            else
+            {
+                if (key == 223)
+                {
+                    _console->set_visible(!_console->visible());
+                }
+            }
         };
 
         generate_tool_window(texture_storage);
@@ -152,6 +159,14 @@ namespace trview
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
+
+        _console = _control->add_child(std::make_unique<ui::Window>(Point(), Size(500, 300), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _token_store += _control->on_size_changed += [&](auto size)
+        {
+            _console->set_position(Point(size.width - 500, size.height / 2.0f));
+        };
+        _console->set_position(Point(_control->size().width - 500, _control->size().height / 2.0f));
+        _console->set_visible(false);
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
