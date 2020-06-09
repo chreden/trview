@@ -14,6 +14,11 @@ namespace trview
 
         _input = _window->add_child(std::make_unique<ui::TextArea>(Point(0, 282), Size(500, 18), Colour::Blue, Colour::White));
         _input->set_mode(ui::TextArea::Mode::SingleLine);
+        _token_store += _input->on_enter += [&](const auto& text)
+        {
+            on_command(text);
+            _input->set_text(L"");
+        };
     }
 
     bool Console::visible() const
