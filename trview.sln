@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "external\lua\lua.vcxproj", "{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -199,6 +201,14 @@ Global
 		{7329B02D-C504-482A-A156-181D48CE493C}.Release|x64.Build.0 = Release|Any CPU
 		{7329B02D-C504-482A-A156-181D48CE493C}.Release|x86.ActiveCfg = Release|Any CPU
 		{7329B02D-C504-482A-A156-181D48CE493C}.Release|x86.Build.0 = Release|Any CPU
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Debug|x64.ActiveCfg = Debug|x64
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Debug|x64.Build.0 = Debug|x64
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Debug|x86.ActiveCfg = Debug|x86
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Debug|x86.Build.0 = Debug|x86
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Release|x64.ActiveCfg = Release|x64
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Release|x64.Build.0 = Release|x64
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Release|x86.ActiveCfg = Release|x86
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +217,7 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{745DEC58-EBB3-47A9-A9B8-4C6627C01BF8} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{7329B02D-C504-482A-A156-181D48CE493C} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
