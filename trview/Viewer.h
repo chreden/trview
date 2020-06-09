@@ -42,6 +42,7 @@
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
+#include <trview.app/Lua/Lua.h>
 
 namespace trview
 {
@@ -175,6 +176,7 @@ namespace trview
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
+        Lua _lua;
     };
 }
 

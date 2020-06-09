@@ -193,6 +193,9 @@
     <ClCompile Include="UI\Console.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Lua\Lua.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="UI\Console.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\Lua.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -439,6 +445,9 @@
     </Filter>
     <Filter Include="Settings">
       <UniqueIdentifier>{174a7bd1-ab5d-446d-8632-f99a01c87815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{8fe99dfb-e6c8-4786-8bfa-952a19ea124a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

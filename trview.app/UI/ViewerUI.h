@@ -274,6 +274,12 @@ namespace trview
 
         /// Toggle the visibility of the settings window.
         void toggle_settings_visibility();
+
+        /// <summary>
+        /// Write the text to the console.
+        /// </summary>
+        /// <param name="text">The text to write.</param>
+        void print_console(const std::wstring& text);
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);

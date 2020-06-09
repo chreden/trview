@@ -25,6 +25,8 @@
 #include "ResourceHelper.h"
 #include "resource.h"
 
+#include <trview.common/Strings.h>
+
 namespace trview
 {
     namespace
@@ -183,6 +185,16 @@ namespace trview
                 set_camera_mode(CameraMode::Free);
             }
             _free_camera.set_position(position);
+        };
+
+        _token_store += _ui->on_command += [&](const auto& command)
+        {
+            _lua.execute(to_utf8(command));
+        };
+
+        _token_store += _lua.on_text += [&](const auto& text)
+        {
+            _ui->print_console(text);
         };
 
         _ui->set_settings(_settings);

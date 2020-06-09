@@ -12,12 +12,15 @@ namespace trview
 
         bool visible() const;
 
+        void print(const std::wstring& text);
+
         void set_visible(bool value);
 
         Event<std::wstring> on_command;
     private:
         TokenStore _token_store;
         ui::Window* _window;
+        ui::TextArea* _log;
         ui::TextArea* _input;
     };
 }
