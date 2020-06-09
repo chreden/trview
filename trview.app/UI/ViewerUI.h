@@ -22,6 +22,7 @@
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/ViewOptions.h>
+#include <trview.app/UI/Console.h>
 
 namespace trview
 {
@@ -295,8 +296,8 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
+        std::unique_ptr<Console> _console;
         ui::Label* _measure;
         bool _show_tooltip{ true };
-        ui::Window* _console;
     };
 }

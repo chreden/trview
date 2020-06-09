@@ -190,6 +190,9 @@
     <ClCompile Include="Windows\RoomsWindowManager.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Console.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -401,6 +404,9 @@
     </ClInclude>
     <ClInclude Include="Windows\RoomsWindowManager.h">
       <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Console.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
