@@ -65,9 +65,10 @@ namespace trview
             }
             else
             {
-                if (key == 223)
+                if (key == VK_F11)
                 {
                     _console->set_visible(!_console->visible());
+                    return;
                 }
             }
         };

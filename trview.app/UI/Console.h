@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.ui/Window.h>
+#include <trview.ui/TextArea.h>
 
 namespace trview
 {
@@ -15,5 +16,6 @@ namespace trview
     private:
         TokenStore _token_store;
         ui::Window* _window;
+        ui::TextArea* _input;
     };
 }
