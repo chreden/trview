@@ -52,4 +52,9 @@ namespace trview
     {
         on_text(to_utf16(value));
     }
+
+    lua_State* Lua::state() const
+    {
+        return _lua;
+    }
 }

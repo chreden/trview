@@ -10,11 +10,9 @@ namespace trview
     {
     public:
         Lua();
-
         void execute(const std::string& command);
-
         void print(const std::string& value);
-
+        lua_State* state() const;
         Event<std::wstring> on_text;
     private:
         lua_State* _lua;

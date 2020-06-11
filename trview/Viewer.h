@@ -116,6 +116,10 @@ namespace trview
         void select_next_orbit();
         void select_pick(const PickResult& pick);
 
+        void register_lua();
+        static int lua_open(lua_State* state);
+        static int lua_open_recent(lua_State* state);
+
         graphics::Device _device;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
