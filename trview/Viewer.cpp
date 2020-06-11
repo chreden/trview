@@ -1149,7 +1149,6 @@ namespace trview
         lua_setglobal(state, "trview");
     }
 
-
     int Viewer::lua_open(lua_State* state)
     {
         auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
