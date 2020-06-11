@@ -22,6 +22,7 @@
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/ViewOptions.h>
+#include <trview.app/UI/Console.h>
 
 namespace trview
 {
@@ -127,6 +128,9 @@ namespace trview
 
         /// Event raised when user edits camera position.
         Event<DirectX::SimpleMath::Vector3> on_camera_position;
+
+        /// Event raised when user enters a command.
+        Event<std::wstring> on_command;
 
         /// Render the UI.
         /// @param device The device to use to render the UI.
@@ -270,6 +274,12 @@ namespace trview
 
         /// Toggle the visibility of the settings window.
         void toggle_settings_visibility();
+
+        /// <summary>
+        /// Write the text to the console.
+        /// </summary>
+        /// <param name="text">The text to write.</param>
+        void print_console(const std::wstring& text);
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);
@@ -295,6 +305,7 @@ namespace trview
         std::unique_ptr<ui::render::MapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
+        std::unique_ptr<Console> _console;
         ui::Label* _measure;
         bool _show_tooltip{ true };
     };

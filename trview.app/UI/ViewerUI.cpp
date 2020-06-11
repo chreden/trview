@@ -63,6 +63,14 @@ namespace trview
                     _go_to->set_name(name);
                 }
             }
+            else
+            {
+                if (key == VK_F11)
+                {
+                    _console->set_visible(!_console->visible());
+                    return;
+                }
+            }
         };
 
         generate_tool_window(texture_storage);
@@ -152,6 +160,9 @@ namespace trview
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
+
+        _console = std::make_unique<Console>(*_control);
+        _console->on_command += on_command;
 
         // Create the renderer for the UI based on the controls created.
         _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
@@ -463,5 +474,10 @@ namespace trview
     void ViewerUI::toggle_settings_visibility()
     {
         _settings_window->toggle_visibility();
+    }
+
+    void ViewerUI::print_console(const std::wstring& text)
+    {
+        _console->print(text);
     }
 }

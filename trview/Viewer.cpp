@@ -25,6 +25,8 @@
 #include "ResourceHelper.h"
 #include "resource.h"
 
+#include <trview.common/Strings.h>
+
 namespace trview
 {
     namespace
@@ -183,6 +185,16 @@ namespace trview
                 set_camera_mode(CameraMode::Free);
             }
             _free_camera.set_position(position);
+        };
+
+        _token_store += _ui->on_command += [&](const auto& command)
+        {
+            _lua.execute(to_utf8(command));
+        };
+
+        _token_store += _lua.on_text += [&](const auto& text)
+        {
+            _ui->print_console(text);
         };
 
         _ui->set_settings(_settings);
@@ -346,6 +358,8 @@ namespace trview
             _timer.reset();
             _camera_input.reset();
         };
+
+        register_lua();
     }
 
     Viewer::~Viewer()
@@ -1112,5 +1126,46 @@ namespace trview
         {
             set_camera_mode(CameraMode::Orbit);
         }
+    }
+
+    void Viewer::register_lua()
+    {
+        auto state = _lua.state();
+
+        *reinterpret_cast<Viewer**>(lua_newuserdata(state, sizeof(this))) = this;
+
+        luaL_newmetatable(state, "trview.mt");
+
+        lua_pushvalue(state, -1);
+        lua_setfield(state, -2, "__index");
+
+        lua_pushcfunction(state, lua_open);
+        lua_setfield(state, -2, "open");
+
+        lua_pushcfunction(state, lua_open_recent);
+        lua_setfield(state, -2, "openRecent");
+
+        lua_setmetatable(state, -2);
+        lua_setglobal(state, "trview");
+    }
+
+    int Viewer::lua_open(lua_State* state)
+    {
+        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
+        auto filename = lua_tostring(state, 2);
+        viewer->open(filename);
+        return 0;
+    }
+
+    int Viewer::lua_open_recent(lua_State* state)
+    {
+        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
+        auto index = static_cast<std::size_t>(lua_tonumber(state, 2));
+        const auto& settings = viewer->settings();
+        if (index > 0 && index <= settings.recent_files.size())
+        {
+            viewer->open(*std::next(settings.recent_files.begin(), index - 1));
+        }
+        return 0;
     }
 }
