@@ -13,6 +13,7 @@
 #include <trview.ui/Window.h>
 
 #include <trview.app/Windows/WindowResizer.h>
+#include <trview.app/Menus/Shortcuts.h>
 
 namespace trview
 {
@@ -104,5 +105,6 @@ namespace trview
         bool        _allow_increase_height{ true };
         bool        _expanded{ true };
         bool        _ui_changed{ true };
+        Shortcuts   _shortcuts;
     };
 }

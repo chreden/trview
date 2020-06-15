@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     namespace ui
     {
         class Control;
@@ -16,7 +18,7 @@ namespace trview
         class Input final : public IInputQuery
         {
         public:
-            explicit Input(const trview::Window& window, Control& control);
+            explicit Input(const trview::Window& window, Control& control, Shortcuts& shortcuts);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
             input::Mouse& mouse();
@@ -37,7 +39,9 @@ namespace trview
             bool     process_key_down(Control* control, uint16_t key);
             void     process_char(uint16_t key);
             bool     process_char(Control* control, uint16_t key);
+        public:
             void     process_paste(const std::wstring& text);
+        private:
             bool     process_paste(Control* control, const std::wstring& text);
 
 
@@ -50,6 +54,7 @@ namespace trview
             Control&       _control;
             Control*       _hover_control{ nullptr };
             Control*       _focus_control{ nullptr };
+            Shortcuts&     _shortcuts;
         };
     }
 }

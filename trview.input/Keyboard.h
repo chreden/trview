@@ -30,9 +30,6 @@ namespace trview
             /// @returns Whether control is currently pressed.
             bool control() const;
 
-            /// Event raised when the user presses ctrl+v
-            Event<std::wstring> on_paste;
-
             /// Event raised when the user presses a key. The key is passed as a parameter
             /// to the event listeners.
             Event<uint16_t, bool> on_key_down;
@@ -50,8 +47,6 @@ namespace trview
             /// @param wParam The WPARAM for the message.
             /// @param lParam The LPARAM for the message.
             virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-        private:
-            HACCEL _accelerators;
         };
     }
 }

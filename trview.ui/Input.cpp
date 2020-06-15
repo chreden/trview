@@ -1,6 +1,7 @@
 #include "Input.h"
 #include "Control.h"
 #include <trview.input/WindowTester.h>
+#include <trview.app/Menus/Shortcuts.h>
 
 namespace trview
 {
@@ -14,8 +15,8 @@ namespace trview
             }
         }
 
-        Input::Input(const trview::Window& window, Control& control)
-            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control)
+        Input::Input(const trview::Window& window, Control& control, Shortcuts& shortcuts)
+            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts)
         {
             register_events();
         }
@@ -42,7 +43,7 @@ namespace trview
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control) { process_key_down(key, control); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
-            _token_store += _keyboard.on_paste += [&](const auto& text) { process_paste(text); };
+            _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(L"Henk"); };
         }
 
         void Input::register_focus_controls(Control* control)

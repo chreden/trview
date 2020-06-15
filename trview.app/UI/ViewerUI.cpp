@@ -22,7 +22,7 @@ namespace trview
         register_change_detection(_control.get());
 
         _control->set_handles_input(false);
-        _ui_input = std::make_unique<Input>(window, *_control);
+        _ui_input = std::make_unique<Input>(window, *_control, shortcuts);
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
