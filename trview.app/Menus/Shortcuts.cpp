@@ -3,15 +3,13 @@
 namespace trview
 {
     Shortcuts::Shortcuts(const Window& window)
-        : MessageHandler(window), _command_index(41000)
+        : MessageHandler(window), _command_index(41000), _accelerators(nullptr)
     {
-        
     }
 
     Event<>& Shortcuts::add_shortcut(bool control, uint16_t key)
     {
-        uint8_t target_flags = control ? FVIRTKEY : (FVIRTKEY | FCONTROL);
-        
+        uint8_t target_flags = control ? (FVIRTKEY | FCONTROL) : FVIRTKEY;
         for (auto& shortcut : _shortcuts)
         {
             if (shortcut.first.flags == target_flags &&
@@ -46,7 +44,6 @@ namespace trview
                 return;
             }
 
-            // Create the table based on the registered shortcuts...
             std::vector<ACCEL> shortcuts;
             for (const auto& shortcut : _shortcuts)
             {
