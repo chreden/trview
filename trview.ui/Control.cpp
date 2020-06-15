@@ -165,6 +165,11 @@ namespace trview
             return false;
         }
 
+        bool Control::paste(const std::wstring&)
+        {
+            return false;
+        }
+
         bool Control::handles_input() const
         {
             return _handles_input;

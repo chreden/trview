@@ -62,6 +62,7 @@ namespace trview
             virtual bool key_char(wchar_t character) override;
             virtual void gained_focus() override;
             virtual void lost_focus(Control*) override;
+            virtual bool paste(const std::wstring& text) override;
         private:
             Label* current_line(bool raise_event = true);
 
