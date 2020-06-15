@@ -43,7 +43,7 @@ namespace trview
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control) { process_key_down(key, control); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
-            _token_store += _keyboard.on_paste += [&](const auto& text) { process_paste(text); };
+            _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(L"Henk"); };
         }
 
         void Input::register_focus_controls(Control* control)
