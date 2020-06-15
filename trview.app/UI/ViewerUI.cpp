@@ -8,12 +8,13 @@
 #include <sstream>
 #include <iomanip>
 #include <trview.input/WindowTester.h>
+#include <trview.app/Menus/Shortcuts.h>
 
 using namespace trview::ui;
 
 namespace trview
 {
-    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage)
+    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage, Shortcuts& shortcuts)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -32,45 +33,21 @@ namespace trview
             }
         };
 
-        _token_store += _keyboard.on_key_down += [&](auto key, bool control)
+        _token_store += shortcuts.add_shortcut(true, 'G') += [&]()
         {
-            if (control)
-            {
-                std::wstring name;
-                switch (key)
-                {
-                case 'G':
-                    name = L"Room";
-                    break;
-                case 'E':
-                    name = L"Item";
-                    break;
-                default:
-                    return;
-                }
+            _go_to->set_name(L"Room");
+            _go_to->toggle_visible();
+        };
 
-                if (!_go_to->visible())
-                {
-                    _go_to->set_name(name);
-                    _go_to->toggle_visible();
-                }
-                else if (_go_to->name() == name)
-                {
-                    _go_to->toggle_visible();
-                }
-                else
-                {
-                    _go_to->set_name(name);
-                }
-            }
-            else
-            {
-                if (key == VK_F11)
-                {
-                    _console->set_visible(!_console->visible());
-                    return;
-                }
-            }
+        _token_store += shortcuts.add_shortcut(true, 'E') += [&]()
+        {
+            _go_to->set_name(L"Item");
+            _go_to->toggle_visible();
+        };
+
+        _token_store += shortcuts.add_shortcut(false, VK_F11) += [&]()
+        {
+            _console->set_visible(!_console->visible());
         };
 
         generate_tool_window(texture_storage);

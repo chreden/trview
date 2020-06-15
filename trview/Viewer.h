@@ -43,6 +43,7 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
+#include <trview.app/Menus/Shortcuts.h>
 
 namespace trview
 {
@@ -121,6 +122,7 @@ namespace trview
         static int lua_open_recent(lua_State* state);
 
         graphics::Device _device;
+        Shortcuts _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
