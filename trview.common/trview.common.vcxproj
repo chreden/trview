@@ -29,7 +29,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TokenStore.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="Windows\Shortcuts.h" />
+    <ClInclude Include="Windows\Clipboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
@@ -42,7 +42,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TokenStore.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="Windows\Shortcuts.cpp" />
+    <ClCompile Include="Windows\Clipboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Event.inl" />
