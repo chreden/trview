@@ -17,6 +17,9 @@
       <Filter>Events</Filter>
     </ClInclude>
     <ClInclude Include="Strings.h" />
+    <ClInclude Include="Windows\Clipboard.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -35,6 +38,9 @@
       <Filter>Events</Filter>
     </ClCompile>
     <ClCompile Include="Strings.cpp" />
+    <ClCompile Include="Windows\Clipboard.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
