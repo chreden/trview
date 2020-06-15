@@ -196,6 +196,9 @@
     <ClCompile Include="Lua\Lua.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\Shortcuts.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -413,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="Lua\Lua.h">
       <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\Shortcuts.h">
+      <Filter>Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
