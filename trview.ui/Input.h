@@ -39,9 +39,7 @@ namespace trview
             bool     process_key_down(Control* control, uint16_t key);
             void     process_char(uint16_t key);
             bool     process_char(Control* control, uint16_t key);
-        public:
             void     process_paste(const std::wstring& text);
-        private:
             bool     process_paste(Control* control, const std::wstring& text);
 
 
