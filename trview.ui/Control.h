@@ -226,6 +226,8 @@ namespace trview
             /// @returns True if the key char event was handled.
             virtual bool key_char(wchar_t key);
 
+            virtual bool paste(const std::wstring& text);
+
             void set_input_query(IInputQuery* query);
 
             bool focused() const;
