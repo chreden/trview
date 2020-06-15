@@ -38,7 +38,9 @@ namespace trview
             auto line = current_line();
             auto line_text = line->text();
             line_text.insert(line_text.begin() + _cursor_position, text.begin(), text.end());
+            _cursor_position += text.size();
             line->set_text(line_text);
+            update_cursor();
             return true;
         }
 
