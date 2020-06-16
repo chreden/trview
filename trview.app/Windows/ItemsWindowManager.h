@@ -13,6 +13,7 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.common/TokenStore.h>
 #include "ItemsWindow.h"
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -25,7 +26,7 @@ namespace trview
         /// @param shader_storage The shader storage for items windows.
         /// @param font_factory The font_factory for items windows.
         /// @param window The parent window of the items window.
-        explicit ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window);
+        explicit ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;

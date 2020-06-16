@@ -59,7 +59,7 @@ namespace trview
         load_default_fonts(_device, _font_factory);
 
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
