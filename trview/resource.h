@@ -56,7 +56,6 @@
 #define IDF_ARIAL7                      32793
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
-#define ID_ACCEL_ROOMS_WINDOW           ID_APP_ACCEL_ROOMS_WINDOW
 
 // Next default values for new objects
 // 

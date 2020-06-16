@@ -87,7 +87,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
