@@ -21,8 +21,6 @@ namespace trview
 
         Event<>& add_shortcut(bool control, uint16_t key);
     private:
-        void create_accelerators();
-
         HACCEL _accelerators;
         std::vector<std::pair<Shortcut, Event<>>> _shortcuts;
         uint16_t _command_index;

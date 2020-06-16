@@ -12,7 +12,8 @@ namespace trview
         uint8_t target_flags = control ? (FVIRTKEY | FCONTROL) : FVIRTKEY;
         for (auto& shortcut : _shortcuts)
         {
-            if (shortcut.first.flags == target_flags && shortcut.first.key == key)
+            if (shortcut.first.flags == target_flags &&
+                shortcut.first.key == key)
             {
                 return shortcut.second;
             }
@@ -21,27 +22,17 @@ namespace trview
         auto entry = Shortcut{ target_flags, key, _command_index++ };
         _shortcuts.push_back({ entry, Event<>() });
 
-        if (_accelerators)
+        for (auto& shortcut : _shortcuts)
         {
-            create_accelerators();
+            if (shortcut.first.flags == entry.flags &&
+                shortcut.first.key == entry.key &&
+                shortcut.first.command == entry.command)
+            {
+                return shortcut.second;
+            }
         }
 
-        return _shortcuts.back().second;
-    }
-
-    void Shortcuts::create_accelerators()
-    {
-        if (_accelerators)
-        {
-            DestroyAcceleratorTable(_accelerators);
-        }
-
-        std::vector<ACCEL> shortcuts;
-        for (const auto& shortcut : _shortcuts)
-        {
-            shortcuts.push_back({ shortcut.first.flags, shortcut.first.key, shortcut.first.command });
-        }
-        _accelerators = CreateAcceleratorTable(&shortcuts[0], shortcuts.size());
+        throw std::exception();
     }
 
     void Shortcuts::process_message(UINT message, WPARAM wParam, LPARAM lParam)
@@ -52,7 +43,13 @@ namespace trview
             {
                 return;
             }
-            create_accelerators();
+
+            std::vector<ACCEL> shortcuts;
+            for (const auto& shortcut : _shortcuts)
+            {
+                shortcuts.push_back({ shortcut.first.flags, shortcut.first.key, shortcut.first.command });
+            }
+            _accelerators = CreateAcceleratorTable(&shortcuts[0], shortcuts.size());
         }
 
         MSG msg{ window(), message, wParam, lParam, GetTickCount(), 0 };
@@ -61,16 +58,20 @@ namespace trview
             return;
         }
 
-        if (message == WM_COMMAND)
+        switch (message)
         {
-            auto id = LOWORD(wParam);
-            for (auto& shortcut : _shortcuts)
+            case WM_COMMAND:
             {
-                if (shortcut.first.command == id)
+                auto id = LOWORD(wParam);
+                for (auto& shortcut : _shortcuts)
                 {
-                    shortcut.second();
-                    break;
+                    if (shortcut.first.command == id)
+                    {
+                        shortcut.second();
+                        break;
+                    }
                 }
+                break;
             }
         }
     }
