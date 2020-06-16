@@ -9,11 +9,13 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     /// Controls and creates the route window.
     class RouteWindowManager final : public MessageHandler
     {
     public:
-        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window);
+        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         virtual ~RouteWindowManager() = default;
 

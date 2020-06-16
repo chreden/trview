@@ -211,7 +211,7 @@ namespace trview
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window);
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window, _shortcuts);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
