@@ -73,7 +73,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();

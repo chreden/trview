@@ -13,6 +13,8 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     /// Controls and creates TriggersWindows.
     class TriggersWindowManager final : public MessageHandler
     {
@@ -22,7 +24,7 @@ namespace trview
         /// @param shader_storage The shader storage for triggers windows.
         /// @param font_factory The font_factory for triggers windows.
         /// @param window The parent window of the triggers window.
-        explicit TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window);
+        explicit TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the TriggersWindowManager.
         virtual ~TriggersWindowManager() = default;

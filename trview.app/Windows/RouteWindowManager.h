@@ -6,11 +6,10 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
 #include "RouteWindow.h"
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
-    class Shortcuts;
-
     /// Controls and creates the route window.
     class RouteWindowManager final : public MessageHandler
     {
