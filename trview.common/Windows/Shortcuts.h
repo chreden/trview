@@ -1,7 +1,7 @@
 #pragma once
 
-#include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
+#include "../MessageHandler.h"
+#include "../Event.h"
 
 namespace trview
 {

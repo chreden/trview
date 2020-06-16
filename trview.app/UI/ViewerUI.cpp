@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iomanip>
 #include <trview.input/WindowTester.h>
-#include <trview.app/Menus/Shortcuts.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 using namespace trview::ui;
 

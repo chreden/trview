@@ -43,7 +43,7 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
-#include <trview.app/Menus/Shortcuts.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {

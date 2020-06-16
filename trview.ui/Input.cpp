@@ -1,7 +1,7 @@
 #include "Input.h"
 #include "Control.h"
 #include <trview.input/WindowTester.h>
-#include <trview.app/Menus/Shortcuts.h>
+#include <trview.common/Windows/Shortcuts.h>
 #include <trview.common/Windows/Clipboard.h>
 
 namespace trview

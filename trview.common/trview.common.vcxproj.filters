@@ -20,6 +20,9 @@
     <ClInclude Include="Windows\Clipboard.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\Shortcuts.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -39,6 +42,9 @@
     </ClCompile>
     <ClCompile Include="Strings.cpp" />
     <ClCompile Include="Windows\Clipboard.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Shortcuts.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
   </ItemGroup>

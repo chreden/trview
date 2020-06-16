@@ -13,7 +13,7 @@
 #include <trview.ui/Window.h>
 
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Menus/Shortcuts.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
