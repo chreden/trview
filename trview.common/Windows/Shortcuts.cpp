@@ -3,7 +3,7 @@
 namespace trview
 {
     Shortcuts::Shortcuts(const Window& window)
-        : MessageHandler(window), _command_index(41000), _accelerators(nullptr)
+        : MessageHandler(window), _command_index(38000), _accelerators(nullptr)
     {
     }
 
@@ -22,6 +22,11 @@ namespace trview
         auto entry = Shortcut{ target_flags, key, _command_index++ };
         _shortcuts.push_back({ entry, Event<>() });
 
+        if (_accelerators)
+        {
+            create_accelerators();
+        }
+
         for (auto& shortcut : _shortcuts)
         {
             if (shortcut.first.flags == entry.flags &&
@@ -35,6 +40,21 @@ namespace trview
         throw std::exception();
     }
 
+    void Shortcuts::create_accelerators()
+    {
+        if (_accelerators)
+        {
+            DestroyAcceleratorTable(_accelerators);
+        }
+
+        std::vector<ACCEL> shortcuts;
+        for (const auto& shortcut : _shortcuts)
+        {
+            shortcuts.push_back({ shortcut.first.flags, shortcut.first.key, shortcut.first.command });
+        }
+        _accelerators = CreateAcceleratorTable(&shortcuts[0], shortcuts.size());
+    }
+
     void Shortcuts::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (!_accelerators)
@@ -43,13 +63,7 @@ namespace trview
             {
                 return;
             }
-
-            std::vector<ACCEL> shortcuts;
-            for (const auto& shortcut : _shortcuts)
-            {
-                shortcuts.push_back({ shortcut.first.flags, shortcut.first.key, shortcut.first.command });
-            }
-            _accelerators = CreateAcceleratorTable(&shortcuts[0], shortcuts.size());
+            create_accelerators();
         }
 
         MSG msg{ window(), message, wParam, lParam, GetTickCount(), 0 };
