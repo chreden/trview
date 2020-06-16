@@ -3,7 +3,7 @@
 namespace trview
 {
     Shortcuts::Shortcuts(const Window& window)
-        : MessageHandler(window), _command_index(38000), _accelerators(nullptr)
+        : MessageHandler(window), _command_index(41000), _accelerators(nullptr)
     {
     }
 
