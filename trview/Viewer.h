@@ -94,6 +94,8 @@ namespace trview
         void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
+        void select_next_waypoint();
+        void select_previous_waypoint();
         void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;
@@ -101,6 +103,7 @@ namespace trview
         void set_camera_mode(CameraMode camera_mode);
         void set_camera_projection_mode(ProjectionMode projection_mode);
         void set_alternate_mode(bool enabled);
+        void toggle_alternate_mode();
         void set_alternate_group(uint32_t group, bool enabled);
         bool alternate_group(uint32_t group) const;
         // Tell things that need to be resized that they should resize.
@@ -108,7 +111,9 @@ namespace trview
         // Set up keyboard and mouse input for the camera.
         void setup_camera_input();
         void set_show_triggers(bool show);
+        void toggle_show_triggers();
         void set_show_hidden_geometry(bool show);
+        void toggle_show_hidden_geometry();
         void set_show_water(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);

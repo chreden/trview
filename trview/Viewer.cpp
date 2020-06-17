@@ -382,106 +382,37 @@ namespace trview
             }
         };
 
-        _token_store += _shortcuts.add_shortcut(false, 'P') += [&]()
+        auto add_shortcut = [&](bool control, uint16_t key, std::function<void ()> fn)
         {
-            if (!_ui->is_input_active() && _level && _level->any_alternates())
+            _token_store += _shortcuts.add_shortcut(control, key) += [&, fn]()
             {
-                set_alternate_mode(!_level->alternate_mode());
-            }
+                if (!_ui->is_input_active()) { fn(); }
+            };
         };
 
-        _token_store += _shortcuts.add_shortcut(false, 'M') += [&]()
+        add_shortcut(false, 'P', [&]() { toggle_alternate_mode(); });
+        add_shortcut(false, 'M', [&]()
         {
-            if (!_ui->is_input_active())
-            {
-                _active_tool = Tool::Measure;
-                _measure->reset();
-                _scene_changed = true;
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, 'T') += [&]()
+            _active_tool = Tool::Measure;
+            _measure->reset();
+            _scene_changed = true;
+        });
+        add_shortcut(false, 'T', [&]() { toggle_show_triggers(); });
+        add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
+        add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
+        add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
+        add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
+        add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
+        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
+        add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
+        add_shortcut(false, 'H', [&]() { toggle_highlight(); });
+        add_shortcut(false, VK_INSERT, [&]()
         {
-            if (!_ui->is_input_active() && _level)
-            {
-                set_show_triggers(!_level->show_triggers());
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, 'G') += [&]()
-        {
-            if (!_ui->is_input_active() && _level)
-            {
-                set_show_hidden_geometry(!_level->show_hidden_geometry());
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_OEM_MINUS) += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                select_previous_orbit();
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_OEM_PLUS) += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                select_next_orbit();
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_LEFT) += [&]()
-        {
-            if (!_ui->is_input_active() && _route->selected_waypoint() > 0)
-            {
-                select_waypoint(_route->selected_waypoint() - 1);
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_RIGHT) += [&]()
-        {
-            if (!_ui->is_input_active() && _route->selected_waypoint() + 1 < _route->waypoints())
-            {
-                select_waypoint(_route->selected_waypoint() + 1);
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_DELETE) += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                remove_waypoint(_route->selected_waypoint());
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_F1) += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                _ui->toggle_settings_visibility();
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, 'H') += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                toggle_highlight();
-            }
-        };
-
-        _token_store += _shortcuts.add_shortcut(false, VK_INSERT) += [&]()
-        {
-            if (!_ui->is_input_active())
-            {
-                // Reset the camera to defaults.
-                _camera.set_rotation_yaw(0.f);
-                _camera.set_rotation_pitch(-0.78539f);
-                _camera.set_zoom(8.f);
-            }
-        };
+            // Reset the camera to defaults.
+            _camera.set_rotation_yaw(0.f);
+            _camera.set_rotation_pitch(-0.78539f);
+            _camera.set_zoom(8.f);
+        });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
         {
@@ -886,6 +817,22 @@ namespace trview
         _scene_changed = true;
     }
 
+    void Viewer::select_next_waypoint()
+    {
+        if (_route->selected_waypoint() + 1 < _route->waypoints())
+        {
+            select_waypoint(_route->selected_waypoint() + 1);
+        }
+    }
+
+    void Viewer::select_previous_waypoint()
+    {
+        if (_route->selected_waypoint() > 0)
+        {
+            select_waypoint(_route->selected_waypoint() - 1);
+        }
+    }
+
     void Viewer::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
@@ -904,6 +851,14 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
             _ui->set_flip(enabled);
+        }
+    }
+
+    void Viewer::toggle_alternate_mode()
+    {
+        if (_level && _level->any_alternates())
+        {
+            set_alternate_mode(!_level->alternate_mode());
         }
     }
 
@@ -1044,12 +999,28 @@ namespace trview
         }
     }
 
+    void Viewer::toggle_show_triggers()
+    {
+        if (_level)
+        {
+            set_show_triggers(!_level->show_triggers());
+        }
+    }
+
     void Viewer::set_show_hidden_geometry(bool show)
     {
         if (_level)
         {
             _level->set_show_hidden_geometry(show);
             _ui->set_show_hidden_geometry(show);
+        }
+    }
+
+    void Viewer::toggle_show_hidden_geometry()
+    {
+        if (_level)
+        {
+            set_show_hidden_geometry(!_level->show_hidden_geometry());
         }
     }
 
