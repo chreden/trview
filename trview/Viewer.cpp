@@ -374,80 +374,120 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += [&](auto key, bool control) 
+        _token_store += _keyboard.on_key_up += [&](auto key, bool) 
         {
-            if (_ui->is_input_active())
+            if (!_ui->is_input_active())
             {
-                return;
+                _camera_input.key_up(key);
             }
-            process_input_key(key, control);
-            _camera_input.key_up(key); 
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, 'P') += [&]()
+        {
+            if (!_ui->is_input_active() && _level && _level->any_alternates())
+            {
+                set_alternate_mode(!_level->alternate_mode());
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, 'M') += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                _active_tool = Tool::Measure;
+                _measure->reset();
+                _scene_changed = true;
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, 'T') += [&]()
+        {
+            if (!_ui->is_input_active() && _level)
+            {
+                set_show_triggers(!_level->show_triggers());
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, 'G') += [&]()
+        {
+            if (!_ui->is_input_active() && _level)
+            {
+                set_show_hidden_geometry(!_level->show_hidden_geometry());
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_OEM_MINUS) += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                select_previous_orbit();
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_OEM_PLUS) += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                select_next_orbit();
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_LEFT) += [&]()
+        {
+            if (!_ui->is_input_active() && _route->selected_waypoint() > 0)
+            {
+                select_waypoint(_route->selected_waypoint() - 1);
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_RIGHT) += [&]()
+        {
+            if (!_ui->is_input_active() && _route->selected_waypoint() + 1 < _route->waypoints())
+            {
+                select_waypoint(_route->selected_waypoint() + 1);
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_DELETE) += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                remove_waypoint(_route->selected_waypoint());
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_F1) += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                _ui->toggle_settings_visibility();
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, 'H') += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                toggle_highlight();
+            }
+        };
+
+        _token_store += _shortcuts.add_shortcut(false, VK_INSERT) += [&]()
+        {
+            if (!_ui->is_input_active())
+            {
+                // Reset the camera to defaults.
+                _camera.set_rotation_yaw(0.f);
+                _camera.set_rotation_pitch(-0.78539f);
+                _camera.set_zoom(8.f);
+            }
         };
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
         {
-            if (control || _ui->is_input_active())
+            if (!_ui->is_input_active())
             {
-                return;
-            }
-
-            _camera_input.key_down(key, control);
-
-            switch (key)
-            {
-                case VK_OEM_MINUS:
-                {
-                    select_previous_orbit();
-                    break;
-                }
-                case VK_OEM_PLUS:
-                {
-                    select_next_orbit();
-                    break;
-                }
-                case 'P':
-                {
-                    if (_level && _level->any_alternates())
-                    {
-                        set_alternate_mode(!_level->alternate_mode());
-                    }
-                    break;
-                }
-                case 'M':
-                {
-                    _active_tool = Tool::Measure;
-                    _measure->reset();
-                    break;
-                }
-                case 'T':
-                {
-                    if (_level)
-                    {
-                        set_show_triggers(!_level->show_triggers());
-                    }
-                    break;
-                }
-                case VK_LEFT:
-                {
-                    if (_route->selected_waypoint() > 0)
-                    {
-                        select_waypoint(_route->selected_waypoint() - 1);
-                    }
-                    break;
-                }
-                case VK_RIGHT:
-                {
-                    if (_route->selected_waypoint() + 1 < _route->waypoints())
-                    {
-                        select_waypoint(_route->selected_waypoint() + 1);
-                    }
-                    break;
-                }
-                case VK_DELETE:
-                {
-                    remove_waypoint(_route->selected_waypoint());
-                    break;
-                }
+                _camera_input.key_down(key, control);
             }
         };
 
@@ -549,35 +589,6 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
             }
         };
-    }
-
-    void Viewer::process_input_key(uint16_t key, bool control)
-    {
-        switch (key)
-        {
-            case 'G':
-            {
-                if(_level && !control)
-                {
-                    set_show_hidden_geometry(!_level->show_hidden_geometry());
-                }
-                break;
-            }
-            case VK_F1:
-                _ui->toggle_settings_visibility();
-                break;
-            case 'H':
-                toggle_highlight();
-                break;
-            case VK_INSERT:
-            {
-                // Reset the camera to defaults.
-                _camera.set_rotation_yaw(0.f);
-                _camera.set_rotation_pitch(-0.78539f);
-                _camera.set_zoom(8.f);
-                break;
-            }
-        }
     }
 
     void Viewer::update_camera()
