@@ -18,6 +18,7 @@
 namespace trview
 {
     class Room;
+    class Shortcuts;
 
     /// Controls and creates RoomsWindows.
     class RoomsWindowManager final : public MessageHandler
@@ -28,7 +29,7 @@ namespace trview
         /// @param shader_storage The shader storage for rooms windows.
         /// @param font_factory The font_factory for rooms windows.
         /// @param window The parent window of the rooms window.
-        explicit RoomsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window);
+        explicit RoomsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the RoomsWindowManager.
         virtual ~RoomsWindowManager() = default;

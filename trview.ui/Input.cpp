@@ -1,6 +1,7 @@
 #include "Input.h"
 #include "Control.h"
 #include <trview.input/WindowTester.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -14,8 +15,8 @@ namespace trview
             }
         }
 
-        Input::Input(const trview::Window& window, Control& control)
-            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control)
+        Input::Input(const trview::Window& window, Control& control, Shortcuts& shortcuts)
+            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts)
         {
             register_events();
         }

@@ -41,11 +41,8 @@
 #define ID_HELP_DISCORD                 32778
 #define ID_WINDOWS_ITEMS                ID_APP_WINDOWS_ITEMS
 #define IDR_SELECTION_SHADER            32780
-#define ID_ACCEL_ITEM_WINDOW            ID_APP_ACCEL_ITEM_WINDOW
 #define ID_WINDOWS_TRIGGERS             ID_APP_WINDOWS_TRIGGERS 
-#define ID_ACCEL_TRIGGERS_WINDOW        ID_APP_ACCEL_TRIGGERS_WINDOW
 #define ID_WINDOWS_ROUTE                ID_APP_WINDOWS_ROUTE
-#define ID_ACCEL_ROUTE_WINDOW           ID_APP_ACCEL_ROUTE_WINDOW
 #define ID_VIEW_MINIMAP                 ID_APP_VIEW_MINIMAP
 #define ID_VIEW_TOOLTIP                 ID_APP_VIEW_TOOLTIP
 #define ID_VIEW_UI                      ID_APP_VIEW_UI
@@ -57,7 +54,6 @@
 #define IDF_ARIAL7                      32793
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
-#define ID_ACCEL_ROOMS_WINDOW           ID_APP_ACCEL_ROOMS_WINDOW
 
 // Next default values for new objects
 // 

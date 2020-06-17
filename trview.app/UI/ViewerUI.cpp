@@ -8,12 +8,13 @@
 #include <sstream>
 #include <iomanip>
 #include <trview.input/WindowTester.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 using namespace trview::ui;
 
 namespace trview
 {
-    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage)
+    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage, Shortcuts& shortcuts)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _keyboard(window)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -21,7 +22,7 @@ namespace trview
         register_change_detection(_control.get());
 
         _control->set_handles_input(false);
-        _ui_input = std::make_unique<Input>(window, *_control);
+        _ui_input = std::make_unique<Input>(window, *_control, shortcuts);
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
@@ -32,44 +33,29 @@ namespace trview
             }
         };
 
-        _token_store += _keyboard.on_key_down += [&](auto key, bool control)
+        _token_store += shortcuts.add_shortcut(true, 'G') += [&]()
         {
-            if (control)
+            if (!is_input_active())
             {
-                std::wstring name;
-                switch (key)
-                {
-                case 'G':
-                    name = L"Room";
-                    break;
-                case 'E':
-                    name = L"Item";
-                    break;
-                default:
-                    return;
-                }
-
-                if (!_go_to->visible())
-                {
-                    _go_to->set_name(name);
-                    _go_to->toggle_visible();
-                }
-                else if (_go_to->name() == name)
-                {
-                    _go_to->toggle_visible();
-                }
-                else
-                {
-                    _go_to->set_name(name);
-                }
+                _go_to->set_name(L"Room");
+                _go_to->toggle_visible();
             }
-            else
+        };
+
+        _token_store += shortcuts.add_shortcut(true, 'E') += [&]()
+        {
+            if (!is_input_active())
             {
-                if (key == VK_F11)
-                {
-                    _console->set_visible(!_console->visible());
-                    return;
-                }
+                _go_to->set_name(L"Item");
+                _go_to->toggle_visible();
+            }
+        };
+
+        _token_store += shortcuts.add_shortcut(false, VK_F11) += [&]()
+        {
+            if (!is_input_active())
+            {
+                _console->set_visible(!_console->visible());
             }
         };
 

@@ -36,7 +36,7 @@ namespace trview
     }
 
     Viewer::Viewer(const Window& window)
-        : _window(window), _camera(window.size()), _free_camera(window.size()),
+        : _window(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window), _menu_detector(window)
@@ -59,7 +59,7 @@ namespace trview
         load_default_fonts(_device, _font_factory);
 
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -73,7 +73,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -87,7 +87,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window);
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -125,7 +125,7 @@ namespace trview
         _texture_storage = std::make_unique<TextureStorage>(_device);
         load_default_textures(_device, *_texture_storage.get());
 
-        _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage);
+        _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -211,7 +211,7 @@ namespace trview
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window);
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window, _shortcuts);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
@@ -374,80 +374,51 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += [&](auto key, bool control) 
+        _token_store += _keyboard.on_key_up += [&](auto key, bool) 
         {
-            if (_ui->is_input_active())
+            if (!_ui->is_input_active())
             {
-                return;
+                _camera_input.key_up(key);
             }
-            process_input_key(key, control);
-            _camera_input.key_up(key); 
         };
+
+        auto add_shortcut = [&](bool control, uint16_t key, std::function<void ()> fn)
+        {
+            _token_store += _shortcuts.add_shortcut(control, key) += [&, fn]()
+            {
+                if (!_ui->is_input_active()) { fn(); }
+            };
+        };
+
+        add_shortcut(false, 'P', [&]() { toggle_alternate_mode(); });
+        add_shortcut(false, 'M', [&]()
+        {
+            _active_tool = Tool::Measure;
+            _measure->reset();
+            _scene_changed = true;
+        });
+        add_shortcut(false, 'T', [&]() { toggle_show_triggers(); });
+        add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
+        add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
+        add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
+        add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
+        add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
+        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
+        add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
+        add_shortcut(false, 'H', [&]() { toggle_highlight(); });
+        add_shortcut(false, VK_INSERT, [&]()
+        {
+            // Reset the camera to defaults.
+            _camera.set_rotation_yaw(0.f);
+            _camera.set_rotation_pitch(-0.78539f);
+            _camera.set_zoom(8.f);
+        });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
         {
-            if (control || _ui->is_input_active())
+            if (!_ui->is_input_active())
             {
-                return;
-            }
-
-            _camera_input.key_down(key, control);
-
-            switch (key)
-            {
-                case VK_OEM_MINUS:
-                {
-                    select_previous_orbit();
-                    break;
-                }
-                case VK_OEM_PLUS:
-                {
-                    select_next_orbit();
-                    break;
-                }
-                case 'P':
-                {
-                    if (_level && _level->any_alternates())
-                    {
-                        set_alternate_mode(!_level->alternate_mode());
-                    }
-                    break;
-                }
-                case 'M':
-                {
-                    _active_tool = Tool::Measure;
-                    _measure->reset();
-                    break;
-                }
-                case 'T':
-                {
-                    if (_level)
-                    {
-                        set_show_triggers(!_level->show_triggers());
-                    }
-                    break;
-                }
-                case VK_LEFT:
-                {
-                    if (_route->selected_waypoint() > 0)
-                    {
-                        select_waypoint(_route->selected_waypoint() - 1);
-                    }
-                    break;
-                }
-                case VK_RIGHT:
-                {
-                    if (_route->selected_waypoint() + 1 < _route->waypoints())
-                    {
-                        select_waypoint(_route->selected_waypoint() + 1);
-                    }
-                    break;
-                }
-                case VK_DELETE:
-                {
-                    remove_waypoint(_route->selected_waypoint());
-                    break;
-                }
+                _camera_input.key_down(key, control);
             }
         };
 
@@ -549,35 +520,6 @@ namespace trview
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
             }
         };
-    }
-
-    void Viewer::process_input_key(uint16_t key, bool control)
-    {
-        switch (key)
-        {
-            case 'G':
-            {
-                if(_level && !control)
-                {
-                    set_show_hidden_geometry(!_level->show_hidden_geometry());
-                }
-                break;
-            }
-            case VK_F1:
-                _ui->toggle_settings_visibility();
-                break;
-            case 'H':
-                toggle_highlight();
-                break;
-            case VK_INSERT:
-            {
-                // Reset the camera to defaults.
-                _camera.set_rotation_yaw(0.f);
-                _camera.set_rotation_pitch(-0.78539f);
-                _camera.set_zoom(8.f);
-                break;
-            }
-        }
     }
 
     void Viewer::update_camera()
@@ -875,6 +817,22 @@ namespace trview
         _scene_changed = true;
     }
 
+    void Viewer::select_next_waypoint()
+    {
+        if (_route->selected_waypoint() + 1 < _route->waypoints())
+        {
+            select_waypoint(_route->selected_waypoint() + 1);
+        }
+    }
+
+    void Viewer::select_previous_waypoint()
+    {
+        if (_route->selected_waypoint() > 0)
+        {
+            select_waypoint(_route->selected_waypoint() - 1);
+        }
+    }
+
     void Viewer::remove_waypoint(uint32_t index)
     {
         _route->remove(index);
@@ -893,6 +851,14 @@ namespace trview
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
             _ui->set_flip(enabled);
+        }
+    }
+
+    void Viewer::toggle_alternate_mode()
+    {
+        if (_level && _level->any_alternates())
+        {
+            set_alternate_mode(!_level->alternate_mode());
         }
     }
 
@@ -1033,12 +999,28 @@ namespace trview
         }
     }
 
+    void Viewer::toggle_show_triggers()
+    {
+        if (_level)
+        {
+            set_show_triggers(!_level->show_triggers());
+        }
+    }
+
     void Viewer::set_show_hidden_geometry(bool show)
     {
         if (_level)
         {
             _level->set_show_hidden_geometry(show);
             _ui->set_show_hidden_geometry(show);
+        }
+    }
+
+    void Viewer::toggle_show_hidden_geometry()
+    {
+        if (_level)
+        {
+            set_show_hidden_geometry(!_level->show_hidden_geometry());
         }
     }
 

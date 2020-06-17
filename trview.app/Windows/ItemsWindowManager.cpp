@@ -5,16 +5,15 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window)
+    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
+        _token_store += shortcuts.add_shortcut(true, 'I') += [&]() { create_window(); };
     }
 
     void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND && 
-            LOWORD(wParam) == ID_APP_WINDOWS_ITEMS || 
-            LOWORD(wParam) == ID_APP_ACCEL_ITEM_WINDOW)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ITEMS)
         {
             create_window();
         }

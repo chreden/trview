@@ -13,6 +13,7 @@
 #include <trview.ui/Window.h>
 
 #include <trview.app/Windows/WindowResizer.h>
+#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -89,6 +90,7 @@ namespace trview
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::Input> _input;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
+        Shortcuts _shortcuts;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();

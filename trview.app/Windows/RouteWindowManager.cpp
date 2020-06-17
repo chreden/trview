@@ -3,16 +3,15 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window)
+    RouteWindowManager::RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
+        _token_store += shortcuts.add_shortcut(true, 'R') += [&]() { create_window(); };
     }
 
     void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
-        if (message == WM_COMMAND &&
-            LOWORD(wParam) == ID_APP_WINDOWS_ROUTE ||
-            LOWORD(wParam) == ID_APP_ACCEL_ROUTE_WINDOW)
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ROUTE)
         {
             create_window();
         }

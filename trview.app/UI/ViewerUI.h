@@ -26,6 +26,8 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     namespace graphics
     {
         struct IShaderStorage;
@@ -45,7 +47,8 @@ namespace trview
             const graphics::Device& device, 
             const graphics::IShaderStorage& shader_storage,
             const graphics::FontFactory& font_factory,
-            const ITextureStorage& texture_storage);
+            const ITextureStorage& texture_storage,
+            Shortcuts& shortcuts);
 
         /// Clear the highlighted minimap sector.
         void clear_minimap_highlight();

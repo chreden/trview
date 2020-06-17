@@ -70,7 +70,7 @@ namespace trview
 
     CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size)
+        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size), _shortcuts(window())
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -82,7 +82,7 @@ namespace trview
         _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
         register_change_detection(_ui.get());
 
-        _input = std::make_unique<ui::Input>(window(), *_ui);
+        _input = std::make_unique<ui::Input>(window(), *_ui, _shortcuts);
     }
 
     void CollapsiblePanel::register_change_detection(Control* control)

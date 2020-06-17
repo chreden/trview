@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     namespace ui
     {
         class Control;
@@ -16,7 +18,7 @@ namespace trview
         class Input final : public IInputQuery
         {
         public:
-            explicit Input(const trview::Window& window, Control& control);
+            explicit Input(const trview::Window& window, Control& control, Shortcuts& shortcuts);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
             input::Mouse& mouse();
@@ -48,6 +50,7 @@ namespace trview
             Control&       _control;
             Control*       _hover_control{ nullptr };
             Control*       _focus_control{ nullptr };
+            Shortcuts&     _shortcuts;
         };
     }
 }
