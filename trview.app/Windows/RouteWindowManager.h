@@ -10,6 +10,8 @@
 
 namespace trview
 {
+    class Shortcuts;
+
     /// Controls and creates the route window.
     class RouteWindowManager final : public MessageHandler
     {
