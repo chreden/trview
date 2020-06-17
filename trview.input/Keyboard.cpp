@@ -18,7 +18,7 @@ namespace trview
             return GetAsyncKeyState(VK_CONTROL) & 0x8000;
         }
 
-        void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+        void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
         {
             bool control_pressed = control();
             switch (message)

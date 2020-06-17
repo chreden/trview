@@ -33,17 +33,6 @@ namespace trview
             update_cursor();
         }
 
-        bool TextArea::paste(const std::wstring& text)
-        {
-            auto line = current_line();
-            auto line_text = line->text();
-            line_text.insert(line_text.begin() + _cursor_position, text.begin(), text.end());
-            _cursor_position += text.size();
-            line->set_text(line_text);
-            update_cursor();
-            return true;
-        }
-
         bool TextArea::key_char(wchar_t character)
         {
             if (!focused())

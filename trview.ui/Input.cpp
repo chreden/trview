@@ -2,7 +2,6 @@
 #include "Control.h"
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
-#include <trview.common/Windows/Clipboard.h>
 
 namespace trview
 {
@@ -44,7 +43,6 @@ namespace trview
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control) { process_key_down(key, control); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
-            _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(read_clipboard(_window)); };
         }
 
         void Input::register_focus_controls(Control* control)
@@ -321,32 +319,6 @@ namespace trview
                 }
             }
             return control->key_char(key);
-        }
-
-        void Input::process_paste(const std::wstring& text)
-        {
-            if (_focus_control && _focus_control->paste(text))
-            {
-                return;
-            }
-            process_paste(&_control, text);
-        }
-
-        bool Input::process_paste(Control* control, const std::wstring& text)
-        {
-            if (!control->visible())
-            {
-                return false;
-            }
-
-            for (auto& child : control->child_elements())
-            {
-                if (process_paste(child, text))
-                {
-                    return true;
-                }
-            }
-            return control->paste(text);
         }
 
         void Input::set_focus_control(Control* control)
