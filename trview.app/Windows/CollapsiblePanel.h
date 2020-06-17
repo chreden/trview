@@ -90,6 +90,7 @@ namespace trview
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::Input> _input;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
+        Shortcuts _shortcuts;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
@@ -105,6 +106,5 @@ namespace trview
         bool        _allow_increase_height{ true };
         bool        _expanded{ true };
         bool        _ui_changed{ true };
-        Shortcuts   _shortcuts;
     };
 }
