@@ -35,19 +35,28 @@ namespace trview
 
         _token_store += shortcuts.add_shortcut(true, 'G') += [&]()
         {
-            _go_to->set_name(L"Room");
-            _go_to->toggle_visible();
+            if (!is_input_active())
+            {
+                _go_to->set_name(L"Room");
+                _go_to->toggle_visible();
+            }
         };
 
         _token_store += shortcuts.add_shortcut(true, 'E') += [&]()
         {
-            _go_to->set_name(L"Item");
-            _go_to->toggle_visible();
+            if (!is_input_active())
+            {
+                _go_to->set_name(L"Item");
+                _go_to->toggle_visible();
+            }
         };
 
         _token_store += shortcuts.add_shortcut(false, VK_F11) += [&]()
         {
-            _console->set_visible(!_console->visible());
+            if (!is_input_active())
+            {
+                _console->set_visible(!_console->visible());
+            }
         };
 
         generate_tool_window(texture_storage);
