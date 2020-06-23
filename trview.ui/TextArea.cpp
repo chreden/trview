@@ -188,7 +188,16 @@ namespace trview
 
         void TextArea::set_mode(Mode mode)
         {
+            if (_mode != mode)
+            {
+                return;
+            }
+
             _mode = mode;
+            if (_mode == TextArea::Mode::SingleLine)
+            {
+                set_text(text());
+            }
         }
 
         std::wstring TextArea::text() const
