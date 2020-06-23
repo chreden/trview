@@ -7,8 +7,11 @@ namespace trview
     {
         OpenClipboard(window);
         HANDLE data = GetClipboardData(CF_UNICODETEXT);
-        std::wstring text(static_cast<wchar_t*>(data));
         CloseClipboard();
-        return text;
+        if (!data)
+        {
+            return std::wstring();
+        }
+        return std::wstring(static_cast<wchar_t*>(data));
     }
 }

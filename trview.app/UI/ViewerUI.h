@@ -6,7 +6,6 @@
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui/Input.h>
 #include <trview.input/Mouse.h>
-#include <trview.input/Keyboard.h>
 #include <trview.ui.render/MapRenderer.h>
 
 #include <trview.app/Tools/Toolbar.h>
@@ -290,7 +289,6 @@ namespace trview
 
         TokenStore _token_store;
         input::Mouse _mouse;
-        input::Keyboard _keyboard;
         Window _window;
         UserSettings _settings;
         std::unique_ptr<ui::Control> _control;
