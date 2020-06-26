@@ -188,7 +188,7 @@ namespace trview
 
         void TextArea::set_mode(Mode mode)
         {
-            if (_mode != mode)
+            if (_mode == mode)
             {
                 return;
             }
