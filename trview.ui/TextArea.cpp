@@ -101,7 +101,7 @@ namespace trview
                 process_line(i, _text[i]);
             }
 
-            // Remove any extra lines.
+            // Remove any extra lines
             if (_lines.size() > _line_structure.size())
             {
                 for (auto i = _line_structure.size(); i < _lines.size(); ++i)
@@ -143,6 +143,25 @@ namespace trview
 
             switch (character)
             {
+                // VK_BACK
+                case 0x8:
+                {
+                    if (_logical_cursor_position > 0)
+                    {
+                        // Just remove a character.
+                        current.erase(_logical_cursor_position - 1, 1);
+                        --_logical_cursor_position;
+                    }
+                    else if (_logical_cursor_line > 0)
+                    {
+                        // Remove a line.
+                        _logical_cursor_position = _text[_logical_cursor_line - 1].size();
+                        _text[_logical_cursor_line - 1] += _text[_logical_cursor_line];
+                        _text.erase(_text.begin() + _logical_cursor_line);
+                        --_logical_cursor_line;
+                    }
+                    break;
+                }
                 // VK_RETURN
                 case 0xD:
                 {
