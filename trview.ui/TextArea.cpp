@@ -209,27 +209,7 @@ namespace trview
                     {
                         return;
                     }
-                    // VK_BACK
-                    case 0x8:
-                    {
-                        if (!text.empty())
-                        {
-                            if (_cursor_position > 0)
-                            {
-                                text.erase(--_cursor_position, 1);
-                                notify_text_updated();
-                            }
-                        }
-                        else
-                        {
-                            remove_line();
-                            // Move the cursor to the end of the line that we just moved up to,
-                            // as we did just do a backspace.
-                            _cursor_position = current_line()->text().size();
-                            return;
-                        }
-                        break;
-                    }
+                    
                     // VK_TAB
                     case 0x9:
                     {
