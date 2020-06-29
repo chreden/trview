@@ -344,6 +344,31 @@ namespace trview
             _logical_cursor_position = _line_structure[_visual_cursor_line].start + _visual_cursor_position;
         }
 
+        uint32_t TextArea::find_nearest_index(uint32_t index, float x) const
+        {
+            auto line = _lines[index];
+            auto text = line->text();
+
+            float previous = 0.0f;
+            for (auto i = 0u; i < text.size(); ++i)
+            {
+                float current = line->measure_text(text.substr(0, i + 1)).width;
+                if (x < current)
+                {
+                    if (((x - previous) / (current - previous)) >= 0.5f)
+                    {
+                        return i + 1;
+                    }
+                    else
+                    {
+                        return i;
+                    }
+                }
+                previous = current;
+            }
+            return text.size();
+        }
+
         bool TextArea::key_down(uint16_t key)
         {
             if (!focused())
@@ -386,7 +411,8 @@ namespace trview
                 {
                     if (_visual_cursor_line > 0)
                     {
-                        move_visual_cursor_position(_visual_cursor_line - 1, _visual_cursor_position);
+                        move_visual_cursor_position(_visual_cursor_line - 1, 
+                            find_nearest_index(_visual_cursor_line - 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));
                     }
                     break;
                 }
@@ -406,7 +432,11 @@ namespace trview
                 // VK_DOWN
                 case 0x28:
                 {
-                    move_visual_cursor_position(_visual_cursor_line + 1, _visual_cursor_position);
+                    if (_visual_cursor_line < _line_structure.size() - 1)
+                    {
+                        move_visual_cursor_position(_visual_cursor_line + 1, 
+                            find_nearest_index(_visual_cursor_line + 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));                        
+                    }
                     break;
                 }
                 // VK_DELETE

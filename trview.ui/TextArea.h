@@ -75,6 +75,7 @@ namespace trview
             void update_cursor(bool raise_event = true);
             void notify_text_updated();
             void move_visual_cursor_position(uint32_t line, uint32_t position);
+            uint32_t find_nearest_index(uint32_t line, float x) const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
