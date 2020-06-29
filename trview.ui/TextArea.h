@@ -71,6 +71,7 @@ namespace trview
             void add_line(std::wstring text = std::wstring(), bool raise_event = true);
             void remove_line(bool raise_event = true);
             void remove_line(uint32_t line);
+            void update_structure();
             /// Move the cursor element to be in the correct place.
             void update_cursor(bool raise_event = true);
             void notify_text_updated();

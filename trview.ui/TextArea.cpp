@@ -45,41 +45,8 @@ namespace trview
             return true;
         }
 
-        bool TextArea::key_char(wchar_t character)
+        void TextArea::update_structure()
         {
-            if (!focused())
-            {
-                return false;
-            }
-
-            if (_text.empty())
-            {
-                _text.push_back({});
-            }
-
-            auto& current = _text[_logical_cursor_line];
-
-            switch (character)
-            {
-                // VK_RETURN
-                case 0xD:
-                {
-                    auto remainder = current.substr(_logical_cursor_position);
-                    current = current.substr(0, _logical_cursor_position);
-                    _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
-                    ++_logical_cursor_line;
-                    _logical_cursor_position = 0u;
-                    break;
-                }
-                default:
-                {
-                    auto& text = _text[_logical_cursor_line];
-                    text.insert(text.begin() + _logical_cursor_position, character);
-                    ++_logical_cursor_position;
-                    break;
-                }
-            }
-
             // The number of lines that exist.
             uint32_t count = 0;
 
@@ -115,7 +82,7 @@ namespace trview
 
                         // Hackery with the index - might need to be fixed.
                         line_label->set_text(line.substr(0, split_length));
-                        _line_structure.push_back({ index, character_count, split_length});
+                        _line_structure.push_back({ index, character_count, split_length });
                         lines_to_process.push(line.substr(split_length));
                         character_count += split_length;
                     }
@@ -134,6 +101,16 @@ namespace trview
                 process_line(i, _text[i]);
             }
 
+            // Remove any extra lines.
+            if (_lines.size() > _line_structure.size())
+            {
+                for (auto i = _line_structure.size(); i < _lines.size(); ++i)
+                {
+                    _area->remove_child(_lines[i]);
+                }
+                _lines.erase(_lines.begin() + _line_structure.size(), _lines.end());
+            }
+
             // Render the cursor at the correct position?
             // Translate logical cursor to visual cursor:
             auto iter = std::find_if(_line_structure.begin(), _line_structure.end(),
@@ -148,7 +125,44 @@ namespace trview
             _visual_cursor_line = iter - _line_structure.begin();
             _visual_cursor_position = remaining;
             update_cursor();
+        }
 
+        bool TextArea::key_char(wchar_t character)
+        {
+            if (!focused())
+            {
+                return false;
+            }
+
+            if (_text.empty())
+            {
+                _text.push_back({});
+            }
+
+            auto& current = _text[_logical_cursor_line];
+
+            switch (character)
+            {
+                // VK_RETURN
+                case 0xD:
+                {
+                    auto remainder = current.substr(_logical_cursor_position);
+                    current = current.substr(0, _logical_cursor_position);
+                    _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
+                    ++_logical_cursor_line;
+                    _logical_cursor_position = 0u;
+                    break;
+                }
+                default:
+                {
+                    auto& text = _text[_logical_cursor_line];
+                    text.insert(text.begin() + _logical_cursor_position, character);
+                    ++_logical_cursor_position;
+                    break;
+                }
+            }
+
+            update_structure();
             return true;
             /*
 
@@ -442,8 +456,17 @@ namespace trview
                 // VK_DELETE
                 case 0x2E:
                 {
-                    // text.erase(_cursor_position, 1);
-                    line->set_text(text);
+                    if (_logical_cursor_position == _text[_logical_cursor_line].size() &&
+                        _text.size() > _logical_cursor_line + 1u)
+                    {
+                        _text[_logical_cursor_line] += _text[_logical_cursor_line + 1];
+                        _text.erase(_text.begin() + _logical_cursor_line + 1);
+                    }
+                    else
+                    {
+                        _text[_logical_cursor_line].erase(_logical_cursor_position, 1);
+                    }
+                    update_structure();
                     notify_text_updated();
                     break;
                 }
