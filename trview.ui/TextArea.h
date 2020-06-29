@@ -69,25 +69,35 @@ namespace trview
             /// Add a new line to the text area with the specified content.
             /// @param text The optional content to use.
             void add_line(std::wstring text = std::wstring(), bool raise_event = true);
-
             void remove_line(bool raise_event = true);
-
             void remove_line(uint32_t line);
-
             /// Move the cursor element to be in the correct place.
             void update_cursor(bool raise_event = true);
-
             void notify_text_updated();
+            void move_visual_cursor_position(uint32_t line, uint32_t position);
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
             Colour              _text_colour;
             Window*             _cursor;
-            uint32_t            _cursor_position{ 0u };
-            uint32_t            _cursor_line{ 0u };
             Mode                _mode{ Mode::MultiLine };
             bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
+
+            struct LineEntry
+            {
+                uint32_t line;
+                uint32_t start;
+                uint32_t length;
+            };
+
+            // New stuff:
+            std::vector<std::wstring> _text;
+            std::vector<LineEntry>    _line_structure;
+            uint32_t                  _visual_cursor_line{ 0u };
+            uint32_t                  _visual_cursor_position{ 0u };
+            uint32_t                  _logical_cursor_position{ 0u };
+            uint32_t                  _logical_cursor_line{ 0u };
         };
     }
 }
