@@ -41,7 +41,12 @@ namespace trview
                 _text.push_back({});
             }
 
-            std::wstringstream stream(text);
+            auto filtered_text = text;
+
+            // Remove \r of \r\n
+            filtered_text.erase(std::remove(filtered_text.begin(), filtered_text.end(), L'\r'), filtered_text.end());
+
+            std::wstringstream stream(filtered_text);
             std::vector<std::wstring> lines;
             std::wstring line;
             while (std::getline(stream, line, L'\n'))
