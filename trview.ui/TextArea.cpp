@@ -42,9 +42,19 @@ namespace trview
             }
 
             auto filtered_text = text;
-
             // Remove \r of \r\n
             filtered_text.erase(std::remove(filtered_text.begin(), filtered_text.end(), L'\r'), filtered_text.end());
+
+            if (_mode == Mode::SingleLine)
+            {
+                filtered_text.erase(std::remove(filtered_text.begin(), filtered_text.end(), L'\n'), filtered_text.end());
+
+                auto& current_text = _text[_logical_cursor_line];
+                current_text.insert(_logical_cursor_position, text);
+                _logical_cursor_position += text.size();
+                update_structure();
+                return true;
+            }
 
             std::wstringstream stream(filtered_text);
             std::vector<std::wstring> lines;
@@ -71,10 +81,9 @@ namespace trview
 
         void TextArea::update_structure()
         {
-            // The number of lines that exist.
             uint32_t count = 0;
 
-            // Get the next line or add a new one if required.
+            // Gets the next line or add a new one if required.
             auto get_line = [&]()
             {
                 if (_lines.size() <= count)
@@ -96,7 +105,7 @@ namespace trview
                     lines_to_process.pop();
 
                     auto line_label = get_line();
-                    if (line_label->measure_text(line).width > line_label->size().width)
+                    if (_mode == Mode::MultiLine && line_label->measure_text(line).width > line_label->size().width)
                     {
                         auto split_length = 0u;
                         while (line_label->measure_text(line.substr(0, split_length + 1)).width < _area->size().width)
@@ -402,7 +411,7 @@ namespace trview
                     if (_visual_cursor_line < _line_structure.size() - 1)
                     {
                         move_visual_cursor_position(_visual_cursor_line + 1, 
-                            find_nearest_index(_visual_cursor_line + 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));                        
+                            find_nearest_index(_visual_cursor_line + 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));
                     }
                     break;
                 }
