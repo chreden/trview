@@ -61,20 +61,15 @@ namespace trview
             return;
         }
 
-        switch (message)
+        if (message == WM_COMMAND)
         {
-            case WM_COMMAND:
+            for (auto& shortcut : _shortcuts)
             {
-                auto id = LOWORD(wParam);
-                for (auto& shortcut : _shortcuts)
+                if (shortcut.first.command == LOWORD(wParam))
                 {
-                    if (shortcut.first.command == id)
-                    {
-                        shortcut.second();
-                        break;
-                    }
+                    shortcut.second();
+                    break;
                 }
-                break;
             }
         }
     }
