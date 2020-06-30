@@ -36,12 +36,31 @@ namespace trview
 
         bool TextArea::paste(const std::wstring& text)
         {
-            auto line = current_line();
-            auto line_text = line->text();
-            // line_text.insert(line_text.begin() + _cursor_position, text.begin(), text.end());
-            // _cursor_position += text.size();
-            line->set_text(line_text);
-            update_cursor();
+            if (_text.empty())
+            {
+                _text.push_back({});
+            }
+
+            std::wstringstream stream(text);
+            std::vector<std::wstring> lines;
+            std::wstring line;
+            while (std::getline(stream, line, L'\n'))
+            {
+                lines.push_back(line);
+            }
+
+            for (auto i = 0u; i < lines.size(); ++i)
+            {
+                auto& current_text = _text[_logical_cursor_line];
+                current_text.insert(_logical_cursor_position, lines[i]);
+                _logical_cursor_position += lines[i].size();
+                if (i < lines.size() - 1)
+                {
+                    new_line();
+                }
+            }
+
+            update_structure();
             return true;
         }
 
@@ -116,14 +135,23 @@ namespace trview
             auto iter = std::find_if(_line_structure.begin(), _line_structure.end(),
                 [&](const auto& ls) { return ls.line == _logical_cursor_line; });
 
-            auto remaining = _logical_cursor_position;
-            while (remaining > iter->length)
+            if (iter != _line_structure.end())
             {
-                remaining -= iter->length;
-                ++iter;
+                auto remaining = _logical_cursor_position;
+                while (remaining > iter->length)
+                {
+                    remaining -= iter->length;
+                    ++iter;
+                }
+                _visual_cursor_line = iter - _line_structure.begin();
+                _visual_cursor_position = remaining;
             }
-            _visual_cursor_line = iter - _line_structure.begin();
-            _visual_cursor_position = remaining;
+            else
+            {
+                _visual_cursor_line = 0u;
+                _visual_cursor_position = 0;
+            }
+
             update_cursor();
         }
 
@@ -143,6 +171,11 @@ namespace trview
 
             switch (character)
             {
+                // Reserved
+                case 0x7:
+                {
+                    return true;
+                }
                 // VK_BACK
                 case 0x8:
                 {
@@ -162,15 +195,40 @@ namespace trview
                     }
                     break;
                 }
+                // VK_TAB
+                case 0x9:
+                {
+                    if (_mode == Mode::SingleLine)
+                    {
+                        on_tab(text());
+                    }
+                    return true;
+                }
                 // VK_RETURN
                 case 0xD:
                 {
-                    auto remainder = current.substr(_logical_cursor_position);
-                    current = current.substr(0, _logical_cursor_position);
-                    _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
-                    ++_logical_cursor_line;
-                    _logical_cursor_position = 0u;
+                    if (_mode == Mode::SingleLine)
+                    {
+                        on_enter(text());
+                        return true;
+                    }
+                    else
+                    {
+                        new_line();
+                    }
                     break;
+                }
+                // Copy, Paste
+                case 0x3:
+                case 0x16:
+                {
+                    break;
+                }
+                // VK_ESCAPE
+                case 0x1B:
+                {
+                    on_escape();
+                    return true;
                 }
                 default:
                 {
@@ -183,135 +241,22 @@ namespace trview
 
             update_structure();
             return true;
-            /*
-
-            auto line = current_line();
-            auto text = line->text();
-
-            text.insert(text.begin() + _cursor_position, character);
-            ++_cursor_position;
-            line->set_text(text);
-
-            notify_text_updated();
-            update_cursor();
-            return true;*/
-
-            /*
-            auto process_char = [&]()
-            {
-                auto line = current_line();
-                auto text = line->text();
-
-                switch (character)
-                {
-                    // Reserved
-                    case 0x7:
-                    {
-                        return;
-                    }
-                    
-                    // VK_TAB
-                    case 0x9:
-                    {
-                        if (_mode == Mode::SingleLine)
-                        {
-                            on_tab(text);
-                        }
-                        break;
-                    }
-                    // VK_RETURN
-                    case 0xD:
-                    {
-                        if (_mode == Mode::SingleLine)
-                        {
-                            on_enter(text);
-                        }
-                        else
-                        {
-                            add_line();
-                            ++_cursor_line;
-                        }
-                        return;
-                    }
-                    // VK_ESCAPE
-                    case 0x1B:
-                    {
-                        on_escape();
-                        return;
-                    }
-                    default:
-                    {
-                        // Check if this is character we don't support.
-                        if (!line->is_valid_character(character))
-                        {
-                            break;
-                        }
-
-                        // Check if adding the character is going to make the text wider than the text area. If so,
-                        // then create a new line and put the character on that line instead.
-                        if (line->measure_text(text + character).width > _area->size().width)
-                        {
-                            if (_mode == Mode::SingleLine)
-                            {
-                                return;
-                            }
-
-                            add_line({ character });
-                            ++_cursor_line;
-                            return;
-                        }
-
-                        // Add the character to the current line.
-                        text.insert(text.begin() + _cursor_position, character);
-                        ++_cursor_position;
-                        break;
-                    }
-                }
-
-                line->set_text(text);
-                notify_text_updated();
-            };
-
-            process_char();
-            update_cursor();
-
-            return true;
-            */
         }
 
         void TextArea::set_text(const std::wstring& text)
         {
             std::wstringstream stream(text);
-            std::vector<std::wstring> newlines;
             std::wstring line;
+
+            _text.clear();
             while (std::getline(stream, line, L'\n'))
             {
-                newlines.push_back(line);
+                _text.push_back(line);
             }
 
-            if (newlines.size() == _lines.size())
-            {
-                for (std::size_t i = 0; i < newlines.size(); ++i)
-                {
-                    _lines[i]->set_text(newlines[i]);
-                }
-            }
-            else
-            {
-                while (!_lines.empty())
-                {
-                    remove_line(false);
-                }
-
-                for (const auto& line : newlines)
-                {
-                    add_line(line, false);
-                }
-            }
-
-            // _cursor_line = _lines.empty() ? 0 : _lines.size() - 1;
-            // _cursor_position = _lines.empty() ? 0 : _lines.back()->text().size();
-            update_cursor(false);
+            _logical_cursor_line = _text.empty() ? 0 : _text.size() - 1;
+            _logical_cursor_position = _text.empty() ? 0 : _text.back().size();
+            update_structure();
         }
 
         void TextArea::set_mode(Mode mode)
@@ -332,14 +277,14 @@ namespace trview
         {
             bool first = true;
             std::wstring full_string;
-            for (const auto& line : _lines)
+            for (const auto& text : _text)
             {
                 if (!first)
                 {
                     full_string += L'\n';
                 }
                 first = false;
-                full_string += line->text();
+                full_string += text;
             }
             return full_string;
         }
@@ -478,60 +423,19 @@ namespace trview
         {
             if (_lines.empty())
             {
-                add_line(std::wstring(), raise_event);
+                _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             }
             return _lines[_visual_cursor_line];
         }
 
-        void TextArea::add_line(std::wstring text, bool raise_event)
+        void TextArea::new_line()
         {
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), text, 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
-            if (raise_event)
-            {
-                notify_text_updated();
-            }
-            // _cursor_position = text.size();
-            update_cursor(raise_event);
-        }
-
-        void TextArea::remove_line(bool raise_event)
-        {
-            if (_lines.empty())
-            {
-                return;
-            }
-
-            _area->remove_child(_lines.back());
-            _lines.pop_back();
-            /*
-            if (_cursor_line >= _lines.size() && _cursor_line > 0)
-            {
-                --_cursor_line;
-            }
-            */
-
-            if (raise_event)
-            {
-                notify_text_updated();
-            }
-        }
-
-        void TextArea::remove_line(uint32_t line)
-        {
-            if (line >= _lines.size())
-            {
-                return;
-            }
-
-            _area->remove_child(_lines[line]);
-            _lines.erase(_lines.begin() + line);
-            /*
-            if (_cursor_line >= _lines.size() && _cursor_line > 0)
-            {
-                --_cursor_line;
-            }
-            */
-            notify_text_updated();
+            auto& current = _text[_logical_cursor_line];
+            auto remainder = current.substr(_logical_cursor_position);
+            current = current.substr(0, _logical_cursor_position);
+            _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
+            ++_logical_cursor_line;
+            _logical_cursor_position = 0u;
         }
 
         void TextArea::update_cursor(bool raise_event)

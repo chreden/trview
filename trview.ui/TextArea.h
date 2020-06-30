@@ -65,18 +65,17 @@ namespace trview
             virtual bool paste(const std::wstring& text) override;
         private:
             Label* current_line(bool raise_event = true);
-
-            /// Add a new line to the text area with the specified content.
-            /// @param text The optional content to use.
-            void add_line(std::wstring text = std::wstring(), bool raise_event = true);
-            void remove_line(bool raise_event = true);
-            void remove_line(uint32_t line);
             void update_structure();
             /// Move the cursor element to be in the correct place.
             void update_cursor(bool raise_event = true);
             void notify_text_updated();
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
+
+            /// <summary>
+            /// Add a new line at the current position.
+            /// </summary>
+            void new_line();
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
