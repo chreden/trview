@@ -63,9 +63,10 @@ namespace trview
 
         if (message == WM_COMMAND)
         {
+            auto id = LOWORD(wParam);
             for (auto& shortcut : _shortcuts)
             {
-                if (shortcut.first.command == LOWORD(wParam))
+                if (shortcut.first.command == id)
                 {
                     shortcut.second();
                     break;
