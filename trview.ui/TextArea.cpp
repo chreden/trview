@@ -187,11 +187,6 @@ namespace trview
 
             switch (character)
             {
-                // Reserved
-                case 0x7:
-                {
-                    return true;
-                }
                 // VK_BACK
                 case 0x8:
                 {
@@ -237,12 +232,13 @@ namespace trview
                 // Select All, Copy, Undo, Redo, Cut, Paste
                 case 0x1:
                 case 0x3:
+                case 0x7:
                 case 0x1a:
                 case 0x16:
                 case 0x18:
                 case 0x19:
                 {
-                    break;
+                    return true;
                 }
                 // VK_ESCAPE
                 case 0x1B:
@@ -467,8 +463,7 @@ namespace trview
             auto text = line->text();
 
             // Place the cursor based on the current cursor position and the size of the text as it would be renderered.
-            const auto t = text.substr(0, _visual_cursor_position);
-            const auto size = line->measure_text(t);
+            const auto size = line->measure_text(text.substr(0, _visual_cursor_position));
             const auto start = _alignment == graphics::TextAlignment::Left ?
                 Point(0, line->position().y) :
                 Point(line->size().width * 0.5f - size.width * 0.5f - 1, line->position().y);
