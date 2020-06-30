@@ -52,6 +52,7 @@ namespace trview
                 auto& current_text = _text[_logical_cursor_line];
                 current_text.insert(_logical_cursor_position, text);
                 _logical_cursor_position += text.size();
+                notify_text_updated();
                 update_structure();
                 return true;
             }
@@ -75,6 +76,7 @@ namespace trview
                 }
             }
 
+            notify_text_updated();
             update_structure();
             return true;
         }
@@ -257,6 +259,7 @@ namespace trview
                 }
             }
 
+            notify_text_updated();
             update_structure();
             return true;
         }
@@ -274,6 +277,7 @@ namespace trview
 
             _logical_cursor_line = _text.empty() ? 0 : _text.size() - 1;
             _logical_cursor_position = _text.empty() ? 0 : _text.back().size();
+            notify_text_updated();
             update_structure();
         }
 
@@ -353,7 +357,6 @@ namespace trview
             }
 
             auto line = current_line();
-            auto text = line->text();
 
             switch (key) 
             {
@@ -428,11 +431,12 @@ namespace trview
                     {
                         _text[_logical_cursor_line].erase(_logical_cursor_position, 1);
                     }
-                    update_structure();
                     notify_text_updated();
+                    update_structure();
                     break;
                 }
             }
+
             update_cursor();
             return true;
         }

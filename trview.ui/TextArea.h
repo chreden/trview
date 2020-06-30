@@ -66,15 +66,10 @@ namespace trview
         private:
             Label* current_line();
             void update_structure();
-            /// Move the cursor element to be in the correct place.
             void update_cursor();
             void notify_text_updated();
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
-
-            /// <summary>
-            /// Add a new line at the current position.
-            /// </summary>
             void new_line();
 
             StackPanel*         _area;
@@ -92,7 +87,6 @@ namespace trview
                 uint32_t length;
             };
 
-            // New stuff:
             std::vector<std::wstring> _text;
             std::vector<LineEntry>    _line_structure;
             uint32_t                  _visual_cursor_line{ 0u };

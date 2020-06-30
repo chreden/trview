@@ -12,8 +12,7 @@ namespace trview
         uint8_t target_flags = control ? (FVIRTKEY | FCONTROL) : FVIRTKEY;
         for (auto& shortcut : _shortcuts)
         {
-            if (shortcut.first.flags == target_flags &&
-                shortcut.first.key == key)
+            if (shortcut.first.flags == target_flags && shortcut.first.key == key)
             {
                 return shortcut.second;
             }
@@ -27,17 +26,7 @@ namespace trview
             create_accelerators();
         }
 
-        for (auto& shortcut : _shortcuts)
-        {
-            if (shortcut.first.flags == entry.flags &&
-                shortcut.first.key == entry.key &&
-                shortcut.first.command == entry.command)
-            {
-                return shortcut.second;
-            }
-        }
-
-        throw std::exception();
+        return _shortcuts.back().second;
     }
 
     void Shortcuts::create_accelerators()
