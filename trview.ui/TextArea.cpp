@@ -223,9 +223,13 @@ namespace trview
                     }
                     break;
                 }
-                // Copy, Paste
+                // Select All, Copy, Undo, Redo, Cut, Paste
+                case 0x1:
                 case 0x3:
+                case 0x1a:
                 case 0x16:
+                case 0x18:
+                case 0x19:
                 {
                     break;
                 }
@@ -424,7 +428,7 @@ namespace trview
             return true;
         }
 
-        Label* TextArea::current_line(bool raise_event)
+        Label* TextArea::current_line()
         {
             if (_lines.empty())
             {
@@ -443,10 +447,10 @@ namespace trview
             _logical_cursor_position = 0u;
         }
 
-        void TextArea::update_cursor(bool raise_event)
+        void TextArea::update_cursor()
         {
             // Get the current line and the text it is rendering.
-            auto line = current_line(raise_event);
+            auto line = current_line();
             auto text = line->text();
 
             // Place the cursor based on the current cursor position and the size of the text as it would be renderered.

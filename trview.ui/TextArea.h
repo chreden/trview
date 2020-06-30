@@ -64,10 +64,10 @@ namespace trview
             virtual void lost_focus(Control*) override;
             virtual bool paste(const std::wstring& text) override;
         private:
-            Label* current_line(bool raise_event = true);
+            Label* current_line();
             void update_structure();
             /// Move the cursor element to be in the correct place.
-            void update_cursor(bool raise_event = true);
+            void update_cursor();
             void notify_text_updated();
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
