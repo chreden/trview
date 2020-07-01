@@ -229,8 +229,24 @@ namespace trview
                     }
                     break;
                 }
-                // Select All, Copy, Undo, Redo, Cut, Paste
+                // Select All,
                 case 0x1:
+                {
+                    _selection_start = { 0u, 0u };
+
+                    if (_text.empty())
+                    {
+                        _selection_end = { 0u, 0u };
+                    }
+                    else
+                    {
+                        _selection_end = { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
+                        highlight(_selection_start, _selection_end);
+                        on_hierarchy_changed();
+                    }
+                    break;
+                }
+                // Copy, Undo, Redo, Cut, Paste
                 case 0x3:
                 case 0x7:
                 case 0x1a:
@@ -454,6 +470,72 @@ namespace trview
             _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
             ++_logical_cursor_line;
             _logical_cursor_position = 0u;
+        }
+
+        void TextArea::highlight(CursorPoint start, CursorPoint end)
+        {
+            for (auto& line : _lines)
+            {
+                if (!line->child_elements().empty())
+                {
+                    line->child_elements().back()->set_visible(false);
+                }
+                else
+                {
+                    line->add_child(std::make_unique<Window>(line->size(), Colour(0.75f, 0.0f, 1.0f, 0.0f)))->set_visible(false);
+                }
+            }
+
+            // Find the first line in the structure where it is the start line.
+            auto start_iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry) 
+                { 
+                    return entry.line == start.line && 
+                           start.position >= entry.start && 
+                           start.position < entry.start + entry.length; 
+                });
+            auto end_iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry) 
+                { 
+                    return entry.line == end.line &&
+                           end.position >= entry.start &&
+                           end.position <= entry.start + entry.length; ;
+                });
+
+            CursorPoint visual_start{ start_iter - _line_structure.begin(), start.position - start_iter->start };
+            CursorPoint visual_end{ end_iter - _line_structure.begin(), end.position - end_iter->start };
+            for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
+            {
+                auto line = _lines[i];
+                auto highlight = line->child_elements().back();
+
+                Point highlight_pos;
+                Size highlight_size;
+                auto text = line->text();
+
+                if (i == visual_start.line)
+                {
+                    if (i == visual_end.line)
+                    {
+                        highlight_size = Size(line->measure_text(text.substr(visual_start.position, visual_end.position)).width, line->size().height);
+                    }
+                    else
+                    {
+                        highlight_size = Size(line->measure_text(text.substr(visual_start.position)).width, line->size().height);
+                    }
+                    highlight_pos = Point(line->measure_text(text.substr(0, visual_start.position)).width, 0);
+                }
+                else if (i == visual_end.line)
+                {
+                    highlight_size = Size(line->measure_text(text.substr(0, visual_end.position)).width, line->size().height);
+                }
+                else
+                {
+                    highlight_size = Size(line->measure_text(text).width, line->size().height);
+                }
+
+                highlight->set_position(highlight_pos);
+                highlight->set_size(highlight_size);
+                highlight->set_visible(true);
+            }
         }
 
         void TextArea::update_cursor()

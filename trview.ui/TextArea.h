@@ -64,6 +64,19 @@ namespace trview
             virtual void lost_focus(Control*) override;
             virtual bool paste(const std::wstring& text) override;
         private:
+            struct LineEntry
+            {
+                uint32_t line;
+                uint32_t start;
+                uint32_t length;
+            };
+
+            struct CursorPoint
+            {
+                uint32_t line{ 0u };
+                uint32_t position{ 0u };
+            };
+
             Label* current_line();
             void update_structure();
             void update_cursor();
@@ -71,6 +84,7 @@ namespace trview
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
+            void highlight(CursorPoint start, CursorPoint end);
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
@@ -79,20 +93,14 @@ namespace trview
             Mode                _mode{ Mode::MultiLine };
             bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
-
-            struct LineEntry
-            {
-                uint32_t line;
-                uint32_t start;
-                uint32_t length;
-            };
-
             std::vector<std::wstring> _text;
             std::vector<LineEntry>    _line_structure;
             uint32_t                  _visual_cursor_line{ 0u };
             uint32_t                  _visual_cursor_position{ 0u };
             uint32_t                  _logical_cursor_position{ 0u };
             uint32_t                  _logical_cursor_line{ 0u };
+            CursorPoint               _selection_start;
+            CursorPoint               _selection_end;
         };
     }
 }
