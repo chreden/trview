@@ -155,7 +155,7 @@ namespace trview
             return false;
         }
 
-        bool Control::key_down(uint16_t)
+        bool Control::key_down(uint16_t, bool, bool)
         {
             return false;
         }

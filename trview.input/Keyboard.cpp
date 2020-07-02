@@ -15,17 +15,23 @@ namespace trview
 
         bool Keyboard::control() const
         {
-            return GetAsyncKeyState(VK_CONTROL) & 0x8000;
+            return GetKeyState(VK_CONTROL) & 0x8000;
+        }
+
+        bool Keyboard::shift() const
+        {
+            return GetKeyState(VK_SHIFT) & 0x8000;
         }
 
         void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
         {
             bool control_pressed = control();
+            bool shift_pressed = shift();
             switch (message)
             {
                 case WM_KEYDOWN:
                 {
-                    on_key_down(static_cast<uint16_t>(wParam), control_pressed);
+                    on_key_down(static_cast<uint16_t>(wParam), control_pressed, shift_pressed);
                     break;
                 }
                 case WM_CHAR:
@@ -35,7 +41,7 @@ namespace trview
                 }
                 case WM_KEYUP:
                 {
-                    on_key_up(static_cast<uint16_t>(wParam), control_pressed);
+                    on_key_up(static_cast<uint16_t>(wParam), control_pressed, shift_pressed);
                     break;
                 }
             }

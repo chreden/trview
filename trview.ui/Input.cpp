@@ -42,7 +42,7 @@ namespace trview
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
-            _token_store += _keyboard.on_key_down += [&](auto key, bool control) { process_key_down(key, control); };
+            _token_store += _keyboard.on_key_down += [&](auto key, bool control, bool shift) { process_key_down(key, control, shift); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
             _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(read_clipboard(_window)); };
         }
@@ -268,16 +268,16 @@ namespace trview
             return control->scroll(delta);
         }
 
-        void Input::process_key_down(uint16_t key, bool)
+        void Input::process_key_down(uint16_t key, bool control_pressed, bool shift_pressed)
         {
-            if (_focus_control && _focus_control->key_down(key))
+            if (_focus_control && _focus_control->key_down(key, control_pressed, shift_pressed))
             {
                 return;
             }
-            process_key_down(&_control, key);
+            process_key_down(&_control, key, control_pressed, shift_pressed);
         }
 
-        bool Input::process_key_down(Control* control, uint16_t key)
+        bool Input::process_key_down(Control* control, uint16_t key, bool control_pressed, bool shift_pressed)
         {
             if (!control->visible())
             {
@@ -286,7 +286,7 @@ namespace trview
 
             for (auto& child : control->child_elements())
             {
-                if (process_key_down(child, key))
+                if (process_key_down(child, key, control_pressed, shift_pressed))
                 {
                     return true;
                 }
@@ -294,7 +294,7 @@ namespace trview
 
             // If none of the child elements have handled this event themselves, call the key_down
             // event of the control.
-            return control->key_down(key);
+            return control->key_down(key, control_pressed, shift_pressed);
         }
 
         void Input::process_char(uint16_t key)

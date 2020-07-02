@@ -58,7 +58,7 @@ namespace trview
             Event<std::wstring> on_tab;
 
             virtual bool mouse_down(const Point& position) override;
-            virtual bool key_down(uint16_t key) override;
+            virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
             virtual bool key_char(wchar_t character) override;
             virtual void gained_focus() override;
             virtual void lost_focus(Control*) override;

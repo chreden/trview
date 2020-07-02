@@ -35,8 +35,8 @@ namespace trview
             bool     process_mouse_up(Control* control, const Point& position);
             void     process_mouse_scroll(int16_t delta);
             bool     process_mouse_scroll(Control* control, const Point& position, int16_t delta);
-            void     process_key_down(uint16_t key, bool control);
-            bool     process_key_down(Control* control, uint16_t key);
+            void     process_key_down(uint16_t key, bool control_pressed, bool shift_pressed);
+            bool     process_key_down(Control* control, uint16_t key, bool control_pressed, bool shift_pressed);
             void     process_char(uint16_t key);
             bool     process_char(Control* control, uint16_t key);
             void     process_paste(const std::wstring& text);

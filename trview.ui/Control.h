@@ -218,7 +218,7 @@ namespace trview
             /// This should be overidden by child elements to handle a key down event.
             /// @param key The key that was pressed.
             /// @returns True if the key event was handled.
-            virtual bool key_down(uint16_t key);
+            virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed);
 
             /// To be called when a key character is pressed.
             /// This should be overriden by child elements to handle a key char event.

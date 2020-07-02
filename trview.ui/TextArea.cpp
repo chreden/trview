@@ -361,7 +361,7 @@ namespace trview
             return text.size();
         }
 
-        bool TextArea::key_down(uint16_t key)
+        bool TextArea::key_down(uint16_t key, bool control_pressed, bool shift_pressed)
         {
             if (!focused())
             {
