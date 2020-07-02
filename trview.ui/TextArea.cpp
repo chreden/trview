@@ -487,21 +487,8 @@ namespace trview
             }
 
             // Find the first line in the structure where it is the start line.
-            auto start_iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry) 
-                { 
-                    return entry.line == start.line && 
-                           start.position >= entry.start && 
-                           start.position < entry.start + entry.length; 
-                });
-            auto end_iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry) 
-                { 
-                    return entry.line == end.line &&
-                           end.position >= entry.start &&
-                           end.position <= entry.start + entry.length; ;
-                });
-
-            CursorPoint visual_start{ start_iter - _line_structure.begin(), start.position - start_iter->start };
-            CursorPoint visual_end{ end_iter - _line_structure.begin(), end.position - end_iter->start };
+            const CursorPoint visual_start = logical_to_visual(start);
+            const CursorPoint visual_end = logical_to_visual(end);
             for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
             {
                 auto line = _lines[i];
@@ -557,6 +544,15 @@ namespace trview
         void TextArea::notify_text_updated()
         {
             on_text_changed(text());
+        }
+
+        TextArea::CursorPoint TextArea::logical_to_visual(CursorPoint point) const
+        {
+            const auto iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry)
+                {
+                    return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
+                });
+            return { static_cast<uint32_t>(iter - _line_structure.begin()), point.position - iter->start };
         }
     }
 }

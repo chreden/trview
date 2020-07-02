@@ -85,6 +85,7 @@ namespace trview
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
             void highlight(CursorPoint start, CursorPoint end);
+            CursorPoint logical_to_visual(CursorPoint point) const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
