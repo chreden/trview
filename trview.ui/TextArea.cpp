@@ -49,9 +49,9 @@ namespace trview
             {
                 filtered_text.erase(std::remove(filtered_text.begin(), filtered_text.end(), L'\n'), filtered_text.end());
 
-                auto& current_text = _text[_logical_cursor_line];
-                current_text.insert(_logical_cursor_position, text);
-                _logical_cursor_position += text.size();
+                auto& current_text = _text[_logical_cursor.line];
+                current_text.insert(_logical_cursor.position, text);
+                _logical_cursor.position += text.size();
                 notify_text_updated();
                 update_structure();
                 return true;
@@ -67,9 +67,9 @@ namespace trview
 
             for (auto i = 0u; i < lines.size(); ++i)
             {
-                auto& current_text = _text[_logical_cursor_line];
-                current_text.insert(_logical_cursor_position, lines[i]);
-                _logical_cursor_position += lines[i].size();
+                auto& current_text = _text[_logical_cursor.line];
+                current_text.insert(_logical_cursor.position, lines[i]);
+                _logical_cursor.position += lines[i].size();
                 if (i < lines.size() - 1)
                 {
                     new_line();
@@ -149,23 +149,23 @@ namespace trview
             // Render the cursor at the correct position?
             // Translate logical cursor to visual cursor:
             auto iter = std::find_if(_line_structure.begin(), _line_structure.end(),
-                [&](const auto& ls) { return ls.line == _logical_cursor_line; });
+                [&](const auto& ls) { return ls.line == _logical_cursor.line; });
 
             if (iter != _line_structure.end())
             {
-                auto remaining = _logical_cursor_position;
+                auto remaining = _logical_cursor.position;
                 while (remaining > iter->length)
                 {
                     remaining -= iter->length;
                     ++iter;
                 }
-                _visual_cursor_line = iter - _line_structure.begin();
-                _visual_cursor_position = remaining;
+                _visual_cursor.line = iter - _line_structure.begin();
+                _visual_cursor.position = remaining;
             }
             else
             {
-                _visual_cursor_line = 0u;
-                _visual_cursor_position = 0;
+                _visual_cursor.line = 0u;
+                _visual_cursor.position = 0;
             }
 
             update_cursor();
@@ -183,26 +183,26 @@ namespace trview
                 _text.push_back({});
             }
 
-            auto& current = _text[_logical_cursor_line];
+            auto& current = _text[_logical_cursor.line];
 
             switch (character)
             {
                 // VK_BACK
                 case 0x8:
                 {
-                    if (_logical_cursor_position > 0)
+                    if (_logical_cursor.position > 0)
                     {
                         // Just remove a character.
-                        current.erase(_logical_cursor_position - 1, 1);
-                        --_logical_cursor_position;
+                        current.erase(_logical_cursor.position - 1, 1);
+                        --_logical_cursor.position;
                     }
-                    else if (_logical_cursor_line > 0)
+                    else if (_logical_cursor.line > 0)
                     {
                         // Remove a line.
-                        _logical_cursor_position = _text[_logical_cursor_line - 1].size();
-                        _text[_logical_cursor_line - 1] += _text[_logical_cursor_line];
-                        _text.erase(_text.begin() + _logical_cursor_line);
-                        --_logical_cursor_line;
+                        _logical_cursor.position = _text[_logical_cursor.line - 1].size();
+                        _text[_logical_cursor.line - 1] += _text[_logical_cursor.line];
+                        _text.erase(_text.begin() + _logical_cursor.line);
+                        --_logical_cursor.line;
                     }
                     break;
                 }
@@ -232,16 +232,13 @@ namespace trview
                 // Select All,
                 case 0x1:
                 {
-                    _selection_start = { 0u, 0u };
-
                     if (_text.empty())
                     {
-                        _selection_end = { 0u, 0u };
+                        highlight({ 0u, 0u }, { 0u, 0u });
                     }
                     else
                     {
-                        _selection_end = { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
-                        highlight(_selection_start, _selection_end);
+                        highlight(_selection_start, { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) });
                     }
                     break;
                 }
@@ -263,9 +260,9 @@ namespace trview
                 }
                 default:
                 {
-                    auto& text = _text[_logical_cursor_line];
-                    text.insert(text.begin() + _logical_cursor_position, character);
-                    ++_logical_cursor_position;
+                    auto& text = _text[_logical_cursor.line];
+                    text.insert(text.begin() + _logical_cursor.position, character);
+                    ++_logical_cursor.position;
                     break;
                 }
             }
@@ -286,8 +283,8 @@ namespace trview
                 _text.push_back(line);
             }
 
-            _logical_cursor_line = _text.empty() ? 0 : _text.size() - 1;
-            _logical_cursor_position = _text.empty() ? 0 : _text.back().size();
+            _logical_cursor.line = _text.empty() ? 0 : _text.size() - 1;
+            _logical_cursor.position = _text.empty() ? 0 : _text.back().size();
             notify_text_updated();
             update_structure();
         }
@@ -329,22 +326,10 @@ namespace trview
 
         void TextArea::move_visual_cursor_position(uint32_t line, uint32_t position)
         {
-            _visual_cursor_line = std::clamp<uint32_t>(line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
-            _visual_cursor_position = std::clamp<uint32_t>(position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor_line].length));
-            _logical_cursor_line = _line_structure[_visual_cursor_line].line;
-            _logical_cursor_position = _line_structure[_visual_cursor_line].start + _visual_cursor_position;
-        }
-
-        void TextArea::move_visual_highlight_end(uint32_t line, uint32_t position)
-        {
-            _selection_end = { line, position };
-            highlight(_selection_start, _selection_end);
-        }
-
-        void TextArea::move_visual_highlight_start(uint32_t line, uint32_t position)
-        {
-            _selection_start = { line, position };
-            highlight(_selection_start, _selection_end);
+            _visual_cursor.line = std::clamp<uint32_t>(line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
+            _visual_cursor.position = std::clamp<uint32_t>(position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
+            _logical_cursor.line = _line_structure[_visual_cursor.line].line;
+            _logical_cursor.position = _line_structure[_visual_cursor.line].start + _visual_cursor.position;
         }
 
         uint32_t TextArea::find_nearest_index(uint32_t index, float x) const
@@ -386,11 +371,11 @@ namespace trview
                 // VK_END
                 case 0x23:
                 {
-                    move_visual_cursor_position(_visual_cursor_line, _line_structure[_visual_cursor_line].length);
                     if (shift_pressed)
                     {
-                        move_visual_highlight_end(_visual_cursor_line, _line_structure[_visual_cursor_line].length);
+                        highlight(_visual_cursor, { _visual_cursor.line, _line_structure[_visual_cursor.line].length });
                     }
+                    move_visual_cursor_position(_visual_cursor.line, _line_structure[_visual_cursor.line].length);
                     break;
                 }
                 // VK_HOME
@@ -398,71 +383,70 @@ namespace trview
                 { 
                     if (shift_pressed)
                     {
-                        move_visual_highlight_end(_visual_cursor_line, _visual_cursor_position);
-                        move_visual_highlight_start(_visual_cursor_line, 0u);
+                        highlight(_visual_cursor, { _visual_cursor.line, 0u });
                     }
-                    move_visual_cursor_position(_visual_cursor_line, 0u);
+                    move_visual_cursor_position(_visual_cursor.line, 0u);
                     break;
                 }
                 // VK_LEFT
                 case 0x25:
                 {
-                    if (_visual_cursor_position > 0)
+                    if (_visual_cursor.position > 0)
                     {
-                        move_visual_cursor_position(_visual_cursor_line, _visual_cursor_position - 1);
+                        move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position - 1);
                     }
-                    else if (_visual_cursor_line > 0)
+                    else if (_visual_cursor.line > 0)
                     {
-                        move_visual_cursor_position(_visual_cursor_line - 1, _line_structure[_visual_cursor_line - 1].length);
+                        move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
                     }
                     break;
                 }
                 // VK_UP
                 case 0x26:
                 {
-                    if (_visual_cursor_line > 0)
+                    if (_visual_cursor.line > 0)
                     {
-                        move_visual_cursor_position(_visual_cursor_line - 1, 
-                            find_nearest_index(_visual_cursor_line - 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));
+                        move_visual_cursor_position(_visual_cursor.line - 1, 
+                            find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
                     }
                     break;
                 }
                 // VK_RIGHT
                 case 0x27:
                 {
-                    if (_visual_cursor_position < _line_structure[_visual_cursor_line].length)
+                    if (_visual_cursor.position < _line_structure[_visual_cursor.line].length)
                     {
-                        move_visual_cursor_position(_visual_cursor_line, _visual_cursor_position + 1);
+                        move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position + 1);
 
                     }
-                    else if ((_visual_cursor_line + 1) < _line_structure.size())
+                    else if ((_visual_cursor.line + 1) < _line_structure.size())
                     {
-                        move_visual_cursor_position(_visual_cursor_line + 1, 0u);
+                        move_visual_cursor_position(_visual_cursor.line + 1, 0u);
                     }
                     break;
                 }
                 // VK_DOWN
                 case 0x28:
                 {
-                    if (_visual_cursor_line < _line_structure.size() - 1)
+                    if (_visual_cursor.line < _line_structure.size() - 1)
                     {
-                        move_visual_cursor_position(_visual_cursor_line + 1, 
-                            find_nearest_index(_visual_cursor_line + 1, line->measure_text(line->text().substr(0, _visual_cursor_position)).width));
+                        move_visual_cursor_position(_visual_cursor.line + 1, 
+                            find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
                     }
                     break;
                 }
                 // VK_DELETE
                 case 0x2E:
                 {
-                    if (_logical_cursor_position == _text[_logical_cursor_line].size() &&
-                        _text.size() > _logical_cursor_line + 1u)
+                    if (_logical_cursor.position == _text[_logical_cursor.line].size() &&
+                        _text.size() > _logical_cursor.line + 1u)
                     {
-                        _text[_logical_cursor_line] += _text[_logical_cursor_line + 1];
-                        _text.erase(_text.begin() + _logical_cursor_line + 1);
+                        _text[_logical_cursor.line] += _text[_logical_cursor.line + 1];
+                        _text.erase(_text.begin() + _logical_cursor.line + 1);
                     }
                     else
                     {
-                        _text[_logical_cursor_line].erase(_logical_cursor_position, 1);
+                        _text[_logical_cursor.line].erase(_logical_cursor.position, 1);
                     }
                     notify_text_updated();
                     update_structure();
@@ -480,21 +464,24 @@ namespace trview
             {
                 _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             }
-            return _lines[_visual_cursor_line];
+            return _lines[_visual_cursor.line];
         }
 
         void TextArea::new_line()
         {
-            auto& current = _text[_logical_cursor_line];
-            auto remainder = current.substr(_logical_cursor_position);
-            current = current.substr(0, _logical_cursor_position);
-            _text.insert(_text.begin() + _logical_cursor_line + 1, remainder);
-            ++_logical_cursor_line;
-            _logical_cursor_position = 0u;
+            auto& current = _text[_logical_cursor.line];
+            auto remainder = current.substr(_logical_cursor.position);
+            current = current.substr(0, _logical_cursor.position);
+            _text.insert(_text.begin() + _logical_cursor.line + 1, remainder);
+            ++_logical_cursor.line;
+            _logical_cursor.position = 0u;
         }
 
         void TextArea::highlight(CursorPoint start, CursorPoint end)
         {
+            _selection_start = start;
+            _selection_end = end;
+
             for (auto& line : _lines)
             {
                 if (!line->child_elements().empty())
@@ -507,9 +494,10 @@ namespace trview
                 }
             }
 
-            // Find the first line in the structure where it is the start line.
-            const CursorPoint visual_start = logical_to_visual(start);
-            const CursorPoint visual_end = logical_to_visual(end);
+            const auto earliest = start < end ? start : end;
+            const auto latest = start < end ? end : start;
+            const CursorPoint visual_start = logical_to_visual(earliest);
+            const CursorPoint visual_end = logical_to_visual(latest);
             for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
             {
                 auto line = _lines[i];
@@ -555,7 +543,7 @@ namespace trview
             auto text = line->text();
 
             // Place the cursor based on the current cursor position and the size of the text as it would be renderered.
-            const auto size = line->measure_text(text.substr(0, _visual_cursor_position));
+            const auto size = line->measure_text(text.substr(0, _visual_cursor.position));
             const auto start = _alignment == graphics::TextAlignment::Left ?
                 Point(0, line->position().y) :
                 Point(line->size().width * 0.5f - size.width * 0.5f - 1, line->position().y);

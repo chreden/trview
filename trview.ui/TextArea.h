@@ -75,6 +75,19 @@ namespace trview
             {
                 uint32_t line{ 0u };
                 uint32_t position{ 0u };
+
+                bool operator<(const CursorPoint& other) const
+                {
+                    if (line < other.line)
+                    {
+                        return true;
+                    }
+                    if (line == other.line)
+                    {
+                        return position < other.position;
+                    }
+                    return false;
+                }
             };
 
             Label* current_line();
@@ -82,8 +95,6 @@ namespace trview
             void update_cursor();
             void notify_text_updated();
             void move_visual_cursor_position(uint32_t line, uint32_t position);
-            void move_visual_highlight_end(uint32_t line, uint32_t position);
-            void move_visual_highlight_start(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
             void highlight(CursorPoint start, CursorPoint end);
@@ -98,11 +109,11 @@ namespace trview
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
             std::vector<std::wstring> _text;
             std::vector<LineEntry>    _line_structure;
-            uint32_t                  _visual_cursor_line{ 0u };
-            uint32_t                  _visual_cursor_position{ 0u };
-            uint32_t                  _logical_cursor_position{ 0u };
-            uint32_t                  _logical_cursor_line{ 0u };
+            CursorPoint               _visual_cursor{ 0u, 0u };
+            CursorPoint               _logical_cursor{ 0u, 0u };
+            // The first pin point of the selection. Not necessarily earlier in the text.
             CursorPoint               _selection_start;
+            // The second pin point of the selection. Not necessarily later in the text.
             CursorPoint               _selection_end;
         };
     }
