@@ -76,6 +76,11 @@ namespace trview
                 uint32_t line{ 0u };
                 uint32_t position{ 0u };
 
+                bool operator==(const CursorPoint& other) const
+                {
+                    return line == other.line && position == other.position;
+                }
+
                 bool operator<(const CursorPoint& other) const
                 {
                     if (line < other.line)

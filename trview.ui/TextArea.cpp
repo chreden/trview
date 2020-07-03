@@ -416,11 +416,26 @@ namespace trview
                 {
                     if (_visual_cursor.position < _line_structure[_visual_cursor.line].length)
                     {
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position + 1 });
+                        }
                         move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position + 1);
-
                     }
                     else if ((_visual_cursor.line + 1) < _line_structure.size())
                     {
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start, { _visual_cursor.line + 1, 0u });
+                        }
                         move_visual_cursor_position(_visual_cursor.line + 1, 0u);
                     }
                     break;
@@ -511,7 +526,7 @@ namespace trview
                 {
                     if (i == visual_end.line)
                     {
-                        highlight_size = Size(line->measure_text(text.substr(visual_start.position, visual_end.position)).width, line->size().height);
+                        highlight_size = Size(line->measure_text(text.substr(visual_start.position, visual_end.position - visual_start.position)).width, line->size().height);
                     }
                     else
                     {
