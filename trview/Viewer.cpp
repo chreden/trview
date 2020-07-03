@@ -374,7 +374,7 @@ namespace trview
 
     void Viewer::initialise_input()
     {
-        _token_store += _keyboard.on_key_up += [&](auto key, bool) 
+        _token_store += _keyboard.on_key_up += [&](auto key, bool, bool) 
         {
             if (!_ui->is_input_active())
             {
@@ -414,7 +414,7 @@ namespace trview
             _camera.set_zoom(8.f);
         });
 
-        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control)
+        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool shift)
         {
             if (!_ui->is_input_active())
             {

@@ -242,7 +242,6 @@ namespace trview
                     {
                         _selection_end = { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
                         highlight(_selection_start, _selection_end);
-                        on_hierarchy_changed();
                     }
                     break;
                 }
@@ -336,6 +335,18 @@ namespace trview
             _logical_cursor_position = _line_structure[_visual_cursor_line].start + _visual_cursor_position;
         }
 
+        void TextArea::move_visual_highlight_end(uint32_t line, uint32_t position)
+        {
+            _selection_end = { line, position };
+            highlight(_selection_start, _selection_end);
+        }
+
+        void TextArea::move_visual_highlight_start(uint32_t line, uint32_t position)
+        {
+            _selection_start = { line, position };
+            highlight(_selection_start, _selection_end);
+        }
+
         uint32_t TextArea::find_nearest_index(uint32_t index, float x) const
         {
             auto line = _lines[index];
@@ -376,11 +387,20 @@ namespace trview
                 case 0x23:
                 {
                     move_visual_cursor_position(_visual_cursor_line, _line_structure[_visual_cursor_line].length);
+                    if (shift_pressed)
+                    {
+                        move_visual_highlight_end(_visual_cursor_line, _line_structure[_visual_cursor_line].length);
+                    }
                     break;
                 }
                 // VK_HOME
                 case 0x24:
                 { 
+                    if (shift_pressed)
+                    {
+                        move_visual_highlight_end(_visual_cursor_line, _visual_cursor_position);
+                        move_visual_highlight_start(_visual_cursor_line, 0u);
+                    }
                     move_visual_cursor_position(_visual_cursor_line, 0u);
                     break;
                 }
@@ -413,6 +433,7 @@ namespace trview
                     if (_visual_cursor_position < _line_structure[_visual_cursor_line].length)
                     {
                         move_visual_cursor_position(_visual_cursor_line, _visual_cursor_position + 1);
+
                     }
                     else if ((_visual_cursor_line + 1) < _line_structure.size())
                     {
@@ -523,6 +544,8 @@ namespace trview
                 highlight->set_size(highlight_size);
                 highlight->set_visible(true);
             }
+
+            on_hierarchy_changed();
         }
 
         void TextArea::update_cursor()
