@@ -25,8 +25,11 @@ jobs:
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
     
+    - name: Setup NuGet.exe
+      uses: NuGet/setup-nuget@v1.0.2
+    
     - name: Restore Packages
-      run: msbuild -t:restore /property:Configuration=Release /property:Platform=x64
+      run: nuget restore trview.sln
     
     # Runs a single command using the runners shell
     - name: Build Solution
