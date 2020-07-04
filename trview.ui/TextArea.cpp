@@ -393,10 +393,26 @@ namespace trview
                 {
                     if (_visual_cursor.position > 0)
                     {
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position - 1 });
+                        }
                         move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position - 1);
                     }
                     else if (_visual_cursor.line > 0)
                     {
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start, { _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
+                        }
                         move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
                     }
                     break;
