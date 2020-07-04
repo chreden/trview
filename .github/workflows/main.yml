@@ -25,7 +25,10 @@ jobs:
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
     
+    - name: Restore Packages
+      run: msbuild -t:restore /property:Configuration=Release /property:Platform=x64
+    
     # Runs a single command using the runners shell
-    - name: Run a one-line script
+    - name: Build Solution
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64
       
