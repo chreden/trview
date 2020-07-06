@@ -533,40 +533,7 @@ namespace trview
                 {
                     if (_selection_start != _selection_end)
                     {
-                        const auto start = visual_to_logical(_selection_start);
-                        const auto end = visual_to_logical(_selection_end);
-                        const auto earlier = start < end ? start : end;
-                        const auto later = start < end ? end : start;
-
-                        for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
-                        {
-                            if (i == later.line)
-                            {
-                                if (i == earlier.line)
-                                {
-                                    _text[i].erase(_text[i].begin() + earlier.position, _text[i].begin() + later.position);
-                                }
-                                else
-                                {
-                                    _text[i].erase(_text[i].begin(), _text[i].begin() + later.position);
-                                }
-                            }
-                            else if (i == earlier.line)
-                            {
-                                _text[i].erase(_text[i].begin() + earlier.position, _text[i].end());
-                                _text[i] += _text[i + 1];
-                                _text.erase(_text.begin() + i + 1);
-                            }
-                            else
-                            {
-                                _text.erase(_text.begin() + i);
-                            }
-                        }
-
-                        highlight(earlier, earlier);
-                        move_visual_cursor_position(earlier.line, earlier.position);
-                        notify_text_updated();
-                        update_structure();
+                        delete_selection();
                     }
                     else
                     {
@@ -721,6 +688,44 @@ namespace trview
         TextArea::CursorPoint TextArea::visual_to_logical(CursorPoint point) const
         {
             return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
+        }
+
+        void TextArea::delete_selection()
+        {
+            const auto start = visual_to_logical(_selection_start);
+            const auto end = visual_to_logical(_selection_end);
+            const auto earlier = start < end ? start : end;
+            const auto later = start < end ? end : start;
+
+            for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
+            {
+                if (i == later.line)
+                {
+                    if (i == earlier.line)
+                    {
+                        _text[i].erase(_text[i].begin() + earlier.position, _text[i].begin() + later.position);
+                    }
+                    else
+                    {
+                        _text[i].erase(_text[i].begin(), _text[i].begin() + later.position);
+                    }
+                }
+                else if (i == earlier.line)
+                {
+                    _text[i].erase(_text[i].begin() + earlier.position, _text[i].end());
+                    _text[i] += _text[i + 1];
+                    _text.erase(_text.begin() + i + 1);
+                }
+                else
+                {
+                    _text.erase(_text.begin() + i);
+                }
+            }
+
+            highlight(earlier, earlier);
+            move_visual_cursor_position(earlier.line, earlier.position);
+            notify_text_updated();
+            update_structure();
         }
     }
 }

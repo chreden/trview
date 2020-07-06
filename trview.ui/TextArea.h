@@ -112,6 +112,7 @@ namespace trview
             void move_to_latest_highlight();
             CursorPoint logical_to_visual(CursorPoint point) const;
             CursorPoint visual_to_logical(CursorPoint point) const;
+            void delete_selection();
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
