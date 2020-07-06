@@ -238,7 +238,7 @@ namespace trview
                     }
                     else
                     {
-                        highlight(_selection_start, { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) });
+                        highlight({ 0u, 0u }, { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) });
                     }
                     break;
                 }
@@ -625,6 +625,11 @@ namespace trview
                 {
                     line->add_child(std::make_unique<Window>(line->size(), Colour(0.75f, 0.0f, 1.0f, 0.0f)))->set_visible(false);
                 }
+            }
+
+            if (_text.empty())
+            {
+                return;
             }
 
             const auto earliest = start < end ? start : end;
