@@ -531,15 +531,55 @@ namespace trview
                 // VK_DELETE
                 case 0x2E:
                 {
-                    if (_logical_cursor.position == _text[_logical_cursor.line].size() &&
-                        _text.size() > _logical_cursor.line + 1u)
+                    if (_selection_start != _selection_end)
                     {
-                        _text[_logical_cursor.line] += _text[_logical_cursor.line + 1];
-                        _text.erase(_text.begin() + _logical_cursor.line + 1);
+                        const auto start = visual_to_logical(_selection_start);
+                        const auto end = visual_to_logical(_selection_end);
+                        const auto earlier = start < end ? start : end;
+                        const auto later = start < end ? end : start;
+
+                        for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
+                        {
+                            if (i == later.line)
+                            {
+                                if (i == earlier.line)
+                                {
+                                    _text[i].erase(_text[i].begin() + earlier.position, _text[i].begin() + later.position);
+                                }
+                                else
+                                {
+                                    _text[i].erase(_text[i].begin(), _text[i].begin() + later.position);
+                                }
+                            }
+                            else if (i == earlier.line)
+                            {
+                                _text[i].erase(_text[i].begin() + earlier.position, _text[i].end());
+                                _text[i] += _text[i + 1];
+                                _text.erase(_text.begin() + i + 1);
+                            }
+                            else
+                            {
+                                _text.erase(_text.begin() + i);
+                            }
+                        }
+
+                        highlight(earlier, earlier);
+                        move_visual_cursor_position(earlier.line, earlier.position);
+                        notify_text_updated();
+                        update_structure();
                     }
                     else
                     {
-                        _text[_logical_cursor.line].erase(_logical_cursor.position, 1);
+                        if (_logical_cursor.position == _text[_logical_cursor.line].size() &&
+                            _text.size() > _logical_cursor.line + 1u)
+                        {
+                            _text[_logical_cursor.line] += _text[_logical_cursor.line + 1];
+                            _text.erase(_text.begin() + _logical_cursor.line + 1);
+                        }
+                        else
+                        {
+                            _text[_logical_cursor.line].erase(_logical_cursor.position, 1);
+                        }
                     }
                     notify_text_updated();
                     update_structure();
@@ -671,6 +711,11 @@ namespace trview
                     return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
                 });
             return { static_cast<uint32_t>(iter - _line_structure.begin()), point.position - iter->start };
+        }
+
+        TextArea::CursorPoint TextArea::visual_to_logical(CursorPoint point) const
+        {
+            return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
         }
     }
 }
