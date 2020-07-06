@@ -27,11 +27,11 @@ jobs:
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m
     
     - name: Test Solution (x86)
-      run: mstest trview.sln /property:Configuration=Release /property:Platform=x86
+      run: foreach ($file in Get-ChildItem Release\*.tests.exe) { & $file }        
       
     - name: Build Solution (x64)
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m
   
     - name: Test Solution (x64)
-      run: mstest trview.sln /property:Configuration=Release /property:Platform=x64
+      run: foreach ($file in Get-ChildItem x64\Release\*.tests.exe) { & $file }
       
