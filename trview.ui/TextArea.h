@@ -81,6 +81,11 @@ namespace trview
                     return line == other.line && position == other.position;
                 }
 
+                bool operator!=(const CursorPoint& other) const 
+                {
+                    return !(*this == other);
+                }
+
                 bool operator<(const CursorPoint& other) const
                 {
                     if (line < other.line)
@@ -103,6 +108,8 @@ namespace trview
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
             void highlight(CursorPoint start, CursorPoint end);
+            void move_to_earliest_highlight();
+            void move_to_latest_highlight();
             CursorPoint logical_to_visual(CursorPoint point) const;
 
             StackPanel*         _area;

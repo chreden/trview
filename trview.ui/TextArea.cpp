@@ -401,7 +401,15 @@ namespace trview
                             }
                             highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position - 1 });
                         }
-                        move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position - 1);
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            move_to_earliest_highlight();
+                        }
+                        else
+                        {
+                            move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position - 1);
+                        }
                     }
                     else if (_visual_cursor.line > 0)
                     {
@@ -413,7 +421,15 @@ namespace trview
                             }
                             highlight(_selection_start, { _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
                         }
-                        move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            move_to_earliest_highlight();
+                        }
+                        else
+                        {
+                            move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
+                        }
                     }
                     break;
                 }
@@ -440,7 +456,15 @@ namespace trview
                             }
                             highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position + 1 });
                         }
-                        move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position + 1);
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            move_to_latest_highlight();
+                        }
+                        else
+                        {
+                            move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position + 1);
+                        }
                     }
                     else if ((_visual_cursor.line + 1) < _line_structure.size())
                     {
@@ -452,7 +476,15 @@ namespace trview
                             }
                             highlight(_selection_start, { _visual_cursor.line + 1, 0u });
                         }
-                        move_visual_cursor_position(_visual_cursor.line + 1, 0u);
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            move_to_latest_highlight();
+                        }
+                        else
+                        {
+                            move_visual_cursor_position(_visual_cursor.line + 1, 0u);
+                        }
                     }
                     break;
                 }
@@ -565,6 +597,20 @@ namespace trview
             }
 
             on_hierarchy_changed();
+        }
+
+        void TextArea::move_to_earliest_highlight()
+        {
+            const auto lowest = _selection_start < _selection_end ? _selection_start : _selection_end;
+            highlight(lowest, lowest);
+            move_visual_cursor_position(lowest.line, lowest.position);
+        }
+
+        void TextArea::move_to_latest_highlight()
+        {
+            const auto highest = _selection_start < _selection_end ? _selection_end : _selection_start;
+            highlight(highest, highest);
+            move_visual_cursor_position(highest.line, highest.position);
         }
 
         void TextArea::update_cursor()
