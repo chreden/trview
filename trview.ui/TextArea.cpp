@@ -41,6 +41,11 @@ namespace trview
                 _text.push_back({});
             }
 
+            if (any_text_selected())
+            {
+                delete_selection();
+            }
+
             auto filtered_text = text;
             // Remove \r of \r\n
             filtered_text.erase(std::remove(filtered_text.begin(), filtered_text.end(), L'\r'), filtered_text.end());
@@ -190,19 +195,26 @@ namespace trview
                 // VK_BACK
                 case 0x8:
                 {
-                    if (_logical_cursor.position > 0)
+                    if (any_text_selected())
                     {
-                        // Just remove a character.
-                        current.erase(_logical_cursor.position - 1, 1);
-                        --_logical_cursor.position;
+                        delete_selection();
                     }
-                    else if (_logical_cursor.line > 0)
+                    else
                     {
-                        // Remove a line.
-                        _logical_cursor.position = _text[_logical_cursor.line - 1].size();
-                        _text[_logical_cursor.line - 1] += _text[_logical_cursor.line];
-                        _text.erase(_text.begin() + _logical_cursor.line);
-                        --_logical_cursor.line;
+                        if (_logical_cursor.position > 0)
+                        {
+                            // Just remove a character.
+                            current.erase(_logical_cursor.position - 1, 1);
+                            --_logical_cursor.position;
+                        }
+                        else if (_logical_cursor.line > 0)
+                        {
+                            // Remove a line.
+                            _logical_cursor.position = _text[_logical_cursor.line - 1].size();
+                            _text[_logical_cursor.line - 1] += _text[_logical_cursor.line];
+                            _text.erase(_text.begin() + _logical_cursor.line);
+                            --_logical_cursor.line;
+                        }
                     }
                     break;
                 }
@@ -260,6 +272,11 @@ namespace trview
                 }
                 default:
                 {
+                    if (any_text_selected())
+                    {
+                        delete_selection();
+                    }
+
                     auto& text = _text[_logical_cursor.line];
                     text.insert(text.begin() + _logical_cursor.position, character);
                     ++_logical_cursor.position;
@@ -402,7 +419,7 @@ namespace trview
                             highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position - 1 });
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             move_to_earliest_highlight();
                         }
@@ -422,7 +439,7 @@ namespace trview
                             highlight(_selection_start, { _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             move_to_earliest_highlight();
                         }
@@ -448,7 +465,7 @@ namespace trview
                                 { _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) });
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             highlight(_selection_end, _selection_end);
                         }
@@ -472,7 +489,7 @@ namespace trview
                             highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position + 1 });
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             move_to_latest_highlight();
                         }
@@ -492,7 +509,7 @@ namespace trview
                             highlight(_selection_start, { _visual_cursor.line + 1, 0u });
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             move_to_latest_highlight();
                         }
@@ -518,7 +535,7 @@ namespace trview
                                 {_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
                         }
 
-                        if (!shift_pressed && _selection_start != _selection_end)
+                        if (!shift_pressed && any_text_selected())
                         {
                             highlight(_selection_end, _selection_end);
                         }
@@ -531,7 +548,7 @@ namespace trview
                 // VK_DELETE
                 case 0x2E:
                 {
-                    if (_selection_start != _selection_end)
+                    if (any_text_selected())
                     {
                         delete_selection();
                     }
@@ -547,9 +564,10 @@ namespace trview
                         {
                             _text[_logical_cursor.line].erase(_logical_cursor.position, 1);
                         }
+
+                        notify_text_updated();
+                        update_structure();
                     }
-                    notify_text_updated();
-                    update_structure();
                     break;
                 }
             }
@@ -594,7 +612,7 @@ namespace trview
                 }
             }
 
-            if (_text.empty())
+            if (_line_structure.empty())
             {
                 return;
             }
@@ -726,6 +744,11 @@ namespace trview
             move_visual_cursor_position(earlier.line, earlier.position);
             notify_text_updated();
             update_structure();
+        }
+
+        bool TextArea::any_text_selected() const
+        {
+            return _selection_start != _selection_end;
         }
     }
 }
