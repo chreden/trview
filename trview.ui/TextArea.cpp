@@ -438,6 +438,21 @@ namespace trview
                 {
                     if (_visual_cursor.line > 0)
                     {
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start,
+                                { _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) });
+                        }
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            highlight(_selection_end, _selection_end);
+                        }
+
                         move_visual_cursor_position(_visual_cursor.line - 1, 
                             find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
                     }
@@ -493,7 +508,22 @@ namespace trview
                 {
                     if (_visual_cursor.line < _line_structure.size() - 1)
                     {
-                        move_visual_cursor_position(_visual_cursor.line + 1, 
+                        if (shift_pressed)
+                        {
+                            if (_selection_start == _selection_end)
+                            {
+                                _selection_start = _visual_cursor;
+                            }
+                            highlight(_selection_start, 
+                                {_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
+                        }
+
+                        if (!shift_pressed && _selection_start != _selection_end)
+                        {
+                            highlight(_selection_end, _selection_end);
+                        }
+
+                        move_visual_cursor_position(_visual_cursor.line + 1,
                             find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
                     }
                     break;
