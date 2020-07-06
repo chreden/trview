@@ -230,6 +230,11 @@ namespace trview
                 // VK_RETURN
                 case 0xD:
                 {
+                    if (any_text_selected())
+                    {
+                        delete_selection();
+                    }
+
                     if (_mode == Mode::SingleLine)
                     {
                         on_enter(text());
@@ -250,7 +255,9 @@ namespace trview
                     }
                     else
                     {
-                        highlight({ 0u, 0u }, { static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) });
+                        const auto end = CursorPoint{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
+                        highlight({ 0u, 0u }, end);
+                        move_visual_cursor_position(end.line, end.position);
                     }
                     break;
                 }
