@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
+    
+    - name: Setup NuGet.exe
+      uses: NuGet/setup-nuget@v1.0.2
+    
+    - name: Restore Packages
+      run: nuget restore trview.sln
+    
+    - name: Build Solution (x86)
+      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m
+    
+    - name: Test Solution (x86)
+      run: foreach ($file in Get-ChildItem Release\*.tests.exe) { & $file }        
+      
+    - name: Build Solution (x64)
+      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m
+  
+    - name: Test Solution (x64)
+      run: foreach ($file in Get-ChildItem x64\Release\*.tests.exe) { & $file }
+
+    - name: Upload Artifact (x86)
+      uses: actions/upload-artifact@v2
+      with:
+        name: trview-x86
+        path: Release\trview.exe
+
+    - name: Upload Artifact (x64)
+      uses: actions/upload-artifact@v2
+      with:
+        name: trview-x64
+        path: x64\Release\trview.exe
