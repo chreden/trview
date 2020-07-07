@@ -435,13 +435,43 @@ namespace trview
                 {
                     if (_visual_cursor.position > 0)
                     {
+                        auto end = CursorPoint { _visual_cursor.line, _visual_cursor.position - 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
-                            highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position - 1 });
+
+                            if (control_pressed)
+                            {
+                                const auto logical = visual_to_logical(_visual_cursor);
+                                bool found_non_whitespace = false;
+                                const auto& text = _text[logical.line];
+                                for (uint32_t i = logical.position - 1; i >= 0; --i)
+                                {
+                                    if (i == 0)
+                                    {
+                                        end = logical_to_visual({ logical.line, 0u });
+                                        break;
+                                    }
+
+                                    if (text[i] == L' ')
+                                    {
+                                        if (found_non_whitespace)
+                                        {
+                                            end = logical_to_visual({ logical.line, i + 1});
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        found_non_whitespace = true;
+                                    }
+                                }
+                            }
+
+                            highlight(_selection_start, end);
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -450,7 +480,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position - 1);
+                            move_visual_cursor_position(end.line, end.position);
                         }
                     }
                     else if (_visual_cursor.line > 0)
@@ -505,13 +535,43 @@ namespace trview
                 {
                     if (_visual_cursor.position < _line_structure[_visual_cursor.line].length)
                     {
+                        auto end = CursorPoint{ _visual_cursor.line, _visual_cursor.position + 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
-                            highlight(_selection_start, { _visual_cursor.line, _visual_cursor.position + 1 });
+
+                            if (control_pressed)
+                            {
+                                const auto logical = visual_to_logical(_visual_cursor);
+                                bool found_non_whitespace = false;
+                                const auto& text = _text[logical.line];
+                                for (uint32_t i = logical.position; i < text.size(); ++i)
+                                {
+                                    if (i == text.size() - 1)
+                                    {
+                                        end = logical_to_visual({ logical.line, static_cast<uint32_t>(text.size()) });
+                                        break;
+                                    }
+
+                                    if (text[i] == L' ')
+                                    {
+                                        if (found_non_whitespace)
+                                        {
+                                            end = logical_to_visual({ logical.line, i });
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        found_non_whitespace = true;
+                                    }
+                                }
+                            }
+
+                            highlight(_selection_start, end);
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -520,7 +580,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line, _visual_cursor.position + 1);
+                            move_visual_cursor_position(end.line, end.position);
                         }
                     }
                     else if ((_visual_cursor.line + 1) < _line_structure.size())
