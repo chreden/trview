@@ -107,6 +107,7 @@ namespace trview
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
+            void clear_highlight();
             void highlight(CursorPoint start, CursorPoint end);
             void move_to_earliest_highlight();
             void move_to_latest_highlight();

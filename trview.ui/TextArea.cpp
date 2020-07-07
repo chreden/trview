@@ -407,7 +407,7 @@ namespace trview
                     }
                     else
                     {
-                        highlight(_selection_start, _selection_start);
+                        clear_highlight();
                     }
                     move_visual_cursor_position(new_end.line, new_end.position);
                     break;
@@ -425,7 +425,7 @@ namespace trview
                     }
                     else
                     {
-                        highlight(_selection_start, _selection_start);
+                        clear_highlight();
                     }
                     move_visual_cursor_position(end.line, end.position);
                     break;
@@ -492,7 +492,7 @@ namespace trview
 
                         if (!shift_pressed && any_text_selected())
                         {
-                            highlight(_selection_end, _selection_end);
+                            clear_highlight();
                         }
 
                         move_visual_cursor_position(_visual_cursor.line - 1, 
@@ -618,6 +618,11 @@ namespace trview
             _text.insert(_text.begin() + _logical_cursor.line + 1, remainder);
             ++_logical_cursor.line;
             _logical_cursor.position = 0u;
+        }
+
+        void TextArea::clear_highlight()
+        {
+            highlight(_selection_start, _selection_start);
         }
 
         void TextArea::highlight(CursorPoint start, CursorPoint end)
