@@ -96,6 +96,7 @@ namespace trview
                 if (_lines.size() <= count)
                 {
                     _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+                    on_hierarchy_changed();
                 }
                 return _lines[count++];
             };
@@ -149,6 +150,7 @@ namespace trview
                     _area->remove_child(_lines[i]);
                 }
                 _lines.erase(_lines.begin() + _line_structure.size(), _lines.end());
+                on_hierarchy_changed();
             }
 
             // Render the cursor at the correct position?
