@@ -402,7 +402,8 @@ namespace trview
                         CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
-                        highlight(_selection_start, new_end);
+                        const auto start = any_text_selected() ? _selection_start : _visual_cursor;
+                        highlight(start, new_end);
                     }
                     else
                     {
@@ -636,7 +637,7 @@ namespace trview
                 }
             }
 
-            if (_line_structure.empty())
+            if (_line_structure.empty() || !any_text_selected())
             {
                 return;
             }
