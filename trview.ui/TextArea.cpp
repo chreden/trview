@@ -258,8 +258,8 @@ namespace trview
                     else
                     {
                         const auto end = CursorPoint{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
-                        highlight({ 0u, 0u }, end);
-                        move_visual_cursor_position(end.line, end.position);
+                        highlight(end, { 0u, 0u });
+                        move_visual_cursor_position(0u, 0u);
                     }
                     break;
                 }
@@ -397,21 +397,36 @@ namespace trview
                 // VK_END
                 case 0x23:
                 {
+                    const auto new_end = control_pressed ?
+                        CursorPoint{ _line_structure.back().line, _line_structure.back().length } :
+                        CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
-                        highlight(_visual_cursor, { _visual_cursor.line, _line_structure[_visual_cursor.line].length });
+                        highlight(_selection_start, new_end);
                     }
-                    move_visual_cursor_position(_visual_cursor.line, _line_structure[_visual_cursor.line].length);
+                    else
+                    {
+                        highlight(_selection_start, _selection_start);
+                    }
+                    move_visual_cursor_position(new_end.line, new_end.position);
                     break;
                 }
                 // VK_HOME
                 case 0x24:
                 { 
+                    const auto end = control_pressed ?
+                        CursorPoint{ 0u, 0u } :
+                        CursorPoint{ _visual_cursor.line, 0u };
                     if (shift_pressed)
                     {
-                        highlight(_visual_cursor, { _visual_cursor.line, 0u });
+                        const auto start = any_text_selected() ? _selection_start : _visual_cursor;
+                        highlight(start, end);
                     }
-                    move_visual_cursor_position(_visual_cursor.line, 0u);
+                    else
+                    {
+                        highlight(_selection_start, _selection_start);
+                    }
+                    move_visual_cursor_position(end.line, end.position);
                     break;
                 }
                 // VK_LEFT
