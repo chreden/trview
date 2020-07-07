@@ -436,7 +436,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
@@ -456,7 +456,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
@@ -481,7 +481,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
@@ -506,7 +506,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
@@ -526,7 +526,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
@@ -551,7 +551,7 @@ namespace trview
                     {
                         if (shift_pressed)
                         {
-                            if (_selection_start == _selection_end)
+                            if (!any_text_selected())
                             {
                                 _selection_start = _visual_cursor;
                             }
