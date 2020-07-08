@@ -421,6 +421,11 @@ namespace trview
                 return false;
             }
 
+            if (_line_structure.empty())
+            {
+                return true;
+            }
+
             auto line = current_line();
 
             switch (key) 
@@ -429,7 +434,7 @@ namespace trview
                 case 0x23:
                 {
                     const auto new_end = control_pressed ?
-                        CursorPoint{ _line_structure.back().line, _line_structure.back().length } :
+                        CursorPoint{ static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
                         CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
