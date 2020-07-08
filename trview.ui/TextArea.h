@@ -63,6 +63,8 @@ namespace trview
             virtual void gained_focus() override;
             virtual void lost_focus(Control*) override;
             virtual bool paste(const std::wstring& text) override;
+            virtual bool mouse_up(const Point& position) override;
+            virtual bool move(Point position) override;
         private:
             struct LineEntry
             {
@@ -113,6 +115,7 @@ namespace trview
             void move_to_latest_highlight();
             CursorPoint logical_to_visual(CursorPoint point) const;
             CursorPoint visual_to_logical(CursorPoint point) const;
+            CursorPoint position_to_visual(const Point& position) const;
             void delete_selection();
             bool any_text_selected() const;
 
@@ -131,6 +134,7 @@ namespace trview
             CursorPoint               _selection_start;
             // The second pin point of the selection. Not necessarily later in the text.
             CursorPoint               _selection_end;
+            bool                      _dragging{ false };
         };
     }
 }

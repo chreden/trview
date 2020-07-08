@@ -345,8 +345,39 @@ namespace trview
             return full_string;
         }
 
-        bool TextArea::mouse_down(const Point&)
+        bool TextArea::mouse_down(const Point& position)
         {
+            if (_lines.empty() || _line_structure.empty())
+            {
+                return true;
+            }
+
+            _dragging = true;
+            _selection_start = visual_to_logical(position_to_visual(position));
+            return true;
+        }
+
+        bool TextArea::mouse_up(const Point&)
+        {
+            _dragging = false;
+            return true;
+        }
+
+        bool TextArea::move(Point position)
+        {
+            if (_lines.empty() || _line_structure.empty())
+            {
+                return true;
+            }
+
+            if (_dragging)
+            {
+                const auto visual = position_to_visual(position);
+                const auto end = visual_to_logical(visual);
+                highlight(_selection_start, end);
+                move_visual_cursor_position(visual.line, visual.position);
+                update_cursor();
+            }
             return true;
         }
 
@@ -796,6 +827,27 @@ namespace trview
         TextArea::CursorPoint TextArea::visual_to_logical(CursorPoint point) const
         {
             return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
+        }
+
+        TextArea::CursorPoint TextArea::position_to_visual(const Point& position) const
+        {
+            const Point clamped(std::clamp(0.0f, position.x, size().width), position.y);
+
+            uint32_t matched_line = 0;
+            if (position.y >= 0)
+            {
+                for (const auto& child : _lines)
+                {
+                    if (clamped.y > child->position().y && clamped.y <= child->position().y + child->size().height)
+                    {
+                        break;
+                    }
+                    ++matched_line;
+                }
+            }
+
+            uint32_t index = std::min(matched_line, static_cast<uint32_t>(_lines.size()) - 1);
+            return { index, find_nearest_index(index, clamped.x) };
         }
 
         void TextArea::delete_selection()
