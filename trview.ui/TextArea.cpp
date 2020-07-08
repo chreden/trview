@@ -831,19 +831,17 @@ namespace trview
 
         TextArea::CursorPoint TextArea::position_to_visual(const Point& position) const
         {
-            const Point clamped(std::clamp(0.0f, position.x, size().width), position.y);
+            const Point clamped(std::clamp(0.0f, position.x, size().width), 
+                std::max(position.y, _lines[0]->position().y));
 
             uint32_t matched_line = 0;
-            if (position.y >= 0)
+            for (const auto& child : _lines)
             {
-                for (const auto& child : _lines)
+                if (clamped.y >= child->position().y && clamped.y <= child->position().y + child->size().height)
                 {
-                    if (clamped.y > child->position().y && clamped.y <= child->position().y + child->size().height)
-                    {
-                        break;
-                    }
-                    ++matched_line;
+                    break;
                 }
+                ++matched_line;
             }
 
             uint32_t index = std::min(matched_line, static_cast<uint32_t>(_lines.size()) - 1);
