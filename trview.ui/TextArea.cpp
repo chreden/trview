@@ -251,7 +251,7 @@ namespace trview
                 // Select All,
                 case 0x1:
                 {
-                    if (_text.empty())
+                    if (_text.empty() || _line_structure.empty())
                     {
                         highlight({ 0u, 0u }, { 0u, 0u });
                     }
@@ -433,8 +433,8 @@ namespace trview
                         CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : _visual_cursor;
-                        highlight(start, new_end);
+                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
+                        highlight(start, visual_to_logical(new_end));
                     }
                     else
                     {
@@ -451,8 +451,8 @@ namespace trview
                         CursorPoint{ _visual_cursor.line, 0u };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : _visual_cursor;
-                        highlight(start, end);
+                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
+                        highlight(start, visual_to_logical(end));
                     }
                     else
                     {
@@ -502,7 +502,7 @@ namespace trview
                                 }
                             }
 
-                            highlight(_selection_start, end);
+                            highlight(_selection_start, visual_to_logical(end));
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -522,7 +522,7 @@ namespace trview
                             {
                                 _selection_start = _visual_cursor;
                             }
-                            highlight(_selection_start, { _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
+                            highlight(_selection_start, visual_to_logical({ _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length }));
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -548,7 +548,7 @@ namespace trview
                                 _selection_start = _visual_cursor;
                             }
                             highlight(_selection_start,
-                                { _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) });
+                                visual_to_logical({ _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) }));
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -602,7 +602,7 @@ namespace trview
                                 }
                             }
 
-                            highlight(_selection_start, end);
+                            highlight(_selection_start, visual_to_logical(end));
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -622,7 +622,7 @@ namespace trview
                             {
                                 _selection_start = _visual_cursor;
                             }
-                            highlight(_selection_start, { _visual_cursor.line + 1, 0u });
+                            highlight(_selection_start, visual_to_logical({ _visual_cursor.line + 1, 0u }));
                         }
 
                         if (!shift_pressed && any_text_selected())
@@ -648,7 +648,7 @@ namespace trview
                                 _selection_start = _visual_cursor;
                             }
                             highlight(_selection_start, 
-                                {_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
+                                visual_to_logical({_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)}));
                         }
 
                         if (!shift_pressed && any_text_selected())
