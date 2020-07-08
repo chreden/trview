@@ -30,13 +30,17 @@ namespace trview
             /// @returns Whether control is currently pressed.
             bool control() const;
 
+            /// Determines whether the shift key is currently pressed.
+            /// @returns Whether shift is currently pressed.
+            bool shift() const;
+
             /// Event raised when the user presses a key. The key is passed as a parameter
             /// to the event listeners.
-            Event<uint16_t, bool> on_key_down;
+            Event<uint16_t, bool, bool> on_key_down;
 
             /// Event raised when the user releases a key. The key is passed as a parameter
             /// to the event listeners.
-            Event<uint16_t, bool> on_key_up;
+            Event<uint16_t, bool, bool> on_key_up;
 
             /// Event raised when the user enters a text character. The character is passed as
             /// a parameter to the event listener.

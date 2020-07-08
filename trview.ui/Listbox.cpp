@@ -203,7 +203,7 @@ namespace trview
             return true;
         }
 
-        bool Listbox::key_down(uint16_t key)
+        bool Listbox::key_down(uint16_t key, bool control_pressed, bool shift_pressed)
         {
             if (key == VK_DELETE)
             {

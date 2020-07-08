@@ -58,12 +58,50 @@ namespace trview
             Event<std::wstring> on_tab;
 
             virtual bool mouse_down(const Point& position) override;
-            virtual bool key_down(uint16_t key) override;
+            virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
             virtual bool key_char(wchar_t character) override;
             virtual void gained_focus() override;
             virtual void lost_focus(Control*) override;
             virtual bool paste(const std::wstring& text) override;
+            virtual bool mouse_up(const Point& position) override;
+            virtual bool move(Point position) override;
         private:
+            struct LineEntry
+            {
+                uint32_t line;
+                uint32_t start;
+                uint32_t length;
+            };
+
+            struct CursorPoint
+            {
+                uint32_t line{ 0u };
+                uint32_t position{ 0u };
+
+                bool operator==(const CursorPoint& other) const
+                {
+                    return line == other.line && position == other.position;
+                }
+
+                bool operator!=(const CursorPoint& other) const 
+                {
+                    return !(*this == other);
+                }
+
+                bool operator<(const CursorPoint& other) const
+                {
+                    if (line < other.line)
+                    {
+                        return true;
+                    }
+                    if (line == other.line)
+                    {
+                        return position < other.position;
+                    }
+                    return false;
+                }
+            };
+
             Label* current_line();
             void update_structure();
             void update_cursor();
@@ -71,6 +109,15 @@ namespace trview
             void move_visual_cursor_position(uint32_t line, uint32_t position);
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
+            void clear_highlight();
+            void highlight(CursorPoint start, CursorPoint end);
+            void move_to_earliest_highlight();
+            void move_to_latest_highlight();
+            CursorPoint logical_to_visual(CursorPoint point) const;
+            CursorPoint visual_to_logical(CursorPoint point) const;
+            CursorPoint position_to_visual(const Point& position) const;
+            void delete_selection();
+            bool any_text_selected() const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
@@ -79,20 +126,15 @@ namespace trview
             Mode                _mode{ Mode::MultiLine };
             bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
-
-            struct LineEntry
-            {
-                uint32_t line;
-                uint32_t start;
-                uint32_t length;
-            };
-
             std::vector<std::wstring> _text;
             std::vector<LineEntry>    _line_structure;
-            uint32_t                  _visual_cursor_line{ 0u };
-            uint32_t                  _visual_cursor_position{ 0u };
-            uint32_t                  _logical_cursor_position{ 0u };
-            uint32_t                  _logical_cursor_line{ 0u };
+            CursorPoint               _visual_cursor{ 0u, 0u };
+            CursorPoint               _logical_cursor{ 0u, 0u };
+            // The first pin point of the selection. Not necessarily earlier in the text.
+            CursorPoint               _selection_start;
+            // The second pin point of the selection. Not necessarily later in the text.
+            CursorPoint               _selection_end;
+            bool                      _dragging{ false };
         };
     }
 }
