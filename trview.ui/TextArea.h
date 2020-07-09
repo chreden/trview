@@ -65,6 +65,7 @@ namespace trview
             virtual bool paste(const std::wstring& text) override;
             virtual bool mouse_up(const Point& position) override;
             virtual bool move(Point position) override;
+            virtual bool copy(std::wstring& output) override;
         private:
             struct LineEntry
             {

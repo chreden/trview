@@ -86,6 +86,44 @@ namespace trview
             return true;
         }
 
+        bool TextArea::copy(std::wstring& output)
+        {
+            if (!any_text_selected())
+            {
+                return false;
+            }
+
+            const auto start = _selection_start;
+            const auto end = _selection_end;
+            const auto earlier = start < end ? start : end;
+            const auto later = start < end ? end : start;
+
+            output.clear();
+            for (auto i = earlier.line; i <= later.line; ++i)
+            {
+                if (i == earlier.line)
+                {
+                    if (i == later.line)
+                    {
+                        output = _text[i].substr(earlier.position, later.position);
+                    }
+                    else
+                    {
+                        output += _text[i].substr(earlier.position) + L'\n';
+                    }
+                }
+                else if (i == later.line)
+                {
+                    output += _text[i].substr(0, later.position);
+                }
+                else
+                {
+                    output += _text[i] + L'\n';
+                }
+            }
+            return true;
+        }
+
         void TextArea::update_structure()
         {
             uint32_t count = 0;
@@ -855,8 +893,8 @@ namespace trview
 
         void TextArea::delete_selection()
         {
-            const auto start = visual_to_logical(_selection_start);
-            const auto end = visual_to_logical(_selection_end);
+            const auto start = _selection_start;
+            const auto end = _selection_end;
             const auto earlier = start < end ? start : end;
             const auto later = start < end ? end : start;
 
@@ -886,7 +924,8 @@ namespace trview
             }
 
             highlight(earlier, earlier);
-            move_visual_cursor_position(earlier.line, earlier.position);
+            auto earlier_visual = logical_to_visual(earlier);
+            move_visual_cursor_position(earlier_visual.line, earlier_visual.position);
             notify_text_updated();
             update_structure();
         }
