@@ -7,11 +7,28 @@ namespace trview
     {
         OpenClipboard(window);
         HANDLE data = GetClipboardData(CF_UNICODETEXT);
-        CloseClipboard();
         if (!data)
         {
             return std::wstring();
         }
-        return std::wstring(static_cast<wchar_t*>(data));
+
+        auto ptr = static_cast<wchar_t*>(GlobalLock(data));
+        auto result = std::wstring(ptr);
+        GlobalUnlock(ptr);
+        CloseClipboard();
+        return result;
+    }
+
+    void write_clipboard(const Window& window, const std::wstring& text)
+    {
+        const size_t length = text.size() * sizeof(wchar_t) + sizeof(wchar_t);
+        HGLOBAL memory = GlobalAlloc(GMEM_MOVEABLE | GMEM_ZEROINIT, length);
+        memcpy(GlobalLock(memory), text.c_str(), text.size() * sizeof(wchar_t));
+        GlobalUnlock(memory);
+
+        OpenClipboard(window);
+        EmptyClipboard();
+        SetClipboardData(CF_UNICODETEXT, memory);
+        CloseClipboard();
     }
 }

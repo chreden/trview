@@ -45,6 +45,15 @@ namespace trview
             _token_store += _keyboard.on_key_down += [&](auto key, bool control, bool shift) { process_key_down(key, control, shift); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
             _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(read_clipboard(_window)); };
+            _token_store += _shortcuts.add_shortcut(true, 'C') += [&]() 
+            {
+                std::wstring output;
+                if (process_copy(output))
+                {
+                    // Put it on the clipboard.
+                    write_clipboard(_window, output);
+                }
+            };
         }
 
         void Input::register_focus_controls(Control* control)
@@ -347,6 +356,32 @@ namespace trview
                 }
             }
             return control->paste(text);
+        }
+
+        bool Input::process_copy(std::wstring& output)
+        {
+            if (_focus_control && _focus_control->copy(output))
+            {
+                return true;
+            }
+            return process_copy(&_control, output);
+        }
+
+        bool Input::process_copy(Control* control, std::wstring& output)
+        {
+            if (!control->visible())
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                if (process_copy(child, output))
+                {
+                    return true;
+                }
+            }
+            return control->copy(output);
         }
 
         void Input::set_focus_control(Control* control)
