@@ -175,6 +175,11 @@ namespace trview
             return false;
         }
 
+        bool Control::cut(std::wstring& output)
+        {
+            return false;
+        }
+
         bool Control::handles_input() const
         {
             return _handles_input;

@@ -50,7 +50,14 @@ namespace trview
                 std::wstring output;
                 if (process_copy(output))
                 {
-                    // Put it on the clipboard.
+                    write_clipboard(_window, output);
+                }
+            };
+            _token_store += _shortcuts.add_shortcut(true, 'X') += [&]()
+            {
+                std::wstring output;
+                if (process_cut(output))
+                {
                     write_clipboard(_window, output);
                 }
             };
@@ -382,6 +389,32 @@ namespace trview
                 }
             }
             return control->copy(output);
+        }
+
+        bool Input::process_cut(std::wstring& output)
+        {
+            if (_focus_control && _focus_control->cut(output))
+            {
+                return true;
+            }
+            return process_cut(&_control, output);
+        }
+
+        bool Input::process_cut(Control* control, std::wstring& output)
+        {
+            if (!control->visible())
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                if (process_cut(child, output))
+                {
+                    return true;
+                }
+            }
+            return control->cut(output);
         }
 
         void Input::set_focus_control(Control* control)

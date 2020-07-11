@@ -230,6 +230,8 @@ namespace trview
 
             virtual bool copy(std::wstring& output);
 
+            virtual bool cut(std::wstring& output);
+
             void set_input_query(IInputQuery* query);
 
             bool focused() const;
