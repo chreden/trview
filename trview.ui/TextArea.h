@@ -66,6 +66,7 @@ namespace trview
             virtual bool mouse_up(const Point& position) override;
             virtual bool move(Point position) override;
             virtual bool copy(std::wstring& output) override;
+            virtual bool cut(std::wstring& output) override;
         private:
             struct LineEntry
             {
@@ -119,6 +120,7 @@ namespace trview
             CursorPoint position_to_visual(const Point& position) const;
             void delete_selection();
             bool any_text_selected() const;
+            std::wstring selected_text() const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;

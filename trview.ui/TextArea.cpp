@@ -93,34 +93,19 @@ namespace trview
                 return false;
             }
 
-            const auto start = _selection_start;
-            const auto end = _selection_end;
-            const auto earlier = start < end ? start : end;
-            const auto later = start < end ? end : start;
+            output = selected_text();
+            return true;
+        }
 
-            output.clear();
-            for (auto i = earlier.line; i <= later.line; ++i)
+        bool TextArea::cut(std::wstring& output)
+        {
+            if (!any_text_selected())
             {
-                if (i == earlier.line)
-                {
-                    if (i == later.line)
-                    {
-                        output = _text[i].substr(earlier.position, later.position);
-                    }
-                    else
-                    {
-                        output += _text[i].substr(earlier.position) + L'\n';
-                    }
-                }
-                else if (i == later.line)
-                {
-                    output += _text[i].substr(0, later.position);
-                }
-                else
-                {
-                    output += _text[i] + L'\n';
-                }
+                return false;
             }
+
+            output = selected_text();
+            delete_selection();
             return true;
         }
 
@@ -933,6 +918,39 @@ namespace trview
         bool TextArea::any_text_selected() const
         {
             return _selection_start != _selection_end;
+        }
+
+        std::wstring TextArea::selected_text() const
+        {
+            const auto start = _selection_start;
+            const auto end = _selection_end;
+            const auto earlier = start < end ? start : end;
+            const auto later = start < end ? end : start;
+
+            std::wstring output;
+            for (auto i = earlier.line; i <= later.line; ++i)
+            {
+                if (i == earlier.line)
+                {
+                    if (i == later.line)
+                    {
+                        output = _text[i].substr(earlier.position, later.position);
+                    }
+                    else
+                    {
+                        output += _text[i].substr(earlier.position) + L'\n';
+                    }
+                }
+                else if (i == later.line)
+                {
+                    output += _text[i].substr(0, later.position);
+                }
+                else
+                {
+                    output += _text[i] + L'\n';
+                }
+            }
+            return output;
         }
     }
 }

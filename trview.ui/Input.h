@@ -43,6 +43,8 @@ namespace trview
             bool     process_paste(Control* control, const std::wstring& text);
             bool     process_copy(std::wstring& output);
             bool     process_copy(Control* control, std::wstring& output);
+            bool     process_cut(std::wstring& output);
+            bool     process_cut(Control* control, std::wstring& output);
 
             void     set_focus_control(Control* control);
 
