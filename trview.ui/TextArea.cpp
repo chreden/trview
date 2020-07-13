@@ -124,7 +124,7 @@ namespace trview
 
             auto point = visual_to_logical(position_to_visual(position));
             auto link = word_at_cursor(point);
-            if (link.find(L"http://") == 0 || link.find(L"www.") == 0)
+            if (link.find(L"http://") == 0 || link.find(L"https://") == 0 || link.find(L"www.") == 0)
             {
                 ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
             }
@@ -292,7 +292,7 @@ namespace trview
                 case 0xA:
                 {
                     auto word = word_at_cursor(_logical_cursor);
-                    if (word.find(L"http://") == 0 || word.find(L"www.") == 0)
+                    if (word.find(L"http://") == 0 || word.find(L"https://") == 0 || word.find(L"www.") == 0)
                     {
                         ShellExecute(0, 0, word.c_str(), 0, 0, SW_SHOW);
                     }
