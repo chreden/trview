@@ -1,7 +1,9 @@
+#define NOMINMAX
 #include "TextArea.h"
 #include "Label.h"
 #include <sstream>
 #include <queue>
+#include <Windows.h>
 
 namespace trview
 {
@@ -107,6 +109,40 @@ namespace trview
             output = selected_text();
             delete_selection();
             return true;
+        }
+
+        bool TextArea::clicked(Point position)
+        {
+            if (_lines.empty() || _line_structure.empty())
+            {
+                return true;
+            }
+
+            // In case the dragging had started already, clear it.
+            _dragging = false;
+            _selection_end = _selection_start;
+
+            auto point = visual_to_logical(position_to_visual(position));
+            auto link = word_at_cursor(point);
+            if (link.find(L"http://") == 0 || link.find(L"https://") == 0 || link.find(L"www.") == 0)
+            {
+                ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
+            }
+            return true;
+        }
+
+        std::wstring TextArea::word_at_cursor(CursorPoint point) const
+        {
+            auto& line = _text[point.line];
+            if (!std::isspace(line[point.position]))
+            {
+                auto rstart = std::find_if(std::make_reverse_iterator(line.begin() + point.position), line.rend(), std::isspace);
+                auto diff = -(rstart - line.rend());
+                auto start = line.begin() + diff;
+                auto end = std::find_if(line.begin() + point.position, line.end(), std::isspace);
+                return std::wstring(start, end);
+            }
+            return std::wstring();
         }
 
         void TextArea::update_structure()
@@ -252,6 +288,16 @@ namespace trview
                     }
                     return true;
                 }
+                // \n (ctrl + enter)
+                case 0xA:
+                {
+                    auto word = word_at_cursor(_logical_cursor);
+                    if (word.find(L"http://") == 0 || word.find(L"https://") == 0 || word.find(L"www.") == 0)
+                    {
+                        ShellExecute(0, 0, word.c_str(), 0, 0, SW_SHOW);
+                    }
+                    return true;
+                }
                 // VK_RETURN
                 case 0xD:
                 {
@@ -377,6 +423,7 @@ namespace trview
 
             _dragging = true;
             _selection_start = visual_to_logical(position_to_visual(position));
+            _selection_end = _selection_start;
             return true;
         }
 

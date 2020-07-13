@@ -41,6 +41,7 @@ namespace trview
             _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
             _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
+            _token_store += _mouse.mouse_click += [&](auto) { process_mouse_click(); };
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control, bool shift) { process_key_down(key, control, shift); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
@@ -213,13 +214,7 @@ namespace trview
             {
                 const auto focus = _focus_control;
                 const auto control_space_position = position - focus->absolute_position();
-                bool focus_handled = focus->mouse_up(control_space_position);
-                if (focus_handled && in_bounds(control_space_position, focus->size()))
-                {
-                    focus->clicked(control_space_position);
-                }
-
-                if (focus_handled)
+                if (focus->mouse_up(control_space_position))
                 {
                     return;
                 }
@@ -247,6 +242,44 @@ namespace trview
 
             // If none of the child elements have handled this event themselves, call the up of the control.
             return control->mouse_up(position);
+        }
+
+        void Input::process_mouse_click()
+        {
+            auto position = client_cursor_position(_window);
+            
+            if (_focus_control)
+            {
+                const auto focus = _focus_control;
+                const auto control_space_position = position - focus->absolute_position();
+                if (focus->clicked(control_space_position))
+                {
+                    return;
+                }
+            }
+
+            process_mouse_click(&_control, position);
+        }
+
+        bool Input::process_mouse_click(Control* control, const Point& position)
+        {
+            // Bounds check - before child elements are checked.
+            if (!control->visible() || !in_bounds(position, control->size()))
+            {
+                return false;
+            }
+
+            for (auto& child : control->child_elements())
+            {
+                // Convert the position into the coordinate space of the child element.
+                if (process_mouse_click(child, position - child->position()))
+                {
+                    return true;
+                }
+            }
+
+            // If none of the child elements have handled this event themselves, call the click of the control.
+            return control->clicked(position);
         }
 
         void Input::process_mouse_scroll(int16_t delta)
