@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#define NOMINMAX
 #include "Sector.h"
-#include <stdexcept>
 
 namespace trview
 {

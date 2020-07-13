@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Waypoint.h"
 #include <trview.app/Camera/ICamera.h>
-#include <locale>
 
 using namespace DirectX::SimpleMath;
 

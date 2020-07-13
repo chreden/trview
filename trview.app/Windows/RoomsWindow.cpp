@@ -7,7 +7,6 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
 #include <trview.common/Strings.h>
-#include <numeric>
 
 namespace trview
 {

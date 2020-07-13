@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Measure.h"
 #include <trview.graphics/Device.h>
-#include <sstream>
-#include <iomanip>
-
 #include <trview.app/Camera/ICamera.h>
 
 using namespace trview::graphics;

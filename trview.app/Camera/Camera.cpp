@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Camera.h"
-#include <algorithm>
 
 namespace trview
 {

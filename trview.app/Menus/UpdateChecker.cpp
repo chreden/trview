@@ -1,12 +1,6 @@
 #include "stdafx.h"
 #include "UpdateChecker.h"
-#include <WinHttp.h>
-#pragma warning(push)
-#pragma warning(disable : 4127)
-#include <external/nlohmann/json.hpp>
-#pragma warning(pop)
 #include <trview.common/Strings.h>
-#include <shellapi.h>
 
 namespace trview
 {

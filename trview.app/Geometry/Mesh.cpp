@@ -1,11 +1,5 @@
 #include "stdafx.h"
-#define NOMINMAX
-
 #include "Mesh.h"
-
-#include <array>
-#include <DirectXCollision.h>
-
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 
 using namespace Microsoft::WRL;

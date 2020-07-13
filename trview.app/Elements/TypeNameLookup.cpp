@@ -1,10 +1,5 @@
 #include "stdafx.h"
 #include "TypeNameLookup.h"
-#pragma warning(push)
-#pragma warning(disable : 4127)
-#include <external/nlohmann/json.hpp>
-#pragma warning(pop)
-
 
 using namespace trlevel;
 

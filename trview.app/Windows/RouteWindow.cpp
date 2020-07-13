@@ -4,7 +4,6 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
-#include <fstream>
 
 namespace trview
 {
