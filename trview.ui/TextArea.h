@@ -122,6 +122,7 @@ namespace trview
             void delete_selection();
             bool any_text_selected() const;
             std::wstring selected_text() const;
+            std::wstring word_at_cursor(CursorPoint point) const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
