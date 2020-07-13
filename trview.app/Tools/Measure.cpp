@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Measure.h"
 #include <trview.graphics/Device.h>
 #include <sstream>

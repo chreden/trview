@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "TypeNameLookup.h"
 #pragma warning(push)
 #pragma warning(disable : 4127)

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #define NOMINMAX
 #include "Route.h"
 #include <DirectXCollision.h>

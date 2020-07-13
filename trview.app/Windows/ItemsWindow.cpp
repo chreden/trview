@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ItemsWindow.h"
 #include <sstream>
 #include <bitset>

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "SectorHighlight.h"
 
 using namespace DirectX::SimpleMath;

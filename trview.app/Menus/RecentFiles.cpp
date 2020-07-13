@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RecentFiles.h"
 #include <trview.app/Windows/WindowIDs.h>
 #include <trview.common/Strings.h>

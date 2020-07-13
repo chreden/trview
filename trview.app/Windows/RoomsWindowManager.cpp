@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RoomsWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
 #include <trview.ui.render/Renderer.h>

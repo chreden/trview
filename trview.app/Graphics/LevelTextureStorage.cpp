@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "LevelTextureStorage.h"
 #include "TextureStorage.h"
 

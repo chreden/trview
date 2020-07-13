@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "WindowResizer.h"
 #include <trview.common/Window.h>
 

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "TextureStorage.h"
 
 namespace trview

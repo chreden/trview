@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "GoTo.h"
 
 #include <Windows.h>

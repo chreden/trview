@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Compass.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/MeshVertex.h>

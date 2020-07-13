@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RouteWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
 

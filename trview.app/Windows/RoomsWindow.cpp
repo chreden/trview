@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RoomsWindow.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/GroupBox.h>

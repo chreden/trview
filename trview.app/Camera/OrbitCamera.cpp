@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "OrbitCamera.h"
 
 namespace trview

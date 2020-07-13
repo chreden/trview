@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Lua.h"
 #include <trview.common/Strings.h>
 

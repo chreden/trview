@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CollapsiblePanel.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>

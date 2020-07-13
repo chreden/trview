@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DirectoryListing.h"
 #include <windows.h>
 #include <algorithm>

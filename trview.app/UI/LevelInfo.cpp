@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "LevelInfo.h"
 
 #include <trview.ui/Control.h>

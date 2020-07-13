@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #define NOMINMAX
 
 #include "Mesh.h"

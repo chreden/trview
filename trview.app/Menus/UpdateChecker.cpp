@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "UpdateChecker.h"
 #include <WinHttp.h>
 #pragma warning(push)

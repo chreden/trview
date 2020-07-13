@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ContextMenu.h"
 #include <trview.ui/Button.h>
 #include <trview.ui/Label.h>

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "FileDropper.h"
 #include <trview.common/Strings.h>
 

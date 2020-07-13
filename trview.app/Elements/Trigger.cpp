@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Trigger.h"
 #include <trview.app/Elements/Types.h>
 #include <unordered_map>

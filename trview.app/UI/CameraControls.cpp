@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "CameraControls.h"
 
 #include <trview.ui/GroupBox.h>

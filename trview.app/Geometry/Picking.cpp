@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Picking.h"
 #include <trview.app/Camera/ICamera.h>
 

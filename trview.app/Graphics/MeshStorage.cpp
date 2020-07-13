@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "MeshStorage.h"
 
 namespace trview

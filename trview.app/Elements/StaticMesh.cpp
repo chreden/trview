@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "StaticMesh.h"
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Level.h"
 
 #include <trview.graphics/IShaderStorage.h>
