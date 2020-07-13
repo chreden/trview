@@ -120,6 +120,7 @@ namespace trview
 
             // In case the dragging had started already, clear it.
             _dragging = false;
+            _selection_end = _selection_start;
 
             auto point = visual_to_logical(position_to_visual(position));
             auto& line = _text[point.line];
@@ -408,6 +409,7 @@ namespace trview
 
             _dragging = true;
             _selection_start = visual_to_logical(position_to_visual(position));
+            _selection_end = _selection_start;
             return true;
         }
 
