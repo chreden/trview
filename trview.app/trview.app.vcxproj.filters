@@ -196,6 +196,7 @@
     <ClCompile Include="Lua\Lua.cpp">
       <Filter>Lua</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -414,6 +415,7 @@
     <ClInclude Include="Lua\Lua.h">
       <Filter>Lua</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
