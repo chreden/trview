@@ -1,7 +1,9 @@
+#define NOMINMAX
 #include "TextArea.h"
 #include "Label.h"
 #include <sstream>
 #include <queue>
+#include <Windows.h>
 
 namespace trview
 {
@@ -106,6 +108,35 @@ namespace trview
 
             output = selected_text();
             delete_selection();
+            return true;
+        }
+
+        bool TextArea::clicked(Point position)
+        {
+            if (_lines.empty() || _line_structure.empty())
+            {
+                return true;
+            }
+
+            // In case the dragging had started already, clear it.
+            _dragging = false;
+
+            auto point = visual_to_logical(position_to_visual(position));
+            auto& line = _text[point.line];
+            if (!std::isspace(line[point.position]))
+            {
+                auto rstart = std::find_if(std::make_reverse_iterator(line.begin() + point.position), line.rend(), std::isspace);
+                auto diff = -(rstart - line.rend());
+                auto start = line.begin() + diff;
+                auto end = std::find_if(line.begin() + point.position, line.end(), std::isspace);
+                auto link = std::wstring(start, end);
+
+                if (link.find(L"http://") == 0 || link.find(L"www.") == 0)
+                {
+                    ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
+                }
+            }
+
             return true;
         }
 

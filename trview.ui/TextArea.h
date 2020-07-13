@@ -67,6 +67,7 @@ namespace trview
             virtual bool move(Point position) override;
             virtual bool copy(std::wstring& output) override;
             virtual bool cut(std::wstring& output) override;
+            virtual bool clicked(Point position) override;
         private:
             struct LineEntry
             {
