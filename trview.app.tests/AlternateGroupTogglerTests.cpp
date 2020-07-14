@@ -1,6 +1,5 @@
-#include "gtest/gtest.h"
+#include "stdafx.h"
 #include <trview.app/Menus/AlternateGroupToggler.h>
-#include <trview.tests.common/Window.h>
 
 using namespace trview;
 using namespace trview::tests;

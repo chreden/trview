@@ -1,4 +1,4 @@
-#include "gmock/gmock.h"
+#include "stdafx.h"
 #include <trview.app/UI/CameraPosition.h>
 
 using namespace trview;
@@ -9,7 +9,7 @@ using testing::HasSubstr;
 /// Tests that the position event is raised when the coordinates are changed.
 TEST(CameraPosition, PositionEventRaised)
 {
-    Window window(Point(), Size(100, 100), Colour::Transparent);
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
 
     int times_called = 0;
     Vector3 new_position;
@@ -46,7 +46,7 @@ TEST(CameraPosition, PositionEventRaised)
 /// Tests that the coordinate labels are updated to have the correct position values.
 TEST(CameraPosition, CoordinatesUpdated)
 {
-    Window window(Point(), Size(100, 100), Colour::Transparent);
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
     auto subject = CameraPosition(window);
 
     auto area_x = window.find<TextArea>("X");

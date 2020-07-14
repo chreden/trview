@@ -1,6 +1,5 @@
-#include "gmock/gmock.h"
+#include "stdafx.h"
 #include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.tests.common/Window.h>
 
 using namespace trview;
 using namespace trlevel;

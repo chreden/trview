@@ -29,6 +29,7 @@
     <ClCompile Include="Menus\MenuDetectorTests.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -52,5 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
 </Project>
