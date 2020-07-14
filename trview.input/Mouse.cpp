@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "Mouse.h"
-#include <CommCtrl.h>
 
 namespace trview
 {

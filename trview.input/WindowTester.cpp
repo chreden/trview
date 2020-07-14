@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "WindowTester.h"
-#include <trview.common/Window.h>
 
 namespace trview
 {
