@@ -61,6 +61,7 @@
     <ClInclude Include="PixelShaderStore.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -117,6 +118,7 @@
     <ClCompile Include="PixelShaderStore.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

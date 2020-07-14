@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "PixelShaderStore.h"
 
 using namespace Microsoft::WRL;

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Device.h"
 #include "RenderTarget.h"
 #include "DeviceWindow.h"

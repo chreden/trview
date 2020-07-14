@@ -1,9 +1,8 @@
+#include "stdafx.h"
 #include "Font.h"
 #include "Texture.h"
 #include <trview.common/Size.h>
 #include <trview.common/Colour.h>
-#include <algorithm>
-#include <iterator>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "RenderTarget.h"
 #include "DepthStencil.h"
 

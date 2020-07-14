@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "DepthStencil.h"
 
 using namespace Microsoft::WRL;
