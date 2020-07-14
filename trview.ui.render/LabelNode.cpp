@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LabelNode.h"
 
 #include <trview.ui/Label.h>

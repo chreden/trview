@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "RenderNode.h"
 
 #include <trview.ui/Control.h>

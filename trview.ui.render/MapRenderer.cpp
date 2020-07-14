@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MapRenderer.h"
 
 using namespace DirectX::SimpleMath;
