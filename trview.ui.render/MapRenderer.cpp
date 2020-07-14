@@ -1,8 +1,5 @@
+#include "stdafx.h"
 #include "MapRenderer.h"
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ViewportStore.h>
-#include <trview.graphics/SpriteSizeStore.h>
-#include <trview.common/Colour.h>
 
 using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;

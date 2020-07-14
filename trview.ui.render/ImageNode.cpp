@@ -1,9 +1,6 @@
+#include "stdafx.h"
 #include "ImageNode.h"
 #include <trview.ui/Image.h>
-#include <trview.graphics/Sprite.h>
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ViewportStore.h>
-#include <trview.graphics/SpriteSizeStore.h>
 
 namespace trview
 {

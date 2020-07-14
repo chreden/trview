@@ -1,13 +1,7 @@
+#include "stdafx.h"
 #include "RenderNode.h"
-#include <vector>
-#include <algorithm>
 
 #include <trview.ui/Control.h>
-#include <trview.graphics/Sprite.h>
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ViewportStore.h>
-#include <trview.graphics/SpriteSizeStore.h>
-#include <trview.common/Size.h>
 
 using namespace Microsoft::WRL;
 

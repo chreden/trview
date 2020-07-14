@@ -20,6 +20,7 @@
     <ClInclude Include="ButtonNode.h">
       <Filter>Nodes</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="ButtonNode.cpp">
       <Filter>Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Nodes">

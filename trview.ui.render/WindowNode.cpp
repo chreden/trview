@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "WindowNode.h"
 #include <trview.ui/Window.h>
 
