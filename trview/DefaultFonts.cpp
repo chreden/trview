@@ -1,11 +1,7 @@
 #include "stdafx.h"
 #include "DefaultFonts.h"
 #include "resource.h"
-
-#include <trview.graphics/FontFactory.h>
 #include "ResourceHelper.h"
-
-#include <sstream>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;
