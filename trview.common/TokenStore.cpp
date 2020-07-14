@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TokenStore.h"
 
 namespace trview

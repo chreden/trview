@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Colour.h"
 
 namespace trview
