@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DefaultShaders.h"
 #include "ResourceHelper.h"
 #include "resource.h"

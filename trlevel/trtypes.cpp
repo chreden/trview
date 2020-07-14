@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "trtypes.h"
 
 namespace trlevel

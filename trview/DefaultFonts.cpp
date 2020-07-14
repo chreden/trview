@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DefaultFonts.h"
 #include "resource.h"
 #include "ResourceHelper.h"

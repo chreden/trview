@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Graphics/LevelTextureStorage.h>
 
 using namespace trview;

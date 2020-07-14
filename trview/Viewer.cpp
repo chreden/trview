@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Viewer.h"
 
 #include <trlevel/trlevel.h>

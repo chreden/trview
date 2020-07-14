@@ -1,7 +1,6 @@
 // trview.cpp : Defines the entry point for the application.
 //
 
-#include "stdafx.h"
 #include "trview.h"
 #include "resource.h"
 

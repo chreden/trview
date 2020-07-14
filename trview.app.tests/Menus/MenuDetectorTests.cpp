@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Menus/MenuDetector.h>
 
 using namespace trview;

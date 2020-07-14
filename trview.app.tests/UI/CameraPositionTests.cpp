@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/UI/CameraPosition.h>
 
 using namespace trview;

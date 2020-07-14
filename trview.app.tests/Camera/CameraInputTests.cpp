@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Camera/CameraInput.h>
 
 using namespace trview;

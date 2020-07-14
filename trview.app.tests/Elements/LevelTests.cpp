@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 

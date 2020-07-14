@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Level.h"
 #include "LevelLoadException.h"
 

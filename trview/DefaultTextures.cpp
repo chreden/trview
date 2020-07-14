@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DefaultTextures.h"
 #include "resource.h"
 #include "ResourceHelper.h"

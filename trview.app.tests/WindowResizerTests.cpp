@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Windows/WindowResizer.h>
 
 using namespace trview;

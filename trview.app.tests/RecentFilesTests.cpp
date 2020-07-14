@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <trview.app/Menus/RecentFiles.h>
 
 using namespace trview;
