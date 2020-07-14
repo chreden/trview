@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "trlevel.h"
 #include "Level.h"
 

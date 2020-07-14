@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "LevelVersion.h"
 
 namespace trlevel
