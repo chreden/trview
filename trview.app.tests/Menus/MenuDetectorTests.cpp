@@ -1,7 +1,4 @@
-#include "gtest/gtest.h"
 #include <trview.app/Menus/MenuDetector.h>
-#include <trview.tests.common/Window.h>
-#include <optional>
 
 using namespace trview;
 using namespace trview::tests;

@@ -7,6 +7,7 @@
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelLoadException.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
@@ -14,5 +15,6 @@
     <ClCompile Include="trlevel.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
 </Project>

@@ -1,16 +1,8 @@
 #include "Sprite.h"
-
-#include <SimpleMath.h>
-
-#include <vector>
-#include <cmath>
-
 #include <trview.common/FileLoader.h>
 #include "IShaderStorage.h"
 #include "IShader.h"
 #include "Texture.h"
-
-#include <SimpleMath.h>
 #include <trview.app/Geometry/Mesh.h>
 
 using namespace Microsoft::WRL;

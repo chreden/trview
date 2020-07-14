@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.app/Elements/TypeNameLookup.h>
 
 using namespace trview;

@@ -8,8 +8,7 @@
 #include "targetver.h"
 
 #define NOMINMAX
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 // C RunTime Header Files
@@ -18,5 +17,24 @@
 #include <memory.h>
 #include <tchar.h>
 
+#include <algorithm>
+#include <sstream>
+#include <vector>
+#include <cstdint>
+#include <string>
+#include <iomanip>
+#include <memory>
 
-// TODO: reference additional headers your program requires here
+#include <external/DirectXTK/Inc/WICTextureLoader.h>
+#include <directxmath.h>
+#include <commdlg.h>
+#include <shellapi.h>
+#include <Shlwapi.h>
+
+#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/Device.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/VertexShader.h>
+#include <trview.graphics/PixelShader.h>
+#include <trview.app/Graphics/ITextureStorage.h>
+#include <trview.common/Strings.h>

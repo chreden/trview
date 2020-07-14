@@ -1,5 +1,4 @@
 #include "WindowTester.h"
-#include <trview.common/Window.h>
 
 namespace trview
 {

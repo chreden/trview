@@ -61,6 +61,7 @@
     <ClInclude Include="IInputQuery.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -123,6 +124,7 @@
     <ClCompile Include="IInputQuery.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">

@@ -1,6 +1,5 @@
 #include "PickResult.h"
 #include <trview.app/Tools/Compass.h>
-#include <string>
 #include <trview.common/Colour.h>
 
 namespace trview

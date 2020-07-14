@@ -1,12 +1,11 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
-
 namespace trview
 {
     namespace graphics
     {
         class FontFactory;
+        class Device;
     }
 
     /// Loads the fonts that have been embedded in the resource file and puts them into the font storage provided.

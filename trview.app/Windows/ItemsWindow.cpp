@@ -1,9 +1,5 @@
 #include "ItemsWindow.h"
-#include <sstream>
-#include <bitset>
-#include <Windows.h>
 #include <trview/resource.h>
-#include <SimpleMath.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>

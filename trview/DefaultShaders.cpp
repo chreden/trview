@@ -1,13 +1,6 @@
-#include "stdafx.h"
 #include "DefaultShaders.h"
 #include "ResourceHelper.h"
 #include "resource.h"
-
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/VertexShader.h>
-#include <trview.graphics/PixelShader.h>
-
-#include <vector>
 
 using namespace Microsoft::WRL;
 

@@ -1,8 +1,4 @@
 #include "Strings.h"
-#include <vector>
-#include <Windows.h>
-#include <sstream>
-#include <bitset>
 
 namespace trview
 {

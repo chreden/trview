@@ -1,7 +1,5 @@
 #include "Trigger.h"
 #include <trview.app/Elements/Types.h>
-#include <unordered_map>
-#include <algorithm>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 
 using namespace Microsoft::WRL;

@@ -1,7 +1,4 @@
-#include "gtest/gtest.h"
 #include <trview.app/Camera/CameraInput.h>
-#include <trview.common/TokenStore.h>
-#include <set>
 
 using namespace trview;
 

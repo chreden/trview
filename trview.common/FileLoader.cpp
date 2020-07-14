@@ -1,7 +1,4 @@
-#include "stdafx.h"
 #include "FileLoader.h"
-
-#include <fstream>
 
 namespace trview
 {

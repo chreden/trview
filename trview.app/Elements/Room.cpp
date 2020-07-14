@@ -9,12 +9,6 @@
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 
-#include <SimpleMath.h>
-#include <DirectXCollision.h>
-#include <array>
-#include <iterator>
-#include <numeric>
-
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
 

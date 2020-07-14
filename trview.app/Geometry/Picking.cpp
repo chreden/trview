@@ -3,7 +3,6 @@
 
 #include <trview.common/Point.h>
 #include <trview.common/Window.h>
-#include <SimpleMath.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

@@ -5,8 +5,6 @@
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"
 #include <trview.app/UI/ContextMenu.h>
-#include <sstream>
-#include <iomanip>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
 

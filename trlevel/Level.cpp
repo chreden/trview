@@ -1,12 +1,5 @@
 #include "Level.h"
 #include "LevelLoadException.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <iterator>
-#include <trview.common/Strings.h>
-
-#include <external/zlib/zlib.h>
 
 namespace trlevel
 {

@@ -1,9 +1,4 @@
-#include "gmock/gmock.h"
-#include "gmock/gmock-generated-nice-strict.h"
 #include <trview.app/Elements/Level.h>
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/IShader.h>
-#include <trview.tests.common/Window.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 
 using namespace trview;

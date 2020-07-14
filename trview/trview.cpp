@@ -1,16 +1,10 @@
 // trview.cpp : Defines the entry point for the application.
 //
 
-#include "stdafx.h"
 #include "trview.h"
 #include "resource.h"
 
 #include "Viewer.h"
-#include <memory>
-#include <commdlg.h>
-#include <shellapi.h>
-#include <Shlwapi.h>
-#include <trview.common/Strings.h>
 
 #define MAX_LOADSTRING 100
 

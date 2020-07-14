@@ -1,8 +1,5 @@
 #include "Entity.h"
 
-#include <stack>
-#include <algorithm>
-
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>

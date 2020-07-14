@@ -9,8 +9,6 @@
 #include "LabelNode.h"
 #include "ImageNode.h"
 #include "ButtonNode.h"
-#include <trview.graphics/Sprite.h>
-#include <trview.graphics/RenderTargetStore.h>
 
 namespace trview
 {

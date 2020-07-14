@@ -1,6 +1,5 @@
 #include "FontFactory.h"
 #include "Font.h"
-#include <external/DirectXTK/Inc/SpriteFont.h>
 
 using namespace Microsoft::WRL;
 using namespace std::string_literals;

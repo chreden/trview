@@ -1,6 +1,4 @@
 #include "GoTo.h"
-
-#include <Windows.h>
 #include <trview.ui/TextArea.h>
 #include <trview.ui/GroupBox.h>
 

@@ -5,11 +5,13 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="WindowTester.cpp" />
     <ClCompile Include="IWindowTester.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="IWindowTester.h" />
     <ClInclude Include="WindowTester.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
 </Project>

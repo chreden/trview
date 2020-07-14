@@ -1,16 +1,7 @@
-#define NOMINMAX
 #include "Route.h"
-#include <DirectXCollision.h>
-#include <algorithm>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
-#pragma warning(push)
-#pragma warning(disable : 4127)
-#include <external/nlohmann/json.hpp>
-#pragma warning(pop)
-#include <fstream>
 #include <trview.common/Strings.h>
-#include <sstream>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

@@ -1,10 +1,7 @@
 #include "TransparencyBuffer.h"
-
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Geometry/MeshVertex.h>
-
-#include <algorithm>
 #include <trview.app/Geometry/Mesh.h>
 
 using namespace Microsoft::WRL;

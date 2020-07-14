@@ -1,4 +1,3 @@
-#define NOMINMAX
 #include "StackPanel.h"
 
 namespace trview

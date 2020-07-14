@@ -1,12 +1,6 @@
-#include "stdafx.h"
 #include "DefaultTextures.h"
 #include "resource.h"
-
-#include <trview.app/Graphics/ITextureStorage.h>
 #include "ResourceHelper.h"
-
-#include <external/DirectXTK/Inc/WICTextureLoader.h>
-#include <sstream>
 
 using namespace Microsoft::WRL;
 

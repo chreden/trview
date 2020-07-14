@@ -1,9 +1,4 @@
 #include "ButtonNode.h"
-
-#include <trview.graphics/Sprite.h>
-#include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/ViewportStore.h>
-#include <trview.graphics/SpriteSizeStore.h>
 #include <trview.ui/Button.h>
 
 using namespace Microsoft::WRL;

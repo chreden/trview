@@ -1,8 +1,4 @@
-#include "gtest/gtest.h"
 #include <trview.app/Menus/FileDropper.h>
-#include <trview.tests.common/Window.h>
-#include <shellapi.h>
-#include <ShlObj.h>
 
 using namespace trview;
 using namespace trview::tests;

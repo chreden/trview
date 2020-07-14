@@ -1,11 +1,4 @@
-#include "stdafx.h"
 #include "Viewer.h"
-
-#include <algorithm>
-#include <string>
-#include <sstream>
-#include <iomanip>
-#include <directxmath.h>
 
 #include <trlevel/trlevel.h>
 #include <trview.graphics/ShaderStorage.h>

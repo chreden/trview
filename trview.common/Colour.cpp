@@ -1,5 +1,4 @@
 #include "Colour.h"
-#include <string>
 
 namespace trview
 {

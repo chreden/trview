@@ -1,9 +1,12 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
-
 namespace trview
 {
+    namespace graphics
+    {
+        class Device;
+    }
+
     struct ITextureStorage;
 
     // Loads the textures that have been embedded in the resource file and puts them into

@@ -1,6 +1,3 @@
-#include <sstream>
-#include <bitset>
-#include <set>
 
 #include "TriggersWindow.h"
 #include <trview.common/Colour.h>

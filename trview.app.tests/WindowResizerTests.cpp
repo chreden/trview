@@ -1,6 +1,4 @@
-#include "gtest/gtest.h"
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.tests.common/Window.h>
 
 using namespace trview;
 using namespace trview::tests;
