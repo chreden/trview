@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "WindowTester.h"
 
 namespace trview
