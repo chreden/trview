@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Checkbox.h"
 #include "Label.h"
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Listbox.h"
 
 namespace trview

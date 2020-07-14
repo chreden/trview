@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "StackPanel.h"
 
 namespace trview

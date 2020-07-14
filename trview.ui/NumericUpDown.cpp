@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "NumericUpDown.h"
 #include "Label.h"
 #include "Button.h"

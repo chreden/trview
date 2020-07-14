@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TextArea.h"
 #include "Label.h"
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Button.h"
 #include "Label.h"
 #include "Image.h"

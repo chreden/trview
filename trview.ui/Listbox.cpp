@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Listbox.h"
 #include "Button.h"
 #include "Scrollbar.h"

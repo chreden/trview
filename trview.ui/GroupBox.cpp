@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GroupBox.h"
 #include "Label.h"
 

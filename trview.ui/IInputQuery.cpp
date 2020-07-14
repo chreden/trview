@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "IInputQuery.h"
 
 namespace trview
