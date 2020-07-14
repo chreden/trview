@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "VertexShaderStore.h"
 
 using namespace Microsoft::WRL;

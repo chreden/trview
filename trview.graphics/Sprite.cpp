@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Sprite.h"
 #include <trview.common/FileLoader.h>
 #include "IShaderStorage.h"

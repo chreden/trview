@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FontFactory.h"
 #include "Font.h"
 

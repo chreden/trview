@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "SpriteSizeStore.h"
 #include "Sprite.h"
 

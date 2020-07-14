@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Font.h"
 #include "Texture.h"
 #include <trview.common/Size.h>
