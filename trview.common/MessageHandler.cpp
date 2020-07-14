@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "MessageHandler.h"
-#include <CommCtrl.h>
-#include <random>
 
 namespace trview
 {

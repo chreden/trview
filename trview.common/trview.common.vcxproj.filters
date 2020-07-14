@@ -23,6 +23,7 @@
     <ClInclude Include="Windows\Shortcuts.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -47,6 +48,7 @@
     <ClCompile Include="Windows\Shortcuts.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

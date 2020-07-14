@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Shortcuts.h"
 
 namespace trview

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "FileLoader.h"
 
-#include <fstream>
-
 namespace trview
 {
     // Load the contents of a file.
