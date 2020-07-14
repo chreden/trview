@@ -1,6 +1,5 @@
-#define NOMINMAX
+#include "stdafx.h"
 #include "Slider.h"
-#include <algorithm>
 
 namespace trview
 {

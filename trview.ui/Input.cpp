@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Input.h"
 #include "Control.h"
 #include <trview.input/WindowTester.h>

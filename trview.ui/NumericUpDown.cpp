@@ -1,10 +1,7 @@
-#define NOMINMAX
-
+#include "stdafx.h"
 #include "NumericUpDown.h"
 #include "Label.h"
 #include "Button.h"
-
-#include <algorithm>
 
 namespace trview
 {

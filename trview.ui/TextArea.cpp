@@ -1,9 +1,6 @@
-#define NOMINMAX
+#include "stdafx.h"
 #include "TextArea.h"
 #include "Label.h"
-#include <sstream>
-#include <queue>
-#include <Windows.h>
 
 namespace trview
 {

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Listbox.h"
 #include "Button.h"
 

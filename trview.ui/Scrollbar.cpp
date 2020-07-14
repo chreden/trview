@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Scrollbar.h"
 
 namespace trview

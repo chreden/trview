@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "IFontMeasurer.h"
 
 namespace trview
