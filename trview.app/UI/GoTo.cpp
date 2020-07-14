@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GoTo.h"
 #include <trview.ui/TextArea.h>
 #include <trview.ui/GroupBox.h>

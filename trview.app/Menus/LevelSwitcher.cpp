@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "LevelSwitcher.h"
 #include <trview.app/Windows/WindowIDs.h>
 #include "DirectoryListing.h"

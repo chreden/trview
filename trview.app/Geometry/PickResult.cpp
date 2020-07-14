@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "PickResult.h"
 #include <trview.app/Tools/Compass.h>
 #include <trview.common/Colour.h>

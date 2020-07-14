@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "RouteWindow.h"
 #include <trview.app/Routing/Route.h>
 #include <trview.ui/GroupBox.h>

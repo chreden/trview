@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "SelectionRenderer.h"
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>

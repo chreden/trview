@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TypeNameLookup.h"
 
 using namespace trlevel;

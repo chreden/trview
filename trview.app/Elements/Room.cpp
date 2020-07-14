@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Room.h"
 #include <trview.app/Geometry/MeshVertex.h>
 #include "Entity.h"

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Route.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>

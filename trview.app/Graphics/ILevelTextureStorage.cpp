@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ILevelTextureStorage.h"
 
 namespace trview

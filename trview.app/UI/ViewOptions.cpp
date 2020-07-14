@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ViewOptions.h"
 
 #include <trview.ui/Button.h>

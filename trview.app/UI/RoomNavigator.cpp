@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "RoomNavigator.h"
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.app/Elements/RoomInfo.h>

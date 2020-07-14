@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Tooltip.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Label.h>

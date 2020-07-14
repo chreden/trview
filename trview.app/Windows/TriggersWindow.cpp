@@ -1,4 +1,3 @@
-#include "stdafx.h"
 
 #include "TriggersWindow.h"
 #include <trview.common/Colour.h>

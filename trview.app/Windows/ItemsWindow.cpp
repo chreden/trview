@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ItemsWindow.h"
 #include <trview/resource.h>
 #include <trview.ui/Checkbox.h>

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CameraPosition.h"
 #include <trlevel/trlevel.h>
 #include <trview.ui/Label.h>

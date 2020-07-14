@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "TriggersWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
 #include <trview.ui.render/Renderer.h>

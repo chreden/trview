@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ViewMenu.h"
 #include <trview.app/Windows/WindowIDs.h>
 

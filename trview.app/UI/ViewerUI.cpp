@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ViewerUI.h"
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>

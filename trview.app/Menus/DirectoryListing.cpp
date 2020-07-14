@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DirectoryListing.h"
 #include <trview.common/Strings.h>
 

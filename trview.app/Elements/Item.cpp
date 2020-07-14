@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Item.h"
 
 namespace trview
