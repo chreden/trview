@@ -6,3 +6,5 @@
 #include <queue>
 #include <Windows.h>
 #include <iterator>
+
+#include <trview.common/Strings.h>
