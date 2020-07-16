@@ -118,8 +118,7 @@ namespace trview
             _dragging = false;
             _selection_end = _selection_start;
 
-            auto point = visual_to_logical(position_to_visual(position));
-            auto link = word_at_cursor(point);
+            auto link = word_at_cursor(visual_to_logical(position_to_visual(position)));
             if (is_link(link))
             {
                 ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
@@ -208,28 +207,7 @@ namespace trview
                 on_hierarchy_changed();
             }
 
-            // Render the cursor at the correct position?
-            // Translate logical cursor to visual cursor:
-            auto iter = std::find_if(_line_structure.begin(), _line_structure.end(),
-                [&](const auto& ls) { return ls.line == _logical_cursor.line; });
-
-            if (iter != _line_structure.end())
-            {
-                auto remaining = _logical_cursor.position;
-                while (remaining > iter->length)
-                {
-                    remaining -= iter->length;
-                    ++iter;
-                }
-                _visual_cursor.line = iter - _line_structure.begin();
-                _visual_cursor.position = remaining;
-            }
-            else
-            {
-                _visual_cursor.line = 0u;
-                _visual_cursor.position = 0;
-            }
-
+            _visual_cursor = logical_to_visual(_logical_cursor);
             update_cursor();
         }
 
@@ -446,7 +424,7 @@ namespace trview
             return true;
         }
 
-        void TextArea::move_visual_cursor_position(VisualPosition position)
+        void TextArea::move_visual_cursor_position(TextArea::VisualPosition position)
         {
             _visual_cursor.line = std::clamp<uint32_t>(position.line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
             _visual_cursor.position = std::clamp<uint32_t>(position.position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
@@ -640,14 +618,13 @@ namespace trview
 
                             if (control_pressed)
                             {
-                                const auto logical = visual_to_logical(_visual_cursor);
                                 bool found_non_whitespace = false;
-                                const auto& text = _text[logical.line];
-                                for (uint32_t i = logical.position; i < text.size(); ++i)
+                                const auto& text = _text[_logical_cursor.line];
+                                for (uint32_t i = _logical_cursor.position; i < text.size(); ++i)
                                 {
                                     if (i == text.size() - 1)
                                     {
-                                        end = logical_to_visual({ logical.line, static_cast<uint32_t>(text.size()) });
+                                        end = logical_to_visual({ _logical_cursor.line, static_cast<uint32_t>(text.size()) });
                                         break;
                                     }
 
@@ -655,7 +632,7 @@ namespace trview
                                     {
                                         if (found_non_whitespace)
                                         {
-                                            end = logical_to_visual({ logical.line, i });
+                                            end = logical_to_visual({ _logical_cursor.line, i });
                                             break;
                                         }
                                     }
@@ -881,6 +858,10 @@ namespace trview
 
         TextArea::VisualPosition TextArea::logical_to_visual(TextArea::LogicalPosition point) const
         {
+            if (_line_structure.empty())
+            {
+                return { 0u, 0u };
+            }
             const auto iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry)
                 {
                     return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
@@ -914,10 +895,8 @@ namespace trview
 
         void TextArea::delete_selection()
         {
-            const auto start = _selection_start;
-            const auto end = _selection_end;
-            const auto earlier = start < end ? start : end;
-            const auto later = start < end ? end : start;
+            const auto earlier = _selection_start < _selection_end ? _selection_start : _selection_end;
+            const auto later = _selection_start < _selection_end ? _selection_end : _selection_start;
 
             for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
             {
@@ -957,10 +936,8 @@ namespace trview
 
         std::wstring TextArea::selected_text() const
         {
-            const auto start = _selection_start;
-            const auto end = _selection_end;
-            const auto earlier = start < end ? start : end;
-            const auto later = start < end ? end : start;
+            const auto earlier = _selection_start < _selection_end ? _selection_start : _selection_end;
+            const auto later = _selection_start < _selection_end ? _selection_end : _selection_start;
 
             std::wstring output;
             for (auto i = earlier.line; i <= later.line; ++i)
