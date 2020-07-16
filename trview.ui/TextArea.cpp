@@ -324,7 +324,7 @@ namespace trview
                     {
                         const auto end = LogicalPosition{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
                         highlight(end, { 0u, 0u });
-                        move_visual_cursor_position(0u, 0u);
+                        move_visual_cursor_position({ 0u, 0u });
                     }
                     break;
                 }
@@ -439,20 +439,18 @@ namespace trview
             if (_dragging)
             {
                 const auto visual = position_to_visual(position);
-                const auto end = visual_to_logical(visual);
-                highlight(_selection_start, end);
-                move_visual_cursor_position(visual.line, visual.position);
+                highlight(_selection_start, visual_to_logical(visual));
+                move_visual_cursor_position(visual);
                 update_cursor();
             }
             return true;
         }
 
-        void TextArea::move_visual_cursor_position(uint32_t line, uint32_t position)
+        void TextArea::move_visual_cursor_position(VisualPosition position)
         {
-            _visual_cursor.line = std::clamp<uint32_t>(line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
-            _visual_cursor.position = std::clamp<uint32_t>(position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
-            _logical_cursor.line = _line_structure[_visual_cursor.line].line;
-            _logical_cursor.position = _line_structure[_visual_cursor.line].start + _visual_cursor.position;
+            _visual_cursor.line = std::clamp<uint32_t>(position.line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
+            _visual_cursor.position = std::clamp<uint32_t>(position.position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
+            _logical_cursor = visual_to_logical(position);
         }
 
         uint32_t TextArea::find_nearest_index(uint32_t index, float x) const
@@ -500,36 +498,32 @@ namespace trview
                 case 0x23:
                 {
                     const auto new_end = control_pressed ?
-                        VisualPosition{ static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
-                        VisualPosition{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
+                        VisualPosition { static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
+                        VisualPosition { _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
-                        highlight(start, visual_to_logical(new_end));
+                        highlight(any_text_selected() ? _selection_start : _logical_cursor, visual_to_logical(new_end));
                     }
                     else
                     {
                         clear_highlight();
                     }
-                    move_visual_cursor_position(new_end.line, new_end.position);
+                    move_visual_cursor_position(new_end);
                     break;
                 }
                 // VK_HOME
                 case 0x24:
                 { 
-                    const auto end = control_pressed ?
-                        VisualPosition{ 0u, 0u } :
-                        VisualPosition{ _visual_cursor.line, 0u };
+                    const auto end = VisualPosition{ control_pressed ? 0u : _visual_cursor.line, 0u };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
-                        highlight(start, visual_to_logical(end));
+                        highlight(any_text_selected() ? _selection_start : _logical_cursor, visual_to_logical(end));
                     }
                     else
                     {
                         clear_highlight();
                     }
-                    move_visual_cursor_position(end.line, end.position);
+                    move_visual_cursor_position(end);
                     break;
                 }
                 // VK_LEFT
@@ -547,14 +541,13 @@ namespace trview
 
                             if (control_pressed)
                             {
-                                const auto logical = visual_to_logical(_visual_cursor);
                                 bool found_non_whitespace = false;
-                                const auto& text = _text[logical.line];
-                                for (uint32_t i = logical.position - 1; i >= 0; --i)
+                                const auto& text = _text[_logical_cursor.line];
+                                for (uint32_t i = _logical_cursor.position - 1; i >= 0; --i)
                                 {
                                     if (i == 0)
                                     {
-                                        end = logical_to_visual({ logical.line, 0u });
+                                        end = logical_to_visual({ _logical_cursor.line, 0u });
                                         break;
                                     }
 
@@ -562,7 +555,7 @@ namespace trview
                                     {
                                         if (found_non_whitespace)
                                         {
-                                            end = logical_to_visual({ logical.line, i + 1});
+                                            end = logical_to_visual({ _logical_cursor.line, i + 1});
                                             break;
                                         }
                                     }
@@ -582,7 +575,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(end.line, end.position);
+                            move_visual_cursor_position(end);
                         }
                     }
                     else if (_visual_cursor.line > 0)
@@ -602,7 +595,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
+                            move_visual_cursor_position({ _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
                         }
                     }
                     break;
@@ -627,8 +620,8 @@ namespace trview
                             clear_highlight();
                         }
 
-                        move_visual_cursor_position(_visual_cursor.line - 1, 
-                            find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
+                        move_visual_cursor_position({ _visual_cursor.line - 1,
+                            find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
                     }
                     break;
                 }
@@ -682,7 +675,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(end.line, end.position);
+                            move_visual_cursor_position(end);
                         }
                     }
                     else if ((_visual_cursor.line + 1) < _line_structure.size())
@@ -702,7 +695,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line + 1, 0u);
+                            move_visual_cursor_position({ _visual_cursor.line + 1, 0u });
                         }
                     }
                     break;
@@ -727,8 +720,8 @@ namespace trview
                             highlight(_selection_end, _selection_end);
                         }
 
-                        move_visual_cursor_position(_visual_cursor.line + 1,
-                            find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
+                        move_visual_cursor_position({ _visual_cursor.line + 1,
+                            find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
                     }
                     break;
                 }
@@ -855,14 +848,14 @@ namespace trview
         {
             const auto lowest = _selection_start < _selection_end ? _selection_start : _selection_end;
             highlight(lowest, lowest);
-            move_visual_cursor_position(lowest.line, lowest.position);
+            move_visual_cursor_position(logical_to_visual(lowest));
         }
 
         void TextArea::move_to_latest_highlight()
         {
             const auto highest = _selection_start < _selection_end ? _selection_end : _selection_start;
             highlight(highest, highest);
-            move_visual_cursor_position(highest.line, highest.position);
+            move_visual_cursor_position(logical_to_visual(highest));
         }
 
         void TextArea::update_cursor()
@@ -952,8 +945,7 @@ namespace trview
             }
 
             highlight(earlier, earlier);
-            auto earlier_visual = logical_to_visual(earlier);
-            move_visual_cursor_position(earlier_visual.line, earlier_visual.position);
+            move_visual_cursor_position(logical_to_visual(earlier));
             notify_text_updated();
             update_structure();
         }
