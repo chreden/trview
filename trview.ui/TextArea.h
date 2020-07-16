@@ -76,22 +76,51 @@ namespace trview
                 uint32_t length;
             };
 
-            struct CursorPoint
+            struct LogicalPosition
             {
                 uint32_t line{ 0u };
                 uint32_t position{ 0u };
 
-                bool operator==(const CursorPoint& other) const
+                bool operator==(const LogicalPosition& other) const
                 {
                     return line == other.line && position == other.position;
                 }
 
-                bool operator!=(const CursorPoint& other) const 
+                bool operator!=(const LogicalPosition& other) const
                 {
                     return !(*this == other);
                 }
 
-                bool operator<(const CursorPoint& other) const
+                bool operator<(const LogicalPosition& other) const
+                {
+                    if (line < other.line)
+                    {
+                        return true;
+                    }
+                    if (line == other.line)
+                    {
+                        return position < other.position;
+                    }
+                    return false;
+                }
+            };
+
+            struct VisualPosition
+            {
+                uint32_t line{ 0u };
+                uint32_t position{ 0u };
+
+                bool operator==(const VisualPosition& other) const
+                {
+                    return line == other.line && position == other.position;
+                }
+
+                bool operator!=(const VisualPosition& other) const
+                {
+                    return !(*this == other);
+                }
+
+                bool operator<(const VisualPosition& other) const
                 {
                     if (line < other.line)
                     {
@@ -113,16 +142,16 @@ namespace trview
             uint32_t find_nearest_index(uint32_t line, float x) const;
             void new_line();
             void clear_highlight();
-            void highlight(CursorPoint start, CursorPoint end);
+            void highlight(LogicalPosition start, LogicalPosition end);
             void move_to_earliest_highlight();
             void move_to_latest_highlight();
-            CursorPoint logical_to_visual(CursorPoint point) const;
-            CursorPoint visual_to_logical(CursorPoint point) const;
-            CursorPoint position_to_visual(const Point& position) const;
+            VisualPosition logical_to_visual(LogicalPosition point) const;
+            LogicalPosition visual_to_logical(VisualPosition point) const;
+            VisualPosition position_to_visual(const Point& position) const;
             void delete_selection();
             bool any_text_selected() const;
             std::wstring selected_text() const;
-            std::wstring word_at_cursor(CursorPoint point) const;
+            std::wstring word_at_cursor(LogicalPosition point) const;
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
@@ -133,13 +162,13 @@ namespace trview
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
             std::vector<std::wstring> _text;
             std::vector<LineEntry>    _line_structure;
-            CursorPoint               _visual_cursor{ 0u, 0u };
-            CursorPoint               _logical_cursor{ 0u, 0u };
+            VisualPosition _visual_cursor{ 0u, 0u };
+            LogicalPosition _logical_cursor{ 0u, 0u };
             // The first pin point of the selection. Not necessarily earlier in the text.
-            CursorPoint               _selection_start;
+            LogicalPosition _selection_start;
             // The second pin point of the selection. Not necessarily later in the text.
-            CursorPoint               _selection_end;
-            bool                      _dragging{ false };
+            LogicalPosition _selection_end;
+            bool _dragging{ false };
         };
     }
 }

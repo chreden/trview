@@ -127,7 +127,7 @@ namespace trview
             return true;
         }
 
-        std::wstring TextArea::word_at_cursor(CursorPoint point) const
+        std::wstring TextArea::word_at_cursor(LogicalPosition point) const
         {
             auto& line = _text[point.line];
             if (!std::isspace(line[point.position]))
@@ -322,7 +322,7 @@ namespace trview
                     }
                     else
                     {
-                        const auto end = CursorPoint{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
+                        const auto end = LogicalPosition{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
                         highlight(end, { 0u, 0u });
                         move_visual_cursor_position(0u, 0u);
                     }
@@ -500,8 +500,8 @@ namespace trview
                 case 0x23:
                 {
                     const auto new_end = control_pressed ?
-                        CursorPoint{ static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
-                        CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
+                        VisualPosition{ static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
+                        VisualPosition{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
                         const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
@@ -518,8 +518,8 @@ namespace trview
                 case 0x24:
                 { 
                     const auto end = control_pressed ?
-                        CursorPoint{ 0u, 0u } :
-                        CursorPoint{ _visual_cursor.line, 0u };
+                        VisualPosition{ 0u, 0u } :
+                        VisualPosition{ _visual_cursor.line, 0u };
                     if (shift_pressed)
                     {
                         const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
@@ -537,12 +537,12 @@ namespace trview
                 {
                     if (_visual_cursor.position > 0)
                     {
-                        auto end = CursorPoint { _visual_cursor.line, _visual_cursor.position - 1 };
+                        auto end = VisualPosition { _visual_cursor.line, _visual_cursor.position - 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
 
                             if (control_pressed)
@@ -591,7 +591,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, visual_to_logical({ _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length }));
                         }
@@ -616,7 +616,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start,
                                 visual_to_logical({ _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) }));
@@ -637,12 +637,12 @@ namespace trview
                 {
                     if (_visual_cursor.position < _line_structure[_visual_cursor.line].length)
                     {
-                        auto end = CursorPoint{ _visual_cursor.line, _visual_cursor.position + 1 };
+                        auto end = VisualPosition{ _visual_cursor.line, _visual_cursor.position + 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
 
                             if (control_pressed)
@@ -691,7 +691,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, visual_to_logical({ _visual_cursor.line + 1, 0u }));
                         }
@@ -716,7 +716,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, 
                                 visual_to_logical({_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)}));
@@ -787,7 +787,7 @@ namespace trview
             highlight(_selection_start, _selection_start);
         }
 
-        void TextArea::highlight(CursorPoint start, CursorPoint end)
+        void TextArea::highlight(LogicalPosition start, LogicalPosition end)
         {
             _selection_start = start;
             _selection_end = end;
@@ -811,8 +811,8 @@ namespace trview
 
             const auto earliest = start < end ? start : end;
             const auto latest = start < end ? end : start;
-            const CursorPoint visual_start = logical_to_visual(earliest);
-            const CursorPoint visual_end = logical_to_visual(latest);
+            const VisualPosition visual_start = logical_to_visual(earliest);
+            const VisualPosition visual_end = logical_to_visual(latest);
             for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
             {
                 auto line = _lines[i];
@@ -886,7 +886,7 @@ namespace trview
             on_text_changed(text());
         }
 
-        TextArea::CursorPoint TextArea::logical_to_visual(CursorPoint point) const
+        TextArea::VisualPosition TextArea::logical_to_visual(TextArea::LogicalPosition point) const
         {
             const auto iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry)
                 {
@@ -895,12 +895,12 @@ namespace trview
             return { static_cast<uint32_t>(iter - _line_structure.begin()), point.position - iter->start };
         }
 
-        TextArea::CursorPoint TextArea::visual_to_logical(CursorPoint point) const
+        TextArea::LogicalPosition TextArea::visual_to_logical(TextArea::VisualPosition point) const
         {
             return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
         }
 
-        TextArea::CursorPoint TextArea::position_to_visual(const Point& position) const
+        TextArea::VisualPosition TextArea::position_to_visual(const Point& position) const
         {
             const Point clamped(std::clamp(0.0f, position.x, size().width), 
                 std::max(position.y, _lines[0]->position().y));
