@@ -175,7 +175,6 @@ namespace trview
                             ++split_length;
                         }
 
-                        // Hackery with the index - might need to be fixed.
                         line_label->set_text(line.substr(0, split_length));
                         _line_structure.push_back({ index, character_count, split_length });
                         lines_to_process.push(line.substr(split_length));
@@ -306,8 +305,9 @@ namespace trview
                     }
                     break;
                 }
-                // Copy, Undo, Redo, Cut, Paste
+                // Copy, Ctrl + E, Undo, Redo, Cut, Paste
                 case 0x3:
+                case 0x5:
                 case 0x7:
                 case 0x1a:
                 case 0x16:
