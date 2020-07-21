@@ -118,16 +118,15 @@ namespace trview
             _dragging = false;
             _selection_end = _selection_start;
 
-            auto point = visual_to_logical(position_to_visual(position));
-            auto link = word_at_cursor(point);
-            if (link.find(L"http://") == 0 || link.find(L"https://") == 0 || link.find(L"www.") == 0)
+            auto link = word_at_cursor(visual_to_logical(position_to_visual(position)));
+            if (is_link(link))
             {
                 ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
             }
             return true;
         }
 
-        std::wstring TextArea::word_at_cursor(CursorPoint point) const
+        std::wstring TextArea::word_at_cursor(LogicalPosition point) const
         {
             auto& line = _text[point.line];
             if (!std::isspace(line[point.position]))
@@ -176,7 +175,6 @@ namespace trview
                             ++split_length;
                         }
 
-                        // Hackery with the index - might need to be fixed.
                         line_label->set_text(line.substr(0, split_length));
                         _line_structure.push_back({ index, character_count, split_length });
                         lines_to_process.push(line.substr(split_length));
@@ -208,28 +206,7 @@ namespace trview
                 on_hierarchy_changed();
             }
 
-            // Render the cursor at the correct position?
-            // Translate logical cursor to visual cursor:
-            auto iter = std::find_if(_line_structure.begin(), _line_structure.end(),
-                [&](const auto& ls) { return ls.line == _logical_cursor.line; });
-
-            if (iter != _line_structure.end())
-            {
-                auto remaining = _logical_cursor.position;
-                while (remaining > iter->length)
-                {
-                    remaining -= iter->length;
-                    ++iter;
-                }
-                _visual_cursor.line = iter - _line_structure.begin();
-                _visual_cursor.position = remaining;
-            }
-            else
-            {
-                _visual_cursor.line = 0u;
-                _visual_cursor.position = 0;
-            }
-
+            _visual_cursor = logical_to_visual(_logical_cursor);
             update_cursor();
         }
 
@@ -288,7 +265,7 @@ namespace trview
                 case 0xA:
                 {
                     auto word = word_at_cursor(_logical_cursor);
-                    if (word.find(L"http://") == 0 || word.find(L"https://") == 0 || word.find(L"www.") == 0)
+                    if (is_link(word))
                     {
                         ShellExecute(0, 0, word.c_str(), 0, 0, SW_SHOW);
                     }
@@ -322,14 +299,15 @@ namespace trview
                     }
                     else
                     {
-                        const auto end = CursorPoint{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
+                        const auto end = LogicalPosition{ static_cast<uint32_t>(_text.size()) - 1, static_cast<uint32_t>(_text.back().size()) };
                         highlight(end, { 0u, 0u });
-                        move_visual_cursor_position(0u, 0u);
+                        move_visual_cursor_position({ 0u, 0u });
                     }
                     break;
                 }
-                // Copy, Undo, Redo, Cut, Paste
+                // Copy, Ctrl + E, Undo, Redo, Cut, Paste
                 case 0x3:
+                case 0x5:
                 case 0x7:
                 case 0x1a:
                 case 0x16:
@@ -439,20 +417,18 @@ namespace trview
             if (_dragging)
             {
                 const auto visual = position_to_visual(position);
-                const auto end = visual_to_logical(visual);
-                highlight(_selection_start, end);
-                move_visual_cursor_position(visual.line, visual.position);
+                highlight(_selection_start, visual_to_logical(visual));
+                move_visual_cursor_position(visual);
                 update_cursor();
             }
             return true;
         }
 
-        void TextArea::move_visual_cursor_position(uint32_t line, uint32_t position)
+        void TextArea::move_visual_cursor_position(TextArea::VisualPosition position)
         {
-            _visual_cursor.line = std::clamp<uint32_t>(line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
-            _visual_cursor.position = std::clamp<uint32_t>(position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
-            _logical_cursor.line = _line_structure[_visual_cursor.line].line;
-            _logical_cursor.position = _line_structure[_visual_cursor.line].start + _visual_cursor.position;
+            _visual_cursor.line = std::clamp<uint32_t>(position.line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
+            _visual_cursor.position = std::clamp<uint32_t>(position.position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
+            _logical_cursor = visual_to_logical(position);
         }
 
         uint32_t TextArea::find_nearest_index(uint32_t index, float x) const
@@ -500,36 +476,32 @@ namespace trview
                 case 0x23:
                 {
                     const auto new_end = control_pressed ?
-                        CursorPoint{ static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
-                        CursorPoint{ _visual_cursor.line, _line_structure[_visual_cursor.line].length };
+                        VisualPosition { static_cast<uint32_t>(_line_structure.size()) - 1, _line_structure.back().length } :
+                        VisualPosition { _visual_cursor.line, _line_structure[_visual_cursor.line].length };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
-                        highlight(start, visual_to_logical(new_end));
+                        highlight(any_text_selected() ? _selection_start : _logical_cursor, visual_to_logical(new_end));
                     }
                     else
                     {
                         clear_highlight();
                     }
-                    move_visual_cursor_position(new_end.line, new_end.position);
+                    move_visual_cursor_position(new_end);
                     break;
                 }
                 // VK_HOME
                 case 0x24:
                 { 
-                    const auto end = control_pressed ?
-                        CursorPoint{ 0u, 0u } :
-                        CursorPoint{ _visual_cursor.line, 0u };
+                    const auto end = VisualPosition{ control_pressed ? 0u : _visual_cursor.line, 0u };
                     if (shift_pressed)
                     {
-                        const auto start = any_text_selected() ? _selection_start : visual_to_logical(_visual_cursor);
-                        highlight(start, visual_to_logical(end));
+                        highlight(any_text_selected() ? _selection_start : _logical_cursor, visual_to_logical(end));
                     }
                     else
                     {
                         clear_highlight();
                     }
-                    move_visual_cursor_position(end.line, end.position);
+                    move_visual_cursor_position(end);
                     break;
                 }
                 // VK_LEFT
@@ -537,24 +509,23 @@ namespace trview
                 {
                     if (_visual_cursor.position > 0)
                     {
-                        auto end = CursorPoint { _visual_cursor.line, _visual_cursor.position - 1 };
+                        auto end = VisualPosition { _visual_cursor.line, _visual_cursor.position - 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
 
                             if (control_pressed)
                             {
-                                const auto logical = visual_to_logical(_visual_cursor);
                                 bool found_non_whitespace = false;
-                                const auto& text = _text[logical.line];
-                                for (uint32_t i = logical.position - 1; i >= 0; --i)
+                                const auto& text = _text[_logical_cursor.line];
+                                for (uint32_t i = _logical_cursor.position - 1; i >= 0; --i)
                                 {
                                     if (i == 0)
                                     {
-                                        end = logical_to_visual({ logical.line, 0u });
+                                        end = logical_to_visual({ _logical_cursor.line, 0u });
                                         break;
                                     }
 
@@ -562,7 +533,7 @@ namespace trview
                                     {
                                         if (found_non_whitespace)
                                         {
-                                            end = logical_to_visual({ logical.line, i + 1});
+                                            end = logical_to_visual({ _logical_cursor.line, i + 1});
                                             break;
                                         }
                                     }
@@ -582,7 +553,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(end.line, end.position);
+                            move_visual_cursor_position(end);
                         }
                     }
                     else if (_visual_cursor.line > 0)
@@ -591,7 +562,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, visual_to_logical({ _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length }));
                         }
@@ -602,7 +573,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length);
+                            move_visual_cursor_position({ _visual_cursor.line - 1, _line_structure[_visual_cursor.line - 1].length });
                         }
                     }
                     break;
@@ -616,7 +587,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start,
                                 visual_to_logical({ _visual_cursor.line - 1, find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width) }));
@@ -627,8 +598,8 @@ namespace trview
                             clear_highlight();
                         }
 
-                        move_visual_cursor_position(_visual_cursor.line - 1, 
-                            find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
+                        move_visual_cursor_position({ _visual_cursor.line - 1,
+                            find_nearest_index(_visual_cursor.line - 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
                     }
                     break;
                 }
@@ -637,24 +608,23 @@ namespace trview
                 {
                     if (_visual_cursor.position < _line_structure[_visual_cursor.line].length)
                     {
-                        auto end = CursorPoint{ _visual_cursor.line, _visual_cursor.position + 1 };
+                        auto end = VisualPosition{ _visual_cursor.line, _visual_cursor.position + 1 };
                         if (shift_pressed)
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
 
                             if (control_pressed)
                             {
-                                const auto logical = visual_to_logical(_visual_cursor);
                                 bool found_non_whitespace = false;
-                                const auto& text = _text[logical.line];
-                                for (uint32_t i = logical.position; i < text.size(); ++i)
+                                const auto& text = _text[_logical_cursor.line];
+                                for (uint32_t i = _logical_cursor.position; i < text.size(); ++i)
                                 {
                                     if (i == text.size() - 1)
                                     {
-                                        end = logical_to_visual({ logical.line, static_cast<uint32_t>(text.size()) });
+                                        end = logical_to_visual({ _logical_cursor.line, static_cast<uint32_t>(text.size()) });
                                         break;
                                     }
 
@@ -662,7 +632,7 @@ namespace trview
                                     {
                                         if (found_non_whitespace)
                                         {
-                                            end = logical_to_visual({ logical.line, i });
+                                            end = logical_to_visual({ _logical_cursor.line, i });
                                             break;
                                         }
                                     }
@@ -682,7 +652,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(end.line, end.position);
+                            move_visual_cursor_position(end);
                         }
                     }
                     else if ((_visual_cursor.line + 1) < _line_structure.size())
@@ -691,7 +661,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, visual_to_logical({ _visual_cursor.line + 1, 0u }));
                         }
@@ -702,7 +672,7 @@ namespace trview
                         }
                         else
                         {
-                            move_visual_cursor_position(_visual_cursor.line + 1, 0u);
+                            move_visual_cursor_position({ _visual_cursor.line + 1, 0u });
                         }
                     }
                     break;
@@ -716,7 +686,7 @@ namespace trview
                         {
                             if (!any_text_selected())
                             {
-                                _selection_start = _visual_cursor;
+                                _selection_start = _logical_cursor;
                             }
                             highlight(_selection_start, 
                                 visual_to_logical({_visual_cursor.line + 1, find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)}));
@@ -727,8 +697,8 @@ namespace trview
                             highlight(_selection_end, _selection_end);
                         }
 
-                        move_visual_cursor_position(_visual_cursor.line + 1,
-                            find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width));
+                        move_visual_cursor_position({ _visual_cursor.line + 1,
+                            find_nearest_index(_visual_cursor.line + 1, line->measure_text(line->text().substr(0, _visual_cursor.position)).width)});
                     }
                     break;
                 }
@@ -787,7 +757,7 @@ namespace trview
             highlight(_selection_start, _selection_start);
         }
 
-        void TextArea::highlight(CursorPoint start, CursorPoint end)
+        void TextArea::highlight(LogicalPosition start, LogicalPosition end)
         {
             _selection_start = start;
             _selection_end = end;
@@ -811,8 +781,8 @@ namespace trview
 
             const auto earliest = start < end ? start : end;
             const auto latest = start < end ? end : start;
-            const CursorPoint visual_start = logical_to_visual(earliest);
-            const CursorPoint visual_end = logical_to_visual(latest);
+            const VisualPosition visual_start = logical_to_visual(earliest);
+            const VisualPosition visual_end = logical_to_visual(latest);
             for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
             {
                 auto line = _lines[i];
@@ -855,14 +825,14 @@ namespace trview
         {
             const auto lowest = _selection_start < _selection_end ? _selection_start : _selection_end;
             highlight(lowest, lowest);
-            move_visual_cursor_position(lowest.line, lowest.position);
+            move_visual_cursor_position(logical_to_visual(lowest));
         }
 
         void TextArea::move_to_latest_highlight()
         {
             const auto highest = _selection_start < _selection_end ? _selection_end : _selection_start;
             highlight(highest, highest);
-            move_visual_cursor_position(highest.line, highest.position);
+            move_visual_cursor_position(logical_to_visual(highest));
         }
 
         void TextArea::update_cursor()
@@ -886,8 +856,12 @@ namespace trview
             on_text_changed(text());
         }
 
-        TextArea::CursorPoint TextArea::logical_to_visual(CursorPoint point) const
+        TextArea::VisualPosition TextArea::logical_to_visual(TextArea::LogicalPosition point) const
         {
+            if (_line_structure.empty())
+            {
+                return { 0u, 0u };
+            }
             const auto iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry)
                 {
                     return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
@@ -895,12 +869,12 @@ namespace trview
             return { static_cast<uint32_t>(iter - _line_structure.begin()), point.position - iter->start };
         }
 
-        TextArea::CursorPoint TextArea::visual_to_logical(CursorPoint point) const
+        TextArea::LogicalPosition TextArea::visual_to_logical(TextArea::VisualPosition point) const
         {
             return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
         }
 
-        TextArea::CursorPoint TextArea::position_to_visual(const Point& position) const
+        TextArea::VisualPosition TextArea::position_to_visual(const Point& position) const
         {
             const Point clamped(std::clamp(0.0f, position.x, size().width), 
                 std::max(position.y, _lines[0]->position().y));
@@ -921,10 +895,8 @@ namespace trview
 
         void TextArea::delete_selection()
         {
-            const auto start = _selection_start;
-            const auto end = _selection_end;
-            const auto earlier = start < end ? start : end;
-            const auto later = start < end ? end : start;
+            const auto earlier = _selection_start < _selection_end ? _selection_start : _selection_end;
+            const auto later = _selection_start < _selection_end ? _selection_end : _selection_start;
 
             for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
             {
@@ -952,8 +924,7 @@ namespace trview
             }
 
             highlight(earlier, earlier);
-            auto earlier_visual = logical_to_visual(earlier);
-            move_visual_cursor_position(earlier_visual.line, earlier_visual.position);
+            move_visual_cursor_position(logical_to_visual(earlier));
             notify_text_updated();
             update_structure();
         }
@@ -965,10 +936,8 @@ namespace trview
 
         std::wstring TextArea::selected_text() const
         {
-            const auto start = _selection_start;
-            const auto end = _selection_end;
-            const auto earlier = start < end ? start : end;
-            const auto later = start < end ? end : start;
+            const auto earlier = _selection_start < _selection_end ? _selection_start : _selection_end;
+            const auto later = _selection_start < _selection_end ? _selection_end : _selection_start;
 
             std::wstring output;
             for (auto i = earlier.line; i <= later.line; ++i)

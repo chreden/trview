@@ -23,4 +23,9 @@ namespace trview
     /// @param value The value to convert.
     /// @returns The converted string.
     std::wstring format_binary(uint16_t value);
+
+    /// Check whether text is a link.
+    /// @param value The value to check.
+    /// @returns Whether it is a link.
+    bool is_link(const std::wstring& text);
 }

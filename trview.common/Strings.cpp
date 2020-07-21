@@ -36,4 +36,9 @@ namespace trview
         const auto result = stream.str();
         return std::wstring(result.rbegin(), result.rend());
     }
+
+    bool is_link(const std::wstring& text)
+    {
+        return text.find(L"http://") == 0 || text.find(L"https://") == 0 || text.find(L"www.") == 0;
+    }
 }
