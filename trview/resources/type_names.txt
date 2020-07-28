@@ -2944,6 +2944,15 @@
 				"id": 402,
 				"name": "AI Follow"
 			}, {
+				"id": 404,
+				"name": "AI X1"
+			}, {
+				"id": 405,
+				"name": "AI X2"
+			}, {
+				"id": 406,
+				"name": "Lara Start Pos"
+			}, {
 				"id": 408,
 				"name": "Trigger triggerer"
 			}, {
@@ -3674,6 +3683,15 @@
 			}, {
 				"id": 383,
 				"name": "AIPatrol2"
+			}, {
+				"id": 384,
+				"name": "AI X1"
+			}, {
+				"id": 385,
+				"name": "AI X2"
+			}, {
+				"id": 386,
+				"name": "Lara Start Pos"
 			}, {
 				"id": 387,
 				"name": "Teleporter"
