@@ -875,6 +875,21 @@ namespace trlevel
         if (_version >= LevelVersion::Tomb4)
         {
             std::vector<tr4_ai_object> ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
+            std::transform(ai_objects.begin(), ai_objects.end(), std::back_inserter(_entities),
+                [](const auto& ai_object)
+                {
+                    tr2_entity entity {};
+                    entity.TypeID = ai_object.type_id;
+                    entity.Room = ai_object.room;
+                    entity.x = ai_object.x;
+                    entity.y = ai_object.y;
+                    entity.z = ai_object.z;
+                    entity.Angle = ai_object.angle;
+                    entity.Intensity1 = 0;
+                    entity.Intensity2 = ai_object.ocb;
+                    entity.Flags = ai_object.flags;
+                    return entity;
+                });
         }
 
         if (_version < LevelVersion::Tomb4)
