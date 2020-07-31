@@ -68,6 +68,8 @@ namespace trview
             virtual bool copy(std::wstring& output) override;
             virtual bool cut(std::wstring& output) override;
             virtual bool clicked(Point position) override;
+            bool read_only() const;
+            void set_read_only(bool value);
         private:
             struct LineEntry
             {
@@ -169,6 +171,7 @@ namespace trview
             // The second pin point of the selection. Not necessarily later in the text.
             LogicalPosition _selection_end;
             bool _dragging{ false };
+            bool _read_only{ false };
         };
     }
 }
