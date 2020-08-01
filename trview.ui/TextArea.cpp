@@ -34,6 +34,11 @@ namespace trview
 
         bool TextArea::paste(const std::wstring& text)
         {
+            if (read_only())
+            {
+                return false;
+            }
+
             if (_text.empty())
             {
                 _text.push_back({});
@@ -97,7 +102,7 @@ namespace trview
 
         bool TextArea::cut(std::wstring& output)
         {
-            if (!any_text_selected())
+            if (read_only() || !any_text_selected())
             {
                 return false;
             }
@@ -229,6 +234,11 @@ namespace trview
                 // VK_BACK
                 case 0x8:
                 {
+                    if (read_only())
+                    {
+                        return false;
+                    }
+
                     if (any_text_selected())
                     {
                         delete_selection();
@@ -255,7 +265,7 @@ namespace trview
                 // VK_TAB
                 case 0x9:
                 {
-                    if (_mode == Mode::SingleLine)
+                    if (_mode == Mode::SingleLine || read_only())
                     {
                         on_tab(text());
                     }
@@ -274,6 +284,11 @@ namespace trview
                 // VK_RETURN
                 case 0xD:
                 {
+                    if (read_only())
+                    {
+                        return false;
+                    }
+
                     if (any_text_selected())
                     {
                         delete_selection();
@@ -324,6 +339,11 @@ namespace trview
                 }
                 default:
                 {
+                    if (read_only())
+                    {
+                        return false;
+                    }
+
                     if (any_text_selected())
                     {
                         delete_selection();
@@ -705,6 +725,11 @@ namespace trview
                 // VK_DELETE
                 case 0x2E:
                 {
+                    if (read_only())
+                    {
+                        return false;
+                    }
+
                     if (any_text_selected())
                     {
                         delete_selection();
@@ -963,6 +988,16 @@ namespace trview
                 }
             }
             return output;
+        }
+
+        bool TextArea::read_only() const
+        {
+            return _read_only;
+        }
+
+        void TextArea::set_read_only(bool value)
+        {
+            _read_only = value;
         }
     }
 }
