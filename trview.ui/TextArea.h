@@ -78,6 +78,7 @@ namespace trview
                 uint32_t line;
                 uint32_t start;
                 uint32_t length;
+                std::wstring text;
             };
 
             struct LogicalPosition
@@ -175,7 +176,7 @@ namespace trview
             LogicalPosition _selection_end;
             bool _dragging{ false };
             bool _read_only{ false };
-            int32_t _scroll_offset{ 0u };
+            int32_t _scroll_offset{ 0 };
         };
     }
 }

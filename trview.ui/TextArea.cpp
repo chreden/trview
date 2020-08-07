@@ -19,6 +19,11 @@ namespace trview
             _cursor->set_visible(focused());
             _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour::Grey));
             set_handles_input(true);
+
+            // Create all line labels to fill the area.
+            const auto line_height = 14;
+            auto line_count = _area->size().height / line_height;
+            _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
         }
 
         void TextArea::gained_focus()
@@ -188,8 +193,9 @@ namespace trview
                             ++split_length;
                         }
 
-                        line_label->set_text(line.substr(0, split_length));
-                        _line_structure.push_back({ index, character_count, split_length });
+                        auto text = line.substr(0, split_length);
+                        line_label->set_text(text);
+                        _line_structure.push_back({ index, character_count, split_length, text });
                         lines_to_process.push(line.substr(split_length));
                         character_count += split_length;
                     }
@@ -197,7 +203,7 @@ namespace trview
                     {
                         // No splitting required.
                         line_label->set_text(line);
-                        _line_structure.push_back({ index, character_count, static_cast<uint32_t>(line.size()) });
+                        _line_structure.push_back({ index, character_count, static_cast<uint32_t>(line.size()), line });
                     }
                 }
             };
@@ -208,15 +214,16 @@ namespace trview
                 process_line(i, _text[i]);
             }
 
-            // Remove any extra lines
-            if (_lines.size() > _line_structure.size())
+            for (auto i = _scroll_offset, j = 0; i < _line_structure.size() || j < _lines.size(); ++i, ++j)
             {
-                for (auto i = _line_structure.size(); i < _lines.size(); ++i)
+                if (i < _line_structure.size())
                 {
-                    _area->remove_child(_lines[i]);
+                    _lines[j]->set_text(_line_structure[i].text);
                 }
-                _lines.erase(_lines.begin() + _line_structure.size(), _lines.end());
-                on_hierarchy_changed();
+                else
+                {
+                    _lines[j]->set_text(L"");
+                }
             }
 
             _visual_cursor = logical_to_visual(_logical_cursor);
@@ -769,10 +776,6 @@ namespace trview
 
         Label* TextArea::current_line()
         {
-            if (_lines.empty())
-            {
-                _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
-            }
             return _lines[_visual_cursor.line];
         }
 
