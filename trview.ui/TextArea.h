@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StackPanel.h"
+#include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
 
 namespace trview
@@ -68,6 +69,7 @@ namespace trview
             virtual bool copy(std::wstring& output) override;
             virtual bool cut(std::wstring& output) override;
             virtual bool clicked(Point position) override;
+            virtual bool scroll(int delta) override;
             bool read_only() const;
             void set_read_only(bool value);
         private:
@@ -159,6 +161,7 @@ namespace trview
             std::vector<Label*> _lines;
             Colour              _text_colour;
             Window*             _cursor;
+            Scrollbar*          _scrollbar;
             Mode                _mode{ Mode::MultiLine };
             bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
@@ -172,6 +175,7 @@ namespace trview
             LogicalPosition _selection_end;
             bool _dragging{ false };
             bool _read_only{ false };
+            int32_t _scroll_offset{ 0u };
         };
     }
 }

@@ -13,10 +13,11 @@ namespace trview
         TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
             : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
-            _area = add_child(std::make_unique<StackPanel>(size, background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+            _area = add_child(std::make_unique<StackPanel>(Size(size.width - 10, size.height), background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
             _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
+            _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour::Grey));
             set_handles_input(true);
         }
 
@@ -131,6 +132,13 @@ namespace trview
             return true;
         }
 
+        bool TextArea::scroll(int delta)
+        {
+            _scroll_offset = std::max(0, _scroll_offset + (delta > 0 ? -1 : 1));
+            update_structure();
+            return true;
+        }
+
         std::wstring TextArea::word_at_cursor(LogicalPosition point) const
         {
             auto& line = _text[point.line];
@@ -213,6 +221,7 @@ namespace trview
 
             _visual_cursor = logical_to_visual(_logical_cursor);
             update_cursor();
+            _scrollbar->set_range(0, 20, _lines.size());
         }
 
         bool TextArea::key_char(wchar_t character)
