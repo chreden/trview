@@ -214,7 +214,8 @@ namespace trview
                 process_line(i, _text[i]);
             }
 
-            for (auto i = _scroll_offset, j = 0; i < _line_structure.size() || j < _lines.size(); ++i, ++j)
+            _scroll_offset = std::max(0, std::min(_scroll_offset, static_cast<int32_t>(_line_structure.size()) - 1));
+            for (auto i = _scroll_offset, j = 0; i  < _line_structure.size() || j < _lines.size(); ++i, ++j)
             {
                 if (i < _line_structure.size())
                 {
