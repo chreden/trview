@@ -22,8 +22,11 @@ namespace trview
 
             // Create all line labels to fill the area.
             const auto line_height = 14;
-            auto line_count = _area->size().height / line_height;
-            _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+            const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
+            for (auto i = 0; i < line_count; ++i)
+            {
+                _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+            }
         }
 
         void TextArea::gained_focus()
@@ -160,18 +163,8 @@ namespace trview
 
         void TextArea::update_structure()
         {
-            uint32_t count = 0;
-
-            // Gets the next line or add a new one if required.
-            auto get_line = [&]()
-            {
-                if (_lines.size() <= count)
-                {
-                    _lines.push_back(_area->add_child(std::make_unique<Label>(Size(size().width, 14), background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
-                    on_hierarchy_changed();
-                }
-                return _lines[count++];
-            };
+            // Use the first line label to measure text.
+            const auto line_label = _lines[0];
 
             auto process_line = [&](uint32_t index, const std::wstring& text_line)
             {
@@ -184,7 +177,6 @@ namespace trview
                     auto line = lines_to_process.front();
                     lines_to_process.pop();
 
-                    auto line_label = get_line();
                     if (_mode == Mode::MultiLine && line_label->measure_text(line).width > line_label->size().width)
                     {
                         auto split_length = 0u;
@@ -194,7 +186,6 @@ namespace trview
                         }
 
                         auto text = line.substr(0, split_length);
-                        line_label->set_text(text);
                         _line_structure.push_back({ index, character_count, split_length, text });
                         lines_to_process.push(line.substr(split_length));
                         character_count += split_length;
@@ -202,7 +193,6 @@ namespace trview
                     else
                     {
                         // No splitting required.
-                        line_label->set_text(line);
                         _line_structure.push_back({ index, character_count, static_cast<uint32_t>(line.size()), line });
                     }
                 }
@@ -214,8 +204,14 @@ namespace trview
                 process_line(i, _text[i]);
             }
 
+            // Clear everything first.
+            for (auto line : _lines)
+            {
+                line->set_text(L"");
+            }
+
             _scroll_offset = std::max(0, std::min(_scroll_offset, static_cast<int32_t>(_line_structure.size()) - 1));
-            for (auto i = _scroll_offset, j = 0; i  < _line_structure.size() || j < _lines.size(); ++i, ++j)
+            for (auto i = _scroll_offset, j = 0; i  < _line_structure.size() && j < _lines.size(); ++i, ++j)
             {
                 if (i < _line_structure.size())
                 {
@@ -777,7 +773,12 @@ namespace trview
 
         Label* TextArea::current_line()
         {
-            return _lines[_visual_cursor.line];
+            if (_visual_cursor.line >= _scroll_offset &&
+                _visual_cursor.line < _scroll_offset + _lines.size())
+            {
+                return _lines[_visual_cursor.line - _scroll_offset];
+            }
+            return nullptr;
         }
 
         void TextArea::new_line()
@@ -823,6 +824,11 @@ namespace trview
             const VisualPosition visual_end = logical_to_visual(latest);
             for (uint32_t i = visual_start.line; i <= visual_end.line; ++i)
             {
+                if (i >= _lines.size())
+                {
+                    continue;
+                }
+
                 auto line = _lines[i];
                 auto highlight = line->child_elements().back();
 
@@ -877,8 +883,13 @@ namespace trview
         {
             // Get the current line and the text it is rendering.
             auto line = current_line();
-            auto text = line->text();
+            if (line == nullptr)
+            {
+                _cursor->set_visible(false);
+                return;
+            }
 
+            auto text = line->text();
             // Place the cursor based on the current cursor position and the size of the text as it would be renderered.
             const auto size = line->measure_text(text.substr(0, _visual_cursor.position));
             const auto start = _alignment == graphics::TextAlignment::Left ?
@@ -909,7 +920,13 @@ namespace trview
 
         TextArea::LogicalPosition TextArea::visual_to_logical(TextArea::VisualPosition point) const
         {
-            return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
+            if (_line_structure.empty())
+            {
+                return { 0, 0 };
+            }
+
+            const auto index = std::min<uint32_t>(_line_structure.size() - 1, point.line + _scroll_offset);
+            return { _line_structure[index].line, _line_structure[index].start + point.position };
         }
 
         TextArea::VisualPosition TextArea::position_to_visual(const Point& position) const
