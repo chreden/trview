@@ -226,7 +226,7 @@ namespace trview
 
             _visual_cursor = logical_to_visual(_logical_cursor);
             update_cursor();
-            _scrollbar->set_range(0, 20, _lines.size());
+            _scrollbar->set_range(_scroll_offset, std::min<int32_t>(_scroll_offset + _lines.size(), _line_structure.size()), _line_structure.size());
         }
 
         bool TextArea::key_char(wchar_t character)
