@@ -459,8 +459,9 @@ namespace trview
 
         void TextArea::move_visual_cursor_position(TextArea::VisualPosition position)
         {
-            _visual_cursor.line = std::clamp<uint32_t>(position.line, 0u, static_cast<int32_t>(_line_structure.size()) - 1);
-            _visual_cursor.position = std::clamp<uint32_t>(position.position, 0u, static_cast<int32_t>(_line_structure[_visual_cursor.line].length));
+            const auto visual_line = std::min<uint32_t>(position.line, _lines.size());
+            _visual_cursor.line = visual_line;
+            _visual_cursor.position = std::min<uint32_t>(position.position, _lines[visual_line]->text().size());
             _logical_cursor = visual_to_logical(position);
         }
 
@@ -773,10 +774,9 @@ namespace trview
 
         Label* TextArea::current_line()
         {
-            if (_visual_cursor.line >= _scroll_offset &&
-                _visual_cursor.line < _scroll_offset + _lines.size())
+            if (_visual_cursor.line < _lines.size())
             {
-                return _lines[_visual_cursor.line - _scroll_offset];
+                return _lines[_visual_cursor.line];
             }
             return nullptr;
         }
@@ -915,7 +915,7 @@ namespace trview
                 {
                     return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
                 });
-            return { static_cast<uint32_t>(iter - _line_structure.begin()), point.position - iter->start };
+            return { static_cast<uint32_t>(iter - _line_structure.begin()) - _scroll_offset, point.position - iter->start };
         }
 
         TextArea::LogicalPosition TextArea::visual_to_logical(TextArea::VisualPosition point) const
