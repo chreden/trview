@@ -75,16 +75,16 @@ namespace trview
         private:
             struct LineEntry
             {
-                uint32_t line;
-                uint32_t start;
-                uint32_t length;
+                int32_t line;
+                int32_t start;
+                int32_t length;
                 std::wstring text;
             };
 
             struct LogicalPosition
             {
-                uint32_t line{ 0u };
-                uint32_t position{ 0u };
+                int32_t line{ 0u };
+                int32_t position{ 0u };
 
                 bool operator==(const LogicalPosition& other) const
                 {
@@ -112,8 +112,8 @@ namespace trview
 
             struct VisualPosition
             {
-                uint32_t line{ 0u };
-                uint32_t position{ 0u };
+                int32_t line{ 0 };
+                int32_t position{ 0 };
 
                 bool operator==(const VisualPosition& other) const
                 {
@@ -144,7 +144,7 @@ namespace trview
             void update_cursor();
             void notify_text_updated();
             void move_visual_cursor_position(VisualPosition position);
-            uint32_t find_nearest_index(uint32_t line, float x) const;
+            int32_t find_nearest_index(int32_t line, float x) const;
             void new_line();
             void clear_highlight();
             void highlight(LogicalPosition start, LogicalPosition end);
