@@ -462,7 +462,7 @@ namespace trview
         {
             const auto visual_line = std::min<uint32_t>(position.line, _lines.size());
             _visual_cursor.line = visual_line;
-            _visual_cursor.position = std::min<uint32_t>(position.position, _lines[visual_line]->text().size());
+            _visual_cursor.position = std::min<uint32_t>(position.position, _line_structure[visual_line].length);
             _logical_cursor = visual_to_logical(position);
         }
 
