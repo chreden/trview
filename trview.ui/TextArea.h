@@ -157,6 +157,7 @@ namespace trview
             bool any_text_selected() const;
             std::wstring selected_text() const;
             std::wstring word_at_cursor(LogicalPosition point) const;
+            void scroll_cursor_into_view(bool down);
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
