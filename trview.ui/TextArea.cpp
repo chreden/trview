@@ -18,6 +18,7 @@ namespace trview
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
             _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour::Grey));
+            _scrollbar->set_visible(false);
             set_handles_input(true);
 
             // Create all line labels to fill the area.
@@ -182,6 +183,11 @@ namespace trview
 
             update_structure();
             highlight(_selection_start, _selection_end);
+        }
+
+        void TextArea::set_scrollbar_visible(bool value)
+        {
+            _scrollbar->set_visible(value);
         }
 
         void TextArea::update_structure()

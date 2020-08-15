@@ -72,6 +72,7 @@ namespace trview
             virtual bool scroll(int delta) override;
             bool read_only() const;
             void set_read_only(bool value);
+            void set_scrollbar_visible(bool value);
         private:
             struct LineEntry
             {
