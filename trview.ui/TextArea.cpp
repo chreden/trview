@@ -482,10 +482,14 @@ namespace trview
 
         void TextArea::move_visual_cursor_position(TextArea::VisualPosition position)
         {
-            // const auto visual_line = std::min<uint32_t>(position.line, _lines.size());
-            const auto visual_line = position.line;
+            const auto visual_line = std::min<int32_t>(position.line, static_cast<int32_t>(_line_structure.size()) - 1);
+            if (visual_line >= _line_structure.size())
+            {
+                return;
+            }
+
             _visual_cursor.line = visual_line;
-            _visual_cursor.position = std::min<uint32_t>(position.position, _line_structure[visual_line].length);
+            _visual_cursor.position = std::min<int32_t>(position.position, _line_structure[visual_line].length);
             _logical_cursor = visual_to_logical(position);
         }
 
@@ -493,7 +497,7 @@ namespace trview
         {
             if (index < 0 || index >= _line_structure.size())
             {
-                return 0;
+                return _line_structure.back().length;
             }
 
             auto line = _lines[0];
@@ -531,7 +535,6 @@ namespace trview
                 return true;
             }
 
-            // auto line = current_line();
             auto line = _lines[0];
 
             switch (key) 
@@ -949,10 +952,15 @@ namespace trview
             {
                 return { 0u, 0u };
             }
+
             const auto iter = std::find_if(_line_structure.begin(), _line_structure.end(), [&](const auto& entry)
                 {
                     return point.line == entry.line && point.position >= entry.start && point.position <= entry.start + entry.length;
                 });
+            if (iter == _line_structure.end())
+            {
+                return { static_cast<int32_t>(_line_structure.size() - 1), _line_structure.back().length };
+            }
             return { static_cast<int32_t>(iter - _line_structure.begin()), point.position - iter->start };
         }
 
@@ -963,8 +971,11 @@ namespace trview
                 return { 0, 0 };
             }
 
-            const auto index = std::min<int32_t>(_line_structure.size() - 1, point.line);
-            return { _line_structure[index].line, _line_structure[index].start + point.position };
+            if (point.line < _line_structure.size())
+            {
+                return { _line_structure[point.line].line, _line_structure[point.line].start + point.position };
+            }
+            return { static_cast<int32_t>(_line_structure.size()) - 1, _line_structure.back().length };
         }
 
         TextArea::VisualPosition TextArea::position_to_visual(const Point& position) const
@@ -1017,9 +1028,9 @@ namespace trview
             }
 
             highlight(earlier, earlier);
+            update_structure();
             move_visual_cursor_position(logical_to_visual(earlier));
             notify_text_updated();
-            update_structure();
         }
 
         bool TextArea::any_text_selected() const
