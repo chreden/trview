@@ -8,6 +8,7 @@
 #include <memory>
 #include <algorithm>
 #include <map>
+#include <iterator>
 
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>

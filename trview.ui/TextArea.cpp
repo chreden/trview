@@ -1010,6 +1010,11 @@ namespace trview
 
             for (int i = later.line; i >= static_cast<int>(earlier.line); --i)
             {
+                if (i >= _text.size())
+                {
+                    continue;
+                }
+
                 if (i == later.line)
                 {
                     if (i == earlier.line)
@@ -1025,7 +1030,10 @@ namespace trview
                 {
                     _text[i].erase(_text[i].begin() + earlier.position, _text[i].end());
                     _text[i] += _text[i + 1];
-                    _text.erase(_text.begin() + i + 1);
+                    if (i + 1 < _text.size())
+                    {
+                        _text.erase(_text.begin() + i + 1);
+                    }
                 }
                 else
                 {
