@@ -4,7 +4,7 @@ trview is a level visualiser for Tomb Raider 1 - 5 made with speedrunning
 in mind. This program is useful to quickly check how the rooms are laid out,
 see the triggers present on them and analyse route possibilities.
 
-![Screenshot](https://i.imgur.com/irC0Udm.png)
+![Screenshot](https://i.imgur.com/DuSKfC9.png)
 
 ## License
 
