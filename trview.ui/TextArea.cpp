@@ -96,6 +96,7 @@ namespace trview
 
             notify_text_updated();
             update_structure();
+            scroll_cursor_into_view(true);
             return true;
         }
 
@@ -400,6 +401,7 @@ namespace trview
 
             notify_text_updated();
             update_structure();
+            scroll_cursor_into_view(true);
             return true;
         }
 
