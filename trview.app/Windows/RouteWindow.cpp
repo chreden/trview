@@ -314,6 +314,7 @@ namespace trview
 
         auto notes_area = std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
         _notes_area = notes_box->add_child(std::move(notes_area));
+        _notes_area->set_scrollbar_visible(true);
 
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
         right_panel->add_child(std::move(notes_box));

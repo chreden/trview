@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StackPanel.h"
+#include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
 
 namespace trview
@@ -68,20 +69,23 @@ namespace trview
             virtual bool copy(std::wstring& output) override;
             virtual bool cut(std::wstring& output) override;
             virtual bool clicked(Point position) override;
+            virtual bool scroll(int delta) override;
             bool read_only() const;
             void set_read_only(bool value);
+            void set_scrollbar_visible(bool value);
         private:
             struct LineEntry
             {
-                uint32_t line;
-                uint32_t start;
-                uint32_t length;
+                int32_t line;
+                int32_t start;
+                int32_t length;
+                std::wstring text;
             };
 
             struct LogicalPosition
             {
-                uint32_t line{ 0u };
-                uint32_t position{ 0u };
+                int32_t line{ 0u };
+                int32_t position{ 0u };
 
                 bool operator==(const LogicalPosition& other) const
                 {
@@ -109,8 +113,8 @@ namespace trview
 
             struct VisualPosition
             {
-                uint32_t line{ 0u };
-                uint32_t position{ 0u };
+                int32_t line{ 0 };
+                int32_t position{ 0 };
 
                 bool operator==(const VisualPosition& other) const
                 {
@@ -141,7 +145,7 @@ namespace trview
             void update_cursor();
             void notify_text_updated();
             void move_visual_cursor_position(VisualPosition position);
-            uint32_t find_nearest_index(uint32_t line, float x) const;
+            int32_t find_nearest_index(int32_t line, float x) const;
             void new_line();
             void clear_highlight();
             void highlight(LogicalPosition start, LogicalPosition end);
@@ -154,11 +158,13 @@ namespace trview
             bool any_text_selected() const;
             std::wstring selected_text() const;
             std::wstring word_at_cursor(LogicalPosition point) const;
+            void scroll_cursor_into_view(bool down);
 
             StackPanel*         _area;
             std::vector<Label*> _lines;
             Colour              _text_colour;
             Window*             _cursor;
+            Scrollbar*          _scrollbar;
             Mode                _mode{ Mode::MultiLine };
             bool                _focused{ false };
             graphics::TextAlignment _alignment{ graphics::TextAlignment::Left };
@@ -172,6 +178,7 @@ namespace trview
             LogicalPosition _selection_end;
             bool _dragging{ false };
             bool _read_only{ false };
+            int32_t _scroll_offset{ 0 };
         };
     }
 }
