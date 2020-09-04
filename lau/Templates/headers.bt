@@ -1,0 +1,22 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Header
+{
+    uint values[25];
+    uint indices_uv_offset;
+};
+
+Header can;
+Header cheese;
+

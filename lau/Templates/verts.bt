@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Vert
+{
+    short x;
+    short y;
+    short z;
+    short a; // don't know what a b c d does.
+    short b;
+    short c;
+    short d;
+    short e;
+};
+
+while(!FEof())
+{
+    Vert vert;
+}
