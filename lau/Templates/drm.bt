@@ -59,7 +59,8 @@ struct Vertex
 
 struct Mesh(uint32 start)
 {
-    uint32 index_count;
+    uint16 index_count;
+    uint16 unknown_1;
     uint16 texture_id;
     uint16 unknown[5];
     uint32 end_of_mesh;
