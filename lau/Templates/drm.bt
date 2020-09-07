@@ -17,7 +17,8 @@ enum <uint32> SectionType
     Section = 0,
     Texture = 5,
     Audio = 6,
-    Trigger = 7
+    Trigger = 7,
+    WorldMesh = 10
 };
 
 
@@ -113,6 +114,25 @@ struct FileHeader(int extra, int size)
     byte unknown_2[size - 10];
 };
 
+struct WorldVertex
+{
+    int16 x;
+    int16 y;
+    int16 z;
+    int16 a;
+    int16 b;
+    int16 c;
+    int16 d;
+    int16 e;
+    int16 f;
+    int16 g;
+};
+
+struct WorldMeshData(int length)
+{
+    WorldVertex vertex[length / 20];
+};
+
 typedef SectionData AudioData;
 typedef SectionData TriggerData;
 typedef SectionData UnknownData;
@@ -135,9 +155,16 @@ for (i = 0; i < number_of_sections; ++i)
                 FileHeader data(section_headers[i].preamble / 32, section_headers[i].length);
                 has_model = data.flags[1];
             }
-            else if (zero_secs == 1 && has_model)
+            else if (zero_secs == 1)
             {
-                VertexData data(section_headers[i].preamble / 32, section_headers[i].length);
+                if (has_model)
+                {
+                    VertexData data(section_headers[i].preamble / 32, section_headers[i].length);
+                }
+                else
+                {
+                    WorldMeshData data(section_headers[i].length);
+                }
             }
             else
             {
