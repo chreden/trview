@@ -1,6 +1,5 @@
 #include "drm.h"
 #include <fstream>
-#include <vector>
 
 namespace trview
 {
@@ -25,6 +24,12 @@ namespace trview
                 uint32_t preamble; // extra leading bits 
                 uint32_t id;
                 uint32_t separator;
+            };
+
+            struct FileHeader
+            {
+                uint16_t flags[4];
+                uint16_t id;
             };
 #pragma pack(pop)
         }
@@ -54,6 +59,11 @@ namespace trview
             return data;
         }
 
+        void skip(std::istream& file, uint32_t size)
+        {
+            file.seekg(size, std::ios::cur);
+        }
+
         std::unique_ptr<Drm> load_drm(const std::wstring& filename)
         {
             std::ifstream file(filename, std::ios::binary);
@@ -67,6 +77,56 @@ namespace trview
 
             uint32_t sections = read<uint32_t>(file);
             std::vector<SectionHeader> headers = read_vector<SectionHeader>(file, sections);
+
+            FileHeader file_header;
+
+            uint32_t zero_sections = 0;
+            for (const auto& header : headers)
+            {
+                switch (header.type)
+                {
+                    case SectionType::Section:
+                    {
+                        if (zero_sections == 0)
+                        {
+                            skip(file, header.preamble / 32);
+                            file_header = read<FileHeader>(file);
+                            skip(file, header.length - 10);
+                        }
+                        else if (zero_sections == 1)
+                        {
+                            if (file_header.flags[1])
+                            {
+                                // Vertex data - skip for now.
+                                skip(file, header.preamble / 32);
+                                skip(file, header.length);
+                            }
+                            else
+                            {
+                                const auto num_vertices = header.length / 20;
+                                for (uint32_t i = 0; i < num_vertices; ++i)
+                                {
+                                    drm->world_mesh.push_back(read<Vertex>(file));
+                                    skip(file, 14);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            skip(file, header.preamble / 32);
+                            skip(file, header.length);
+                        }
+                        ++zero_sections;
+                        break;
+                    }
+                    default:
+                    {
+                        skip(file, header.preamble / 32);
+                        skip(file, header.length);
+                        break;
+                    }
+                }
+            }
 
             return drm;
         }
