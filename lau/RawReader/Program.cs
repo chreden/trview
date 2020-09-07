@@ -40,8 +40,7 @@ namespace RawReader
 
         static void Main(string[] args)
         {
-            var path = @"D:\Games\Steam\steamapps\common\Tomb Raider Anniversary\bigfile_unpack\default\__UNKNOWN\raw";
-            // var path = @"D:\Games\Steam\steamapps\common\Tomb Raider Anniversary\bigfile_unpack\default\pc-w";
+            var path = args[0];
             foreach (var file in Directory.GetFiles(path, "*.raw"))
             {
                 ConvertImage(file);
