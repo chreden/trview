@@ -73,7 +73,7 @@ namespace trview
             }
 
             auto drm = std::make_unique<Drm>();
-            drm->version = read<uint16_t>(file);
+            drm->version = read<uint32_t>(file);
 
             uint32_t sections = read<uint32_t>(file);
             std::vector<SectionHeader> headers = read_vector<SectionHeader>(file, sections);

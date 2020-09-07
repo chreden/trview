@@ -18,7 +18,7 @@ namespace trview
 
         struct Drm
         {
-            uint16_t version;
+            uint32_t version;
             std::vector<Vertex> world_mesh;
         };
 
