@@ -1,6 +1,7 @@
 #include "drm.h"
 #include <fstream>
 #include <unordered_set>
+#include <sstream>
 
 namespace trview
 {
@@ -65,6 +66,67 @@ namespace trview
             file.seekg(size, std::ios::cur);
         }
 
+        struct Section
+        {
+            uint32_t index;
+            SectionHeader header;
+            std::vector<uint8_t> data;
+
+            std::istringstream stream() const
+            {
+                std::string data(reinterpret_cast<const char*>(&data[0]), data.size());
+                return std::istringstream(data, std::ios::binary);
+            }
+        };
+
+        std::unordered_map<uint32_t, std::unordered_set<uint32_t>> get_links(const Section& section, std::istream& stream)
+        {
+            std::unordered_map<uint32_t, std::unordered_set<uint32_t>> links;
+            for (auto i = 0; i < section.header.preamble / 32 / 8; ++i)
+            {
+                uint32_t referenced_section = read<uint32_t>(stream) >> 3;
+                uint32_t value = read<uint32_t>(stream);
+                links[section.index].insert(referenced_section);
+            }
+            return links;
+        }
+
+        void read_file_header(Drm& drm, const std::vector<Section>& sections)
+        {
+            const auto& file_manifest_section = sections[0];
+            auto file_manifest = file_manifest_section.stream();
+            auto file_manifest_links = get_links(file_manifest_section, file_manifest);
+
+            for (int i = 0; i < 4; ++i)
+            {
+                drm.file_header.flags[i] = read<uint16_t>(file_manifest);
+            }
+            drm.file_header.id = read<uint32_t>(file_manifest);
+
+            if (!drm.file_header.flags[1])
+            {
+                // Room:
+                skip(file_manifest, 262);
+                drm.world_offset = read<Vector3>(file_manifest);
+                skip(file_manifest, 6);
+                skip(file_manifest, file_manifest_section.header.length - 290);
+            }
+            else
+            {
+                skip(file_manifest, 24);
+                uint32_t size_of_section = read<uint32_t>(file_manifest);
+                skip(file_manifest, size_of_section - 32 - 10);
+                drm.file_header.id_of_next_section = read<uint16_t>(file_manifest);
+                skip(file_manifest, 6);
+            }
+        }
+
+        const Section& find_section(const std::vector<Section>& sections, uint32_t id)
+        {
+            return *std::find_if(sections.begin(), sections.end(),
+                [id](const Section& section) { return section.header.id == id; });
+        }
+
         std::unique_ptr<Drm> load_drm(const std::wstring& filename)
         {
             std::ifstream file(filename, std::ios::binary);
@@ -76,8 +138,8 @@ namespace trview
             auto drm = std::make_unique<Drm>();
             drm->version = read<uint32_t>(file);
 
-            uint32_t sections = read<uint32_t>(file);
-            std::vector<SectionHeader> headers = read_vector<SectionHeader>(file, sections);
+            uint32_t num_sections = read<uint32_t>(file);
+            std::vector<SectionHeader> headers = read_vector<SectionHeader>(file, num_sections);
 
             uint32_t zero_sections = 0;
 
@@ -85,8 +147,18 @@ namespace trview
 
             std::unordered_map<uint32_t, std::unordered_set<uint32_t>> links;
 
+            std::vector<Section> sections;
+
             for (const auto& header : headers)
             {
+                const auto section_start = file.tellg();
+                std::vector<uint8_t> section_data(header.preamble / 8 + header.length);
+                file.read(reinterpret_cast<char*>(&section_data[0]), section_data.size());
+                sections.emplace_back(Section{ section_index, header, section_data });
+                file.seekg(section_start);
+
+#if 0
+
                 // Read the header for the section if there is one.
                 if (header.preamble > 0)
                 {
@@ -210,10 +282,26 @@ namespace trview
                         break;
                     }
                 }
+#else
                 ++section_index;
             }
 
+            // Hopefully this never happens.
+            if (sections.empty())
+            {
+                return drm;
+            }
+
+            read_file_header(*drm, sections);
+
+            auto next_section = find_section(sections, drm->file_header.id_of_next_section);
+            
+#endif
+
+
             return drm;
         }
+
+        
     }
 }

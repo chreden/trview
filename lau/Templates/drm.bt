@@ -172,8 +172,24 @@ struct FileHeader(int extra, int size)
         uint32 unknown_3;
         ushort unknown_4;
     }
+    else
+    {
+        byte unknown[24];
+        uint32 size_of_section;
+        byte unknown1[size_of_section - 40];
+        while(true)
+        {
+            if (ReadUShort() == 0xffff)
+            {
+                FSkip(4);
+                break;
+            }
 
-    byte unknown[start + extra + size - FTell()];
+            uint16 id_of_next_section;
+            // uint16 unknown2;
+            FSkip(2);
+        }
+    }
 
     // Hack to keep the old stuff working
     // FSeek(start + extra + 10);   
