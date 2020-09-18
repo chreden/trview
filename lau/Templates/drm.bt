@@ -149,13 +149,15 @@ struct OuterData
 // Information about the file in general.
 struct FileHeader(int extra, int size)
 {
-    local int start = FTell();
+    
     
     Printf("%d, extra: %d\n", i, extra);
     //SectionHeader header;
     local int number_of_headers = extra / 8;
     // FileHeaderHeader headers[number_of_headers];
     NewSectionHeader section_header[number_of_headers] <optimize=false>;
+
+    local int start = FTell();
 
     // New file header reading:
     uint16 flags[4];
@@ -171,6 +173,7 @@ struct FileHeader(int extra, int size)
         float z;
         uint32 unknown_3;
         ushort unknown_4;
+        byte unknown_2[size - (FTell() - start)];
     }
     else
     {

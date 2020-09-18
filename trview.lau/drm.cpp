@@ -294,7 +294,16 @@ namespace trview
 
             read_file_header(*drm, sections);
 
-            auto next_section = find_section(sections, drm->file_header.id_of_next_section);
+            if (drm->file_header.flags[1])
+            {
+                // Mesh
+                auto next_section = find_section(sections, drm->file_header.id_of_next_section);
+            }
+            else
+            {
+                // Level.
+                
+            }
             
 #endif
 
