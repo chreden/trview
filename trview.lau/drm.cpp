@@ -71,6 +71,7 @@ namespace trview
             uint32_t index;
             SectionHeader header;
             std::vector<uint8_t> data;
+            std::vector<std::tuple<uint32_t, uint32_t>> links;
 
             std::istringstream stream() const
             {
@@ -79,23 +80,23 @@ namespace trview
             }
         };
 
-        std::unordered_map<uint32_t, std::unordered_set<uint32_t>> get_links(const Section& section, std::istream& stream)
+        std::vector<std::tuple<uint32_t, uint32_t>> get_links(const Section& section, std::istream& stream)
         {
-            std::unordered_map<uint32_t, std::unordered_set<uint32_t>> links;
+            std::vector<std::tuple<uint32_t, uint32_t>> links;
             for (auto i = 0; i < section.header.preamble / 32 / 8; ++i)
             {
                 uint32_t referenced_section = read<uint32_t>(stream) >> 3;
                 uint32_t value = read<uint32_t>(stream);
-                links[section.index].insert(referenced_section);
+                links.push_back({ referenced_section, value });
             }
             return links;
         }
 
-        void read_file_header(Drm& drm, const std::vector<Section>& sections)
+        void read_file_header(Drm& drm, std::vector<Section>& sections)
         {
-            const auto& file_manifest_section = sections[0];
+            auto& file_manifest_section = sections[0];
             auto file_manifest = file_manifest_section.stream();
-            auto file_manifest_links = get_links(file_manifest_section, file_manifest);
+            file_manifest_section.links = get_links(file_manifest_section, file_manifest);
 
             for (int i = 0; i < 4; ++i)
             {
@@ -152,11 +153,11 @@ namespace trview
             for (const auto& header : headers)
             {
                 const auto section_start = file.tellg();
-                std::vector<uint8_t> section_data(header.preamble / 8 + header.length);
+                std::vector<uint8_t> section_data(header.preamble / 32 + header.length);
                 file.read(reinterpret_cast<char*>(&section_data[0]), section_data.size());
                 sections.emplace_back(Section{ section_index, header, section_data });
                 file.seekg(section_start);
-
+                file.seekg(section_data.size(), std::ios::cur);
 #if 0
 
                 // Read the header for the section if there is one.
@@ -301,10 +302,77 @@ namespace trview
             }
             else
             {
-                // Level.
-                
+                // Quick hack to read the vertexes.
+                auto world_mesh = sections[1];
+                auto world_mesh_stream = world_mesh.stream();
+                const auto num_vertices = world_mesh.header.length / 20;
+                for (uint32_t i = 0; i < num_vertices; ++i)
+                {
+                    drm->world_mesh.push_back(read<Vertex>(world_mesh_stream));
+                }
+
+                // Load a level file - this is all strictly not to do with the DRM file itself - it should
+                // really be done outside but can be moved later.
+                const auto& world_manifest_section = sections[std::get<0>(sections[0].links[0])];
+
+                // Parse the world manifest section (assuming that's what this is....)
+                auto stream = world_manifest_section.stream();
+                auto links = get_links(world_manifest_section, stream);
+
+                auto separator_next = [&stream]()
+                {
+                    stream.seekg(4, std::ios::cur);
+                    const auto separator = read<uint32_t>(stream);
+                    stream.seekg(-8, std::ios::cur);
+                    return separator == 0xffffffff;
+                };
+
+                auto is_zero = [&stream]()
+                {
+                    auto zero = read<uint32_t>(stream) == 0;
+                    if (!zero)
+                    {
+                        stream.seekg(-4, std::ios::cur);
+                    }
+                    return zero;
+                };
+
+                if (!separator_next())
+                {
+                    // This is the case where the list of entries (whatever they are) isn't first.
+                    stream.seekg(32, std::ios::cur);
+                }
+
+                std::vector<std::vector<uint16_t>> all_entries;
+
+                const auto start = stream.tellg();
+                while (separator_next())
+                {
+                    uint32_t num_entries = read<uint32_t>(stream);
+                    uint32_t separator = read<uint32_t>(stream);
+                    auto unknown = read_vector<uint32_t>(stream, 8);
+                    auto next_start = static_cast<std::streampos>(read<uint32_t>(stream));
+                    auto entries = read_vector<uint16_t>(stream, num_entries);
+                    all_entries.push_back(entries);
+                    if (stream.tellg() < start + next_start)
+                    {
+                        stream.seekg(start + next_start, std::ios::beg);
+                    }
+                    while (is_zero())
+                    {
+                        // Get back in sync.
+                    }
+                }
+
+                // Convert these entries to triangles...
+                for (const auto& mesh : all_entries)
+                {
+                    for (auto i = 0u; i < mesh.size(); i += 3)
+                    {
+                        drm->world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
+                    }
+                }
             }
-            
 #endif
 
 
