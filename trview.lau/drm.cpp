@@ -34,98 +34,194 @@ namespace trview
                 uint32_t start;
             };
 #pragma pack(pop)
-        }
 
-        template < typename T >
-        void read(std::istream& file, T& value)
-        {
-            file.read(reinterpret_cast<char*>(&value), sizeof(value));
-        }
-
-        template <typename T>
-        T read(std::istream& file)
-        {
-            T value;
-            read<T>(file, value);
-            return value;
-        }
-
-        template < typename DataType, typename SizeType >
-        std::vector<DataType> read_vector(std::istream& file, SizeType size)
-        {
-            std::vector<DataType> data(size);
-            for (SizeType i = 0; i < size; ++i)
+            template < typename T >
+            void read(std::istream& file, T& value)
             {
-                read<DataType>(file, data[i]);
+                file.read(reinterpret_cast<char*>(&value), sizeof(value));
             }
-            return data;
-        }
 
-        void skip(std::istream& file, uint32_t size)
-        {
-            file.seekg(size, std::ios::cur);
-        }
-
-        struct Section
-        {
-            uint32_t index;
-            SectionHeader header;
-            std::vector<uint8_t> data;
-            std::vector<std::tuple<uint32_t, uint32_t>> links;
-
-            std::istringstream stream() const
+            template <typename T>
+            T read(std::istream& file)
             {
-                std::string data(reinterpret_cast<const char*>(&data[0]), data.size());
-                return std::istringstream(data, std::ios::binary);
+                T value;
+                read<T>(file, value);
+                return value;
             }
-        };
 
-        std::vector<std::tuple<uint32_t, uint32_t>> get_links(const Section& section, std::istream& stream)
-        {
-            std::vector<std::tuple<uint32_t, uint32_t>> links;
-            for (auto i = 0; i < section.header.preamble / 32 / 8; ++i)
+            template < typename DataType, typename SizeType >
+            std::vector<DataType> read_vector(std::istream& file, SizeType size)
             {
-                uint32_t referenced_section = read<uint32_t>(stream) >> 3;
-                uint32_t value = read<uint32_t>(stream);
-                links.push_back({ referenced_section, value });
+                std::vector<DataType> data(size);
+                for (SizeType i = 0; i < size; ++i)
+                {
+                    read<DataType>(file, data[i]);
+                }
+                return data;
             }
-            return links;
-        }
 
-        void read_file_header(Drm& drm, std::vector<Section>& sections)
-        {
-            auto& file_manifest_section = sections[0];
-            auto file_manifest = file_manifest_section.stream();
-            file_manifest_section.links = get_links(file_manifest_section, file_manifest);
-
-            for (int i = 0; i < 4; ++i)
+            void skip(std::istream& file, uint32_t size)
             {
-                drm.file_header.flags[i] = read<uint16_t>(file_manifest);
+                file.seekg(size, std::ios::cur);
             }
-            drm.file_header.id = read<uint32_t>(file_manifest);
 
-            if (!drm.file_header.flags[1])
+            struct Section
             {
-                // Room:
-                skip(file_manifest, 262);
-                drm.world_offset = read<Vector3>(file_manifest);
-                skip(file_manifest, 6);
-                skip(file_manifest, file_manifest_section.header.length - 290);
-            }
-            else
-            {
-                skip(file_manifest, 24);
-                uint32_t size_of_section = read<uint32_t>(file_manifest);
-                skip(file_manifest, size_of_section - 32 - 10);
-                drm.file_header.id_of_next_section = read<uint16_t>(file_manifest);
-                skip(file_manifest, 6);
-            }
-        }
+                uint32_t index;
+                SectionHeader header;
+                std::vector<uint8_t> data;
+                std::vector<std::tuple<uint32_t, uint32_t>> links;
 
-        const Section& find_section(const std::vector<Section>& sections, uint32_t id)
-        {
-            return *std::find_if(sections.begin(), sections.end(),
-                [id](const Section& section) { return section.header.id == id; });
+                std::istringstream stream() const
+                {
+                    std::string data(reinterpret_cast<const char*>(&data[0]), data.size());
+                    return std::istringstream(data, std::ios::binary);
+                }
+            };
+
+            std::vector<std::tuple<uint32_t, uint32_t>> get_links(const Section& section, std::istream& stream)
+            {
+                std::vector<std::tuple<uint32_t, uint32_t>> links;
+                for (auto i = 0; i < section.header.preamble / 32 / 8; ++i)
+                {
+                    uint32_t referenced_section = read<uint32_t>(stream) >> 3;
+                    uint32_t value = read<uint32_t>(stream);
+                    links.push_back({ referenced_section, value });
+                }
+                return links;
+            }
+
+            void read_file_header(Drm& drm, std::vector<Section>& sections)
+            {
+                auto& file_manifest_section = sections[0];
+                auto file_manifest = file_manifest_section.stream();
+                file_manifest_section.links = get_links(file_manifest_section, file_manifest);
+
+                for (int i = 0; i < 4; ++i)
+                {
+                    drm.file_header.flags[i] = read<uint16_t>(file_manifest);
+                }
+                drm.file_header.id = read<uint32_t>(file_manifest);
+
+                if (!drm.file_header.flags[1])
+                {
+                    // Room:
+                    skip(file_manifest, 262);
+                    drm.world_offset = read<Vector3>(file_manifest);
+                    skip(file_manifest, 6);
+                    skip(file_manifest, file_manifest_section.header.length - 290);
+                }
+                else
+                {
+                    skip(file_manifest, 24);
+                    uint32_t size_of_section = read<uint32_t>(file_manifest);
+                    skip(file_manifest, size_of_section - 32 - 10);
+                    drm.file_header.id_of_next_section = read<uint16_t>(file_manifest);
+                    skip(file_manifest, 6);
+                }
+            }
+
+            const Section& find_section(const std::vector<Section>& sections, uint32_t id)
+            {
+                return *std::find_if(sections.begin(), sections.end(),
+                    [id](const Section& section) { return section.header.id == id; });
+            }
+
+            void read_meshes(Drm& drm, const std::vector<Section>& sections, const Section& section)
+            {
+                // Parse the world manifest section (assuming that's what this is....)
+                auto stream = section.stream();
+                auto links = get_links(section, stream);
+
+                auto data_start = stream.tellg();
+
+                auto separator_next = [](std::istream& stream)
+                {
+                    stream.seekg(4, std::ios::cur);
+                    const auto separator = read<uint32_t>(stream);
+                    stream.seekg(-8, std::ios::cur);
+                    return separator == 0xffffffff;
+                };
+
+                auto is_zero = [](std::istream& stream)
+                {
+                    auto zero = read<uint32_t>(stream) == 0;
+                    if (!zero)
+                    {
+                        stream.seekg(-4, std::ios::cur);
+                    }
+                    return zero;
+                };
+
+                const auto start = stream.tellg();
+
+                if (!separator_next(stream))
+                {
+                    // This is the case where the list of entries (whatever they are) isn't first.
+                    stream.seekg(
+                        section.index == 12 ? 1904 : 32, 
+                        std::ios::cur);
+                }
+
+                std::vector<std::vector<uint16_t>> all_entries;
+                while (separator_next(stream))
+                {
+                    uint32_t num_entries = read<uint32_t>(stream);
+                    uint32_t separator = read<uint32_t>(stream);
+                    auto unknown = read_vector<uint32_t>(stream, 8);
+                    auto next_start = static_cast<std::streampos>(read<uint32_t>(stream));
+                    auto entries = read_vector<uint16_t>(stream, num_entries);
+                    all_entries.push_back(entries);
+                    if (stream.tellg() < start + next_start)
+                    {
+                        stream.seekg(start + next_start, std::ios::beg);
+                        auto at = stream.tellg();
+                    }
+                    while (is_zero(stream) && stream.tellg() < section.data.size() - 4)
+                    {
+                    }
+                    auto at = stream.tellg();
+                }
+
+                // Recruit more indices... more meshes.
+                stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);
+                uint16_t more_meshes_section = read<uint16_t>(stream);
+                if (more_meshes_section < sections.size())
+                {
+                    read_meshes(drm, sections, sections[more_meshes_section]);
+                }
+                else if (section.index != 12)
+                {
+                    read_meshes(drm, sections, sections[12]);
+                }
+
+                // Convert these entries to triangles...
+                for (const auto& mesh : all_entries)
+                {
+                    for (auto i = 0u; i < mesh.size(); i += 3)
+                    {
+                        drm.world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
+                    }
+                }
+
+                // Find the vertices:
+                if (links.size() > 3)
+                {
+                    const auto& verts_pointer = links[links.size() - 3];
+                    const auto world_mesh_index = std::get<0>(verts_pointer);
+                    if (world_mesh_index != section.index)
+                    {
+                        const auto& world_mesh = sections[world_mesh_index];
+                        auto world_mesh_stream = world_mesh.stream();
+                        const auto num_vertices = world_mesh.header.length / 20;
+                        for (uint32_t i = 0; i < num_vertices; ++i)
+                        {
+                            drm.world_mesh.push_back(read<Vertex>(world_mesh_stream));
+                        }
+                    }
+                }
+            }
+
         }
 
         std::unique_ptr<Drm> load_drm(const std::wstring& filename)
@@ -302,79 +398,12 @@ namespace trview
             }
             else
             {
-                // Quick hack to read the vertexes.
-                auto world_mesh = sections[1];
-                auto world_mesh_stream = world_mesh.stream();
-                const auto num_vertices = world_mesh.header.length / 20;
-                for (uint32_t i = 0; i < num_vertices; ++i)
-                {
-                    drm->world_mesh.push_back(read<Vertex>(world_mesh_stream));
-                }
-
                 // Load a level file - this is all strictly not to do with the DRM file itself - it should
                 // really be done outside but can be moved later.
                 const auto& world_manifest_section = sections[std::get<0>(sections[0].links[0])];
-
-                // Parse the world manifest section (assuming that's what this is....)
-                auto stream = world_manifest_section.stream();
-                auto links = get_links(world_manifest_section, stream);
-
-                auto separator_next = [&stream]()
-                {
-                    stream.seekg(4, std::ios::cur);
-                    const auto separator = read<uint32_t>(stream);
-                    stream.seekg(-8, std::ios::cur);
-                    return separator == 0xffffffff;
-                };
-
-                auto is_zero = [&stream]()
-                {
-                    auto zero = read<uint32_t>(stream) == 0;
-                    if (!zero)
-                    {
-                        stream.seekg(-4, std::ios::cur);
-                    }
-                    return zero;
-                };
-
-                if (!separator_next())
-                {
-                    // This is the case where the list of entries (whatever they are) isn't first.
-                    stream.seekg(32, std::ios::cur);
-                }
-
-                std::vector<std::vector<uint16_t>> all_entries;
-
-                const auto start = stream.tellg();
-                while (separator_next())
-                {
-                    uint32_t num_entries = read<uint32_t>(stream);
-                    uint32_t separator = read<uint32_t>(stream);
-                    auto unknown = read_vector<uint32_t>(stream, 8);
-                    auto next_start = static_cast<std::streampos>(read<uint32_t>(stream));
-                    auto entries = read_vector<uint16_t>(stream, num_entries);
-                    all_entries.push_back(entries);
-                    if (stream.tellg() < start + next_start)
-                    {
-                        stream.seekg(start + next_start, std::ios::beg);
-                    }
-                    while (is_zero())
-                    {
-                        // Get back in sync.
-                    }
-                }
-
-                // Convert these entries to triangles...
-                for (const auto& mesh : all_entries)
-                {
-                    for (auto i = 0u; i < mesh.size(); i += 3)
-                    {
-                        drm->world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
-                    }
-                }
+                read_meshes(*drm, sections, world_manifest_section);
             }
 #endif
-
 
             return drm;
         }
