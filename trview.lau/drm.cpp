@@ -154,22 +154,18 @@ namespace trview
                 };
 
                 const auto start = stream.tellg();
-
-                if (!separator_next(stream))
+                while (!separator_next(stream))
                 {
-                    // This is the case where the list of entries (whatever they are) isn't first.
-                    stream.seekg(
-                        section.index == 12 ? 1904 : 32, 
-                        std::ios::cur);
+                    stream.seekg(4, std::ios::cur);
                 }
 
                 std::vector<std::vector<uint16_t>> all_entries;
-                while (separator_next(stream))
+                while (separator_next(stream) && stream.tellg() < section.data.size() - 8)
                 {
                     uint32_t num_entries = read<uint32_t>(stream);
                     uint32_t separator = read<uint32_t>(stream);
                     auto unknown = read_vector<uint32_t>(stream, 8);
-                    auto next_start = static_cast<std::streampos>(read<uint32_t>(stream));
+                    auto next_start = std::streampos(read<uint32_t>(stream));
                     auto entries = read_vector<uint16_t>(stream, num_entries);
                     all_entries.push_back(entries);
                     if (stream.tellg() < start + next_start)
