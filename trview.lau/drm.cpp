@@ -91,6 +91,22 @@ namespace trview
                 return links;
             }
 
+            std::vector<uint32_t> get_filtered_links(const Section& section, const std::vector<std::tuple<uint32_t, uint32_t>>& links, std::unordered_set<uint32_t>& visited_sections)
+            {
+                std::vector<uint32_t> filtered_links;
+                for (const auto& link : links)
+                {
+                    auto index = std::get<0>(link);
+                    if (index == 0 || visited_sections.find(index) != visited_sections.end() ||
+                        std::find(filtered_links.begin(), filtered_links.end(), index) != filtered_links.end())
+                    {
+                        continue;
+                    }
+                    filtered_links.push_back(index);
+                }
+                return filtered_links;
+            }
+
             void read_file_header(Drm& drm, std::vector<Section>& sections)
             {
                 auto& file_manifest_section = sections[0];
@@ -127,11 +143,14 @@ namespace trview
                     [id](const Section& section) { return section.header.id == id; });
             }
 
-            void read_meshes(Drm& drm, const std::vector<Section>& sections, const Section& section)
+            void read_meshes(Drm& drm, const std::vector<Section>& sections, const Section& section, std::unordered_set<uint32_t>& visited_sections)
             {
+                visited_sections.insert(section.index);
+
                 // Parse the world manifest section (assuming that's what this is....)
                 auto stream = section.stream();
                 auto links = get_links(section, stream);
+                auto filtered_links = get_filtered_links(section, links, visited_sections);
 
                 auto data_start = stream.tellg();
 
@@ -184,11 +203,11 @@ namespace trview
                 uint16_t more_meshes_section = read<uint16_t>(stream);
                 if (more_meshes_section < sections.size())
                 {
-                    read_meshes(drm, sections, sections[more_meshes_section]);
+                    read_meshes(drm, sections, sections[more_meshes_section], visited_sections);
                 }
                 else if (section.index != 12)
                 {
-                    read_meshes(drm, sections, sections[12]);
+                    read_meshes(drm, sections, sections[12], visited_sections);
                 }
 
                 // Convert these entries to triangles...
@@ -397,7 +416,8 @@ namespace trview
                 // Load a level file - this is all strictly not to do with the DRM file itself - it should
                 // really be done outside but can be moved later.
                 const auto& world_manifest_section = sections[std::get<0>(sections[0].links[0])];
-                read_meshes(*drm, sections, world_manifest_section);
+                std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index };
+                read_meshes(*drm, sections, world_manifest_section, visited_sections);
             }
 #endif
 
