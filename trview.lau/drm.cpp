@@ -220,10 +220,9 @@ namespace trview
                 }
 
                 // Find the vertices:
-                if (links.size() > 3)
+                if (!filtered_links.empty())
                 {
-                    const auto& verts_pointer = links[links.size() - 3];
-                    const auto world_mesh_index = std::get<0>(verts_pointer);
+                    const auto world_mesh_index = filtered_links.back();
                     if (world_mesh_index != section.index)
                     {
                         const auto& world_mesh = sections[world_mesh_index];
