@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Level.h"
 
 #include <trview.graphics/IShaderStorage.h>
@@ -10,6 +11,11 @@
 #include <trview.app/Graphics/SelectionRenderer.h>
 #include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
+
+#include <trview.lau/drm.h>
+#include <trview.common/Strings.h>
+
+#include <external/DirectXTK/Inc/DDSTextureLoader.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -186,6 +192,37 @@ namespace trview
         }
     }
 
+    namespace
+    {
+        struct DDS_PIXELFORMAT {
+            DWORD dwSize;
+            DWORD dwFlags;
+            DWORD dwFourCC;
+            DWORD dwRGBBitCount;
+            DWORD dwRBitMask;
+            DWORD dwGBitMask;
+            DWORD dwBBitMask;
+            DWORD dwABitMask;
+        };
+
+        typedef struct {
+            DWORD           dwSize;
+            DWORD           dwFlags;
+            DWORD           dwHeight;
+            DWORD           dwWidth;
+            DWORD           dwPitchOrLinearSize;
+            DWORD           dwDepth;
+            DWORD           dwMipMapCount;
+            DWORD           dwReserved1[11];
+            DDS_PIXELFORMAT ddspf;
+            DWORD           dwCaps;
+            DWORD           dwCaps2;
+            DWORD           dwCaps3;
+            DWORD           dwCaps4;
+            DWORD           dwReserved2;
+        } DDS_HEADER;
+    }
+
     // Render the rooms in the level.
     // context: The device context.
     // camera: The current camera to render the level with.
@@ -198,6 +235,66 @@ namespace trview
         {
             _transparency->reset();
         }
+
+#if 1
+        static std::vector<TransparentTriangle> tris;
+        if (tris.empty())
+        {
+            auto drm = lau::load_drm(std::wstring(L"C:\\Projects\\Applications\\trview\\lau\\drm\\") + to_utf16("ma9") + L".drm");
+
+            std::vector<ComPtr<ID3D11Resource>> textures;
+            for (auto& t : drm->textures)
+            {
+                auto& data = t.second;
+                ComPtr<ID3D11Resource> resource;
+                ComPtr<ID3D11ShaderResourceView> resource_view;
+
+                DDS_HEADER header;
+                memset(&header, 0, sizeof(header));
+                header.dwSize = sizeof(header);
+                header.dwFlags = 0x1 | 0x2 | 0x4 | 0x1000 | 0x80000;
+                header.dwHeight = data.height;
+                header.dwWidth = data.width;
+                header.dwPitchOrLinearSize = data.data.size();
+                header.ddspf.dwSize = sizeof(header.ddspf); 
+                // header.ddspf.dwFlags = 0x1; // Alpha?
+                header.ddspf.dwFlags = 4;
+                header.ddspf.dwFourCC = 827611204;
+                header.dwCaps = 4096;
+
+                std::vector<uint8_t> final_data(4 + sizeof(header) + data.data.size(), 0u);
+                uint32_t magic = 542327876u;
+                memcpy(&final_data[0], &magic, sizeof(magic));
+                memcpy(&final_data[4], &header, sizeof(header));
+                memcpy(&final_data[4 + sizeof(header)], &data.data[0], data.data.size());
+
+                std::ofstream outer;
+                outer.open(std::wstring(L"C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\xepeeaqi\\test") + std::to_wstring(t.first) + L".dds", std::ios::binary | std::ios::out);
+                outer.write(reinterpret_cast<char*>(&final_data[0]), final_data.size());
+                outer.close();
+
+                HRESULT hr = DirectX::CreateDDSTextureFromMemory(device.device().Get(), &final_data[0], final_data.size(), resource.GetAddressOf(), resource_view.GetAddressOf());
+                textures.push_back(resource);
+            }
+
+            auto m = Matrix::CreateScale(1.0 / 2048.0f);
+
+            for (auto& tri : drm->world_triangles)
+            {
+                auto v0 = Vector3(drm->world_mesh[tri.v0].x, drm->world_mesh[tri.v0].y, drm->world_mesh[tri.v0].z);
+                auto v1 = Vector3(drm->world_mesh[tri.v1].x, drm->world_mesh[tri.v1].y, drm->world_mesh[tri.v1].z);
+                auto v2 = Vector3(drm->world_mesh[tri.v2].x, drm->world_mesh[tri.v2].y, drm->world_mesh[tri.v2].z);
+                auto value = std::min(0.2f, rand() / static_cast<float>(RAND_MAX));
+                tris.push_back(TransparentTriangle(v0, v2, v1, Color(1, 1, 1, 1)).transform(m, Color(value, value, value, 1)));
+            }
+        }
+
+        for (const auto& t : tris)
+        {
+            _transparency->add(t);
+        }
+
+#else
 
         // Render the opaque portions of the rooms and also collect the transparent triangles
         // that need to be rendered in the second pass.
@@ -220,7 +317,8 @@ namespace trview
                 }
             }
         }
-
+        
+#endif 
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
