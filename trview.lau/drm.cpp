@@ -143,7 +143,7 @@ namespace trview
                     [id](const Section& section) { return section.header.id == id; });
             }
 
-            void read_meshes(Drm& drm, const std::vector<Section>& sections, const Section& section, std::unordered_set<uint32_t>& visited_sections)
+            void read_meshes(Drm& drm, const std::vector<Section>& sections, const Section& section, std::unordered_set<uint32_t>& visited_sections, int32_t depth)
             {
                 visited_sections.insert(section.index);
 
@@ -152,8 +152,34 @@ namespace trview
                 auto links = get_links(section, stream);
                 auto filtered_links = get_filtered_links(section, links, visited_sections);
 
-                auto data_start = stream.tellg();
+                if (!filtered_links.empty())
+                {
+                    uint32_t skip = depth == 1 ? 1 : 0;
+                    for (auto i = 0u; i < filtered_links.size() - skip; ++i)
+                    {
+                        if (sections[filtered_links[i]].header.type == SectionType::Section)
+                        {
+                            read_meshes(drm, sections, sections[filtered_links[i]], visited_sections, depth + 1);
+                        }
+                    }
 
+                    if (depth == 1)
+                    {
+                        const auto world_mesh_index = filtered_links.back();
+                        if (world_mesh_index != section.index)
+                        {
+                            const auto& world_mesh = sections[world_mesh_index];
+                            auto world_mesh_stream = world_mesh.stream();
+                            const auto num_vertices = world_mesh.header.length / 20;
+                            for (uint32_t i = 0; i < num_vertices; ++i)
+                            {
+                                drm.world_mesh.push_back(read<Vertex>(world_mesh_stream));
+                            }
+                        }
+                    }
+                }
+
+                auto data_start = stream.tellg();
                 auto separator_next = [](std::istream& stream)
                 {
                     stream.seekg(4, std::ios::cur);
@@ -173,7 +199,7 @@ namespace trview
                 };
 
                 const auto start = stream.tellg();
-                while (!separator_next(stream))
+                while (!separator_next(stream) && stream.tellg() < section.data.size() - 8)
                 {
                     stream.seekg(4, std::ios::cur);
                 }
@@ -201,13 +227,11 @@ namespace trview
                 // Recruit more indices... more meshes.
                 stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);
                 uint16_t more_meshes_section = read<uint16_t>(stream);
-                if (more_meshes_section < sections.size())
+                if (more_meshes_section < sections.size() && 
+                    sections[more_meshes_section].header.type == SectionType::Section &&
+                    visited_sections.find(more_meshes_section) == visited_sections.end())
                 {
-                    read_meshes(drm, sections, sections[more_meshes_section], visited_sections);
-                }
-                else if (section.index != 12)
-                {
-                    read_meshes(drm, sections, sections[12], visited_sections);
+                    read_meshes(drm, sections, sections[more_meshes_section], visited_sections, depth + 1);
                 }
 
                 // Convert these entries to triangles...
@@ -216,22 +240,6 @@ namespace trview
                     for (auto i = 0u; i < mesh.size(); i += 3)
                     {
                         drm.world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
-                    }
-                }
-
-                // Find the vertices:
-                if (!filtered_links.empty())
-                {
-                    const auto world_mesh_index = filtered_links.back();
-                    if (world_mesh_index != section.index)
-                    {
-                        const auto& world_mesh = sections[world_mesh_index];
-                        auto world_mesh_stream = world_mesh.stream();
-                        const auto num_vertices = world_mesh.header.length / 20;
-                        for (uint32_t i = 0; i < num_vertices; ++i)
-                        {
-                            drm.world_mesh.push_back(read<Vertex>(world_mesh_stream));
-                        }
                     }
                 }
             }
@@ -415,8 +423,8 @@ namespace trview
                 // Load a level file - this is all strictly not to do with the DRM file itself - it should
                 // really be done outside but can be moved later.
                 const auto& world_manifest_section = sections[std::get<0>(sections[0].links[0])];
-                std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index };
-                read_meshes(*drm, sections, world_manifest_section, visited_sections);
+                std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index, 0 };
+                read_meshes(*drm, sections, world_manifest_section, visited_sections, 1);
             }
 #endif
 
