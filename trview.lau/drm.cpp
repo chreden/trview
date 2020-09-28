@@ -204,13 +204,16 @@ namespace trview
                     stream.seekg(4, std::ios::cur);
                 }
 
+                auto at = stream.tellg();
+                std::streampos next_start;
                 std::vector<std::vector<uint16_t>> all_entries;
                 while (separator_next(stream) && stream.tellg() < section.data.size() - 8)
                 {
                     uint32_t num_entries = read<uint32_t>(stream);
                     uint32_t separator = read<uint32_t>(stream);
                     auto unknown = read_vector<uint32_t>(stream, 8);
-                    auto next_start = std::streampos(read<uint32_t>(stream));
+                    uint32_t nsv = read<uint32_t>(stream);
+                    next_start = std::streampos(nsv);
                     auto entries = read_vector<uint16_t>(stream, num_entries);
                     all_entries.push_back(entries);
                     if (stream.tellg() < start + next_start)
@@ -221,8 +224,10 @@ namespace trview
                     while (is_zero(stream) && stream.tellg() < section.data.size() - 4)
                     {
                     }
-                    auto at = stream.tellg();
+                    at = stream.tellg();
                 }
+
+                // TODO: Read texture information
 
                 // Recruit more indices... more meshes.
                 stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);
@@ -275,132 +280,6 @@ namespace trview
                 sections.emplace_back(Section{ section_index, header, section_data });
                 file.seekg(section_start);
                 file.seekg(section_data.size(), std::ios::cur);
-#if 0
-
-                // Read the header for the section if there is one.
-                if (header.preamble > 0)
-                {
-                    auto number_of_headers = (header.preamble / 32) / 8;
-                    for (auto i = 0; i < number_of_headers; ++i)
-                    {
-                        uint32_t referenced_section = read<uint32_t>(file) >> 3;
-                        uint32_t value = read<uint32_t>(file);
-                        links[section_index].insert(referenced_section);
-                    }
-                }
-
-                switch (header.type)
-                {
-                    case SectionType::Section:
-                    {
-                        if (zero_sections == 0)
-                        {
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                drm->file_header.flags[i] = read<uint16_t>(file);
-                            }
-                            drm->file_header.id = read<uint32_t>(file);
-
-                            if (!drm->file_header.flags[1])
-                            {
-                                // Room:
-                                skip(file, 262);
-                                drm->world_offset = read<Vector3>(file);
-                                skip(file, 6);
-                                skip(file, header.length - 290);
-                            }
-                            else
-                            {
-                                skip(file, 120);
-                                drm->file_header.id_of_next_section = read<uint16_t>(file);
-                                skip(file, 6);
-                            }
-                        }
-                        else if (zero_sections == 1)
-                        {
-                            if (drm->file_header.flags[1])
-                            {
-                                // Vertex data - skip for now.
-                                skip(file, header.length);
-                            }
-                            else
-                            {
-                                const auto num_vertices = header.length / 20;
-                                for (uint32_t i = 0; i < num_vertices; ++i)
-                                {
-                                    drm->world_mesh.push_back(read<Vertex>(file));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            uint32_t type = read<uint32_t>(file);
-                            // Disabled for now.
-                            if (type == -1)
-                            {
-                                file.seekg(-4, std::ios::cur);
-                                // Read world model data:
-                                const uint32_t number_of_headers = (header.preamble / 32) / 8;
-                                auto world_mesh_headers = read_vector<WorldMeshHeader>(file, number_of_headers);
-
-                                auto start = file.tellg();
-                                for (auto i = 0; i < number_of_headers; ++i)
-                                {
-                                    file.seekg(start + static_cast<std::streamoff>(world_mesh_headers[i].start - 40), std::ios::beg);
-
-                                    uint32_t number_of_indices = read<uint32_t>(file);
-                                    uint32_t separator = read<uint32_t>(file);
-                                    if (separator != 0xffffffff)
-                                    {
-                                        continue;
-                                    }
-
-                                    skip(file, 32);
-                                    uint32_t end_of_mesh = read<uint32_t>(file);
-                                    auto indices = read_vector<uint16_t>(file, number_of_indices);
-                                    for (auto j = 0u; j < indices.size(); j += 3)
-                                    {
-                                        drm->world_triangles.push_back({ indices[j], indices[j + 1u], indices[j + 2u] });
-                                    }
-                                }
-
-                                file.seekg(start + static_cast<std::streamoff>(header.length), std::ios::beg);
-                            }
-                            else
-                            {
-                                file.seekg(-4, std::ios::cur);
-                                skip(file, header.length);
-                            }
-                        }
-                        ++zero_sections;
-                        break;
-                    }
-                    case SectionType::Texture:
-                    {
-                        Texture texture;
-                        texture.id = header.id;
-                        skip(file, 4); // Skip PCD9
-
-                        auto format = read_vector<uint8_t>(file, 4);
-                        texture.format = std::string(format.begin(), format.end());
-
-                        uint32_t pixel_data_length = read<uint32_t>(file);
-                        skip(file, 4); // unknown uint32_t
-                        texture.width = read<uint16_t>(file);
-                        texture.height = read<uint16_t>(file);
-                        skip(file, 4); // unknown uint32_t
-                        texture.data = read_vector<uint8_t>(file, pixel_data_length);
-
-                        drm->textures[texture.id] = texture;
-                        break;
-                    }
-                    default:
-                    {
-                        skip(file, header.length);
-                        break;
-                    }
-                }
-#else
                 ++section_index;
             }
 
@@ -449,11 +328,8 @@ namespace trview
                     drm->textures[texture.id] = texture;
                 }
             }
-#endif
 
             return drm;
         }
-
-        
     }
 }
