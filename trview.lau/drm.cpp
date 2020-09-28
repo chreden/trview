@@ -243,7 +243,6 @@ namespace trview
                     }
                 }
             }
-
         }
 
         std::unique_ptr<Drm> load_drm(const std::wstring& filename)
@@ -425,6 +424,30 @@ namespace trview
                 const auto& world_manifest_section = sections[std::get<0>(sections[0].links[0])];
                 std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index, 0 };
                 read_meshes(*drm, sections, world_manifest_section, visited_sections, 1);
+            }
+
+            // Load textures
+            for (const auto& section : sections)
+            {
+                if (section.header.type == SectionType::Texture)
+                {
+                    Texture texture;
+                    texture.id = section.header.id;
+                    auto stream = section.stream();
+                    stream.seekg(4, std::ios::cur); // Skip PCD9
+
+                    auto format = read_vector<uint8_t>(stream, 4);
+                    texture.format = std::string(format.begin(), format.end());
+
+                    uint32_t pixel_data_length = read<uint32_t>(stream);
+                    stream.seekg(4, std::ios::cur); // unknown uint32_t
+                    texture.width = read<uint16_t>(stream);
+                    texture.height = read<uint16_t>(stream);
+                    stream.seekg(4, std::ios::cur); // unknown uint32_t
+                    texture.data = read_vector<uint8_t>(stream, pixel_data_length);
+
+                    drm->textures[texture.id] = texture;
+                }
             }
 #endif
 
