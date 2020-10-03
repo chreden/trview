@@ -278,6 +278,7 @@ namespace trview
                         {
                             uint8_t flags;
                             uint16_t texture_id;
+                            uint32_t unknown_number;
                         };
 
                         std::vector<TextureEntry> all_texture_entries;
@@ -290,7 +291,9 @@ namespace trview
                                 new_entry.flags = (new_entry.texture_id & 0xf000) >> 12;
                                 new_entry.texture_id = new_entry.texture_id & 0xfff;
 
-                                stream.seekg(18, std::ios::cur);
+                                stream.seekg(14, std::ios::cur);
+
+                                new_entry.unknown_number = read<uint32_t>(stream);
 
                                 all_texture_entries.push_back(new_entry);
                             }
