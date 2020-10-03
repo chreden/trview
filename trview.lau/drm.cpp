@@ -207,6 +207,7 @@ namespace trview
                 auto at = stream.tellg();
                 std::streampos next_start;
                 std::vector<std::vector<uint16_t>> all_entries;
+                bool has_entries = false;
                 while (separator_next(stream) && stream.tellg() < section.data.size() - 8)
                 {
                     uint32_t num_entries = read<uint32_t>(stream);
@@ -216,6 +217,7 @@ namespace trview
                     next_start = std::streampos(nsv);
                     auto entries = read_vector<uint16_t>(stream, num_entries);
                     all_entries.push_back(entries);
+                    has_entries = has_entries | !entries.empty();
                     if (stream.tellg() < start + next_start)
                     {
                         stream.seekg(start + next_start, std::ios::beg);
@@ -228,23 +230,89 @@ namespace trview
                 }
 
                 // TODO: Read texture information
-
-                // Recruit more indices... more meshes.
-                stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);
-                uint16_t more_meshes_section = read<uint16_t>(stream);
-                if (more_meshes_section < sections.size() && 
-                    sections[more_meshes_section].header.type == SectionType::Section &&
-                    visited_sections.find(more_meshes_section) == visited_sections.end())
+                if (!all_entries.empty())
                 {
-                    read_meshes(drm, sections, sections[more_meshes_section], visited_sections, depth + 1);
-                }
-
-                // Convert these entries to triangles...
-                for (const auto& mesh : all_entries)
-                {
-                    for (auto i = 0u; i < mesh.size(); i += 3)
+                    // Read indices:
+                    auto sum = 0;
+                    for (const auto& s : all_entries) 
                     {
-                        drm.world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
+                        sum += s.size();
+                    };
+
+                    // Hack for reading mesh data:
+                    if (has_entries && stream.tellg() < section.data.size())
+                    {
+                        auto x = stream.tellg();
+                        
+                        std::vector<std::vector<uint16_t>> texture_entry_groups;
+
+                        auto more_entry_groups = [](std::istream& stream)
+                        {
+                            stream.seekg(2, std::ios::cur);
+                            const auto separator = read<uint16_t>(stream);
+                            stream.seekg(-4, std::ios::cur);
+                            return (separator & 32) == 0;
+                        };
+
+                        while (true)
+                        {
+                            std::vector<uint16_t> current_group;
+                            while (true)
+                            {
+                                uint16_t value = read<uint16_t>(stream);
+                                if (value == 0)
+                                {
+                                    break;
+                                }
+                                current_group.push_back(value);
+                            }
+
+                            texture_entry_groups.push_back(current_group);
+                            if (!more_entry_groups(stream))
+                            {
+                                break;
+                            }
+                        }
+
+                        struct TextureEntry
+                        {
+                            uint8_t flags;
+                            uint16_t texture_id;
+                        };
+
+                        std::vector<TextureEntry> all_texture_entries;
+                        for (const auto& group : texture_entry_groups)
+                        {
+                            for (int i = 0; i < group.size(); ++i)
+                            {
+                                TextureEntry new_entry;
+                                new_entry.texture_id = read<uint16_t>(stream);
+                                new_entry.flags = (new_entry.texture_id & 0xf000) >> 12;
+                                new_entry.texture_id = new_entry.texture_id & 0xfff;
+
+                                stream.seekg(18, std::ios::cur);
+
+                                all_texture_entries.push_back(new_entry);
+                            }
+                        }
+
+                        stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);
+                        uint16_t more_meshes_section = read<uint16_t>(stream);
+                        if (more_meshes_section < sections.size() &&
+                            sections[more_meshes_section].header.type == SectionType::Section &&
+                            visited_sections.find(more_meshes_section) == visited_sections.end())
+                        {
+                            read_meshes(drm, sections, sections[more_meshes_section], visited_sections, depth + 1);
+                        }
+                    }
+
+                    // Convert these entries to triangles...
+                    for (const auto& mesh : all_entries)
+                    {
+                        for (auto i = 0u; i < mesh.size(); i += 3)
+                        {
+                            drm.world_triangles.push_back({ mesh[i], mesh[i + 1u], mesh[i + 2u] });
+                        }
                     }
                 }
             }
