@@ -19,6 +19,10 @@
 #include "resource.h"
 
 #include <trview.common/Strings.h>
+#include <fstream>
+#include <iostream>
+
+#include <trview.lau/drm.h>
 
 namespace trview
 {
@@ -531,6 +535,20 @@ namespace trview
         current_camera().update(_timer.elapsed());
     }
 
+    template <typename T>
+    T read(std::istream& file)
+    {
+        T value;
+        read<T>(file, value);
+        return value;
+    }
+
+    template < typename T >
+    void read(std::istream& file, T& value)
+    {
+        file.read(reinterpret_cast<char*>(&value), sizeof(value));
+    }
+
     void Viewer::open(const std::string& filename)
     {
         std::unique_ptr<trlevel::ILevel> new_level;
@@ -601,6 +619,7 @@ namespace trview
         _window.set_title("trview - " + name);
         _measure->reset();
         _route->clear();
+
         _route_window_manager->set_route(_route.get());
 
         _recent_orbits.clear();
@@ -1120,6 +1139,9 @@ namespace trview
         lua_pushcfunction(state, lua_open_recent);
         lua_setfield(state, -2, "openRecent");
 
+        lua_pushcfunction(state, lua_show_tra);
+        lua_setfield(state, -2, "tra");
+
         lua_setmetatable(state, -2);
         lua_setglobal(state, "trview");
     }
@@ -1141,6 +1163,70 @@ namespace trview
         {
             viewer->open(*std::next(settings.recent_files.begin(), index - 1));
         }
+        return 0;
+    }
+
+    int Viewer::lua_show_tra(lua_State* state)
+    {
+        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
+        auto fn = lua_tostring(state, 2);
+
+        auto ox = lua_tonumber(state, 3);
+        auto oy = lua_tonumber(state, 4);
+        auto oz = lua_tonumber(state, 5);
+
+        using namespace DirectX::SimpleMath;
+
+        // viewer->_route->clear();
+
+        auto drm = lau::load_drm(std::wstring(L"C:\\Projects\\Applications\\trview\\lau\\drm\\") + to_utf16(fn) + L".drm");
+        auto count = drm->textures.size();
+
+        float scale = 1.0f / 2048.0f;
+        // float scale = 1;
+        auto m = Matrix::CreateScale(scale);
+        //auto offset = Vector3::Transform(Vector3(drm->world_offset.x, drm->world_offset.z, drm->world_offset.y), m);
+        // auto offset = Vector3::Zero;
+        // auto offset = Vector3::Transform(Vector3(drm->world_offset.x, -drm->world_offset.z, 0), m);
+        // auto offset = Vector3::Transform(Vector3(ox, oy, oz), m);
+        auto offset = Vector3(ox, oy, oz);
+        // if (std::string(fn) == "gr2")
+        // {
+        //     offset = Vector3::Zero;
+        // }
+
+        float min_x = FLT_MAX;
+        float min_y = FLT_MAX;
+        float min_z = FLT_MAX;
+        float max_x = -FLT_MAX; 
+        float max_y = -FLT_MAX;
+        float max_z = -FLT_MAX;
+
+        // FILE* stream;
+        // AllocConsole();
+        // freopen_s(&stream, "CONOUT$", "w", stdout);
+
+        for (const auto& vert : drm->world_mesh)
+        {
+            min_x = std::min<float>(min_x, vert.x);
+            min_y = std::min<float>(min_y, vert.y);
+            min_z = std::min<float>(min_z, vert.z);
+            max_x = std::max<float>(max_x, vert.x);
+            max_y = std::max<float>(max_y, vert.y);
+            max_z = std::max<float>(max_z, vert.z);
+        }
+
+        // auto extent = Vector3::Transform(Vector3(max_x - min_x, -(max_z - min_z), max_y - min_y), m);
+        // auto extent = Vector3::Transform(Vector3(0, max_z - min_z, 0), m);
+        // offset += extent * 0.5f;
+
+        for (const auto& vert : drm->world_mesh)
+        {
+            // viewer->_route->add(Vector3::Transform(Vector3(vert.x, -vert.z, vert.y), m) + offset, 0);
+            viewer->_route->add(Vector3::Transform(Vector3(vert.x, vert.y, vert.z) + offset, m), 0);
+        }
+        
+        viewer->_scene_changed = true;
         return 0;
     }
 }

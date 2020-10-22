@@ -7,7 +7,7 @@ namespace trview
 {
     namespace
     {
-        const float PoleThickness = 0.05f;
+        const float PoleThickness = 0.005f;
     }
 
     Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
@@ -29,10 +29,11 @@ namespace trview
 
         // The pole
         auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.25f, 0)) * camera.view_projection();
-        _mesh->render(device.context(), pole_wvp, texture_storage, colour, light_direction);
+        // _mesh->render(device.context(), pole_wvp, texture_storage, colour, light_direction);
 
         // The light blob.
-        auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * camera.view_projection();
+        // auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * camera.view_projection();
+        auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position) * camera.view_projection();
         _mesh->render(device.context(), blob_wvp, texture_storage, _route_colour);
     }
 

@@ -276,27 +276,35 @@ namespace trview
 
                         struct TextureEntry
                         {
+                            uint32_t group;
                             uint8_t flags;
                             uint16_t texture_id;
-                            uint32_t unknown_number;
+                            uint32_t unknown_1;
+                            uint32_t unknown_2;
                         };
 
                         std::vector<TextureEntry> all_texture_entries;
+                        uint32_t group_index = 0;
                         for (const auto& group : texture_entry_groups)
                         {
                             for (int i = 0; i < group.size(); ++i)
                             {
                                 TextureEntry new_entry;
+                                new_entry.group = group_index;
                                 new_entry.texture_id = read<uint16_t>(stream);
                                 new_entry.flags = (new_entry.texture_id & 0xf000) >> 12;
                                 new_entry.texture_id = new_entry.texture_id & 0xfff;
 
-                                stream.seekg(14, std::ios::cur);
+                                new_entry.unknown_1 = read<uint16_t>(stream);
 
-                                new_entry.unknown_number = read<uint32_t>(stream);
+                                stream.seekg(12, std::ios::cur);
+
+                                new_entry.unknown_2 = read<uint32_t>(stream);
 
                                 all_texture_entries.push_back(new_entry);
                             }
+
+                            ++group_index;
                         }
 
                         stream.seekg(data_start + std::streampos(section.header.length - 100), std::ios::beg);

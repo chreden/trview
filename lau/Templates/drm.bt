@@ -32,6 +32,10 @@ struct Header
 struct NewSectionHeader
 {
     local uint section_index = ReadUInt() >> 3;
+    if (section_index == 12)
+    {
+        Printf("Found 12 at %d\n", FTell());
+    }
     FSkip(4);
     uint value;
 };
@@ -309,7 +313,8 @@ for (i = 0; i < number_of_sections; ++i)
             }
             else if (ReadUInt() == 64 || ReadUInt() == 216)// || ReadUInt() == 88 || ReadUInt() == 96 || ReadUInt() == 1160)
             {
-                WorldModelData data(section_headers[i].header_size / 32, section_headers[i].length);
+                // WorldModelData data(section_headers[i].header_size / 32, section_headers[i].length);
+                SectionData data(section_headers[i].header_size / 32, section_headers[i].length);
             }
             else
             {   

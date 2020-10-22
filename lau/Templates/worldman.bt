@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Entry
+{
+    uint32 num_entries;
+    uint32 separator; // -1
+    uint32 unknown[9];
+    uint16 entries[num_entries];
+    if ((num_entries * 2) % 4)
+    {
+        FSkip(2);
+    }
+    while (ReadUInt() == 0)
+    {
+        FSkip(4);
+    }  
+};
+
+while (ReadUInt(FTell() + 4) == 0xffffffff)
+{
+    Entry entry;
+}
+
+// Entry entry[39] <optimize=false>;

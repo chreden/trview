@@ -146,6 +146,7 @@ namespace trview
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
+                /*
                 const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
                 const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
                 const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
@@ -153,6 +154,7 @@ namespace trview
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
+                */
             }
         }
 

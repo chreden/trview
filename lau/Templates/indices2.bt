@@ -1,0 +1,48 @@
+//------------------------------------------------
+//--- 010 Editor v11.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+local uint num_entries_1;
+local uint num_entries_2;
+
+while(ReadShort() != 0)
+{
+    short entries_1;
+    ++num_entries_1;
+}
+
+FSkip(2);
+
+while(ReadShort() != 0)
+{
+    short entries_2;
+    ++num_entries_2;
+}
+
+FSkip(2);
+
+struct Entry
+{
+    ushort texture_id;
+    byte unknown[18];    
+};
+
+local int i = 0;
+for (i = 0; i < num_entries_1; ++i)
+{
+    Entry entry;
+}
+
+for (i = 0; i < num_entries_2; ++i)
+{
+    Entry entry;
+}
