@@ -124,7 +124,6 @@ namespace trview
         void register_lua();
         static int lua_open(lua_State* state);
         static int lua_open_recent(lua_State* state);
-        static int lua_show_tra(lua_State* state);
 
         graphics::Device _device;
         Shortcuts _shortcuts;
