@@ -246,7 +246,7 @@ namespace trview
             _selection_renderer->render(device, camera, *_texture_storage, *_selected_item, Item_Outline);
         }
 
-        if (_selected_trigger)
+        if (_show_triggers && _selected_trigger)
         {
             _selection_renderer->render(device, camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
         }
