@@ -1,4 +1,3 @@
-
 #include "TriggersWindow.h"
 #include <trview.common/Colour.h>
 #include <trview/resource.h>
@@ -8,6 +7,7 @@
 #include <trview.ui/Dropdown.h>
 #include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 
 namespace trview
 {
@@ -157,6 +157,12 @@ namespace trview
         stats_list->set_show_headers(false);
         stats_list->set_show_scrollbar(false);
         stats_list->set_show_highlight(false);
+
+        _token_store += stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
+        {
+            write_clipboard(window(), item.value(L"Value"));
+        };
+
         _stats_list = details_panel->add_child(std::move(stats_list));
 
         auto button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Add to Route"));

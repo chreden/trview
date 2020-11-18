@@ -4,6 +4,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 
 using namespace trview::graphics;
 
@@ -20,6 +21,8 @@ namespace trview
             const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
+        const float Height{ 420 };
+
         ui::Listbox::Item create_listbox_item(const Item& item)
         {
             return {{{ L"#", std::to_wstring(item.number()) },
@@ -30,7 +33,7 @@ namespace trview
     }
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, Height))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -152,15 +155,13 @@ namespace trview
     {
         using namespace ui;
 
-        const float height = 400;
+        auto right_panel = std::make_unique<StackPanel>(Size(200, Height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
-        auto right_panel = std::make_unique<StackPanel>(Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
-
-        auto details_panel = std::make_unique<StackPanel>(Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<StackPanel>(Size(180, 230), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Size(180, 160), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
@@ -170,6 +171,11 @@ namespace trview
         stats_list->set_show_headers(false);
         stats_list->set_show_scrollbar(false);
         stats_list->set_show_highlight(false);
+
+        _token_store += stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
+        {
+            write_clipboard(window(), item.value(L"Value"));
+        };
 
         _stats_list = details_panel->add_child(std::move(stats_list));
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
@@ -224,10 +230,21 @@ namespace trview
             return Listbox::Item { { { L"Name", name }, { L"Value", value } } };
         };
 
+        auto position_text = [&item]()
+        {
+            std::wstringstream stream;
+            stream.precision(0);
+            stream << item.position().x * trlevel::Scale_X << L", " <<
+                item.position().y * trlevel::Scale_Y << L", " <<
+                item.position().z * trlevel::Scale_Z;
+            return stream.str();
+        };
+
         using namespace ui;
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", item.type()));
         stats.push_back(make_item(L"#", std::to_wstring(item.number())));
+        stats.push_back(make_item(L"Position", position_text()));
         stats.push_back(make_item(L"Type ID", std::to_wstring(item.type_id())));
         stats.push_back(make_item(L"Room", std::to_wstring(item.room())));
         stats.push_back(make_item(L"Clear Body", format_bool(item.clear_body_flag())));
