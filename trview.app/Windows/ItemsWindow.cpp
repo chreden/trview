@@ -224,10 +224,21 @@ namespace trview
             return Listbox::Item { { { L"Name", name }, { L"Value", value } } };
         };
 
+        auto position_text = [&item]()
+        {
+            std::wstringstream stream;
+            stream.precision(0);
+            stream << item.position().x * trlevel::Scale_X << L", " <<
+                item.position().y * trlevel::Scale_Y << L", " <<
+                item.position().z * trlevel::Scale_Z;
+            return stream.str();
+        };
+
         using namespace ui;
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", item.type()));
         stats.push_back(make_item(L"#", std::to_wstring(item.number())));
+        stats.push_back(make_item(L"Position", position_text()));
         stats.push_back(make_item(L"Type ID", std::to_wstring(item.type_id())));
         stats.push_back(make_item(L"Room", std::to_wstring(item.room())));
         stats.push_back(make_item(L"Clear Body", format_bool(item.clear_body_flag())));
