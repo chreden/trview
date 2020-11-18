@@ -20,6 +20,8 @@ namespace trview
             const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
+        const float Height{ 420 };
+
         ui::Listbox::Item create_listbox_item(const Item& item)
         {
             return {{{ L"#", std::to_wstring(item.number()) },
@@ -30,7 +32,7 @@ namespace trview
     }
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, 400))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, Height))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -152,15 +154,13 @@ namespace trview
     {
         using namespace ui;
 
-        const float height = 400;
+        auto right_panel = std::make_unique<StackPanel>(Size(200, Height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
 
-        auto right_panel = std::make_unique<StackPanel>(Size(200, height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Size(200, 220), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
-
-        auto details_panel = std::make_unique<StackPanel>(Size(180, 210), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<StackPanel>(Size(180, 230), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Size(180, 160), Colours::ItemDetails);
+        auto stats_list = std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails);
         stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
