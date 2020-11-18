@@ -4,6 +4,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 
 using namespace trview::graphics;
 
@@ -170,6 +171,11 @@ namespace trview
         stats_list->set_show_headers(false);
         stats_list->set_show_scrollbar(false);
         stats_list->set_show_highlight(false);
+
+        _token_store += stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
+        {
+            write_clipboard(window(), item.value(L"Value"));
+        };
 
         _stats_list = details_panel->add_child(std::move(stats_list));
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
