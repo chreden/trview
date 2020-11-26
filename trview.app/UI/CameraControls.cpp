@@ -5,6 +5,7 @@
 #include <trview.ui/Button.h>
 #include <trview.ui/Slider.h>
 #include <trview.ui/Label.h>
+#include <trview.ui/Grid.h>
 
 namespace trview
 {
@@ -13,6 +14,9 @@ namespace trview
         using namespace ui;
 
         auto camera_window = std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera");
+
+        // Use the new grid control.
+        auto grid = std::make_unique<Grid>(Grid::InsertOrder::Column);
 
         auto reset_camera = std::make_unique<Button>(Size(16, 16));
         reset_camera->on_click += on_reset;
