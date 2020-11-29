@@ -14,10 +14,7 @@ namespace trview
         using namespace ui;
 
         auto camera_window = parent.add_child(std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera"));
-
-#if 1
-        // Use the new grid control.
-        auto grid = camera_window->add_child(std::make_unique<Grid>(Size(150, 92), Colour::Transparent, Grid::InsertOrder::Column));
+        auto grid = camera_window->add_child(std::make_unique<Grid>(Size(150, 63), Colour::Transparent, Grid::InsertOrder::Column, 2, 3));
 
         // Make a button with a label next to it, until this kind of control exists.
         auto create_labelled_button = [](Event<>& on_click, const std::wstring& text)
@@ -42,32 +39,6 @@ namespace trview
 
         _ortho = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Ortho"));
         _token_store += _ortho->on_state_changed += [&](auto ortho_enabled) { change_projection(ortho_enabled ? ProjectionMode::Orthographic : ProjectionMode::Perspective); };
-#else
-
-        auto reset_camera = std::make_unique<Button>(Size(16, 16));
-        reset_camera->on_click += on_reset;
-
-        auto reset_camera_label = std::make_unique<Label>(Point(20, 0), Size(40, 16), Colour::Transparent, L"Reset", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre);
-
-        auto orbit_camera = std::make_unique<Checkbox>(Point(74, 0), Colour::Transparent, L"Orbit");
-        _token_store += orbit_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
-
-        auto free_camera = std::make_unique<Checkbox>(Point(0, 21), Colour::Transparent, L"Free");
-        _token_store += free_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Free); };
-
-        auto axis_camera = std::make_unique<Checkbox>(Point(74, 21), Colour::Transparent, L"Axis");
-        _token_store += axis_camera->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
-
-        auto ortho = std::make_unique<Checkbox>(Point(0, 43), Colour::Transparent, L"Ortho");
-        _token_store += ortho->on_state_changed += [&](auto ortho_enabled) { change_projection(ortho_enabled ? ProjectionMode::Orthographic : ProjectionMode::Perspective); };
-
-        camera_window->add_child(std::move(reset_camera));
-        camera_window->add_child(std::move(reset_camera_label));
-        _orbit = camera_window->add_child(std::move(orbit_camera));
-        _free = camera_window->add_child(std::move(free_camera));
-        _axis = camera_window->add_child(std::move(axis_camera));
-        _ortho = camera_window->add_child(std::move(ortho));
-#endif
     }
 
     // Set the current camera mode and raise the on_mode_selected event.

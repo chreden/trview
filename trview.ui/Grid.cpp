@@ -4,8 +4,8 @@ namespace trview
 {
     namespace ui
     {
-        Grid::Grid(const Size& size, const Colour& background_colour, InsertOrder insert_order)
-            : Window(size, background_colour), _insert_order(insert_order)
+        Grid::Grid(const Size& size, const Colour& background_colour, InsertOrder insert_order, uint32_t columns, uint32_t rows)
+            : Window(size, background_colour), _insert_order(insert_order), _columns(columns), _rows(rows)
         {
             _grid = add_child(std::make_unique<Window>(size, background_colour));
         }
@@ -18,16 +18,13 @@ namespace trview
                 return;
             }
 
-            const int Columns = 2;
-            const int Rows = 3;
-
             // Add the cell to the grid
-            auto cell = _grid->add_child(std::make_unique<Window>(Size(static_cast<int>(size().width / Columns), static_cast<int>(size().height / Rows)), background_colour()));
+            auto cell = _grid->add_child(std::make_unique<Window>(Size(static_cast<int>(size().width / _columns), static_cast<int>(size().height / _rows)), background_colour()));
 
             // Calculate the coordinates based on cell index.
-            auto y = std::floor(_cells.size() / Columns);
-            auto x = _cells.size() - Columns * y;
-            cell->set_position(Point((size().width / Columns) * x, (size().height / Rows) * y));
+            auto y = std::floor(_cells.size() / _columns);
+            auto x = _cells.size() - _columns * y;
+            cell->set_position(Point((size().width / _columns) * x, (size().height / _rows) * y));
 
             _cells.push_back(cell);
 
