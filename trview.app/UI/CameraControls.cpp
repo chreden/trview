@@ -15,8 +15,34 @@ namespace trview
 
         auto camera_window = std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera");
 
+#if 1
         // Use the new grid control.
-        auto grid = std::make_unique<Grid>(Grid::InsertOrder::Column);
+        auto grid = camera_window->add_child(std::make_unique<Grid>(Size(150, 92), Colour::Transparent, Grid::InsertOrder::Column));
+
+        // Make a button with a label next to it, until this kind of control exists.
+        auto create_labelled_button = [](Event<>& on_click, const std::wstring& text)
+        {
+            auto panel = std::make_unique<StackPanel>(Size(16, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+            auto button = panel->add_child(std::make_unique<Button>(Size(16, 16)));
+            button->on_click += on_click;
+            panel->add_child(std::make_unique<Label>(Size(40, 16), Colour::Transparent, text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre));
+            return std::move(panel);
+        };
+
+        grid->add_child(create_labelled_button(on_reset, L"Reset"));
+
+        _orbit = grid->add_child(std::make_unique<Checkbox>(Point(74, 0), Colour::Transparent, L"Orbit"));
+        _token_store += _orbit->on_state_changed += [&](auto) { change_mode(CameraMode::Orbit); };
+
+        _free = grid->add_child(std::make_unique<Checkbox>(Point(0, 21), Colour::Transparent, L"Free"));
+        _token_store += _free->on_state_changed += [&](auto) { change_mode(CameraMode::Free); };
+
+        _axis = grid->add_child(std::make_unique<Checkbox>(Point(74, 21), Colour::Transparent, L"Axis"));
+        _token_store += _axis->on_state_changed += [&](auto) { change_mode(CameraMode::Axis); };
+
+        _ortho = grid->add_child(std::make_unique<Checkbox>(Point(0, 43), Colour::Transparent, L"Ortho"));
+        _token_store += _ortho->on_state_changed += [&](auto ortho_enabled) { change_projection(ortho_enabled ? ProjectionMode::Orthographic : ProjectionMode::Perspective); };
+#else
 
         auto reset_camera = std::make_unique<Button>(Size(16, 16));
         reset_camera->on_click += on_reset;
@@ -41,6 +67,7 @@ namespace trview
         _free = camera_window->add_child(std::move(free_camera));
         _axis = camera_window->add_child(std::move(axis_camera));
         _ortho = camera_window->add_child(std::move(ortho));
+#endif
 
         parent.add_child(std::move(camera_window));
     }

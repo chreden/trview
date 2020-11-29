@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Window.h"
+
 namespace trview
 {
     namespace ui
     {
-        class Grid final
+        class Grid final : public Window
         {
         public:
             enum class InsertOrder
@@ -13,7 +15,7 @@ namespace trview
                 Row
             };
 
-            explicit Grid(InsertOrder insert_order);
+            explicit Grid(const Size& size, const Colour& background_colour, InsertOrder insert_order);
         private:
             InsertOrder _insert_order;
         };
