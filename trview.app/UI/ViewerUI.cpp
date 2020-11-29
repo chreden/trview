@@ -218,7 +218,7 @@ namespace trview
     void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
     {
         // This is the main tool window on the side of the screen.
-        auto tool_window = std::make_unique<StackPanel>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5));
+        auto tool_window = _control->add_child(std::make_unique<StackPanel>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5)));
         tool_window->set_margin(Size(5, 5));
 
         _view_options = std::make_unique<ViewOptions>(*tool_window, texture_storage);
@@ -231,12 +231,10 @@ namespace trview
         _view_options->on_flip += on_flip;
         _view_options->on_alternate_group += on_alternate_group;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window.get(), texture_storage);
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, texture_storage);
         _room_navigator->on_room_selected += on_select_room;
 
         initialise_camera_controls(*tool_window);
-
-        _control->add_child(std::move(tool_window));
     }
 
     void ViewerUI::initialise_camera_controls(ui::Control& parent)

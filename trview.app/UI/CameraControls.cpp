@@ -13,7 +13,7 @@ namespace trview
     {
         using namespace ui;
 
-        auto camera_window = std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera");
+        auto camera_window = parent.add_child(std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera"));
 
 #if 1
         // Use the new grid control.
@@ -68,8 +68,6 @@ namespace trview
         _axis = camera_window->add_child(std::move(axis_camera));
         _ortho = camera_window->add_child(std::move(ortho));
 #endif
-
-        parent.add_child(std::move(camera_window));
     }
 
     // Set the current camera mode and raise the on_mode_selected event.
