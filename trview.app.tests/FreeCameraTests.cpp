@@ -18,7 +18,7 @@ TEST(FreeCamera, Alignment)
     const auto current_position = camera.position();
     ASSERT_EQ(Vector3::Zero, camera.position());
 
-    camera.move(Vector3(0, 1, 0));
+    camera.move(Vector3(0, 1, 0), 1);
 
     // Check that the camera has moved up.
     const auto new_position = camera.position();

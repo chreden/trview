@@ -11,27 +11,33 @@ namespace trview
         _rotation_pitch = 0.0f;
     }
 
-    void FreeCamera::move(const Vector3& movement)
+    void FreeCamera::move(const Vector3& movement, float elapsed)
     {
+        update_acceleration(movement, elapsed);
+
+        // Scale the movement by elapsed time to keep it framerate independent - also apply
+        // camera movement acceleration if present.
+        auto scaled_movement = movement * elapsed * (1 + _acceleration);
+
         if (_projection_mode == ProjectionMode::Orthographic)
         {
             auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-            _position += Vector3::Transform(Vector3(movement.x, -movement.z, 0), rotate);
+            _position += Vector3::Transform(Vector3(scaled_movement.x, -scaled_movement.z, 0), rotate);
         }
         else
         {
             if (_alignment == Alignment::Camera)
             {
                 auto rotate = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
-                _position += Vector3(0, movement.y, 0) + Vector3::Transform(Vector3(movement.x, 0, movement.z), rotate);
+                _position += Vector3(0, scaled_movement.y, 0) + Vector3::Transform(Vector3(scaled_movement.x, 0, scaled_movement.z), rotate);
             }
             else if (_alignment == Alignment::Axis)
             {
-                _position += movement;
+                _position += scaled_movement;
             }
         }
 
-        if (movement.LengthSquared() > 0)
+        if (scaled_movement.LengthSquared() > 0)
         {
             calculate_view_matrix();
         }
@@ -55,5 +61,17 @@ namespace trview
         _forward = Vector3::Transform(Vector3::Backward, rotation);
         _up = Vector3::Transform(Vector3::Down, rotation);
         calculate_view_matrix();
+    }
+
+    void FreeCamera::update_acceleration(const Vector3& movement, float elapsed)
+    {
+        if (movement.LengthSquared() == 0)
+        {
+            _acceleration = 0.0f;
+        }
+        else
+        {
+            _acceleration += 0.5f * elapsed;
+        }
     }
 }

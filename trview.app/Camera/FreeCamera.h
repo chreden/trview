@@ -28,8 +28,9 @@ namespace trview
 
         /// Move the camera around the world.
         /// @param movement The axis relative movement vector.
+        /// @param elapsed The elapsed time since the previous update.
         /// @remarks The movement will be applied based on the current alignment mode of the camera.
-        void move(const DirectX::SimpleMath::Vector3& movement);
+        void move(const DirectX::SimpleMath::Vector3& movement, float elapsed);
 
         /// Set the camera alignment. This controls how the camera movement is applied to the current position.
         /// @param alignment The new alignment mode.
@@ -41,6 +42,9 @@ namespace trview
     protected:
         virtual void update_vectors() override;
     private:
+        void update_acceleration(const DirectX::SimpleMath::Vector3& movement, float elapsed);
+
         Alignment _alignment{ Alignment::Axis };
+        float _acceleration{ 0.0f };
     };
 }

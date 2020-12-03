@@ -520,7 +520,7 @@ namespace trview
         if (_camera_mode == CameraMode::Free || _camera_mode == CameraMode::Axis)
         {
             const float Speed = std::max(0.01f, _settings.camera_movement_speed) * _CAMERA_MOVEMENT_SPEED_MULTIPLIER;
-            _free_camera.move(_camera_input.movement() * _timer.elapsed() * Speed);
+            _free_camera.move(_camera_input.movement() * Speed, _timer.elapsed());
 
             if (_level)
             {
