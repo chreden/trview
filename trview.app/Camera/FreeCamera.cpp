@@ -77,7 +77,7 @@ namespace trview
 
     void FreeCamera::update_acceleration(const Vector3& movement, float elapsed)
     {
-        if (movement.LengthSquared() == 0)
+        if (_acceleration_enabled || movement.LengthSquared() == 0)
         {
             _acceleration = 0.0f;
         }

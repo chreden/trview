@@ -76,6 +76,21 @@ namespace trview
 
         panel->add_child(std::move(camera_panel));
 
+        auto camera_acceleration_panel = std::make_unique<StackPanel>(Size(400, 40), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
+        camera_acceleration_panel->set_margin(Size(5, 5));
+
+        _acceleration = camera_acceleration_panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Acceleration"));
+        camera_acceleration_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, L"Rate", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        _acceleration_rate = camera_acceleration_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
+        camera_acceleration_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, L"Maximum", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
+        _acceleration_maximum = camera_acceleration_panel->add_child(std::make_unique<Slider>(Point(6, 12), Size(118, 16)));
+
+        _acceleration->on_state_changed += on_camera_acceleration;
+        _acceleration_rate->on_value_changed += on_camera_acceleration_rate;
+        _acceleration_maximum->on_value_changed += on_camera_acceleration_maximum;
+
+        panel->add_child(std::move(camera_acceleration_panel));
+
         auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
         ok->set_horizontal_alignment(Align::Centre);
         _token_store += ok->on_click += [&]() { _window->set_visible(!_window->visible()); };
@@ -130,6 +145,21 @@ namespace trview
     void SettingsWindow::set_auto_orbit(bool value)
     {
         _auto_orbit->set_state(value);
+    }
+
+    void SettingsWindow::set_camera_acceleration_enabled(bool value)
+    {
+        _acceleration->set_state(value);
+    }
+
+    void SettingsWindow::set_camera_acceleration_maximum(float value)
+    {
+        _acceleration_maximum->set_value(value);
+    }
+
+    void SettingsWindow::set_camera_acceleration_rate(float value)
+    {
+        _acceleration_rate->set_value(value);
     }
 
     void SettingsWindow::toggle_visibility()

@@ -58,6 +58,11 @@ namespace trview
         /// Event raised when the 'Invert vertical pan' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_invert_vertical_pan;
 
+        Event<bool> on_camera_acceleration;
+        Event<float> on_camera_acceleration_rate;
+
+        Event<float> on_camera_acceleration_maximum;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -85,6 +90,10 @@ namespace trview
         /// Set the new value of the 'Switch to orbit on selection' setting. This will not raise the on_auto_orbit event.
         /// @param value The new 'Switch to orbit on selection' setting.
         void set_auto_orbit(bool value);
+
+        void set_camera_acceleration_enabled(bool value);
+        void set_camera_acceleration_maximum(float value);
+        void set_camera_acceleration_rate(float value);
 
         /// Set the movement speed slider to specified value.
         /// @param value The movement speed between 0 and 1.
@@ -115,6 +124,9 @@ namespace trview
         ui::Slider* _movement_speed;
         ui::Control* _window;
         ui::Checkbox* _invert_vertical_pan;
+        ui::Checkbox* _acceleration;
+        ui::Slider* _acceleration_rate;
+        ui::Slider* _acceleration_maximum;
         TokenStore _token_store;
     };
 }

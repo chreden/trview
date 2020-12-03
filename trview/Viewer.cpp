@@ -37,7 +37,7 @@ namespace trview
         _update_checker.check_for_updates();
 
         _settings = load_user_settings();
-        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_acceleration_maximum);
+        apply_acceleration_settings();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
@@ -142,6 +142,21 @@ namespace trview
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
+        _token_store += _ui->on_camera_acceleration_enabled += [&](bool value)
+        {
+            _settings.camera_acceleration = value;
+            apply_acceleration_settings();
+        };
+        _token_store += _ui->on_camera_acceleration_rate_changed += [&](float value)
+        {
+            _settings.camera_acceleration_rate = value;
+            apply_acceleration_settings();
+        };
+        _token_store += _ui->on_camera_acceleration_maximum_changed += [&](float value)
+        {
+            _settings.camera_acceleration_maximum = value;
+            apply_acceleration_settings();
+        };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
         {
             if (_level)
@@ -196,6 +211,9 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
         _ui->set_camera_sensitivity(_settings.camera_sensitivity);
         _ui->set_camera_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
+        _ui->set_camera_acceleration_enabled(_settings.camera_acceleration);
+        _ui->set_camera_acceleration_rate(_settings.camera_acceleration_rate);
+        _ui->set_camera_acceleration_maximum(_settings.camera_acceleration_maximum);
 
         _measure = std::make_unique<Measure>(_device);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
@@ -1143,5 +1161,10 @@ namespace trview
             viewer->open(*std::next(settings.recent_files.begin(), index - 1));
         }
         return 0;
+    }
+
+    void Viewer::apply_acceleration_settings()
+    {
+        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_acceleration_maximum);
     }
 }
