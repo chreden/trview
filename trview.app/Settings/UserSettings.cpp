@@ -17,6 +17,15 @@ namespace trview
                 }
             }
         };
+
+        template <typename T>
+        void read_setting(const nlohmann::json& json, T& destination, const std::string& attribute_name)
+        {
+            if (json.count(attribute_name) != 0)
+            {
+                destination = json[attribute_name].get<T>();
+            }
+        }
     }
 
     void UserSettings::add_recent_file(const std::string& file)
@@ -73,6 +82,9 @@ namespace trview
             settings.invert_vertical_pan = json["invertverticalpan"].get<bool>();
             settings.background_colour = json["background"].get<uint32_t>();
             settings.rooms_startup = json["roomsstartup"].get<bool>();
+            read_setting(json, settings.camera_acceleration, "cameraacceleration");
+            read_setting(json, settings.camera_acceleration_maximum, "cameraaccelerationmaximum");
+            read_setting(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
         }
         catch (...)
         {
@@ -114,6 +126,9 @@ namespace trview
             json["invertverticalpan"] = settings.invert_vertical_pan;
             json["background"] = settings.background_colour;
             json["roomsstartup"] = settings.rooms_startup;
+            json["cameraacceleration"] = settings.camera_acceleration;
+            json["cameraaccelerationmaximum"] = settings.camera_acceleration_maximum;
+            json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
 
             std::ofstream file(file_path);
             file << json;

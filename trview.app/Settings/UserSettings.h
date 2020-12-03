@@ -21,6 +21,9 @@ namespace trview
         bool                    invert_vertical_pan{ true };
         uint32_t                background_colour = 0x003366;
         bool                    rooms_startup{ false };
+        bool                    camera_acceleration{ true };
+        float                   camera_acceleration_maximum{ 20.0f };
+        float                   camera_acceleration_rate{ 0.5f };
     };
 
     // Load the user settings from the settings file.
