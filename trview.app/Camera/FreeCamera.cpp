@@ -55,6 +55,18 @@ namespace trview
         calculate_view_matrix();
     }
 
+    void FreeCamera::set_acceleration_settings(bool enabled, float rate, float maximum)
+    {
+        _acceleration_enabled = enabled;
+        _acceleration_rate = rate;
+        _acceleration_maximum = maximum;
+
+        if (!_acceleration_enabled)
+        {
+            _acceleration = 0.0f;
+        }
+    }
+
     void FreeCamera::update_vectors()
     {
         const auto rotation = Matrix::CreateFromYawPitchRoll(_rotation_yaw, _rotation_pitch, 0);
@@ -71,7 +83,7 @@ namespace trview
         }
         else
         {
-            _acceleration += 0.5f * elapsed;
+            _acceleration = std::max(_acceleration + _acceleration_rate * elapsed, _acceleration_maximum);
         }
     }
 }

@@ -39,12 +39,22 @@ namespace trview
         /// Set the position of the camera in the world.
         /// @param position The new camera position.
         void set_position(const DirectX::SimpleMath::Vector3& position);
+
+        /// Set the new acceleration settings.
+        /// @param enabled Whether acceleration is on.
+        /// @param rate The rate of acceleration.
+        /// @param maximum The maximum speedup factor.
+        void set_acceleration_settings(bool enabled, float rate, float maximum);
     protected:
         virtual void update_vectors() override;
     private:
         void update_acceleration(const DirectX::SimpleMath::Vector3& movement, float elapsed);
 
         Alignment _alignment{ Alignment::Axis };
+
+        bool _acceleration_enabled{ true };
+        float _acceleration_rate{ 0.5f };
+        float _acceleration_maximum{ 20.0f };
         float _acceleration{ 0.0f };
     };
 }

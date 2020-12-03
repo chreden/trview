@@ -37,6 +37,7 @@ namespace trview
         _update_checker.check_for_updates();
 
         _settings = load_user_settings();
+        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_acceleration_maximum);
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
