@@ -29,6 +29,11 @@ namespace trview
         return *this;
     }
 
+    bool Point::operator==(const Point& other) const
+    {
+        return x == other.x && y == other.y;
+    }
+
     bool Point::is_between(const Point& first, const Point& second) const
     {
         return x >= first.x && y >= first.y 

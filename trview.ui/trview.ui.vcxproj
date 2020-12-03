@@ -23,6 +23,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="Dropdown.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="GroupBox.h" />
     <ClInclude Include="IFontMeasurer.h" />
     <ClInclude Include="IInputQuery.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="Dropdown.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="IFontMeasurer.cpp" />
     <ClCompile Include="IInputQuery.cpp" />

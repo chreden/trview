@@ -5,6 +5,7 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/NumericUpDown.h>
+#include <trview.ui/Grid.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 
 namespace trview
@@ -19,53 +20,40 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options");
-        auto highlight = std::make_unique<Checkbox>(Colour::Transparent, L"Highlight");
-        auto triggers = std::make_unique<Checkbox>(Point(74, 0), Colour::Transparent, L"Triggers");
-        triggers->set_state(true);
-        auto hidden_geometry = std::make_unique<Checkbox>(Point(0, 24), Colour::Transparent, L"Geometry");
-        auto water = std::make_unique<Checkbox>(Point(74, 24), Colour::Transparent, L"Water");
-        water->set_state(true);
+        auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options"));
+        auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 130), Colour::Transparent));
+        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 70), Colour::Transparent, 2, 3));
 
-        highlight->on_state_changed += on_highlight;
-        triggers->on_state_changed += on_show_triggers;
-        hidden_geometry->on_state_changed += on_show_hidden_geometry;
-        water->on_state_changed += on_show_water;
+        _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
+        _highlight->on_state_changed += on_highlight;
 
-        auto enabled = std::make_unique<Checkbox>(Point(0, 49), Colour::Transparent, L"Depth");
-        enabled->on_state_changed += on_depth_enabled;
+        _triggers = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Triggers"));
+        _triggers->set_state(true);
+        _triggers->on_state_changed += on_show_triggers;
 
-        auto depth = std::make_unique<NumericUpDown>(Point(75, 49), Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20);
-        depth->set_value(1);
-        depth->on_value_changed += on_depth_changed;
+        _hidden_geometry = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Geometry"));
+        _hidden_geometry->on_state_changed += on_show_hidden_geometry;
 
-        _enabled = rooms_groups->add_child(std::move(enabled));
-        _depth = rooms_groups->add_child(std::move(depth));
+        _water = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Water"));
+        _water->set_state(true);
+        _water->on_state_changed += on_show_water;
 
-        _highlight = rooms_groups->add_child(std::move(highlight));
-        _triggers = rooms_groups->add_child(std::move(triggers));
-        _hidden_geometry = rooms_groups->add_child(std::move(hidden_geometry));
-        _water = rooms_groups->add_child(std::move(water));
+        _enabled = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Depth"));
+        _enabled->on_state_changed += on_depth_enabled;
 
-        // Shared panel size.
+        _depth = rooms_grid->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20));
+        _depth->set_value(1);
+        _depth->on_value_changed += on_depth_changed;
+        
         const auto panel_size = Size(140, 20);
+        auto flip_panel = rooms_area->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
+        _tr1_3_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
+        _flip = _tr1_3_panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Flip"));
+        _flip->on_state_changed += on_flip;
 
-        // Add two methods of controlling flipmaps:
-        // The TR1-3 method:
-        auto tr1_3_panel = std::make_unique<ui::Window>(Point(0, 75), panel_size, Colour::Transparent);
-        auto flip = std::make_unique<Checkbox>(Colour::Transparent, L"Flip");
-        flip->on_state_changed += on_flip;
-        _flip = tr1_3_panel->add_child(std::move(flip));
-        _tr1_3_panel = rooms_groups->add_child(std::move(tr1_3_panel));
-
-        // The TR4-5 method:
-        auto tr4_5_panel = std::make_unique<ui::Window>(Point(0, 75), panel_size, Colour::Transparent);
-        auto alternate_groups = std::make_unique<StackPanel>(Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        _alternate_groups = tr4_5_panel->add_child(std::move(alternate_groups));
-        tr4_5_panel->set_visible(false);
-        _tr4_5_panel = rooms_groups->add_child(std::move(tr4_5_panel));
-
-        parent.add_child(std::move(rooms_groups));
+        _tr4_5_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
+        _alternate_groups = _tr4_5_panel->add_child(std::make_unique<StackPanel>(Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
+        _tr4_5_panel->set_visible(false);
     }
 
     void ViewOptions::set_alternate_group(uint32_t value, bool enabled)
