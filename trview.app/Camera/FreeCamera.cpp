@@ -83,7 +83,7 @@ namespace trview
         }
         else
         {
-            _acceleration = std::max(_acceleration + _acceleration_rate * elapsed, _acceleration_maximum);
+            _acceleration = std::min(_acceleration + _acceleration_rate * elapsed, _acceleration_maximum);
         }
     }
 }
