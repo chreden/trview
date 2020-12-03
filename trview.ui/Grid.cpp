@@ -12,13 +12,11 @@ namespace trview
 
         void Grid::inner_add_child(Control* child_element)
         {
-            // Take the newly added child element, add it to the 'grid'
             if (!_grid)
             {
                 return;
             }
 
-            // Add the cell to the grid
             auto cell = _grid->add_child(std::make_unique<Window>(Size(static_cast<int>(size().width / _columns), static_cast<int>(size().height / _rows)), background_colour()));
 
             // Calculate the coordinates based on cell index.
