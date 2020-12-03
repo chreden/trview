@@ -14,7 +14,7 @@ namespace trview
         using namespace ui;
 
         auto camera_window = parent.add_child(std::make_unique<GroupBox>(Size(150, 92), Colour::Transparent, Colour::Grey, L"Camera"));
-        auto grid = camera_window->add_child(std::make_unique<Grid>(Size(150, 63), Colour::Transparent, Grid::InsertOrder::Column, 2, 3));
+        auto grid = camera_window->add_child(std::make_unique<Grid>(Size(150, 63), Colour::Transparent, 2, 3));
 
         // Make a button with a label next to it, until this kind of control exists.
         auto create_labelled_button = [](Event<>& on_click, const std::wstring& text)

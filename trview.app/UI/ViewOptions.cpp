@@ -22,7 +22,7 @@ namespace trview
 
         auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options"));
         auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 130), Colour::Transparent));
-        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 70), Colour::Transparent, Grid::InsertOrder::Column, 2, 3));
+        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 70), Colour::Transparent, 2, 3));
 
         _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
         _highlight->on_state_changed += on_highlight;

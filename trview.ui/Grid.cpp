@@ -4,8 +4,8 @@ namespace trview
 {
     namespace ui
     {
-        Grid::Grid(const Size& size, const Colour& background_colour, InsertOrder insert_order, uint32_t columns, uint32_t rows)
-            : Window(size, background_colour), _insert_order(insert_order), _columns(columns), _rows(rows)
+        Grid::Grid(const Size& size, const Colour& background_colour, uint32_t columns, uint32_t rows)
+            : Window(size, background_colour), _columns(columns), _rows(rows)
         {
             _grid = add_child(std::make_unique<Window>(size, background_colour));
         }
