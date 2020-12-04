@@ -143,7 +143,6 @@ namespace trview
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
         _settings_window->on_camera_acceleration += on_camera_acceleration_enabled;
         _settings_window->on_camera_acceleration_rate += on_camera_acceleration_rate_changed;
-        _settings_window->on_camera_acceleration_maximum += on_camera_acceleration_maximum_changed;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
@@ -267,11 +266,6 @@ namespace trview
     void ViewerUI::set_camera_acceleration_enabled(bool value)
     {
         _settings_window->set_camera_acceleration_enabled(value);
-    }
-
-    void ViewerUI::set_camera_acceleration_maximum(float value)
-    {
-        _settings_window->set_camera_acceleration_maximum(value);
     }
     
     void ViewerUI::set_camera_acceleration_rate(float value)
@@ -398,7 +392,6 @@ namespace trview
         _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
         _settings_window->set_camera_acceleration_enabled(settings.camera_acceleration);
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
-        _settings_window->set_camera_acceleration_maximum(settings.camera_acceleration_maximum);
     }
 
     void ViewerUI::set_selected_room(Room* room)

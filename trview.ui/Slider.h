@@ -11,6 +11,7 @@ namespace trview
         {
         public:
             Slider(Point position, Size size);
+            explicit Slider(const Size& size);
             virtual ~Slider() = default;
 
             Event<float> on_value_changed;

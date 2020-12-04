@@ -152,11 +152,6 @@ namespace trview
             _settings.camera_acceleration_rate = value;
             apply_acceleration_settings();
         };
-        _token_store += _ui->on_camera_acceleration_maximum_changed += [&](float value)
-        {
-            _settings.camera_acceleration_maximum = value;
-            apply_acceleration_settings();
-        };
         _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
         {
             if (_level)
@@ -213,7 +208,6 @@ namespace trview
         _ui->set_camera_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
         _ui->set_camera_acceleration_enabled(_settings.camera_acceleration);
         _ui->set_camera_acceleration_rate(_settings.camera_acceleration_rate);
-        _ui->set_camera_acceleration_maximum(_settings.camera_acceleration_maximum);
 
         _measure = std::make_unique<Measure>(_device);
         _compass = std::make_unique<Compass>(_device, *_shader_storage);
@@ -1165,6 +1159,6 @@ namespace trview
 
     void Viewer::apply_acceleration_settings()
     {
-        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_acceleration_maximum);
+        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_movement_speed);
     }
 }

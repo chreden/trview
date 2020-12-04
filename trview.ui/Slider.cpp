@@ -29,6 +29,11 @@ namespace trview
             set_blob_position(Point(0, 0));
         }
 
+        Slider::Slider(const Size& size)
+            : Slider(Point(), size)
+        {
+        }
+
         void Slider::set_value(float value)
         {
             _value = value;

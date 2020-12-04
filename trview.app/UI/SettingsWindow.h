@@ -61,8 +61,6 @@ namespace trview
         Event<bool> on_camera_acceleration;
         Event<float> on_camera_acceleration_rate;
 
-        Event<float> on_camera_acceleration_maximum;
-
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -92,7 +90,6 @@ namespace trview
         void set_auto_orbit(bool value);
 
         void set_camera_acceleration_enabled(bool value);
-        void set_camera_acceleration_maximum(float value);
         void set_camera_acceleration_rate(float value);
 
         /// Set the movement speed slider to specified value.
@@ -126,7 +123,6 @@ namespace trview
         ui::Checkbox* _invert_vertical_pan;
         ui::Checkbox* _acceleration;
         ui::Slider* _acceleration_rate;
-        ui::Slider* _acceleration_maximum;
         TokenStore _token_store;
     };
 }

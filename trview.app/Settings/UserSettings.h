@@ -22,7 +22,6 @@ namespace trview
         uint32_t                background_colour = 0x003366;
         bool                    rooms_startup{ false };
         bool                    camera_acceleration{ true };
-        float                   camera_acceleration_maximum{ 20.0f };
         float                   camera_acceleration_rate{ 0.5f };
     };
 

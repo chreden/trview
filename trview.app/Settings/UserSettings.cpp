@@ -83,7 +83,6 @@ namespace trview
             settings.background_colour = json["background"].get<uint32_t>();
             settings.rooms_startup = json["roomsstartup"].get<bool>();
             read_setting(json, settings.camera_acceleration, "cameraacceleration");
-            read_setting(json, settings.camera_acceleration_maximum, "cameraaccelerationmaximum");
             read_setting(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
         }
         catch (...)
@@ -127,7 +126,6 @@ namespace trview
             json["background"] = settings.background_colour;
             json["roomsstartup"] = settings.rooms_startup;
             json["cameraacceleration"] = settings.camera_acceleration;
-            json["cameraaccelerationmaximum"] = settings.camera_acceleration_maximum;
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
 
             std::ofstream file(file_path);
