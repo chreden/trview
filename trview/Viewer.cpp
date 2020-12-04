@@ -1159,6 +1159,6 @@ namespace trview
 
     void Viewer::apply_acceleration_settings()
     {
-        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate, _settings.camera_movement_speed);
+        _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
     }
 }

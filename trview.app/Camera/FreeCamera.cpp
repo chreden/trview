@@ -17,7 +17,7 @@ namespace trview
 
         // Scale the movement by elapsed time to keep it framerate independent - also apply
         // camera movement acceleration if present.
-        auto scaled_movement = movement * elapsed * (1 + _acceleration);
+        auto scaled_movement = movement * elapsed * _acceleration;
 
         if (_projection_mode == ProjectionMode::Orthographic)
         {
@@ -55,15 +55,14 @@ namespace trview
         calculate_view_matrix();
     }
 
-    void FreeCamera::set_acceleration_settings(bool enabled, float rate, float maximum)
+    void FreeCamera::set_acceleration_settings(bool enabled, float rate)
     {
         _acceleration_enabled = enabled;
         _acceleration_rate = rate;
-        _acceleration_maximum = maximum;
 
         if (!_acceleration_enabled)
         {
-            _acceleration = 0.0f;
+            _acceleration = 1.0f;
         }
     }
 
@@ -77,13 +76,17 @@ namespace trview
 
     void FreeCamera::update_acceleration(const Vector3& movement, float elapsed)
     {
-        if (_acceleration_enabled || movement.LengthSquared() == 0)
+        if (!_acceleration_enabled)
+        {
+            _acceleration = 1.0f;
+        }
+        else if (movement.LengthSquared() == 0)
         {
             _acceleration = 0.0f;
         }
         else
         {
-            _acceleration = std::min(_acceleration + _acceleration_rate * elapsed, _acceleration_maximum);
+            _acceleration = std::min(_acceleration + std::max(_acceleration_rate, 0.1f) * elapsed, 1.0f);
         }
     }
 }

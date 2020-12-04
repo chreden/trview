@@ -43,8 +43,7 @@ namespace trview
         /// Set the new acceleration settings.
         /// @param enabled Whether acceleration is on.
         /// @param rate The rate of acceleration.
-        /// @param maximum The maximum speedup factor.
-        void set_acceleration_settings(bool enabled, float rate, float maximum);
+        void set_acceleration_settings(bool enabled, float rate);
     protected:
         virtual void update_vectors() override;
     private:
@@ -54,7 +53,6 @@ namespace trview
 
         bool _acceleration_enabled{ true };
         float _acceleration_rate{ 0.5f };
-        float _acceleration_maximum{ 20.0f };
         float _acceleration{ 0.0f };
     };
 }
