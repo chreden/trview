@@ -70,18 +70,18 @@ namespace trview
             nlohmann::json json;
             file >> json;
 
-            settings.camera_sensitivity = json["camera"].get<float>();
-            settings.camera_movement_speed = json["movement"].get<float>();
-            settings.vsync = json["vsync"].get<bool>();
-            settings.go_to_lara = json["gotolara"].get<bool>();
-            settings.invert_map_controls = json["invertmapcontrols"].get<bool>();
-            settings.items_startup = json["itemsstartup"].get<bool>();
-            settings.triggers_startup = json["triggersstartup"].get<bool>();
-            settings.auto_orbit = json["autoorbit"].get<bool>();
-            settings.recent_files = json["recent"].get<std::list<std::string>>();
-            settings.invert_vertical_pan = json["invertverticalpan"].get<bool>();
-            settings.background_colour = json["background"].get<uint32_t>();
-            settings.rooms_startup = json["roomsstartup"].get<bool>();
+            read_setting(json, settings.camera_sensitivity, "camera");
+            read_setting(json, settings.camera_movement_speed, "movement");
+            read_setting(json, settings.vsync, "vsync");
+            read_setting(json, settings.go_to_lara, "gotolara");
+            read_setting(json, settings.invert_map_controls, "invertmapcontrols");
+            read_setting(json, settings.items_startup, "itemsstartup");
+            read_setting(json, settings.triggers_startup, "triggersstartup");
+            read_setting(json, settings.auto_orbit, "autoorbit");
+            read_setting(json, settings.recent_files, "recent");
+            read_setting(json, settings.invert_vertical_pan, "invertverticalpan");
+            read_setting(json, settings.background_colour, "background");
+            read_setting(json, settings.rooms_startup, "roomsstartup");
             read_setting(json, settings.camera_acceleration, "cameraacceleration");
             read_setting(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
         }
