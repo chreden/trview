@@ -110,19 +110,19 @@ namespace trview
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
-        ui::Checkbox* _vsync;
-        ui::Checkbox* _go_to_lara;
-        ui::Checkbox* _invert_map_controls;
-        ui::Checkbox* _items_startup;
-        ui::Checkbox* _triggers_startup;
-        ui::Checkbox* _rooms_startup;
-        ui::Checkbox* _auto_orbit;
-        ui::Slider* _sensitivity;
-        ui::Slider* _movement_speed;
-        ui::Control* _window;
-        ui::Checkbox* _invert_vertical_pan;
-        ui::Checkbox* _acceleration;
-        ui::Slider* _acceleration_rate;
+        ui::Checkbox* _vsync{ nullptr };
+        ui::Checkbox* _go_to_lara{ nullptr };
+        ui::Checkbox* _invert_map_controls{ nullptr };
+        ui::Checkbox* _items_startup{ nullptr };
+        ui::Checkbox* _triggers_startup{ nullptr };
+        ui::Checkbox* _rooms_startup{ nullptr };
+        ui::Checkbox* _auto_orbit{ nullptr };
+        ui::Slider* _sensitivity{ nullptr };
+        ui::Slider* _movement_speed{ nullptr };
+        ui::Control* _window{ nullptr };
+        ui::Checkbox* _invert_vertical_pan{ nullptr };
+        ui::Checkbox* _acceleration{ nullptr };
+        ui::Slider* _acceleration_rate{ nullptr };
         TokenStore _token_store;
     };
 }

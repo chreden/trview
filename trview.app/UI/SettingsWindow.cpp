@@ -18,51 +18,42 @@ namespace trview
         const auto background_colour = Colour(0.5f, 0.0f, 0.0f, 0.0f);
         const auto title_colour = Colour::Black;
 
-        auto window = std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size());
-        window->set_visible(false);
+        _window = parent.add_child(std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size()));
+        _window->set_visible(false);
 
         // Create the title bar.
-        auto title_bar = std::make_unique<StackPanel>(Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto title = std::make_unique<Label>(Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre);
+        auto title_bar = _window->add_child(std::make_unique<StackPanel>(Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+        auto title = title_bar->add_child(std::make_unique<Label>(Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
         title->set_horizontal_alignment(Align::Centre);
-        title_bar->add_child(std::move(title));
-        window->add_child(std::move(title_bar));
 
         // Create the rest of the window contents.
-        auto panel = std::make_unique<StackPanel>(Size(400, 250), Colour::Transparent , Size(5, 5));
+        auto panel = _window->add_child(std::make_unique<StackPanel>(Size(400, 250), Colour::Transparent , Size(5, 5)));
         panel->set_auto_size_dimension(SizeDimension::Height);
         panel->set_margin(Size(5, 5));
 
-        auto vsync = std::make_unique<Checkbox>(Colour::Transparent, L"Vsync");
-        vsync->on_state_changed += on_vsync;
-        _vsync = panel->add_child(std::move(vsync));
+        _vsync = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vsync"));
+        _vsync->on_state_changed += on_vsync;
 
-        auto go_to_lara = std::make_unique<Checkbox>(Colour::Transparent, L"Go to Lara");
-        go_to_lara->on_state_changed += on_go_to_lara;
-        _go_to_lara = panel->add_child(std::move(go_to_lara));
+        _go_to_lara = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Go to Lara"));
+        _go_to_lara->on_state_changed += on_go_to_lara;
 
-        auto invert_map_controls = std::make_unique<Checkbox>(Colour::Transparent, L"Invert map controls");
-        invert_map_controls->on_state_changed += on_invert_map_controls;
-        _invert_map_controls = panel->add_child(std::move(invert_map_controls));
+        _invert_map_controls = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Invert map controls"));
+        _invert_map_controls->on_state_changed += on_invert_map_controls;
 
-        auto items_startup = std::make_unique<Checkbox>(Colour::Transparent, L"Open Items Window at startup");
-        items_startup->on_state_changed += on_items_startup;
-        _items_startup = panel->add_child(std::move(items_startup));
+        _items_startup = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Open Items Window at startup"));
+        _items_startup->on_state_changed += on_items_startup;
 
-        auto triggers_startup = std::make_unique<Checkbox>(Colour::Transparent, L"Open Triggers Window at startup");
-        triggers_startup->on_state_changed += on_triggers_startup;
-        _triggers_startup = panel->add_child(std::move(triggers_startup));
+        _triggers_startup = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Open Triggers Window at startup"));
+        _triggers_startup->on_state_changed += on_triggers_startup;
 
         _rooms_startup = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Open Rooms Window at startup"));
         _rooms_startup->on_state_changed += on_rooms_startup;
 
-        auto auto_orbit = std::make_unique<Checkbox>(Colour::Transparent, L"Switch to orbit on selection");
-        auto_orbit->on_state_changed += on_auto_orbit;
-        _auto_orbit = panel->add_child(std::move(auto_orbit));
+        _auto_orbit = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Switch to orbit on selection"));
+        _auto_orbit->on_state_changed += on_auto_orbit;
 
-        auto invert_vertical_pan = std::make_unique<Checkbox>(Colour::Transparent, L"Invert vertical panning");
-        invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
-        _invert_vertical_pan = panel->add_child(std::move(invert_vertical_pan));
+        _invert_vertical_pan = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Invert vertical panning"));
+        _invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
 
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
         auto camera_panel = camera_group->add_child(std::make_unique<Grid>(Size(360, 50), Colour::Transparent, 2, 2));
@@ -84,13 +75,9 @@ namespace trview
         _acceleration->on_state_changed += on_camera_acceleration;
         _acceleration_rate->on_value_changed += on_camera_acceleration_rate;
 
-        auto ok = std::make_unique<Button>(Point(), Size(60, 20), L"Close");
+        auto ok = panel->add_child(std::make_unique<Button>(Point(), Size(60, 20), L"Close"));
         ok->set_horizontal_alignment(Align::Centre);
         _token_store += ok->on_click += [&]() { _window->set_visible(!_window->visible()); };
-        panel->add_child(std::move(ok));
-
-        window->add_child(std::move(panel));
-        _window = parent.add_child(std::move(window));
 
         // Register for control resizes on the parent so that the window will always
         // be in the middle of the screen.
