@@ -127,7 +127,7 @@ namespace trview
         _auto_orbit->set_state(value);
     }
 
-    void SettingsWindow::set_camera_acceleration_enabled(bool value)
+    void SettingsWindow::set_camera_acceleration(bool value)
     {
         _acceleration->set_state(value);
     }

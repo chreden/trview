@@ -74,8 +74,11 @@ namespace trview
         /// Event raised when an alternate group is toggled.
         Event<uint32_t, bool> on_alternate_group;
 
-        Event<bool> on_camera_acceleration_enabled;
-        Event<float> on_camera_acceleration_rate_changed;
+        /// Event raised when camera acceleration setting is changed.
+        Event<bool> on_camera_acceleration;
+
+        /// Event raised when camera acceleration rate is changed.
+        Event<float> on_camera_acceleration_rate;
 
         /// Event raised when the camera mode is set.
         Event<CameraMode> on_camera_mode;
@@ -150,7 +153,12 @@ namespace trview
         /// @param groups The alternate groups for the level.
         void set_alternate_groups(const std::set<uint32_t>& groups);
 
-        void set_camera_acceleration_enabled(bool value);
+        /// Set whether camera acceleration is enabled.
+        /// @param value Whether camera acceleration is enabled.
+        void set_camera_acceleration(bool value);
+
+        /// Set the camera acceleration rate.
+        /// @param value The acceleration rate.
         void set_camera_acceleration_rate(float value);
 
         /// Set the camera movement speed.

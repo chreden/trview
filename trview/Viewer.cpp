@@ -142,12 +142,12 @@ namespace trview
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
         _token_store += _ui->on_camera_sensitivity += [&](float value) { _settings.camera_sensitivity = value; };
         _token_store += _ui->on_camera_movement_speed += [&](float value) { _settings.camera_movement_speed = value; };
-        _token_store += _ui->on_camera_acceleration_enabled += [&](bool value)
+        _token_store += _ui->on_camera_acceleration += [&](bool value)
         {
             _settings.camera_acceleration = value;
             apply_acceleration_settings();
         };
-        _token_store += _ui->on_camera_acceleration_rate_changed += [&](float value)
+        _token_store += _ui->on_camera_acceleration_rate += [&](float value)
         {
             _settings.camera_acceleration_rate = value;
             apply_acceleration_settings();
@@ -206,7 +206,7 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
         _ui->set_camera_sensitivity(_settings.camera_sensitivity);
         _ui->set_camera_movement_speed(_settings.camera_movement_speed == 0 ? _CAMERA_MOVEMENT_SPEED_DEFAULT : _settings.camera_movement_speed);
-        _ui->set_camera_acceleration_enabled(_settings.camera_acceleration);
+        _ui->set_camera_acceleration(_settings.camera_acceleration);
         _ui->set_camera_acceleration_rate(_settings.camera_acceleration_rate);
 
         _measure = std::make_unique<Measure>(_device);

@@ -141,8 +141,8 @@ namespace trview
         };
         _settings_window->on_sensitivity_changed += on_camera_sensitivity;
         _settings_window->on_movement_speed_changed += on_camera_movement_speed;
-        _settings_window->on_camera_acceleration += on_camera_acceleration_enabled;
-        _settings_window->on_camera_acceleration_rate += on_camera_acceleration_rate_changed;
+        _settings_window->on_camera_acceleration += on_camera_acceleration;
+        _settings_window->on_camera_acceleration_rate += on_camera_acceleration_rate;
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
@@ -263,9 +263,9 @@ namespace trview
         _view_options->set_alternate_groups(groups);
     }
 
-    void ViewerUI::set_camera_acceleration_enabled(bool value)
+    void ViewerUI::set_camera_acceleration(bool value)
     {
-        _settings_window->set_camera_acceleration_enabled(value);
+        _settings_window->set_camera_acceleration(value);
     }
     
     void ViewerUI::set_camera_acceleration_rate(float value)
@@ -390,7 +390,7 @@ namespace trview
         _settings_window->set_rooms_startup(settings.rooms_startup);
         _settings_window->set_vsync(settings.vsync);
         _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
-        _settings_window->set_camera_acceleration_enabled(settings.camera_acceleration);
+        _settings_window->set_camera_acceleration(settings.camera_acceleration);
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
     }
 
