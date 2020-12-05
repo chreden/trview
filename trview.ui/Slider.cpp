@@ -34,6 +34,11 @@ namespace trview
         {
         }
 
+        float Slider::value() const
+        {
+            return _value;
+        }
+
         void Slider::set_value(float value)
         {
             _value = value;
@@ -53,7 +58,7 @@ namespace trview
 
         bool Slider::clicked(Point position)
         {
-            set_blob_position(position);
+            set_blob_position(position, true);
             return true;
         }
 
@@ -61,28 +66,31 @@ namespace trview
         {
             if (_input_query && _input_query->focus_control() == this)
             {
-                set_blob_position(position);
+                set_blob_position(position, true);
                 return true;
             }
             return false;
         }
 
-        void Slider::set_blob_position(float percentage)
+        void Slider::set_blob_position(float percentage, bool raise_event)
         {
             const float SliderSize = size().width - BlobWidth * 2;
             const float x = BlobWidth + percentage * SliderSize - BlobWidth * 0.5f;
 
             const auto pos = _blob->position();
             _blob->set_position(Point(x, pos.y));
-            on_value_changed(percentage);
+            if (raise_event)
+            {
+                on_value_changed(percentage);
+            }
             on_invalidate();
         }
 
-        void Slider::set_blob_position(Point position)
+        void Slider::set_blob_position(Point position, bool raise_event)
         {
             const float SliderSize = size().width - BlobWidth * 2;
             const float percentage = std::min(1.0f, std::max(0.0f, (position.x - BlobWidth) / SliderSize));
-            set_blob_position(percentage);
+            set_blob_position(percentage, raise_event);
         }
     }
 }
