@@ -76,16 +76,18 @@ namespace trview
 
         _sensitivity = add_labelled_slider(L"Sensitivity");
         _sensitivity->set_name("Sensitivity");
+        _sensitivity->on_value_changed += on_sensitivity_changed;
+
         _movement_speed = add_labelled_slider(L"Movement Speed ");
         _movement_speed->set_name("MovementSpeed");
+        _movement_speed->on_value_changed += on_movement_speed_changed;
+
         _acceleration = camera_panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Acceleration"));
         _acceleration->set_name("Acceleration");
+        _acceleration->on_state_changed += on_camera_acceleration;
+
         _acceleration_rate = add_labelled_slider(L"Acceleration Rate");
         _acceleration_rate->set_name("AccelerationRate");
-
-        _sensitivity->on_value_changed += on_sensitivity_changed;
-        _movement_speed->on_value_changed += on_movement_speed_changed;
-        _acceleration->on_state_changed += on_camera_acceleration;
         _acceleration_rate->on_value_changed += on_camera_acceleration_rate;
 
         auto close = panel->add_child(std::make_unique<Button>(Point(), Size(60, 20), L"Close"));

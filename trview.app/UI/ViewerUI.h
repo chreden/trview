@@ -74,12 +74,6 @@ namespace trview
         /// Event raised when an alternate group is toggled.
         Event<uint32_t, bool> on_alternate_group;
 
-        /// Event raised when camera acceleration setting is changed.
-        Event<bool> on_camera_acceleration;
-
-        /// Event raised when camera acceleration rate is changed.
-        Event<float> on_camera_acceleration_rate;
-
         /// Event raised when the camera mode is set.
         Event<CameraMode> on_camera_mode;
 
@@ -88,12 +82,6 @@ namespace trview
 
         /// Event raised when the camera is reset.
         Event<> on_camera_reset;
-
-        /// Event raised when the camera sensitivity is changed.
-        Event<float> on_camera_sensitivity;
-
-        /// Event raised when the camera movement speed is changed.
-        Event<float> on_camera_movement_speed;
 
         /// Event raised when the depth level changes.
         Event<int32_t> on_depth_level_changed;
@@ -153,25 +141,9 @@ namespace trview
         /// @param groups The alternate groups for the level.
         void set_alternate_groups(const std::set<uint32_t>& groups);
 
-        /// Set whether camera acceleration is enabled.
-        /// @param value Whether camera acceleration is enabled.
-        void set_camera_acceleration(bool value);
-
-        /// Set the camera acceleration rate.
-        /// @param value The acceleration rate.
-        void set_camera_acceleration_rate(float value);
-
-        /// Set the camera movement speed.
-        /// @param value The camera movement speed.
-        void set_camera_movement_speed(float value);
-
         /// Set the current camera position.
         /// @param position The camera position.
         void set_camera_position(const DirectX::SimpleMath::Vector3& position);
-
-        /// Set the sensitivity of the camera.
-        /// @param value The camera sensitivity.
-        void set_camera_sensitivity(float value);
 
         /// Set the camera mode.
         /// @param mode The current camera mode.
