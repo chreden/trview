@@ -58,6 +58,12 @@ namespace trview
         /// Event raised when the 'Invert vertical pan' setting has been changed. The new setting is passed as the parameter.
         Event<bool> on_invert_vertical_pan;
 
+        /// Event raised when the 'camera acceleration' setting has been changed. The new setting is passed as the parameter.
+        Event<bool> on_camera_acceleration;
+
+        /// Event raised when the 'camera acceleration rate' setting has been changed. The new setting is passed as the parameter.
+        Event<float> on_camera_acceleration_rate;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -86,6 +92,14 @@ namespace trview
         /// @param value The new 'Switch to orbit on selection' setting.
         void set_auto_orbit(bool value);
 
+        /// Set the new value of the 'camera acceleration' setting. This will not raise the on_camera_acceleration event.
+        /// @param value The new 'camera acceleration' setting.
+        void set_camera_acceleration(bool value);
+
+        /// Set the new value of the 'camera acceleration rate' setting. This will not raise the on_camera_acceleration_rate event.
+        /// @param value The new 'camera acceleration rate' setting.
+        void set_camera_acceleration_rate(float value);
+
         /// Set the movement speed slider to specified value.
         /// @param value The movement speed between 0 and 1.
         /// @remarks This will not raise the on_movement_speed_changed event.
@@ -104,17 +118,19 @@ namespace trview
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
-        ui::Checkbox* _vsync;
-        ui::Checkbox* _go_to_lara;
-        ui::Checkbox* _invert_map_controls;
-        ui::Checkbox* _items_startup;
-        ui::Checkbox* _triggers_startup;
-        ui::Checkbox* _rooms_startup;
-        ui::Checkbox* _auto_orbit;
-        ui::Slider* _sensitivity;
-        ui::Slider* _movement_speed;
-        ui::Control* _window;
-        ui::Checkbox* _invert_vertical_pan;
+        ui::Checkbox* _vsync{ nullptr };
+        ui::Checkbox* _go_to_lara{ nullptr };
+        ui::Checkbox* _invert_map_controls{ nullptr };
+        ui::Checkbox* _items_startup{ nullptr };
+        ui::Checkbox* _triggers_startup{ nullptr };
+        ui::Checkbox* _rooms_startup{ nullptr };
+        ui::Checkbox* _auto_orbit{ nullptr };
+        ui::Slider* _sensitivity{ nullptr };
+        ui::Slider* _movement_speed{ nullptr };
+        ui::Control* _window{ nullptr };
+        ui::Checkbox* _invert_vertical_pan{ nullptr };
+        ui::Checkbox* _acceleration{ nullptr };
+        ui::Slider* _acceleration_rate{ nullptr };
         TokenStore _token_store;
     };
 }

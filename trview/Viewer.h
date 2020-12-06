@@ -125,6 +125,8 @@ namespace trview
         static int lua_open(lua_State* state);
         static int lua_open_recent(lua_State* state);
 
+        void apply_acceleration_settings();
+
         graphics::Device _device;
         Shortcuts _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;

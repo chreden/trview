@@ -139,8 +139,26 @@ namespace trview
             _settings.invert_vertical_pan = value;
             on_settings(_settings);
         };
-        _settings_window->on_sensitivity_changed += on_camera_sensitivity;
-        _settings_window->on_movement_speed_changed += on_camera_movement_speed;
+        _token_store += _settings_window->on_sensitivity_changed += [&](float value)
+        {
+            _settings.camera_sensitivity = value;
+            on_settings(_settings);
+        };
+        _token_store += _settings_window->on_movement_speed_changed += [&](float value)
+        {
+            _settings.camera_movement_speed = value;
+            on_settings(_settings);
+        };
+        _token_store += _settings_window->on_camera_acceleration += [&](bool value)
+        {
+            _settings.camera_acceleration = value;
+            on_settings(_settings);
+        };
+        _token_store += _settings_window->on_camera_acceleration_rate += [&](float value)
+        {
+            _settings.camera_acceleration_rate = value;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
@@ -261,19 +279,9 @@ namespace trview
         _view_options->set_alternate_groups(groups);
     }
 
-    void ViewerUI::set_camera_movement_speed(float value)
-    {
-        _settings_window->set_movement_speed(value);
-    }
-
     void ViewerUI::set_camera_position(const DirectX::SimpleMath::Vector3& position)
     {
         _camera_position->set_position(position);
-    }
-
-    void ViewerUI::set_camera_sensitivity(float value)
-    {
-        _settings_window->set_sensitivity(value);
     }
 
     void ViewerUI::set_camera_mode(CameraMode mode)
@@ -378,6 +386,10 @@ namespace trview
         _settings_window->set_rooms_startup(settings.rooms_startup);
         _settings_window->set_vsync(settings.vsync);
         _settings_window->set_invert_vertical_pan(settings.invert_vertical_pan);
+        _settings_window->set_movement_speed(settings.camera_movement_speed);
+        _settings_window->set_sensitivity(settings.camera_sensitivity);
+        _settings_window->set_camera_acceleration(settings.camera_acceleration);
+        _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
     }
 
     void ViewerUI::set_selected_room(Room* room)
