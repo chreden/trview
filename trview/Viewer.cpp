@@ -904,6 +904,11 @@ namespace trview
 
         _token_store += _camera_input.on_rotate += [&](float x, float y)
         {
+            if (_ui->is_cursor_over())
+            {
+                return;
+            }
+
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
             const float high_sensitivity = 25.0f;
@@ -918,7 +923,11 @@ namespace trview
 
         _token_store += _camera_input.on_zoom += [&](float zoom)
         {
-            // Zoom only affects Orbit mode.
+            if (_ui->is_cursor_over())
+            {
+                return;
+            }
+
             if (_camera_mode == CameraMode::Orbit)
             {
                 _camera.set_zoom(_camera.zoom() + zoom);
@@ -939,7 +948,7 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            if (_camera_mode != CameraMode::Orbit)
+            if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
             {
                 return;
             }
