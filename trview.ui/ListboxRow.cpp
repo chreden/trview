@@ -17,7 +17,12 @@ namespace trview
                 {
                     case Column::Type::Boolean:
                     {
-                        auto checkbox = add_child(std::make_unique<Checkbox>());
+                        auto panel = add_child(std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" "));
+                        auto checkbox = panel->add_child(std::make_unique<Checkbox>());
+                        checkbox->set_name("checkbox");
+
+                        auto size = checkbox->size();
+                        checkbox->set_position(Point(static_cast<int>(column.width() / 2.0f - size.width / 2.0f), 2));
                         _token_store += checkbox->on_state_changed += [this](bool value)
                         {
                             if (_item.has_value())
@@ -55,7 +60,7 @@ namespace trview
                 {
                     case Column::Type::Boolean:
                     {
-                        Checkbox* checkbox = static_cast<Checkbox*>(columns[c]);
+                        Checkbox* checkbox = columns[c]->find<Checkbox>("checkbox");
                         checkbox->set_state(std::stoi(item.value(_columns[c].name())) == 1);
                         break;
                     }
@@ -94,7 +99,7 @@ namespace trview
                 }
                 else
                 {
-                    Checkbox* checkbox_cell = dynamic_cast<Checkbox*>(cell);
+                    Window* checkbox_cell = dynamic_cast<Window*>(cell);
                     if (checkbox_cell)
                     {
                         checkbox_cell->set_background_colour(colour);

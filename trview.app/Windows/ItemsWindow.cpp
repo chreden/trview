@@ -25,15 +25,16 @@ namespace trview
 
         ui::Listbox::Item create_listbox_item(const Item& item)
         {
-            return {{{ L"#", std::to_wstring(item.number()) },
+            return { {{ L"#", std::to_wstring(item.number()) },
                      { L"ID", std::to_wstring(item.type_id()) },
                      { L"Room", std::to_wstring(item.room()) },
-                     { L"Type", item.type() }}};
+                     { L"Type", item.type() },
+                     { L"Hide", L"0" }} };
         }
     }
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, Height))
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -93,7 +94,7 @@ namespace trview
     std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
@@ -123,13 +124,14 @@ namespace trview
 
         _controls = left_panel->add_child(std::move(controls));
 
-        auto items_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
+        auto items_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::Number, L"Room", 30 },
                 { Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::Type::String, L"Type", 100 } 
+                { Listbox::Column::Type::String, L"Type", 100 },
+                { Listbox::Column::Type::Boolean, L"Hide", 50 }
             }
         );
         _token_store += items_list->on_item_selected += [&](const auto& item)
@@ -146,7 +148,7 @@ namespace trview
         left_panel->add_child(std::move(items_list));
 
         // Fix items list size now that it has been added to the panel.
-        _items_list->set_size(Size(200, left_panel->size().height - _items_list->position().y));
+        _items_list->set_size(Size(250, left_panel->size().height - _items_list->position().y));
 
         return left_panel;
     }
