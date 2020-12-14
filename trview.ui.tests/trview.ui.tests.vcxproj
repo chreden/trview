@@ -149,6 +149,7 @@
     <ClCompile Include="ButtonTests.cpp" />
     <ClCompile Include="CheckboxTests.cpp" />
     <ClCompile Include="GridTests.cpp" />
+    <ClCompile Include="ListboxTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">

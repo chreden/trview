@@ -119,6 +119,9 @@ namespace trview
                 /// Event raised when a row is clicked.
                 Event<Item> on_click;
 
+                /// Event raised when a checkbox is checked.
+                Event<Item> on_state_changed;
+
                 void set_highlighted(bool value);
 
                 virtual void mouse_enter() override;

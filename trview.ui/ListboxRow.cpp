@@ -1,5 +1,6 @@
 #include "Listbox.h"
 #include "Button.h"
+#include "Checkbox.h"
 
 namespace trview
 {
@@ -12,17 +13,33 @@ namespace trview
 
             for (const auto& column : columns)
             {
-                // TODO: Add a checkbox instead of a button if it is boolean - bind to different event.
-                // Also pass out name of column clicked, probably.
-                auto button = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" ");
-                _token_store += button->on_click += [this]
+                switch (column.type())
                 {
-                    if (_item.has_value())
+                    case Column::Type::Boolean:
                     {
-                        on_click(_item.value());
+                        auto checkbox = add_child(std::make_unique<Checkbox>());
+                        _token_store += checkbox->on_state_changed += [this](bool value)
+                        {
+                            if (_item.has_value())
+                            {
+                                on_state_changed(_item.value());
+                            }
+                        };
+                        break;
                     }
-                };
-                add_child(std::move(button));
+                    default:
+                    {
+                        auto button = add_child(std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" "));
+                        _token_store += button->on_click += [this]
+                        {
+                            if (_item.has_value())
+                            {
+                                on_click(_item.value());
+                            }
+                        };
+                        break;
+                    }
+                }
             }
         }
 
@@ -34,11 +51,23 @@ namespace trview
             const auto columns = child_elements();
             for (auto c = 0u; c < _columns.size(); ++c)
             {
-                // TODO: Cast dependent on column type.
-                Button* button = static_cast<Button*>(columns[c]);
-                button->set_text(item.value(_columns[c].name()));
-                button->set_text_background_colour(item.background());
-                button->set_text_colour(item.foreground());
+                switch (_columns[c].type())
+                {
+                    case Column::Type::Boolean:
+                    {
+                        Checkbox* checkbox = static_cast<Checkbox*>(columns[c]);
+                        checkbox->set_state(std::stoi(item.value(_columns[c].name())) == 1);
+                        break;
+                    }
+                    default:
+                    {
+                        Button* button = static_cast<Button*>(columns[c]);
+                        button->set_text(item.value(_columns[c].name()));
+                        button->set_text_background_colour(item.background());
+                        button->set_text_colour(item.foreground());
+                        break;
+                    }
+                }
             }
         }
 
@@ -58,8 +87,19 @@ namespace trview
             const auto columns = child_elements();
             for (auto& cell : columns)
             {
-                Button* button_cell = static_cast<Button*>(cell);
-                button_cell->set_text_background_colour(colour);
+                Button* button_cell = dynamic_cast<Button*>(cell);
+                if (button_cell)
+                {
+                    button_cell->set_text_background_colour(colour);
+                }
+                else
+                {
+                    Checkbox* checkbox_cell = dynamic_cast<Checkbox*>(cell);
+                    if (checkbox_cell)
+                    {
+                        checkbox_cell->set_background_colour(colour);
+                    }
+                }
             }
         }
 
