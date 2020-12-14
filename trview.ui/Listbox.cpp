@@ -162,7 +162,7 @@ namespace trview
                 std::sort(_items.begin(), _items.end(),
                     [&](const auto& l, const auto& r)
                 {
-                    if (_current_sort.type() == Column::Type::Number)
+                    if (_current_sort.type() != Column::Type::String)
                     {
                         if (!_current_sort_direction)
                         {

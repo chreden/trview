@@ -12,6 +12,8 @@ namespace trview
 
             for (const auto& column : columns)
             {
+                // TODO: Add a checkbox instead of a button if it is boolean - bind to different event.
+                // Also pass out name of column clicked, probably.
                 auto button = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" ");
                 _token_store += button->on_click += [this]
                 {
@@ -32,6 +34,7 @@ namespace trview
             const auto columns = child_elements();
             for (auto c = 0u; c < _columns.size(); ++c)
             {
+                // TODO: Cast dependent on column type.
                 Button* button = static_cast<Button*>(columns[c]);
                 button->set_text(item.value(_columns[c].name()));
                 button->set_text_background_colour(item.background());

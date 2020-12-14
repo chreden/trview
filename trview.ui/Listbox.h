@@ -30,7 +30,9 @@ namespace trview
                     /// The data is a string and will be sorted alphabetically.
                     String,
                     /// The data is numerical and will be sorted numerically.
-                    Number
+                    Number,
+                    /// The data is true or false data.
+                    Boolean
                 };
 
                 /// Default constructor.
