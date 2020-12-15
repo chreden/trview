@@ -156,6 +156,11 @@ namespace trview
 
     void Entity::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         using namespace DirectX::SimpleMath;
 
         for (uint32_t i = 0; i < _meshes.size(); ++i)
@@ -186,6 +191,11 @@ namespace trview
 
     void Entity::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             for (const auto& triangle : _meshes[i]->transparent_triangles())
@@ -321,5 +331,15 @@ namespace trview
     DirectX::BoundingBox Entity::bounding_box() const
     {
         return _bounding_box;
+    }
+
+    bool Entity::visible() const
+    {
+        return _visible;
+    }
+
+    void Entity::set_visible(bool value)
+    {
+        _visible = value;
     }
 }

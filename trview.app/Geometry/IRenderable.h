@@ -27,5 +27,11 @@ namespace trview
         /// @param camera The current camera to render with.
         /// @param colour The colour tint to use for the triangles.
         virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
+
+        /// Get whether the object is visible.
+        virtual bool visible() const = 0;
+
+        /// Set whether the object is visible.
+        virtual void set_visible(bool value) = 0;
     };
 }

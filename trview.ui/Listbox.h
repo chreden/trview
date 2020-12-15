@@ -120,7 +120,7 @@ namespace trview
                 Event<Item> on_click;
 
                 /// Event raised when a checkbox is checked.
-                Event<Item> on_state_changed;
+                Event<Item, bool> on_state_changed;
 
                 void set_highlighted(bool value);
 
@@ -182,6 +182,9 @@ namespace trview
 
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
+
+            /// Event raised when an item state is hidden.
+            Event<Item, bool> on_state_changed;
 
             /// Event raised when the delete key is pressed.
             Event<> on_delete;

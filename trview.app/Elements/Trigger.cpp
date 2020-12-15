@@ -218,6 +218,16 @@ namespace trview
         return _position;
     }
 
+    bool Trigger::visible() const
+    {
+        return _visible;
+    }
+
+    void Trigger::set_visible(bool value)
+    {
+        _visible = value;
+    }
+
     std::wstring trigger_type_name(TriggerType type)
     {
         auto name = trigger_type_names.find(type);

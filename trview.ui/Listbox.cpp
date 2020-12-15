@@ -112,6 +112,7 @@ namespace trview
             {
                 auto row = std::make_unique<Row>(background_colour(), _columns);
                 _token_store += row->on_click += [this](const auto& item) { select_item(item); };
+                _token_store += row->on_state_changed += [this](const auto& item, bool state) { on_state_changed(item, state); };
                 _rows_element->add_child(std::move(row));
             }
         }

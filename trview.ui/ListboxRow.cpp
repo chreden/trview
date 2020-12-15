@@ -27,7 +27,7 @@ namespace trview
                         {
                             if (_item.has_value())
                             {
-                                on_state_changed(_item.value());
+                                on_state_changed(_item.value(), value);
                             }
                         };
                         break;

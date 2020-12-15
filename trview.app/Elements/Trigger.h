@@ -66,6 +66,8 @@ namespace trview
 
         virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        virtual bool visible() const override;
+        virtual void set_visible(bool value) override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
@@ -80,6 +82,7 @@ namespace trview
         uint16_t _flags;
         uint8_t _timer;
         uint16_t _sector_id;
+        bool _visible{ true };
     };
 
     /// Get the string representation of the trigger type specified.

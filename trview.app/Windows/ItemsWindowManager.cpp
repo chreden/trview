@@ -38,6 +38,7 @@ namespace trview
     {
         auto items_window = std::make_unique<ItemsWindow>(_device, _shader_storage, _font_factory, window());
         items_window->on_item_selected += on_item_selected;
+        items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_items(_items);

@@ -40,6 +40,8 @@ namespace trview
         /// Event raised when an item is selected in one of the item windows.
         Event<Item> on_item_selected;
 
+        Event<Item, bool> on_item_visibility;
+
         /// Event raised when a trigger is selected in one of the item windows.
         Event<Trigger*> on_trigger_selected;
 

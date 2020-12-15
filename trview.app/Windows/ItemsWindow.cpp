@@ -143,6 +143,11 @@ namespace trview
                 on_item_selected(_all_items[index]);
             }
         };
+        _token_store += items_list->on_state_changed += [&](const auto& item, bool state)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_item_visibility(_all_items[index], !state);
+        };
 
         _items_list = items_list.get();
         left_panel->add_child(std::move(items_list));
