@@ -57,6 +57,11 @@ namespace trview
         /// @param items The items in the level.
         void set_items(const std::vector<Item>& items);
 
+        /// Set whether an item is visible.
+        /// @param item The item.
+        /// @param visible Whether the item is visible.
+        void set_item_visible(const Item& item, bool visible);
+
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
         void set_triggers(const std::vector<Trigger*>& triggers);

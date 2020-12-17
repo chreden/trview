@@ -68,6 +68,20 @@ namespace trview
         }
     }
 
+    void ItemsWindowManager::set_item_visible(const Item& item, bool visible)
+    {
+        auto found = std::find_if(_items.begin(), _items.end(), [&item](const auto& l) { return l.number() == item.number(); });
+        if (found == _items.end())
+        {
+            return;
+        }
+        found->set_visible(visible);
+        for (auto& window : _windows)
+        {
+            window->set_items(_items);
+        }
+    }
+
     void ItemsWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _triggers = triggers;

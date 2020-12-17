@@ -43,8 +43,12 @@ namespace trview
 
         void Listbox::set_items(const std::vector<Item>& items)
         {
-            // Reset the index for scrolling.
-            _current_top = 0;
+            // Reset the index for scrolling if the list is different.
+            if (items.empty() || 
+                !std::equal(_items.begin(), _items.end(), items.begin(), [this](const auto& l, const auto& r) { return identity_equal(l, r); }))
+            {
+                _current_top = 0;
+            }
 
             // Store the items for later.
             _items = items;
@@ -216,7 +220,7 @@ namespace trview
             }
 
             // Find the selected item in the list.
-            auto item = std::find(_items.begin(), _items.end(), _selected_item);
+            auto item = std::find_if(_items.begin(), _items.end(), [this](const auto& item) { return identity_equal(item, _selected_item); });
 
             // If the item isn't in the list but there are items in the list, select the first item in the list.
             if (item == _items.end())
@@ -328,8 +332,29 @@ namespace trview
             for (auto& row_element : rows)
             {
                 auto row = static_cast<Row*>(row_element);
-                row->set_highlighted(_show_highlight && row->item() == _selected_item);
+                row->set_highlighted(_show_highlight && identity_equal(row->item(), _selected_item));
             }
+        }
+
+        bool Listbox::identity_equal(const Item& left, const Item& right) const
+        {
+            for (const auto& c : _columns)
+            {
+                if (c.identity_mode() == Column::IdentityMode::Key && left.value(c.name()) != right.value(c.name()))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool Listbox::identity_equal(const std::optional<Item>& left, const std::optional<Item>& right) const
+        {
+            if (!left.has_value() && !right.has_value())
+            {
+                return false;
+            }
+            return left.has_value() == right.has_value() && identity_equal(left.value(), right.value());
         }
 
         void Listbox::scroll_to(uint32_t item)
@@ -350,7 +375,7 @@ namespace trview
 
         void Listbox::scroll_to_show(const Item& item)
         {
-            auto iter = std::find(_items.begin(), _items.end(), item);
+            auto iter = std::find_if(_items.begin(), _items.end(), [this, &item] (const auto& i) { return identity_equal(i, item); });
             if (iter == _items.end())
             {
                 return;
@@ -371,7 +396,7 @@ namespace trview
 
         bool Listbox::set_selected_item(const Item& item)
         {
-            if (std::find(_items.begin(), _items.end(), item) == _items.end())
+            if (std::find_if(_items.begin(), _items.end(), [this, &item](const auto& i) { return identity_equal(i, item); }) == _items.end())
             {
                 return false;
             }

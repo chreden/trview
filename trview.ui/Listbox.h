@@ -35,6 +35,12 @@ namespace trview
                     Boolean
                 };
 
+                enum class IdentityMode
+                {
+                    Key,
+                    None
+                };
+
                 /// Default constructor.
                 Column();
 
@@ -43,6 +49,14 @@ namespace trview
                 /// @param name The column name. This is displayed as a header.
                 /// @param width The width of the column.
                 Column(Type type, const std::wstring& name, uint32_t width);
+
+                /// Create a column.
+                /// @param type The type of the column.
+                /// @param name The column name. This is displayed as a header.
+                /// @param width The width of the column.
+                Column(IdentityMode identity_mode, Type type, const std::wstring& name, uint32_t width);
+
+                IdentityMode identity_mode() const;
 
                 /// Get the name of the column. This is displayed as a header.
                 /// @returns The name of the column.
@@ -57,6 +71,7 @@ namespace trview
                 uint32_t width() const;
             private:
                 std::wstring _name;
+                IdentityMode _identity_mode{ IdentityMode::Key };
                 Type _type;
                 uint32_t _width;
             };
@@ -87,11 +102,6 @@ namespace trview
                 /// Get the background colour.
                 /// @returns The backround colour.
                 Colour background() const;
-
-                /// Determines whether two items are equal.
-                /// @param other The item to compare.
-                /// @returns Whether the items are equal.
-                bool operator == (const Item& other) const;
             private:
                 std::unordered_map<std::wstring, std::wstring> _values;
                 Colour _foreground;
@@ -210,6 +220,9 @@ namespace trview
             void scroll_to_show(const Item& item);
 
             void highlight_item();
+
+            bool identity_equal(const Item& left, const Item& right) const;
+            bool identity_equal(const std::optional<Item>& left, const std::optional<Item>& right) const;
 
             std::vector<Column> _columns;
             std::vector<Item> _items;

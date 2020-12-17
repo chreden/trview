@@ -62,6 +62,14 @@ namespace trview
 
         /// Get the position of the entity.
         DirectX::SimpleMath::Vector3 position() const;
+
+        /// Get whether the item is visible.
+        /// @returns Whether the item is visible.
+        bool visible() const;
+
+        /// Set whether the item is visible.
+        /// @param value Whether the item is visible.
+        void set_visible(bool value);
     private:
         std::vector<Trigger*> _triggers;
         DirectX::SimpleMath::Vector3 _position;
@@ -71,5 +79,6 @@ namespace trview
         std::wstring _type;
         uint32_t _ocb{ 0u };
         uint16_t _flags{ 0u };
+        bool _visible{ true };
     };
 }

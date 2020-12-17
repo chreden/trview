@@ -29,7 +29,7 @@ namespace trview
                      { L"ID", std::to_wstring(item.type_id()) },
                      { L"Room", std::to_wstring(item.room()) },
                      { L"Type", item.type() },
-                     { L"Hide", L"0" }} };
+                     { L"Hide", std::to_wstring(!item.visible()) }} };
         }
     }
 
@@ -127,11 +127,11 @@ namespace trview
         auto items_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
         items_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::Type::String, L"Type", 100 },
-                { Listbox::Column::Type::Boolean, L"Hide", 50 }
+                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"ID", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 100 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
             }
         );
         _token_store += items_list->on_item_selected += [&](const auto& item)
