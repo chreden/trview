@@ -27,7 +27,8 @@ namespace trview
         {
             return { {{ L"#", std::to_wstring(item.number()) },
                      { L"Room", std::to_wstring(item.room()) },
-                     { L"Type", trigger_type_name(item.type()) }} };
+                     { L"Type", trigger_type_name(item.type()) },
+                     { L"Hide", std::to_wstring(!item.visible()) }}};
         }
 
         ui::Listbox::Item create_listbox_item_pointer(const Trigger* const item)
@@ -48,13 +49,13 @@ namespace trview
     {
         using namespace ui;
 
-        auto left_panel = std::make_unique<ui::StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
-        auto controls_box = std::make_unique<StackPanel>(Size(200, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto controls_box = std::make_unique<StackPanel>(Size(250, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         controls_box->set_margin(Size(2, 2));
-        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls->set_margin(Size(2, 2));
         auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
         _token_store += track_room->on_state_changed += [this](bool value)
@@ -110,12 +111,13 @@ namespace trview
         controls_box->add_child(std::move(controls_row2));
         left_panel->add_child(std::move(controls_box));
 
-        auto triggers_list = std::make_unique<Listbox>(Size(200, window().size().height - controls_box_bottom), Colours::LeftPanel);
+        auto triggers_list = std::make_unique<Listbox>(Size(250, window().size().height - controls_box_bottom), Colours::LeftPanel);
         triggers_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::String, L"Type", 130 }
+                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 130 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
             }
         );
         _token_store += triggers_list->on_item_selected += [&](const auto& item)
@@ -132,7 +134,7 @@ namespace trview
         left_panel->add_child(std::move(triggers_list));
 
         // Fix items list size now that it has been added to the panel.
-        _triggers_list->set_size(Size(200, left_panel->size().height - _triggers_list->position().y));
+        _triggers_list->set_size(Size(250, left_panel->size().height - _triggers_list->position().y));
 
         return left_panel;
     }
