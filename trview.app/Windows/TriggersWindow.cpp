@@ -80,10 +80,10 @@ namespace trview
         add_expander(*controls);
 
         // Command filter:
-        auto controls_row2 = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls_row2 = std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
         controls_row2->set_margin(Size(2, 0));
 
-        auto command_filter = std::make_unique<Dropdown>(Size(186, 20));
+        auto command_filter = std::make_unique<Dropdown>(Size(236, 20));
         std::vector<std::wstring> default_commands { L"All", L"Flipmaps" };
         command_filter->set_values(default_commands);
         command_filter->set_dropdown_scope(_ui.get());
