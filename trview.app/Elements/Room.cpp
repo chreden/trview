@@ -304,6 +304,11 @@ namespace trview
         {
             for (const auto& trigger : _triggers)
             {
+                if (!trigger.second->visible())
+                {
+                    continue;
+                }
+
                 for (const auto& triangle : trigger.second->triangles())
                 {
                     transparency.add(triangle);

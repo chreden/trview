@@ -74,6 +74,7 @@ namespace trview
         }
         _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
             uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
@@ -835,6 +836,17 @@ namespace trview
 
         _level->set_item_visibility(item.number(), visible);
         _items_windows->set_item_visible(item, visible);
+    }
+
+    void Viewer::set_trigger_visibility(Trigger* trigger, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        _level->set_trigger_visibility(trigger->number(), visible);
+        _triggers_windows->set_trigger_visible(trigger, visible);
     }
 
     void Viewer::remove_waypoint(uint32_t index)

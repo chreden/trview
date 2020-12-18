@@ -45,7 +45,7 @@ namespace trview
         {
             // Reset the index for scrolling if the list is different.
             if (items.empty() || 
-                !std::equal(_items.begin(), _items.end(), items.begin(), [this](const auto& l, const auto& r) { return identity_equal(l, r); }))
+                !std::equal(_items.begin(), _items.end(), items.begin(), items.end(), [this](const auto& l, const auto& r) { return identity_equal(l, r); }))
             {
                 _current_top = 0;
             }

@@ -31,13 +31,17 @@ namespace trview
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        /// @param reset_filters Whether to reset the trigger filters.
+        void set_triggers(const std::vector<Trigger*>& triggers, bool reset_filters);
 
         /// Clear the currently selected trigger from the details panel.
         void clear_selected_trigger();
 
         /// Event raised when a trigger is selected in the list.
         Event<Trigger*> on_trigger_selected;
+
+        /// Event raised when the visibility of a trigger is changed.
+        Event<Trigger*, bool> on_trigger_visibility;
 
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;

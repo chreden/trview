@@ -476,6 +476,13 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_trigger_visibility(uint32_t index, bool state)
+    {
+        _triggers[index]->set_visible(state);
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
     // Set whether to render the alternate mode (the flipmap) or the regular room.
     // enabled: Whether to render the flipmap.
     void Level::set_alternate_mode(bool enabled)

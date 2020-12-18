@@ -94,6 +94,7 @@ namespace trview
         void set_neighbour_depth(uint32_t depth);
         void on_camera_moved();
         void set_item_visibility(uint32_t index, bool state);
+        void set_trigger_visibility(uint32_t index, bool state);
 
         // Set whether to render the alternate mode (the flipmap) or the regular room.
         // enabled: Whether to render the flipmap.

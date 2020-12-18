@@ -121,6 +121,11 @@ namespace trview
                 on_trigger_selected(_all_triggers[index]);
             }
         };
+        _token_store += _triggers_list->on_state_changed += [&](const auto item, bool state)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_trigger_visibility(_all_triggers[index], !state);
+        };
 
         // Fix items list size now that it has been added to the panel.
         _triggers_list->set_size(Size(250, left_panel->size().height - _triggers_list->position().y));
@@ -194,25 +199,32 @@ namespace trview
         return right_panel;
     }
 
-    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers, bool reset_filters)
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
 
-        // Populate command filter dropdown.
-        _selected_commands.clear();
-        std::set<TriggerCommandType> command_set;
-        for (const auto& trigger : triggers)
+        if (!reset_filters)
         {
-            for (const auto& command : trigger->commands())
-            {
-                command_set.insert(command.type());
-            }
+            apply_filters();
         }
-        std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
-        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
-        _command_filter->set_values(all_commands);
-        _command_filter->set_selected_value(L"All");
+        else
+        {
+            // Populate command filter dropdown.
+            _selected_commands.clear();
+            std::set<TriggerCommandType> command_set;
+            for (const auto& trigger : triggers)
+            {
+                for (const auto& command : trigger->commands())
+                {
+                    command_set.insert(command.type());
+                }
+            }
+            std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
+            std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
+            _command_filter->set_values(all_commands);
+            _command_filter->set_selected_value(L"All");
+        }
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -295,7 +307,7 @@ namespace trview
             }
             else
             {
-                set_triggers(_all_triggers);
+                set_triggers(_all_triggers, true);
                 _filter_applied = false;
             }
         }

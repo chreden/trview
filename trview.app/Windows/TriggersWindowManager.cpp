@@ -40,9 +40,10 @@ namespace trview
         auto triggers_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
+        triggers_window->on_trigger_visibility += on_trigger_visibility;
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->set_items(_items);
-        triggers_window->set_triggers(_triggers);
+        triggers_window->set_triggers(_triggers, true);
         triggers_window->set_current_room(_current_room);
         if (_selected_trigger.has_value())
         {
@@ -73,7 +74,21 @@ namespace trview
         for (auto& window : _windows)
         {
             window->clear_selected_trigger();
-            window->set_triggers(triggers);
+            window->set_triggers(triggers, true);
+        }
+    }
+
+    void TriggersWindowManager::set_trigger_visible(Trigger* trigger, bool visible)
+    {
+        auto found = std::find(_triggers.begin(), _triggers.end(), trigger);
+        if (found == _triggers.end())
+        {
+            return;
+        }
+        trigger->set_visible(visible);
+        for (auto& window : _windows)
+        {
+            window->set_triggers(_triggers, false);
         }
     }
 
