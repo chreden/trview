@@ -403,5 +403,10 @@ namespace trview
             select_item(item, false);
             return true;
         }
+
+        std::optional<Listbox::Item> Listbox::selected_item() const
+        {
+            return _selected_item;
+        }
     }
 }

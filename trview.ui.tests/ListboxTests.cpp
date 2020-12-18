@@ -37,7 +37,34 @@ TEST(Listbox, ColumnsCreated)
 /// Tests that only key identity columns are used for selection comparison.
 TEST(Listbox, KeyIdentityUsedForSelection)
 {
-    FAIL();
+    Listbox listbox(Size(300, 200), Colour::Transparent);
+    listbox.set_columns(
+        {
+            { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+            { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Name", 50 }
+        });
+
+    Listbox::Item item_1{ {{ L"#", L"100" }, { L"Name", L"First" }} };
+    Listbox::Item item_2{ {{ L"#", L"200" }, { L"Name", L"Second" }} };
+    Listbox::Item altered_item{ {{ L"#", L"100" }, { L"Name", L"First Renamed" }} };
+
+    listbox.set_items({ item_1, item_2 });
+
+    ASSERT_FALSE(listbox.selected_item().has_value());
+    listbox.set_selected_item(item_1);
+    auto selected_item = listbox.selected_item();
+    ASSERT_TRUE(selected_item.has_value());
+    ASSERT_EQ(selected_item.value().value(L"#"), L"100");
+
+    listbox.set_selected_item(item_2);
+    selected_item = listbox.selected_item();
+    ASSERT_TRUE(selected_item.has_value());
+    ASSERT_EQ(selected_item.value().value(L"#"), L"200");
+
+    listbox.set_selected_item(altered_item);
+    selected_item = listbox.selected_item();
+    ASSERT_TRUE(selected_item.has_value());
+    ASSERT_EQ(selected_item.value().value(L"#"), L"100");
 }
 
 /// Tests that ordering the listbox by a column functions.

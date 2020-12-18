@@ -190,6 +190,10 @@ namespace trview
             /// @returns Whether the item was selected.
             bool set_selected_item(const Item& item);
 
+            /// Get the selected item if one is set.
+            /// @returns The selected item.
+            std::optional<Item> selected_item() const;
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
 
