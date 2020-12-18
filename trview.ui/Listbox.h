@@ -202,7 +202,7 @@ namespace trview
 
             /// Event raised when the delete key is pressed.
             Event<> on_delete;
-        protected:
+
             virtual bool scroll(int delta) override;
             virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
         private:

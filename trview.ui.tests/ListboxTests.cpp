@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <trview.ui/Listbox.h>
+#include <Windows.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -25,7 +26,15 @@ TEST(Listbox, KeyboardNavigationRaisesSelectedItemEvent)
 /// Tests that deleting an item raises an event.
 TEST(Listbox, DeletingItemRaisesEvent)
 {
-    FAIL();
+    Listbox listbox(Size(300, 200), Colour::Transparent);
+
+    bool raised = false;
+    TokenStore store;
+    store += listbox.on_delete += [&raised]() { raised = true; };
+
+    listbox.key_down(VK_DELETE, false, false);
+
+    ASSERT_TRUE(raised);
 }
 
 /// Tests that the correct columns are created based on constructor input.
@@ -77,4 +86,26 @@ TEST(Listbox, OrderingByColumn)
 TEST(Listbox, CheckboxCreatedForBoolean)
 {
     FAIL();
+}
+
+TEST(Listbox, ClearSelectionClearsSelection)
+{
+    Listbox listbox(Size(300, 200), Colour::Transparent);
+    listbox.set_columns(
+        {
+            { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+            { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Name", 50 }
+        });
+
+    Listbox::Item item_1{ {{ L"#", L"100" }, { L"Name", L"First" }} };
+    listbox.set_items({ item_1 });
+
+    ASSERT_FALSE(listbox.selected_item().has_value());
+
+    listbox.set_selected_item(item_1);
+    ASSERT_TRUE(listbox.selected_item().has_value());
+    ASSERT_EQ(listbox.selected_item().value().value(L"#"), L"100");
+
+    listbox.clear_selection();
+    ASSERT_FALSE(listbox.selected_item().has_value());
 }
