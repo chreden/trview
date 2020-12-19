@@ -41,7 +41,7 @@ namespace trview
         items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
-        items_window->set_items(_items);
+        items_window->set_items(_items, true);
         items_window->set_triggers(_triggers);
         items_window->set_current_room(_current_room);
         if (_selected_item.has_value())
@@ -64,7 +64,7 @@ namespace trview
         for (auto& window : _windows)
         {
             window->clear_selected_item();
-            window->set_items(items);
+            window->set_items(items, true);
         }
     }
 
@@ -78,7 +78,7 @@ namespace trview
         found->set_visible(visible);
         for (auto& window : _windows)
         {
-            window->set_items(_items);
+            window->set_items(_items, false);
         }
     }
 
