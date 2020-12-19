@@ -39,11 +39,16 @@ namespace trview
         set_panels(create_left_panel(), create_right_panel());
     }
 
-    void ItemsWindow::set_items(const std::vector<Item>& items, bool reset_filters)
+    void ItemsWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
         populate_items(items);
-        if (!reset_filters && _track_room)
+    }
+
+    void ItemsWindow::update_items(const std::vector<Item>& items)
+    {
+        set_items(items);
+        if (_track_room)
         {
             _filter_applied = false;
             set_current_room(_current_room);
@@ -291,8 +296,8 @@ namespace trview
             }
             else
             {
-                set_items(_all_items, false);
                 _filter_applied = false;
+                set_items(_all_items);
             }
         }
 

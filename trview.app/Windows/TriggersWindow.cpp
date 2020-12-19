@@ -199,32 +199,32 @@ namespace trview
         return right_panel;
     }
 
-    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers, bool reset_filters)
+    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
 
-        if (!reset_filters)
+        // Populate command filter dropdown.
+        _selected_commands.clear();
+        std::set<TriggerCommandType> command_set;
+        for (const auto& trigger : triggers)
         {
-            apply_filters();
-        }
-        else
-        {
-            // Populate command filter dropdown.
-            _selected_commands.clear();
-            std::set<TriggerCommandType> command_set;
-            for (const auto& trigger : triggers)
+            for (const auto& command : trigger->commands())
             {
-                for (const auto& command : trigger->commands())
-                {
-                    command_set.insert(command.type());
-                }
+                command_set.insert(command.type());
             }
-            std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
-            std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
-            _command_filter->set_values(all_commands);
-            _command_filter->set_selected_value(L"All");
         }
+        std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
+        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
+        _command_filter->set_values(all_commands);
+        _command_filter->set_selected_value(L"All");
+    }
+
+    void TriggersWindow::update_triggers(const std::vector<Trigger*>& triggers)
+    {
+        _all_triggers = triggers;
+        populate_triggers(triggers);
+        apply_filters();
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -307,8 +307,8 @@ namespace trview
             }
             else
             {
-                set_triggers(_all_triggers, true);
                 _filter_applied = false;
+                set_triggers(_all_triggers);
             }
         }
 

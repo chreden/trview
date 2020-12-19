@@ -30,7 +30,10 @@ namespace trview
 
         /// Set the items to display in the window.
         /// @param items The items to show.
-        void set_items(const std::vector<Item>& items, bool reset_filters);
+        void set_items(const std::vector<Item>& items);
+
+        /// Update the items - this doesn't reset the filters.
+        void update_items(const std::vector<Item>& items);
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.

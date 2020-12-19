@@ -32,7 +32,10 @@ namespace trview
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
         /// @param reset_filters Whether to reset the trigger filters.
-        void set_triggers(const std::vector<Trigger*>& triggers, bool reset_filters);
+        void set_triggers(const std::vector<Trigger*>& triggers);
+
+        /// Update the trigers - this doesn't reset the filters.
+        void update_triggers(const std::vector<Trigger*>& triggers);
 
         /// Clear the currently selected trigger from the details panel.
         void clear_selected_trigger();
