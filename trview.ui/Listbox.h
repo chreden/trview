@@ -129,8 +129,9 @@ namespace trview
                 /// Event raised when a row is clicked.
                 Event<Item> on_click;
 
-                /// Event raised when a checkbox is checked.
-                Event<Item, bool> on_state_changed;
+                /// Event raised when an item state is hidden.
+                /// Parameters: item, attribute, state.
+                Event<Item, std::wstring, bool> on_state_changed;
 
                 void set_highlighted(bool value);
 
@@ -198,7 +199,8 @@ namespace trview
             Event<Item> on_item_selected;
 
             /// Event raised when an item state is hidden.
-            Event<Item, bool> on_state_changed;
+            /// Parameters: item, attribute, state.
+            Event<Item, std::wstring, bool> on_state_changed;
 
             /// Event raised when the delete key is pressed.
             Event<> on_delete;

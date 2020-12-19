@@ -148,10 +148,13 @@ namespace trview
                 on_item_selected(_all_items[index]);
             }
         };
-        _token_store += _items_list->on_state_changed += [&](const auto& item, bool state)
+        _token_store += _items_list->on_state_changed += [&](const auto& item, const std::wstring& column, bool state)
         {
-            auto index = std::stoi(item.value(L"#"));
-            on_item_visibility(_all_items[index], !state);
+            if (column == L"Hide")
+            {
+                auto index = std::stoi(item.value(L"#"));
+                on_item_visibility(_all_items[index], !state);
+            }
         };
 
         // Fix items list size now that it has been added to the panel.

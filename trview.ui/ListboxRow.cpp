@@ -23,11 +23,13 @@ namespace trview
 
                         auto size = checkbox->size();
                         checkbox->set_position(Point(static_cast<int>(column.width() / 2.0f - size.width / 2.0f), 2));
-                        _token_store += checkbox->on_state_changed += [this](bool value)
+
+                        auto name = column.name();
+                        _token_store += checkbox->on_state_changed += [this, name](bool value)
                         {
                             if (_item.has_value())
                             {
-                                on_state_changed(_item.value(), value);
+                                on_state_changed(_item.value(), name, value);
                             }
                         };
                         break;
