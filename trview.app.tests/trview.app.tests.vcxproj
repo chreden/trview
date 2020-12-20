@@ -27,6 +27,8 @@
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
+    <ClCompile Include="ItemsWindowManagerTests.cpp" />
+    <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="Menus\MenuDetectorTests.cpp" />
     <ClCompile Include="OrbitCameraTests.cpp" />
     <ClCompile Include="RecentFilesTests.cpp" />
@@ -37,6 +39,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TriggersWindowManagerTests.cpp" />
+    <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
   </ItemGroup>

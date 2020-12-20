@@ -36,6 +36,18 @@
     <ClCompile Include="ContextMenuTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ItemsWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggersWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggersWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -55,6 +67,9 @@
     </Filter>
     <Filter Include="Menus">
       <UniqueIdentifier>{1f416bd8-ff05-4720-81cd-5666b82a28e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{0c7c1192-4ae6-44cc-960c-e3f136dea95d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
