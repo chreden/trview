@@ -159,6 +159,17 @@ namespace trview
             select_waypoint(new_index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
+        _token_store += _ui->on_hide += [&]()
+        {
+            if (_context_pick.type == PickResult::Type::Entity)
+            {
+                set_item_visibility(_level->items()[_context_pick.index], false);
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                set_trigger_visibility(_level->triggers()[_context_pick.index], false);
+            }
+        };
         _token_store += _ui->on_orbit += [&]()
         {
             select_room(room_from_pick(_context_pick), true);
@@ -512,6 +523,7 @@ namespace trview
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
+                _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
             }
         };
     }

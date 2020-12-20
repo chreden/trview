@@ -33,6 +33,9 @@
     <ClCompile Include="SettingsWindowTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ContextMenuTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="AlternateGroupTogglerTests.cpp" />
     <ClCompile Include="Camera\CameraInputTests.cpp" />
+    <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="Elements\LevelTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
