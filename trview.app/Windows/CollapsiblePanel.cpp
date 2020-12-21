@@ -68,7 +68,7 @@ namespace trview
     }
 
 
-    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size), _shortcuts(window())
     {
@@ -133,6 +133,11 @@ namespace trview
         _ui_renderer->render(device.context());
         _device_window->present(vsync);
         _ui_changed = false;
+    }
+
+    Control* CollapsiblePanel::root_control() const
+    {
+        return _ui.get();
     }
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)

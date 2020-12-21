@@ -33,7 +33,9 @@ namespace trview
         }
     }
 
-    ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
+    const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
+
+    ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
     {
         set_panels(create_left_panel(), create_right_panel());
@@ -191,6 +193,7 @@ namespace trview
         };
 
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
+        add_to_route->set_name(Names::add_to_route_button);
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())

@@ -18,12 +18,17 @@ namespace trview
     class ItemsWindow final : public CollapsiblePanel
     {
     public:
+        struct Names
+        {
+            static const std::string add_to_route_button;
+        };
+
         /// Create an items window as a child of the specified window.
         /// @param device The graphics device
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit ItemsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent);
+        explicit ItemsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent);
 
         /// Destructor for items window
         virtual ~ItemsWindow() = default;

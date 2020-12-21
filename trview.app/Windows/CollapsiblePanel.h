@@ -21,7 +21,7 @@ namespace trview
     {
         class  Device;
         struct IShaderStorage;
-        class  FontFactory;
+        struct IFontFactory;
     }
 
     namespace ui
@@ -46,7 +46,7 @@ namespace trview
         /// @param parent The parent window.
         explicit CollapsiblePanel(graphics::Device& device,
             const graphics::IShaderStorage& shader_storage,
-            const graphics::FontFactory& font_factory,
+            const graphics::IFontFactory& font_factory,
             const Window& parent,
             const std::wstring& window_class,
             const std::wstring& title,
@@ -64,6 +64,10 @@ namespace trview
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
         void render(const graphics::Device& device, bool vsync);
+
+        /// Get the root control for the window.
+        /// @returns The root control.
+        ui::Control* root_control() const;
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;

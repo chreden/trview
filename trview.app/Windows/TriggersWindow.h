@@ -7,6 +7,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
 #include "CollapsiblePanel.h"
+#include <trview.graphics/FontFactory.h>
 
 namespace trview
 {

@@ -8,7 +8,7 @@ namespace trview
     {
         namespace render
         {
-            LabelNode::LabelNode(const graphics::Device& device, Label* label, const graphics::FontFactory& font_factory)
+            LabelNode::LabelNode(const graphics::Device& device, Label* label, const graphics::IFontFactory& font_factory)
                 : WindowNode(device, label), 
                 _font(font_factory.create_font("Arial", label->text_size(), label->text_alignment(), label->paragraph_alignment())), _label(label)
             {
