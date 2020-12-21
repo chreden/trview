@@ -8,6 +8,15 @@ namespace trview
     class ContextMenu final
     {
     public:
+        /// Control names used for automation
+        struct Names
+        {
+            static const std::string add_waypoint_button;
+            static const std::string hide_button;
+            static const std::string orbit_button;
+            static const std::string remove_waypoint_button;
+        };
+
         /// Create a new ContentMenu window.
         /// @param parent The control to add the window to.
         explicit ContextMenu(ui::Control& parent);

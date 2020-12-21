@@ -9,6 +9,8 @@
 
 #include "Window.h"
 
+#include <optional>
+
 namespace trview
 {
     struct Colour;
@@ -79,6 +81,10 @@ namespace trview
             /// Set the foreground colour of the text, if present.
             /// @param colour The foreground colour.
             void set_text_colour(const Colour& colour);
+
+            /// Get the text colour, if set.
+            /// @returns The text colour.
+            std::optional<Colour> text_colour() const;
 
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;

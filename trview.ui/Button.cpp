@@ -119,5 +119,14 @@ namespace trview
                 _text->set_text_colour(colour);
             }
         }
+
+        std::optional<Colour> Button::text_colour() const
+        {
+            if (_text)
+            {
+                return _text->text_colour();
+            }
+            return std::optional<Colour>();
+        }
     }
 }

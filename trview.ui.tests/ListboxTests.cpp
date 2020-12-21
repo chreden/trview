@@ -29,8 +29,7 @@ TEST(Listbox, DeletingItemRaisesEvent)
     Listbox listbox(Size(300, 200), Colour::Transparent);
 
     bool raised = false;
-    TokenStore store;
-    store += listbox.on_delete += [&raised]() { raised = true; };
+    auto token = listbox.on_delete += [&raised]() { raised = true; };
 
     listbox.key_down(VK_DELETE, false, false);
 
