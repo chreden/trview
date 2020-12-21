@@ -34,7 +34,10 @@ TEST(ItemsWindow, AddToRouteEventRaised)
     MockFontFactory font_factory;
     EXPECT_CALL(font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
-    ItemsWindow window(Device(), ShaderStorage(), font_factory, create_test_window(L"ItemsWindowTests"));
+
+    Device device;
+    ShaderStorage shader_storage;
+    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
