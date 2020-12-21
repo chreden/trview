@@ -45,6 +45,7 @@ namespace trview
         /// Event raised when an item is selected in the list.
         Event<Item> on_item_selected;
 
+        /// Event raised when an item visibility is changed.
         Event<Item, bool> on_item_visibility;
 
         /// Event raised when a trigger is selected in the list.
