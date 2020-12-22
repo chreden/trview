@@ -6,6 +6,8 @@ namespace trview
 {
     namespace ui
     {
+        const std::string Listbox::Names::row_name_format{ "row-" };
+
         Listbox::Listbox(const Size& size, const Colour& background_colour)
             : Listbox(Point(), size, background_colour)
         {
@@ -115,6 +117,7 @@ namespace trview
             for (auto i = 0; i < remaining_rows; ++i)
             {
                 auto row = std::make_unique<Row>(background_colour(), _columns);
+                row->set_name(Names::row_name_format + std::to_string(i));
                 _token_store += row->on_click += [this](const auto& item) { select_item(item); };
                 row->on_state_changed += on_state_changed;
                 _rows_element->add_child(std::move(row));

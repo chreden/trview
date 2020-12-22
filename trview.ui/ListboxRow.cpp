@@ -6,6 +6,8 @@ namespace trview
 {
     namespace ui
     {
+        const std::string Listbox::Row::Names::cell_name_format{ "cell-" };
+
         Listbox::Row::Row(const Colour& colour, const std::vector<Listbox::Column>& columns)
             : StackPanel(Point(), Size(), colour, Size(), Direction::Horizontal), _columns(columns)
         {
@@ -19,7 +21,7 @@ namespace trview
                     {
                         auto panel = add_child(std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" "));
                         auto checkbox = panel->add_child(std::make_unique<Checkbox>());
-                        checkbox->set_name("checkbox");
+                        checkbox->set_name(Listbox::Row::Names::cell_name_format + to_utf8(column.name()));
 
                         auto size = checkbox->size();
                         checkbox->set_position(Point(static_cast<int>(column.width() / 2.0f - size.width / 2.0f), 2));
@@ -37,6 +39,7 @@ namespace trview
                     default:
                     {
                         auto button = add_child(std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), L" "));
+                        button->set_name(Listbox::Row::Names::cell_name_format + to_utf8(column.name()));
                         _token_store += button->on_click += [this]
                         {
                             if (_item.has_value())
@@ -62,7 +65,7 @@ namespace trview
                 {
                     case Column::Type::Boolean:
                     {
-                        Checkbox* checkbox = columns[c]->find<Checkbox>("checkbox");
+                        Checkbox* checkbox = columns[c]->find<Checkbox>(Listbox::Row::Names::cell_name_format + to_utf8(_columns[c].name()));
                         checkbox->set_state(std::stoi(item.value(_columns[c].name())) == 1);
                         break;
                     }

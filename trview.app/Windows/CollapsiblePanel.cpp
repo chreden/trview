@@ -25,15 +25,33 @@ namespace trview
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
 
+            bool is_message_only(const Window& window)
+            {
+                auto current = FindWindowEx(HWND_MESSAGE, nullptr, nullptr, nullptr);
+                while (current != nullptr)
+                {
+                    if (current == window)
+                    {
+                        return true;
+                    }
+                    current = GetNextWindow(current, GW_HWNDNEXT);
+                }
+                return false;
+            }
+
             Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
             {
                 RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
+                const auto parent_window = is_message_only(parent) ? HWND_MESSAGE : parent.window();
                 Window items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
                     CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
 
-                ShowWindow(items_window, nCmdShow);
+                if (parent_window != HWND_MESSAGE)
+                {
+                    ShowWindow(items_window, nCmdShow);
+                }
                 UpdateWindow(items_window);
 
                 return items_window;

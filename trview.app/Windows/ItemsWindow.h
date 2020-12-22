@@ -21,6 +21,8 @@ namespace trview
         struct Names
         {
             static const std::string add_to_route_button;
+            static const std::string items_listbox;
+            static const std::string sync_item_checkbox;
         };
 
         /// Create an items window as a child of the specified window.

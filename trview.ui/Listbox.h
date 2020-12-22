@@ -20,6 +20,11 @@ namespace trview
         class Listbox : public StackPanel
         {
         public:
+            struct Names
+            {
+                static const std::string row_name_format;
+            };
+
             /// A column in a list box.
             class Column final
             {
@@ -112,6 +117,11 @@ namespace trview
             class Row final : public StackPanel
             {
             public:
+                struct Names
+                {
+                    static const std::string cell_name_format;
+                };
+
                 explicit Row(const Colour& colour, const std::vector<Column>& columns);
 
                 virtual ~Row() = default;

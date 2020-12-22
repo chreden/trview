@@ -34,6 +34,8 @@ namespace trview
     }
 
     const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
+    const std::string ItemsWindow::Names::items_listbox{ "Items" };
+    const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
@@ -122,6 +124,7 @@ namespace trview
         _controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
 
         auto sync_item = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
+        sync_item->set_name(Names::sync_item_checkbox);
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
 
@@ -132,6 +135,7 @@ namespace trview
         add_expander(*_controls);
 
         _items_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel));
+        _items_list->set_name(Names::items_listbox);
         _items_list->set_columns(
             {
                 { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },

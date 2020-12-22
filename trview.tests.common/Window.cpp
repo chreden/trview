@@ -27,8 +27,8 @@ namespace trview
 
             RegisterClassExW(&wcex);
 
-            HWND window = CreateWindowW(name.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW,
-                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+            HWND window = CreateWindowW(name.c_str(), name.c_str(), 0,
+                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_MESSAGE, nullptr, hInstance, nullptr);
             ShowWindow(window, SW_HIDE);
             UpdateWindow(window);
             return window;
