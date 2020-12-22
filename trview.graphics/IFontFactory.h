@@ -11,7 +11,7 @@ namespace trview
 {
     namespace graphics
     {
-        class IFont;
+        struct IFont;
 
         struct IFontFactory
         {

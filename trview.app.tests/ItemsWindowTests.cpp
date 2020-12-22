@@ -6,6 +6,8 @@
 #include <trview.ui/Button.h>
 #include <trview.graphics/IFont.h>
 #include <trview.common/Size.h>
+#include <trview.graphics/mocks/IFontFactory.h>
+#include <trview.graphics/mocks/IFont.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -13,27 +15,11 @@ using namespace trview::graphics;
 using testing::NiceMock;
 using testing::Return;
 
-class MockFontFactory : public graphics::IFontFactory
-{
-public:
-    MOCK_METHOD(void, store, (const std::string&, const std::shared_ptr<DirectX::SpriteFont>&));
-    MOCK_METHOD(std::unique_ptr<graphics::IFont>, create_font, (const std::string&, int, graphics::TextAlignment, graphics::ParagraphAlignment), (const));
-};
-
-class MockFont : public graphics::IFont
-{
-public:
-    MOCK_METHOD(void, render, (const Microsoft::WRL::ComPtr<ID3D11DeviceContext>&, const std::wstring&, float, float, const Colour&));
-    MOCK_METHOD(void, render, (const Microsoft::WRL::ComPtr<ID3D11DeviceContext>&, const std::wstring&, float, float, float, float, const Colour&));
-    MOCK_METHOD(Size, measure, (const std::wstring&), (const));
-    MOCK_METHOD(bool, is_valid_character, (wchar_t), (const));
-};
-
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
-    MockFontFactory font_factory;
+    mocks::MockFontFactory font_factory;
     EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
     ShaderStorage shader_storage;
