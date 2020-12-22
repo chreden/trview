@@ -10,7 +10,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/IFontFactory.h>
 #include <trview.common/TokenStore.h>
 #include "ItemsWindow.h"
 #include <trview.common/Windows/Shortcuts.h>
@@ -26,7 +26,7 @@ namespace trview
         /// @param shader_storage The shader storage for items windows.
         /// @param font_factory The font_factory for items windows.
         /// @param window The parent window of the items window.
-        explicit ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;
@@ -75,7 +75,7 @@ namespace trview
         void set_selected_item(const Item& item);
 
         /// Create a new items window.
-        void create_window();
+        ItemsWindow* create_window();
     private:
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
         std::vector<ItemsWindow*> _closing_windows;
@@ -83,7 +83,7 @@ namespace trview
         std::vector<Trigger*> _triggers;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
-        graphics::FontFactory& _font_factory;
+        graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<Item> _selected_item;

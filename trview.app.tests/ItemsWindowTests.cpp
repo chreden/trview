@@ -1,7 +1,6 @@
 #include <trview.app/Windows/ItemsWindow.h>
 #include <trview.tests.common/Window.h>
 #include <trview.graphics/Device.h>
-#include <trview.graphics/FontFactory.h>
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
