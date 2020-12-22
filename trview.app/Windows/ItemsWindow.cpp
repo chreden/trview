@@ -35,8 +35,10 @@ namespace trview
 
     const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
     const std::string ItemsWindow::Names::items_listbox{ "Items" };
+    const std::string ItemsWindow::Names::stats_listbox{ "Stats" };
     const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
     const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
+    const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
@@ -70,6 +72,7 @@ namespace trview
     {
         _selected_item.reset();
         _stats_list->set_items({});
+        _trigger_list->set_items({});
     }
 
     void ItemsWindow::populate_items(const std::vector<Item>& items)
@@ -183,6 +186,7 @@ namespace trview
 
         // Add some information about the selected item.
         _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails));
+        _stats_list->set_name(Names::stats_listbox);
         _stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
@@ -215,6 +219,7 @@ namespace trview
         auto trigger_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By"));
 
         _trigger_list = trigger_group_box->add_child(std::make_unique<Listbox>(Size(190, 130), Colours::Triggers));
+        _trigger_list->set_name(Names::triggers_listbox);
         _trigger_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 25 },

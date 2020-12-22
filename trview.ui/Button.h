@@ -82,6 +82,10 @@ namespace trview
             /// @param colour The foreground colour.
             void set_text_colour(const Colour& colour);
 
+            /// Get the text if set.
+            /// @returns The text.
+            std::wstring text() const;
+
             /// Get the text colour, if set.
             /// @returns The text colour.
             std::optional<Colour> text_colour() const;

@@ -172,6 +172,8 @@ namespace trview
 
             /// Clear the selected item.
             void clear_selection();
+            /// Get the items in the listbox.
+            std::vector<Item> items() const;
 
             /// Set the columns that will be used for sorting and filtering items.
             /// @param columns The column names.

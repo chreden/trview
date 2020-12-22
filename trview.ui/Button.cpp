@@ -120,6 +120,15 @@ namespace trview
             }
         }
 
+        std::wstring Button::text() const
+        {
+            if (_text)
+            {
+                return _text->text();
+            }
+            return std::wstring();
+        }
+
         std::optional<Colour> Button::text_colour() const
         {
             if (_text)
