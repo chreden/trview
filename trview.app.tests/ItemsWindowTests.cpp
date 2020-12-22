@@ -82,7 +82,6 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
     auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
     ASSERT_NE(row, nullptr);
-
     cell->clicked(Point());
 
     ASSERT_FALSE(raised_item.has_value());
@@ -116,7 +115,6 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
     auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
     ASSERT_NE(row, nullptr);
-
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_item.has_value());
@@ -151,7 +149,6 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
     auto cell = row->find<ui::Checkbox>(ui::Listbox::Row::Names::cell_name_format + "Hide");
     ASSERT_NE(row, nullptr);
-
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_item.has_value());
@@ -159,9 +156,78 @@ TEST(ItemsWindow, ItemVisibilityRaised)
     ASSERT_EQ(std::get<0>(raised_item.value()).number(), 1);
 }
 
-TEST(ItemsWindow, ItemsListFilteredWhenRoomSet)
+TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+
+    std::optional<Item> raised_item;
+    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+
+    std::vector<Item> items
+    {
+        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+    window.set_items(items);
+    window.set_current_room(78);
+
+    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(row, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_item.has_value());
+    ASSERT_EQ(raised_item.value().number(), 0);
+}
+
+TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
+{
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+
+    std::optional<Item> raised_item;
+    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+
+    std::vector<Item> items
+    {
+        Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+    window.set_items(items);
+    window.set_current_room(78);
+
+    auto track = window.root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
+    ASSERT_NE(track, nullptr);
+    track->clicked(Point());
+
+    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(row, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_item.has_value());
+    ASSERT_EQ(raised_item.value().number(), 1);
 }
 
 TEST(ItemsWindow, ItemsListPopulatedOnSet)

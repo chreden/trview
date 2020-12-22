@@ -36,6 +36,7 @@ namespace trview
     const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
     const std::string ItemsWindow::Names::items_listbox{ "Items" };
     const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
+    const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
 
     ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
@@ -115,6 +116,7 @@ namespace trview
         _controls = left_panel->add_child(std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual));
         _controls->set_margin(Size(2, 2));
         _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
+        _track_room_checkbox->set_name(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
