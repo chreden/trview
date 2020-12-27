@@ -29,6 +29,14 @@ namespace trview
         return _shortcuts.back().second;
     }
 
+    std::vector<Shortcuts::Shortcut> Shortcuts::shortcuts() const
+    {
+        std::vector<Shortcut> shortcuts;
+        std::transform(_shortcuts.begin(), _shortcuts.end(), std::back_inserter(shortcuts),
+            [](const auto& s) { return s.first; });
+        return shortcuts;
+    }
+
     void Shortcuts::create_accelerators()
     {
         if (_accelerators)

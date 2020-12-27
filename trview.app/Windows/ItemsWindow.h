@@ -71,6 +71,10 @@ namespace trview
         /// Set the selected item.
         /// @param item The selected item.
         void set_selected_item(const Item& item);
+
+        /// Get the selected item.
+        /// @returns The selected item, if present.
+        std::optional<Item> selected_item() const;
     protected:
         /// After the window has been resized, adjust the sizes of the child elements.
         virtual void update_layout() override;

@@ -336,4 +336,9 @@ namespace trview
             }
         }
     }
+
+    std::optional<Item> ItemsWindow::selected_item() const
+    {
+        return _selected_item;
+    }
 }

@@ -5,6 +5,7 @@
 #include <trview.graphics/mocks/IFontFactory.h>
 #include <trview.graphics/mocks/IFont.h>
 #include <trview.app/Elements/Types.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -89,35 +90,205 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
 
 TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+
+    manager.set_items(items);
+    ASSERT_EQ(list->items().size(), 2);
 }
 
 TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+    };
+
+    manager.set_items(items);
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
+
+    manager.set_item_visible(items[0], false);
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"1");
 }
 
 TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 0, 0, L"Type", 0, 0, { trigger.get() }, DirectX::SimpleMath::Vector3::Zero)
+    };
+    manager.set_triggers({ trigger.get() });
+    manager.set_items(items);
+    manager.set_selected_item(items[1]);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto triggers_list = created_window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
+    ASSERT_NE(triggers_list, nullptr);
+
+    ASSERT_EQ(triggers_list->items().size(), 1);
+    ASSERT_EQ(triggers_list->items()[0].value(L"#"), L"0");
 }
 
 TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 1, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+
+    manager.set_items(items);
+    ASSERT_EQ(list->items().size(), 2);
+
+    auto track = created_window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
+    ASSERT_NE(track, nullptr);
+    track->clicked(Point());
+
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"0");
+
+    manager.set_room(1);
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"1");
 }
 
 TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 1, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+    manager.set_items(items);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+    ASSERT_FALSE(created_window->selected_item().has_value());
+
+    manager.set_selected_item(items[1]);
+    ASSERT_TRUE(created_window->selected_item().has_value());
+    ASSERT_EQ(created_window->selected_item().value().number(), 1);
 }
 
 TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+        Item(1, 1, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+
+    manager.set_items(items);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_EQ(list->items().size(), 2);
 }
 
 TEST(ItemsWindowManager, CreateItemsWindowKeyboardShortcut)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+
+    Shortcuts shortcuts(test_window);
+    ASSERT_TRUE(shortcuts.shortcuts().empty());
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    ASSERT_FALSE(shortcuts.shortcuts().empty());
 }
