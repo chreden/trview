@@ -37,9 +37,13 @@ namespace trview
         }
     }
 
+    const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
+    const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
+
     using namespace graphics;
 
-    TriggersWindow::TriggersWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
+    TriggersWindow::TriggersWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(520, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
@@ -104,6 +108,7 @@ namespace trview
         auto controls_box_bottom = controls_box->size().height;
 
         _triggers_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - controls_box_bottom), Colours::LeftPanel));
+        _triggers_list->set_name(Names::triggers_listbox);
         _triggers_list->set_columns(
             {
                 { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
@@ -163,6 +168,7 @@ namespace trview
         };
 
         auto button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Add to Route"));
+        button->set_name(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
             if (_selected_trigger.has_value())
@@ -177,6 +183,7 @@ namespace trview
         // Add the trigger details group box.
         auto command_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands"));
         _command_list = command_group_box->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 160), Colours::Triggers));
+        _command_list->set_name(Names::trigger_commands_listbox);
         _command_list->set_columns(
             {
                 { Listbox::Column::Type::String, L"Type", 80 },

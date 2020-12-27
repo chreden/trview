@@ -7,7 +7,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
 #include "CollapsiblePanel.h"
-#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/IFontFactory.h>
 
 namespace trview
 {
@@ -20,12 +20,19 @@ namespace trview
     class TriggersWindow final : public CollapsiblePanel
     {
     public:
+        struct Names
+        {
+            static const std::string add_to_route_button;
+            static const std::string triggers_listbox;
+            static const std::string trigger_commands_listbox;
+        };
+
         /// Create an items window as a child of the specified window.
         /// @param device The graphics device
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit TriggersWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& parent);
+        explicit TriggersWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent);
 
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;
