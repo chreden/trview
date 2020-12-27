@@ -5,6 +5,7 @@
 #include <trview.graphics/mocks/IFont.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/Dropdown.h>
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
 
@@ -34,7 +35,47 @@ TEST(TriggersWindow, TriggersListFilteredWhenTrackRoomEnabled)
 
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<const Trigger*> raised_trigger;
+    auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} });
+    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} });
+    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
+    window.set_triggers(triggers);
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_EQ(list->items().size(), 2);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"0");
+    ASSERT_EQ(list->items()[1].value(L"#"), L"1");
+
+    auto dropdown = window.root_control()->find<ui::Dropdown>(TriggersWindow::Names::filter_dropdown);
+    ASSERT_NE(dropdown, nullptr);
+
+    auto dropdown_button = dropdown->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
+    ASSERT_NE(dropdown_button, nullptr);
+    dropdown_button->clicked(Point());
+
+    auto dropdown_list = dropdown->dropdown_listbox();
+    ASSERT_NE(dropdown_list, nullptr);
+
+    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "3");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+    
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"1");
 }
 
 TEST(TriggersWindow, AddToRouteEventRaised)

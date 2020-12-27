@@ -38,6 +38,7 @@ namespace trview
     }
 
     const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
+    const std::string TriggersWindow::Names::filter_dropdown{ "FilterDropdown" };
     const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
     const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
 
@@ -85,6 +86,7 @@ namespace trview
         controls_row2->set_margin(Size(2, 0));
 
         _command_filter = controls_row2->add_child(std::make_unique<Dropdown>(Size(236, 20)));
+        _command_filter->set_name(Names::filter_dropdown);
         std::vector<std::wstring> default_commands { L"All", L"Flipmaps" };
         _command_filter->set_values(default_commands);
         _command_filter->set_dropdown_scope(_ui.get());

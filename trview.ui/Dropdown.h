@@ -15,6 +15,12 @@ namespace trview
         class Dropdown final : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string dropdown_button;
+                static const std::string dropdown_listbox;
+            };
+
             /// A value element for the dropdown.
             struct Value
             {
@@ -34,6 +40,9 @@ namespace trview
 
             /// Destructor for Dropdown.
             virtual ~Dropdown() = default;
+
+            /// Get the actual list.
+            ui::Listbox* dropdown_listbox() const;
 
             /// Set the scope that the dropdown will appear in. This may be required if the parent control
             /// does not have space for the entire dropdown to be rendered.
