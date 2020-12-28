@@ -13,14 +13,71 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 
-TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncEnabled)
+TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<const Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} });
+    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} });
+    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
+    window.set_triggers(triggers);
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(raised_trigger.value(), trigger2.get());
 }
 
-TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncDisabled)
+TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<const Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} });
+    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} });
+    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
+    window.set_triggers(triggers);
+
+    auto sync = window.root_control()->find<ui::Checkbox>(TriggersWindow::Names::sync_trigger_checkbox);
+    ASSERT_NE(sync, nullptr);
+    sync->clicked(Point());
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_FALSE(raised_trigger.has_value());
 }
 
 TEST(TriggersWindow, TriggersListNotFilteredWhenTrackRoomDisabled)
@@ -187,6 +244,11 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 }
 
 TEST(TriggersWindow, SelectionSurvivesFiltering)
+{
+    FAIL();
+}
+
+TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     FAIL();
 }

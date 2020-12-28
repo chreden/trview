@@ -39,6 +39,7 @@ namespace trview
 
     const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
     const std::string TriggersWindow::Names::filter_dropdown{ "FilterDropdown" };
+    const std::string TriggersWindow::Names::sync_trigger_checkbox{ "SyncTriggers" };
     const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
     const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
 
@@ -72,6 +73,7 @@ namespace trview
         _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
 
         auto sync_trigger = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger"));
+        sync_trigger->set_name(Names::sync_trigger_checkbox);
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
 
