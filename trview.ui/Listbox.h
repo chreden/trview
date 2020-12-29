@@ -23,6 +23,8 @@ namespace trview
             struct Names
             {
                 static const std::string row_name_format;
+                static const std::string header_container;
+                static const std::string header_name_format;
             };
 
             /// A column in a list box.
