@@ -61,6 +61,8 @@ BEGIN
         MENUITEM "Tools",                       ID_VIEW_TOOLS
         MENUITEM SEPARATOR
         MENUITEM "Background &Colour...",       ID_VIEW_BACKGROUNDCOLOUR
+        MENUITEM SEPARATOR
+        MENUITEM "Unhide All",                  ID_VIEW_UNHIDE_ALL
     END
     POPUP "Windows"
     BEGIN

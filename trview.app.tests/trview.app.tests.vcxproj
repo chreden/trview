@@ -43,6 +43,7 @@
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
+    <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
   </ItemGroup>
   <ItemGroup>

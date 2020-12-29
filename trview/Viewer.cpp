@@ -259,6 +259,11 @@ namespace trview
             _settings.background_colour = static_cast<uint32_t>(colour);
             _scene_changed = true; 
         };
+        _token_store += _view_menu.on_unhide_all += [&]()
+        {
+            for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
+            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
+        };
 
         _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };

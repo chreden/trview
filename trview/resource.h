@@ -51,6 +51,7 @@
 #define ID_VIEW_ROUTE                   ID_APP_VIEW_ROUTE
 #define ID_VIEW_TOOLS                   ID_APP_VIEW_TOOLS
 #define ID_VIEW_BACKGROUNDCOLOUR        ID_APP_VIEW_BACKGROUNDCOLOUR
+#define ID_VIEW_UNHIDE_ALL              ID_APP_VIEW_UNHIDE_ALL
 #define IDF_ARIAL7                      32793
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS

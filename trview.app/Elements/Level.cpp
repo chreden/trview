@@ -471,6 +471,7 @@ namespace trview
 
     void Level::set_item_visibility(uint32_t index, bool state)
     {
+        _items[index].set_visible(state);
         _entities[index]->set_visible(state);
         _regenerate_transparency = true;
         on_level_changed();
