@@ -11,6 +11,31 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 
+TEST(ItemsWindowManager, AddToRouteEventRaised)
+{
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    std::optional<Item> raised_item;
+    auto token = manager.on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
+    created_window->on_add_to_route(test_item);
+
+    ASSERT_TRUE(raised_item.has_value());
+    ASSERT_EQ(raised_item.value().number(), 100);
+}
+
 TEST(ItemsWindowManager, ItemSelectedEventRaised)
 {
     mocks::MockFontFactory font_factory;

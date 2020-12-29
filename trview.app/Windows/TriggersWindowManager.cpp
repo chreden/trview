@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    TriggersWindowManager::TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
+    TriggersWindowManager::TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
         _token_store += shortcuts.add_shortcut(true, 'T') += [&]() { create_window(); };
@@ -35,7 +35,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::create_window()
+    TriggersWindow* TriggersWindowManager::create_window()
     {
         auto triggers_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
         triggers_window->on_item_selected += on_item_selected;
@@ -57,6 +57,7 @@ namespace trview
         };
 
         _windows.push_back(std::move(triggers_window));
+        return window;
     }
 
     void TriggersWindowManager::set_items(const std::vector<Item>& items)
