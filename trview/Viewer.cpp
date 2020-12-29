@@ -58,6 +58,7 @@ namespace trview
             _items_windows->create_window();
         }
         _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
@@ -73,6 +74,7 @@ namespace trview
         }
         _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
             uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
@@ -157,6 +159,17 @@ namespace trview
             select_waypoint(new_index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
+        _token_store += _ui->on_hide += [&]()
+        {
+            if (_context_pick.type == PickResult::Type::Entity)
+            {
+                set_item_visibility(_level->items()[_context_pick.index], false);
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                set_trigger_visibility(_level->triggers()[_context_pick.index], false);
+            }
+        };
         _token_store += _ui->on_orbit += [&]()
         {
             select_room(room_from_pick(_context_pick), true);
@@ -245,6 +258,11 @@ namespace trview
         { 
             _settings.background_colour = static_cast<uint32_t>(colour);
             _scene_changed = true; 
+        };
+        _token_store += _view_menu.on_unhide_all += [&]()
+        {
+            for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
+            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
         };
 
         _picking = std::make_unique<Picking>();
@@ -510,6 +528,7 @@ namespace trview
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
+                _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
             }
         };
     }
@@ -823,6 +842,28 @@ namespace trview
         {
             select_waypoint(_route->selected_waypoint() - 1);
         }
+    }
+
+    void Viewer::set_item_visibility(const Item& item, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        _level->set_item_visibility(item.number(), visible);
+        _items_windows->set_item_visible(item, visible);
+    }
+
+    void Viewer::set_trigger_visibility(Trigger* trigger, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        _level->set_trigger_visibility(trigger->number(), visible);
+        _triggers_windows->set_trigger_visible(trigger, visible);
     }
 
     void Viewer::remove_waypoint(uint32_t index)

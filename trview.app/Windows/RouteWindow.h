@@ -8,6 +8,7 @@
 #include <trview.common/Event.h>
 #include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Elements/Item.h>
+#include <trview.graphics/FontFactory.h>
 
 namespace trview
 {

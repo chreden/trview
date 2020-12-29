@@ -7,8 +7,8 @@ namespace trview
 {
     namespace graphics
     {
-        class Font;
-        class FontFactory;
+        struct IFont;
+        struct IFontFactory;
     }
 
     namespace ui
@@ -20,7 +20,7 @@ namespace trview
             class LabelNode : public WindowNode, public IFontMeasurer
             {
             public:
-                LabelNode(const graphics::Device& device, Label* label, const graphics::FontFactory& font_factory);
+                LabelNode(const graphics::Device& device, Label* label, const graphics::IFontFactory& font_factory);
                 virtual ~LabelNode();
                 virtual Size measure(const std::wstring& text) const override;
                 virtual bool is_valid_character(wchar_t character) const override;
@@ -31,8 +31,8 @@ namespace trview
                 // resize the label if the label has been set to auto size mode.
                 void generate_font_texture();
 
-                Label*                          _label;
-                std::unique_ptr<graphics::Font> _font;
+                Label* _label;
+                std::unique_ptr<graphics::IFont> _font;
             };
         }
     }

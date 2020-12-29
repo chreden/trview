@@ -127,6 +127,8 @@ namespace trview
             _texture->apply(context);
 
             // Draw the regular faces of the item with a black colouring.
+            const bool was_visible = selected_item.visible();
+            selected_item.set_visible(true);
             selected_item.render(device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
@@ -134,6 +136,7 @@ namespace trview
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.rendering_position());
             _transparency->render(context, camera, texture_storage, true);
+            selected_item.set_visible(was_visible);
         }
 
         // Set vertex shader parameters. Since we don't require any kind of scaling (we just want to fill the viewport), 

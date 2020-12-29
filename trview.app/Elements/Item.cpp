@@ -56,4 +56,14 @@ namespace trview
     {
         return _position;
     }
+
+    bool Item::visible() const
+    {
+        return _visible;
+    }
+
+    void Item::set_visible(bool value)
+    {
+        _visible = value;
+    }
 }

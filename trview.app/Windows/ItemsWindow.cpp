@@ -25,15 +25,23 @@ namespace trview
 
         ui::Listbox::Item create_listbox_item(const Item& item)
         {
-            return {{{ L"#", std::to_wstring(item.number()) },
+            return { {{ L"#", std::to_wstring(item.number()) },
                      { L"ID", std::to_wstring(item.type_id()) },
                      { L"Room", std::to_wstring(item.room()) },
-                     { L"Type", item.type() }}};
+                     { L"Type", item.type() },
+                     { L"Hide", std::to_wstring(!item.visible()) }} };
         }
     }
 
-    ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(400, Height))
+    const std::string ItemsWindow::Names::add_to_route_button{ "AddToRoute" };
+    const std::string ItemsWindow::Names::items_listbox{ "Items" };
+    const std::string ItemsWindow::Names::stats_listbox{ "Stats" };
+    const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
+    const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
+    const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
+
+    ItemsWindow::ItemsWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.items", L"Items", Size(450, Height))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -42,6 +50,16 @@ namespace trview
     {
         _all_items = items;
         populate_items(items);
+    }
+
+    void ItemsWindow::update_items(const std::vector<Item>& items)
+    {
+        set_items(items);
+        if (_track_room)
+        {
+            _filter_applied = false;
+            set_current_room(_current_room);
+        }
     }
 
     void ItemsWindow::set_triggers(const std::vector<Trigger*>& triggers)
@@ -54,6 +72,7 @@ namespace trview
     {
         _selected_item.reset();
         _stats_list->set_items({});
+        _trigger_list->set_items({});
     }
 
     void ItemsWindow::populate_items(const std::vector<Item>& items)
@@ -93,46 +112,45 @@ namespace trview
     std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
-        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
-        _token_store += track_room->on_state_changed += [this](bool value)
+        _controls = left_panel->add_child(std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual));
+        _controls->set_margin(Size(2, 2));
+        _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
+        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
         };
 
-        _track_room_checkbox = controls->add_child(std::move(track_room));
-
         // Spacing between checkboxes.
-        controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
+        _controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
 
-        auto sync_item = std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item");
+        auto sync_item = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
+        sync_item->set_name(Names::sync_item_checkbox);
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
-        controls->add_child(std::move(sync_item));
 
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
+        _controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
 
         // Add the expander button at this point.
-        add_expander(*controls);
+        add_expander(*_controls);
 
-        _controls = left_panel->add_child(std::move(controls));
-
-        auto items_list = std::make_unique<Listbox>(Size(200, window().size().height - _controls->size().height), Colours::LeftPanel);
-        items_list->set_columns(
+        _items_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel));
+        _items_list->set_name(Names::items_listbox);
+        _items_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::Type::String, L"Type", 100 } 
+                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"ID", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 100 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
             }
         );
-        _token_store += items_list->on_item_selected += [&](const auto& item)
+        _token_store += _items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
             load_item_details(_all_items[index]);
@@ -141,12 +159,17 @@ namespace trview
                 on_item_selected(_all_items[index]);
             }
         };
-
-        _items_list = items_list.get();
-        left_panel->add_child(std::move(items_list));
+        _token_store += _items_list->on_state_changed += [&](const auto& item, const std::wstring& column, bool state)
+        {
+            if (column == L"Hide")
+            {
+                auto index = std::stoi(item.value(L"#"));
+                on_item_visibility(_all_items[index], !state);
+            }
+        };
 
         // Fix items list size now that it has been added to the panel.
-        _items_list->set_size(Size(200, left_panel->size().height - _items_list->position().y));
+        _items_list->set_size(Size(250, left_panel->size().height - _items_list->position().y));
 
         return left_panel;
     }
@@ -156,29 +179,31 @@ namespace trview
         using namespace ui;
 
         auto right_panel = std::make_unique<StackPanel>(Size(200, Height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details");
+        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
 
-        auto details_panel = std::make_unique<StackPanel>(Size(180, 230), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details"));
+        auto details_panel = group_box->add_child(std::make_unique<StackPanel>(Size(180, 230), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual));
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails);
-        stats_list->set_columns(
+        _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails));
+        _stats_list->set_name(Names::stats_listbox);
+        _stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 60 },
                 { Listbox::Column::Type::Number, L"Value", 120 },
             }
         );
-        stats_list->set_show_headers(false);
-        stats_list->set_show_scrollbar(false);
-        stats_list->set_show_highlight(false);
+        _stats_list->set_show_headers(false);
+        _stats_list->set_show_scrollbar(false);
+        _stats_list->set_show_highlight(false);
 
-        _token_store += stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
+        _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             write_clipboard(window(), item.value(L"Value"));
         };
 
-        _stats_list = details_panel->add_child(std::move(stats_list));
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
+        add_to_route->set_name(Names::add_to_route_button);
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())
@@ -187,38 +212,31 @@ namespace trview
             }
         };
 
-        group_box->add_child(std::move(details_panel));
-
-        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
-        right_panel->add_child(std::move(group_box));
-
         // Spacer element.
         right_panel->add_child(std::make_unique<ui::Window>(Size(200, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto trigger_group_box = std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By");
+        auto trigger_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By"));
 
-        auto trigger_list = std::make_unique<Listbox>(Size(190, 130), Colours::Triggers);
-        trigger_list->set_columns(
+        _trigger_list = trigger_group_box->add_child(std::make_unique<Listbox>(Size(190, 130), Colours::Triggers));
+        _trigger_list->set_name(Names::triggers_listbox);
+        _trigger_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 25 },
                 { Listbox::Column::Type::Number, L"Room", 35 },
                 { Listbox::Column::Type::String, L"Type", 120 },
             }
         );
-        trigger_list->set_show_headers(true);
-        trigger_list->set_show_scrollbar(true);
-        trigger_list->set_show_highlight(true);
+        _trigger_list ->set_show_headers(true);
+        _trigger_list ->set_show_scrollbar(true);
+        _trigger_list ->set_show_highlight(true);
 
-        _token_store += trigger_list->on_item_selected += [&](const auto& item)
+        _token_store += _trigger_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
             set_track_room(false);
             on_trigger_selected(_all_triggers[index]);
         };
-
-        _trigger_list = trigger_group_box->add_child(std::move(trigger_list));
-        right_panel->add_child(std::move(trigger_group_box));
 
         return right_panel;
     }
@@ -279,8 +297,8 @@ namespace trview
             }
             else
             {
-                set_items(_all_items);
                 _filter_applied = false;
+                set_items(_all_items);
             }
         }
 
@@ -317,5 +335,10 @@ namespace trview
                 _selected_item.reset();
             }
         }
+    }
+
+    std::optional<Item> ItemsWindow::selected_item() const
+    {
+        return _selected_item;
     }
 }

@@ -6,6 +6,10 @@ namespace trview
 {
     namespace ui
     {
+        const std::string Listbox::Names::row_name_format{ "row-" };
+        const std::string Listbox::Names::header_container{ "header" };
+        const std::string Listbox::Names::header_name_format{ "header-" };
+
         Listbox::Listbox(const Size& size, const Colour& background_colour)
             : Listbox(Point(), size, background_colour)
         {
@@ -30,6 +34,11 @@ namespace trview
             _selected_item.reset();
         }
 
+        std::vector<Listbox::Item> Listbox::items() const
+        {
+            return _items;
+        }
+
         void Listbox::set_columns(const std::vector<Column>& columns)
         {
             _columns = columns;
@@ -43,8 +52,12 @@ namespace trview
 
         void Listbox::set_items(const std::vector<Item>& items)
         {
-            // Reset the index for scrolling.
-            _current_top = 0;
+            // Reset the index for scrolling if the list is different.
+            if (items.empty() || 
+                !std::equal(_items.begin(), _items.end(), items.begin(), items.end(), [this](const auto& l, const auto& r) { return identity_equal(l, r); }))
+            {
+                _current_top = 0;
+            }
 
             // Store the items for later.
             _items = items;
@@ -84,22 +97,17 @@ namespace trview
             }
             else
             {
-                auto rows_container = std::make_unique<StackPanel>(Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual);
-
-                auto rows_element = std::make_unique<StackPanel>(Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual);
-                _rows_element = rows_container->add_child(std::move(rows_element));
+                _rows_container = add_child(std::make_unique<StackPanel>(Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual));
+                _rows_element = _rows_container->add_child(std::make_unique<StackPanel>(Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual));
 
                 if (_show_scrollbar)
                 {
-                    auto rows_scrollbar = std::make_unique<Scrollbar>(Size(scrollbar_width, remaining_height), background_colour());
-                    _token_store += rows_scrollbar->on_scroll += [&](float value)
+                    _rows_scrollbar = _rows_container->add_child(std::make_unique<Scrollbar>(Size(scrollbar_width, remaining_height), background_colour()));
+                    _token_store += _rows_scrollbar->on_scroll += [&](float value)
                     {
                         scroll_to(static_cast<uint32_t>(value * _items.size()));
                     };
-                    _rows_scrollbar = rows_container->add_child(std::move(rows_scrollbar));
                 }
-
-                _rows_container = add_child(std::move(rows_container));
             }
 
             // Add as many rows as can be seen.
@@ -110,9 +118,10 @@ namespace trview
 
             for (auto i = 0; i < remaining_rows; ++i)
             {
-                auto row = std::make_unique<Row>(background_colour(), _columns);
+                auto row = _rows_element->add_child(std::make_unique<Row>(background_colour(), _columns));
+                row->set_name(Names::row_name_format + std::to_string(i));
                 _token_store += row->on_click += [this](const auto& item) { select_item(item); };
-                _rows_element->add_child(std::move(row));
+                row->on_state_changed += on_state_changed;
             }
         }
 
@@ -162,7 +171,7 @@ namespace trview
                 std::sort(_items.begin(), _items.end(),
                     [&](const auto& l, const auto& r)
                 {
-                    if (_current_sort.type() == Column::Type::Number)
+                    if (_current_sort.type() != Column::Type::String)
                     {
                         if (!_current_sort_direction)
                         {
@@ -215,7 +224,7 @@ namespace trview
             }
 
             // Find the selected item in the list.
-            auto item = std::find(_items.begin(), _items.end(), _selected_item);
+            auto item = std::find_if(_items.begin(), _items.end(), [this](const auto& item) { return identity_equal(item, _selected_item); });
 
             // If the item isn't in the list but there are items in the list, select the first item in the list.
             if (item == _items.end())
@@ -279,10 +288,12 @@ namespace trview
                 return;
             }
 
-            auto headers_element = std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal);
+            _headers_element = add_child(std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal));
+            _headers_element->set_name(Names::header_container);
             for (const auto column : _columns)
             {
-                auto header_element = std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), column.name());
+                auto header_element = _headers_element->add_child(std::make_unique<Button>(Size(static_cast<float>(column.width()), 20.0f), column.name()));
+                header_element->set_name(Names::header_name_format + to_utf8(column.name()));
                 header_element->set_text_background_colour(background_colour());
                 _token_store += header_element->on_click += [this, column]()
                 {
@@ -302,12 +313,10 @@ namespace trview
                     }
                     sort_items();
                 };
-                headers_element->add_child(std::move(header_element));
             }
 
             // Add the spacer to make the scrollbar look ok.
-            headers_element->add_child(std::make_unique<Window>(Size(10, 20), background_colour()));
-            _headers_element = add_child(std::move(headers_element));
+            _headers_element->add_child(std::make_unique<Window>(Size(10, 20), background_colour()));
         }
 
         void Listbox::select_item(const Item& item, bool raise_event)
@@ -327,8 +336,29 @@ namespace trview
             for (auto& row_element : rows)
             {
                 auto row = static_cast<Row*>(row_element);
-                row->set_highlighted(_show_highlight && row->item() == _selected_item);
+                row->set_highlighted(_show_highlight && identity_equal(row->item(), _selected_item));
             }
+        }
+
+        bool Listbox::identity_equal(const Item& left, const Item& right) const
+        {
+            for (const auto& c : _columns)
+            {
+                if (c.identity_mode() == Column::IdentityMode::Key && left.value(c.name()) != right.value(c.name()))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool Listbox::identity_equal(const std::optional<Item>& left, const std::optional<Item>& right) const
+        {
+            if (!left.has_value() && !right.has_value())
+            {
+                return false;
+            }
+            return left.has_value() == right.has_value() && identity_equal(left.value(), right.value());
         }
 
         void Listbox::scroll_to(uint32_t item)
@@ -349,7 +379,7 @@ namespace trview
 
         void Listbox::scroll_to_show(const Item& item)
         {
-            auto iter = std::find(_items.begin(), _items.end(), item);
+            auto iter = std::find_if(_items.begin(), _items.end(), [this, &item] (const auto& i) { return identity_equal(i, item); });
             if (iter == _items.end())
             {
                 return;
@@ -370,12 +400,17 @@ namespace trview
 
         bool Listbox::set_selected_item(const Item& item)
         {
-            if (std::find(_items.begin(), _items.end(), item) == _items.end())
+            if (std::find_if(_items.begin(), _items.end(), [this, &item](const auto& i) { return identity_equal(i, item); }) == _items.end())
             {
                 return false;
             }
             select_item(item, false);
             return true;
+        }
+
+        std::optional<Listbox::Item> Listbox::selected_item() const
+        {
+            return _selected_item;
         }
     }
 }

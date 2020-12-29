@@ -20,6 +20,8 @@ namespace trview
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         Event<>& add_shortcut(bool control, uint16_t key);
+
+        std::vector<Shortcut> shortcuts() const;
     private:
         void create_accelerators();
 

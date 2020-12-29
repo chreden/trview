@@ -9,13 +9,13 @@
 
 #include <trview.ui/Control.h>
 #include <trview.common/TokenStore.h>
+#include <trview.graphics/IFontFactory.h>
 
 namespace trview
 {
     namespace graphics
     {
         struct IShaderStorage;
-        class FontFactory;
         class Sprite;
     }
 
@@ -26,7 +26,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& host_size);
+                explicit Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
 
                 ~Renderer();
 
@@ -51,7 +51,7 @@ namespace trview
                 std::unique_ptr<graphics::Sprite>               _sprite;
                 const graphics::Device&                         _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-                const graphics::FontFactory&                    _font_factory;
+                const graphics::IFontFactory&                    _font_factory;
                 Size                                            _host_size;
                 TokenStore                                      _token_store;
                 bool                                            _hierarchy_changed{ false };

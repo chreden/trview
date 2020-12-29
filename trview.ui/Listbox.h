@@ -20,6 +20,13 @@ namespace trview
         class Listbox : public StackPanel
         {
         public:
+            struct Names
+            {
+                static const std::string row_name_format;
+                static const std::string header_container;
+                static const std::string header_name_format;
+            };
+
             /// A column in a list box.
             class Column final
             {
@@ -30,7 +37,15 @@ namespace trview
                     /// The data is a string and will be sorted alphabetically.
                     String,
                     /// The data is numerical and will be sorted numerically.
-                    Number
+                    Number,
+                    /// The data is true or false data.
+                    Boolean
+                };
+
+                enum class IdentityMode
+                {
+                    Key,
+                    None
                 };
 
                 /// Default constructor.
@@ -41,6 +56,14 @@ namespace trview
                 /// @param name The column name. This is displayed as a header.
                 /// @param width The width of the column.
                 Column(Type type, const std::wstring& name, uint32_t width);
+
+                /// Create a column.
+                /// @param type The type of the column.
+                /// @param name The column name. This is displayed as a header.
+                /// @param width The width of the column.
+                Column(IdentityMode identity_mode, Type type, const std::wstring& name, uint32_t width);
+
+                IdentityMode identity_mode() const;
 
                 /// Get the name of the column. This is displayed as a header.
                 /// @returns The name of the column.
@@ -55,6 +78,7 @@ namespace trview
                 uint32_t width() const;
             private:
                 std::wstring _name;
+                IdentityMode _identity_mode{ IdentityMode::Key };
                 Type _type;
                 uint32_t _width;
             };
@@ -85,11 +109,6 @@ namespace trview
                 /// Get the background colour.
                 /// @returns The backround colour.
                 Colour background() const;
-
-                /// Determines whether two items are equal.
-                /// @param other The item to compare.
-                /// @returns Whether the items are equal.
-                bool operator == (const Item& other) const;
             private:
                 std::unordered_map<std::wstring, std::wstring> _values;
                 Colour _foreground;
@@ -100,6 +119,11 @@ namespace trview
             class Row final : public StackPanel
             {
             public:
+                struct Names
+                {
+                    static const std::string cell_name_format;
+                };
+
                 explicit Row(const Colour& colour, const std::vector<Column>& columns);
 
                 virtual ~Row() = default;
@@ -116,6 +140,10 @@ namespace trview
 
                 /// Event raised when a row is clicked.
                 Event<Item> on_click;
+
+                /// Event raised when an item state is hidden.
+                /// Parameters: item, attribute, state.
+                Event<Item, std::wstring, bool> on_state_changed;
 
                 void set_highlighted(bool value);
 
@@ -146,6 +174,8 @@ namespace trview
 
             /// Clear the selected item.
             void clear_selection();
+            /// Get the items in the listbox.
+            std::vector<Item> items() const;
 
             /// Set the columns that will be used for sorting and filtering items.
             /// @param columns The column names.
@@ -175,12 +205,20 @@ namespace trview
             /// @returns Whether the item was selected.
             bool set_selected_item(const Item& item);
 
+            /// Get the selected item if one is set.
+            /// @returns The selected item.
+            std::optional<Item> selected_item() const;
+
             /// Event raised when an item is selected
             Event<Item> on_item_selected;
 
+            /// Event raised when an item state is hidden.
+            /// Parameters: item, attribute, state.
+            Event<Item, std::wstring, bool> on_state_changed;
+
             /// Event raised when the delete key is pressed.
             Event<> on_delete;
-        protected:
+
             virtual bool scroll(int delta) override;
             virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
         private:
@@ -202,6 +240,9 @@ namespace trview
             void scroll_to_show(const Item& item);
 
             void highlight_item();
+
+            bool identity_equal(const Item& left, const Item& right) const;
+            bool identity_equal(const std::optional<Item>& left, const std::optional<Item>& right) const;
 
             std::vector<Column> _columns;
             std::vector<Item> _items;

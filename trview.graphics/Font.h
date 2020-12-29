@@ -14,6 +14,7 @@
 
 #include "TextAlignment.h"
 #include "ParagraphAlignment.h"
+#include "IFont.h"
 
 namespace trview
 {
@@ -25,7 +26,7 @@ namespace trview
         class Texture;
 
         /// Creates, stores and renders fonts to textures.
-        class Font
+        class Font final : public IFont
         {
         public:
             /// Create a new font.
@@ -34,12 +35,14 @@ namespace trview
             /// @param paragraph_alignment Paragraph alignment for the font.
             explicit Font(const std::shared_ptr<DirectX::SpriteFont>& font, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment);
 
+            virtual ~Font() = default;
+
             /// Renders the text to the specified font texture.
             /// @param text The text to render on to the font texture.
             /// @param width The optional width of the rectangle in which to render text.
             /// @param height The optional height of the rectangle in which to render text.
             /// @param colour The colour to render the text.
-            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour);
+            virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float width, float height, const Colour& colour) override;
 
             /// Renders the text to the specified font texture.
             /// @param text The text to render on to the font texture.
@@ -48,17 +51,17 @@ namespace trview
             /// @param width The optional width of the rectangle in which to render text.
             /// @param height The optional height of the rectangle in which to render text.
             /// @param colour The colour to render the text.
-            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float x, float y, float width, float height, const Colour& colour);
+            virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const std::wstring& text, float x, float y, float width, float height, const Colour& colour) override;
 
             /// Determines the size in pixels that the text specified will be when rendered.
             /// @param text The text to measure.
             /// @returns The size in pixels required to render the specified text.
-            Size measure(const std::wstring& text) const;
+            virtual Size measure(const std::wstring& text) const override;
 
             /// Determines whether the character is in the image set.
             /// @param character The character to test.
             /// @returns True if the character is in the image set.
-            bool is_valid_character(wchar_t character) const;
+            virtual bool is_valid_character(wchar_t character) const override;
         private:
             std::shared_ptr<DirectX::SpriteFont> _font;
             std::unique_ptr<DirectX::SpriteBatch> _batch;

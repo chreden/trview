@@ -25,15 +25,33 @@ namespace trview
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
 
+            bool is_message_only(const Window& window)
+            {
+                auto current = FindWindowEx(HWND_MESSAGE, nullptr, nullptr, nullptr);
+                while (current != nullptr)
+                {
+                    if (current == window)
+                    {
+                        return true;
+                    }
+                    current = GetNextWindow(current, GW_HWNDNEXT);
+                }
+                return false;
+            }
+
             Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
             {
                 RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
                 AdjustWindowRect(&rect, window_style, FALSE);
 
+                const auto parent_window = is_message_only(parent) ? HWND_MESSAGE : parent.window();
                 Window items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
                     CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
 
-                ShowWindow(items_window, nCmdShow);
+                if (parent_window != HWND_MESSAGE)
+                {
+                    ShowWindow(items_window, nCmdShow);
+                }
                 UpdateWindow(items_window);
 
                 return items_window;
@@ -68,7 +86,7 @@ namespace trview
     }
 
 
-    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
         _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size), _shortcuts(window())
     {
@@ -135,6 +153,11 @@ namespace trview
         _ui_changed = false;
     }
 
+    Control* CollapsiblePanel::root_control() const
+    {
+        return _ui.get();
+    }
+
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
         auto panel = std::make_unique<StackPanel>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
@@ -179,11 +202,7 @@ namespace trview
 
     void CollapsiblePanel::add_expander(Control& parent)
     {
-        auto expander = std::make_unique<Button>(Size(16, 16), L"<<");
-        _token_store += expander->on_click += [this]()
-        {
-            toggle_expand();
-        };
-        _expander = parent.add_child(std::move(expander));
+        _expander = parent.add_child(std::make_unique<Button>(Size(16, 16), L"<<"));
+        _token_store += _expander->on_click += [this]() { toggle_expand(); };
     }
 }

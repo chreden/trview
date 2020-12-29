@@ -7,7 +7,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/IFontFactory.h>
 #include <trview.common/TokenStore.h>
 #include "TriggersWindow.h"
 
@@ -24,7 +24,7 @@ namespace trview
         /// @param shader_storage The shader storage for triggers windows.
         /// @param font_factory The font_factory for triggers windows.
         /// @param window The parent window of the triggers window.
-        explicit TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the TriggersWindowManager.
         virtual ~TriggersWindowManager() = default;
@@ -37,6 +37,8 @@ namespace trview
 
         /// Event raised when an item is selected in one of the trigger windows.
         Event<Item> on_item_selected;
+
+        Event<Trigger*, bool> on_trigger_visibility;
 
         /// Event raised when a trigger is selected in one of the trigger windows.
         Event<Trigger*> on_trigger_selected;
@@ -57,6 +59,11 @@ namespace trview
         /// @param triggers The triggers in the level.
         void set_triggers(const std::vector<Trigger*>& triggers);
 
+        /// Set whether a trigger is visible.
+        /// @param trigger The trigger.
+        /// @param visible Whether the trigger is visible.
+        void set_trigger_visible(Trigger* trigger, bool visible);
+
         /// Set the current room to filter trigger windows.
         /// @param room The current room.
         void set_room(uint32_t room);
@@ -66,7 +73,7 @@ namespace trview
         void set_selected_trigger(const Trigger* const trigger);
 
         /// Create a new triggers window.
-        void create_window();
+        TriggersWindow* create_window();
     private:
         std::vector<std::unique_ptr<TriggersWindow>> _windows;
         std::vector<TriggersWindow*> _closing_windows;
@@ -74,7 +81,7 @@ namespace trview
         std::vector<Trigger*> _triggers;
         graphics::Device& _device;
         graphics::IShaderStorage& _shader_storage;
-        graphics::FontFactory& _font_factory;
+        graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<const Trigger*> _selected_trigger;

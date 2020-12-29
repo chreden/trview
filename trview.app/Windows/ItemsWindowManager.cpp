@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
+    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
         _token_store += shortcuts.add_shortcut(true, 'I') += [&]() { create_window(); };
@@ -34,10 +34,11 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::create_window()
+    ItemsWindow* ItemsWindowManager::create_window()
     {
         auto items_window = std::make_unique<ItemsWindow>(_device, _shader_storage, _font_factory, window());
         items_window->on_item_selected += on_item_selected;
+        items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;
         items_window->on_add_to_route += on_add_to_route;
         items_window->set_items(_items);
@@ -55,6 +56,7 @@ namespace trview
         };
 
         _windows.push_back(std::move(items_window));
+        return window;
     }
 
     void ItemsWindowManager::set_items(const std::vector<Item>& items)
@@ -64,6 +66,20 @@ namespace trview
         {
             window->clear_selected_item();
             window->set_items(items);
+        }
+    }
+
+    void ItemsWindowManager::set_item_visible(const Item& item, bool visible)
+    {
+        auto found = std::find_if(_items.begin(), _items.end(), [&item](const auto& l) { return l.number() == item.number(); });
+        if (found == _items.end())
+        {
+            return;
+        }
+        found->set_visible(visible);
+        for (auto& window : _windows)
+        {
+            window->update_items(_items);
         }
     }
 

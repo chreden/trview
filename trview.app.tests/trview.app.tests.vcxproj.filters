@@ -33,6 +33,25 @@
     <ClCompile Include="SettingsWindowTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ContextMenuTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggersWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggersWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ViewMenuTests.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -53,11 +72,14 @@
     <Filter Include="Menus">
       <UniqueIdentifier>{1f416bd8-ff05-4720-81cd-5666b82a28e2}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Filter Include="Windows">
+      <UniqueIdentifier>{0c7c1192-4ae6-44cc-960c-e3f136dea95d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

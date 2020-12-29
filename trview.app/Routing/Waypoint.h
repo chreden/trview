@@ -84,6 +84,9 @@ namespace trview
 
         /// Set the contents of the attached save file.
         void set_save_file(const std::vector<uint8_t>& data);
+
+        virtual bool visible() const override;
+        virtual void set_visible(bool value) override;
     private:
         std::wstring                 _notes;
         std::vector<uint8_t>         _save_data;
@@ -93,6 +96,7 @@ namespace trview
         uint32_t                     _index;
         uint32_t                     _room;
         Colour                       _route_colour;
+        bool                         _visible{ true };
     };
 
     Waypoint::Type waypoint_type_from_string(const std::string& value);

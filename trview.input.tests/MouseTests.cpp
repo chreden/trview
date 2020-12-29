@@ -1,4 +1,5 @@
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include <trview.input/Mouse.h>
 #include <trview.tests.common/Window.h>
 

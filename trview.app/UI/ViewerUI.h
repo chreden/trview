@@ -92,6 +92,9 @@ namespace trview
         /// Event raised when the flip settings is changed.
         Event<bool> on_flip;
 
+        /// Event raised when the hide button is clicked.
+        Event<> on_hide;
+
         /// Event raised when the higlight setting is changed.
         Event<bool> on_highlight;
 
@@ -168,6 +171,10 @@ namespace trview
         /// Set whether there are any flipmaps in the level.
         /// @param value Whether there are any flipmaps.
         void set_flip_enabled(bool value);
+
+        /// Set whether the hide button on the context menu is enabled.
+        /// @param value Whether the hide button is enabled.
+        void set_hide_enabled(bool value);
 
         /// Set whether highlight is enabled.
         /// @param value Whether highlight is enabled.

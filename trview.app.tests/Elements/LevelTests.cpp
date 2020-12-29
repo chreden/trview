@@ -12,50 +12,50 @@ namespace
     class MockShaderStorage : public IShaderStorage
     {
     public:
-        MOCK_METHOD2(add, void(const std::string&, std::unique_ptr<IShader>));
-        MOCK_CONST_METHOD1(get, IShader*(const std::string&));
+        MOCK_METHOD(void, add, (const std::string&, std::unique_ptr<IShader>), (override));
+        MOCK_METHOD(IShader*, get, (const std::string&), (const, override));
     };
 
     class MockLevel : public ILevel
     {
     public:
-        MOCK_CONST_METHOD1(get_palette_entry8, tr_colour(uint32_t));
-        MOCK_CONST_METHOD1(get_palette_entry_16, tr_colour4(uint32_t));
-        MOCK_CONST_METHOD1(get_palette_entry, tr_colour4(uint32_t));
-        MOCK_CONST_METHOD2(get_palette_entry, tr_colour4(uint32_t, uint32_t));
-        MOCK_CONST_METHOD0(num_textiles, uint32_t());
-        MOCK_CONST_METHOD1(get_textile8, tr_textile8(uint32_t));
-        MOCK_CONST_METHOD1(get_textile16, tr_textile16(uint32_t));
-        MOCK_CONST_METHOD1(get_textile, std::vector<uint32_t>(uint32_t));
-        MOCK_CONST_METHOD0(num_rooms, uint32_t());
-        MOCK_CONST_METHOD1(get_room, tr3_room(uint32_t));
-        MOCK_CONST_METHOD0(num_object_textures, uint32_t());
-        MOCK_CONST_METHOD1(get_object_texture, tr_object_texture(uint32_t));
-        MOCK_CONST_METHOD0(num_floor_data, uint32_t());
-        MOCK_CONST_METHOD1(get_floor_data, uint16_t(uint32_t));
-        MOCK_CONST_METHOD0(get_floor_data_all, std::vector<uint16_t>());
-        MOCK_CONST_METHOD0(num_entities, uint32_t());
-        MOCK_CONST_METHOD1(get_entity, tr2_entity(uint32_t));
-        MOCK_CONST_METHOD0(num_models, uint32_t());
-        MOCK_CONST_METHOD1(get_model, tr_model(uint32_t));
-        MOCK_CONST_METHOD2(get_model_by_id, bool(uint32_t, tr_model&));
-        MOCK_CONST_METHOD0(num_static_meshes, uint32_t());
-        MOCK_CONST_METHOD1(get_static_mesh, tr_staticmesh(uint32_t));
-        MOCK_CONST_METHOD0(num_mesh_pointers, uint32_t());
-        MOCK_CONST_METHOD1(get_mesh_by_pointer, tr_mesh(uint32_t));
-        MOCK_CONST_METHOD2(get_meshtree, std::vector<tr_meshtree_node>(uint32_t, uint32_t));
-        MOCK_CONST_METHOD2(get_frame, tr2_frame(uint32_t, uint32_t));
-        MOCK_CONST_METHOD0(get_version, LevelVersion());
-        MOCK_CONST_METHOD2(get_sprite_sequence_by_id, bool(int32_t, tr_sprite_sequence&));
-        MOCK_CONST_METHOD1(get_sprite_texture, tr_sprite_texture(uint32_t));
-        MOCK_CONST_METHOD2(find_first_entity_by_type, bool(int16_t, tr2_entity&));
-        MOCK_CONST_METHOD1(get_mesh_from_type_id, int16_t(int16_t));
+        MOCK_METHOD(tr_colour, get_palette_entry8, (uint32_t), (const, override));
+        MOCK_METHOD(tr_colour4, get_palette_entry_16, (uint32_t), (const, override));
+        MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t), (const, override));
+        MOCK_METHOD(tr_colour4, get_palette_entry, (uint32_t, uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_textiles, (), (const, override));
+        MOCK_METHOD(tr_textile8, get_textile8, (uint32_t), (const, override));
+        MOCK_METHOD(tr_textile16, get_textile16, (uint32_t), (const, override));
+        MOCK_METHOD(std::vector<uint32_t>, get_textile, (uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_rooms, (), (const, override));
+        MOCK_METHOD(tr3_room, get_room, (uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_object_textures, (), (const, override));
+        MOCK_METHOD(tr_object_texture, get_object_texture, (uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_floor_data, (), (const, override));
+        MOCK_METHOD(uint16_t, get_floor_data, (uint32_t), (const, override));
+        MOCK_METHOD(std::vector<uint16_t>, get_floor_data_all, (), (const, override));
+        MOCK_METHOD(uint32_t, num_entities, (), (const, override));
+        MOCK_METHOD(tr2_entity, get_entity, (uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_models, (), (const, override));
+        MOCK_METHOD(tr_model, get_model, (uint32_t), (const, override));
+        MOCK_METHOD(bool, get_model_by_id, (uint32_t, tr_model&), (const, override));
+        MOCK_METHOD(uint32_t, num_static_meshes, (), (const, override));
+        MOCK_METHOD(tr_staticmesh, get_static_mesh, (uint32_t), (const, override));
+        MOCK_METHOD(uint32_t, num_mesh_pointers, (), (const, override));
+        MOCK_METHOD(tr_mesh, get_mesh_by_pointer, (uint32_t), (const, override));
+        MOCK_METHOD(std::vector<tr_meshtree_node>, get_meshtree, (uint32_t, uint32_t), (const, override));
+        MOCK_METHOD(tr2_frame, get_frame, (uint32_t, uint32_t), (const, override));
+        MOCK_METHOD(LevelVersion, get_version, (), (const, override));
+        MOCK_METHOD(bool, get_sprite_sequence_by_id, (int32_t, tr_sprite_sequence&), (const, override));
+        MOCK_METHOD(tr_sprite_texture, get_sprite_texture, (uint32_t), (const, override));
+        MOCK_METHOD(bool, find_first_entity_by_type, (int16_t, tr2_entity&), (const, override));
+        MOCK_METHOD(int16_t, get_mesh_from_type_id, (int16_t), (const, override));
     };
 
     class MockTypeNameLookup : public ITypeNameLookup
     {
     public:
-        MOCK_CONST_METHOD2(lookup_type_name, std::wstring(LevelVersion, uint32_t));
+        MOCK_METHOD(std::wstring, lookup_type_name, (LevelVersion, uint32_t), (const, override));
     };
 }
 

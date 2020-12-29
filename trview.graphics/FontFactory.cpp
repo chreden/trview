@@ -1,5 +1,6 @@
 #include "FontFactory.h"
 #include "Font.h"
+#include <stdexcept>
 
 using namespace Microsoft::WRL;
 using namespace std::string_literals;
@@ -8,20 +9,12 @@ namespace trview
 {
     namespace graphics
     {
-        FontFactory::FontFactory()
-        {
-        }
-
-        FontFactory::~FontFactory()
-        {
-        }
-
         void FontFactory::store(const std::string& key, const std::shared_ptr<DirectX::SpriteFont>& font)
         {
             _cache.insert({ key, font });
         }
 
-        std::unique_ptr<Font> FontFactory::create_font(const std::string& font_face, int size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment) const
+        std::unique_ptr<IFont> FontFactory::create_font(const std::string& font_face, int size, TextAlignment text_alignment, ParagraphAlignment paragraph_alignment) const
         {
             // Look for the font in the cache....
             const auto key = font_face + std::to_string(size);

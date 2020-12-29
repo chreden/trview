@@ -96,6 +96,8 @@ namespace trview
         void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();
+        void set_item_visibility(const Item& item, bool visible);
+        void set_trigger_visibility(Trigger* trigger, bool visible);
         void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;

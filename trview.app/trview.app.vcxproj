@@ -173,8 +173,14 @@
     <ProjectReference Include="..\trview.common\trview.common.vcxproj">
       <Project>{d0633291-23a6-4b3f-9a5e-e94d20f66a07}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\trview.input\trview.input.vcxproj">
+      <Project>{0b28c3cd-d28a-4923-9577-50eb1ee29212}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\trview.lau\trview.lau.vcxproj">
       <Project>{2ac76373-f9a6-426d-b732-80e6bd6bfab4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\trview.ui.render\trview.ui.render.vcxproj">
+      <Project>{0c5a9791-6cf1-42e9-9776-ac47eeff8ec8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>

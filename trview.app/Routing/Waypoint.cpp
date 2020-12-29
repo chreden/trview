@@ -90,6 +90,16 @@ namespace trview
         _save_data = data;
     }
 
+    bool Waypoint::visible() const
+    {
+        return _visible;
+    }
+
+    void Waypoint::set_visible(bool value)
+    {
+        _visible = value;
+    }
+
     Waypoint::Type waypoint_type_from_string(const std::string& value)
     {
         if (value == "Trigger")

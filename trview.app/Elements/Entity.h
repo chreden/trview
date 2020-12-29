@@ -38,6 +38,9 @@ namespace trview
 
         PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
         DirectX::BoundingBox bounding_box() const;
+
+        virtual bool visible() const override;
+        virtual void set_visible(bool value) override;
     private:
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
@@ -58,5 +61,6 @@ namespace trview
 
         DirectX::BoundingBox                      _bounding_box;
         std::vector<DirectX::BoundingOrientedBox> _oriented_boxes;
+        bool                                      _visible{ true };
     };
 }

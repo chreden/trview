@@ -93,7 +93,9 @@ namespace trview
         _context_menu->on_add_waypoint += on_add_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
         _context_menu->on_orbit_here += on_orbit;
+        _context_menu->on_hide += on_hide;
         _context_menu->set_remove_enabled(false);
+        _context_menu->set_hide_enabled(false);
 
         _level_info = std::make_unique<LevelInfo>(*_control.get(), texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
@@ -312,6 +314,11 @@ namespace trview
     void ViewerUI::set_flip_enabled(bool value)
     {
         _view_options->set_flip_enabled(value);
+    }
+
+    void ViewerUI::set_hide_enabled(bool value)
+    {
+        _context_menu->set_hide_enabled(value);
     }
 
     void ViewerUI::set_highlight(bool value)

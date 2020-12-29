@@ -18,7 +18,7 @@
 #include <trview.graphics/RenderTarget.h>
 #include <trview.common/Event.h>
 #include <trview.graphics/FontFactory.h>
-#include <trview.graphics/Font.h>
+#include <trview.graphics/IFont.h>
 
 namespace trview
 {
@@ -133,7 +133,7 @@ namespace trview
                 const float                         _DRAW_SCALE = 17.0f; 
 
                 std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
-                std::unique_ptr<graphics::Font> _font;
+                std::unique_ptr<graphics::IFont> _font;
                 std::shared_ptr<Sector> _previous_sector;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
             };

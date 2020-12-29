@@ -27,7 +27,8 @@ namespace trview
         {
             return { {{ L"#", std::to_wstring(item.number()) },
                      { L"Room", std::to_wstring(item.room()) },
-                     { L"Type", trigger_type_name(item.type()) }} };
+                     { L"Type", trigger_type_name(item.type()) },
+                     { L"Hide", std::to_wstring(!item.visible()) }}};
         }
 
         ui::Listbox::Item create_listbox_item_pointer(const Trigger* const item)
@@ -36,10 +37,18 @@ namespace trview
         }
     }
 
+    const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
+    const std::string TriggersWindow::Names::filter_dropdown{ "FilterDropdown" };
+    const std::string TriggersWindow::Names::stats_listbox{ "StatsListbox" };
+    const std::string TriggersWindow::Names::sync_trigger_checkbox{ "SyncTriggers" };
+    const std::string TriggersWindow::Names::track_room_checkbox{ "TrackRoom" };
+    const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
+
     using namespace graphics;
 
-    TriggersWindow::TriggersWindow(Device& device, const IShaderStorage& shader_storage, const FontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(470, 400))
+    TriggersWindow::TriggersWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent)
+        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(520, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
     }
@@ -48,46 +57,43 @@ namespace trview
     {
         using namespace ui;
 
-        auto left_panel = std::make_unique<ui::StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
         left_panel->set_margin(Size(0, 3));
 
         // Control modes:.
-        auto controls_box = std::make_unique<StackPanel>(Size(200, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto controls_box = left_panel->add_child(std::make_unique<StackPanel>(Size(250, 50), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Vertical, SizeMode::Manual));
         controls_box->set_margin(Size(2, 2));
-        auto controls = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        controls->set_margin(Size(2, 2));
-        auto track_room = std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room");
-        _token_store += track_room->on_state_changed += [this](bool value)
-        {
-            set_track_room(value);
-        };
-
-        _track_room_checkbox = controls->add_child(std::move(track_room));
+        _controls = controls_box->add_child(std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual));
+        _controls->set_margin(Size(2, 2));
+        _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
+        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
 
         // Spacing between checkboxes.
-        controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
+        _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
 
-        auto sync_trigger = std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger");
+        auto sync_trigger = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger"));
+        sync_trigger->set_name(Names::sync_trigger_checkbox);
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
-        controls->add_child(std::move(sync_trigger));
 
         // Space out the button
-        controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
+        _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
 
         // Add the expander button at this point.
-        add_expander(*controls);
+        add_expander(*_controls);
 
         // Command filter:
-        auto controls_row2 = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
+        auto controls_row2 = controls_box->add_child(std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 0), StackPanel::Direction::Horizontal, SizeMode::Manual));
         controls_row2->set_margin(Size(2, 0));
 
-        auto command_filter = std::make_unique<Dropdown>(Size(186, 20));
+        _command_filter = controls_row2->add_child(std::make_unique<Dropdown>(Size(236, 20)));
+        _command_filter->set_name(Names::filter_dropdown);
         std::vector<std::wstring> default_commands { L"All", L"Flipmaps" };
-        command_filter->set_values(default_commands);
-        command_filter->set_dropdown_scope(_ui.get());
-        command_filter->set_selected_value(L"All");
-        _token_store += command_filter->on_value_selected += [&](const auto& value) 
+        _command_filter->set_values(default_commands);
+        _command_filter->set_dropdown_scope(_ui.get());
+        _command_filter->set_selected_value(L"All");
+        _token_store += _command_filter->on_value_selected += [&](const auto& value) 
         {
             _selected_commands.clear();
             if (value == L"Flipmaps")
@@ -103,22 +109,19 @@ namespace trview
             apply_filters();
         };
 
-        _command_filter = controls_row2->add_child(std::move(command_filter));
-
-        _controls = controls_box->add_child(std::move(controls));
         auto controls_box_bottom = controls_box->size().height;
-        controls_box->add_child(std::move(controls_row2));
-        left_panel->add_child(std::move(controls_box));
 
-        auto triggers_list = std::make_unique<Listbox>(Size(200, window().size().height - controls_box_bottom), Colours::LeftPanel);
-        triggers_list->set_columns(
+        _triggers_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - controls_box_bottom), Colours::LeftPanel));
+        _triggers_list->set_name(Names::triggers_listbox);
+        _triggers_list->set_columns(
             {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::Type::String, L"Type", 130 }
+                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 130 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
             }
         );
-        _token_store += triggers_list->on_item_selected += [&](const auto& item)
+        _token_store += _triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
             load_trigger_details(*_all_triggers[index]);
@@ -127,12 +130,17 @@ namespace trview
                 on_trigger_selected(_all_triggers[index]);
             }
         };
-
-        _triggers_list = triggers_list.get();
-        left_panel->add_child(std::move(triggers_list));
+        _token_store += _triggers_list->on_state_changed += [&](const auto item, const std::wstring& column, bool state)
+        {
+            if (column == L"Hide")
+            {
+                auto index = std::stoi(item.value(L"#"));
+                on_trigger_visibility(_all_triggers[index], !state);
+            }
+        };
 
         // Fix items list size now that it has been added to the panel.
-        _triggers_list->set_size(Size(200, left_panel->size().height - _triggers_list->position().y));
+        _triggers_list->set_size(Size(250, left_panel->size().height - _triggers_list->position().y));
 
         return left_panel;
     }
@@ -142,30 +150,30 @@ namespace trview
         using namespace ui;
         const float panel_width = 270;
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details");
-
-        auto details_panel = std::make_unique<StackPanel>(Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual);
+        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 8), Colours::ItemDetails));
+        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details"));
+        auto details_panel = group_box->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 160), Colours::ItemDetails, Size(0, 16), StackPanel::Direction::Vertical, SizeMode::Manual));
 
         // Add some information about the selected item.
-        auto stats_list = std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails);
-        stats_list->set_columns(
+        _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails));
+        _stats_list->set_name(Names::stats_listbox);
+        _stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 100 },
                 { Listbox::Column::Type::Number, L"Value", 150 },
             }
         );
-        stats_list->set_show_headers(false);
-        stats_list->set_show_scrollbar(false);
-        stats_list->set_show_highlight(false);
+        _stats_list->set_show_headers(false);
+        _stats_list->set_show_scrollbar(false);
+        _stats_list->set_show_highlight(false);
 
-        _token_store += stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
+        _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             write_clipboard(window(), item.value(L"Value"));
         };
 
-        _stats_list = details_panel->add_child(std::move(stats_list));
-
         auto button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Add to Route"));
+        button->set_name(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
             if (_selected_trigger.has_value())
@@ -174,30 +182,25 @@ namespace trview
             }
         };
 
-        group_box->add_child(std::move(details_panel));
-
-        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 8), Colours::ItemDetails));
-        right_panel->add_child(std::move(group_box));
-
         // Spacer element.
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Triggers));
 
         // Add the trigger details group box.
-        auto command_group_box = std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands");
-
-        auto command_list = std::make_unique<Listbox>(Size(panel_width - 20, 160), Colours::Triggers);
-        command_list->set_columns(
+        auto command_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands"));
+        _command_list = command_group_box->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 160), Colours::Triggers));
+        _command_list->set_name(Names::trigger_commands_listbox);
+        _command_list->set_columns(
             {
                 { Listbox::Column::Type::String, L"Type", 80 },
                 { Listbox::Column::Type::String, L"Index", 35 },
                 { Listbox::Column::Type::String, L"Entity", 125 },
             }
         );
-        command_list->set_show_headers(true);
-        command_list->set_show_scrollbar(true);
-        command_list->set_show_highlight(false);
+        _command_list->set_show_headers(true);
+        _command_list->set_show_scrollbar(true);
+        _command_list->set_show_highlight(false);
 
-        _token_store += command_list->on_item_selected += [&](const auto& trigger_item)
+        _token_store += _command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
             auto command = _selected_trigger.value()->commands()[index];
@@ -207,9 +210,6 @@ namespace trview
                 on_item_selected(_all_items[command.index()]);
             }
         };
-
-        _command_list = command_group_box->add_child(std::move(command_list));
-        right_panel->add_child(std::move(command_group_box));
 
         return right_panel;
     }
@@ -233,6 +233,13 @@ namespace trview
         std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
         _command_filter->set_values(all_commands);
         _command_filter->set_selected_value(L"All");
+    }
+
+    void TriggersWindow::update_triggers(const std::vector<Trigger*>& triggers)
+    {
+        _all_triggers = triggers;
+        populate_triggers(triggers);
+        apply_filters();
     }
 
     void TriggersWindow::clear_selected_trigger()
@@ -315,8 +322,8 @@ namespace trview
             }
             else
             {
-                set_triggers(_all_triggers);
                 _filter_applied = false;
+                set_triggers(_all_triggers);
             }
         }
 
@@ -398,5 +405,10 @@ namespace trview
             }
         }
         populate_triggers(filtered_triggers);
+    }
+
+    std::optional<const Trigger*> TriggersWindow::selected_trigger() const
+    {
+        return _selected_trigger;
     }
 }

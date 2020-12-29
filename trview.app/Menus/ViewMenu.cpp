@@ -157,6 +157,11 @@ namespace trview
 
                 return; // Do not set checked
             }
+            case ID_APP_VIEW_UNHIDE_ALL:
+            {
+                on_unhide_all();
+                return;
+            }
             default:
             {
                 return;

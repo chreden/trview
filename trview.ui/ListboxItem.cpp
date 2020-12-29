@@ -33,10 +33,5 @@ namespace trview
         {
             return _background;
         }
-
-        bool Listbox::Item::operator == (const Item& other) const
-        {
-            return _values == other._values;
-        }
     }
 }

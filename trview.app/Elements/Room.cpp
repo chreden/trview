@@ -100,6 +100,11 @@ namespace trview
             // Pick against the entity geometry:
             for (const auto& entity : _entities)
             {
+                if (!entity->visible())
+                {
+                    continue;
+                }
+
                 auto entity_result = entity->pick(position, direction);
                 if (entity_result.hit)
                 {
@@ -112,6 +117,11 @@ namespace trview
         {
             for (const auto& trigger : _triggers)
             {
+                if (!trigger.second->visible())
+                {
+                    continue;
+                }
+
                 auto trigger_result = trigger.second->pick(position, direction);
                 if (trigger_result.hit)
                 {
@@ -304,6 +314,11 @@ namespace trview
         {
             for (const auto& trigger : _triggers)
             {
+                if (!trigger.second->visible())
+                {
+                    continue;
+                }
+
                 for (const auto& triangle : trigger.second->triangles())
                 {
                     transparency.add(triangle);

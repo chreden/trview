@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    TriggersWindowManager::TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
+    TriggersWindowManager::TriggersWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
         _token_store += shortcuts.add_shortcut(true, 'T') += [&]() { create_window(); };
@@ -35,11 +35,12 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::create_window()
+    TriggersWindow* TriggersWindowManager::create_window()
     {
         auto triggers_window = std::make_unique<TriggersWindow>(_device, _shader_storage, _font_factory, window());
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
+        triggers_window->on_trigger_visibility += on_trigger_visibility;
         triggers_window->on_add_to_route += on_add_to_route;
         triggers_window->set_items(_items);
         triggers_window->set_triggers(_triggers);
@@ -56,6 +57,7 @@ namespace trview
         };
 
         _windows.push_back(std::move(triggers_window));
+        return window;
     }
 
     void TriggersWindowManager::set_items(const std::vector<Item>& items)
@@ -74,6 +76,20 @@ namespace trview
         {
             window->clear_selected_trigger();
             window->set_triggers(triggers);
+        }
+    }
+
+    void TriggersWindowManager::set_trigger_visible(Trigger* trigger, bool visible)
+    {
+        auto found = std::find(_triggers.begin(), _triggers.end(), trigger);
+        if (found == _triggers.end())
+        {
+            return;
+        }
+        trigger->set_visible(visible);
+        for (auto& window : _windows)
+        {
+            window->update_triggers(_triggers);
         }
     }
 
