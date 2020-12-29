@@ -5,6 +5,7 @@
 #include <trview.graphics/mocks/IFontFactory.h>
 #include <trview.graphics/mocks/IFont.h>
 #include <trview.app/Elements/Types.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -170,7 +171,38 @@ TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
 
 TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"TriggersWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
+    manager.set_triggers({ trigger1.get(), trigger2.get() });
+    ASSERT_EQ(list->items().size(), 2);
+
+    auto track = created_window->root_control()->find<ui::Checkbox>(TriggersWindow::Names::track_room_checkbox);
+    ASSERT_NE(track, nullptr);
+    track->clicked(Point());
+
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"0");
+
+    manager.set_room(1);
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"#"), L"1");
 }
 
 TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
