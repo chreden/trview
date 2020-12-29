@@ -73,6 +73,8 @@ namespace trview
         void set_selected_trigger(const Trigger* const item);
 
         void set_items(const std::vector<Item>& items);
+
+        std::optional<const Trigger*> selected_trigger() const;
     protected:
         virtual void update_layout() override;
     private:

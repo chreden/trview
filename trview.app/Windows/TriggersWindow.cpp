@@ -406,4 +406,9 @@ namespace trview
         }
         populate_triggers(filtered_triggers);
     }
+
+    std::optional<const Trigger*> TriggersWindow::selected_trigger() const
+    {
+        return _selected_trigger;
+    }
 }

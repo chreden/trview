@@ -29,7 +29,26 @@ TEST(TriggersWindowManager, CreateTriggersWindowKeyboardShortcut)
 
 TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"TriggersWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    manager.set_triggers({ trigger1.get(), trigger2.get() });
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_EQ(list->items().size(), 2);
 }
 
 TEST(TriggersWindowManager, ItemSelectedEventRaised)
@@ -135,7 +154,40 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
 
 TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"TriggersWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+    };
+    manager.set_items(items);
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 0 }} });
+    manager.set_triggers({ trigger1.get() });
+
+    manager.set_selected_trigger(trigger1.get());
+
+    auto commands_list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
+    ASSERT_NE(commands_list, nullptr);
+
+    auto command_items = commands_list->items();
+    ASSERT_NE(command_items.size(), 0);
+    ASSERT_EQ(command_items[0].value(L"Index"), L"0");
+    ASSERT_EQ(command_items[0].value(L"Entity"), L"Test Object");
 }
 
 TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
@@ -166,7 +218,31 @@ TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
 
 TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"TriggersWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+
+    auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    manager.set_triggers({ trigger1.get() });
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
+
+    trigger1->set_visible(false);
+    manager.set_trigger_visible(trigger1.get(), false);
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"1");
 }
 
 TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
@@ -207,5 +283,25 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
 
 TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    auto test_window = create_test_window(L"TriggersWindowManagerTests");
+    Shortcuts shortcuts(test_window);
+    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
+    manager.set_triggers({ trigger1.get(), trigger2.get() });
+
+    auto created_window = manager.create_window();
+    ASSERT_NE(created_window, nullptr);
+    ASSERT_FALSE(created_window->selected_trigger().has_value());
+
+    manager.set_selected_trigger(trigger2.get());
+    ASSERT_TRUE(created_window->selected_trigger().has_value());
+    ASSERT_EQ(created_window->selected_trigger().value()->number(), 1);
 }
