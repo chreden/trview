@@ -130,7 +130,7 @@ namespace trview
             const bool was_visible = selected_item.visible();
             selected_item.set_visible(true);
             selected_item.render(device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
-            
+
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));

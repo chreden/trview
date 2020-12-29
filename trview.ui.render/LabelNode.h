@@ -7,8 +7,8 @@ namespace trview
 {
     namespace graphics
     {
-        class IFont;
-        class IFontFactory;
+        struct IFont;
+        struct IFontFactory;
     }
 
     namespace ui
