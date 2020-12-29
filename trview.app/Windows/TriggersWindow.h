@@ -24,7 +24,9 @@ namespace trview
         {
             static const std::string add_to_route_button;
             static const std::string filter_dropdown;
+            static const std::string stats_listbox;
             static const std::string sync_trigger_checkbox;
+            static const std::string track_room_checkbox;
             static const std::string triggers_listbox;
             static const std::string trigger_commands_listbox;
         };

@@ -39,7 +39,9 @@ namespace trview
 
     const std::string TriggersWindow::Names::add_to_route_button{ "AddToRoute" };
     const std::string TriggersWindow::Names::filter_dropdown{ "FilterDropdown" };
+    const std::string TriggersWindow::Names::stats_listbox{ "StatsListbox" };
     const std::string TriggersWindow::Names::sync_trigger_checkbox{ "SyncTriggers" };
+    const std::string TriggersWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
     const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
 
@@ -64,10 +66,8 @@ namespace trview
         _controls = controls_box->add_child(std::make_unique<StackPanel>(Size(250, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual));
         _controls->set_margin(Size(2, 2));
         _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
-        _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
-        {
-            set_track_room(value);
-        };
+        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
 
         // Spacing between checkboxes.
         _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
@@ -156,6 +156,7 @@ namespace trview
 
         // Add some information about the selected item.
         _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails));
+        _stats_list->set_name(Names::stats_listbox);
         _stats_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"Name", 100 },

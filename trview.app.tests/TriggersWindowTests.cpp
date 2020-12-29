@@ -80,14 +80,72 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
     ASSERT_FALSE(raised_trigger.has_value());
 }
 
-TEST(TriggersWindow, TriggersListNotFilteredWhenTrackRoomDisabled)
+TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{});
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+    window.set_current_room(78);
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(raised_trigger.value()->number(), 0);
 }
 
-TEST(TriggersWindow, TriggersListFilteredWhenTrackRoomEnabled)
+TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{});
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+    window.set_current_room(78);
+
+    auto track = window.root_control()->find<ui::Checkbox>(TriggersWindow::Names::track_room_checkbox);
+    ASSERT_NE(track, nullptr);
+    track->clicked(Point());
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(raised_trigger.value()->number(), 1);
 }
 
 TEST(TriggersWindow, TriggersListFilteredByCommand)
@@ -235,20 +293,158 @@ TEST(TriggersWindow, ItemSelectedRaised)
 
 TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } });
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } });
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(raised_trigger.value()->number(), 1);
+
+    auto stats_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
+    ASSERT_NE(stats_list, nullptr);
+
+    auto stats_items = stats_list->items();
+    ASSERT_NE(stats_items.size(), 0);
+
+    auto commands_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
+    ASSERT_NE(commands_list, nullptr);
+
+    auto commands_items = commands_list->items();
+    ASSERT_NE(commands_items.size(), 0);
+
+    window.clear_selected_trigger();
+
+    stats_items = stats_list->items();
+    ASSERT_EQ(stats_items.size(), 0);
+
+    commands_items = commands_list->items();
+    ASSERT_EQ(commands_items.size(), 0);
 }
 
 TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } });
+    window.set_triggers({ trigger1.get() });
+
+    auto stats_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
+    ASSERT_NE(stats_list, nullptr);
+    ASSERT_EQ(stats_list->items().size(), 0);
+
+    window.set_selected_trigger(trigger1.get());
+    ASSERT_NE(stats_list->items().size(), 0);
 }
 
 TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{});
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{});
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+    window.set_current_room(78);
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    auto track = window.root_control()->find<ui::Checkbox>(TriggersWindow::Names::track_room_checkbox);
+    ASSERT_NE(track, nullptr);
+    track->clicked(Point());
+
+    auto now_selected = list->selected_item();
+    ASSERT_TRUE(now_selected.has_value());
+    ASSERT_EQ(now_selected.value().value(L"#"), L"1");
 }
 
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
-    FAIL();
+    mocks::MockFontFactory font_factory;
+    EXPECT_CALL(font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+
+    Device device;
+    ShaderStorage shader_storage;
+    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOff, 0 } } });
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOn, 0 } } });
+    auto trigger3 = std::make_unique<Trigger>(2, 78, 100, 200, TriggerInfo{ 0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipMap, 0 } } });
+    auto trigger4 = std::make_unique<Trigger>(3, 78, 100, 200, TriggerInfo{ 0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::Object, 0 } } });
+    window.set_triggers({ trigger1.get(), trigger2.get(), trigger3.get(), trigger4.get() });
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto get_numbers = [&list]()
+    {
+        std::vector<uint32_t> numbers;
+        for (const auto& item : list->items()) { numbers.push_back(std::stoi(item.value(L"#"))); }
+        return numbers;
+    };
+
+    using ::testing::ElementsAre;
+    ASSERT_THAT(get_numbers(), ElementsAre(0, 1, 2, 3));
+
+    auto dropdown = window.root_control()->find<ui::Dropdown>(TriggersWindow::Names::filter_dropdown);
+    ASSERT_NE(dropdown, nullptr);
+
+    auto dropdown_button = dropdown->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
+    ASSERT_NE(dropdown_button, nullptr);
+    dropdown_button->clicked(Point());
+
+    auto dropdown_list = dropdown->dropdown_listbox();
+    ASSERT_NE(dropdown_list, nullptr);
+
+    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_THAT(get_numbers(), ElementsAre(0, 1, 2));
 }
