@@ -182,6 +182,11 @@ namespace trview
         }
     }
 
+    void Route::set_level_signature()
+    {
+
+    }
+
     const Waypoint& Route::waypoint(uint32_t index) const
     {
         if (index < _waypoints.size())

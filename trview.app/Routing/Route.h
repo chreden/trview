@@ -92,6 +92,9 @@ namespace trview
         /// @param colour The colour to use.
         void set_colour(const Colour& colour);
 
+        /// Set the level signature based on contents of the level.
+        void set_level_signature();
+
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
         const Waypoint& waypoint(uint32_t index) const;
