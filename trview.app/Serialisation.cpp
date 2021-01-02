@@ -1,4 +1,7 @@
 #include "Serialisation.h"
+#include "Routing/LevelSignature.h"
+#include "Routing/Waypoint.h"
+#include "Routing/Route.h"
 #include <trview.common/Strings.h>
 
 namespace trview
@@ -40,5 +43,15 @@ namespace trview
         {
             json["save"] = to_base64(waypoint.save_file());
         }
+    }
+
+    void to_json(nlohmann::json& json, const Route& route)
+    {
+        json = nlohmann::json
+        {
+            { "colour", to_utf8(route.colour().name()) },
+            { "waypoints", route.waypoints() },
+            { "signature", route.level_signature() }
+        };
     }
 }

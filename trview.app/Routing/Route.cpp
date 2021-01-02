@@ -27,22 +27,6 @@ namespace trview
             }
             return data;
         }
-
-        std::string to_base64(const std::vector<uint8_t>& bytes)
-        {
-            if (bytes.empty())
-            {
-                return std::string();
-            }
-
-            DWORD required_length = 0;
-            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, nullptr, &required_length);
-
-            std::vector<wchar_t> output_string(required_length);
-            CryptBinaryToString(&bytes[0], static_cast<DWORD>(bytes.size()), CRYPT_STRING_BASE64 | CRYPT_STRING_NOCRLF, &output_string[0], &required_length);
-
-            return to_utf8(std::wstring(&output_string[0]));
-        }
     }
 
     Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
@@ -299,13 +283,7 @@ namespace trview
     {
         try
         {
-            nlohmann::json json
-            {
-                { "colour", to_utf8(route.colour().name()) },
-                { "waypoints", route.waypoints() },
-                { "signature", route.level_signature() }
-            };
-
+            nlohmann::json json = route;
             std::ofstream file(to_utf16(filename));
             file << json;
         }

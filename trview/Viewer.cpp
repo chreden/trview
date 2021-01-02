@@ -228,6 +228,11 @@ namespace trview
             auto route = import_route(_device, *_shader_storage, path);
             if (route)
             {
+                if (_level)
+                {
+                    route->set_level_signature(*_level);
+                }
+
                 _route = std::move(route);
                 _route_window_manager->set_route(_route.get());
                 _scene_changed = true;
