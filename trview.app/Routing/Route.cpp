@@ -98,6 +98,11 @@ namespace trview
         return index;
     }
 
+    LevelSignature Route::level_signature() const
+    {
+        return _level_signature;
+    }
+
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
     {
         PickResult result;
@@ -182,9 +187,19 @@ namespace trview
         }
     }
 
-    void Route::set_level_signature()
+    void Route::set_level_signature(const Level& level)
     {
+        using namespace trlevel;
 
+        LevelSignature signature;
+        signature.version = level.version();
+
+        for (const auto& item : level.items())
+        {
+            signature.item_ids.push_back(item.type_id());
+        }
+
+        _level_signature = signature;
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const
@@ -307,6 +322,7 @@ namespace trview
             }
 
             json["waypoints"] = waypoints;
+            json["signature"] = route.level_signature();
 
             std::ofstream file(to_utf16(filename));
             file << json;

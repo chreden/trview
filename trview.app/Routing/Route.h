@@ -5,6 +5,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
+#include <trview.app/Routing/LevelSignature.h>
 #include "Waypoint.h"
 
 namespace trview
@@ -66,6 +67,10 @@ namespace trview
         /// @return The index of the new waypoint.
         uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index);
 
+        /// Get the level signature for the route.
+        /// @return The geneated level signature.
+        LevelSignature level_signature() const;
+
         /// Pick against the waypoints in the route.
         /// @param position The position of the camera.
         /// @param direction The direction of the ray.
@@ -93,7 +98,7 @@ namespace trview
         void set_colour(const Colour& colour);
 
         /// Set the level signature based on contents of the level.
-        void set_level_signature();
+        void set_level_signature(const Level& level);
 
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
@@ -113,6 +118,7 @@ namespace trview
         SelectionRenderer     _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };
+        LevelSignature        _level_signature;
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);

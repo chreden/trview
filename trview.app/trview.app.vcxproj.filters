@@ -197,6 +197,9 @@
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Routing\LevelSignature.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -416,6 +419,9 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Routing\LevelSignature.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
