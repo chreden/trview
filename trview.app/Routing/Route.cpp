@@ -49,6 +49,21 @@ namespace trview
         return _colour;
     }
 
+    void Route::generate_level_signature(const Level& level)
+    {
+        using namespace trlevel;
+
+        LevelSignature signature;
+        signature.version = level.version();
+
+        for (const auto& item : level.items())
+        {
+            signature.item_ids.push_back(item.type_id());
+        }
+
+        _level_signature = signature;
+    }
+
     void Route::clear()
     {
         _waypoints.clear();
@@ -172,19 +187,9 @@ namespace trview
         }
     }
 
-    void Route::set_level_signature(const Level& level)
+    void Route::set_level_signature(const LevelSignature& signature)
     {
-        using namespace trlevel;
-
-        LevelSignature signature;
-        signature.version = level.version();
-
-        for (const auto& item : level.items())
-        {
-            signature.item_ids.push_back(item.type_id());
-        }
-
-        _level_signature = signature;
+        _previous_level_signature = signature;
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const
@@ -270,6 +275,8 @@ namespace trview
                 new_waypoint.set_notes(to_utf16(notes));
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
+
+            route->set_level_signature(json["signature"].get<LevelSignature>());
 
             return route;
         }

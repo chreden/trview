@@ -6,6 +6,7 @@
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
 #include <trview.app/Routing/LevelSignature.h>
+#include <trview.app/Elements/Level.h>
 #include "Waypoint.h"
 
 namespace trview
@@ -38,6 +39,8 @@ namespace trview
 
         /// Get the colour of the route.
         Colour colour() const;
+
+        void generate_level_signature(const Level& level);
 
         /// Insert the new waypoint into the route.
         /// @param position The new waypoint.
@@ -98,7 +101,7 @@ namespace trview
         void set_colour(const Colour& colour);
 
         /// Set the level signature based on contents of the level.
-        void set_level_signature(const Level& level);
+        void set_level_signature(const LevelSignature& signature);
 
         /// Get the waypoint at the specified index.
         /// @param index The index to get.
@@ -123,6 +126,7 @@ namespace trview
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };
         LevelSignature        _level_signature;
+        LevelSignature        _previous_level_signature;
     };
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);

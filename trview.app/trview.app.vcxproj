@@ -57,7 +57,6 @@
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
-    <ClCompile Include="Routing\LevelSignature.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
     <ClCompile Include="Serialisation.cpp" />

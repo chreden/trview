@@ -230,7 +230,7 @@ namespace trview
             {
                 if (_level)
                 {
-                    route->set_level_signature(*_level);
+                    route->generate_level_signature(*_level);
                 }
 
                 _route = std::move(route);
@@ -624,7 +624,7 @@ namespace trview
         _window.set_title("trview - " + name);
         _measure->reset();
         _route->clear();
-        _route->set_level_signature(*_level);
+        _route->generate_level_signature(*_level);
         _route_window_manager->set_route(_route.get());
 
         _recent_orbits.clear();

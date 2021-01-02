@@ -2,13 +2,13 @@
 
 #include <cstdint>
 #include <vector>
-#include <trview.app/Elements/Level.h>
+#include <trlevel/LevelVersion.h>
 
 namespace trview
 {
     struct LevelSignature
     {
         trlevel::LevelVersion version;
-        std::vector<uint32_t> item_ids;  
+        std::vector<uint32_t> item_ids;
     };
 }

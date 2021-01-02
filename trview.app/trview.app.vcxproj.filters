@@ -197,9 +197,6 @@
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Routing\LevelSignature.cpp">
-      <Filter>Routing</Filter>
-    </ClCompile>
     <ClCompile Include="Serialisation.cpp" />
   </ItemGroup>
   <ItemGroup>

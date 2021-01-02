@@ -25,6 +25,21 @@ namespace trview
         }
     }
 
+    void from_json(const nlohmann::json& json, LevelSignature& signature)
+    {
+        signature.version = json.at("version").get<trlevel::LevelVersion>();
+        signature.item_ids = json.at("items").get<std::vector<uint32_t>>();
+    }
+
+    void to_json(nlohmann::json& json, const LevelSignature& signature)
+    {
+        json = nlohmann::json
+        {
+            {"version", signature.version},
+            {"items", signature.item_ids}
+        };
+    }
+
     void to_json(nlohmann::json& json, const Waypoint& waypoint)
     {
         std::stringstream pos_string;
