@@ -831,7 +831,7 @@ namespace trview
 
     void Viewer::select_next_waypoint()
     {
-        if (_route->selected_waypoint() + 1 < _route->waypoints())
+        if (_route->selected_waypoint() + 1 < _route->num_waypoints())
         {
             select_waypoint(_route->selected_waypoint() + 1);
         }
@@ -871,7 +871,7 @@ namespace trview
     {
         _route->remove(index);
         _route_window_manager->set_route(_route.get());
-        if (_route->waypoints() > 0)
+        if (_route->num_waypoints() > 0)
         {
             select_waypoint(_route->selected_waypoint());
         }

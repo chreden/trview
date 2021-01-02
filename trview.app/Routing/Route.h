@@ -109,7 +109,11 @@ namespace trview
         Waypoint& waypoint(uint32_t index);
 
         /// Get the number of waypoints in the route.
-        uint32_t waypoints() const;
+        uint32_t num_waypoints() const;
+
+        /// Get the waypoints in the route.
+        /// @returns The waypoints.
+        std::vector<Waypoint> waypoints() const;
     private:
         uint32_t next_index() const;
 

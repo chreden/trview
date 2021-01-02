@@ -60,6 +60,7 @@
     <ClCompile Include="Routing\LevelSignature.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
+    <ClCompile Include="Serialisation.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -140,6 +141,7 @@
     <ClInclude Include="Routing\LevelSignature.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
+    <ClInclude Include="Serialisation.h" />
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />

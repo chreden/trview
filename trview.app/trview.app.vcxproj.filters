@@ -200,6 +200,7 @@
     <ClCompile Include="Routing\LevelSignature.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Serialisation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -422,6 +423,7 @@
     <ClInclude Include="Routing\LevelSignature.h">
       <Filter>Routing</Filter>
     </ClInclude>
+    <ClInclude Include="Serialisation.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

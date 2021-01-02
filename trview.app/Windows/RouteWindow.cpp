@@ -47,7 +47,7 @@ namespace trview
         _selected_index = 0u;
 
         std::vector<Listbox::Item> items;
-        for (uint32_t i = 0; i < _route->waypoints(); ++i)
+        for (uint32_t i = 0; i < _route->num_waypoints(); ++i)
         {
             items.push_back(create_listbox_item(i, _route->waypoint(i)));
         }
@@ -199,7 +199,7 @@ namespace trview
         _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
         _token_store += _select_save->on_click += [&]()
         {
-            if (!(_route && _selected_index < _route->waypoints()))
+            if (!(_route && _selected_index < _route->num_waypoints()))
             {
                 return;
             }
@@ -280,7 +280,7 @@ namespace trview
         _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
         _token_store += _clear_save->on_click += [&]()
         {
-            if (!(_route && _selected_index < _route->waypoints()))
+            if (!(_route && _selected_index < _route->num_waypoints()))
             {
                 return;
             }
@@ -296,7 +296,7 @@ namespace trview
         _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
         _token_store += _delete_waypoint->on_click += [&]()
         {
-            if (_route && _selected_index < _route->waypoints())
+            if (_route && _selected_index < _route->num_waypoints())
             {
                 on_waypoint_deleted(_selected_index);
             }
@@ -321,7 +321,7 @@ namespace trview
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
-            if (_route && _selected_index < _route->waypoints())
+            if (_route && _selected_index < _route->num_waypoints())
             {
                 _route->waypoint(_selected_index).set_notes(text);
             }
@@ -361,7 +361,7 @@ namespace trview
 
     void RouteWindow::load_waypoint_details(uint32_t index)
     {
-        if (index >= _route->waypoints())
+        if (index >= _route->num_waypoints())
         {
             _stats->set_items({});
             _notes_area->set_text(L"");
@@ -429,7 +429,7 @@ namespace trview
             return;
         }
 
-        if (index < _route->waypoints())
+        if (index < _route->num_waypoints())
         {
             _waypoints->set_selected_item(create_listbox_item(index, _route->waypoint(index)));
             load_waypoint_details(index);

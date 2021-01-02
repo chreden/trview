@@ -1,4 +1,5 @@
 #include "Route.h"
+#include "Serialisation.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.common/Strings.h>
@@ -220,7 +221,7 @@ namespace trview
         throw std::range_error("Waypoint index out of range");
     }
 
-    uint32_t Route::waypoints() const
+    uint32_t Route::num_waypoints() const
     {
         return _waypoints.size();
     }
@@ -228,6 +229,11 @@ namespace trview
     uint32_t Route::next_index() const
     {
         return _waypoints.empty() ? 0 : _selected_index + 1;
+    }
+
+    std::vector<Waypoint> Route::waypoints() const
+    {
+        return _waypoints;
     }
 
     std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
@@ -276,7 +282,7 @@ namespace trview
 
                 route->add(position, room, type, index);
 
-                auto& new_waypoint = route->waypoint(route->waypoints() - 1);
+                auto& new_waypoint = route->waypoint(route->num_waypoints() - 1);
                 new_waypoint.set_notes(to_utf16(notes));
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
@@ -293,36 +299,12 @@ namespace trview
     {
         try
         {
-            nlohmann::json json;
-
-            json["colour"] = to_utf8(route.colour().name());
-
-            std::vector<nlohmann::json> waypoints;
-
-            for (uint32_t i = 0; i < route.waypoints(); ++i)
+            nlohmann::json json
             {
-                const Waypoint& waypoint = route.waypoint(i);
-                nlohmann::json waypoint_json;
-                waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
-
-                std::stringstream pos_string;
-                auto pos = waypoint.position();
-                pos_string << pos.x << "," << pos.y << "," << pos.z;
-                waypoint_json["position"] = pos_string.str();
-                waypoint_json["room"] = waypoint.room();
-                waypoint_json["index"] = waypoint.index();
-                waypoint_json["notes"] = to_utf8(waypoint.notes());
-
-                if (waypoint.has_save())
-                {
-                    waypoint_json["save"] = to_base64(waypoint.save_file());
-                }
-
-                waypoints.push_back(waypoint_json);
-            }
-
-            json["waypoints"] = waypoints;
-            json["signature"] = route.level_signature();
+                { "colour", to_utf8(route.colour().name()) },
+                { "waypoints", route.waypoints() },
+                { "signature", route.level_signature() }
+            };
 
             std::ofstream file(to_utf16(filename));
             file << json;
