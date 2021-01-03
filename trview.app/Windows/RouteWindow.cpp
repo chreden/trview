@@ -63,8 +63,7 @@ namespace trview
     std::unique_ptr<Control> RouteWindow::create_left_panel()
     {
         auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
-
-        auto buttons = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
+        auto buttons = left_panel->add_child(std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal));
 
         _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
         _colour->set_text_colour(Colour::Green);
@@ -137,27 +136,21 @@ namespace trview
             // Show status modal.
         };
 
-        auto _buttons = left_panel->add_child(std::move(buttons));
-
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
-        waypoints->set_enable_sorting(false);
-        waypoints->set_columns(
+        _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));
+        _waypoints->set_enable_sorting(false);
+        _waypoints->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::String, L"Type", 160 }
             }
         );
-        _token_store += waypoints->on_item_selected += [&](const auto& item) {
+        _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
             on_waypoint_selected(index);
         };
-        _token_store += waypoints->on_delete += [&]() {
-            on_waypoint_deleted(_selected_index);
-        };
-
-        _waypoints = left_panel->add_child(std::move(waypoints));
+        _token_store += _waypoints->on_delete += [&]() { on_waypoint_deleted(_selected_index); };
         return left_panel;
     }
 
@@ -167,19 +160,18 @@ namespace trview
         auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
         right_panel->set_margin(Size(0, 8));
 
-        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
+        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details"));
+        auto details_panel = group_box->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 140), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual));
 
-        auto details_panel = std::make_unique<StackPanel>(Size(panel_width - 20, 140), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
-
-        auto stats_box = std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails);
-        stats_box->set_show_headers(false);
-        stats_box->set_show_scrollbar(false);
-        stats_box->set_columns(
+        _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
+        _stats->set_show_headers(false);
+        _stats->set_show_scrollbar(false);
+        _stats->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 150 }
             });
-        _token_store += stats_box->on_item_selected += [&](const auto&)
+        _token_store += _stats->on_item_selected += [&](const auto&)
         {
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
@@ -198,7 +190,6 @@ namespace trview
                 break;
             }
         };
-        _stats = details_panel->add_child(std::move(stats_box));
 
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
@@ -312,18 +303,13 @@ namespace trview
         _clear_save->set_visible(false);
         _delete_waypoint->set_visible(false);
 
-        group_box->add_child(std::move(details_panel));
-        right_panel->add_child(std::move(group_box));
-
         // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes");
+        auto notes_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
 
-        auto notes_area = std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
-        _notes_area = notes_box->add_child(std::move(notes_area));
+        _notes_area = notes_box->add_child(std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
         _notes_area->set_scrollbar_visible(true);
 
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        right_panel->add_child(std::move(notes_box));
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
