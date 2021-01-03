@@ -276,7 +276,10 @@ namespace trview
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
 
-            route->set_level_signature(json["signature"].get<LevelSignature>());
+            if (!json["signature"].is_null())
+            {
+                route->set_level_signature(json["signature"].get<LevelSignature>());
+            }
 
             return route;
         }
