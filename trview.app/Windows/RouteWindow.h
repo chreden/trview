@@ -81,5 +81,6 @@ namespace trview
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
+        ui::Window* _modal;
     };
 }

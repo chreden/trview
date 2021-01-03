@@ -95,13 +95,12 @@ namespace trview
         std::unique_ptr<ui::Input> _input;
         std::unique_ptr<graphics::DeviceWindow> _device_window;
         Shortcuts _shortcuts;
+        std::unique_ptr<ui::render::Renderer> _ui_renderer;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();
         void register_change_detection(ui::Control* control);
-
         Window _parent;
-        std::unique_ptr<ui::render::Renderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
         ui::Control* _divider;

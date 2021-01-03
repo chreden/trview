@@ -39,6 +39,10 @@ namespace trview
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
+
+        _modal = _ui->add_child(std::make_unique<ui::Window>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _modal->set_visible(false);
+        _ui_renderer->load(_ui.get());
     }
 
     void RouteWindow::set_route(Route* route) 
@@ -134,6 +138,7 @@ namespace trview
         _token_store += status_button->on_click += [&]()
         {
             // Show status modal.
+            _modal->set_visible(!_modal->visible());
         };
 
         // List box to show the waypoints in the route.
