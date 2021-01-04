@@ -2,6 +2,7 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
+#include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
 
 namespace trview
@@ -39,11 +40,7 @@ namespace trview
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
         set_panels(create_left_panel(), create_right_panel());
-
-        _modal = _ui->add_child(std::make_unique<ui::Modal>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        _modal->set_name("Route Modal");
-        _token_store += _modal->on_click += [&]() { _modal->set_visible(false); };
-        _ui_renderer->load(_ui.get());
+        create_modal();
     }
 
     void RouteWindow::set_route(Route* route) 
@@ -443,5 +440,27 @@ namespace trview
     void RouteWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
+    }
+
+    void RouteWindow::create_modal()
+    {
+        _modal = _ui->add_child(std::make_unique<ui::Modal>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _modal->set_name("Route Modal");
+        _token_store += _modal->on_click += [&]() { _modal->set_visible(false); };
+
+        auto size = Size(400, 300);
+        auto host_size = _modal->size();
+        auto box = _modal->add_child(std::make_unique<ui::StackPanel>(
+            Point(static_cast<int>(host_size.width / 2 - size.width / 2),
+                static_cast<int>(host_size.height / 2 - size.height / 2)),
+            size, Colour::Black, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+
+        box->set_margin(Size(10, 4));
+        box->add_child(std::make_unique<Label>(Size(400, 20), Colour::Transparent, L"Route Compatibility", 8, graphics::TextAlignment::Centre));
+        box->add_child(std::make_unique<Label>(Size(400, 20), Colour::Transparent, L"Game Version Match", 8));
+        box->add_child(std::make_unique<Label>(Size(400, 20), Colour::Transparent, L"Objects Match", 8));
+        box->add_child(std::make_unique<Label>(Size(400, 20), Colour::Transparent, L"Trigger Mismatch :'(", 8));
+
+        _ui_renderer->load(_ui.get());
     }
 }
