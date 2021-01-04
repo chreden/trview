@@ -31,6 +31,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Listbox.h" />
+    <ClInclude Include="Modal.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="Scrollbar.h" />
     <ClInclude Include="SizeDimension.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="ListboxColumn.cpp" />
     <ClCompile Include="ListboxItem.cpp" />
     <ClCompile Include="ListboxRow.cpp" />
+    <ClCompile Include="Modal.cpp" />
     <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Scrollbar.cpp" />
     <ClCompile Include="Slider.cpp" />

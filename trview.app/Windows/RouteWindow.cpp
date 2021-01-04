@@ -3,6 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.ui/Modal.h>
 
 namespace trview
 {
@@ -40,8 +41,8 @@ namespace trview
     {
         set_panels(create_left_panel(), create_right_panel());
 
-        _modal = _ui->add_child(std::make_unique<ui::Window>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        _modal->set_visible(false);
+        _modal = _ui->add_child(std::make_unique<ui::Modal>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _modal->set_name("Route Modal");
         _ui_renderer->load(_ui.get());
     }
 
@@ -135,6 +136,7 @@ namespace trview
             }
         };
         auto status_button = buttons->add_child(std::make_unique<Button>(Size(20, 20), L"?"));
+        status_button->set_name("Status Button");
         _token_store += status_button->on_click += [&]()
         {
             // Show status modal.

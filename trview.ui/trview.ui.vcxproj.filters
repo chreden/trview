@@ -65,6 +65,9 @@
     <ClInclude Include="Grid.h">
       <Filter>Controls\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="Modal.h">
+      <Filter>Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -130,6 +133,9 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Grid.cpp">
       <Filter>Controls\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Modal.cpp">
+      <Filter>Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
