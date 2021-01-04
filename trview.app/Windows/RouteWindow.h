@@ -4,6 +4,7 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/TextArea.h>
 #include <trview.ui/Dropdown.h>
+#include <trview.ui/Modal.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Routing/Waypoint.h>
@@ -81,6 +82,6 @@ namespace trview
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
-        ui::Window* _modal;
+        ui::Modal* _modal;
     };
 }

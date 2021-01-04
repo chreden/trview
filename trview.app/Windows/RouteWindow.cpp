@@ -3,7 +3,6 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
-#include <trview.ui/Modal.h>
 
 namespace trview
 {
@@ -43,6 +42,7 @@ namespace trview
 
         _modal = _ui->add_child(std::make_unique<ui::Modal>(_ui->size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
         _modal->set_name("Route Modal");
+        _token_store += _modal->on_click += [&]() { _modal->set_visible(false); };
         _ui_renderer->load(_ui.get());
     }
 
@@ -137,11 +137,7 @@ namespace trview
         };
         auto status_button = buttons->add_child(std::make_unique<Button>(Size(20, 20), L"?"));
         status_button->set_name("Status Button");
-        _token_store += status_button->on_click += [&]()
-        {
-            // Show status modal.
-            _modal->set_visible(!_modal->visible());
-        };
+        _token_store += status_button->on_click += [&]() { _modal->set_visible(!_modal->visible()); };
 
         // List box to show the waypoints in the route.
         _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));

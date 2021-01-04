@@ -14,6 +14,8 @@ namespace trview
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
             virtual bool clicked(Point position) override;
+
+            Event<> on_click;
         };
     }
 }

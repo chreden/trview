@@ -25,6 +25,7 @@ namespace trview
 
         bool Modal::clicked(Point position)
         {
+            on_click();
             return true;
         }
     }
