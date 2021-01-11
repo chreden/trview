@@ -4,7 +4,6 @@
     <ClCompile Include="src\lapi.c" />
     <ClCompile Include="src\lauxlib.c" />
     <ClCompile Include="src\lbaselib.c" />
-    <ClCompile Include="src\lbitlib.c" />
     <ClCompile Include="src\lcode.c" />
     <ClCompile Include="src\lcorolib.c" />
     <ClCompile Include="src\lctype.c" />
