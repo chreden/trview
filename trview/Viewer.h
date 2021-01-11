@@ -126,6 +126,8 @@ namespace trview
         void register_lua();
         static int lua_open(lua_State* state);
         static int lua_open_recent(lua_State* state);
+        static int lua_index(lua_State* state);
+        static int lua_newindex(lua_State* state);
 
         void apply_acceleration_settings();
 

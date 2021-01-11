@@ -1169,6 +1169,12 @@ namespace trview
         lua_pushcfunction(state, lua_open_recent);
         lua_setfield(state, -2, "openRecent");
 
+        lua_pushcfunction(state, lua_newindex);
+        lua_setfield(state, -2, "__newindex");
+
+        lua_pushcfunction(state, lua_index);
+        lua_setfield(state, -2, "__index");
+
         lua_setmetatable(state, -2);
         lua_setglobal(state, "trview");
     }
@@ -1189,6 +1195,30 @@ namespace trview
         if (index > 0 && index <= settings.recent_files.size())
         {
             viewer->open(*std::next(settings.recent_files.begin(), index - 1));
+        }
+        return 0;
+    }
+
+    int Viewer::lua_index(lua_State* state)
+    {
+        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
+        std::string index = lua_tostring(state, 2);
+        if (index == "show_selection")
+        {
+            lua_pushboolean(state, viewer->_show_selection);
+            return 1;
+        }
+        return 0;
+    }
+
+    int Viewer::lua_newindex(lua_State* state)
+    {
+        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
+        std::string index = lua_tostring(state, 2);
+        if (index == "show_selection")
+        {
+            viewer->_show_selection = lua_toboolean(state, 3);
+            viewer->_scene_changed = true;
         }
         return 0;
     }

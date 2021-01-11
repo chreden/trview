@@ -16,7 +16,15 @@ namespace trview
             int nargs = lua_gettop(L);
             for (int i = 1; i <= nargs; i++) 
             {
-                text += lua_tostring(L, i);
+                if (lua_isboolean(L, i))
+                {
+                    text += lua_toboolean(L, i) ? "true" : "false";
+                }
+                else
+                {
+                    text += lua_tostring(L, i);
+                }
+
                 if (i < nargs)
                 {
                     text += " ";
