@@ -113,7 +113,7 @@ namespace trview
             // Add as many rows as can be seen.
             const float row_height = 20;
             const int32_t total_required_rows = std::min<int32_t>(static_cast<int32_t>(std::ceil(remaining_height / row_height)), static_cast<int32_t>(_items.size()));
-            const int32_t existing_rows = _rows_element->child_elements().size();
+            const int32_t existing_rows = static_cast<int32_t>(_rows_element->child_elements().size());
             const int32_t remaining_rows = total_required_rows - existing_rows;
 
             for (auto i = 0; i < remaining_rows; ++i)
@@ -210,7 +210,7 @@ namespace trview
             return true;
         }
 
-        bool Listbox::key_down(uint16_t key, bool control_pressed, bool shift_pressed)
+        bool Listbox::key_down(uint16_t key, bool, bool)
         {
             if (key == VK_DELETE)
             {
@@ -363,16 +363,15 @@ namespace trview
 
         void Listbox::scroll_to(uint32_t item)
         {
-            // If the item is a partially visible row, move the top of the list down by one (move it into view at 
-            // the bottom).
+            // If the item is a partially visible row, move the top of the list down by one (move it into view at the bottom).
             if (item == _current_top + _fully_visible_rows)
             {
-                _current_top = std::clamp<int32_t>(_current_top + 1, 0, _items.size() - _fully_visible_rows);
+                _current_top = std::clamp<int32_t>(_current_top + 1, 0, static_cast<int32_t>(_items.size()) - static_cast<int32_t>(_fully_visible_rows));
             }
             else
             {
                 // Otherwise, just set the new item to be at the top of the list.
-                _current_top = std::clamp<int32_t>(item, 0, _items.size() - _fully_visible_rows);
+                _current_top = std::clamp<int32_t>(item, 0, static_cast<int32_t>(_items.size()) - static_cast<int32_t>(_fully_visible_rows));
             }
             populate_rows();
         }

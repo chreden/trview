@@ -17,11 +17,13 @@ namespace trview
                 return;
             }
 
-            auto cell = _grid->add_child(std::make_unique<Window>(Size(static_cast<int>(size().width / _columns), static_cast<int>(size().height / _rows)), background_colour()));
+            auto cell = _grid->add_child(std::make_unique<Window>(
+                Size(static_cast<float>(static_cast<int>(size().width / _columns)),
+                     static_cast<float>(static_cast<int>(size().height / _rows))), background_colour()));
 
             // Calculate the coordinates based on cell index.
-            auto y = std::floor(_cells.size() / _columns);
-            auto x = _cells.size() - _columns * y;
+            float y = std::floor(static_cast<float>(_cells.size() / _columns));
+            float x = _cells.size() - _columns * y;
             cell->set_position(Point((size().width / _columns) * x, (size().height / _rows) * y));
 
             _cells.push_back(cell);

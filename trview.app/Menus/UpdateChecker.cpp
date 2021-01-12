@@ -16,7 +16,7 @@ namespace trview
 
         DWORD handle = 0;
         std::vector<uint8_t> data(GetFileVersionInfoSize(filename, &handle), 0);
-        GetFileVersionInfo(filename, 0, data.size(), &data[0]);
+        GetFileVersionInfo(filename, 0, static_cast<uint32_t>(data.size()), &data[0]);
 
         LPBYTE buffer = nullptr;
         uint32_t value_size = 0;

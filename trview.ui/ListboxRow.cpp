@@ -24,7 +24,7 @@ namespace trview
                         checkbox->set_name(Listbox::Row::Names::cell_name_format + to_utf8(column.name()));
 
                         auto size = checkbox->size();
-                        checkbox->set_position(Point(static_cast<int>(column.width() / 2.0f - size.width / 2.0f), 2));
+                        checkbox->set_position(Point(static_cast<float>(static_cast<int>(column.width() / 2.0f - size.width / 2.0f)), 2.0f));
 
                         auto name = column.name();
                         _token_store += checkbox->on_state_changed += [this, name](bool value)

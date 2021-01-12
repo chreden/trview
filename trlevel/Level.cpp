@@ -453,7 +453,7 @@ namespace trlevel
 
     uint32_t Level::num_rooms() const
     {
-        return _rooms.size();
+        return static_cast<uint32_t>(_rooms.size());
     }
 
     tr3_room Level::get_room(uint32_t index) const
@@ -473,7 +473,7 @@ namespace trlevel
 
     uint32_t Level::num_floor_data() const
     {
-        return _floor_data.size();
+        return static_cast<uint32_t>(_floor_data.size());
     }
 
     uint16_t Level::get_floor_data(uint32_t index) const
@@ -532,7 +532,7 @@ namespace trlevel
 
     uint32_t Level::num_mesh_pointers() const
     {
-        return _mesh_pointers.size();
+        return static_cast<uint32_t>(_mesh_pointers.size());
     }
 
     tr_mesh Level::get_mesh_by_pointer(uint32_t mesh_pointer) const
@@ -884,7 +884,8 @@ namespace trlevel
                     entity.x = ai_object.x;
                     entity.y = ai_object.y;
                     entity.z = ai_object.z;
-                    entity.Angle = ai_object.angle;
+                    // Loses some of the angle, but not important at the moment.
+                    entity.Angle = static_cast<int16_t>(ai_object.angle);
                     entity.Intensity1 = 0;
                     entity.Intensity2 = ai_object.ocb;
                     entity.Flags = ai_object.flags;

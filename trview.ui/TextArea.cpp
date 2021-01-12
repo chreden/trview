@@ -24,7 +24,7 @@ namespace trview
             // Create all line labels to fill the area.
             const auto line_height = 14;
             const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
-            for (auto i = 0; i < line_count; ++i)
+            for (auto i = 0u; i < line_count; ++i)
             {
                 _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
             }
@@ -69,7 +69,7 @@ namespace trview
 
                 auto& current_text = _text[_logical_cursor.line];
                 current_text.insert(_logical_cursor.position, text);
-                _logical_cursor.position += text.size();
+                _logical_cursor.position += static_cast<int32_t>(text.size());
                 notify_text_updated();
                 update_structure();
                 return true;
@@ -87,7 +87,7 @@ namespace trview
             {
                 auto& current_text = _text[_logical_cursor.line];
                 current_text.insert(_logical_cursor.position, lines[i]);
-                _logical_cursor.position += lines[i].size();
+                _logical_cursor.position += static_cast<int32_t>(lines[i].size());
                 if (i < lines.size() - 1)
                 {
                     new_line();
@@ -255,7 +255,10 @@ namespace trview
 
             _visual_cursor = logical_to_visual(_logical_cursor);
             update_cursor();
-            _scrollbar->set_range(_scroll_offset, std::min<int32_t>(_scroll_offset + _lines.size(), _line_structure.size()), _line_structure.size());
+            _scrollbar->set_range(
+                static_cast<float>(_scroll_offset), 
+                static_cast<float>(std::min<int32_t>(_scroll_offset + static_cast<int32_t>(_lines.size()), static_cast<int32_t>(_line_structure.size()))), 
+                static_cast<float>(_line_structure.size()));
         }
 
         bool TextArea::key_char(wchar_t character)
@@ -297,7 +300,7 @@ namespace trview
                         else if (_logical_cursor.line > 0)
                         {
                             // Remove a line.
-                            _logical_cursor.position = _text[_logical_cursor.line - 1].size();
+                            _logical_cursor.position = static_cast<int32_t>(_text[_logical_cursor.line - 1].size());
                             _text[_logical_cursor.line - 1] += _text[_logical_cursor.line];
                             _text.erase(_text.begin() + _logical_cursor.line);
                             --_logical_cursor.line;
@@ -416,8 +419,8 @@ namespace trview
                 _text.push_back(line);
             }
 
-            _logical_cursor.line = _text.empty() ? 0 : _text.size() - 1;
-            _logical_cursor.position = _text.empty() ? 0 : _text.back().size();
+            _logical_cursor.line = _text.empty() ? 0 : static_cast<int32_t>(_text.size() - 1);
+            _logical_cursor.position = _text.empty() ? 0 : static_cast<int32_t>(_text.back().size());
             notify_text_updated();
             update_structure();
         }
@@ -528,7 +531,7 @@ namespace trview
                 }
                 previous = current;
             }
-            return text.size();
+            return static_cast<int32_t>(text.size());
         }
 
         bool TextArea::key_down(uint16_t key, bool control_pressed, bool shift_pressed)

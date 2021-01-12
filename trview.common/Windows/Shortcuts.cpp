@@ -49,7 +49,7 @@ namespace trview
         {
             shortcuts.push_back({ shortcut.first.flags, shortcut.first.key, shortcut.first.command });
         }
-        _accelerators = CreateAcceleratorTable(&shortcuts[0], shortcuts.size());
+        _accelerators = CreateAcceleratorTable(&shortcuts[0], static_cast<int>(shortcuts.size()));
     }
 
     void Shortcuts::process_message(UINT message, WPARAM wParam, LPARAM lParam)
