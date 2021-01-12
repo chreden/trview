@@ -118,13 +118,13 @@ TEST(Listbox, ColumnsCreated)
     ASSERT_NE(headers, nullptr);
 
     auto number_header = headers->find<Control>(Listbox::Names::header_name_format + "#");
-    ASSERT_NE(headers, nullptr);
+    ASSERT_NE(number_header, nullptr);
 
     auto name_header = headers->find<Control>(Listbox::Names::header_name_format + "Name");
-    ASSERT_NE(headers, nullptr);
+    ASSERT_NE(name_header, nullptr);
 
     auto value_header = headers->find<Control>(Listbox::Names::header_name_format + "Value");
-    ASSERT_NE(headers, nullptr);
+    ASSERT_NE(value_header, nullptr);
 }
 
 /// Tests that only key identity columns are used for selection comparison.
