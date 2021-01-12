@@ -29,8 +29,6 @@
     <ClCompile Include="src\ltable.c" />
     <ClCompile Include="src\ltablib.c" />
     <ClCompile Include="src\ltm.c" />
-    <ClCompile Include="src\lua.c" />
-    <ClCompile Include="src\luac.c" />
     <ClCompile Include="src\lundump.c" />
     <ClCompile Include="src\lutf8lib.c" />
     <ClCompile Include="src\lvm.c" />
