@@ -202,7 +202,7 @@ namespace trview
 
     uint32_t Route::waypoints() const
     {
-        return _waypoints.size();
+        return static_cast<uint32_t>(_waypoints.size());
     }
 
     uint32_t Route::next_index() const

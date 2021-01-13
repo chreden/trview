@@ -172,7 +172,7 @@ namespace trview
             return false;
         }
 
-        bool Control::cut(std::wstring& output)
+        bool Control::cut(std::wstring&)
         {
             return false;
         }

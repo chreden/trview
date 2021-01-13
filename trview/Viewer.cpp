@@ -424,7 +424,7 @@ namespace trview
             _camera.set_zoom(8.f);
         });
 
-        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool shift)
+        _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
         {
             if (!_ui->is_input_active())
             {

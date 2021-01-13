@@ -93,7 +93,7 @@ namespace trview
 
     uint32_t Level::number_of_rooms() const
     {
-        return _rooms.size();
+        return static_cast<uint32_t>(_rooms.size());
     }
 
     std::vector<Room*> Level::rooms() const
@@ -332,7 +332,7 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Trigger)
                 {
-                    _triggers.emplace_back(std::make_unique<Trigger>(_triggers.size(), i, sector->x(), sector->z(), sector->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
             }

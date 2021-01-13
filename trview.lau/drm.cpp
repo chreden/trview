@@ -41,7 +41,7 @@ namespace trview
             std::vector<std::tuple<uint32_t, uint32_t>> get_links(const Section& section, std::istream& stream)
             {
                 std::vector<std::tuple<uint32_t, uint32_t>> links;
-                for (auto i = 0; i < section.header.preamble / 32 / 8; ++i)
+                for (auto i = 0u; i < section.header.preamble / 32 / 8; ++i)
                 {
                     uint32_t referenced_section = read<uint32_t>(stream) >> 3;
                     uint32_t value = read<uint32_t>(stream);

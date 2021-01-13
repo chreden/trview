@@ -580,7 +580,7 @@ namespace trview
             std::vector<Triangle>& collision_triangles,
             const Color& color)
         {
-            uint32_t base = output_vertices.size();
+            uint32_t base = static_cast<uint32_t>(output_vertices.size());
 
             output_vertices.push_back({ tri[0], Vector3::Down, Vector2::Zero, color });
             output_vertices.push_back({ tri[1], Vector3::Down, Vector2::Zero, color });
