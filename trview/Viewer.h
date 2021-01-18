@@ -124,9 +124,6 @@ namespace trview
         void select_pick(const PickResult& pick);
 
         void register_lua();
-        static int lua_open(lua_State* state);
-        static int lua_open_recent(lua_State* state);
-
         void apply_acceleration_settings();
 
         graphics::Device _device;
@@ -190,7 +187,8 @@ namespace trview
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
-        Lua _lua;
+
+        LuaFunctionRegistry _lua_registry;
     };
 }
 
