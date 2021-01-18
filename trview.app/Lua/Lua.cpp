@@ -73,7 +73,7 @@ namespace trview
 
         int t = luaL_ref ( L, LUA_REGISTRYINDEX );
         callbacks [e] = t;
-
+        return 0;
     }
 
     // Callback for whenever a new frame is rendered in the viewer
