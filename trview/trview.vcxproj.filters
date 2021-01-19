@@ -69,6 +69,9 @@
     <ClCompile Include="DefaultFonts.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="ViewerLuaRegistry.cpp">
+      <Filter>Program</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="trview.rc">
