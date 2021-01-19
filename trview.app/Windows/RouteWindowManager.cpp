@@ -38,6 +38,7 @@ namespace trview
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
         _route_window->set_items(_all_items);
+        _route_window->set_rooms(_all_rooms);
         _route_window->set_triggers(_all_triggers);
         if (_route)
         {
@@ -76,6 +77,15 @@ namespace trview
         if (_route_window)
         {
             _route_window->set_items(items);
+        }
+    }
+
+    void RouteWindowManager::set_rooms(const std::vector<Room*>& rooms)
+    {
+        _all_rooms = rooms;
+        if (_route_window)
+        {
+            _route_window->set_rooms(rooms);
         }
     }
 
