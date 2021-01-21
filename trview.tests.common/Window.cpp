@@ -9,7 +9,7 @@ namespace trview
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
-        Window create_test_window(const std::wstring& name)
+        Window create_test_window(const std::wstring& name, HWND parent)
         {
             HINSTANCE hInstance = GetModuleHandle(nullptr);
 
@@ -28,7 +28,7 @@ namespace trview
             RegisterClassExW(&wcex);
 
             HWND window = CreateWindowW(name.c_str(), name.c_str(), 0,
-                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, HWND_MESSAGE, nullptr, hInstance, nullptr);
+                CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, parent, nullptr, hInstance, nullptr);
             ShowWindow(window, SW_HIDE);
             UpdateWindow(window);
             return window;

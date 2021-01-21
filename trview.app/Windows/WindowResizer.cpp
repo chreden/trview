@@ -3,6 +3,8 @@
 
 namespace trview
 {
+    const int32_t WindowResizer::WM_APP_PARENT_RESTORED = WM_APP + 1;
+
     WindowResizer::WindowResizer(const Window& window)
         : MessageHandler(window), _previous_size(Window(window).size())
     {
@@ -22,12 +24,25 @@ namespace trview
                 if (!_resizing && (wParam == SIZE_MAXIMIZED || wParam == SIZE_RESTORED || has_size_changed()))
                 {
                     on_resize();
+
+                    // Inform owned windows that the window has been restored.
+                    EnumThreadWindows(GetCurrentThreadId(),
+                        [](auto window, auto) -> BOOL 
+                        {
+                            SendMessage(window, WM_APP_PARENT_RESTORED, 0, 0);
+                            return true;
+                        }, 0);
                 }
                 break;
             }
             case WM_EXITSIZEMOVE:
             {
                 _resizing = false;
+                on_resize();
+                break;
+            }
+            case WM_APP_PARENT_RESTORED:
+            {
                 on_resize();
                 break;
             }
