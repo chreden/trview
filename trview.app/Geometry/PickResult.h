@@ -21,6 +21,7 @@ namespace trview
         bool                         hit{ false };
         float                        distance{ FLT_MAX };
         DirectX::SimpleMath::Vector3 position;
+        DirectX::SimpleMath::Vector3 centroid;
         Type                         type{ Type::Room };
         uint32_t                     index{ 0u };
         bool                         stop{ false };

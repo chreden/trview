@@ -65,6 +65,9 @@ namespace trview
         /// Event raised when the add waypoint button is pressed.
         Event<> on_add_waypoint;
 
+        /// Event raised when the add mid waypoint button is pressed.
+        Event<> on_add_mid_waypoint;
+
         /// Event raised when the remove waypoint button is pressed.
         Event<> on_remove_waypoint;
 

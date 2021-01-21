@@ -141,6 +141,12 @@ namespace trview
                 geometry_result.type = PickResult::Type::Room;
                 geometry_result.index = _index;
                 geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+
+                PickResult centroid_hit = _mesh->pick(
+                    Vector3::Transform(Vector3(std::floor(geometry_result.position.x) + 0.5f, -1000, std::floor(geometry_result.position.z) + 0.5f), room_offset),
+                    Vector3(0, 1, 0));
+                geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
+
                 pick_results.push_back(geometry_result);
             }
 

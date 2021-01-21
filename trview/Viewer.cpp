@@ -159,6 +159,27 @@ namespace trview
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
+        _token_store += _ui->on_add_mid_waypoint += [&]()
+        {
+            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
+
+            if (_context_pick.type == PickResult::Type::Room)
+            {
+                _context_pick.position = _context_pick.centroid;
+            }
+            else if (_context_pick.type == PickResult::Type::Entity)
+            {
+                _context_pick.position = _level->items()[_context_pick.index].position();
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                _context_pick.position = _level->triggers()[_context_pick.index]->position();
+            }
+
+            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        };
         _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
         {
