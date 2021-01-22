@@ -29,6 +29,8 @@ namespace trview
 
         /// Event that is raised when the window has resized.
         Event<> on_resize;
+
+        static const int32_t WM_APP_PARENT_RESTORED;
     private:
         bool has_size_changed();
 
