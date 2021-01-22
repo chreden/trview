@@ -40,6 +40,8 @@ namespace trview
         /// @param items The items to show.
         void set_items(const std::vector<Item>& items);
 
+        void set_rooms(const std::vector<Room*>& rooms);
+
         /// Set the triggers in the level.
         /// @param triggers The triggers.
         void set_triggers(const std::vector<Trigger*>& triggers);
@@ -75,6 +77,7 @@ namespace trview
         bool _closing{ false };
         Route* _route{ nullptr };
         std::vector<Item> _all_items;
+        std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
         uint32_t _selected_waypoint{ 0u };
     };

@@ -167,11 +167,11 @@ namespace trview
 
         auto stats_box = std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails);
         stats_box->set_show_headers(false);
-        stats_box->set_show_scrollbar(false);
+        stats_box->set_show_scrollbar(true);
         stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
-                { Listbox::Column::Type::String, L"Value", 150 }
+                { Listbox::Column::Type::String, L"Value", 140 }
             });
         _token_store += stats_box->on_item_selected += [&](const auto&)
         {
@@ -376,9 +376,23 @@ namespace trview
         _delete_waypoint->set_visible(true);
 
         const auto& waypoint = _route->waypoint(index);
+
+        auto get_room_pos = [&waypoint, this]() 
+        {
+            if (waypoint.room() < _all_rooms.size())
+            {
+                const auto info = _all_rooms[waypoint.room()]->info();
+                DirectX::SimpleMath::Vector3 top_left = DirectX::SimpleMath::Vector3(info.x, info.yTop, info.z) / trlevel::Scale_X;
+                return waypoint.position() - top_left;
+            }
+            return waypoint.position();
+        };
+
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
         stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
+        stats.push_back(make_item(L"Room", std::to_wstring(waypoint.room())));
+        stats.push_back(make_item(L"Room Position", pos_to_string(get_room_pos())));
 
         _selected_type = waypoint.type();
         _selected_index = index;
@@ -398,7 +412,7 @@ namespace trview
             else if (waypoint.type() == Waypoint::Type::Trigger)
             {
                 std::wstring type = L"Invalid trigger";
-                if (waypoint.index() < _all_items.size())
+                if (waypoint.index() < _all_triggers.size())
                 {
                     type = trigger_type_name(_all_triggers[waypoint.index()]->type());
                 }
@@ -441,6 +455,11 @@ namespace trview
     void RouteWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+    }
+
+    void RouteWindow::set_rooms(const std::vector<Room*>& rooms)
+    {
+        _all_rooms = rooms;
     }
 
     /// Set the triggers in the level.
