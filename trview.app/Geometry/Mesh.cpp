@@ -204,6 +204,7 @@ namespace trview
             {
                 result.hit = true;
                 result.distance = std::min(distance, result.distance);
+                result.triangle = tri;
             }
         }
 

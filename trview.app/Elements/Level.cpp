@@ -459,6 +459,7 @@ namespace trview
                 final_result.centroid = result.centroid;
                 final_result.index = result.index;
                 final_result.type = result.type;
+                final_result.triangle = result.triangle;
             }
         };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SimpleMath.h>
+#include <trview.app/Geometry/Triangle.h>
 
 namespace trview
 {
@@ -27,6 +28,7 @@ namespace trview
         bool                         stop{ false };
         std::wstring                 text;
         bool                         override_centre{ false };
+        Triangle                     triangle;
     };
 
     /// Convert the pick result to a display string.
