@@ -62,7 +62,7 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
+            uint32_t new_index = _route->insert(item.position(), DirectX::SimpleMath::Vector3(0, -1, 0), item.room(), Waypoint::Type::Entity, item.number());
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -77,7 +77,7 @@ namespace trview
         _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
-            uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
+            uint32_t new_index = _route->insert(trigger->position(), DirectX::SimpleMath::Vector3(0, -1, 0), trigger->room(), Waypoint::Type::Trigger, trigger->number());
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -155,7 +155,7 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
+            uint32_t new_index = _route->insert(_context_pick.position, DirectX::SimpleMath::Vector3(0, -1, 0), room_from_pick(_context_pick), type, _context_pick.index);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -176,7 +176,7 @@ namespace trview
                 _context_pick.position = _level->triggers()[_context_pick.index]->position();
             }
 
-            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
+            uint32_t new_index = _route->insert(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };

@@ -188,6 +188,7 @@ namespace trview
                 ray_direction.Normalize();
                 PickResult centroid_hit = _mesh->pick(centroid - ray_direction, ray_direction);
                 geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
+                geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
 
                 pick_results.push_back(geometry_result);
             }

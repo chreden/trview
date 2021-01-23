@@ -49,14 +49,14 @@ namespace trview
     {
     }
 
-    void Route::add(const Vector3& position, uint32_t room)
+    void Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        add(position, room, Waypoint::Type::Position, 0u);
+        add(position, normal, room, Waypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+        _waypoints.emplace_back(_waypoint_mesh.get(), position, normal, room, type, type_index, _colour);
     }
 
     Colour Route::colour() const
@@ -70,31 +70,31 @@ namespace trview
         _selected_index = 0u;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
     {
         if (index >= _waypoints.size())
         {
-            return add(position, room, Waypoint::Type::Position, 0u);
+            return add(position, normal, room, Waypoint::Type::Position, 0u);
         }
-        insert(position, room, index, Waypoint::Type::Position, 0u);
+        insert(position, normal, room, index, Waypoint::Type::Position, 0u);
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
         uint32_t index = next_index();
-        insert(position, room, index);
+        insert(position, normal, room, index);
         return index;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, normal, room, type, type_index, _colour));
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
         uint32_t index = next_index();
-        insert(position, room, index, type, type_index);
+        insert(position, normal, room, index, type, type_index);
         return index;
     }
 
@@ -146,8 +146,8 @@ namespace trview
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
-                const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
-                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+                const auto current = waypoint.blob_position();
+                const auto next_waypoint = _waypoints[i + 1].blob_position();
                 const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
@@ -254,7 +254,7 @@ namespace trview
                 auto index = waypoint["index"].get<int>();
                 auto notes = waypoint["notes"].get<std::string>();
 
-                route->add(position, room, type, index);
+                route->add(position, Vector3(0, -1, 0), room, type, index);
 
                 auto& new_waypoint = route->waypoint(route->waypoints() - 1);
                 new_waypoint.set_notes(to_utf16(notes));

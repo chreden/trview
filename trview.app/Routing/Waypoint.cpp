@@ -10,13 +10,13 @@ namespace trview
         const float PoleThickness = 0.05f;
     }
 
-    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
-        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u), _room(room)
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
+        : _mesh(mesh), _position(position), _normal(normal), _type(Type::Position), _index(0u), _room(room)
     {
     }
 
-    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
-        : _mesh(mesh), _position(position), _type(type), _index(index), _room(room), _route_colour(route_colour)
+    Waypoint::Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
+        : _mesh(mesh), _position(position), _normal(normal), _type(type), _index(index), _room(room), _route_colour(route_colour)
     {
     }
 
@@ -27,12 +27,22 @@ namespace trview
         auto light_direction = _position - camera.position();
         light_direction.Normalize();
 
+        const float Pi = 3.1415926535897932384626433832796f;
+
+        Matrix rotation = Matrix(DirectX::XMMatrixLookAtRH(Vector3::Zero, _normal, Vector3::Up)).Invert();
+        rotation = Matrix::CreateRotationX(Pi * 0.5f) * rotation;
+
+        if (_normal == Vector3::Down)
+        {
+            rotation = Matrix::Identity;
+        }
+
         // The pole
-        auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.25f, 0)) * camera.view_projection();
+        auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(0, -0.25f, 0) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
         _mesh->render(device.context(), pole_wvp, texture_storage, colour, light_direction);
 
         // The light blob.
-        auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(_position - Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * camera.view_projection();
+        auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
         _mesh->render(device.context(), blob_wvp, texture_storage, _route_colour);
     }
 
@@ -43,6 +53,21 @@ namespace trview
     DirectX::SimpleMath::Vector3 Waypoint::position() const
     {
         return _position;
+    }
+
+    DirectX::SimpleMath::Vector3 Waypoint::blob_position() const
+    {
+        const float Pi = 3.1415926535897932384626433832796f;
+
+        Matrix rotation = Matrix(DirectX::XMMatrixLookAtRH(Vector3::Zero, _normal, Vector3::Up)).Invert();
+        rotation = Matrix::CreateRotationX(Pi * 0.5f) * rotation;
+
+        if (_normal == Vector3::Down)
+        {
+            rotation = Matrix::Identity;
+        }
+        auto matrix = Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position);
+        return Vector3::Transform(Vector3(), matrix);
     }
 
     Waypoint::Type Waypoint::type() const

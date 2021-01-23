@@ -26,7 +26,7 @@ namespace trview
         /// @param mesh The waypoint mesh.
         /// @param position The position of the waypoint in the world.
         /// @param room The room that the waypoint is in.
-        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room);
+        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room);
 
         /// Create a new waypoint.
         /// @param mesh The waypoint mesh.
@@ -35,7 +35,7 @@ namespace trview
         /// @param type The type of waypoint.
         /// @param index The index of the entity or trigger being referenced if this is a non-position type.
         /// @param route_colour The colour of the route.
-        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
+        explicit Waypoint(Mesh* mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
 
         /// Destructor for waypoint.
         virtual ~Waypoint() = default;
@@ -55,6 +55,8 @@ namespace trview
 
         /// Get the position of the waypoint in the 3D view.
         DirectX::SimpleMath::Vector3 position() const;
+
+        DirectX::SimpleMath::Vector3 blob_position() const;
 
         /// Get the type of the waypoint.
         Type type() const;
@@ -91,6 +93,7 @@ namespace trview
         std::wstring                 _notes;
         std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
+        DirectX::SimpleMath::Vector3 _normal;
         Mesh*                        _mesh;
         Type                         _type;
         uint32_t                     _index;
