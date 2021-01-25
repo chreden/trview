@@ -12,6 +12,7 @@ namespace trview
     {
         const float PoleThickness = 0.05f;
         const float RopeThickness = 0.015f;
+        const float Pi = 3.1415926535897932384626433832796f;
 
         std::vector<uint8_t> from_base64(const std::string& text)
         {
@@ -149,8 +150,12 @@ namespace trview
                 const auto current = waypoint.blob_position();
                 const auto next_waypoint = _waypoints[i + 1].blob_position();
                 const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
-                const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
-                const auto length = (next_waypoint - current).Length();
+                const auto to = next_waypoint - current;
+                const auto matrix = 
+                    (to.x == 0 && to.z == 0) 
+                        ? Matrix::CreateRotationX(Pi * 0.5f) * Matrix::CreateTranslation(mid)
+                        : Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
+                const auto length = to.Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
                 _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
             }
