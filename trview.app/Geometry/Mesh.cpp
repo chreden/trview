@@ -200,7 +200,8 @@ namespace trview
         {
             float distance = 0;
             if (direction.Dot(tri.normal) < 0 &&
-                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance))
+                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance) &&
+                distance < result.distance)
             {
                 result.hit = true;
                 result.distance = std::min(distance, result.distance);
