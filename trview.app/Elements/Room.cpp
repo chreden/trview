@@ -142,15 +142,11 @@ namespace trview
                 geometry_result.index = _index;
                 geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
-                Vector3 centroid;
+                auto tri = geometry_result.triangle;
+                Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
                 Vector3 ray_direction{ 0, 1, 0 };
 
-                auto tri = geometry_result.triangle;
-                Vector3 ab = tri.v1 - tri.v0;
-                Vector3 bc = tri.v2 - tri.v1;
-                Vector3 ac = tri.v2 - tri.v0;
-
-                // Special handling for walls.
+                // Ray direction handling - Wall:
                 if (tri.normal.y == 0)
                 {
                     if (tri.normal.z == 0) // X wall
@@ -164,32 +160,16 @@ namespace trview
                 }
                 else
                 {
+                    // Surface:
                     ray_direction = -tri.normal;
                     ray_direction.x = 0;
                     ray_direction.z = 0;
-                    ab.y = 0;
-                    bc.y = 0;
-                    ac.y = 0;
-                }
-
-                if (ab.LengthSquared() > bc.LengthSquared() && ab.LengthSquared() > ac.LengthSquared())
-                {
-                    centroid = tri.v0 + (tri.v1 - tri.v0) * 0.5f;
-                }
-                else if (bc.LengthSquared() > ab.LengthSquared() && bc.LengthSquared() > ac.LengthSquared())
-                {
-                    centroid = tri.v1 + (tri.v2 - tri.v1) * 0.5f;
-                }
-                else
-                {
-                    centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
                 }
 
                 ray_direction.Normalize();
-                PickResult centroid_hit = _mesh->pick(centroid - ray_direction, ray_direction);
+                PickResult centroid_hit = _mesh->pick(centroid - ray_direction * 0.1f, ray_direction);
                 geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
                 geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
-
                 pick_results.push_back(geometry_result);
             }
 
