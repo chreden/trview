@@ -137,7 +137,7 @@ namespace trview
             PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
             if (geometry_result.hit)
             {
-                add_centroid_to_pick(geometry_result);
+                add_centroid_to_pick(*_mesh, geometry_result);
                 pick_results.push_back(geometry_result);
             }
 
@@ -148,7 +148,7 @@ namespace trview
                 {
                     unmatched_result.type = PickResult::Type::Room;
                     unmatched_result.index = _index;
-                    unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
+                    add_centroid_to_pick(*_unmatched_mesh, unmatched_result);
                     pick_results.push_back(unmatched_result);
                 }
             }
@@ -689,7 +689,7 @@ namespace trview
         return _sectors; 
     }
 
-    void Room::add_centroid_to_pick(PickResult& geometry_result) const
+    void Room::add_centroid_to_pick(const Mesh& mesh, PickResult& geometry_result) const
     {
         // Transform the position back in to world space. Also mark it as a room pick result.
         geometry_result.type = PickResult::Type::Room;
@@ -721,7 +721,7 @@ namespace trview
         }
 
         ray_direction.Normalize();
-        PickResult centroid_hit = _mesh->pick(centroid - ray_direction * 0.1f, ray_direction);
+        PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.1f, ray_direction);
         geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
         geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
     }

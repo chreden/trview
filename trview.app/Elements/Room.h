@@ -177,7 +177,7 @@ namespace trview
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);
 
-        void add_centroid_to_pick(PickResult& geometry_result) const;
+        void add_centroid_to_pick(const Mesh& mesh, PickResult& geometry_result) const;
 
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
