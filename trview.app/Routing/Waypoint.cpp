@@ -36,6 +36,10 @@ namespace trview
         {
             rotation = Matrix::Identity;
         }
+        else if (_normal == Vector3::Up)
+        {
+            rotation = Matrix::CreateRotationX(Pi);
+        }
 
         // The pole
         auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(0, -0.25f, 0) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
@@ -65,6 +69,10 @@ namespace trview
         if (_normal == Vector3::Down)
         {
             rotation = Matrix::Identity;
+        }
+        else if (_normal == Vector3::Up)
+        {
+            rotation = Matrix::CreateRotationX(Pi);
         }
         auto matrix = Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position);
         return Vector3::Transform(Vector3(), matrix);

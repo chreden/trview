@@ -155,7 +155,15 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            uint32_t new_index = _route->insert(_context_pick.position, DirectX::SimpleMath::Vector3(0, -1, 0), room_from_pick(_context_pick), type, _context_pick.index);
+
+            if (_context_pick.triangle.normal.y != 0)
+            {
+                _context_pick.triangle.normal.x = 0;
+                _context_pick.triangle.normal.z = 0;
+                _context_pick.triangle.normal.Normalize();
+            }
+
+            uint32_t new_index = _route->insert(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
             _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -174,6 +182,14 @@ namespace trview
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
                 _context_pick.position = _level->triggers()[_context_pick.index]->position();
+            }
+
+            // Filter out non-wall normals - ceiling and floor normals should be vertical.
+            if (_context_pick.triangle.normal.y != 0)
+            {
+                _context_pick.triangle.normal.x = 0;
+                _context_pick.triangle.normal.z = 0;
+                _context_pick.triangle.normal.Normalize();
             }
 
             uint32_t new_index = _route->insert(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);

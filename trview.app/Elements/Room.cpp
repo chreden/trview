@@ -137,39 +137,7 @@ namespace trview
             PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
             if (geometry_result.hit)
             {
-                // Transform the position back in to world space. Also mark it as a room pick result.
-                geometry_result.type = PickResult::Type::Room;
-                geometry_result.index = _index;
-                geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
-
-                auto tri = geometry_result.triangle;
-                Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
-                Vector3 ray_direction{ 0, 1, 0 };
-
-                // Ray direction handling - Wall:
-                if (tri.normal.y == 0)
-                {
-                    if (tri.normal.z == 0) // X wall
-                    {
-                        ray_direction = Vector3(-tri.normal.x, 0, 0);
-                    }
-                    else // Z Wall
-                    {
-                        ray_direction = Vector3(0, 0, -tri.normal.z);
-                    }
-                }
-                else
-                {
-                    // Surface:
-                    ray_direction = -tri.normal;
-                    ray_direction.x = 0;
-                    ray_direction.z = 0;
-                }
-
-                ray_direction.Normalize();
-                PickResult centroid_hit = _mesh->pick(centroid - ray_direction * 0.1f, ray_direction);
-                geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
-                geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
+                add_centroid_to_pick(geometry_result);
                 pick_results.push_back(geometry_result);
             }
 
@@ -719,5 +687,42 @@ namespace trview
     const std::vector<std::shared_ptr<Sector>>& Room::sectors() const
     {
         return _sectors; 
+    }
+
+    void Room::add_centroid_to_pick(PickResult& geometry_result) const
+    {
+        // Transform the position back in to world space. Also mark it as a room pick result.
+        geometry_result.type = PickResult::Type::Room;
+        geometry_result.index = _index;
+        geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+
+        auto tri = geometry_result.triangle;
+        Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
+        Vector3 ray_direction{ 0, 1, 0 };
+
+        // Ray direction handling - Wall:
+        if (tri.normal.y == 0)
+        {
+            if (tri.normal.z == 0) // X wall
+            {
+                ray_direction = Vector3(-tri.normal.x, 0, 0);
+            }
+            else // Z Wall
+            {
+                ray_direction = Vector3(0, 0, -tri.normal.z);
+            }
+        }
+        else
+        {
+            // Surface:
+            ray_direction = -tri.normal;
+            ray_direction.x = 0;
+            ray_direction.z = 0;
+        }
+
+        ray_direction.Normalize();
+        PickResult centroid_hit = _mesh->pick(centroid - ray_direction * 0.1f, ray_direction);
+        geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
+        geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
     }
 }
