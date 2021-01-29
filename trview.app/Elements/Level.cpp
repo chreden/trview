@@ -44,6 +44,13 @@ namespace trview
         // Create the texture sampler state.
         device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
 
+        D3D11_RASTERIZER_DESC rasterizer_desc;
+        memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
+        rasterizer_desc.FillMode = D3D11_FILL_WIREFRAME;
+        rasterizer_desc.CullMode = D3D11_CULL_NONE;
+        rasterizer_desc.DepthClipEnable = true;
+        device.device()->CreateRasterizerState(&rasterizer_desc, &_rasterizer_state);
+
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
         generate_rooms(device, *level);
@@ -201,6 +208,8 @@ namespace trview
         {
             render_selected_item(device, camera);
         }
+
+        context->RSSetState(old_state.Get());
     }
 
     // Render the rooms in the level.
