@@ -696,12 +696,7 @@ namespace trview
         geometry_result.index = _index;
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
-        auto tri = geometry_result.triangle;
-
-#if true
-
-        Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
-        Vector3 ray_direction{ 0, 1, 0 };
+        const auto& tri = geometry_result.triangle;
 
         // Find all midpoints.
         std::array<Vector3, 3> mids
@@ -711,17 +706,25 @@ namespace trview
             tri.v1 + (tri.v2 - tri.v1) * 0.5f
         };
 
+        Vector3 centroid;
         Vector3 anchor;
         Vector3 direction;
+        Vector3 ray_direction{ 0, 1, 0 };
 
-        auto sort_mids = [&mids, &direction, &anchor]()
+        auto sort_mids = [&mids, &direction, &anchor](bool no_y = false)
         {
             // Find the most aligned.
             std::sort(mids.begin(), mids.end(),
-                [&direction, &anchor](const auto& left, const auto& right)
+                [&direction, &anchor, no_y](const auto& left, const auto& right)
                 {
                     Vector3 to_left = left - anchor;
                     Vector3 to_right = right - anchor;
+
+                    if (no_y)
+                    {
+                        to_left.y = 0;
+                        to_right.y = 0;
+                    }
 
                     to_left.Normalize();
                     to_right.Normalize();
@@ -730,10 +733,20 @@ namespace trview
                 });
         };
 
+        // Get the common and uncommon values.
+        auto split_values = [](float a, float b, float c) -> std::tuple<float, float>
+        {
+            if (b == c) { return { a, b }; }
+            else if (a == c) { return { b, a }; }
+            return { c, a };
+        };
+
         if (tri.normal.y != 0)
         {
-            anchor = { std::floor(tri.v0.x), tri.v0.y, std::floor(tri.v0.z) };
-            direction = { tri.normal.z * -0.5f, 0, 0.5f };
+            auto [uncommon_x, common_x] = split_values(tri.v0.x, tri.v1.x, tri.v2.x);
+            auto [uncommon_z, common_z] = split_values(tri.v0.z, tri.v1.z, tri.v2.z);
+            anchor = { std::round(common_x), tri.v0.y, std::round(common_z) };
+            direction = { common_x < uncommon_x ? 0.5f : -0.5f, 0, common_z < uncommon_z ? 0.5f : -0.5f };
             direction.Normalize();
             ray_direction = Vector3(0, -tri.normal.y, 0);
         }
@@ -752,34 +765,8 @@ namespace trview
             ray_direction = Vector3(-tri.normal.x, 0, 0);
         }
 
-        sort_mids();
+        sort_mids(tri.normal.y != 0);
         centroid = mids[0];
-        
-#else
-
-        Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
-        Vector3 ray_direction{ 0, 1, 0 };
-
-        // Ray direction handling - Wall:
-        if (tri.normal.y == 0)
-        {
-            if (tri.normal.z == 0) // X wall
-            {
-                ray_direction = Vector3(-tri.normal.x, 0, 0);
-            }
-            else // Z Wall
-            {
-                ray_direction = Vector3(0, 0, -tri.normal.z);
-            }
-        }
-        else
-        {
-            // Surface:
-            ray_direction = -tri.normal;
-            ray_direction.x = 0;
-            ray_direction.z = 0;
-        }
-#endif
 
         ray_direction.Normalize();
         PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.1f, ray_direction);
