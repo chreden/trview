@@ -697,6 +697,66 @@ namespace trview
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         auto tri = geometry_result.triangle;
+
+#if true
+
+        Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
+        Vector3 ray_direction{ 0, 1, 0 };
+
+        // Find all midpoints.
+        std::array<Vector3, 3> mids
+        {
+            tri.v0 + (tri.v1 - tri.v0) * 0.5f,
+            tri.v0 + (tri.v2 - tri.v0) * 0.5f,
+            tri.v1 + (tri.v2 - tri.v1) * 0.5f
+        };
+
+        Vector3 anchor;
+        Vector3 direction;
+
+        auto sort_mids = [&mids, &direction, &anchor]()
+        {
+            // Find the most aligned.
+            std::sort(mids.begin(), mids.end(),
+                [&direction, &anchor](const auto& left, const auto& right)
+                {
+                    Vector3 to_left = left - anchor;
+                    Vector3 to_right = right - anchor;
+
+                    to_left.Normalize();
+                    to_right.Normalize();
+
+                    return std::abs(direction.Dot(to_left)) > std::abs(direction.Dot(to_right));
+                });
+        };
+
+        if (tri.normal.y != 0)
+        {
+            anchor = { std::floor(tri.v0.x), tri.v0.y, std::floor(tri.v0.z) };
+            direction = { tri.normal.z * -0.5f, 0, 0.5f };
+            direction.Normalize();
+            ray_direction = Vector3(0, -tri.normal.y, 0);
+        }
+        else if (tri.normal.x == 0) // Wall along X - Normal of Z
+        {
+            anchor = { std::floor(tri.v0.x), std::floor(tri.v0.y), tri.v0.z };
+            direction = { tri.normal.z * -0.5f, 0.5f, 0 };
+            direction.Normalize();
+            ray_direction = Vector3(0, 0, -tri.normal.z);
+        }
+        else
+        {
+            anchor = { std::floor(tri.v0.x), std::floor(tri.v0.y), tri.v0.z };
+            direction = { tri.normal.z * -0.5f, 0.5f, 0 };
+            direction.Normalize();
+            ray_direction = Vector3(-tri.normal.x, 0, 0);
+        }
+
+        sort_mids();
+        centroid = mids[0];
+        
+#else
+
         Vector3 centroid = tri.v0 + (tri.v2 - tri.v0) * 0.5f;
         Vector3 ray_direction{ 0, 1, 0 };
 
@@ -719,10 +779,12 @@ namespace trview
             ray_direction.x = 0;
             ray_direction.z = 0;
         }
+#endif
 
         ray_direction.Normalize();
         PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.1f, ray_direction);
         geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
         geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
+
     }
 }
