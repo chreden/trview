@@ -697,79 +697,31 @@ namespace trview
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;
-
-        // Find all midpoints.
-        std::array<Vector3, 3> mids
-        {
-            tri.v0 + (tri.v1 - tri.v0) * 0.5f,
-            tri.v0 + (tri.v2 - tri.v0) * 0.5f,
-            tri.v1 + (tri.v2 - tri.v1) * 0.5f
-        };
-
         Vector3 centroid;
-        Vector3 anchor;
-        Vector3 direction;
         Vector3 ray_direction{ 0, 1, 0 };
 
-        auto sort_mids = [&mids, &direction, &anchor](bool no_y = false)
+        Matrix from_room;
+        _room_offset.Invert(from_room);
+
+        if (tri.normal.y)
         {
-            // Find the most aligned.
-            std::sort(mids.begin(), mids.end(),
-                [&direction, &anchor, no_y](const auto& left, const auto& right)
-                {
-                    Vector3 to_left = left - anchor;
-                    Vector3 to_right = right - anchor;
-
-                    if (no_y)
-                    {
-                        to_left.y = 0;
-                        to_right.y = 0;
-                    }
-
-                    to_left.Normalize();
-                    to_right.Normalize();
-
-                    return std::abs(direction.Dot(to_left)) > std::abs(direction.Dot(to_right));
-                });
-        };
-
-        // Get the common and uncommon values.
-        auto split_values = [](float a, float b, float c) -> std::tuple<float, float>
-        {
-            if (b == c) { return { a, b }; }
-            else if (a == c) { return { b, a }; }
-            return { c, a };
-        };
-
-        if (tri.normal.y != 0)
-        {
-            auto [uncommon_x, common_x] = split_values(tri.v0.x, tri.v1.x, tri.v2.x);
-            auto [uncommon_z, common_z] = split_values(tri.v0.z, tri.v1.z, tri.v2.z);
-            anchor = { std::round(common_x), tri.v0.y, std::round(common_z) };
-            direction = { common_x < uncommon_x ? 0.5f : -0.5f, 0, common_z < uncommon_z ? 0.5f : -0.5f };
-            direction.Normalize();
-            ray_direction = Vector3(0, -tri.normal.y, 0);
+            centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
+            ray_direction = { 0, -tri.normal.y, 0 };
         }
-        else if (tri.normal.x == 0) // Wall along X - Normal of Z
+        else if (tri.normal.x)
         {
-            anchor = { std::floor(tri.v0.x), std::floor(tri.v0.y), tri.v0.z };
-            direction = { tri.normal.z * -0.5f, 0.5f, 0 };
-            direction.Normalize();
-            ray_direction = Vector3(0, 0, -tri.normal.z);
+            centroid = { geometry_result.position.x, std::floor(geometry_result.position.y) + 0.5f, std::floor(geometry_result.position.z) + 0.5f };
+            ray_direction = { -tri.normal.x, 0, 0 };
         }
         else
         {
-            anchor = { std::floor(tri.v0.x), std::floor(tri.v0.y), tri.v0.z };
-            direction = { tri.normal.z * -0.5f, 0.5f, 0 };
-            direction.Normalize();
-            ray_direction = Vector3(-tri.normal.x, 0, 0);
+            centroid = { std::floor(geometry_result.position.x) + 0.5f, std::floor(geometry_result.position.y) + 0.5f, geometry_result.position.z };
+            ray_direction = { 0, 0, -tri.normal.z };
         }
 
-        sort_mids(tri.normal.y != 0);
-        centroid = mids[0];
-
+        centroid = Vector3::Transform(centroid, from_room);
         ray_direction.Normalize();
-        PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.1f, ray_direction);
+        PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.5f, ray_direction);
         geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
         geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
 

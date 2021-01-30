@@ -209,7 +209,7 @@ namespace trview
             render_selected_item(device, camera);
         }
 
-        context->RSSetState(old_state.Get());
+        // context->RSSetState(old_state.Get());
     }
 
     // Render the rooms in the level.
