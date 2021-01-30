@@ -133,6 +133,7 @@ namespace trview
         _token_store += _ui->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _ui->on_show_hidden_geometry += [&](bool value) { set_show_hidden_geometry(value); };
         _token_store += _ui->on_show_water += [&](bool value) { set_show_water(value); };
+        _token_store += _ui->on_show_wireframe += [&](bool value) { set_show_wireframe(value); };
         _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
         _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
@@ -582,6 +583,7 @@ namespace trview
         _level->set_show_triggers(_ui->show_triggers());
         _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
         _level->set_show_water(_ui->show_water());
+        _level->set_show_wireframe(_ui->show_wireframe());
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -1069,6 +1071,15 @@ namespace trview
         if (_level)
         {
             _level->set_show_water(show);
+        }
+    }
+
+    void Viewer::set_show_wireframe(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_wireframe(show);
+            _ui->set_show_wireframe(show);
         }
     }
 

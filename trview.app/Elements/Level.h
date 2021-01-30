@@ -128,17 +128,12 @@ namespace trview
         /// Determines if there are any flipmaps in the level.
         /// @returns True if there are flipmaps.
         bool any_alternates() const;
-
         void set_show_triggers(bool show);
-
         void set_show_hidden_geometry(bool show);
-
         bool show_hidden_geometry() const;
-
         void set_show_water(bool show);
-
+        void set_show_wireframe(bool show);
         bool show_triggers() const;
-
         void set_selected_trigger(uint32_t number);
 
         const ILevelTextureStorage& texture_storage() const;
@@ -201,6 +196,8 @@ namespace trview
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> _sampler_state;
+        Microsoft::WRL::ComPtr<ID3D11RasterizerState> _wireframe_rasterizer;
+
 
         std::set<RoomHighlightMode> _room_highlight_modes;
         
@@ -219,6 +216,7 @@ namespace trview
         bool _show_triggers{ true };
         bool _show_hidden_geometry{ false };
         bool _show_water{ true };
+        bool _show_wireframe{ false };
 
         std::unique_ptr<SelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

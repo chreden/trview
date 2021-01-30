@@ -62,6 +62,11 @@ namespace trview
         /// @remarks This event is not raised by the set_show_water function.
         Event<bool> on_show_water;
 
+        /// Event raised when the user toggles wireframe mode. The boolean passed as a parameter when this event is raised
+        /// indicates whether wireframe mode is used.
+        /// @remarks This event is not raised by the set_wireframe function.
+        Event<bool> on_show_wireframe;
+
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
@@ -103,6 +108,10 @@ namespace trview
         /// @param show Whether water is visible.
         void set_show_water(bool show);
 
+        /// Set whether wireframe mode is enabled.
+        /// @param show Whether to use wireframe.
+        void set_show_wireframe(bool show);
+
         /// Set whether to use alternate groups method of flipmaps.
         /// @param value Whether to use alternate groups or a single toggle.
         void set_use_alternate_groups(bool value);
@@ -118,6 +127,10 @@ namespace trview
         /// Get the current value of the show water checkbox.
         /// @returns The current value of the checkbox.
         bool show_water() const;
+
+        /// Get the current value of the wireframe checkbox.
+        /// @returns The current value of the checkbox.
+        bool show_wireframe() const;
     private:
         TokenStore _token_store;
         ui::Checkbox* _highlight;
@@ -126,6 +139,7 @@ namespace trview
         ui::Checkbox* _hidden_geometry;
         ui::Checkbox* _water;
         ui::Checkbox* _enabled;
+        ui::Checkbox* _wireframe;
         ui::NumericUpDown* _depth;
         ui::Window* _tr1_3_panel;
         ui::Window* _tr4_5_panel;

@@ -119,6 +119,9 @@ namespace trview
         /// Event raised when the show water setting is changed.
         Event<bool> on_show_water;
 
+        /// Event raised when the show wireframe setting is changed.
+        Event<bool> on_show_wireframe;
+
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
@@ -250,6 +253,10 @@ namespace trview
         /// @param value Whether water is visible.
         void set_show_water(bool value);
 
+        /// Set whether wireframe is visible.
+        /// @param value Whether wireframe is visible.
+        void set_show_wireframe(bool value);
+
         /// Set whether the level uses alternate groups.
         /// @param value Whether alternate groups are used.
         void set_use_alternate_groups(bool value);
@@ -266,6 +273,9 @@ namespace trview
 
         /// Get whether water is visible.
         bool show_water() const;
+
+        /// Get whether wireframe is visible.
+        bool show_wireframe() const;
 
         /// Toggle the visibility of the settings window.
         void toggle_settings_visibility();

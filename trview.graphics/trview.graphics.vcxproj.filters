@@ -74,6 +74,9 @@
     <ClInclude Include="mocks\IFont.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="RasterizerStateStore.h">
+      <Filter>Rasterizer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -137,6 +140,9 @@
     <ClCompile Include="IFont.cpp">
       <Filter>Font</Filter>
     </ClCompile>
+    <ClCompile Include="RasterizerStateStore.cpp">
+      <Filter>Rasterizer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -162,6 +168,9 @@
     </Filter>
     <Filter Include="Mocks">
       <UniqueIdentifier>{ef2c9a26-a91d-4c79-9a95-ed6a10479adc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rasterizer">
+      <UniqueIdentifier>{4bfba0e9-fb4c-4f56-b8a2-64a51daa20ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
