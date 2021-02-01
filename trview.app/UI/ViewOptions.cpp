@@ -20,9 +20,9 @@ namespace trview
     {
         using namespace ui;
 
-        auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 130), Colour::Transparent, Colour::Grey, L"View Options"));
-        auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 130), Colour::Transparent));
-        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 70), Colour::Transparent, 2, 3));
+        auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 155), Colour::Transparent, Colour::Grey, L"View Options"));
+        auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 155), Colour::Transparent));
+        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 95), Colour::Transparent, 2, 4));
 
         _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
         _highlight->on_state_changed += on_highlight;
@@ -44,6 +44,9 @@ namespace trview
         _depth = rooms_grid->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20));
         _depth->set_value(1);
         _depth->on_value_changed += on_depth_changed;
+
+        _wireframe = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Wireframe"));
+        _wireframe->on_state_changed += on_show_wireframe;
         
         const auto panel_size = Size(140, 20);
         auto flip_panel = rooms_area->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
@@ -134,6 +137,11 @@ namespace trview
         _water->set_state(show);
     }
 
+    void ViewOptions::set_show_wireframe(bool show)
+    {
+        _wireframe->set_state(show);
+    }
+
     void ViewOptions::set_use_alternate_groups(bool value)
     {
         _tr1_3_panel->set_visible(!value);
@@ -154,4 +162,9 @@ namespace trview
     {
         return _water->state();
     }    
+
+    bool ViewOptions::show_wireframe() const
+    {
+        return _wireframe->state();
+    }
 }

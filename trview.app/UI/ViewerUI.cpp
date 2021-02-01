@@ -250,6 +250,7 @@ namespace trview
         _view_options->on_depth_enabled += on_depth;
         _view_options->on_flip += on_flip;
         _view_options->on_alternate_group += on_alternate_group;
+        _view_options->on_show_wireframe += on_show_wireframe;
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window, texture_storage);
         _room_navigator->on_room_selected += on_select_room;
@@ -447,6 +448,11 @@ namespace trview
         _view_options->set_show_water(value);
     }
 
+    void ViewerUI::set_show_wireframe(bool value)
+    {
+        _view_options->set_show_wireframe(value);
+    }
+
     void ViewerUI::set_use_alternate_groups(bool value)
     {
         _view_options->set_use_alternate_groups(value);
@@ -470,6 +476,11 @@ namespace trview
     bool ViewerUI::show_water() const
     {
         return _view_options->show_water();
+    }
+
+    bool ViewerUI::show_wireframe() const
+    {
+        return _view_options->show_wireframe();
     }
 
     void ViewerUI::toggle_settings_visibility()

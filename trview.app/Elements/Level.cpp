@@ -10,6 +10,7 @@
 #include <trview.app/Graphics/SelectionRenderer.h>
 #include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
+#include <trview.graphics/RasterizerStateStore.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
@@ -32,6 +33,13 @@ namespace trview
         sampler_desc.MaxAnisotropy = 1;
         sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+        D3D11_RASTERIZER_DESC rasterizer_desc;
+        memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
+        rasterizer_desc.FillMode = D3D11_FILL_WIREFRAME;
+        rasterizer_desc.CullMode = D3D11_CULL_BACK;
+        rasterizer_desc.DepthClipEnable = true;
+        device.device()->CreateRasterizerState(&rasterizer_desc, &_wireframe_rasterizer);
 
         // Create the texture sampler state.
         device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
@@ -174,12 +182,21 @@ namespace trview
 
         auto context = device.context();
 
-        context->PSSetSamplers(0, 1, &_sampler_state);
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        _vertex_shader->apply(context);
-        _pixel_shader->apply(context);
+        {
+            graphics::RasterizerStateStore rasterizer_store(context);
 
-        render_rooms(device, camera);
+            context->PSSetSamplers(0, 1, &_sampler_state);
+            if (_show_wireframe)
+            {
+                context->RSSetState(_wireframe_rasterizer.Get());
+            }
+            context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+            _vertex_shader->apply(context);
+            _pixel_shader->apply(context);
+
+            render_rooms(device, camera);
+        }
+
         if (render_selection)
         {
             render_selected_item(device, camera);
@@ -232,6 +249,11 @@ namespace trview
 
     void Level::render_transparency(const graphics::Device& device, const ICamera& camera)
     {
+        graphics::RasterizerStateStore rasterizer_store(device.context());
+        if (_show_wireframe)
+        {
+            device.context()->RSSetState(_wireframe_rasterizer.Get());
+        }
         // Render the triangles that the transparency buffer has produced.
         _transparency->render(device.context(), camera, *_texture_storage.get());
     }
@@ -579,6 +601,13 @@ namespace trview
     void Level::set_show_water(bool show)
     {
         _show_water = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_wireframe(bool show)
+    {
+        _show_wireframe = show;
         _regenerate_transparency = true;
         on_level_changed();
     }
