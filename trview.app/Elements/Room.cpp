@@ -61,6 +61,8 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
+        _inverted_room_offset = _room_offset.Invert();
+
         generate_sectors(level, room);
         generate_geometry(level.get_version(), device, room, texture_storage);
         generate_adjacency();
@@ -700,9 +702,6 @@ namespace trview
         Vector3 centroid;
         Vector3 ray_direction{ 0, 1, 0 };
 
-        Matrix from_room;
-        _room_offset.Invert(from_room);
-
         if (tri.normal.y)
         {
             centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
@@ -719,7 +718,7 @@ namespace trview
             ray_direction = { 0, 0, -tri.normal.z };
         }
 
-        centroid = Vector3::Transform(centroid, from_room);
+        centroid = Vector3::Transform(centroid, _inverted_room_offset);
         ray_direction.Normalize();
         PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.5f, ray_direction);
         geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;

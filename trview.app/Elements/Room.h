@@ -188,6 +188,7 @@ namespace trview
         std::unique_ptr<Mesh>       _mesh;
         std::unique_ptr<Mesh>       _unmatched_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
+        DirectX::SimpleMath::Matrix _inverted_room_offset;
 
         DirectX::BoundingBox  _bounding_box;
 
