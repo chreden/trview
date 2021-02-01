@@ -5,6 +5,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
+#include <trview.common/Maths.h>
 
 namespace trview
 {
@@ -14,8 +15,6 @@ namespace trview
 
     namespace
     {
-        const float HalfPi = 1.5707963267948966192313216916398f;
-        const float Pi = 3.1415926535897932384626433832796f;
         const float View_Size = 200;
         const float Nodule_Size = 0.05f;
 
@@ -74,8 +73,8 @@ namespace trview
             const auto scale = Matrix::CreateScale(thickness, 1.0f, thickness);
 
             _mesh->render(context, scale * view_projection, texture_storage, Color(1.0f, 0.0f, 0.0f));
-            _mesh->render(context, scale * Matrix::CreateRotationZ(HalfPi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
-            _mesh->render(context, scale * Matrix::CreateRotationX(HalfPi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationZ(maths::HalfPi) * view_projection, texture_storage, Color(0.0f, 1.0f, 0.0f));
+            _mesh->render(context, scale * Matrix::CreateRotationX(maths::HalfPi) * view_projection, texture_storage, Color(0.0f, 0.0f, 1.0f));
 
             // Nodules for each direction - they can be clicked.
             const auto nodule_scale = Matrix::CreateScale(0.05f);
@@ -157,25 +156,25 @@ namespace trview
         switch (axis)
         {
         case Compass::Axis::Pos_X:
-            yaw = HalfPi;
+            yaw = maths::HalfPi;
             pitch = 0;
             break;
         case Compass::Axis::Pos_Y:
-            pitch = -HalfPi;
+            pitch = -maths::HalfPi;
             break;
         case Compass::Axis::Pos_Z:
             yaw = 0;
             pitch = 0;
             break;
         case Compass::Axis::Neg_X:
-            yaw = -HalfPi;
+            yaw = -maths::HalfPi;
             pitch = 0;
             break;
         case Compass::Axis::Neg_Y:
-            pitch = HalfPi;
+            pitch = maths::HalfPi;
             break;
         case Compass::Axis::Neg_Z:
-            yaw = Pi;
+            yaw = maths::Pi;
             pitch = 0;
             break;
         }

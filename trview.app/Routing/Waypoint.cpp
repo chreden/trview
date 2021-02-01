@@ -1,5 +1,6 @@
 #include "Waypoint.h"
 #include <trview.app/Camera/ICamera.h>
+#include <trview.common/Maths.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -27,19 +28,7 @@ namespace trview
         auto light_direction = _position - camera.position();
         light_direction.Normalize();
 
-        const float Pi = 3.1415926535897932384626433832796f;
-
-        Matrix rotation = Matrix(DirectX::XMMatrixLookAtRH(Vector3::Zero, _normal, Vector3::Up)).Invert();
-        rotation = Matrix::CreateRotationX(Pi * 0.5f) * rotation;
-
-        if (_normal == Vector3::Down)
-        {
-            rotation = Matrix::Identity;
-        }
-        else if (_normal == Vector3::Up)
-        {
-            rotation = Matrix::CreateRotationX(Pi);
-        }
+        Matrix rotation = calculate_waypoint_rotation();
 
         // The pole
         auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(0, -0.25f, 0) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
@@ -61,10 +50,14 @@ namespace trview
 
     DirectX::SimpleMath::Vector3 Waypoint::blob_position() const
     {
-        const float Pi = 3.1415926535897932384626433832796f;
+        auto matrix = Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * calculate_waypoint_rotation() * Matrix::CreateTranslation(_position);
+        return Vector3::Transform(Vector3(), matrix);
+    }
 
+    Matrix Waypoint::calculate_waypoint_rotation() const
+    {
         Matrix rotation = Matrix(DirectX::XMMatrixLookAtRH(Vector3::Zero, _normal, Vector3::Up)).Invert();
-        rotation = Matrix::CreateRotationX(Pi * 0.5f) * rotation;
+        rotation = Matrix::CreateRotationX(maths::Pi * 0.5f) * rotation;
 
         if (_normal == Vector3::Down)
         {
@@ -72,10 +65,9 @@ namespace trview
         }
         else if (_normal == Vector3::Up)
         {
-            rotation = Matrix::CreateRotationX(Pi);
+            rotation = Matrix::CreateRotationX(maths::Pi);
         }
-        auto matrix = Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position);
-        return Vector3::Transform(Vector3(), matrix);
+        return rotation;
     }
 
     Waypoint::Type Waypoint::type() const

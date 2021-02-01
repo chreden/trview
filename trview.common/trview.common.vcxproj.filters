@@ -24,6 +24,7 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Maths.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />

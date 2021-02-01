@@ -90,6 +90,8 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
     private:
+        DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
+
         std::wstring                 _notes;
         std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
