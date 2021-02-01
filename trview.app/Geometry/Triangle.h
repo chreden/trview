@@ -17,6 +17,6 @@ namespace trview
         DirectX::SimpleMath::Vector3 v0;
         DirectX::SimpleMath::Vector3 v1;
         DirectX::SimpleMath::Vector3 v2;
-        DirectX::SimpleMath::Vector3 normal{ 0, 1, 0 };
+        DirectX::SimpleMath::Vector3 normal{ 0, -1, 0 };
     };
 }
