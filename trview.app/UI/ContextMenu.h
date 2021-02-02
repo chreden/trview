@@ -21,6 +21,10 @@ namespace trview
         /// @param parent The control to add the window to.
         explicit ContextMenu(ui::Control& parent);
 
+        /// Get the root control.
+        /// @returns The root control.
+        const ui::Control* control() const;
+
         /// Set the position of the context menu.
         /// @param position The new position of the menu.
         void set_position(const Point& position);
@@ -36,6 +40,10 @@ namespace trview
         /// Set whether the hide button is enabled or not.
         /// @param value Whether the hide button is enabled or not.
         void set_hide_enabled(bool value);
+
+        /// Get whether the context menu is visible.
+        /// @returns Whether the menu is visible.
+        bool visible() const;
 
         /// Event raised when the user has clicked the button to create a new
         /// waypoint for the current route.

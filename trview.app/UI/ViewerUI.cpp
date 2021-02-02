@@ -483,6 +483,11 @@ namespace trview
         return _view_options->show_wireframe();
     }
 
+    bool ViewerUI::show_context_menu() const
+    {
+        return _context_menu->visible();
+    }
+
     void ViewerUI::toggle_settings_visibility()
     {
         _settings_window->toggle_visibility();

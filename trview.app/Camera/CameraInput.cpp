@@ -150,14 +150,14 @@ namespace trview
         on_zoom(scroll / -100.0f);
     }
 
-    void CameraInput::reset()
+    void CameraInput::reset(bool ignore_key_states)
     {
-        _free_forward = GetAsyncKeyState('W') & 0x8000;
-        _free_left = GetAsyncKeyState('A') & 0x8000;
-        _free_right = GetAsyncKeyState('D') & 0x8000;
-        _free_backward = GetAsyncKeyState('S') & 0x8000;
-        _free_up = GetAsyncKeyState('E') & 0x8000;
-        _free_down = GetAsyncKeyState('Q') & 0x8000;
+        _free_forward = ignore_key_states ? false : GetAsyncKeyState('W') & 0x8000;
+        _free_left = ignore_key_states ? false : GetAsyncKeyState('A') & 0x8000;
+        _free_right = ignore_key_states ? false : GetAsyncKeyState('D') & 0x8000;
+        _free_backward = ignore_key_states ? false : GetAsyncKeyState('S') & 0x8000;
+        _free_up = ignore_key_states ? false : GetAsyncKeyState('E') & 0x8000;
+        _free_down = ignore_key_states ? false : GetAsyncKeyState('Q') & 0x8000;
         _rotating = false;
         _panning = false;
         _panning_vertical = false;

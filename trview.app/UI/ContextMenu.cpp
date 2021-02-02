@@ -73,6 +73,11 @@ namespace trview
         _menu->set_visible(false);
     }
 
+    const ui::Control* ContextMenu::control() const
+    {
+        return _menu;
+    }
+
     void ContextMenu::set_position(const Point& position)
     {
         _menu->set_position(position);
@@ -93,5 +98,10 @@ namespace trview
     {
         _hide_enabled = value;
         _hide_button->set_text_colour(value ? Colours::Enabled : Colours::Disabled);
+    }
+
+    bool ContextMenu::visible() const
+    {
+        return _menu->visible();
     }
 }

@@ -57,7 +57,7 @@ namespace trview
                 update_button(Button::Middle, input.data.mouse.usButtonFlags, RI_MOUSE_MIDDLE_BUTTON_DOWN, RI_MOUSE_MIDDLE_BUTTON_UP, _middle_down);
                 update_button(Button::Right, input.data.mouse.usButtonFlags, RI_MOUSE_RIGHT_BUTTON_DOWN, RI_MOUSE_RIGHT_BUTTON_UP, _right_down);
 
-                if (input.data.mouse.usFlags == MOUSE_MOVE_RELATIVE)
+                if (input.data.mouse.usFlags == MOUSE_MOVE_RELATIVE && (input.data.mouse.lLastX || input.data.mouse.lLastY))
                 {
                     mouse_move(input.data.mouse.lLastX, input.data.mouse.lLastY);
                 }
