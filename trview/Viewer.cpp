@@ -422,9 +422,13 @@ namespace trview
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
         {
-            if (!_ui->is_input_active())
+            if (!_ui->is_input_active() && !_ui->show_context_menu())
             {
                 _camera_input.key_down(key, control);
+            }
+            else if (_ui->show_context_menu() && key == VK_ESCAPE)
+            {
+                _ui->set_show_context_menu(false);
             }
         };
 
@@ -438,6 +442,12 @@ namespace trview
             {
                 if (!_ui->is_cursor_over())
                 {
+                    if (_ui->show_context_menu())
+                    {
+                        _ui->set_show_context_menu(false);
+                        return;
+                    }
+
                     _ui->set_show_context_menu(false);
 
                     if (_compass_axis.has_value())
@@ -523,6 +533,7 @@ namespace trview
             {
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
+                _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
             }
@@ -950,6 +961,11 @@ namespace trview
                 return;
             }
 
+            if (_ui->show_context_menu())
+            {
+                _ui->set_show_context_menu(false);
+            }
+
             ICamera& camera = current_camera();
             const float low_sensitivity = 200.0f;
             const float high_sensitivity = 25.0f;
@@ -992,6 +1008,11 @@ namespace trview
             if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
             {
                 return;
+            }
+
+            if (_ui->show_context_menu())
+            {
+                _ui->set_show_context_menu(false);
             }
 
             ICamera& camera = current_camera();

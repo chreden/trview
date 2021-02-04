@@ -277,6 +277,9 @@ namespace trview
         /// Get whether wireframe is visible.
         bool show_wireframe() const;
 
+        /// Get whether the context menu is visible.
+        bool show_context_menu() const;
+
         /// Toggle the visibility of the settings window.
         void toggle_settings_visibility();
 

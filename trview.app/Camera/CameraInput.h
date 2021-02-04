@@ -45,7 +45,8 @@ namespace trview
         void mouse_scroll(int16_t scroll);
 
         /// Reset all input states.
-        void reset();
+        /// @param ignore_key_states Whether to set everything to false regardless of the actual state.
+        void reset(bool ignore_key_states = false);
 
         /// Event raised when the camera needs to be rotated.
         Event<float, float> on_rotate;

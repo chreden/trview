@@ -130,3 +130,18 @@ TEST(ContextMenu, RemoveWaypointRaised)
     button->clicked(Point());
     ASSERT_TRUE(raised);
 }
+
+TEST(ContextMenu, ShowContextMenu)
+{
+    ui::Window parent(Size(800, 600), Colour::Transparent);
+    ContextMenu menu(parent);
+
+    auto control = menu.control();
+    ASSERT_NE(control, nullptr);
+    ASSERT_FALSE(control->visible());
+    ASSERT_FALSE(menu.visible());
+    
+    menu.set_visible(true);
+    ASSERT_TRUE(menu.visible());
+    ASSERT_TRUE(control->visible());
+}
