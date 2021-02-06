@@ -335,7 +335,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const int flags = ocb & 0x3F;
-        if (_meshes.size() == 1 && equals_any(flags, 0, 3, 4, 7, 11))
+        if (_meshes.size() == 1 && equals_any(flags, 0, 3, 7, 11))
         {
             Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
             _world *= offset;
