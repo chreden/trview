@@ -5,6 +5,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
+#include <trview.common/Algorithms.h>
 
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
@@ -333,9 +334,8 @@ namespace trview
     void Entity::apply_ocb_adjustment(uint32_t ocb)
     {
         using namespace DirectX::SimpleMath;
-        const auto flags = ocb & 0x3F;
-        if (_meshes.size() == 1 &&
-            flags == 0 || flags == 3 || flags == 4 || flags == 7 || flags == 8 || flags == 11)
+        const int flags = ocb & 0x3F;
+        if (_meshes.size() == 1 && equals_any(flags, 0, 3, 4, 7, 11))
         {
             Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
             _world *= offset;

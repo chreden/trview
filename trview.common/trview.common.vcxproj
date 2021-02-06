@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
