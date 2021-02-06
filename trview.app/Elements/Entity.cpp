@@ -40,7 +40,12 @@ namespace trview
             _position = entity.position();
         }
 
-        generate_bounding_box(entity.Intensity2);
+        generate_bounding_box();
+
+        if (level.get_version() >= trlevel::LevelVersion::Tomb4)
+        {
+            apply_ocb_adjustment(entity.Intensity2);
+        }
     }
 
     void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -285,7 +290,7 @@ namespace trview
         return result;
     }
 
-    void Entity::generate_bounding_box(uint32_t ocb)
+    void Entity::generate_bounding_box()
     {
         using namespace DirectX;
 
@@ -327,8 +332,6 @@ namespace trview
 
         // Create an axis-aligned BB from the points of the oriented ones.
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
-
-        apply_ocb_adjustment(ocb);
     }
 
     void Entity::apply_ocb_adjustment(uint32_t ocb)
