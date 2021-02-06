@@ -251,8 +251,8 @@ namespace trview
         auto position_text = [&item]()
         {
             std::wstringstream stream;
-            stream.precision(0);
-            stream << item.position().x * trlevel::Scale_X << L", " <<
+            stream << std::fixed << std::setprecision(0) <<
+                item.position().x * trlevel::Scale_X << L", " <<
                 item.position().y * trlevel::Scale_Y << L", " <<
                 item.position().z * trlevel::Scale_Z;
             return stream.str();
