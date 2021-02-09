@@ -5,6 +5,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
+#include <trview.common/Algorithms.h>
 
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
@@ -40,6 +41,11 @@ namespace trview
         }
 
         generate_bounding_box();
+
+        if (level.get_version() >= trlevel::LevelVersion::Tomb4)
+        {
+            apply_ocb_adjustment(entity.Intensity2);
+        }
     }
 
     void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -326,6 +332,26 @@ namespace trview
 
         // Create an axis-aligned BB from the points of the oriented ones.
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
+    }
+
+    void Entity::apply_ocb_adjustment(uint32_t ocb)
+    {
+        using namespace DirectX::SimpleMath;
+        const int flags = ocb & 0x3F;
+        // This assumes that pickups only have one mesh, as a general rule (it seems to work most of the time).
+        // Applying OCB adjustment without this test when OCB is 0 makes Lara and other entities move up, which
+        // isn't right.
+        if (_meshes.size() == 1 && equals_any(flags, 0, 3, 7, 11))
+        {
+            Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
+            _world *= offset;
+
+            for (auto& obb : _oriented_boxes)
+            {
+                obb.Transform(obb, offset);
+            }
+            _bounding_box.Transform(_bounding_box, offset);
+        }
     }
 
     DirectX::BoundingBox Entity::bounding_box() const

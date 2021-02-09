@@ -46,6 +46,7 @@ namespace trview
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
         void load_sprite(const graphics::Device& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
         void generate_bounding_box();
+        void apply_ocb_adjustment(uint32_t ocb);
 
         DirectX::SimpleMath::Matrix               _world;
         std::vector<Mesh*>                        _meshes;

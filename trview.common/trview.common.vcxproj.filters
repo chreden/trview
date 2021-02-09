@@ -24,6 +24,8 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="Algorithms.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
