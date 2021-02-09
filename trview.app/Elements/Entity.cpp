@@ -338,6 +338,9 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
         const int flags = ocb & 0x3F;
+        // This assumes that pickups only have one mesh, as a general rule (it seems to work most of the time).
+        // Applying OCB adjustment without this test when OCB is 0 makes Lara and other entities move up, which
+        // isn't right.
         if (_meshes.size() == 1 && equals_any(flags, 0, 3, 7, 11))
         {
             Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
