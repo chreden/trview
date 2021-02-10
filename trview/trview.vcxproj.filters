@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Program">
-      <UniqueIdentifier>{ccc85673-5a75-47e9-a108-5f6c027fb645}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{94ba7176-10d8-4cf9-b2f2-e6a6d554e70a}</UniqueIdentifier>
     </Filter>
@@ -19,9 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Viewer.h">
-      <Filter>Program</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Win</Filter>
     </ClInclude>
@@ -48,9 +42,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Viewer.cpp">
-      <Filter>Program</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Win</Filter>
     </ClCompile>
@@ -68,9 +59,6 @@
     </ClCompile>
     <ClCompile Include="DefaultFonts.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerLuaRegistry.cpp">
-      <Filter>Program</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

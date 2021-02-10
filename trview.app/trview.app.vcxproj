@@ -89,6 +89,8 @@
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
+    <ClCompile Include="Windows\Viewer.cpp" />
+    <ClCompile Include="Windows\ViewerLuaRegistry.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +165,7 @@
     <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
+    <ClInclude Include="Windows\Viewer.h" />
     <ClInclude Include="Windows\WindowIDs.h" />
     <ClInclude Include="Windows\WindowResizer.h" />
   </ItemGroup>
