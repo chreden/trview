@@ -57,6 +57,10 @@
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
+    <ClCompile Include="Resources\DefaultFonts.cpp" />
+    <ClCompile Include="Resources\DefaultShaders.cpp" />
+    <ClCompile Include="Resources\DefaultTextures.cpp" />
+    <ClCompile Include="Resources\ResourceHelper.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
@@ -138,6 +142,12 @@
     <ClInclude Include="Menus\RecentFiles.h" />
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
+    <ClInclude Include="Resources\DefaultFonts.h" />
+    <ClInclude Include="Resources\DefaultShaders.h" />
+    <ClInclude Include="Resources\DefaultTextures.h" />
+    <ClInclude Include="Resources\resource.h" />
+    <ClInclude Include="Resources\ResourceHelper.h" />
+    <ClInclude Include="Resources\targetver.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
     <ClInclude Include="Settings\UserSettings.h" />
@@ -168,6 +178,29 @@
     <ClInclude Include="Windows\Viewer.h" />
     <ClInclude Include="Windows\WindowIDs.h" />
     <ClInclude Include="Windows\WindowResizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\trview.app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Files\numericdown.png" />
+    <Image Include="Resources\Files\numericup.png" />
+    <Image Include="Resources\Files\settings.png" />
+    <Image Include="Resources\Files\tomb1.png" />
+    <Image Include="Resources\Files\tomb2.png" />
+    <Image Include="Resources\Files\tomb3.png" />
+    <Image Include="Resources\Files\tomb4.png" />
+    <Image Include="Resources\Files\tomb5.png" />
+    <Image Include="Resources\Files\unknown.png" />
+    <Image Include="small.ico" />
+    <Image Include="trview.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Generated\level_pixel_shader.cso" />
+    <None Include="Resources\Generated\level_vertex_shader.cso" />
+    <None Include="Resources\Generated\selection_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_vertex_shader.cso" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\lua\lua.vcxproj">

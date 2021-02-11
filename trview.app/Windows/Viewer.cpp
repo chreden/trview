@@ -10,13 +10,13 @@
 #include <trview.graphics/ViewportStore.h>
 #include <trview.input/WindowTester.h>
 
-#include "DefaultTextures.h"
-#include "DefaultShaders.h"
-#include "DefaultFonts.h"
+#include "Resources/DefaultTextures.h"
+#include "Resources/DefaultShaders.h"
+#include "Resources/DefaultFonts.h"
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/Elements/TypeNameLookup.h>
-#include "ResourceHelper.h"
-#include "resource.h"
+#include "Resources/ResourceHelper.h"
+#include "Resources/resource.h"
 
 #include <trview.common/Strings.h>
 

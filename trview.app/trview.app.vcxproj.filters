@@ -203,6 +203,18 @@
     <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Resources\DefaultFonts.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\DefaultShaders.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\DefaultTextures.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceHelper.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -425,6 +437,24 @@
     <ClInclude Include="Windows\Viewer.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultFonts.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultShaders.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultTextures.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceHelper.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\targetver.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -460,5 +490,58 @@
     <Filter Include="Lua">
       <UniqueIdentifier>{8fe99dfb-e6c8-4786-8bfa-952a19ea124a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{021610f0-b987-420f-bf87-6cfc739390a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Files">
+      <UniqueIdentifier>{49faf3bb-6ba0-4d4a-ad01-5d2d70ab5bee}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Files\numericdown.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\numericup.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\settings.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb1.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb3.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb2.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb5.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="trview.ico">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb4.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\unknown.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Generated\level_pixel_shader.cso" />
+    <None Include="Resources\Generated\level_vertex_shader.cso" />
+    <None Include="Resources\Generated\selection_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_vertex_shader.cso" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\trview.app.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "CollapsiblePanel.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
-#include <trview/resource.h>
+#include <trview.app/Resources/resource.h>
 
 using namespace trview::graphics;
 using namespace trview::ui;

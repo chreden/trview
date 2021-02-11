@@ -1,4 +1,5 @@
 #include "Viewer.h" 
+#include <trview.common/Strings.h>
 
 namespace trview
 {

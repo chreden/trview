@@ -1,6 +1,6 @@
 #include "TriggersWindow.h"
 #include <trview.common/Colour.h>
-#include <trview/resource.h>
+#include <trview.app/Resources/resource.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/GroupBox.h>

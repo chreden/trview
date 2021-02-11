@@ -2,9 +2,7 @@
 //
 
 #include "trview.h"
-#include "resource.h"
-
-#include "Viewer.h"
+#include <trview.app/Windows/Viewer.h>
 
 #define MAX_LOADSTRING 100
 

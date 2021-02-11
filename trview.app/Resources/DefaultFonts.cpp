@@ -1,6 +1,8 @@
 #include "DefaultFonts.h"
 #include "resource.h"
 #include "ResourceHelper.h"
+#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/Device.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;
