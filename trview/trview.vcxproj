@@ -102,9 +102,6 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,9 +123,6 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -154,9 +148,6 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -182,9 +173,6 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

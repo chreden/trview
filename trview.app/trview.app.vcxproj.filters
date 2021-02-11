@@ -496,6 +496,9 @@
     <Filter Include="Resources\Files">
       <UniqueIdentifier>{49faf3bb-6ba0-4d4a-ad01-5d2d70ab5bee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Generated">
+      <UniqueIdentifier>{15b63c6f-69e1-4682-bd97-031bcda2ff23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\numericdown.png">
@@ -533,11 +536,21 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Generated\level_pixel_shader.cso" />
-    <None Include="Resources\Generated\level_vertex_shader.cso" />
-    <None Include="Resources\Generated\selection_pixel_shader.cso" />
-    <None Include="Resources\Generated\ui_pixel_shader.cso" />
-    <None Include="Resources\Generated\ui_vertex_shader.cso" />
+    <None Include="Resources\Generated\level_pixel_shader.cso">
+        <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\level_vertex_shader.cso">
+        <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\selection_pixel_shader.cso">
+        <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\ui_pixel_shader.cso">
+        <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\ui_vertex_shader.cso">
+        <Filter>Resources\Generated</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

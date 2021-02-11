@@ -18,6 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\Resources\Generated"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
