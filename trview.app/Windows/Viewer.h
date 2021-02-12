@@ -57,7 +57,7 @@ namespace trview
     }
 
     /// Class that coordinates all the parts of the application.
-    class Viewer
+    class Viewer : public MessageHandler
     {
     public:
         /// Create a new viewer.
@@ -65,7 +65,7 @@ namespace trview
         explicit Viewer(const Window& window);
 
         /// Destructor for the viewer.
-        ~Viewer();
+        virtual ~Viewer();
 
         /// Render the viewer.
         void render();
@@ -85,6 +85,8 @@ namespace trview
         /// Event raised when the recent files list is updated.
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::string>> on_recent_files_changed;
+
+        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
     private:
         void initialise_input();
         void toggle_highlight();
@@ -134,7 +136,6 @@ namespace trview
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
         std::unique_ptr<Level> _level;
-        Window _window;
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;

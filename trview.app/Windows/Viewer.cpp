@@ -25,10 +25,28 @@ namespace trview
     namespace
     {
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
+
+        INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+        {
+            UNREFERENCED_PARAMETER(lParam);
+            switch (message)
+            {
+                case WM_INITDIALOG:
+                    return (INT_PTR)TRUE;
+                case WM_COMMAND:
+                    if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+                    {
+                        EndDialog(hDlg, LOWORD(wParam));
+                        return (INT_PTR)TRUE;
+                    }
+                    break;
+            }
+            return (INT_PTR)FALSE;
+        }
     }
 
     Viewer::Viewer(const Window& window)
-        : _window(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
+        : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)), _level_switcher(window),
         _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window), _menu_detector(window)
@@ -120,7 +138,7 @@ namespace trview
         _texture_storage = std::make_unique<TextureStorage>(_device);
         load_default_textures(_device, *_texture_storage.get());
 
-        _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage, _shortcuts);
+        _ui = std::make_unique<ViewerUI>(this->window(), _device, *_shader_storage, _font_factory, *_texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -373,6 +391,70 @@ namespace trview
         save_user_settings(_settings);
     }
 
+    void Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
+    {
+        switch (message)
+        {
+            case WM_COMMAND:
+            {
+                int wmId = LOWORD(wParam);
+
+                // Parse the menu selections:
+                switch (wmId)
+                {
+                    case IDM_ABOUT:
+                        DialogBox(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_ABOUTBOX), window(), About);
+                        break;
+                    case ID_FILE_OPEN:
+                    case ID_ACCEL_FILE_OPEN:
+                    {
+                        wchar_t cd[MAX_PATH];
+                        GetCurrentDirectoryW(MAX_PATH, cd);
+
+                        OPENFILENAME ofn;
+                        memset(&ofn, 0, sizeof(ofn));
+
+                        wchar_t path[MAX_PATH];
+                        memset(&path, 0, sizeof(path));
+
+                        ofn.lStructSize = sizeof(ofn);
+                        ofn.lpstrFile = path;
+                        ofn.nMaxFile = MAX_PATH;
+                        ofn.lpstrTitle = L"Open level";
+                        ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
+                        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+                        if (GetOpenFileName(&ofn))
+                        {
+                            SetCurrentDirectory(cd);
+                            open(trview::to_utf8(ofn.lpstrFile));
+                        }
+                        break;
+                    }
+                    case ID_HELP_GITHUB:
+                    {
+                        ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
+                        break;
+                    }
+                    case ID_HELP_DISCORD:
+                    {
+                        ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
+                        break;
+                    }
+                    case IDM_EXIT:
+                        DestroyWindow(window());
+                        break;
+                }
+                break;
+            }
+            case WM_DESTROY:
+            {
+                PostQuitMessage(0);
+                break;
+            }
+        }
+    }
+
     UserSettings Viewer::settings() const
     {
         return _settings;
@@ -565,7 +647,7 @@ namespace trview
         }
         catch(...)
         {
-            MessageBox(_window.window(), L"Failed to load level", L"Error", MB_OK);
+            MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
             return;
         }
 
@@ -625,7 +707,7 @@ namespace trview
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _level->version());
-        _window.set_title("trview - " + name);
+        window().set_title("trview - " + name);
         _measure->reset();
         _route->clear();
         _route_window_manager->set_route(_route.get());
@@ -639,7 +721,7 @@ namespace trview
     void Viewer::render()
     {
         // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
-        if (window_is_minimised(_window))
+        if (window_is_minimised(window()))
         {
             Sleep(1);
             return;
@@ -650,7 +732,7 @@ namespace trview
 
         if (_mouse_changed || _scene_changed)
         {
-            _picking->pick(_window, current_camera());
+            _picking->pick(window(), current_camera());
             _mouse_changed = false;
         }
 
@@ -672,7 +754,7 @@ namespace trview
                 _scene_changed = false;
             }
 
-            _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+            _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, window().size().width, window().size().height);
             _ui->set_camera_position(current_camera().position());
 
             _ui->render(_device);
@@ -691,7 +773,7 @@ namespace trview
 
     bool Viewer::should_pick() const
     {
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
+        return !(!_level || window_under_cursor() != window() || window_is_minimised(window()) || _ui->is_cursor_over() || cursor_outside_window(window()));
     }
 
     void Viewer::render_scene()
@@ -927,7 +1009,7 @@ namespace trview
 
     void Viewer::resize_elements()
     {
-        const auto size = _window.size();
+        const auto size = window().size();
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
@@ -947,7 +1029,7 @@ namespace trview
         _token_store += _mouse.mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
         _token_store += _mouse.mouse_wheel += [&](int16_t scroll) 
         {
-            if (window_under_cursor() == _window)
+            if (window_under_cursor() == window())
             {
                 _ui->set_show_context_menu(false);
                 _camera_input.mouse_scroll(scroll);

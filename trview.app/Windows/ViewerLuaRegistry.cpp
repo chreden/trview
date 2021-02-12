@@ -140,7 +140,7 @@ namespace trview
         _lua_registry.on_crazy = [this] () -> bool
             {
             const int result = MessageBox ( 
-                _window.window (), 
+                window(), 
                 L"Script has been running for a long time and may have gone crazy. Do you want to kill it?", 
                 L"Lua Script error", 
                 MB_YESNO );

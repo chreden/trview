@@ -44,7 +44,7 @@ namespace trview
 
         /// Gets the window that the handler is listening to.
         /// @returns The window handle.
-        const Window& window() const;
+        Window window() const;
     private:
         Window _window;
         uint32_t _subclass_id;
