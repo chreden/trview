@@ -25,7 +25,6 @@
 #include <iomanip>
 #include <memory>
 
-#include <directxmath.h>
 #include <commdlg.h>
 #include <shellapi.h>
 #include <Shlwapi.h>

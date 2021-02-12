@@ -1,7 +1,7 @@
 // trview.cpp : Defines the entry point for the application.
 //
 
-#include "trview.h"
+#include <trview.app/Resources/resource.h>
 #include <trview.app/Windows/Viewer.h>
 
 #define MAX_LOADSTRING 100

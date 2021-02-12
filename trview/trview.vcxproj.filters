@@ -1,24 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Win">
-      <UniqueIdentifier>{19537d19-9f7b-4110-a120-984dd4b941de}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Win</Filter>
-    </ClInclude>
-    <ClInclude Include="trview.h">
-      <Filter>Win</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Win</Filter>
-    </ClCompile>
-    <ClCompile Include="trview.cpp">
-      <Filter>Win</Filter>
-    </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="trview.cpp" />
   </ItemGroup>
 </Project>
