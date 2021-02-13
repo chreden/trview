@@ -215,6 +215,7 @@
     <ClCompile Include="Resources\ResourceHelper.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Application.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -455,6 +456,7 @@
     <ClInclude Include="Resources\targetver.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Application.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -534,27 +536,36 @@
     <Image Include="Resources\Files\unknown.png">
       <Filter>Resources\Files</Filter>
     </Image>
+    <Image Include="Resources\Files\trview.ico" />
+    <Image Include="Resources\Files\small.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Generated\level_pixel_shader.cso">
-        <Filter>Resources\Generated</Filter>
+      <Filter>Resources\Generated</Filter>
     </None>
     <None Include="Resources\Generated\level_vertex_shader.cso">
-        <Filter>Resources\Generated</Filter>
+      <Filter>Resources\Generated</Filter>
     </None>
     <None Include="Resources\Generated\selection_pixel_shader.cso">
-        <Filter>Resources\Generated</Filter>
+      <Filter>Resources\Generated</Filter>
     </None>
     <None Include="Resources\Generated\ui_pixel_shader.cso">
-        <Filter>Resources\Generated</Filter>
+      <Filter>Resources\Generated</Filter>
     </None>
     <None Include="Resources\Generated\ui_vertex_shader.cso">
-        <Filter>Resources\Generated</Filter>
+      <Filter>Resources\Generated</Filter>
     </None>
+    <None Include="Resources\Files\arial8.bin" />
+    <None Include="Resources\Files\arial7.bin" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Files\texturelist.txt" />
+    <Text Include="Resources\Files\fontlist.txt" />
+    <Text Include="Resources\Files\type_names.txt" />
   </ItemGroup>
 </Project>

@@ -27,6 +27,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Camera\CameraMode.cpp" />
@@ -106,6 +107,7 @@
     <ClCompile Include="Windows\WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Camera\CameraInput.h" />
     <ClInclude Include="Camera\CameraMode.h" />
@@ -194,16 +196,20 @@
     <Image Include="Resources\Files\numericdown.png" />
     <Image Include="Resources\Files\numericup.png" />
     <Image Include="Resources\Files\settings.png" />
+    <Image Include="Resources\Files\small.ico" />
     <Image Include="Resources\Files\tomb1.png" />
     <Image Include="Resources\Files\tomb2.png" />
     <Image Include="Resources\Files\tomb3.png" />
     <Image Include="Resources\Files\tomb4.png" />
     <Image Include="Resources\Files\tomb5.png" />
+    <Image Include="Resources\Files\trview.ico" />
     <Image Include="Resources\Files\unknown.png" />
     <Image Include="small.ico" />
     <Image Include="trview.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Files\arial7.bin" />
+    <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />
     <None Include="Resources\Generated\selection_pixel_shader.cso" />
@@ -229,6 +235,11 @@
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Files\fontlist.txt" />
+    <Text Include="Resources\Files\texturelist.txt" />
+    <Text Include="Resources\Files\type_names.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
