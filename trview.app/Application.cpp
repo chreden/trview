@@ -12,20 +12,12 @@ namespace trview
         const std::wstring window_class{ L"TRVIEW" };
         const std::wstring window_title{ L"trview" };
 
-        std::wstring get_exe_directory()
-        {
-            std::vector<wchar_t> exe_directory(MAX_PATH);
-            GetModuleFileName(nullptr, &exe_directory[0], static_cast<uint32_t>(exe_directory.size()));
-            PathRemoveFileSpec(&exe_directory[0]);
-            return std::wstring(exe_directory.begin(), exe_directory.end());
-        }
-
         LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 
-        ATOM MyRegisterClass(HINSTANCE hInstance)
+        ATOM register_class(HINSTANCE hInstance)
         {
             WNDCLASSEXW wcex;
 
@@ -46,7 +38,7 @@ namespace trview
             return RegisterClassExW(&wcex);
         }
 
-        HWND InitInstance(HINSTANCE hInstance, int nCmdShow)
+        HWND create_window(HINSTANCE hInstance, int nCmdShow)
         {
             HWND window = CreateWindowW(window_class.c_str(), window_title.c_str(), WS_OVERLAPPEDWINDOW,
                 CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
@@ -64,19 +56,16 @@ namespace trview
     }
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
+        : _instance(hInstance)
     {
-        MyRegisterClass(hInstance);
+        register_class(_instance);
 
-        HWND window = InitInstance(hInstance, command_show);
+        HWND window = create_window(_instance, command_show);
         if (!window)
         {
             // Convert to throw?
             return;
         }
-
-        // Set the current directory to the directory that the exe is running from
-        // so that the shaders can be found.
-        SetCurrentDirectory(get_exe_directory().c_str());
 
         _viewer = std::make_unique<Viewer>(window);
 

@@ -11,6 +11,6 @@ namespace trview
         int run();
     private:
         std::unique_ptr<Viewer> _viewer;
-        HINSTANCE _instance;
+        HINSTANCE _instance{ nullptr };
     };
 }
