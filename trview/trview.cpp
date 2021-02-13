@@ -3,6 +3,7 @@
 
 #include <trview.app/Resources/resource.h>
 #include <trview.app/Windows/Viewer.h>
+#include <Trview.app/Application.h>
 
 #define MAX_LOADSTRING 100
 
@@ -33,6 +34,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+    trview::Application application(hInstance, lpCmdLine, nCmdShow);
+    application.run();
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
