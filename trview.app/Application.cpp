@@ -77,7 +77,7 @@ namespace trview
     }
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
-        : MessageHandler(create_window(_instance, command_show)), _instance(hInstance), _viewer(window()),
+        : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance), _viewer(window()),
         _level_switcher(window()), _recent_files(window())
     {
         _settings = load_user_settings();

@@ -31,9 +31,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_TRVIEW              ICON                    "Files/trview.ico"
+IDI_TRVIEW              ICON                    "Files\\trview.ico"
 
-IDI_SMALL               ICON                    "Files/small.ico"
+IDI_SMALL               ICON                    "Files\\small.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
