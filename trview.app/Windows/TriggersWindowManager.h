@@ -24,7 +24,7 @@ namespace trview
         /// @param shader_storage The shader storage for triggers windows.
         /// @param font_factory The font_factory for triggers windows.
         /// @param window The parent window of the triggers window.
-        explicit TriggersWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit TriggersWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the TriggersWindowManager.
         virtual ~TriggersWindowManager() = default;
@@ -81,7 +81,7 @@ namespace trview
         std::vector<Trigger*> _triggers;
         graphics::Device& _device;
         const graphics::IShaderStorage& _shader_storage;
-        graphics::IFontFactory& _font_factory;
+        const graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<const Trigger*> _selected_trigger;

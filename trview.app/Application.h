@@ -48,6 +48,7 @@ namespace trview
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
         std::unique_ptr<Level> _level;
+        graphics::FontFactory _font_factory;
         HINSTANCE _instance{ nullptr };
     };
 }

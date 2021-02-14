@@ -14,7 +14,7 @@ namespace trview
     class RouteWindowManager final : public MessageHandler
     {
     public:
-        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         virtual ~RouteWindowManager() = default;
 
@@ -71,7 +71,7 @@ namespace trview
     private:
         graphics::Device& _device;
         const graphics::IShaderStorage& _shader_storage;
-        const graphics::FontFactory& _font_factory;
+        const graphics::IFontFactory& _font_factory;
         TokenStore _token_store;
         std::unique_ptr<RouteWindow> _route_window;
         bool _closing{ false };

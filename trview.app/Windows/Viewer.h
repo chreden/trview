@@ -48,7 +48,7 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
-        class FontFactory;
+        struct IFontFactory;
         class DeviceWindow;
     }
 
@@ -58,7 +58,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -136,7 +136,6 @@ namespace trview
         CameraInput _camera_input;
         std::unique_ptr<ITextureStorage> _texture_storage;
         const graphics::IShaderStorage& _shader_storage;
-        graphics::FontFactory _font_factory;
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;

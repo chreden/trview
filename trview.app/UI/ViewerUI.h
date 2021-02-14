@@ -45,7 +45,7 @@ namespace trview
         explicit ViewerUI(const Window& window, 
             const graphics::Device& device, 
             const graphics::IShaderStorage& shader_storage,
-            const graphics::FontFactory& font_factory,
+            const graphics::IFontFactory& font_factory,
             const ITextureStorage& texture_storage,
             Shortcuts& shortcuts);
 

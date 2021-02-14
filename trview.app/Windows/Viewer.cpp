@@ -11,7 +11,6 @@
 #include <trview.input/WindowTester.h>
 
 #include "Resources/DefaultTextures.h"
-#include "Resources/DefaultFonts.h"
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/Elements/TypeNameLookup.h>
 #include "Resources/ResourceHelper.h"
@@ -26,7 +25,7 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory)
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
         _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window),
@@ -39,10 +38,10 @@ namespace trview
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
-        load_default_fonts(_device, _font_factory);
+        
 
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -57,7 +56,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -72,7 +71,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -101,7 +100,7 @@ namespace trview
         _texture_storage = std::make_unique<TextureStorage>(_device);
         load_default_textures(_device, *_texture_storage.get());
 
-        _ui = std::make_unique<ViewerUI>(this->window(), _device, _shader_storage, _font_factory, *_texture_storage, _shortcuts);
+        _ui = std::make_unique<ViewerUI>(this->window(), _device, _shader_storage, font_factory, *_texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -189,7 +188,7 @@ namespace trview
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);

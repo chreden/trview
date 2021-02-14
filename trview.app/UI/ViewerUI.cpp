@@ -12,7 +12,7 @@ using namespace trview::ui;
 
 namespace trview
 {
-    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const ITextureStorage& texture_storage, Shortcuts& shortcuts)
+    ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const ITextureStorage& texture_storage, Shortcuts& shortcuts)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);

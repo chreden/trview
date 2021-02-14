@@ -13,6 +13,7 @@
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
 #include "Resources/DefaultShaders.h"
+#include "Resources/DefaultFonts.h"
 #include "Elements/TypeNameLookup.h"
 
 namespace trview
@@ -106,8 +107,9 @@ namespace trview
 
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
+        load_default_fonts(_device, _font_factory);
 
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get());
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory);
         _viewer->set_settings(_settings);
 
         // Open the level passed in on the command line, if there is one.
