@@ -47,7 +47,7 @@ namespace trview
 
     Viewer::Viewer(const Window& window)
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
-        _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)), _level_switcher(window),
+        _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
         _window_resizer(window), _file_dropper(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window), _menu_detector(window)
     {
@@ -108,9 +108,6 @@ namespace trview
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-
-        _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
-        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
         _token_store += _window_resizer.on_resize += [=]()
         {

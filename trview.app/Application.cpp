@@ -59,9 +59,13 @@ namespace trview
     }
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
-        : MessageHandler(create_window(_instance, command_show)), _instance(hInstance), _viewer(window()), _recent_files(window())
+        : MessageHandler(create_window(_instance, command_show)), _instance(hInstance), _viewer(window()),
+        _level_switcher(window()), _recent_files(window())
     {
         _settings = load_user_settings();
+
+        _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
+        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
         _recent_files.set_recent_files(_settings.recent_files);
         _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
@@ -94,7 +98,7 @@ namespace trview
             return;
         }
 
-        // on_file_loaded(filename);
+        on_file_loaded(filename);
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);

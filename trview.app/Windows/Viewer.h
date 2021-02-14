@@ -23,7 +23,6 @@
 #include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
-#include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
@@ -72,10 +71,6 @@ namespace trview
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         void open(const std::string& filename);
-
-        /// Event raised when a level file is successfully opened.
-        /// @remarks The filename is passed as a parameter to the listener functions.
-        Event<std::string> on_file_loaded;
 
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
@@ -147,7 +142,6 @@ namespace trview
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;
-        LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
         FileDropper _file_dropper;
         TokenStore _token_store;

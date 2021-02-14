@@ -2,6 +2,7 @@
 
 #include <trview.app/Windows/Viewer.h>
 #include <trview.common/Window.h>
+#include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 
 namespace trview
@@ -16,6 +17,10 @@ namespace trview
         /// @remarks The list of filenames is passed as a parameter to the listener functions.
         Event<std::list<std::string>> on_recent_files_changed;
 
+        /// Event raised when a level file is successfully opened.
+        /// @remarks The filename is passed as a parameter to the listener functions.
+        Event<std::string> on_file_loaded;
+
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         void open(const std::string& filename);
@@ -25,9 +30,10 @@ namespace trview
         int run();
     private:
         Viewer _viewer;
-        HINSTANCE _instance{ nullptr };
         UserSettings _settings;
+        LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
         TokenStore _token_store;
+        HINSTANCE _instance{ nullptr };
     };
 }
