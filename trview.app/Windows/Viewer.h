@@ -36,7 +36,6 @@
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
-#include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
@@ -172,7 +171,6 @@ namespace trview
         bool _mouse_changed{ true };
         bool _ui_changed{ true };
 
-        UpdateChecker _update_checker;
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
 
         std::vector<PickResult> _recent_orbits;

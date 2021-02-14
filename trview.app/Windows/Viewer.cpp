@@ -31,10 +31,8 @@ namespace trview
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
         _window_resizer(window), _alternate_group_toggler(window),
-        _view_menu(window), _update_checker(window), _menu_detector(window)
+        _view_menu(window), _menu_detector(window)
     {
-        _update_checker.check_for_updates();
-
         apply_acceleration_settings();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");

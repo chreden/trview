@@ -5,6 +5,7 @@
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
+#include <trview.app/Menus/UpdateChecker.h>
 
 namespace trview
 {
@@ -35,6 +36,7 @@ namespace trview
         FileDropper _file_dropper;
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
+        UpdateChecker _update_checker;
         TokenStore _token_store;
         HINSTANCE _instance{ nullptr };
     };
