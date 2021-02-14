@@ -26,7 +26,7 @@ namespace trview
         /// @param shader_storage The shader storage for items windows.
         /// @param font_factory The font_factory for items windows.
         /// @param window The parent window of the items window.
-        explicit ItemsWindowManager(graphics::Device& device, graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit ItemsWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, graphics::IFontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;
@@ -82,7 +82,7 @@ namespace trview
         std::vector<Item> _items;
         std::vector<Trigger*> _triggers;
         graphics::Device& _device;
-        graphics::IShaderStorage& _shader_storage;
+        const graphics::IShaderStorage& _shader_storage;
         graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;

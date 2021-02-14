@@ -58,7 +58,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -68,7 +68,7 @@ namespace trview
 
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        void open(const std::string& filename);
+        void open(Level* level);
 
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
@@ -119,13 +119,13 @@ namespace trview
         void register_lua();
         void apply_acceleration_settings();
 
-        graphics::Device _device;
+        graphics::Device& _device;
         Shortcuts _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
-        std::unique_ptr<Level> _level;
+        Level* _level;
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;
@@ -135,7 +135,7 @@ namespace trview
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         std::unique_ptr<ITextureStorage> _texture_storage;
-        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
+        const graphics::IShaderStorage& _shader_storage;
         graphics::FontFactory _font_factory;
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
@@ -170,8 +170,6 @@ namespace trview
         bool _scene_changed{ true };
         bool _mouse_changed{ true };
         bool _ui_changed{ true };
-
-        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };

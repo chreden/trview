@@ -147,6 +147,10 @@ namespace trview
         Event<> on_level_changed;
 
         trlevel::LevelVersion version() const;
+
+        std::string filename() const;
+
+        void set_filename(const std::string& filename);
     private:
         void generate_rooms(const graphics::Device& device, const trlevel::ILevel& level);
         void generate_triggers();
@@ -221,6 +225,7 @@ namespace trview
         std::unique_ptr<SelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
         trlevel::LevelVersion _version;
+        std::string _filename;
     };
 
     /// Find the first item with the type id specified.

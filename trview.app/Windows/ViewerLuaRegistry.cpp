@@ -9,13 +9,15 @@ namespace trview
             {
             auto i = static_cast<std::size_t> (index);
             const auto& config = _settings;
-            if ( i > 0 && i <= config.recent_files.size () )
-                open ( *std::next ( config.recent_files.begin (), i - 1 ) );
+            if (i > 0 && i <= config.recent_files.size())
+            {
+                // open(*std::next(config.recent_files.begin(), i - 1));
+            }
             };
 
         _lua_registry.trview_open = [this] ( const std::string& path )
             {
-            open ( path );
+            // open ( path );
             };
 
         _lua_registry.trview_currentroom = [this] () -> int

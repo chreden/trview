@@ -1,11 +1,17 @@
 #pragma once
 
-#include <trview.app/Windows/Viewer.h>
 #include <trview.common/Window.h>
+
+#include <trview.app/Windows/Viewer.h>
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/Elements/Level.h>
+#include <trview.app/Elements/ITypeNameLookup.h>
+
+#include <trview.graphics/Device.h>
+#include <trview.graphics/IShaderStorage.h>
 
 namespace trview
 {
@@ -31,13 +37,17 @@ namespace trview
 
         int run();
     private:
-        Viewer _viewer;
         UserSettings _settings;
         FileDropper _file_dropper;
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
         UpdateChecker _update_checker;
         TokenStore _token_store;
+        graphics::Device _device;
+        std::unique_ptr<Viewer> _viewer;
+        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
+        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
+        std::unique_ptr<Level> _level;
         HINSTANCE _instance{ nullptr };
     };
 }

@@ -1,10 +1,19 @@
 #include "Application.h"
-#include "Resources/resource.h"
+
 #include <shellapi.h>
 #include <Shlwapi.h>
 #include <commdlg.h>
-#include <trview.common/Strings.h>
+
 #include <trlevel/trlevel.h>
+
+#include <trview.common/Strings.h>
+
+#include <trview.graphics/ShaderStorage.h>
+
+#include "Resources/resource.h"
+#include "Resources/ResourceHelper.h"
+#include "Resources/DefaultShaders.h"
+#include "Elements/TypeNameLookup.h"
 
 namespace trview
 {
@@ -77,13 +86,11 @@ namespace trview
     }
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
-        : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance), _viewer(window()),
+        : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance),
         _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(window())
     {
         _update_checker.check_for_updates();
-
         _settings = load_user_settings();
-        _viewer.set_settings(_settings);
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
@@ -94,12 +101,21 @@ namespace trview
         _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
         _token_store += on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
 
+        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
+
+        _shader_storage = std::make_unique<graphics::ShaderStorage>();
+        load_default_shaders(_device, *_shader_storage.get());
+
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get());
+        _viewer->set_settings(_settings);
+
         // Open the level passed in on the command line, if there is one.
         int number_of_arguments = 0;
         const LPWSTR* const arguments = CommandLineToArgvW(command_line.c_str(), &number_of_arguments);
         if (number_of_arguments > 1)
         {
-            _viewer.open(trview::to_utf8(arguments[1]));
+            open(trview::to_utf8(arguments[1]));
         }
     }
 
@@ -125,12 +141,15 @@ namespace trview
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
         save_user_settings(_settings);
-        _viewer.set_settings(_settings);
+        _viewer->set_settings(_settings);
 
-        _viewer.open(filename);
+        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        _level->set_filename(filename);
+
+        _viewer->open(_level.get());
 
         /*
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
@@ -280,7 +299,7 @@ namespace trview
                 }
             }
 
-            _viewer.render();
+            _viewer->render();
             Sleep(1);
         }
 

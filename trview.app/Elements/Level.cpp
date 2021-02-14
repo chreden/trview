@@ -652,6 +652,16 @@ namespace trview
         return _version;
     }
 
+    std::string Level::filename() const
+    {
+        return _filename;
+    }
+
+    void Level::set_filename(const std::string& filename)
+    {
+        _filename = filename;
+    }
+
     bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();

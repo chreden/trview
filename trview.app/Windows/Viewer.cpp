@@ -11,7 +11,6 @@
 #include <trview.input/WindowTester.h>
 
 #include "Resources/DefaultTextures.h"
-#include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/Elements/TypeNameLookup.h>
@@ -27,29 +26,23 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage)
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
-        _window_resizer(window), _alternate_group_toggler(window),
-        _view_menu(window), _menu_detector(window)
+        _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window),
+        _shader_storage(shader_storage), _device(device)
     {
         apply_acceleration_settings();
 
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-
-        _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device, *_shader_storage.get());
-
         _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite = std::make_unique<graphics::Sprite>(_device, *_shader_storage, window.size());
+        _scene_sprite = std::make_unique<graphics::Sprite>(_device, _shader_storage, window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
         load_default_fonts(_device, _font_factory);
 
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -64,7 +57,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -79,7 +72,7 @@ namespace trview
             select_waypoint(new_index);
         };
 
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -108,7 +101,7 @@ namespace trview
         _texture_storage = std::make_unique<TextureStorage>(_device);
         load_default_textures(_device, *_texture_storage.get());
 
-        _ui = std::make_unique<ViewerUI>(this->window(), _device, *_shader_storage, _font_factory, *_texture_storage, _shortcuts);
+        _ui = std::make_unique<ViewerUI>(this->window(), _device, _shader_storage, _font_factory, *_texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -189,14 +182,14 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
 
         _measure = std::make_unique<Measure>(_device);
-        _compass = std::make_unique<Compass>(_device, *_shader_storage);
-        _route = std::make_unique<Route>(_device, *_shader_storage);
+        _compass = std::make_unique<Compass>(_device, _shader_storage);
+        _route = std::make_unique<Route>(_device, _shader_storage);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window, _shortcuts);
+        _route_window_manager = std::make_unique<RouteWindowManager>(_device, _shader_storage, _font_factory, window, _shortcuts);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
             select_waypoint(index);
@@ -205,7 +198,7 @@ namespace trview
         _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window_manager->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(_device, *_shader_storage, path);
+            auto route = import_route(_device, _shader_storage, path);
             if (route)
             {
                 _route = std::move(route);
@@ -534,20 +527,9 @@ namespace trview
         current_camera().update(_timer.elapsed());
     }
 
-    void Viewer::open(const std::string& filename)
+    void Viewer::open(Level* level)
     {
-        std::unique_ptr<trlevel::ILevel> new_level;
-        try
-        {
-            new_level = trlevel::load_level(filename);
-        }
-        catch(...)
-        {
-            MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
-            return;
-        }
-
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        _level = level;
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
@@ -595,6 +577,7 @@ namespace trview
         _ui->set_depth_level(1);
 
         // Strip the last part of the path away.
+        const auto filename = _level->filename();
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _level->version());
