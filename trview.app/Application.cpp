@@ -13,6 +13,24 @@ namespace trview
         const std::wstring window_class{ L"TRVIEW" };
         const std::wstring window_title{ L"trview" };
 
+        INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+        {
+            UNREFERENCED_PARAMETER(lParam);
+            switch (message)
+            {
+                case WM_INITDIALOG:
+                    return (INT_PTR)TRUE;
+                case WM_COMMAND:
+                    if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+                    {
+                        EndDialog(hDlg, LOWORD(wParam));
+                        return (INT_PTR)TRUE;
+                    }
+                    break;
+            }
+            return (INT_PTR)FALSE;
+        }
+
         LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -172,7 +190,66 @@ namespace trview
 
     void Application::process_message(UINT message, WPARAM wParam, LPARAM)
     {
+        switch (message)
+        {
+            case WM_COMMAND:
+            {
+                int wmId = LOWORD(wParam);
 
+                // Parse the menu selections:
+                switch (wmId)
+                {
+                    case IDM_ABOUT:
+                        DialogBox(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDD_ABOUTBOX), window(), About);
+                        break;
+                    case ID_FILE_OPEN:
+                    case ID_ACCEL_FILE_OPEN:
+                    {
+                        wchar_t cd[MAX_PATH];
+                        GetCurrentDirectoryW(MAX_PATH, cd);
+
+                        OPENFILENAME ofn;
+                        memset(&ofn, 0, sizeof(ofn));
+
+                        wchar_t path[MAX_PATH];
+                        memset(&path, 0, sizeof(path));
+
+                        ofn.lStructSize = sizeof(ofn);
+                        ofn.lpstrFile = path;
+                        ofn.nMaxFile = MAX_PATH;
+                        ofn.lpstrTitle = L"Open level";
+                        ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
+                        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+                        if (GetOpenFileName(&ofn))
+                        {
+                            SetCurrentDirectory(cd);
+                            open(trview::to_utf8(ofn.lpstrFile));
+                        }
+                        break;
+                    }
+                    case ID_HELP_GITHUB:
+                    {
+                        ShellExecute(0, 0, L"https://github.com/chreden/trview", 0, 0, SW_SHOW);
+                        break;
+                    }
+                    case ID_HELP_DISCORD:
+                    {
+                        ShellExecute(0, 0, L"https://discord.gg/Zy7kYge", 0, 0, SW_SHOW);
+                        break;
+                    }
+                    case IDM_EXIT:
+                        DestroyWindow(window());
+                        break;
+                }
+                break;
+            }
+            case WM_DESTROY:
+            {
+                PostQuitMessage(0);
+                break;
+            }
+        }
     }
 
     int Application::run()
