@@ -78,9 +78,11 @@ namespace trview
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
         : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance), _viewer(window()),
-        _level_switcher(window()), _recent_files(window())
+        _file_dropper(window()), _level_switcher(window()), _recent_files(window())
     {
         _settings = load_user_settings();
+
+        _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };

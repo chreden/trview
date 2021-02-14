@@ -24,7 +24,6 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
@@ -143,7 +142,6 @@ namespace trview
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;
         WindowResizer _window_resizer;
-        FileDropper _file_dropper;
         TokenStore _token_store;
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;

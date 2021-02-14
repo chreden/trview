@@ -30,7 +30,7 @@ namespace trview
     Viewer::Viewer(const Window& window)
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
-        _window_resizer(window), _file_dropper(window), _alternate_group_toggler(window),
+        _window_resizer(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window), _menu_detector(window)
     {
         _update_checker.check_for_updates();
@@ -96,8 +96,6 @@ namespace trview
             _main_window->resize();
             resize_elements();
         };
-
-        _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
         _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
         {

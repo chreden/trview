@@ -2,6 +2,7 @@
 
 #include <trview.app/Windows/Viewer.h>
 #include <trview.common/Window.h>
+#include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 
@@ -31,6 +32,7 @@ namespace trview
     private:
         Viewer _viewer;
         UserSettings _settings;
+        FileDropper _file_dropper;
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
         TokenStore _token_store;
