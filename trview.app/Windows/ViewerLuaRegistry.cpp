@@ -8,7 +8,7 @@ namespace trview
         _lua_registry.trview_openrecent = [this] (int index)
             {
             auto i = static_cast<std::size_t> (index);
-            const auto& config = settings ();
+            const auto& config = _settings;
             if ( i > 0 && i <= config.recent_files.size () )
                 open ( *std::next ( config.recent_files.begin (), i - 1 ) );
             };

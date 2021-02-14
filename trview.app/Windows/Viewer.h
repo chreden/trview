@@ -25,7 +25,6 @@
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
@@ -65,7 +64,7 @@ namespace trview
         explicit Viewer(const Window& window);
 
         /// Destructor for the viewer.
-        virtual ~Viewer();
+        virtual ~Viewer() = default;
 
         /// Render the viewer.
         void render();
@@ -74,19 +73,17 @@ namespace trview
         /// @param filename The level file to open.
         void open(const std::string& filename);
 
-        /// Get the current user settings.
-        /// @returns The current settings.
-        UserSettings settings() const;
-
         /// Event raised when a level file is successfully opened.
         /// @remarks The filename is passed as a parameter to the listener functions.
         Event<std::string> on_file_loaded;
 
-        /// Event raised when the recent files list is updated.
-        /// @remarks The list of filenames is passed as a parameter to the listener functions.
-        Event<std::list<std::string>> on_recent_files_changed;
-
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+
+        /// Event raised when the user settings have changed.
+        /// @remarks The settings is passed as a parameter to the listener functions.
+        Event<UserSettings> on_settings;
+
+        void set_settings(const UserSettings& settings);
     private:
         void initialise_input();
         void toggle_highlight();
@@ -152,7 +149,6 @@ namespace trview
         PickResult _current_pick;
         LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
-        RecentFiles _recent_files;
         FileDropper _file_dropper;
         TokenStore _token_store;
         AlternateGroupToggler _alternate_group_toggler;

@@ -48,12 +48,11 @@ namespace trview
     Viewer::Viewer(const Window& window)
         : MessageHandler(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)), _level_switcher(window),
-        _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
+        _window_resizer(window), _file_dropper(window), _alternate_group_toggler(window),
         _view_menu(window), _update_checker(window), _menu_detector(window)
     {
         _update_checker.check_for_updates();
 
-        _settings = load_user_settings();
         apply_acceleration_settings();
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
@@ -118,10 +117,6 @@ namespace trview
             _main_window->resize();
             resize_elements();
         };
-
-        _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
-        _recent_files.set_recent_files(_settings.recent_files);
-        _token_store += on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
@@ -199,11 +194,7 @@ namespace trview
             stored_pick.type = PickResult::Type::Room;
             add_recent_orbit(stored_pick);
         };
-        _token_store += _ui->on_settings += [&](auto settings)
-        {
-            _settings = settings;
-            apply_acceleration_settings();
-        };
+        _ui->on_settings += on_settings;
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
@@ -386,11 +377,6 @@ namespace trview
         register_lua();
     }
 
-    Viewer::~Viewer()
-    {
-        save_user_settings(_settings);
-    }
-
     void Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         switch (message)
@@ -453,11 +439,6 @@ namespace trview
                 break;
             }
         }
-    }
-
-    UserSettings Viewer::settings() const
-    {
-        return _settings;
     }
 
     void Viewer::initialise_input()
@@ -652,9 +633,6 @@ namespace trview
         }
 
         on_file_loaded(filename);
-        _settings.add_recent_file(filename);
-        on_recent_files_changed(_settings.recent_files);
-        save_user_settings(_settings);
 
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
         _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
@@ -1267,5 +1245,11 @@ namespace trview
     void Viewer::apply_acceleration_settings()
     {
         _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
+    }
+
+    void Viewer::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        apply_acceleration_settings();
     }
 }
