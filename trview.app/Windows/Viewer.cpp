@@ -38,8 +38,6 @@ namespace trview
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
-        
-
         _main_window = _device.create_for_window(window);
         _items_windows = std::make_unique<ItemsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         if (_settings.items_startup)
