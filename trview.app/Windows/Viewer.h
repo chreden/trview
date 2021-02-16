@@ -24,7 +24,6 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
@@ -87,6 +86,9 @@ namespace trview
         /// Event raised when the viewer wants to select a trigger.
         Event<Trigger*> on_trigger_selected;
 
+        /// Event raised when the viewer wants to change the visibility of a trigger.
+        Event<Trigger*, bool> on_trigger_visibility;
+
         /// Event raised when the viewer wants to select a waypoint.
         Event<uint32_t> on_waypoint_selected;
 
@@ -121,7 +123,6 @@ namespace trview
         void render_scene();
         void select_next_waypoint();
         void select_previous_waypoint();
-        void set_trigger_visibility(Trigger* trigger, bool visible);
         void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;
@@ -154,7 +155,6 @@ namespace trview
         graphics::Device& _device;
         Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
         Level* _level;
         Timer _timer;

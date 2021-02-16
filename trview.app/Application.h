@@ -10,6 +10,7 @@
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Windows/Viewer.h>
 
 #include <trview.graphics/Device.h>
@@ -42,6 +43,7 @@ namespace trview
         // Window setup functions.
         void setup_viewer(const std::wstring& command_line);
         void setup_items_windows();
+        void setup_triggers_windows();
 
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index);
@@ -50,6 +52,7 @@ namespace trview
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
         void set_item_visibility(const Item& item, bool visible);
+        void set_trigger_visibility(Trigger* const trigger, bool visible);
 
 
         // Rendering
@@ -81,5 +84,6 @@ namespace trview
         // Windows
         std::unique_ptr<Viewer> _viewer;
         std::unique_ptr<ItemsWindowManager> _items_windows;
+        std::unique_ptr<TriggersWindowManager> _triggers_windows;
     };
 }

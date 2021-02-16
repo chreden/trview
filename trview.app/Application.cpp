@@ -115,6 +115,7 @@ namespace trview
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
         setup_items_windows();
+        setup_triggers_windows();
         setup_viewer(command_line);
     }
 
@@ -150,6 +151,8 @@ namespace trview
 
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
+        _triggers_windows->set_items(_level->items());
+        _triggers_windows->set_triggers(_level->triggers());
     }
 
     void Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -253,6 +256,7 @@ namespace trview
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, auto room, auto type, auto index) { add_waypoint(position, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _viewer->set_settings(_settings);
@@ -268,7 +272,7 @@ namespace trview
 
     void Application::setup_items_windows()
     {
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window(), _shortcuts);
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -283,6 +287,22 @@ namespace trview
             // TODO: Use route window manager.
             // _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
+        };
+    }
+
+    void Application::setup_triggers_windows()
+    {
+        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        if (_settings.triggers_startup)
+        {
+            _triggers_windows->create_window();
+        }
+        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
+        _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
+        {
+            add_waypoint(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
         };
     }
 
@@ -317,6 +337,7 @@ namespace trview
         _level->set_selected_room(static_cast<uint16_t>(room));
         _viewer->select_room(room);
         _items_windows->set_room(room);
+        _triggers_windows->set_room(room);
     }
 
     void Application::select_trigger(const Trigger* const trigger)
@@ -329,8 +350,8 @@ namespace trview
         select_room(trigger->room());
         _level->set_selected_trigger(trigger->number());
         _viewer->select_trigger(trigger);
-        // TODO: Update triggers and rooms window.
-        // _triggers_windows->set_selected_trigger(trigger);
+        _triggers_windows->set_selected_trigger(trigger);
+        // TODO: Update rooms window.
         // _rooms_windows->set_selected_trigger(trigger);
     }
 
@@ -354,6 +375,17 @@ namespace trview
         _items_windows->set_item_visible(item, visible);
     }
 
+    void Application::set_trigger_visibility(Trigger* const trigger, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        _level->set_trigger_visibility(trigger->number(), visible);
+        _triggers_windows->set_trigger_visible(trigger, visible);
+    }
+
     void Application::render()
     {
         // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
@@ -365,5 +397,6 @@ namespace trview
 
         _viewer->render();
         _items_windows->render(_device, _settings.vsync);
+        _triggers_windows->render(_device, _settings.vsync);
     }
 }

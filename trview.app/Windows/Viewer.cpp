@@ -12,7 +12,6 @@
 
 #include "Resources/DefaultTextures.h"
 #include <trview.app/Graphics/TextureStorage.h>
-#include <trview.app/Elements/TypeNameLookup.h>
 #include "Resources/ResourceHelper.h"
 #include "Resources/resource.h"
 
@@ -39,19 +38,6 @@ namespace trview
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
         _main_window = _device.create_for_window(window);
-
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
-        if (_settings.triggers_startup)
-        {
-            _triggers_windows->create_window();
-        }
-        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { on_item_selected(item); };
-        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { on_trigger_selected(trigger); };
-        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
-        _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
-        {
-            on_waypoint_added(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
-        };
 
         _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         if (_settings.rooms_startup)
@@ -128,7 +114,7 @@ namespace trview
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                set_trigger_visibility(_level->triggers()[_context_pick.index], false);
+                on_trigger_visibility(_level->triggers()[_context_pick.index], false);
             }
         };
         _token_store += _ui->on_orbit += [&]()
@@ -219,7 +205,7 @@ namespace trview
         _token_store += _view_menu.on_unhide_all += [&]()
         {
             for (const auto& item : _level->items()) { if (!item.visible()) { on_item_visibility(item, true); } }
-            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
+            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { on_trigger_visibility(trigger, true); } }
         };
 
         _picking = std::make_unique<Picking>();
@@ -519,8 +505,6 @@ namespace trview
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
-        _triggers_windows->set_items(_level->items());
-        _triggers_windows->set_triggers(_level->triggers());
         _route_window_manager->set_items(_level->items());
         _route_window_manager->set_triggers(_level->triggers());
         _route_window_manager->set_rooms(_level->rooms());
@@ -612,7 +596,6 @@ namespace trview
             _main_window->present(_settings.vsync);
         }
 
-        _triggers_windows->render(_device, _settings.vsync);
         _route_window_manager->render(_device, _settings.vsync);
         _rooms_windows->render(_device, _settings.vsync);
 
@@ -718,7 +701,6 @@ namespace trview
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room())->centre();
 
-        _triggers_windows->set_room(room);
         _rooms_windows->set_room(room);
     }
 
@@ -769,17 +751,6 @@ namespace trview
         {
             on_waypoint_selected(_route.selected_waypoint() - 1);
         }
-    }
-
-    void Viewer::set_trigger_visibility(Trigger* trigger, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        _level->set_trigger_visibility(trigger->number(), visible);
-        _triggers_windows->set_trigger_visible(trigger, visible);
     }
 
     void Viewer::remove_waypoint(uint32_t index)
