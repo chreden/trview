@@ -18,7 +18,7 @@
 
 namespace trview
 {
-    class Application : MessageHandler
+    class Application : public MessageHandler
     {
     public:
         explicit Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show);
@@ -53,7 +53,6 @@ namespace trview
         void select_waypoint(uint32_t index);
         void set_item_visibility(const Item& item, bool visible);
         void set_trigger_visibility(Trigger* const trigger, bool visible);
-
 
         // Rendering
         void render();
