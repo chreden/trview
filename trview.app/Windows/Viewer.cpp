@@ -712,21 +712,14 @@ namespace trview
         }
     }
 
-    void Viewer::select_room(uint32_t room, bool force_orbit)
+    void Viewer::select_room(uint32_t room)
     {
         if (!_level || room >= _level->number_of_rooms())
         {
             return;
         }
 
-        _level->set_selected_room(static_cast<uint16_t>(room));
         _ui->set_selected_room(_level->room(_level->selected_room()));
-
-        if (force_orbit || (_settings.auto_orbit && !_was_alternate_select))
-        {
-            set_camera_mode(CameraMode::Orbit);
-        }
-
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room())->centre();
 

@@ -90,7 +90,11 @@ namespace trview
         /// @param item The item to select.
         /// @remarks This will not raise the on_item_selected event.
         void select_item(const Item& item);
-        void select_room(uint32_t room, bool force_orbit = false);
+
+        /// Select the specified room.
+        /// @param room The room to select.
+        /// @remarks This will not raise the on_room_selected event.
+        void select_room(uint32_t room);
     private:
         void initialise_input();
         void toggle_highlight();
