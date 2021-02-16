@@ -57,7 +57,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route& route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -87,6 +87,12 @@ namespace trview
         /// Event raised when the viewer wants to select a trigger.
         Event<Trigger*> on_trigger_selected;
 
+        /// Event raised when the viewer wants to select a waypoint.
+        Event<uint32_t> on_waypoint_selected;
+
+        /// Event raised when the viewer wants to add a waypoint.
+        Event<DirectX::SimpleMath::Vector3, uint32_t, Waypoint::Type, uint32_t> on_waypoint_added;
+
         void set_settings(const UserSettings& settings);
 
         /// Select the specified item.
@@ -103,12 +109,16 @@ namespace trview
         /// @param trigger The trigger to select.
         /// @remarks This will not raise the on_trigger_selected event.
         void select_trigger(const Trigger* const trigger);
+
+        /// Select the specified waypoint
+        /// @param index The waypoint to select.
+        /// @remarks This will not raise the on_waypoint_selected event.
+        void select_waypoint(uint32_t index);
     private:
         void initialise_input();
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();
         void set_trigger_visibility(Trigger* trigger, bool visible);
@@ -178,7 +188,7 @@ namespace trview
 
         // Temporary route objects.
         PickResult _context_pick;
-        std::unique_ptr<Route> _route;
+        Route& _route;
         std::unique_ptr<RouteWindowManager> _route_window_manager;
         bool _show_route{ true };
 

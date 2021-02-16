@@ -20,6 +20,8 @@ namespace trview
         /// @param device The device to use.
         explicit Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
 
+        Route& operator=(const Route& other);
+
         /// Add a new waypoint to the end of the route.
         /// @param position The new waypoint.
         /// @param room The room the waypoint is in.

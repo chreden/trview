@@ -25,11 +25,11 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route& route)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
         _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window),
-        _shader_storage(shader_storage), _device(device)
+        _shader_storage(shader_storage), _device(device), _route(route)
     {
         apply_acceleration_settings();
 
@@ -50,9 +50,7 @@ namespace trview
         _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
-            uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
+            on_waypoint_added(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
         };
 
         _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
@@ -119,9 +117,7 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
+            on_waypoint_added(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
@@ -172,7 +168,6 @@ namespace trview
 
         _measure = std::make_unique<Measure>(_device);
         _compass = std::make_unique<Compass>(_device, _shader_storage);
-        _route = std::make_unique<Route>(_device, _shader_storage);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
@@ -181,7 +176,7 @@ namespace trview
         _route_window_manager = std::make_unique<RouteWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
         _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
         {
-            select_waypoint(index);
+            on_waypoint_selected(index);
         };
         _token_store += _route_window_manager->on_item_selected += [&](const auto& item) { on_item_selected(item); };
         _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { on_trigger_selected(trigger); };
@@ -190,14 +185,14 @@ namespace trview
             auto route = import_route(_device, _shader_storage, path);
             if (route)
             {
-                _route = std::move(route);
-                _route_window_manager->set_route(_route.get());
+                _route = *route;
+                _route_window_manager->set_route(&_route);
                 _scene_changed = true;
             }
         };
         _token_store += _route_window_manager->on_route_export += [&](const std::string& path)
         {
-            export_route(*_route, path);
+            export_route(_route, path);
         };
         _token_store += _route_window_manager->on_waypoint_deleted += [&](auto index)
         {
@@ -205,7 +200,7 @@ namespace trview
         };
         _token_store += _route_window_manager->on_colour_changed += [&](const Colour& colour)
         {
-            _route->set_colour(colour);
+            _route.set_colour(colour);
             _scene_changed = true;
         };
 
@@ -267,7 +262,7 @@ namespace trview
             {
                 return;
             }
-            result = nearest_result(result, _route->pick(info.position, info.direction));
+            result = nearest_result(result, _route.pick(info.position, info.direction));
         };
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result)
         {
@@ -369,7 +364,7 @@ namespace trview
         add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
         add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
         add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
-        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
+        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route.selected_waypoint()); });
         add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
         add_shortcut(false, 'H', [&]() { toggle_highlight(); });
         add_shortcut(false, VK_INSERT, [&]()
@@ -570,8 +565,8 @@ namespace trview
         _ui->set_level(name, _level->version());
         window().set_title("trview - " + name);
         _measure->reset();
-        _route->clear();
-        _route_window_manager->set_route(_route.get());
+        _route.clear();
+        _route_window_manager->set_route(&_route);
 
         _recent_orbits.clear();
         _recent_orbit_index = 0u;
@@ -645,7 +640,7 @@ namespace trview
 
             if (_show_route)
             {
-                _route->render(_device, current_camera(), _level->texture_storage());
+                _route.render(_device, current_camera(), _level->texture_storage());
             }
 
             _level->render_transparency(_device, current_camera());
@@ -750,9 +745,8 @@ namespace trview
 
     void Viewer::select_waypoint(uint32_t index)
     {
-        on_room_selected(_route->waypoint(index).room());
-        _target = _route->waypoint(index).position();
-        _route->select_waypoint(index);
+        _target = _route.waypoint(index).position();
+        // TODO: Move RWM
         _route_window_manager->select_waypoint(index);
         if (_settings.auto_orbit)
         {
@@ -763,17 +757,17 @@ namespace trview
 
     void Viewer::select_next_waypoint()
     {
-        if (_route->selected_waypoint() + 1 < _route->waypoints())
+        if (_route.selected_waypoint() + 1 < _route.waypoints())
         {
-            select_waypoint(_route->selected_waypoint() + 1);
+            on_waypoint_selected(_route.selected_waypoint() + 1);
         }
     }
 
     void Viewer::select_previous_waypoint()
     {
-        if (_route->selected_waypoint() > 0)
+        if (_route.selected_waypoint() > 0)
         {
-            select_waypoint(_route->selected_waypoint() - 1);
+            on_waypoint_selected(_route.selected_waypoint() - 1);
         }
     }
 
@@ -790,11 +784,11 @@ namespace trview
 
     void Viewer::remove_waypoint(uint32_t index)
     {
-        _route->remove(index);
-        _route_window_manager->set_route(_route.get());
-        if (_route->waypoints() > 0)
+        _route.remove(index);
+        _route_window_manager->set_route(&_route);
+        if (_route.waypoints() > 0)
         {
-            select_waypoint(_route->selected_waypoint());
+            on_waypoint_selected(_route.selected_waypoint());
         }
         _scene_changed = true;
     }
@@ -1026,7 +1020,7 @@ namespace trview
         case PickResult::Type::Trigger:
             return _level->triggers()[pick.index]->room();
         case PickResult::Type::Waypoint:
-            return _route->waypoint(pick.index).room();
+            return _route.waypoint(pick.index).room();
         }
         return _level->selected_room();
     }
@@ -1083,7 +1077,7 @@ namespace trview
             on_trigger_selected(_level->triggers()[pick.index]);
             break;
         case PickResult::Type::Waypoint:
-            select_waypoint(pick.index);
+            on_waypoint_selected(pick.index);
             break;
         }
 

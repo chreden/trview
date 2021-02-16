@@ -16,6 +16,8 @@
 #include "Resources/DefaultFonts.h"
 #include "Elements/TypeNameLookup.h"
 
+using namespace DirectX::SimpleMath;
+
 namespace trview
 {
     namespace
@@ -109,6 +111,8 @@ namespace trview
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
         load_default_fonts(_device, _font_factory);
+
+        _route = std::make_unique<Route>(_device, *_shader_storage);
 
         setup_items_windows();
         setup_viewer(command_line);
@@ -244,11 +248,13 @@ namespace trview
 
     void Application::setup_viewer(const std::wstring& command_line)
     {
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, _shortcuts);
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, _shortcuts, *_route.get());
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _viewer->on_waypoint_added += [this](const auto& position, auto room, auto type, auto index) { add_waypoint(position, room, type, index); };
+        _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _viewer->set_settings(_settings);
 
         // Open the level passed in on the command line, if there is one.
@@ -271,14 +277,21 @@ namespace trview
         _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        /*
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
             uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
-            _route_window_manager->set_route(_route.get());
+            // TODO: Use route window manager.
+            // _route_window_manager->set_route(_route.get());
             select_waypoint(new_index);
         };
-        */
+    }
+
+    void Application::add_waypoint(const Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index)
+    {
+        uint32_t new_index = _route->insert(position, room, type, index);
+        // TODO: Use RWM:
+        // _route_window_manager->set_route(&_route);
+        select_waypoint(new_index);
     }
 
     void Application::select_item(const Item& item)
@@ -319,6 +332,15 @@ namespace trview
         // TODO: Update triggers and rooms window.
         // _triggers_windows->set_selected_trigger(trigger);
         // _rooms_windows->set_selected_trigger(trigger);
+    }
+
+    void Application::select_waypoint(uint32_t index)
+    {
+        select_room(_route->waypoint(index).room());
+        _route->select_waypoint(index);
+        _viewer->select_waypoint(index);
+        // TODO: Use RWM.
+        // _route_window_manager->select_waypoint(index);
     }
 
     void Application::set_item_visibility(const Item& item, bool visible)

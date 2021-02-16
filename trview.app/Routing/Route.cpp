@@ -49,6 +49,14 @@ namespace trview
     {
     }
 
+    Route& Route::operator=(const Route& other)
+    {
+        _waypoints = other._waypoints;
+        _selected_index = other._selected_index;;
+        _colour = other._colour;
+        return *this;
+    }
+
     void Route::add(const Vector3& position, uint32_t room)
     {
         add(position, room, Waypoint::Type::Position, 0u);

@@ -2,14 +2,15 @@
 
 #include <trview.common/Window.h>
 
-#include <trview.app/Windows/Viewer.h>
+#include <trview.app/Elements/Level.h>
+#include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/FileDropper.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/UpdateChecker.h>
-#include <trview.app/Elements/Level.h>
-#include <trview.app/Elements/ITypeNameLookup.h>
+#include <trview.app/Routing/Route.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/Viewer.h>
 
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
@@ -43,14 +44,17 @@ namespace trview
         void setup_items_windows();
 
         // Entity manipulation
+        void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index);
         void select_item(const Item& item);
         void select_room(uint32_t room);
         void select_trigger(const Trigger* const trigger);
+        void select_waypoint(uint32_t index);
         void set_item_visibility(const Item& item, bool visible);
+
 
         // Rendering
         void render();
-        
+
         TokenStore _token_store;
 
         // Window message related components.
@@ -70,6 +74,9 @@ namespace trview
         // Level data components
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
         std::unique_ptr<Level> _level;
+
+        // Routing and tools.
+        std::unique_ptr<Route> _route;
 
         // Windows
         std::unique_ptr<Viewer> _viewer;
