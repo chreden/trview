@@ -84,6 +84,9 @@ namespace trview
         /// Event raised when the viewer wants to select a room.
         Event<uint32_t> on_room_selected;
 
+        /// Event raised when the viewer wants to select a trigger.
+        Event<Trigger*> on_trigger_selected;
+
         void set_settings(const UserSettings& settings);
 
         /// Select the specified item.
@@ -95,12 +98,16 @@ namespace trview
         /// @param room The room to select.
         /// @remarks This will not raise the on_room_selected event.
         void select_room(uint32_t room);
+
+        /// Select the specified trigger.
+        /// @param trigger The trigger to select.
+        /// @remarks This will not raise the on_trigger_selected event.
+        void select_trigger(const Trigger* const trigger);
     private:
         void initialise_input();
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();

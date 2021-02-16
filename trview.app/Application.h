@@ -45,6 +45,7 @@ namespace trview
         // Entity manipulation
         void select_item(const Item& item);
         void select_room(uint32_t room);
+        void select_trigger(const Trigger* const trigger);
         void set_item_visibility(const Item& item, bool visible);
 
         // Rendering

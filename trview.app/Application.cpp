@@ -248,6 +248,7 @@ namespace trview
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
+        _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _viewer->set_settings(_settings);
 
         // Open the level passed in on the command line, if there is one.
@@ -269,8 +270,8 @@ namespace trview
 
         _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
-        /*
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        /*
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
             uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
@@ -303,6 +304,21 @@ namespace trview
         _level->set_selected_room(static_cast<uint16_t>(room));
         _viewer->select_room(room);
         _items_windows->set_room(room);
+    }
+
+    void Application::select_trigger(const Trigger* const trigger)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        select_room(trigger->room());
+        _level->set_selected_trigger(trigger->number());
+        _viewer->select_trigger(trigger);
+        // TODO: Update triggers and rooms window.
+        // _triggers_windows->set_selected_trigger(trigger);
+        // _rooms_windows->set_selected_trigger(trigger);
     }
 
     void Application::set_item_visibility(const Item& item, bool visible)

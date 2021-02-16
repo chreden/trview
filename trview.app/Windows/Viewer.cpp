@@ -46,7 +46,7 @@ namespace trview
             _triggers_windows->create_window();
         }
         _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { on_item_selected(item); };
-        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { on_trigger_selected(trigger); };
         _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
@@ -63,7 +63,7 @@ namespace trview
 
         _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { on_room_selected(room); };
         _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { on_item_selected(item); };
-        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { on_trigger_selected(trigger); };
 
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -184,7 +184,7 @@ namespace trview
             select_waypoint(index);
         };
         _token_store += _route_window_manager->on_item_selected += [&](const auto& item) { on_item_selected(item); };
-        _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { on_trigger_selected(trigger); };
         _token_store += _route_window_manager->on_route_import += [&](const std::string& path)
         {
             auto route = import_route(_device, _shader_storage, path);
@@ -465,7 +465,7 @@ namespace trview
                     }
                     else
                     {
-                        select_trigger(*trigger);
+                        on_trigger_selected(*trigger);
                     }
                 }
             }
@@ -734,21 +734,18 @@ namespace trview
             return;
         }
 
-        on_room_selected(item.room());
         _target = item.position();
         _rooms_windows->set_selected_item(item);
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
     {
-        if (_level)
+        if (!_level)
         {
-            on_room_selected(trigger->room());
-            _target = trigger->position();
-            _level->set_selected_trigger(trigger->number());
-            _triggers_windows->set_selected_trigger(trigger);
-            _rooms_windows->set_selected_trigger(trigger);
+            return;
         }
+
+        _target = trigger->position();
     }
 
     void Viewer::select_waypoint(uint32_t index)
@@ -1083,7 +1080,7 @@ namespace trview
             on_item_selected(_level->items()[pick.index]);
             break;
         case PickResult::Type::Trigger:
-            select_trigger(_level->triggers()[pick.index]);
+            on_trigger_selected(_level->triggers()[pick.index]);
             break;
         case PickResult::Type::Waypoint:
             select_waypoint(pick.index);
