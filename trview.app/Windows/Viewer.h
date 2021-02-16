@@ -24,7 +24,6 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Tools/Measure.h>
@@ -58,7 +57,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -76,19 +75,31 @@ namespace trview
         /// @remarks The settings is passed as a parameter to the listener functions.
         Event<UserSettings> on_settings;
 
+        /// Event raised when the viwer wants to select an item.
+        Event<Item> on_item_selected;
+
+        /// Event raised when the viewer wants to change the visibility of an item.
+        Event<Item, bool> on_item_visibility;
+
+        /// Event raised when the viewer wants to select a room.
+        Event<uint32_t> on_room_selected;
+
         void set_settings(const UserSettings& settings);
+
+        /// Select the specified item.
+        /// @param item The item to select.
+        /// @remarks This will not raise the on_item_selected event.
+        void select_item(const Item& item);
+        void select_room(uint32_t room, bool force_orbit = false);
     private:
         void initialise_input();
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_room(uint32_t room, bool force_orbit = false);
-        void select_item(const Item& item);
         void select_trigger(const Trigger* const trigger);
         void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();
-        void set_item_visibility(const Item& item, bool visible);
         void set_trigger_visibility(Trigger* trigger, bool visible);
         void remove_waypoint(uint32_t index);
         bool should_pick() const;
@@ -120,9 +131,8 @@ namespace trview
         void apply_acceleration_settings();
 
         graphics::Device& _device;
-        Shortcuts _shortcuts;
+        Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
         Level* _level;

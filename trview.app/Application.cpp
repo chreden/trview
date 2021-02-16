@@ -88,7 +88,8 @@ namespace trview
 
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
         : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance),
-        _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(window())
+        _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(window()),
+        _shortcuts(window())
     {
         _update_checker.check_for_updates();
         _settings = load_user_settings();
@@ -109,16 +110,8 @@ namespace trview
         load_default_shaders(_device, *_shader_storage.get());
         load_default_fonts(_device, _font_factory);
 
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory);
-        _viewer->set_settings(_settings);
-
-        // Open the level passed in on the command line, if there is one.
-        int number_of_arguments = 0;
-        const LPWSTR* const arguments = CommandLineToArgvW(command_line.c_str(), &number_of_arguments);
-        if (number_of_arguments > 1)
-        {
-            open(trview::to_utf8(arguments[1]));
-        }
+        setup_items_windows();
+        setup_viewer(command_line);
     }
 
     Application::~Application()
@@ -147,71 +140,12 @@ namespace trview
 
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
         _level->set_filename(filename);
+        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
 
         _viewer->open(_level.get());
 
-        /*
-        
-        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
-        _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
-        _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
-        _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
-
         _items_windows->set_items(_level->items());
         _items_windows->set_triggers(_level->triggers());
-        _triggers_windows->set_items(_level->items());
-        _triggers_windows->set_triggers(_level->triggers());
-        _route_window_manager->set_items(_level->items());
-        _route_window_manager->set_triggers(_level->triggers());
-        _route_window_manager->set_rooms(_level->rooms());
-        _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_triggers(_level->triggers());
-        _rooms_windows->set_rooms(_level->rooms());
-
-        _level->set_show_triggers(_ui->show_triggers());
-        _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
-        _level->set_show_water(_ui->show_water());
-        _level->set_show_wireframe(_ui->show_wireframe());
-
-        // Set up the views.
-        auto rooms = _level->room_info();
-        _camera.reset();
-
-        // Reset UI buttons
-        _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        _ui->set_highlight(false);
-        _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
-        _ui->set_alternate_groups(_level->alternate_groups());
-        _ui->set_flip(false);
-        _ui->set_flip_enabled(_level->any_alternates());
-
-        Item lara;
-        if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
-        {
-            select_item(lara);
-        }
-        else
-        {
-            select_room(0);
-        }
-
-        _ui->set_depth_enabled(false);
-        _ui->set_depth_level(1);
-
-        // Strip the last part of the path away.
-        auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
-        auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
-        _ui->set_level(name, _level->version());
-        window().set_title("trview - " + name);
-        _measure->reset();
-        _route->clear();
-        _route_window_manager->set_route(_route.get());
-
-        _recent_orbits.clear();
-        _recent_orbit_index = 0u;
-
-        _scene_changed = true;
-        */
     }
 
     void Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -301,10 +235,97 @@ namespace trview
                 }
             }
 
-            _viewer->render();
+            render();
             Sleep(1);
         }
 
         return (int)msg.wParam;
+    }
+
+    void Application::setup_viewer(const std::wstring& command_line)
+    {
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, _shortcuts);
+        _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
+        _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
+        _viewer->set_settings(_settings);
+
+        // Open the level passed in on the command line, if there is one.
+        int number_of_arguments = 0;
+        const LPWSTR* const arguments = CommandLineToArgvW(command_line.c_str(), &number_of_arguments);
+        if (number_of_arguments > 1)
+        {
+            open(trview::to_utf8(arguments[1]));
+        }
+    }
+
+    void Application::setup_items_windows()
+    {
+        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window(), _shortcuts);
+        if (_settings.items_startup)
+        {
+            _items_windows->create_window();
+        }
+
+        _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
+        /*
+        _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+        _token_store += _items_windows->on_add_to_route += [this](const auto& item)
+        {
+            uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
+            _route_window_manager->set_route(_route.get());
+            select_waypoint(new_index);
+        };
+        */
+    }
+
+    void Application::select_item(const Item& item)
+    {
+        if (!_level || item.number() >= _level->items().size())
+        {
+            return;
+        }
+
+        select_room(item.room());
+        _level->set_selected_item(item.number());
+        _viewer->select_item(item);
+        _items_windows->set_selected_item(item);
+    }
+
+    void Application::select_room(uint32_t room)
+    {
+        if (!_level || room >= _level->number_of_rooms())
+        {
+            return;
+        }
+
+        _level->set_selected_room(static_cast<uint16_t>(room));
+        _viewer->select_room(room);
+        _items_windows->set_room(room);
+    }
+
+    void Application::set_item_visibility(const Item& item, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        _level->set_item_visibility(item.number(), visible);
+        _items_windows->set_item_visible(item, visible);
+    }
+
+    void Application::render()
+    {
+        // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
+        if (window_is_minimised(window()))
+        {
+            Sleep(1);
+            return;
+        }
+
+        _viewer->render();
+        _items_windows->render(_device, _settings.vsync);
     }
 }
