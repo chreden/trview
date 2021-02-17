@@ -50,6 +50,7 @@ namespace trview
         void setup_triggers_windows();
         void setup_rooms_windows();
         void setup_route_window();
+        void setup_shortcuts();
 
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index);

@@ -118,6 +118,7 @@ namespace trview
 
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
+        setup_shortcuts();
         setup_view_menu();
         setup_items_windows();
         setup_triggers_windows();
@@ -382,6 +383,21 @@ namespace trview
             _route->set_colour(colour);
             _viewer->set_route(_route.get());
         };
+    }
+
+    void Application::setup_shortcuts()
+    {
+        auto add_shortcut = [&](bool control, uint16_t key, std::function<void()> fn)
+        {
+            _token_store += _shortcuts.add_shortcut(control, key) += [&, fn]()
+            {
+                if (!_viewer->ui_input_active()) { fn(); }
+            };
+        };
+
+        add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
+        add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
+        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
     }
 
     void Application::add_waypoint(const Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index)

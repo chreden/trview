@@ -283,9 +283,6 @@ namespace trview
         add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
         add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
         add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
-        add_shortcut(false, VK_LEFT, [&]() { on_waypoint_select_previous(); });
-        add_shortcut(false, VK_RIGHT, [&]() { on_waypoint_select_next(); });
-        add_shortcut(false, VK_DELETE, [&]() { on_waypoint_removed(_route->selected_waypoint()); });
         add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
         add_shortcut(false, 'H', [&]() { toggle_highlight(); });
         add_shortcut(false, VK_INSERT, [&]()
@@ -693,6 +690,11 @@ namespace trview
     {
         _ui->set_visible(value);
         _ui_changed = true;
+    }
+
+    bool Viewer::ui_input_active() const
+    {
+        return _ui->is_input_active();
     }
 
     void Viewer::set_alternate_mode(bool enabled)

@@ -148,6 +148,8 @@ namespace trview
 
         /// Set whether the ui is visible.
         void set_show_ui(bool value);
+
+        bool ui_input_active() const;
     private:
         void initialise_input();
         void toggle_highlight();
