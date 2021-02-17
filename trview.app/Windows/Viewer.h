@@ -132,8 +132,6 @@ namespace trview
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_next_waypoint();
-        void select_previous_waypoint();
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -189,7 +187,6 @@ namespace trview
         MenuDetector _menu_detector;
 
         // Tools:
-
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
         std::unique_ptr<Compass> _compass;
