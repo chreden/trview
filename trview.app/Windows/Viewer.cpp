@@ -23,9 +23,9 @@ namespace trview
 
     Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory,
         const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route)
-        : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()),
-        _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
-        _window_resizer(window), _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route)
+        : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
+        _mouse(window, std::make_unique<input::WindowTester>(window)), _window_resizer(window), _alternate_group_toggler(window),
+        _menu_detector(window), _device(device), _route(route), _window(window)
     {
         apply_acceleration_settings();
 
@@ -52,7 +52,7 @@ namespace trview
 
         initialise_input();
 
-        _ui = std::make_unique<ViewerUI>(this->window(), _device, shader_storage, font_factory, texture_storage, _shortcuts);
+        _ui = std::make_unique<ViewerUI>(window, _device, shader_storage, font_factory, texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -248,10 +248,6 @@ namespace trview
         };
 
         register_lua();
-    }
-
-    void Viewer::process_message(UINT message, WPARAM wParam, LPARAM)
-    {
     }
 
     void Viewer::initialise_input()
@@ -472,7 +468,7 @@ namespace trview
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _level->version());
-        window().set_title("trview - " + name);
+        _window.set_title("trview - " + name);
         _measure->reset();
 
         _recent_orbits.clear();
@@ -488,7 +484,7 @@ namespace trview
 
         if (_mouse_changed || _scene_changed)
         {
-            _picking->pick(window(), current_camera());
+            _picking->pick(_window, current_camera());
             _mouse_changed = false;
         }
 
@@ -510,7 +506,7 @@ namespace trview
                 _scene_changed = false;
             }
 
-            _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, window().size().width, window().size().height);
+            _scene_sprite->render(_device.context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
             _ui->set_camera_position(current_camera().position());
 
             _ui->render(_device);
@@ -524,7 +520,7 @@ namespace trview
 
     bool Viewer::should_pick() const
     {
-        return !(!_level || window_under_cursor() != window() || window_is_minimised(window()) || _ui->is_cursor_over() || cursor_outside_window(window()));
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
     }
 
     void Viewer::render_scene()
@@ -736,7 +732,7 @@ namespace trview
 
     void Viewer::resize_elements()
     {
-        const auto size = window().size();
+        const auto size = _window.size();
         // Inform elements that need to know that the device has been resized.
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
@@ -756,7 +752,7 @@ namespace trview
         _token_store += _mouse.mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
         _token_store += _mouse.mouse_wheel += [&](int16_t scroll) 
         {
-            if (window_under_cursor() == window())
+            if (window_under_cursor() == _window)
             {
                 _ui->set_show_context_menu(false);
                 _camera_input.mouse_scroll(scroll);

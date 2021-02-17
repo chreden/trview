@@ -48,7 +48,7 @@ namespace trview
     }
 
     /// Class that coordinates all the parts of the application.
-    class Viewer : public MessageHandler
+    class Viewer
     {
     public:
         /// Create a new viewer.
@@ -65,8 +65,6 @@ namespace trview
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         void open(Level* level);
-
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when the user settings have changed.
         /// @remarks The settings is passed as a parameter to the listener functions.
@@ -184,6 +182,7 @@ namespace trview
         void apply_acceleration_settings();
 
         graphics::Device& _device;
+        Window _window;
         Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         Level* _level;
