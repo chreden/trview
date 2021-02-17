@@ -54,13 +54,8 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window,
-            graphics::Device& device,
-            const graphics::IShaderStorage& shader_storage,
-            const graphics::IFontFactory& font_factory,
-            const ITextureStorage& texture_storage,
-            Shortcuts& shortcuts,
-            Route* route);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory,
+            const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;

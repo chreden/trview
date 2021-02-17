@@ -21,13 +21,8 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window,
-        graphics::Device& device,
-        const graphics::IShaderStorage& shader_storage,
-        const graphics::IFontFactory& font_factory,
-        const ITextureStorage& texture_storage,
-        Shortcuts& shortcuts,
-        Route* route)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory,
+        const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
         _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window), _device(device), _route(route)
