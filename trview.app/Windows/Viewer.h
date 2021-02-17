@@ -29,7 +29,6 @@
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.app/Routing/Route.h>
-#include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
@@ -56,7 +55,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route& route);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route* route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -92,6 +91,9 @@ namespace trview
         /// Event raised when the viewer wants to select a waypoint.
         Event<uint32_t> on_waypoint_selected;
 
+        /// Event raised when the viewer wants to remove a waypoint.
+        Event<uint32_t> on_waypoint_removed;
+
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, uint32_t, Waypoint::Type, uint32_t> on_waypoint_added;
 
@@ -116,6 +118,8 @@ namespace trview
         /// @param index The waypoint to select.
         /// @remarks This will not raise the on_waypoint_selected event.
         void select_waypoint(uint32_t index);
+
+        void set_route(Route* route);
     private:
         void initialise_input();
         void toggle_highlight();
@@ -123,7 +127,6 @@ namespace trview
         void render_scene();
         void select_next_waypoint();
         void select_previous_waypoint();
-        void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -188,8 +191,7 @@ namespace trview
 
         // Temporary route objects.
         PickResult _context_pick;
-        Route& _route;
-        std::unique_ptr<RouteWindowManager> _route_window_manager;
+        Route* _route;
         bool _show_route{ true };
 
         /// Was the room just changed due to an alternate group or flip being performed?
