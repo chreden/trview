@@ -651,22 +651,14 @@ namespace trview
 
     void Viewer::select_item(const Item& item)
     {
-        if (!_level || item.number() >= _level->items().size())
-        {
-            return;
-        }
-
         _target = item.position();
+        _scene_changed = true;
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
     {
-        if (!_level)
-        {
-            return;
-        }
-
         _target = trigger->position();
+        _scene_changed = true;
     }
 
     void Viewer::select_waypoint(uint32_t index)
