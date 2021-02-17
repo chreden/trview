@@ -630,9 +630,9 @@ namespace trview
         _scene_changed = true;
     }
 
-    void Viewer::select_waypoint(uint32_t index)
+    void Viewer::select_waypoint(const Waypoint& waypoint)
     {
-        _target = _route->waypoint(index).position();
+        _target = waypoint.position();
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);

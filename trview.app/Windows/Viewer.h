@@ -120,7 +120,7 @@ namespace trview
         /// Select the specified waypoint
         /// @param index The waypoint to select.
         /// @remarks This will not raise the on_waypoint_selected event.
-        void select_waypoint(uint32_t index);
+        void select_waypoint(const Waypoint& waypoint);
 
         /// Set the current route.
         /// @param route The new route.
