@@ -28,7 +28,6 @@
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.app/Routing/Route.h>
-#include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/ViewerUI.h>
@@ -128,6 +127,27 @@ namespace trview
         /// Set the current route.
         /// @param route The new route.
         void set_route(Route* route);
+
+        /// Set whether the compass is visible.
+        void set_show_compass(bool value);
+
+        /// Set whether the minimap is visible.
+        void set_show_minimap(bool value);
+
+        /// Set whether the route is visible.
+        void set_show_route(bool value);
+
+        /// Set whether the selection is visible.
+        void set_show_selection(bool value);
+
+        /// Set whether the tools are visible.
+        void set_show_tools(bool value);
+
+        /// Set whether the tooltip is visible.
+        void set_show_tooltip(bool value);
+
+        /// Set whether the ui is visible.
+        void set_show_ui(bool value);
     private:
         void initialise_input();
         void toggle_highlight();
@@ -180,7 +200,6 @@ namespace trview
         TokenStore _token_store;
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
-        ViewMenu _view_menu;
         bool _show_selection{ true };
         SectorHighlight _sector_highlight;
         MenuDetector _menu_detector;

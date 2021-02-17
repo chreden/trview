@@ -8,6 +8,7 @@
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
@@ -43,6 +44,7 @@ namespace trview
         int run();
     private:
         // Window setup functions.
+        void setup_view_menu();
         void setup_viewer(const std::wstring& command_line);
         void setup_items_windows();
         void setup_triggers_windows();
@@ -72,6 +74,7 @@ namespace trview
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
         UpdateChecker _update_checker;
+        ViewMenu _view_menu;
         Shortcuts _shortcuts;
         HINSTANCE _instance{ nullptr };
 

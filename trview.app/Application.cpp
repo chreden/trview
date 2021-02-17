@@ -92,7 +92,7 @@ namespace trview
     Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
         : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance),
         _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(window()),
-        _shortcuts(window())
+        _shortcuts(window()), _view_menu(window())
     {
         _update_checker.check_for_updates();
         _settings = load_user_settings();
@@ -118,6 +118,7 @@ namespace trview
 
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
+        setup_view_menu();
         setup_items_windows();
         setup_triggers_windows();
         setup_rooms_windows();
@@ -263,6 +264,27 @@ namespace trview
         }
 
         return (int)msg.wParam;
+    }
+
+    void Application::setup_view_menu()
+    {
+        _token_store += _view_menu.on_show_minimap += [&](bool show) { _viewer->set_show_minimap(show); };
+        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _viewer->set_show_tooltip(show); };
+        _token_store += _view_menu.on_show_ui += [&](bool show) { _viewer->set_show_ui(show); };
+        _token_store += _view_menu.on_show_compass += [&](bool show) { _viewer->set_show_compass(show); };
+        _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
+        _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
+        _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
+        _token_store += _view_menu.on_colour_change += [&](Colour colour)
+        {
+            _settings.background_colour = static_cast<uint32_t>(colour);
+            _viewer->set_settings(_settings);
+        };
+        _token_store += _view_menu.on_unhide_all += [&]()
+        {
+            for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
+            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
+        };
     }
 
     void Application::setup_viewer(const std::wstring& command_line)

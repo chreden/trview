@@ -25,7 +25,7 @@ namespace trview
         const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
-        _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window), _device(device), _route(route)
+        _window_resizer(window), _alternate_group_toggler(window), _menu_detector(window), _device(device), _route(route)
     {
         apply_acceleration_settings();
 
@@ -142,24 +142,6 @@ namespace trview
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
-
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); _scene_changed = true; };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; _scene_changed = true; };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; _scene_changed = true; };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
-        _token_store += _view_menu.on_colour_change += [&](Colour colour) 
-        { 
-            _settings.background_colour = static_cast<uint32_t>(colour);
-            _scene_changed = true; 
-        };
-        _token_store += _view_menu.on_unhide_all += [&]()
-        {
-            for (const auto& item : _level->items()) { if (!item.visible()) { on_item_visibility(item, true); } }
-            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { on_trigger_visibility(trigger, true); } }
-        };
 
         _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
@@ -671,6 +653,48 @@ namespace trview
         _scene_changed = true;
     }
 
+    void Viewer::set_show_compass(bool value)
+    {
+        _compass->set_visible(value);
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_minimap(bool value)
+    {
+        _ui->set_show_minimap(value);
+        _ui_changed = true;
+    }
+
+    void Viewer::set_show_route(bool value)
+    {
+        _show_route = value;
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_selection(bool value)
+    {
+        _show_selection = value;
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_tools(bool value)
+    {
+        _measure->set_visible(value);
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_tooltip(bool value)
+    {
+        _ui->set_show_tooltip(value);
+        _ui_changed = true;
+    }
+
+    void Viewer::set_show_ui(bool value)
+    {
+        _ui->set_visible(value);
+        _ui_changed = true;
+    }
+
     void Viewer::set_alternate_mode(bool enabled)
     {
         if (_level)
@@ -974,5 +998,6 @@ namespace trview
     {
         _settings = settings;
         apply_acceleration_settings();
+        _scene_changed = true;
     }
 }
