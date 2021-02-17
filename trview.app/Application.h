@@ -10,6 +10,7 @@
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Windows/Viewer.h>
@@ -45,6 +46,7 @@ namespace trview
         void setup_viewer(const std::wstring& command_line);
         void setup_items_windows();
         void setup_triggers_windows();
+        void setup_rooms_windows();
         void setup_route_window();
 
         // Entity manipulation
@@ -90,5 +92,6 @@ namespace trview
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RouteWindowManager> _route_window;
+        std::unique_ptr<RoomsWindowManager> _rooms_windows;
     };
 }

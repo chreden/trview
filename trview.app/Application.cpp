@@ -116,6 +116,7 @@ namespace trview
 
         setup_items_windows();
         setup_triggers_windows();
+        setup_rooms_windows();
         setup_route_window();
         setup_viewer(command_line);
     }
@@ -154,6 +155,9 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_items(_level->items());
+        _rooms_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_rooms(_level->rooms());
         _route_window->set_items(_level->items());
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());
@@ -316,6 +320,19 @@ namespace trview
         };
     }
 
+    void Application::setup_rooms_windows()
+    {
+        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        if (_settings.rooms_startup)
+        {
+            _rooms_windows->create_window();
+        }
+
+        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
+        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
+        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
+    }
+
     void Application::setup_route_window()
     {
         _route_window = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
@@ -371,6 +388,7 @@ namespace trview
         _level->set_selected_item(item.number());
         _viewer->select_item(item);
         _items_windows->set_selected_item(item);
+        _rooms_windows->set_selected_item(item);
     }
 
     void Application::select_room(uint32_t room)
@@ -383,6 +401,7 @@ namespace trview
         _level->set_selected_room(static_cast<uint16_t>(room));
         _viewer->select_room(room);
         _items_windows->set_room(room);
+        _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
     }
 
@@ -397,8 +416,7 @@ namespace trview
         _level->set_selected_trigger(trigger->number());
         _viewer->select_trigger(trigger);
         _triggers_windows->set_selected_trigger(trigger);
-        // TODO: Update rooms window.
-        // _rooms_windows->set_selected_trigger(trigger);
+        _rooms_windows->set_selected_trigger(trigger);
     }
 
     void Application::select_waypoint(uint32_t index)
@@ -459,6 +477,7 @@ namespace trview
         _viewer->render();
         _items_windows->render(_device, _settings.vsync);
         _triggers_windows->render(_device, _settings.vsync);
+        _rooms_windows->render(_device, _settings.vsync);
         _route_window->render(_device, _settings.vsync);
     }
 }

@@ -24,7 +24,6 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
@@ -125,6 +124,8 @@ namespace trview
         /// @remarks This will not raise the on_waypoint_selected event.
         void select_waypoint(uint32_t index);
 
+        /// Set the current route.
+        /// @param route The new route.
         void set_route(Route* route);
     private:
         void initialise_input();
@@ -164,7 +165,6 @@ namespace trview
         graphics::Device& _device;
         Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        std::unique_ptr<RoomsWindowManager> _rooms_windows;
         Level* _level;
         Timer _timer;
         OrbitCamera _camera;

@@ -39,16 +39,6 @@ namespace trview
 
         _main_window = _device.create_for_window(window);
 
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, _shader_storage, font_factory, window, _shortcuts);
-        if (_settings.rooms_startup)
-        {
-            _rooms_windows->create_window();
-        }
-
-        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { on_room_selected(room); };
-        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { on_item_selected(item); };
-        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { on_trigger_selected(trigger); };
-
         _token_store += _window_resizer.on_resize += [=]()
         {
             _main_window->resize();
@@ -474,10 +464,6 @@ namespace trview
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
-        _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_triggers(_level->triggers());
-        _rooms_windows->set_rooms(_level->rooms());
-
         _level->set_show_triggers(_ui->show_triggers());
         _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
         _level->set_show_water(_ui->show_water());
@@ -559,8 +545,6 @@ namespace trview
 
             _main_window->present(_settings.vsync);
         }
-
-        _rooms_windows->render(_device, _settings.vsync);
 
         lua_fire_event ( LuaEvent::ON_RENDER );
     }
@@ -663,8 +647,6 @@ namespace trview
         _ui->set_selected_room(_level->room(_level->selected_room()));
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room())->centre();
-
-        _rooms_windows->set_room(room);
     }
 
     void Viewer::select_item(const Item& item)
@@ -675,7 +657,6 @@ namespace trview
         }
 
         _target = item.position();
-        _rooms_windows->set_selected_item(item);
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
