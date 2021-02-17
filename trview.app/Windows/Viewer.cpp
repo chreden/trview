@@ -317,8 +317,8 @@ namespace trview
         add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
         add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
         add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
-        add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
-        add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
+        add_shortcut(false, VK_LEFT, [&]() { on_waypoint_select_previous(); });
+        add_shortcut(false, VK_RIGHT, [&]() { on_waypoint_select_next(); });
         add_shortcut(false, VK_DELETE, [&]() { on_waypoint_removed(_route->selected_waypoint()); });
         add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
         add_shortcut(false, 'H', [&]() { toggle_highlight(); });
@@ -702,22 +702,6 @@ namespace trview
     {
         _route = route;
         _scene_changed = true;
-    }
-
-    void Viewer::select_next_waypoint()
-    {
-        if (_route->selected_waypoint() + 1 < _route->waypoints())
-        {
-            on_waypoint_selected(_route->selected_waypoint() + 1);
-        }
-    }
-
-    void Viewer::select_previous_waypoint()
-    {
-        if (_route->selected_waypoint() > 0)
-        {
-            on_waypoint_selected(_route->selected_waypoint() - 1);
-        }
     }
 
     void Viewer::set_alternate_mode(bool enabled)

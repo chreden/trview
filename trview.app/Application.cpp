@@ -268,6 +268,8 @@ namespace trview
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, auto room, auto type, auto index) { add_waypoint(position, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
+        _token_store += _viewer->on_waypoint_select_previous += [this]() { select_previous_waypoint(); };
+        _token_store += _viewer->on_waypoint_select_next += [this]() { select_next_waypoint(); };
         _viewer->set_settings(_settings);
 
         // Open the level passed in on the command line, if there is one.
@@ -405,6 +407,22 @@ namespace trview
         _route->select_waypoint(index);
         _viewer->select_waypoint(index);
         _route_window->select_waypoint(index);
+    }
+
+    void Application::select_next_waypoint()
+    {
+        if (_route->selected_waypoint() + 1 < _route->waypoints())
+        {
+            select_waypoint(_route->selected_waypoint() + 1);
+        }
+    }
+
+    void Application::select_previous_waypoint()
+    {
+        if (_route->selected_waypoint() > 0)
+        {
+            select_waypoint(_route->selected_waypoint() - 1);
+        }
     }
 
     void Application::set_item_visibility(const Item& item, bool visible)

@@ -97,6 +97,12 @@ namespace trview
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, uint32_t, Waypoint::Type, uint32_t> on_waypoint_added;
 
+        /// Event raised when the viewer wants to select the next waypoint in the route.
+        Event<> on_waypoint_select_next;
+
+        /// Event raised when the viewer wants to select the previous waypoint in the route.
+        Event<> on_waypoint_select_previous;
+
         void set_settings(const UserSettings& settings);
 
         /// Select the specified item.
