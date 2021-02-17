@@ -6,14 +6,15 @@
 
 #include <trlevel/trlevel.h>
 
+#include <trview.app/Graphics/TextureStorage.h>
 #include <trview.common/Strings.h>
-
 #include <trview.graphics/ShaderStorage.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
+#include "Resources/DefaultTextures.h"
 #include "Elements/TypeNameLookup.h"
 
 using namespace DirectX::SimpleMath;
@@ -111,6 +112,9 @@ namespace trview
         _shader_storage = std::make_unique<graphics::ShaderStorage>();
         load_default_shaders(_device, *_shader_storage.get());
         load_default_fonts(_device, _font_factory);
+
+        _texture_storage = std::make_unique<TextureStorage>(_device);
+        load_default_textures(_device, *_texture_storage.get());
 
         _route = std::make_unique<Route>(_device, *_shader_storage);
 
@@ -263,7 +267,7 @@ namespace trview
 
     void Application::setup_viewer(const std::wstring& command_line)
     {
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, _shortcuts, _route.get());
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, *_texture_storage, _shortcuts, _route.get());
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };

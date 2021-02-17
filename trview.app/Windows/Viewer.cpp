@@ -9,9 +9,6 @@
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.input/WindowTester.h>
-
-#include "Resources/DefaultTextures.h"
-#include <trview.app/Graphics/TextureStorage.h>
 #include "Resources/ResourceHelper.h"
 #include "Resources/resource.h"
 
@@ -24,16 +21,21 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route* route)
+    Viewer::Viewer(const Window& window,
+        graphics::Device& device,
+        const graphics::IShaderStorage& shader_storage,
+        const graphics::IFontFactory& font_factory,
+        const ITextureStorage& texture_storage,
+        Shortcuts& shortcuts,
+        Route* route)
         : MessageHandler(window), _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()),
         _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)),
-        _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window),
-        _shader_storage(shader_storage), _device(device), _route(route)
+        _window_resizer(window), _alternate_group_toggler(window), _view_menu(window), _menu_detector(window), _device(device), _route(route)
     {
         apply_acceleration_settings();
 
         _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite = std::make_unique<graphics::Sprite>(_device, _shader_storage, window.size());
+        _scene_sprite = std::make_unique<graphics::Sprite>(_device, shader_storage, window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
@@ -55,10 +57,7 @@ namespace trview
 
         initialise_input();
 
-        _texture_storage = std::make_unique<TextureStorage>(_device);
-        load_default_textures(_device, *_texture_storage.get());
-
-        _ui = std::make_unique<ViewerUI>(this->window(), _device, _shader_storage, font_factory, *_texture_storage, _shortcuts);
+        _ui = std::make_unique<ViewerUI>(this->window(), _device, shader_storage, font_factory, texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
@@ -143,7 +142,7 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
 
         _measure = std::make_unique<Measure>(_device);
-        _compass = std::make_unique<Compass>(_device, _shader_storage);
+        _compass = std::make_unique<Compass>(_device, shader_storage);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };

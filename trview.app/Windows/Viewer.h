@@ -54,7 +54,13 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, Shortcuts& shortcuts, Route* route);
+        explicit Viewer(const Window& window,
+            graphics::Device& device,
+            const graphics::IShaderStorage& shader_storage,
+            const graphics::IFontFactory& font_factory,
+            const ITextureStorage& texture_storage,
+            Shortcuts& shortcuts,
+            Route* route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -172,8 +178,6 @@ namespace trview
         std::unique_ptr<ViewerUI> _ui;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
-        std::unique_ptr<ITextureStorage> _texture_storage;
-        const graphics::IShaderStorage& _shader_storage;
         UserSettings _settings;
         std::unique_ptr<Picking> _picking;
         PickResult _current_pick;

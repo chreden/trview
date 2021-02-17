@@ -79,6 +79,7 @@ namespace trview
         graphics::Device _device;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
         graphics::FontFactory _font_factory;
+        std::unique_ptr<ITextureStorage> _texture_storage;
 
         // Level data components
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
