@@ -428,7 +428,7 @@ namespace trview
     void Viewer::open(Level* level)
     {
         _level = level;
-        // TODO: Move these to application
+
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };

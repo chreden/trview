@@ -302,8 +302,6 @@ namespace trview
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, auto room, auto type, auto index) { add_waypoint(position, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
-        _token_store += _viewer->on_waypoint_select_previous += [this]() { select_previous_waypoint(); };
-        _token_store += _viewer->on_waypoint_select_next += [this]() { select_next_waypoint(); };
         _viewer->set_settings(_settings);
 
         // Open the level passed in on the command line, if there is one.
