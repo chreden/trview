@@ -30,7 +30,7 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
-#include <trview.app/UI/ViewerUI.h>
+#include <trview.app/UI/IViewerUI.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
@@ -53,8 +53,7 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory,
-            const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route);
+        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, Shortcuts& shortcuts, Route* route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -185,7 +184,7 @@ namespace trview
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
         input::Mouse _mouse;
-        std::unique_ptr<ViewerUI> _ui;
+        std::unique_ptr<IViewerUI> _ui;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         UserSettings _settings;

@@ -1,27 +1,21 @@
 #pragma once
 
-#include <trview.common/TokenStore.h>
-#include <trview.common/Window.h>
-#include <trview.ui/Control.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.ui/Input.h>
-#include <trview.input/Mouse.h>
-#include <trview.ui.render/MapRenderer.h>
-
 #include <trview.app/Tools/Toolbar.h>
-#include <trview.app/UI/LevelInfo.h>
-#include <trview.app/UI/RoomNavigator.h>
-#include <trview.app/UI/GoTo.h>
-#include <trview.app/UI/SettingsWindow.h>
 #include <trview.app/UI/CameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
-#include <trview.app/Geometry/PickInfo.h>
-#include <trview.app/Geometry/PickResult.h>
+#include <trview.app/UI/Console.h>
 #include <trview.app/UI/ContextMenu.h>
-#include <trview.app/Settings/UserSettings.h>
+#include <trview.app/UI/GoTo.h>
+#include <trview.app/UI/IViewerUI.h>
+#include <trview.app/UI/LevelInfo.h>
+#include <trview.app/UI/RoomNavigator.h>
+#include <trview.app/UI/SettingsWindow.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/ViewOptions.h>
-#include <trview.app/UI/Console.h>
+#include <trview.input/Mouse.h>
+#include <trview.ui/Input.h>
+#include <trview.ui.render/Renderer.h>
+#include <trview.ui.render/MapRenderer.h>
 
 namespace trview
 {
@@ -30,16 +24,10 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
-        class FontFactory;
+        struct IFontFactory;
     }
 
-    enum class Tool
-    {
-        None,
-        Measure
-    };
-
-    class ViewerUI final
+    class ViewerUI final : public IViewerUI
     {
     public:
         explicit ViewerUI(const Window& window, 
@@ -49,245 +37,175 @@ namespace trview
             const ITextureStorage& texture_storage,
             Shortcuts& shortcuts);
 
+        virtual ~ViewerUI() = default;
+
         /// Clear the highlighted minimap sector.
-        void clear_minimap_highlight();
+        virtual void clear_minimap_highlight() override;
 
         /// Get the currently hovered minimap sector, if any.
-        std::shared_ptr<Sector> current_minimap_sector() const;
+        virtual std::shared_ptr<Sector> current_minimap_sector() const override;
 
         /// Get whether there is any text input currently active.
-        bool is_input_active() const;
+        virtual bool is_input_active() const override;
 
         /// Determiens if the cursor is over any ui element.
         /// @returns Whether the cursor is over an element.
-        bool is_cursor_over() const;
-
-        /// Event raised when the add waypoint button is pressed.
-        Event<> on_add_waypoint;
-
-        /// Event raised when the remove waypoint button is pressed.
-        Event<> on_remove_waypoint;
-
-        /// Event raised when the orbit here button is pressed.
-        Event<> on_orbit;
-
-        /// Event raised when an alternate group is toggled.
-        Event<uint32_t, bool> on_alternate_group;
-
-        /// Event raised when the camera mode is set.
-        Event<CameraMode> on_camera_mode;
-
-        /// Event raised when the camera projection mode is set.
-        Event<ProjectionMode> on_camera_projection_mode;
-
-        /// Event raised when the camera is reset.
-        Event<> on_camera_reset;
-
-        /// Event raised when the depth level changes.
-        Event<int32_t> on_depth_level_changed;
-
-        /// Event raised when the depth setting is changed.
-        Event<bool> on_depth;
-
-        /// Event raised when the flip settings is changed.
-        Event<bool> on_flip;
-
-        /// Event raised when the hide button is clicked.
-        Event<> on_hide;
-
-        /// Event raised when the higlight setting is changed.
-        Event<bool> on_highlight;
-
-        /// Event raised when a minimap sector is hovered over.
-        Event<std::shared_ptr<Sector>> on_sector_hover;
-
-        /// Event raised when an item is selected.
-        Event<uint32_t> on_select_item;
-
-        /// Event raised when a room is selected.
-        Event<int32_t> on_select_room;
-
-        /// Event raised when the user settings are changed.
-        Event<UserSettings> on_settings;
-
-        /// Event raised when the hidden geometry setting is changed.
-        Event<bool> on_show_hidden_geometry;
-
-        /// Event raised when the show triggers setting is changed.
-        Event<bool> on_show_triggers;
-
-        /// Event raised when the show water setting is changed.
-        Event<bool> on_show_water;
-
-        /// Event raised when the show wireframe setting is changed.
-        Event<bool> on_show_wireframe;
-
-        /// Event raised when a tool is selected.
-        Event<Tool> on_tool_selected;
-
-        /// Event raised when something in the ui has changed.
-        Event<> on_ui_changed;
-
-        /// Event raised when user edits camera position.
-        Event<DirectX::SimpleMath::Vector3> on_camera_position;
-
-        /// Event raised when user enters a command.
-        Event<std::wstring> on_command;
+        virtual bool is_cursor_over() const override;
 
         /// Render the UI.
         /// @param device The device to use to render the UI.
-        void render(const graphics::Device& device);
+        virtual void render(const graphics::Device& device) override;
 
         /// Set whether an alternate group is enabled.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint32_t value, bool enabled);
+        virtual void set_alternate_group(uint32_t value, bool enabled) override;
 
         /// Set the alternate groups for the level.
         /// @param groups The alternate groups for the level.
-        void set_alternate_groups(const std::set<uint32_t>& groups);
+        virtual void set_alternate_groups(const std::set<uint32_t>& groups) override;
 
         /// Set the current camera position.
         /// @param position The camera position.
-        void set_camera_position(const DirectX::SimpleMath::Vector3& position);
+        virtual void set_camera_position(const DirectX::SimpleMath::Vector3& position) override;
 
         /// Set the camera mode.
         /// @param mode The current camera mode.
-        void set_camera_mode(CameraMode mode);
+        virtual void set_camera_mode(CameraMode mode) override;
 
         /// Set the camera projection mode.
         /// @param mode The current camera projection mode.
-        void set_camera_projection_mode(ProjectionMode mode);
+        virtual void set_camera_projection_mode(ProjectionMode mode) override;
 
         /// Set whether depth is enabled.
         /// @param value Whether depth is enabled.
-        void set_depth_enabled(bool value);
+        virtual void set_depth_enabled(bool value) override;
 
         /// Set the level of depth.
         /// @param value The depth level.
-        void set_depth_level(int32_t value);
+        virtual void set_depth_level(int32_t value) override;
 
         /// Set the current flip state.
         /// @param value The flip state.
-        void set_flip(bool value);
+        virtual void set_flip(bool value) override;
 
         /// Set whether there are any flipmaps in the level.
         /// @param value Whether there are any flipmaps.
-        void set_flip_enabled(bool value);
+        virtual void set_flip_enabled(bool value) override;
 
         /// Set whether the hide button on the context menu is enabled.
         /// @param value Whether the hide button is enabled.
-        void set_hide_enabled(bool value);
+        virtual void set_hide_enabled(bool value) override;
 
         /// Set whether highlight is enabled.
         /// @param value Whether highlight is enabled.
-        void set_highlight(bool value);
+        virtual void set_highlight(bool value) override;
 
         /// Set the size of the host window.
-        void set_host_size(const Size& size);
+        void set_host_size(const Size& size) override;
 
         /// Set the level name and version.
         /// @param name The file.
         /// @param version The version of the level.
-        void set_level(const std::string& name, trlevel::LevelVersion version);
+        virtual void set_level(const std::string& name, trlevel::LevelVersion version) override;
 
         /// Set the maximum number of rooms in the level.
         /// @param rooms The number of rooms that are in the level.
-        void set_max_rooms(uint32_t rooms);
+        virtual void set_max_rooms(uint32_t rooms) override;
 
         /// Set the current measure distance to display on the label.
         /// @param distance The distance to measure.
-        void set_measure_distance(float distance);
+        virtual void set_measure_distance(float distance) override;
 
         /// Set the position of the measure label.
         /// @param position The position of the label.
-        void set_measure_position(const Point& position);
+        virtual void set_measure_position(const Point& position) override;
 
         /// Set which square is highlighted on the minimap.
         /// @param x The x coordinate.
         /// @param z The z coordinate.
-        void set_minimap_highlight(uint16_t x, uint16_t z);
+        virtual void set_minimap_highlight(uint16_t x, uint16_t z) override;
 
         /// Set the current pick result.
         /// @param info The parameters for the pick.
         /// @param pick_result The pick result.
-        void set_pick(const PickInfo& info, const PickResult& pick_result);
+        virtual void set_pick(const PickInfo& info, const PickResult& pick_result) override;
 
         /// Set whether the user can click the remove waypoint button.
         /// "param value Whether the button is enabled.
-        void set_remove_waypoint_enabled(bool value);
+        virtual void set_remove_waypoint_enabled(bool value) override;
 
         /// Set the selected room.
         /// @param room The selected room.
-        void set_selected_room(Room* room);
+        virtual void set_selected_room(Room* room) override;
 
         /// Set the user settings.
         /// @param settings The user settings.
-        void set_settings(const UserSettings& settings);
+        virtual void set_settings(const UserSettings& settings) override;
 
         /// Set whether the context menu is visible.
         /// "param value Whether the context menu is visible.
-        void set_show_context_menu(bool value);
+        virtual void set_show_context_menu(bool value) override;
 
         /// Set whether hidden geometry is visible.
         /// @param value Whether hidden geometry is visible.
-        void set_show_hidden_geometry(bool value);
+        virtual void set_show_hidden_geometry(bool value) override;
 
         /// Set whether to show the measure label.
         /// @param value Whether to show the measure label.
-        void set_show_measure(bool value);
+        virtual void set_show_measure(bool value) override;
 
         /// Set whether to show the minimap.
         /// @param value Whether to show the minimap.
-        void set_show_minimap(bool value);
+        virtual void set_show_minimap(bool value) override;
 
         /// Set whether to show the tooltip.
         /// @param value Whether to show the tooltip.
-        void set_show_tooltip(bool value);
+        virtual void set_show_tooltip(bool value) override;
 
         /// Set whether triggers are visible.
         /// @param value Whether triggers are visible.
-        void set_show_triggers(bool value);
+        virtual void set_show_triggers(bool value) override;
 
         /// Set whether water is visible.
         /// @param value Whether water is visible.
-        void set_show_water(bool value);
+        virtual void set_show_water(bool value) override;
 
         /// Set whether wireframe is visible.
         /// @param value Whether wireframe is visible.
-        void set_show_wireframe(bool value);
+        virtual void set_show_wireframe(bool value) override;
 
         /// Set whether the level uses alternate groups.
         /// @param value Whether alternate groups are used.
-        void set_use_alternate_groups(bool value);
+        virtual void set_use_alternate_groups(bool value) override;
 
         /// Set whether the UI is visible.
         /// @param value Whether the UI is visible.
-        void set_visible(bool value);
+        virtual void set_visible(bool value) override;
 
         /// Get whether hidden geometry is visible.
-        bool show_hidden_geometry() const;
+        virtual bool show_hidden_geometry() const override;
 
         /// Get whether triggers are visible.
-        bool show_triggers() const;
+        virtual bool show_triggers() const override;
 
         /// Get whether water is visible.
-        bool show_water() const;
+        virtual bool show_water() const override;
 
         /// Get whether wireframe is visible.
-        bool show_wireframe() const;
+        virtual bool show_wireframe() const override;
 
         /// Get whether the context menu is visible.
-        bool show_context_menu() const;
+        virtual bool show_context_menu() const override;
 
         /// Toggle the visibility of the settings window.
-        void toggle_settings_visibility();
+        virtual void toggle_settings_visibility() override;
 
         /// <summary>
         /// Write the text to the console.
         /// </summary>
         /// <param name="text">The text to write.</param>
-        void print_console(const std::wstring& text);
+        virtual void print_console(const std::wstring& text) override;
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);

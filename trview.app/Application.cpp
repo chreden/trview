@@ -7,6 +7,7 @@
 #include <trlevel/trlevel.h>
 
 #include <trview.app/Graphics/TextureStorage.h>
+#include <trview.app/UI/ViewerUI.h>
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
 
@@ -293,7 +294,9 @@ namespace trview
 
     void Application::setup_viewer(const std::wstring& command_line)
     {
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), _font_factory, *_texture_storage, _shortcuts, _route.get());
+        auto ui = std::make_unique<ViewerUI>(window(), _device, *_shader_storage.get(), _font_factory, *_texture_storage, _shortcuts);
+
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), std::move(ui), _shortcuts, _route.get());
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };

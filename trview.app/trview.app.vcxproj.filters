@@ -217,6 +217,9 @@
     </ClCompile>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ApplicationLuaRegistry.cpp" />
+    <ClCompile Include="UI\IViewerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -458,6 +461,9 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="UI\IViewerUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

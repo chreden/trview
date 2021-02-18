@@ -88,6 +88,7 @@
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
+    <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
     <ClCompile Include="UI\SettingsWindow.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\GoTo.h" />
+    <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\LevelInfo.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />

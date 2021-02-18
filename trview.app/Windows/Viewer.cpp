@@ -21,11 +21,10 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory,
-        const ITextureStorage& texture_storage, Shortcuts& shortcuts, Route* route)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, Shortcuts& shortcuts, Route* route)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(window, std::make_unique<input::WindowTester>(window)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window)
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui))
     {
         apply_acceleration_settings();
 
@@ -52,7 +51,6 @@ namespace trview
 
         initialise_input();
 
-        _ui = std::make_unique<ViewerUI>(window, _device, shader_storage, font_factory, texture_storage, _shortcuts);
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
