@@ -13,14 +13,13 @@ using namespace trview::ui;
 namespace trview
 {
     ViewerUI::ViewerUI(const Window& window, const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const ITextureStorage& texture_storage, Shortcuts& shortcuts)
-        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window)
+        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _shortcuts(shortcuts)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
 
         register_change_detection(_control.get());
 
         _control->set_handles_input(false);
-        _ui_input = std::make_unique<Input>(window, *_control, shortcuts);
 
         _token_store += _mouse.mouse_move += [&](long, long)
         {
@@ -496,5 +495,10 @@ namespace trview
     void ViewerUI::print_console(const std::wstring& text)
     {
         _console->print(text);
+    }
+
+    void ViewerUI::initialise_input()
+    {
+        _ui_input = std::make_unique<Input>(_window, *_control, _shortcuts);
     }
 }

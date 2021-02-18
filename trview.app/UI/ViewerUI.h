@@ -206,6 +206,8 @@ namespace trview
         /// </summary>
         /// <param name="text">The text to write.</param>
         virtual void print_console(const std::wstring& text) override;
+
+        virtual void initialise_input() override;
     private:
         void generate_tool_window(const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);
@@ -215,6 +217,7 @@ namespace trview
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
+        Shortcuts& _shortcuts;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ui::Input> _ui_input;

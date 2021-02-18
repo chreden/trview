@@ -51,6 +51,7 @@ namespace trview
 
         initialise_input();
 
+        _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
