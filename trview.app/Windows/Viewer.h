@@ -35,6 +35,7 @@
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/Shortcuts.h>
+#include <trview.graphics/DeviceWindow.h>
 
 namespace trview
 {

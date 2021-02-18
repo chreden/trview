@@ -52,6 +52,9 @@
     <ClCompile Include="ViewMenuTests.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\ViewerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

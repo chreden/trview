@@ -45,6 +45,7 @@
     <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
+    <ClCompile Include="Windows\ViewerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop_2017.vcxproj">

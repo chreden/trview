@@ -464,6 +464,9 @@
     <ClInclude Include="UI\IViewerUI.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\IViewerUI.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -507,6 +510,9 @@
     </Filter>
     <Filter Include="Resources\Generated">
       <UniqueIdentifier>{15b63c6f-69e1-4682-bd97-031bcda2ff23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{f887ffc9-ee5c-4f06-9adc-d94261ba3661}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
