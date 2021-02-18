@@ -227,8 +227,6 @@ namespace trview
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
-
-        LuaFunctionRegistry _lua_registry;
     };
 }
 

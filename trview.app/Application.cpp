@@ -125,6 +125,9 @@ namespace trview
         setup_rooms_windows();
         setup_route_window();
         setup_viewer(command_line);
+
+        register_lua();
+        lua_init(&lua_registry);
     }
 
     Application::~Application()

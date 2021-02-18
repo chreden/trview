@@ -216,6 +216,7 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ApplicationLuaRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">

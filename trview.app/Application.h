@@ -67,6 +67,9 @@ namespace trview
         // Rendering
         void render();
 
+        // Lua
+        void register_lua();
+
         TokenStore _token_store;
 
         // Window message related components.
