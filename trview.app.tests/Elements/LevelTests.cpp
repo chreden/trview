@@ -16,7 +16,7 @@ namespace
         MOCK_METHOD(IShader*, get, (const std::string&), (const, override));
     };
 
-    class MockLevel : public ILevel
+    class MockLevel : public trlevel::ILevel
     {
     public:
         MOCK_METHOD(tr_colour, get_palette_entry8, (uint32_t), (const, override));

@@ -4,23 +4,21 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <vector>
-#include <SimpleMath.h>
 #include <set>
 
 #include <trview.graphics/Texture.h>
-#include <trview.common/Event.h>
+
 #include <trlevel/ILevel.h>
 
-#include "Room.h"
-#include "Entity.h"
+
 #include <trview.app/Geometry/Mesh.h>
 #include "StaticMesh.h"
-#include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+
 
 #include <trview.app/Graphics/IMeshStorage.h>
 
 #include <trview.graphics/RenderTarget.h>
+#include <trview.app/Elements/ILevel.h>
 
 namespace trview
 {
@@ -35,18 +33,11 @@ namespace trview
         struct IShader;
     }
 
-    class Level
+    class Level : public ILevel
     {
     public:
         Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names);
         ~Level();
-
-        enum class RoomHighlightMode
-        {
-            None,
-            Highlight,
-            Neighbours
-        };
 
         // Temporary, for the room info and texture window.
         std::vector<RoomInfo> room_info() const;
@@ -57,7 +48,7 @@ namespace trview
 
         /// Get the items in this level.
         /// @returns All items in the level.
-        const std::vector<Item>& items() const;
+        std::vector<Item> items() const;
 
         /// Get the number of rooms in the level.
         uint32_t number_of_rooms() const;
@@ -110,15 +101,6 @@ namespace trview
         /// @returns True if the group is active.
         bool alternate_group(uint32_t group) const;
 
-        // Event raised when the level needs to change the selected room.
-        Event<uint16_t> on_room_selected;
-
-        // Event raised when the level needs to change the alternate mode.
-        Event<bool> on_alternate_mode_selected;   
-
-        /// Event raised when the levle needs to change the alternate group mode.
-        Event<uint16_t, bool> on_alternate_group_selected;
-
         // Returns the room with ID provided 
         inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
 
@@ -141,10 +123,6 @@ namespace trview
         /// Gets the alternate groups that exist in the level.
         /// @returns The set of alternate groups in the level.
         std::set<uint32_t> alternate_groups() const;
-
-        /// Event raised when something has changed in the appearance of the level or the
-        /// items that are contained within.
-        Event<> on_level_changed;
 
         trlevel::LevelVersion version() const;
 
@@ -233,5 +211,5 @@ namespace trview
     /// @param type_id The type id to search for.
     /// @param output_item The item to output the result into.
     /// @returns True if the item was found.
-    bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item);
+    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item);
 }

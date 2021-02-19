@@ -38,6 +38,7 @@
     <ClCompile Include="Elements\Entity.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
     <ClCompile Include="Elements\ITypeNameLookup.cpp" />
+    <ClCompile Include="Elements\ILevel.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\Entity.h" />
+    <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\Item.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />
     <ClInclude Include="Elements\Level.h" />
@@ -154,7 +156,8 @@
     <ClInclude Include="Menus\RecentFiles.h" />
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
-    <ClInclude Include="Mocks\IViewerUI.h" />
+    <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />

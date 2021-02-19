@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../UI/IViewerUI.h"
+#include "../../UI/IViewerUI.h"
 
 namespace trview
 {
@@ -9,8 +9,6 @@ namespace trview
         class MockViewerUI final : public IViewerUI
         {
         public:
-            // MOCK_METHOD(void, store, (const std::string&, const std::shared_ptr<DirectX::SpriteFont>&));
-            // MOCK_METHOD(std::unique_ptr<graphics::IFont>, create_font, (const std::string&, int, graphics::TextAlignment, graphics::ParagraphAlignment), (const));
             MOCK_METHOD(void, clear_minimap_highlight, ());
             MOCK_METHOD(std::shared_ptr<Sector>, current_minimap_sector, (), (const));
             MOCK_METHOD(bool, is_input_active, (), (const));

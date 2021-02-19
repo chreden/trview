@@ -220,6 +220,9 @@
     <ClCompile Include="UI\IViewerUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ILevel.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -461,11 +464,15 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="UI\IViewerUI.h">
-      <Filter>UI</Filter>
+    <ClInclude Include="Mocks\Elements\ILevel.h">
+      <Filter>Mocks\Elements</Filter>
     </ClInclude>
-    <ClInclude Include="Mocks\IViewerUI.h">
-      <Filter>Mocks</Filter>
+    <ClInclude Include="Mocks\UI\IViewerUI.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IViewerUI.h" />
+    <ClInclude Include="Elements\ILevel.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -513,6 +520,12 @@
     </Filter>
     <Filter Include="Mocks">
       <UniqueIdentifier>{f887ffc9-ee5c-4f06-9adc-d94261ba3661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\UI">
+      <UniqueIdentifier>{8cde831c-542d-4e6d-a6fe-fb6ad01b04e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Elements">
+      <UniqueIdentifier>{6f82e7bf-faf0-481f-983b-b1a62e5e1a2a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

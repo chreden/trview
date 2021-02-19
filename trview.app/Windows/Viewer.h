@@ -64,7 +64,7 @@ namespace trview
 
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        void open(Level* level);
+        void open(ILevel* level);
 
         /// Event raised when the user settings have changed.
         /// @remarks The settings is passed as a parameter to the listener functions.
@@ -179,7 +179,7 @@ namespace trview
         Window _window;
         Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        Level* _level;
+        ILevel* _level;
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;
