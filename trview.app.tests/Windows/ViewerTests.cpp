@@ -22,7 +22,6 @@ TEST(Viewer, SelectItemRaised)
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    // Create mocks:
     std::unique_ptr<IViewerUI> ui_ptr = std::make_unique<mocks::MockViewerUI>();
     IViewerUI& ui = *ui_ptr;
 
