@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IMouse.cpp" />
     <ClCompile Include="IWindowTester.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -31,8 +32,10 @@
     <ClCompile Include="WindowTester.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IMouse.h" />
     <ClInclude Include="IWindowTester.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Mocks\IMouse.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WindowTester.h" />

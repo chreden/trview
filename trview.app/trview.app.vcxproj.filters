@@ -223,6 +223,9 @@
     <ClCompile Include="Elements\ILevel.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\IPicking.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -474,6 +477,12 @@
     <ClInclude Include="Elements\ILevel.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\IPicking.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\IPicking.h">
+      <Filter>Mocks\Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -526,6 +535,9 @@
     </Filter>
     <Filter Include="Mocks\Elements">
       <UniqueIdentifier>{6f82e7bf-faf0-481f-983b-b1a62e5e1a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Geometry">
+      <UniqueIdentifier>{d319b605-c8f4-48a2-9c7c-989ed77730a2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

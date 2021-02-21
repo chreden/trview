@@ -21,10 +21,10 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, Shortcuts& shortcuts, Route* route)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking, std::unique_ptr<input::IMouse> mouse, Shortcuts& shortcuts, Route* route)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
-        _mouse(window, std::make_unique<input::WindowTester>(window)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui))
+        _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking))
     {
         apply_acceleration_settings();
 
@@ -142,7 +142,6 @@ namespace trview
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
@@ -304,7 +303,7 @@ namespace trview
 
         using namespace input;
 
-        _token_store += _mouse.mouse_click += [&](Mouse::Button button)
+        _token_store += _mouse->mouse_click += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
@@ -395,9 +394,9 @@ namespace trview
             }
         };
 
-        _token_store += _mouse.mouse_click += [&](auto button)
+        _token_store += _mouse->mouse_click += [&](auto button)
         {
-            if (button == input::Mouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
+            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
             {
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
@@ -746,10 +745,10 @@ namespace trview
     {
         using namespace input;
 
-        _token_store += _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
-        _token_store += _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
-        _token_store += _mouse.mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
-        _token_store += _mouse.mouse_wheel += [&](int16_t scroll) 
+        _token_store += _mouse->mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _token_store += _mouse->mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _token_store += _mouse->mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
+        _token_store += _mouse->mouse_wheel += [&](int16_t scroll) 
         {
             if (window_under_cursor() == _window)
             {

@@ -6,10 +6,12 @@
 
 #include <trlevel/trlevel.h>
 
+#include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
+#include <trview.input/WindowTester.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -295,8 +297,9 @@ namespace trview
     void Application::setup_viewer(const std::wstring& command_line)
     {
         auto ui = std::make_unique<ViewerUI>(window(), _device, *_shader_storage.get(), _font_factory, *_texture_storage, _shortcuts);
+        auto mouse = std::make_unique<input::Mouse>(window(), std::make_unique<input::WindowTester>(window()));
 
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), std::move(ui), _shortcuts, _route.get());
+        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), std::move(ui), std::make_unique<Picking>(), std::move(mouse), _shortcuts, _route.get());
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };

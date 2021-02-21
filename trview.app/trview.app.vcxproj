@@ -45,6 +45,7 @@
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeNameLookup.cpp" />
+    <ClCompile Include="Geometry\IPicking.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Elements\Trigger.h" />
     <ClInclude Include="Elements\TypeNameLookup.h" />
     <ClInclude Include="Elements\Types.h" />
+    <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\MeshVertex.h" />
@@ -157,6 +159,7 @@
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\Geometry\IPicking.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />

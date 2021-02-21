@@ -102,9 +102,9 @@ TEST(CameraInput, Rotation)
         rotation = { x, y };
     };
 
-    subject.mouse_down(input::Mouse::Button::Right);
+    subject.mouse_down(input::IMouse::Button::Right);
     subject.mouse_move(100, 200);
-    subject.mouse_up(input::Mouse::Button::Right);
+    subject.mouse_up(input::IMouse::Button::Right);
 
     ASSERT_TRUE(rotation.has_value());
     ASSERT_EQ(100.0f, std::get<0>(rotation.value()));
@@ -184,9 +184,9 @@ TEST(CameraInput, Panning)
         pan_movement = { vertical, x, y };
     };
 
-    subject.mouse_down(input::Mouse::Button::Left);
+    subject.mouse_down(input::IMouse::Button::Left);
     subject.mouse_move(100, 200);
-    subject.mouse_up(input::Mouse::Button::Left);
+    subject.mouse_up(input::IMouse::Button::Left);
 
     ASSERT_TRUE(pan_movement.has_value());
     ASSERT_EQ(false, std::get<0>(pan_movement.value()));
@@ -204,10 +204,10 @@ TEST(CameraInput, PanningVertical)
         pan_movement = { vertical, x, y };
     };
 
-    subject.mouse_down(input::Mouse::Button::Left);
-    subject.mouse_down(input::Mouse::Button::Right);
+    subject.mouse_down(input::IMouse::Button::Left);
+    subject.mouse_down(input::IMouse::Button::Right);
     subject.mouse_move(100, 200);
-    subject.mouse_up(input::Mouse::Button::Left);
+    subject.mouse_up(input::IMouse::Button::Left);
 
     ASSERT_TRUE(pan_movement.has_value());
     ASSERT_EQ(true, std::get<0>(pan_movement.value()));

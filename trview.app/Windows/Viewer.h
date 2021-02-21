@@ -28,7 +28,7 @@
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.app/Routing/Route.h>
-#include <trview.app/Geometry/Picking.h>
+#include <trview.app/Geometry/IPicking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
 #include <trview.app/UI/IViewerUI.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
@@ -54,7 +54,15 @@ namespace trview
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, Shortcuts& shortcuts, Route* route);
+        explicit Viewer(
+            const Window& window, 
+            graphics::Device& device, 
+            const graphics::IShaderStorage& shader_storage, 
+            std::unique_ptr<IViewerUI> ui, 
+            std::unique_ptr<IPicking> picking,
+            std::unique_ptr<input::IMouse> mouse,
+            Shortcuts& shortcuts, 
+            Route* route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -179,17 +187,17 @@ namespace trview
         Window _window;
         Shortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
-        ILevel* _level;
+        ILevel* _level{ nullptr };
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
-        input::Mouse _mouse;
+        std::unique_ptr<input::IMouse> _mouse;
         std::unique_ptr<IViewerUI> _ui;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
         UserSettings _settings;
-        std::unique_ptr<Picking> _picking;
+        std::unique_ptr<IPicking> _picking;
         PickResult _current_pick;
         WindowResizer _window_resizer;
         TokenStore _token_store;
