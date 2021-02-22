@@ -17,6 +17,14 @@ using namespace DirectX::SimpleMath;
 
 namespace
 {
+    template <typename T>
+    std::tuple<std::unique_ptr<T>, T&> create_mock()
+    {
+        auto ptr = std::make_unique<T>();
+        auto& ref = *ptr;
+        return { std::move(ptr), ref };
+    }
+
     /// Simulates a context menu activation - 
     void activate_context_menu(
         mocks::MockPicking& picking,
@@ -43,8 +51,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto ui_ptr = std::make_unique<mocks::MockViewerUI>();
-    auto& ui = *ui_ptr;
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
     mocks::MockLevel level;
@@ -74,8 +81,7 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto ui_ptr = std::make_unique<mocks::MockViewerUI>();
-    auto& ui = *ui_ptr;
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
 
@@ -96,9 +102,6 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto ui_ptr = std::make_unique<mocks::MockViewerUI>();
-    auto& ui = *ui_ptr;
-
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
     mocks::MockLevel level;
 
@@ -106,11 +109,9 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    auto picking_ptr = std::make_unique<mocks::MockPicking>();
-    auto& picking = *picking_ptr;
-
-    auto mouse_ptr = std::make_unique<input::mocks::MockMouse>();
-    auto& mouse = *mouse_ptr;
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
     viewer.open(&level);
@@ -127,3 +128,29 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     ASSERT_FALSE(std::get<1>(raised_item.value()));
 }
 
+TEST(Viewer, SettingsRaised)
+{
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+
+    std::optional<UserSettings> raised_settings;
+    auto token = viewer.on_settings += [&raised_settings](const auto& settings) { raised_settings = settings; };
+
+    UserSettings settings;
+    settings.add_recent_file("test file");
+    ui.on_settings(settings);
+
+    ASSERT_TRUE(raised_settings.has_value());
+    ASSERT_EQ(raised_settings.value().recent_files.size(), 1);
+    ASSERT_EQ(raised_settings.value().recent_files.front(), "test file");
+}
