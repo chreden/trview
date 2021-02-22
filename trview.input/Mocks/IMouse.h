@@ -6,12 +6,15 @@ namespace trview
 {
     namespace input
     {
-        class MockMouse final : public IMouse
+        namespace mocks
         {
-        public:
-            virtual ~MockMouse() = default;
-            MOCK_METHOD(long, x, (), (const));
-            MOCK_METHOD(long, y, (), (const));
-        };
+            class MockMouse final : public IMouse
+            {
+            public:
+                virtual ~MockMouse() = default;
+                MOCK_METHOD(long, x, (), (const));
+                MOCK_METHOD(long, y, (), (const));
+            };
+        }
     }
 }

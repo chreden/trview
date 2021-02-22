@@ -15,6 +15,24 @@ using namespace trview::graphics;
 using namespace trview::tests;
 using namespace DirectX::SimpleMath;
 
+namespace
+{
+    /// Simulates a context menu activation - 
+    void activate_context_menu(
+        mocks::MockPicking& picking,
+        input::mocks::MockMouse& mouse,
+        PickResult::Type type,
+        uint32_t index)
+    {
+        PickResult pick_result{};
+        pick_result.hit = true;
+        pick_result.type = type;
+        pick_result.index = index;
+        picking.on_pick({}, pick_result);
+        mouse.mouse_click(input::IMouse::Button::Right);
+    }
+}
+
 /// Tests that the on_select_item event from the UI is observed and forwarded.
 TEST(Viewer, SelectItemRaisedForValidItem)
 {
@@ -35,7 +53,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
     viewer.open(&level);
 
     std::optional<Item> raised_item;
@@ -59,7 +77,7 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     auto ui_ptr = std::make_unique<mocks::MockViewerUI>();
     auto& ui = *ui_ptr;
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
 
     std::optional<Item> raised_item;
     auto token = viewer.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -91,7 +109,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto picking_ptr = std::make_unique<mocks::MockPicking>();
     auto& picking = *picking_ptr;
 
-    auto mouse_ptr = std::make_unique<input::MockMouse>();
+    auto mouse_ptr = std::make_unique<input::mocks::MockMouse>();
     auto& mouse = *mouse_ptr;
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -100,13 +118,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = viewer.on_item_visibility += [&raised_item](const auto& item, auto visible) { raised_item = { item, visible }; };
 
-    // Simulate a context menu click
-    PickResult pick_result{};
-    pick_result.hit = true;
-    pick_result.type = PickResult::Type::Entity;
-    pick_result.index = 0;
-    picking.on_pick({}, pick_result);
-    mouse.mouse_click(input::IMouse::Button::Right);
+    activate_context_menu(picking, mouse, PickResult::Type::Entity, 0);
 
     ui.on_hide();
 
