@@ -72,6 +72,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     ASSERT_EQ(raised_item.value().number(), 123);
 }
 
+/// Tests that the on_hide event from the UI is observed but not forwarded when the item is invalid.
 TEST(Viewer, SelectItemNotRaisedForInvalidItem)
 {
     auto window = create_test_window(L"ViewerTests");
@@ -93,6 +94,7 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     ASSERT_FALSE(raised_item.has_value());
 }
 
+/// Tests that the on_hide event from the UI is observed and forwarded when the item is valid.
 TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     auto window = create_test_window(L"ViewerTests");
@@ -128,6 +130,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     ASSERT_FALSE(std::get<1>(raised_item.value()));
 }
 
+/// Tests that the on_settings event from the UI is observed and forwarded.
 TEST(Viewer, SettingsRaised)
 {
     auto window = create_test_window(L"ViewerTests");
@@ -153,4 +156,113 @@ TEST(Viewer, SettingsRaised)
     ASSERT_TRUE(raised_settings.has_value());
     ASSERT_EQ(raised_settings.value().recent_files.size(), 1);
     ASSERT_EQ(raised_settings.value().recent_files.front(), "test file");
+}
+
+/// Tests that the on_select_room event from the UI is observed and forwarded.
+TEST(Viewer, SelectRoomRaised)
+{
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+
+    std::optional<uint32_t> raised_room;
+    auto token = viewer.on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
+
+    ui.on_select_room(0);
+
+    ASSERT_TRUE(raised_room.has_value());
+    ASSERT_EQ(raised_room.value(), 0u);
+}
+
+TEST(Viewer, SelectTriggerRaised)
+{
+    FAIL();
+}
+
+TEST(Viewer, TriggerVisibilityRaised)
+{
+    FAIL();
+}
+
+TEST(Viewer, SelectWaypointRaised)
+{
+    FAIL();
+}
+
+/// Tests that the on_remove_waypoint event from the UI is observed and forwarded.
+TEST(Viewer, RemoveWaypointRaised)
+{
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+
+    std::optional<uint32_t> removed_waypoint;
+    auto token = viewer.on_waypoint_removed += [&removed_waypoint](const auto& waypoint) { removed_waypoint = waypoint; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Waypoint, 100);
+
+    ui.on_remove_waypoint();
+
+    ASSERT_TRUE(removed_waypoint.has_value());
+    ASSERT_EQ(removed_waypoint.value(), 100u);
+}
+
+/// Tests that the on_add_waypoint event from the UI is observed and forwarded.
+TEST(Viewer, AddWaypointRaised)
+{
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+
+    mocks::MockLevel level;
+    std::vector<Item> items_list(51);
+    Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
+    items_list[50] = item;
+
+    EXPECT_CALL(level, items)
+        .WillRepeatedly([&]() { return items_list; });
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    viewer.open(&level);
+
+    std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer.on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, Waypoint::Type type, uint32_t index) 
+    {
+        added_waypoint = { position, room, type, index };
+    };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Entity, 50);
+
+    ui.on_add_waypoint();
+
+    ASSERT_TRUE(added_waypoint.has_value());
+    ASSERT_EQ(std::get<1>(added_waypoint.value()), 10u);
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), Waypoint::Type::Entity);
+    ASSERT_EQ(std::get<3>(added_waypoint.value()), 50u);
 }
