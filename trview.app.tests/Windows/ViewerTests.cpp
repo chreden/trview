@@ -183,19 +183,102 @@ TEST(Viewer, SelectRoomRaised)
     ASSERT_EQ(raised_room.value(), 0u);
 }
 
+/// Tests that the trigger selected event is raised when the user clicks on a trigger.
 TEST(Viewer, SelectTriggerRaised)
 {
-    FAIL();
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    mocks::MockLevel level;
+    std::vector<Trigger*> triggers_list(101);
+    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
+    triggers_list[100] = trigger.get();
+
+    EXPECT_CALL(level, triggers)
+        .WillRepeatedly([&]() { return triggers_list; });
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    viewer.open(&level);
+
+    std::optional<Trigger*> selected_trigger;
+    auto token = viewer.on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
+    mouse.mouse_click(input::IMouse::Button::Left);
+
+    ASSERT_TRUE(selected_trigger.has_value());
+    ASSERT_EQ(selected_trigger.value(), trigger.get());
 }
 
+/// Tests that the on_hide event from the UI is observed and forwarded for triggers.
 TEST(Viewer, TriggerVisibilityRaised)
 {
-    FAIL();
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    mocks::MockLevel level;
+    std::vector<Trigger*> triggers_list(101);
+    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
+    triggers_list[100] = trigger.get();
+
+    EXPECT_CALL(level, triggers)
+        .WillRepeatedly([&]() { return triggers_list; });
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    viewer.open(&level);
+
+    std::optional<std::tuple<Trigger*, bool>> raised_trigger;
+    auto token = viewer.on_trigger_visibility += [&raised_trigger](const auto& trigger, auto visible) { raised_trigger = { trigger, visible }; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
+
+    ui.on_hide();
+
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(std::get<0>(raised_trigger.value()), trigger.get());
+    ASSERT_FALSE(std::get<1>(raised_trigger.value()));
 }
 
+/// Tests that the waypoint selected event is raised when the user clicks on a waypoint.
 TEST(Viewer, SelectWaypointRaised)
 {
-    FAIL();
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+
+    std::optional<uint32_t> selected_waypoint;
+    auto token = viewer.on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Waypoint, 100);
+    mouse.mouse_click(input::IMouse::Button::Left);
+
+    ASSERT_TRUE(selected_waypoint.has_value());
+    ASSERT_EQ(selected_waypoint.value(), 100u);
 }
 
 /// Tests that the on_remove_waypoint event from the UI is observed and forwarded.
