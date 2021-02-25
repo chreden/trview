@@ -322,7 +322,6 @@ TEST(Viewer, AddWaypointRaised)
     auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-
     mocks::MockLevel level;
     std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
@@ -335,7 +334,7 @@ TEST(Viewer, AddWaypointRaised)
     viewer.open(&level);
 
     std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
-    auto token = viewer.on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, Waypoint::Type type, uint32_t index) 
+    auto token = viewer.on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, Waypoint::Type type, uint32_t index)
     {
         added_waypoint = { position, room, type, index };
     };
@@ -348,4 +347,26 @@ TEST(Viewer, AddWaypointRaised)
     ASSERT_EQ(std::get<1>(added_waypoint.value()), 10u);
     ASSERT_EQ(std::get<2>(added_waypoint.value()), Waypoint::Type::Entity);
     ASSERT_EQ(std::get<3>(added_waypoint.value()), 50u);
+}
+
+/// Tests that right clicking activates the context menu.
+TEST(Viewer, RightClickActivatesContextMenu)
+{
+    auto window = create_test_window(L"ViewerTests");
+
+    Device device;
+    ShaderStorage shader_storage;
+    Shortcuts shortcuts(window);
+    Route route(device, shader_storage);
+
+    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+
+    EXPECT_CALL(ui, set_show_context_menu(false));
+    EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 0);
 }
