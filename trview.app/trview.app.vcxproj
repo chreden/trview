@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemDefinitionGroup>
     <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\Resources\Generated"</Command>
+      <Command>copy "$(OutDir)*.cso" "$(ProjectDir)\Resources\Generated"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy "$(IntDir)\trview.app.res" "$(OutDir)\trview.app.res"</Command>
