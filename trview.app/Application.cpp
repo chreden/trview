@@ -92,12 +92,12 @@ namespace trview
         }
     }
 
-    Application::Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show)
-        : MessageHandler(create_window(hInstance, command_show)), _instance(hInstance),
-        _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(window()),
+    Application::Application(const Window& application_window, std::unique_ptr<IUpdateChecker> update_checker, const std::wstring& command_line)
+        : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
+        _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(std::move(update_checker)),
         _shortcuts(window()), _view_menu(window())
     {
-        _update_checker.check_for_updates();
+        _update_checker->check_for_updates();
         _settings = load_user_settings();
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
@@ -529,5 +529,11 @@ namespace trview
         _triggers_windows->render(_device, _settings.vsync);
         _rooms_windows->render(_device, _settings.vsync);
         _route_window->render(_device, _settings.vsync);
+    }
+
+    Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
+    {
+        auto window = create_window(instance, command_show);
+        return Application(window, std::make_unique<UpdateChecker>(window), command_line);
     }
 }

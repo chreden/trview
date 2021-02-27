@@ -17,14 +17,6 @@ using namespace DirectX::SimpleMath;
 
 namespace
 {
-    template <typename T>
-    std::tuple<std::unique_ptr<T>, T&> create_mock()
-    {
-        auto ptr = std::make_unique<T>();
-        auto& ref = *ptr;
-        return { std::move(ptr), ref };
-    }
-
     /// Simulates a context menu activation - 
     void activate_context_menu(
         mocks::MockPicking& picking,

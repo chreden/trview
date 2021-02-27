@@ -65,6 +65,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
     <ClCompile Include="Menus\DirectoryListing.cpp" />
     <ClCompile Include="Menus\FileDropper.cpp" />
+    <ClCompile Include="Menus\IUpdateChecker.cpp" />
     <ClCompile Include="Menus\LevelSwitcher.cpp" />
     <ClCompile Include="Menus\MenuDetector.cpp" />
     <ClCompile Include="Menus\RecentFiles.cpp" />
@@ -154,6 +155,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\AlternateGroupToggler.h" />
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
+    <ClInclude Include="Menus\IUpdateChecker.h" />
     <ClInclude Include="Menus\LevelSwitcher.h" />
     <ClInclude Include="Menus\MenuDetector.h" />
     <ClInclude Include="Menus\RecentFiles.h" />
@@ -161,6 +163,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
+    <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
@@ -339,7 +342,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Crypt32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -361,7 +364,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Crypt32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -383,7 +386,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Crypt32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -409,7 +412,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Crypt32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

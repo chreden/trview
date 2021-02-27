@@ -11,6 +11,7 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
 #include <trview.tests.common/Window.h>
+#include <trview.tests.common/Mocks.h>
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"

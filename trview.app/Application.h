@@ -24,7 +24,10 @@ namespace trview
     class Application : public MessageHandler
     {
     public:
-        explicit Application(HINSTANCE hInstance, const std::wstring& command_line, int command_show);
+        explicit Application(
+            const Window& application_window,
+            std::unique_ptr<IUpdateChecker> update_checker,
+            const std::wstring& command_line);
         virtual ~Application();
 
         /// Event raised when the recent files list is updated.
@@ -77,7 +80,7 @@ namespace trview
         FileDropper _file_dropper;
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
-        UpdateChecker _update_checker;
+        std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
         Shortcuts _shortcuts;
         HINSTANCE _instance{ nullptr };
@@ -102,4 +105,6 @@ namespace trview
         std::unique_ptr<RouteWindowManager> _route_window;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
     };
+
+    Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
 }

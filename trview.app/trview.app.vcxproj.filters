@@ -226,6 +226,9 @@
     <ClCompile Include="Geometry\IPicking.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\IUpdateChecker.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -483,6 +486,12 @@
     <ClInclude Include="Mocks\Geometry\IPicking.h">
       <Filter>Mocks\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Menus\IUpdateChecker.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IUpdateChecker.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -538,6 +547,9 @@
     </Filter>
     <Filter Include="Mocks\Geometry">
       <UniqueIdentifier>{d319b605-c8f4-48a2-9c7c-989ed77730a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Menus">
+      <UniqueIdentifier>{46297bfe-0f61-4ad3-9380-7bb4c429fe95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -602,8 +614,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Files\texturelist.txt" />
-    <Text Include="Resources\Files\fontlist.txt" />
-    <Text Include="Resources\Files\type_names.txt" />
+    <Text Include="Resources\Files\texturelist.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
+    <Text Include="Resources\Files\type_names.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
+    <Text Include="Resources\Files\fontlist.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
