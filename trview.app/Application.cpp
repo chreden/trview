@@ -8,6 +8,7 @@
 
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/TextureStorage.h>
+#include <trview.app/Settings/SettingsLoader.h>
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
@@ -92,13 +93,13 @@ namespace trview
         }
     }
 
-    Application::Application(const Window& application_window, std::unique_ptr<IUpdateChecker> update_checker, const std::wstring& command_line)
+    Application::Application(const Window& application_window, std::unique_ptr<IUpdateChecker> update_checker, std::unique_ptr<ISettingsLoader> settings_loader, const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(std::move(update_checker)),
-        _shortcuts(window()), _view_menu(window())
+        _shortcuts(window()), _view_menu(window()), _settings_loader(std::move(settings_loader))
     {
         _update_checker->check_for_updates();
-        _settings = load_user_settings();
+        _settings = _settings_loader->load_user_settings();
 
         _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
@@ -135,7 +136,7 @@ namespace trview
 
     Application::~Application()
     {
-        save_user_settings(_settings);
+        _settings_loader->save_user_settings(_settings);
     }
 
     void Application::open(const std::string& filename)
@@ -154,7 +155,7 @@ namespace trview
         on_file_loaded(filename);
         _settings.add_recent_file(filename);
         on_recent_files_changed(_settings.recent_files);
-        save_user_settings(_settings);
+        _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
         _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
@@ -534,6 +535,6 @@ namespace trview
     Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
         auto window = create_window(instance, command_show);
-        return Application(window, std::make_unique<UpdateChecker>(window), command_line);
+        return Application(window, std::make_unique<UpdateChecker>(window), std::make_unique<SettingsLoader>(), command_line);
     }
 }

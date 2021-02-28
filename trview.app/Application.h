@@ -10,6 +10,7 @@
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
+#include <trview.app/Settings/ISettingsLoader.h>
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Windows/RouteWindowManager.h>
@@ -21,12 +22,13 @@
 
 namespace trview
 {
-    class Application : public MessageHandler
+    class Application final : public MessageHandler
     {
     public:
         explicit Application(
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
+            std::unique_ptr<ISettingsLoader> settings_loader,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -76,6 +78,7 @@ namespace trview
         TokenStore _token_store;
 
         // Window message related components.
+        std::unique_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
         FileDropper _file_dropper;
         LevelSwitcher _level_switcher;

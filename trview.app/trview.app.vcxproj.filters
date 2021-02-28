@@ -229,6 +229,12 @@
     <ClCompile Include="Menus\IUpdateChecker.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\ISettingsLoader.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\SettingsLoader.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -492,6 +498,15 @@
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h">
       <Filter>Mocks\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Settings\ISettingsLoader.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingsLoader.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
+      <Filter>Mocks\Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -550,6 +565,9 @@
     </Filter>
     <Filter Include="Mocks\Menus">
       <UniqueIdentifier>{46297bfe-0f61-4ad3-9380-7bb4c429fe95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Settings">
+      <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
