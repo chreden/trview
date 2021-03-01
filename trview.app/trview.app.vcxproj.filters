@@ -235,6 +235,9 @@
     <ClCompile Include="Settings\SettingsLoader.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\IFileDropper.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -506,6 +509,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
       <Filter>Mocks\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IFileDropper.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IFileDropper.h">
+      <Filter>Mocks\Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

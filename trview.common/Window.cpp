@@ -66,4 +66,18 @@ namespace trview
         GetCursorPos(&cursor_pos);
         return WindowFromPoint(cursor_pos);
     }
+
+    bool is_message_only(const Window& window) noexcept
+    {
+        auto current = FindWindowEx(HWND_MESSAGE, nullptr, nullptr, nullptr);
+        while (current != nullptr)
+        {
+            if (current == window)
+            {
+                return true;
+            }
+            current = GetNextWindow(current, GW_HWNDNEXT);
+        }
+        return false;
+    }
 }

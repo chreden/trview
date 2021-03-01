@@ -5,11 +5,13 @@
 #include <commdlg.h>
 
 #include <trlevel/trlevel.h>
+#include <trlevel/LevelLoader.h>
 
 #include <trview.app/Geometry/Picking.h>
 #include <trview.app/Graphics/TextureStorage.h>
 #include <trview.app/Settings/SettingsLoader.h>
 #include <trview.app/UI/ViewerUI.h>
+#include <trview.app/Menus/FileDropper.h>
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.input/WindowTester.h>
@@ -93,15 +95,20 @@ namespace trview
         }
     }
 
-    Application::Application(const Window& application_window, std::unique_ptr<IUpdateChecker> update_checker, std::unique_ptr<ISettingsLoader> settings_loader, const std::wstring& command_line)
+    Application::Application(const Window& application_window, 
+        std::unique_ptr<IUpdateChecker> update_checker, 
+        std::unique_ptr<ISettingsLoader> settings_loader, 
+        std::unique_ptr<IFileDropper> file_dropper, 
+        std::unique_ptr<trlevel::ILevelLoader> level_loader, 
+        const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_dropper(window()), _level_switcher(window()), _recent_files(window()), _update_checker(std::move(update_checker)),
-        _shortcuts(window()), _view_menu(window()), _settings_loader(std::move(settings_loader))
+        _file_dropper(std::move(file_dropper)), _level_switcher(window()), _recent_files(window()), _update_checker(std::move(update_checker)),
+        _shortcuts(window()), _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
 
-        _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
+        _token_store += _file_dropper->on_file_dropped += [&](const auto& file) { open(file); };
 
         _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
         _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
@@ -144,11 +151,14 @@ namespace trview
         std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
-            new_level = trlevel::load_level(filename);
+            new_level = _level_loader->load_level(filename);
         }
         catch (...)
         {
-            MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
+            if (!is_message_only(window()))
+            {
+                MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
+            }
             return;
         }
 
@@ -535,6 +545,12 @@ namespace trview
     Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
         auto window = create_window(instance, command_show);
-        return Application(window, std::make_unique<UpdateChecker>(window), std::make_unique<SettingsLoader>(), command_line);
+        return Application(
+            window, 
+            std::make_unique<UpdateChecker>(window), 
+            std::make_unique<SettingsLoader>(), 
+            std::make_unique<FileDropper>(window),
+            std::make_unique<trlevel::LevelLoader>(),
+            command_line);
     }
 }

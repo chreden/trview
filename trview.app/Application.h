@@ -2,9 +2,11 @@
 
 #include <trview.common/Window.h>
 
+#include <trlevel/ILevelLoader.h>
+
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
-#include <trview.app/Menus/FileDropper.h>
+#include <trview.app/Menus/IFileDropper.h>
 #include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/UpdateChecker.h>
@@ -29,6 +31,8 @@ namespace trview
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
             std::unique_ptr<ISettingsLoader> settings_loader,
+            std::unique_ptr<IFileDropper> file_dropper,
+            std::unique_ptr<trlevel::ILevelLoader> level_loader,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -80,7 +84,8 @@ namespace trview
         // Window message related components.
         std::unique_ptr<ISettingsLoader> _settings_loader;
         UserSettings _settings;
-        FileDropper _file_dropper;
+        std::unique_ptr<IFileDropper> _file_dropper;
+        std::unique_ptr<trlevel::ILevelLoader> _level_loader;
         LevelSwitcher _level_switcher;
         RecentFiles _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;

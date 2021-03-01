@@ -43,5 +43,10 @@ namespace trview
     /// Determines which window is under the cursor.
     /// @returns The window under the cursor.
     Window window_under_cursor() noexcept;
+
+    /// Determines whether this a message only window.
+    /// @param The window to check.
+    /// @returns True if this is a message only window.
+    bool is_message_only(const Window& window) noexcept;
 }
 

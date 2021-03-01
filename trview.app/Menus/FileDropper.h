@@ -3,14 +3,13 @@
 
 #pragma once
 
+#include "IFileDropper.h"
 #include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
-#include <string>
 
 namespace trview
 {
     /// Raises events when the user drops a file on to the window.
-    class FileDropper final : public MessageHandler
+    class FileDropper final : public IFileDropper, public MessageHandler
     {
     public:
         /// Create a new FileDropper.
@@ -25,8 +24,5 @@ namespace trview
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-
-        /// Event raised when the user drops a file on to the window. The file dropped is passed as a parameter.
-        Event<std::string> on_file_dropped;
     };
 }
