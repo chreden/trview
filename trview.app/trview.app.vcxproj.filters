@@ -241,6 +241,9 @@
     <ClCompile Include="Menus\ILevelSwitcher.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Menus\IRecentFiles.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -523,6 +526,12 @@
       <Filter>Menus</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Menus\ILevelSwitcher.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IRecentFiles.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IRecentFiles.h">
       <Filter>Mocks\Menus</Filter>
     </ClInclude>
   </ItemGroup>

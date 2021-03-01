@@ -8,8 +8,8 @@
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileDropper.h>
 #include <trview.app/Menus/ILevelSwitcher.h>
-#include <trview.app/Menus/RecentFiles.h>
-#include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/Menus/IRecentFiles.h>
+#include <trview.app/Menus/IUpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Settings/ISettingsLoader.h>
@@ -34,6 +34,7 @@ namespace trview
             std::unique_ptr<IFileDropper> file_dropper,
             std::unique_ptr<trlevel::ILevelLoader> level_loader,
             std::unique_ptr<ILevelSwitcher> level_switcher,
+            std::unique_ptr<IRecentFiles> recent_files,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -84,7 +85,7 @@ namespace trview
         std::unique_ptr<IFileDropper> _file_dropper;
         std::unique_ptr<trlevel::ILevelLoader> _level_loader;
         std::unique_ptr<ILevelSwitcher> _level_switcher;
-        RecentFiles _recent_files;
+        std::unique_ptr<IRecentFiles> _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
         Shortcuts _shortcuts;
