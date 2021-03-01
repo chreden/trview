@@ -66,6 +66,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\DirectoryListing.cpp" />
     <ClCompile Include="Menus\FileDropper.cpp" />
     <ClCompile Include="Menus\IFileDropper.cpp" />
+    <ClCompile Include="Menus\ILevelSwitcher.cpp" />
     <ClCompile Include="Menus\IUpdateChecker.cpp" />
     <ClCompile Include="Menus\LevelSwitcher.cpp" />
     <ClCompile Include="Menus\MenuDetector.cpp" />
@@ -159,6 +160,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
     <ClInclude Include="Menus\IFileDropper.h" />
+    <ClInclude Include="Menus\ILevelSwitcher.h" />
     <ClInclude Include="Menus\IUpdateChecker.h" />
     <ClInclude Include="Menus\LevelSwitcher.h" />
     <ClInclude Include="Menus\MenuDetector.h" />
@@ -168,6 +170,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
     <ClInclude Include="Mocks\Menus\IFileDropper.h" />
+    <ClInclude Include="Mocks\Menus\ILevelSwitcher.h" />
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />

@@ -12,6 +12,7 @@
 #include <trview.app/Settings/SettingsLoader.h>
 #include <trview.app/UI/ViewerUI.h>
 #include <trview.app/Menus/FileDropper.h>
+#include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.input/WindowTester.h>
@@ -95,14 +96,15 @@ namespace trview
         }
     }
 
-    Application::Application(const Window& application_window, 
-        std::unique_ptr<IUpdateChecker> update_checker, 
-        std::unique_ptr<ISettingsLoader> settings_loader, 
-        std::unique_ptr<IFileDropper> file_dropper, 
-        std::unique_ptr<trlevel::ILevelLoader> level_loader, 
+    Application::Application(const Window& application_window,
+        std::unique_ptr<IUpdateChecker> update_checker,
+        std::unique_ptr<ISettingsLoader> settings_loader,
+        std::unique_ptr<IFileDropper> file_dropper,
+        std::unique_ptr<trlevel::ILevelLoader> level_loader,
+        std::unique_ptr<ILevelSwitcher> level_switcher,
         const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
-        _file_dropper(std::move(file_dropper)), _level_switcher(window()), _recent_files(window()), _update_checker(std::move(update_checker)),
+        _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(window()), _update_checker(std::move(update_checker)),
         _shortcuts(window()), _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader))
     {
         _update_checker->check_for_updates();
@@ -110,12 +112,11 @@ namespace trview
 
         _token_store += _file_dropper->on_file_dropped += [&](const auto& file) { open(file); };
 
-        _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
-        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
+        _token_store += _level_switcher->on_switch_level += [=](const auto& file) { open(file); };
+        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher->open_file(file); };
 
         _recent_files.set_recent_files(_settings.recent_files);
         _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
-        _token_store += on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
@@ -164,7 +165,7 @@ namespace trview
 
         on_file_loaded(filename);
         _settings.add_recent_file(filename);
-        on_recent_files_changed(_settings.recent_files);
+        _recent_files.set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
@@ -551,6 +552,7 @@ namespace trview
             std::make_unique<SettingsLoader>(), 
             std::make_unique<FileDropper>(window),
             std::make_unique<trlevel::LevelLoader>(),
+            std::make_unique<LevelSwitcher>(window),
             command_line);
     }
 }

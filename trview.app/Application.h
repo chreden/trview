@@ -7,7 +7,7 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileDropper.h>
-#include <trview.app/Menus/LevelSwitcher.h>
+#include <trview.app/Menus/ILevelSwitcher.h>
 #include <trview.app/Menus/RecentFiles.h>
 #include <trview.app/Menus/UpdateChecker.h>
 #include <trview.app/Menus/ViewMenu.h>
@@ -33,12 +33,9 @@ namespace trview
             std::unique_ptr<ISettingsLoader> settings_loader,
             std::unique_ptr<IFileDropper> file_dropper,
             std::unique_ptr<trlevel::ILevelLoader> level_loader,
+            std::unique_ptr<ILevelSwitcher> level_switcher,
             const std::wstring& command_line);
         virtual ~Application();
-
-        /// Event raised when the recent files list is updated.
-        /// @remarks The list of filenames is passed as a parameter to the listener functions.
-        Event<std::list<std::string>> on_recent_files_changed;
 
         /// Event raised when a level file is successfully opened.
         /// @remarks The filename is passed as a parameter to the listener functions.
@@ -86,7 +83,7 @@ namespace trview
         UserSettings _settings;
         std::unique_ptr<IFileDropper> _file_dropper;
         std::unique_ptr<trlevel::ILevelLoader> _level_loader;
-        LevelSwitcher _level_switcher;
+        std::unique_ptr<ILevelSwitcher> _level_switcher;
         RecentFiles _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
