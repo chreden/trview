@@ -26,7 +26,8 @@ TEST(Application, ChecksForUpdates)
     auto [update_checker_ptr, update_checker] = create_mock<MockUpdateChecker>();
     EXPECT_CALL(update_checker, check_for_updates).Times(1);
     CoInitialize(nullptr);
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::move(update_checker_ptr),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
@@ -39,7 +40,7 @@ TEST(Application, ChecksForUpdates)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 }
 
@@ -49,7 +50,8 @@ TEST(Application, SettingsLoadedAndSaved)
     EXPECT_CALL(settings_loader, load_user_settings).Times(1);
     EXPECT_CALL(settings_loader, save_user_settings).Times(1);
     CoInitialize(nullptr);
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::move(settings_loader_ptr),
         std::make_unique<MockFileDropper>(),
@@ -62,7 +64,7 @@ TEST(Application, SettingsLoadedAndSaved)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 }
 
@@ -76,7 +78,8 @@ TEST(Application, FileDropperOpensFile)
         .Times(1)
         .WillRepeatedly(Throw(std::exception()));
 
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::move(file_dropper_ptr),
@@ -89,7 +92,7 @@ TEST(Application, FileDropperOpensFile)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
     file_dropper.on_file_dropped("test_path.tr2");
 }
@@ -103,7 +106,8 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         .Times(1)
         .WillRepeatedly(Throw(std::exception()));
 
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
@@ -116,7 +120,7 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 
     level_switcher.on_switch_level("test_path.tr2");
@@ -131,7 +135,8 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         .Times(1)
         .WillRepeatedly(Throw(std::exception()));
 
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
@@ -144,7 +149,7 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 
     recent_files.on_file_open("test_path.tr2");
@@ -160,7 +165,8 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<MockLevel>())));
 
     CoInitialize(nullptr);
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
@@ -173,7 +179,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 
     application.open("test_path.tr2");
@@ -189,20 +195,21 @@ TEST(Application, FileOpenedInViewer)
     EXPECT_CALL(viewer, open(NotNull())).Times(1);
 
     CoInitialize(nullptr);
-    Application application(create_test_window(L"ApplicationTests"),
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
         std::move(level_loader_ptr),
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
-        std::make_unique<MockViewer>(),
+        std::move(viewer_ptr),
         std::make_unique<MockShaderStorage>(),
         std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
-        std::make_unique<MockShortcuts>(),
+        std::make_unique<Shortcuts>(window),
         std::wstring());
 
     application.open("test_path.tr2");
