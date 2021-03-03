@@ -218,7 +218,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
+    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
     {
         try
         {
@@ -277,7 +277,7 @@ namespace trview
         }
     }
 
-    void export_route(const Route& route, const std::string& filename)
+    void export_route(const IRoute& route, const std::string& filename)
     {
         try
         {

@@ -165,6 +165,7 @@
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="LevelVersion.h" />
+    <ClInclude Include="Mocks\ILevel.h" />
     <ClInclude Include="Mocks\ILevelLoader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trlevel.h" />

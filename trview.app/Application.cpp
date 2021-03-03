@@ -18,6 +18,7 @@
 #include <trview.common/Strings.h>
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.input/WindowTester.h>
+#include <trview.app/Windows/Viewer.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -105,10 +106,18 @@ namespace trview
         std::unique_ptr<trlevel::ILevelLoader> level_loader,
         std::unique_ptr<ILevelSwitcher> level_switcher,
         std::unique_ptr<IRecentFiles> recent_files,
+        std::unique_ptr<IViewer> viewer,
+        std::unique_ptr<graphics::IShaderStorage> shader_storage,
+        std::unique_ptr<graphics::IFontFactory> font_factory,
+        std::unique_ptr<ITextureStorage> texture_storage,
+        std::unique_ptr<graphics::Device> device,
+        std::unique_ptr<IRoute> route,
+        std::unique_ptr<IShortcuts> shortcuts,
         const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _shortcuts(window()), _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader))
+        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
+        _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -123,15 +132,6 @@ namespace trview
 
         Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
         _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-
-        _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device, *_shader_storage.get());
-        load_default_fonts(_device, _font_factory);
-
-        _texture_storage = std::make_unique<TextureStorage>(_device);
-        load_default_textures(_device, *_texture_storage.get());
-
-        _route = std::make_unique<Route>(_device, *_shader_storage);
 
         setup_shortcuts();
         setup_view_menu();
@@ -172,9 +172,8 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        _level = std::make_unique<Level>(*_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
         _level->set_filename(filename);
-        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
 
         _viewer->open(_level.get());
 
@@ -311,10 +310,10 @@ namespace trview
 
     void Application::setup_viewer(const std::wstring& command_line)
     {
-        auto ui = std::make_unique<ViewerUI>(window(), _device, *_shader_storage.get(), _font_factory, *_texture_storage, _shortcuts);
+        auto ui = std::make_unique<ViewerUI>(window(), *_device, *_shader_storage.get(), *_font_factory, *_texture_storage, *_shortcuts);
         auto mouse = std::make_unique<input::Mouse>(window(), std::make_unique<input::WindowTester>(window()));
 
-        _viewer = std::make_unique<Viewer>(window(), _device, *_shader_storage.get(), std::move(ui), std::make_unique<Picking>(), std::move(mouse), _shortcuts, _route.get());
+        _viewer = std::make_unique<Viewer>(window(), *_device, *_shader_storage.get(), std::move(ui), std::make_unique<Picking>(), std::move(mouse), *_shortcuts, _route.get());
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
@@ -336,7 +335,7 @@ namespace trview
 
     void Application::setup_items_windows()
     {
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        _items_windows = std::make_unique<ItemsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -355,7 +354,7 @@ namespace trview
 
     void Application::setup_triggers_windows()
     {
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        _triggers_windows = std::make_unique<TriggersWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -371,7 +370,7 @@ namespace trview
 
     void Application::setup_rooms_windows()
     {
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        _rooms_windows = std::make_unique<RoomsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -384,13 +383,13 @@ namespace trview
 
     void Application::setup_route_window()
     {
-        _route_window = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window(), _shortcuts);
+        _route_window = std::make_unique<RouteWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(_device, *_shader_storage, path);
+            auto route = import_route(*_device, *_shader_storage, path);
             if (route)
             {
                 _route = std::move(route);
@@ -411,7 +410,7 @@ namespace trview
     {
         auto add_shortcut = [&](bool control, uint16_t key, std::function<void()> fn)
         {
-            _token_store += _shortcuts.add_shortcut(control, key) += [&, fn]()
+            _token_store += _shortcuts->add_shortcut(control, key) += [&, fn]()
             {
                 if (!_viewer->ui_input_active()) { fn(); }
             };
@@ -540,15 +539,32 @@ namespace trview
         }
 
         _viewer->render();
-        _items_windows->render(_device, _settings.vsync);
-        _triggers_windows->render(_device, _settings.vsync);
-        _rooms_windows->render(_device, _settings.vsync);
-        _route_window->render(_device, _settings.vsync);
+        _items_windows->render(*_device, _settings.vsync);
+        _triggers_windows->render(*_device, _settings.vsync);
+        _rooms_windows->render(*_device, _settings.vsync);
+        _route_window->render(*_device, _settings.vsync);
     }
 
     Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
         auto window = create_window(instance, command_show);
+
+        auto device = std::make_unique<graphics::Device>();
+        auto shader_storage = std::make_unique<graphics::ShaderStorage>();
+        auto font_factory = std::make_unique<graphics::FontFactory>();
+        auto texture_storage = std::make_unique<TextureStorage>(*device);
+
+        load_default_shaders(*device, *shader_storage);
+        load_default_fonts(*device, *font_factory);
+        load_default_textures(*device, *texture_storage);
+
+        auto route = std::make_unique<Route>(*device, *shader_storage);
+        auto shortcuts = std::make_unique<Shortcuts>(window);
+
+        auto ui = std::make_unique<ViewerUI>(window, *device, *shader_storage, *font_factory, *texture_storage, *shortcuts);
+        auto mouse = std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window));
+        auto viewer = std::make_unique<Viewer>(window, *device, *shader_storage, std::move(ui), std::make_unique<Picking>(), std::move(mouse), *shortcuts, route.get());
+
         return Application(
             window, 
             std::make_unique<UpdateChecker>(window), 
@@ -557,6 +573,13 @@ namespace trview
             std::make_unique<trlevel::LevelLoader>(),
             std::make_unique<LevelSwitcher>(window),
             std::make_unique<RecentFiles>(window),
+            std::move(viewer),
+            std::move(shader_storage),
+            std::move(font_factory),
+            std::move(texture_storage),
+            std::move(device),
+            std::move(route),
+            std::move(shortcuts),
             command_line);
     }
 }

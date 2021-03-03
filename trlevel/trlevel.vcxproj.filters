@@ -13,6 +13,9 @@
     <ClInclude Include="Mocks\ILevelLoader.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\ILevel.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />

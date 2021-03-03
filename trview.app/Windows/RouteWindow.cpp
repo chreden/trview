@@ -41,7 +41,7 @@ namespace trview
         set_panels(create_left_panel(), create_right_panel());
     }
 
-    void RouteWindow::set_route(Route* route) 
+    void RouteWindow::set_route(IRoute* route) 
     {
         _route = route;
         _selected_index = 0u;

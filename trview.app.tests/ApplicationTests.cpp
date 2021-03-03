@@ -1,16 +1,25 @@
 #include <trview.app/Application.h>
+#include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
-#include <trview.app/Mocks/Settings/ISettingsLoader.h>
 #include <trview.app/Mocks/Menus/IFileDropper.h>
 #include <trview.app/Mocks/Menus/ILevelSwitcher.h>
 #include <trview.app/Mocks/Menus/IRecentFiles.h>
+#include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Settings/ISettingsLoader.h>
+#include <trview.app/Mocks/Windows/IViewer.h>
+#include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trlevel/Mocks/ILevelLoader.h>
+#include <trlevel/Mocks/ILevel.h>
+#include <trview.graphics/mocks/IFontFactory.h>
+#include <trview.graphics/mocks/IShaderStorage.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace testing;
 using namespace trview::mocks;
+using namespace trview::graphics::mocks;
 using namespace trlevel::mocks;
+using testing::_;
 
 TEST(Application, ChecksForUpdates)
 {
@@ -24,6 +33,13 @@ TEST(Application, ChecksForUpdates)
         std::make_unique<MockLevelLoader>(),
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
 }
 
@@ -40,6 +56,13 @@ TEST(Application, SettingsLoadedAndSaved)
         std::make_unique<MockLevelLoader>(),
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
 }
 
@@ -60,6 +83,13 @@ TEST(Application, FileDropperOpensFile)
         std::move(level_loader_ptr),
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
     file_dropper.on_file_dropped("test_path.tr2");
 }
@@ -80,6 +110,13 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         std::move(level_loader_ptr),
         std::move(level_switcher_ptr),
         std::make_unique<MockRecentFiles>(),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
 
     level_switcher.on_switch_level("test_path.tr2");
@@ -101,6 +138,13 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         std::move(level_loader_ptr),
         std::make_unique<MockLevelSwitcher>(),
         std::move(recent_files_ptr),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
 
     recent_files.on_file_open("test_path.tr2");
@@ -109,16 +153,56 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
 TEST(Application, RecentFilesUpdatedOnFileOpen)
 {
     auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
 
-    EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{ "test_path.tr2" })).Times(1);
+    EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
+    EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<MockLevel>())));
 
+    CoInitialize(nullptr);
     Application application(create_test_window(L"ApplicationTests"),
         std::make_unique<MockUpdateChecker>(),
         std::make_unique<MockSettingsLoader>(),
         std::make_unique<MockFileDropper>(),
-        std::make_unique<MockLevelLoader>(),
+        std::move(level_loader_ptr),
         std::make_unique<MockLevelSwitcher>(),
         std::move(recent_files_ptr),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
+        std::wstring());
+
+    application.open("test_path.tr2");
+}
+
+TEST(Application, FileOpenedInViewer)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
+    EXPECT_CALL(viewer, open(NotNull())).Times(1);
+
+    CoInitialize(nullptr);
+    Application application(create_test_window(L"ApplicationTests"),
+        std::make_unique<MockUpdateChecker>(),
+        std::make_unique<MockSettingsLoader>(),
+        std::make_unique<MockFileDropper>(),
+        std::move(level_loader_ptr),
+        std::make_unique<MockLevelSwitcher>(),
+        std::make_unique<MockRecentFiles>(),
+        std::make_unique<MockViewer>(),
+        std::make_unique<MockShaderStorage>(),
+        std::make_unique<MockFontFactory>(),
+        std::make_unique<MockTextureStorage>(),
+        std::make_unique<graphics::Device>(),
+        std::make_unique<MockRoute>(),
+        std::make_unique<MockShortcuts>(),
         std::wstring());
 
     application.open("test_path.tr2");

@@ -19,7 +19,7 @@
 
 namespace trview
 {
-    class Shortcuts;
+    struct IShortcuts;
 
     namespace graphics
     {
@@ -35,7 +35,7 @@ namespace trview
             const graphics::IShaderStorage& shader_storage,
             const graphics::IFontFactory& font_factory,
             const ITextureStorage& texture_storage,
-            Shortcuts& shortcuts);
+            IShortcuts& shortcuts);
 
         virtual ~ViewerUI() = default;
 
@@ -217,7 +217,7 @@ namespace trview
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
-        Shortcuts& _shortcuts;
+        IShortcuts& _shortcuts;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ui::Input> _ui_input;

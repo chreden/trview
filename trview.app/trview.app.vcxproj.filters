@@ -244,6 +244,12 @@
     <ClCompile Include="Menus\IRecentFiles.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\IViewer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\IRoute.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -534,6 +540,21 @@
     <ClInclude Include="Mocks\Menus\IRecentFiles.h">
       <Filter>Mocks\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\IViewer.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IViewer.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ITextureStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IRoute.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Routing\IRoute.h">
+      <Filter>Mocks\Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -595,6 +616,15 @@
     </Filter>
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Windows">
+      <UniqueIdentifier>{bf510d34-b63f-4cfb-9448-1b62a72cdac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Graphics">
+      <UniqueIdentifier>{fc010d02-678c-4f36-977f-06c6b9379694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Routing">
+      <UniqueIdentifier>{06dfb4a3-f717-4461-b283-e43999dbc039}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

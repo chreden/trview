@@ -17,7 +17,9 @@
 #include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
-#include <trview.app/Windows/Viewer.h>
+#include <trview.app/Windows/IViewer.h>
+#include <trview.app/Lua/Lua.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
@@ -35,6 +37,13 @@ namespace trview
             std::unique_ptr<trlevel::ILevelLoader> level_loader,
             std::unique_ptr<ILevelSwitcher> level_switcher,
             std::unique_ptr<IRecentFiles> recent_files,
+            std::unique_ptr<IViewer> viewer,
+            std::unique_ptr<graphics::IShaderStorage> shader_storage,
+            std::unique_ptr<graphics::IFontFactory> font_factory,
+            std::unique_ptr<ITextureStorage> texture_storage,
+            std::unique_ptr<graphics::Device> device,
+            std::unique_ptr<IRoute> route,
+            std::unique_ptr<IShortcuts> shortcuts,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -88,13 +97,13 @@ namespace trview
         std::unique_ptr<IRecentFiles> _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
-        Shortcuts _shortcuts;
+        std::unique_ptr<IShortcuts> _shortcuts;
         HINSTANCE _instance{ nullptr };
 
         // Rendering
-        graphics::Device _device;
+        std::unique_ptr<graphics::Device> _device;
         std::unique_ptr<graphics::IShaderStorage> _shader_storage;
-        graphics::FontFactory _font_factory;
+        std::unique_ptr<graphics::IFontFactory> _font_factory;
         std::unique_ptr<ITextureStorage> _texture_storage;
 
         // Level data components
@@ -102,10 +111,10 @@ namespace trview
         std::unique_ptr<Level> _level;
 
         // Routing and tools.
-        std::unique_ptr<Route> _route;
+        std::unique_ptr<IRoute> _route;
 
         // Windows
-        std::unique_ptr<Viewer> _viewer;
+        std::unique_ptr<IViewer> _viewer;
         std::unique_ptr<ItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RouteWindowManager> _route_window;
