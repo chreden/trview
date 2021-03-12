@@ -1,5 +1,5 @@
 #include "ItemsWindow.h"
-#include <trview/resource.h>
+#include <trview.app/Resources/resource.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>

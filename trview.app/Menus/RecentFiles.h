@@ -3,16 +3,15 @@
 
 #pragma once
 
-#include <string>
 #include <list>
 #include <vector>
-#include <trview.common/Event.h>
 #include <trview.common/MessageHandler.h>
+#include "IRecentFiles.h"
 
 namespace trview
 {
     /// Updates a menu with the most recent files.
-    class RecentFiles final : public MessageHandler
+    class RecentFiles final : public IRecentFiles, public MessageHandler
     {
     public:
         /// Create a new RecentFiles that will manage a menu on the window specified.
@@ -28,13 +27,9 @@ namespace trview
         /// @param lParam The LPARAM for the message.
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
-        /// Event raised when the user opens a file from the recent files list. The file that was opened
-        /// is passed as a parameter.
-        Event<std::string> on_file_open;
-
         /// Set the current list of recent files.
         /// @param files The list of recent files.
-        void set_recent_files(const std::list<std::string>& files);
+        virtual void set_recent_files(const std::list<std::string>& files) override;
     private:
         std::vector<std::string> _recent_files;
     };

@@ -24,11 +24,5 @@ namespace trview
         bool                    camera_acceleration{ true };
         float                   camera_acceleration_rate{ 0.5f };
     };
-
-    // Load the user settings from the settings file.
-    UserSettings load_user_settings();
-
-    // Save the user settings to the settings file.
-    void         save_user_settings(const UserSettings& settings);
 }
 

@@ -29,11 +29,11 @@ namespace trview
 
         /// Process a mouse button being pressed.
         /// @param button The button that was pressed.
-        void mouse_down(input::Mouse::Button button);
+        void mouse_down(input::IMouse::Button button);
 
         /// Process a mouse button being released.
         /// @param button The button that was released.
-        void mouse_up(input::Mouse::Button button);
+        void mouse_up(input::IMouse::Button button);
 
         /// Process the mouse being moved.
         /// @param x The x movement.

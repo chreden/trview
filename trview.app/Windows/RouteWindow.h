@@ -13,7 +13,7 @@
 
 namespace trview
 {
-    class Route;
+    struct IRoute;
 
     class RouteWindow final : public CollapsiblePanel
     {
@@ -23,14 +23,14 @@ namespace trview
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit RouteWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const trview::Window& parent);
+        explicit RouteWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const trview::Window& parent);
 
         /// Destructor for triggers window
         virtual ~RouteWindow() = default;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        void set_route(Route* route);
+        void set_route(IRoute* route);
 
         /// Event raised when a waypoint is selected.
         Event<uint32_t> on_waypoint_selected;
@@ -79,7 +79,7 @@ namespace trview
         ui::Button* _select_save;
         ui::Button* _delete_waypoint;
         ui::Button* _clear_save;
-        Route* _route{ nullptr };
+        IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;

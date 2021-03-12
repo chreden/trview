@@ -14,7 +14,7 @@ namespace trview
     class RouteWindowManager final : public MessageHandler
     {
     public:
-        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Window& window, Shortcuts& shortcuts);
+        explicit RouteWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
 
         virtual ~RouteWindowManager() = default;
 
@@ -31,7 +31,7 @@ namespace trview
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        void set_route(Route* route);
+        void set_route(IRoute* route);
 
         /// Create a new route window.
         void create_window();
@@ -71,11 +71,11 @@ namespace trview
     private:
         graphics::Device& _device;
         const graphics::IShaderStorage& _shader_storage;
-        const graphics::FontFactory& _font_factory;
+        const graphics::IFontFactory& _font_factory;
         TokenStore _token_store;
         std::unique_ptr<RouteWindow> _route_window;
         bool _closing{ false };
-        Route* _route{ nullptr };
+        IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;

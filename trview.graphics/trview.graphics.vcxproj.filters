@@ -77,6 +77,9 @@
     <ClInclude Include="RasterizerStateStore.h">
       <Filter>Rasterizer</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\IShaderStorage.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">

@@ -16,7 +16,7 @@ namespace trview
             }
         }
 
-        Input::Input(const trview::Window& window, Control& control, Shortcuts& shortcuts)
+        Input::Input(const trview::Window& window, Control& control, IShortcuts& shortcuts)
             : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts)
         {
             register_events();
@@ -39,7 +39,7 @@ namespace trview
             register_focus_controls(&_control);
 
             _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
-            _token_store += _mouse.mouse_down += [&](input::Mouse::Button) { process_mouse_down(); };
+            _token_store += _mouse.mouse_down += [&](input::IMouse::Button) { process_mouse_down(); };
             _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
             _token_store += _mouse.mouse_click += [&](auto) { process_mouse_click(); };
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };

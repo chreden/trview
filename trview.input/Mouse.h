@@ -10,6 +10,7 @@
 #include <trview.common/MessageHandler.h>
 #include <cstdint>
 
+#include "IMouse.h"
 #include "IWindowTester.h"
 
 namespace trview
@@ -17,20 +18,9 @@ namespace trview
     namespace input
     {
         /// Receives mouse input on a specific window.
-        class Mouse final : public MessageHandler
+        class Mouse final : public IMouse, public MessageHandler
         {
         public:
-            /// The mouse button that was pressed.
-            enum class Button
-            {
-                /// The left mouse button.
-                Left,
-                /// The middle mouse button.
-                Middle,
-                /// The right mouse button.
-                Right
-            };
-
             /// Creates an instance of the Mouse class.
             /// @param window The window to monitor.
             /// @param window_tester The window tester to use.
@@ -45,31 +35,11 @@ namespace trview
             /// @remarks This is called internally and does not need to be called from external sources.
             void process_input(const RAWINPUT& input);
 
-            /// Event raised when a mouse button is pressed. The button that was pressed is passed
-            /// as a parameter to the event listeners.
-            Event<Button> mouse_down;
-
-            /// Event raised when a mouse button is released. The button that was released is passed
-            /// as a parameter to the event listeners.
-            Event<Button> mouse_up;
-
-            /// Event raised when a mouse is pressed and released (clicked). The button that was clicked
-            /// is passed as a parameter to the event listeners.
-            Event<Button> mouse_click;
-
-            /// Event raised when the mouse wheel has rotated. The amount that the wheel has rotated
-            /// is passed as a parameter to the event listeners.
-            Event<int16_t> mouse_wheel;
-
-            /// Event raised when the mouse has moved. The difference in X and Y coordinates are passed
-            /// as the parameters to the event listeners.
-            Event<long, long> mouse_move;
-
             /// Get the current X coordinate of the mouse.
-            long x() const;
+            virtual long x() const override;
 
             /// Get the current Y coordinate of the mouse.
-            long y() const;
+            virtual long y() const override;
 
             /// Handles a window message.
             /// @param message The message that was received.

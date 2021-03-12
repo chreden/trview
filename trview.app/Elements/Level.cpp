@@ -94,7 +94,7 @@ namespace trview
         return _selected_room;
     }
 
-    const std::vector<Item>& Level::items() const
+    std::vector<Item> Level::items() const
     {
         return _items;
     }
@@ -652,7 +652,17 @@ namespace trview
         return _version;
     }
 
-    bool find_item_by_type_id(const Level& level, uint32_t type_id, Item& output_item)
+    std::string Level::filename() const
+    {
+        return _filename;
+    }
+
+    void Level::set_filename(const std::string& filename)
+    {
+        _filename = filename;
+    }
+
+    bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)
     {
         const auto& items = level.items();
         auto found_item = std::find_if(items.begin(), items.end(), [=](const auto& item) { return item.type_id() == type_id; });

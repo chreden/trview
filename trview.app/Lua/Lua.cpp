@@ -13,6 +13,8 @@ namespace trview
     static LuaFunctionRegistry* op;
     static std::map <LuaEvent, int> callbacks;
 
+    LuaFunctionRegistry lua_registry;
+
     // Function hit whenever the VM executes LUA_MAX_INS instructions.
     // This counter doesn't seem to reset, so we use "num_tries" variable to scope it to a single script/command.
     static void rescue ( lua_State* L, lua_Debug* )

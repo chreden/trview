@@ -1,6 +1,10 @@
 #include "DefaultShaders.h"
 #include "ResourceHelper.h"
 #include "resource.h"
+#include <trview.graphics/Device.h>
+#include <trview.graphics/IShaderStorage.h>
+#include <trview.graphics/VertexShader.h>
+#include <trview.graphics/PixelShader.h>
 
 using namespace Microsoft::WRL;
 

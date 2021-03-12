@@ -49,6 +49,14 @@ namespace trview
     {
     }
 
+    Route& Route::operator=(const Route& other)
+    {
+        _waypoints = other._waypoints;
+        _selected_index = other._selected_index;;
+        _colour = other._colour;
+        return *this;
+    }
+
     void Route::add(const Vector3& position, uint32_t room)
     {
         add(position, room, Waypoint::Type::Position, 0u);
@@ -210,7 +218,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<Route> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
+    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
     {
         try
         {
@@ -269,7 +277,7 @@ namespace trview
         }
     }
 
-    void export_route(const Route& route, const std::string& filename)
+    void export_route(const IRoute& route, const std::string& filename)
     {
         try
         {

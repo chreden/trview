@@ -197,6 +197,59 @@
       <Filter>Lua</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Windows\Viewer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\DefaultFonts.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\DefaultShaders.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\DefaultTextures.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceHelper.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ApplicationLuaRegistry.cpp" />
+    <ClCompile Include="UI\IViewerUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ILevel.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\IPicking.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\IUpdateChecker.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\ISettingsLoader.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings\SettingsLoader.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\IFileDropper.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\ILevelSwitcher.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\IRecentFiles.cpp">
+      <Filter>Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IViewer.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\IRoute.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -416,6 +469,92 @@
       <Filter>Lua</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Windows\Viewer.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultFonts.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultShaders.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\DefaultTextures.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceHelper.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\targetver.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="Mocks\Elements\ILevel.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\IViewerUI.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IViewerUI.h" />
+    <ClInclude Include="Elements\ILevel.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\IPicking.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\IPicking.h">
+      <Filter>Mocks\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IUpdateChecker.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IUpdateChecker.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\ISettingsLoader.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\SettingsLoader.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Settings\ISettingsLoader.h">
+      <Filter>Mocks\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IFileDropper.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IFileDropper.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\ILevelSwitcher.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\ILevelSwitcher.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\IRecentFiles.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Menus\IRecentFiles.h">
+      <Filter>Mocks\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IViewer.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IViewer.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ITextureStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IRoute.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Routing\IRoute.h">
+      <Filter>Mocks\Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -451,5 +590,113 @@
     <Filter Include="Lua">
       <UniqueIdentifier>{8fe99dfb-e6c8-4786-8bfa-952a19ea124a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{021610f0-b987-420f-bf87-6cfc739390a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Files">
+      <UniqueIdentifier>{49faf3bb-6ba0-4d4a-ad01-5d2d70ab5bee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Generated">
+      <UniqueIdentifier>{15b63c6f-69e1-4682-bd97-031bcda2ff23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{f887ffc9-ee5c-4f06-9adc-d94261ba3661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\UI">
+      <UniqueIdentifier>{8cde831c-542d-4e6d-a6fe-fb6ad01b04e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Elements">
+      <UniqueIdentifier>{6f82e7bf-faf0-481f-983b-b1a62e5e1a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Geometry">
+      <UniqueIdentifier>{d319b605-c8f4-48a2-9c7c-989ed77730a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Menus">
+      <UniqueIdentifier>{46297bfe-0f61-4ad3-9380-7bb4c429fe95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Settings">
+      <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Windows">
+      <UniqueIdentifier>{bf510d34-b63f-4cfb-9448-1b62a72cdac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Graphics">
+      <UniqueIdentifier>{fc010d02-678c-4f36-977f-06c6b9379694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Routing">
+      <UniqueIdentifier>{06dfb4a3-f717-4461-b283-e43999dbc039}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Files\numericdown.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\numericup.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\settings.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb1.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb3.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb2.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb5.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="trview.ico">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\tomb4.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\unknown.png">
+      <Filter>Resources\Files</Filter>
+    </Image>
+    <Image Include="Resources\Files\trview.ico" />
+    <Image Include="Resources\Files\small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Generated\level_pixel_shader.cso">
+      <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\level_vertex_shader.cso">
+      <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\selection_pixel_shader.cso">
+      <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\ui_pixel_shader.cso">
+      <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Generated\ui_vertex_shader.cso">
+      <Filter>Resources\Generated</Filter>
+    </None>
+    <None Include="Resources\Files\arial8.bin" />
+    <None Include="Resources\Files\arial7.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\trview.app.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Files\texturelist.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
+    <Text Include="Resources\Files\type_names.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
+    <Text Include="Resources\Files\fontlist.txt">
+      <Filter>Resources\Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

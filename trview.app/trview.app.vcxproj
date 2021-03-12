@@ -18,7 +18,18 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>mkdir ""$(ProjectDir)Resources\Generated""
+copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy "$(IntDir)\trview.app.res" "$(OutDir)\trview.app.res"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Camera\CameraInput.cpp" />
     <ClCompile Include="Camera\CameraMode.cpp" />
@@ -28,12 +39,14 @@
     <ClCompile Include="Elements\Entity.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
     <ClCompile Include="Elements\ITypeNameLookup.cpp" />
+    <ClCompile Include="Elements\ILevel.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
     <ClCompile Include="Elements\Room.cpp" />
     <ClCompile Include="Elements\Sector.cpp" />
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeNameLookup.cpp" />
+    <ClCompile Include="Geometry\IPicking.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
@@ -52,13 +65,24 @@
     <ClCompile Include="Menus\AlternateGroupToggler.cpp" />
     <ClCompile Include="Menus\DirectoryListing.cpp" />
     <ClCompile Include="Menus\FileDropper.cpp" />
+    <ClCompile Include="Menus\IFileDropper.cpp" />
+    <ClCompile Include="Menus\ILevelSwitcher.cpp" />
+    <ClCompile Include="Menus\IRecentFiles.cpp" />
+    <ClCompile Include="Menus\IUpdateChecker.cpp" />
     <ClCompile Include="Menus\LevelSwitcher.cpp" />
     <ClCompile Include="Menus\MenuDetector.cpp" />
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
+    <ClCompile Include="Resources\DefaultFonts.cpp" />
+    <ClCompile Include="Resources\DefaultShaders.cpp" />
+    <ClCompile Include="Resources\DefaultTextures.cpp" />
+    <ClCompile Include="Resources\ResourceHelper.cpp" />
+    <ClCompile Include="Routing\IRoute.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
+    <ClCompile Include="Settings\ISettingsLoader.cpp" />
+    <ClCompile Include="Settings\SettingsLoader.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -74,6 +98,7 @@
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
+    <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
     <ClCompile Include="UI\SettingsWindow.cpp" />
@@ -83,15 +108,19 @@
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\IViewer.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
     <ClCompile Include="Windows\RouteWindowManager.cpp" />
     <ClCompile Include="Windows\TriggersWindow.cpp" />
     <ClCompile Include="Windows\TriggersWindowManager.cpp" />
+    <ClCompile Include="Windows\Viewer.cpp" />
+    <ClCompile Include="Windows\ViewerLuaRegistry.cpp" />
     <ClCompile Include="Windows\WindowResizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Camera\CameraInput.h" />
     <ClInclude Include="Camera\CameraMode.h" />
@@ -100,6 +129,7 @@
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
     <ClInclude Include="Elements\Entity.h" />
+    <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\Item.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />
     <ClInclude Include="Elements\Level.h" />
@@ -110,6 +140,7 @@
     <ClInclude Include="Elements\Trigger.h" />
     <ClInclude Include="Elements\TypeNameLookup.h" />
     <ClInclude Include="Elements\Types.h" />
+    <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\MeshVertex.h" />
@@ -131,13 +162,37 @@
     <ClInclude Include="Menus\AlternateGroupToggler.h" />
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
+    <ClInclude Include="Menus\IFileDropper.h" />
+    <ClInclude Include="Menus\ILevelSwitcher.h" />
+    <ClInclude Include="Menus\IRecentFiles.h" />
+    <ClInclude Include="Menus\IUpdateChecker.h" />
     <ClInclude Include="Menus\LevelSwitcher.h" />
     <ClInclude Include="Menus\MenuDetector.h" />
     <ClInclude Include="Menus\RecentFiles.h" />
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
+    <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\Geometry\IPicking.h" />
+    <ClInclude Include="Mocks\Graphics\ITextureStorage.h" />
+    <ClInclude Include="Mocks\Menus\IFileDropper.h" />
+    <ClInclude Include="Mocks\Menus\ILevelSwitcher.h" />
+    <ClInclude Include="Mocks\Menus\IRecentFiles.h" />
+    <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
+    <ClInclude Include="Mocks\Routing\IRoute.h" />
+    <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
+    <ClInclude Include="Mocks\UI\IViewerUI.h" />
+    <ClInclude Include="Mocks\Windows\IViewer.h" />
+    <ClInclude Include="Resources\DefaultFonts.h" />
+    <ClInclude Include="Resources\DefaultShaders.h" />
+    <ClInclude Include="Resources\DefaultTextures.h" />
+    <ClInclude Include="Resources\resource.h" />
+    <ClInclude Include="Resources\ResourceHelper.h" />
+    <ClInclude Include="Resources\targetver.h" />
+    <ClInclude Include="Routing\IRoute.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
+    <ClInclude Include="Settings\ISettingsLoader.h" />
+    <ClInclude Include="Settings\SettingsLoader.h" />
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
@@ -148,6 +203,7 @@
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
     <ClInclude Include="UI\GoTo.h" />
+    <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\LevelInfo.h" />
     <ClInclude Include="UI\RoomNavigator.h" />
     <ClInclude Include="UI\SettingsWindow.h" />
@@ -157,14 +213,43 @@
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
+    <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />
     <ClInclude Include="Windows\RouteWindowManager.h" />
     <ClInclude Include="Windows\TriggersWindow.h" />
     <ClInclude Include="Windows\TriggersWindowManager.h" />
+    <ClInclude Include="Windows\Viewer.h" />
     <ClInclude Include="Windows\WindowIDs.h" />
     <ClInclude Include="Windows\WindowResizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\trview.app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Files\numericdown.png" />
+    <Image Include="Resources\Files\numericup.png" />
+    <Image Include="Resources\Files\settings.png" />
+    <Image Include="Resources\Files\small.ico" />
+    <Image Include="Resources\Files\tomb1.png" />
+    <Image Include="Resources\Files\tomb2.png" />
+    <Image Include="Resources\Files\tomb3.png" />
+    <Image Include="Resources\Files\tomb4.png" />
+    <Image Include="Resources\Files\tomb5.png" />
+    <Image Include="Resources\Files\trview.ico" />
+    <Image Include="Resources\Files\unknown.png" />
+    <Image Include="small.ico" />
+    <Image Include="trview.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Files\arial7.bin" />
+    <None Include="Resources\Files\arial8.bin" />
+    <None Include="Resources\Generated\level_pixel_shader.cso" />
+    <None Include="Resources\Generated\level_vertex_shader.cso" />
+    <None Include="Resources\Generated\selection_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_pixel_shader.cso" />
+    <None Include="Resources\Generated\ui_vertex_shader.cso" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\lua\lua.vcxproj">
@@ -185,6 +270,11 @@
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\Files\fontlist.txt" />
+    <Text Include="Resources\Files\texturelist.txt" />
+    <Text Include="Resources\Files\type_names.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -273,8 +363,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -296,8 +385,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -319,8 +407,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -346,8 +433,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>Crypt32.lib;winhttp.lib;version.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

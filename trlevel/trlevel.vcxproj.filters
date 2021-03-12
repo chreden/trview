@@ -8,6 +8,14 @@
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ILevelLoader.h" />
+    <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="Mocks\ILevelLoader.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\ILevel.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
@@ -16,5 +24,12 @@
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
+    <ClCompile Include="ILevelLoader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{761f107e-00af-4697-ba3e-3653c2e29391}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

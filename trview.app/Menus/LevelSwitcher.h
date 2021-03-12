@@ -5,8 +5,8 @@
 
 #pragma once
 
+#include "ILevelSwitcher.h"
 #include <trview.common/MessageHandler.h>
-#include <trview.common/Event.h>
 #include "DirectoryListing.h"
 
 namespace trview
@@ -14,7 +14,7 @@ namespace trview
     /// When a file is loaded this will find other levels that are in the same
     /// directory as that file and add them to a menu so the user can quickly
     /// switch between levels.
-    class LevelSwitcher final : public MessageHandler
+    class LevelSwitcher final : public ILevelSwitcher, public MessageHandler
     {
     public:
         /// Create a new LevelSwitcher.
@@ -32,12 +32,8 @@ namespace trview
 
         /// Open the specified file. This will populate the switcher menu.
         /// @param filename The file that was opened.
-        void open_file(const std::string& filename);
-
-        /// Event raised when the user switches level. The opened level is passed as a parameter.
-        Event<std::string> on_switch_level;
+        virtual void open_file(const std::string& filename) override;
     private:
-
         HMENU             _directory_listing_menu;
         std::vector<File> _file_switcher_list;
     };

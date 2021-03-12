@@ -31,9 +31,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_TRVIEW              ICON                    "trview.ico"
+IDI_TRVIEW              ICON                    "Files\\trview.ico"
 
-IDI_SMALL               ICON                    "small.ico"
+IDI_SMALL               ICON                    "Files\\small.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -231,23 +231,23 @@ END
 // PNG
 //
 
-IDB_TOMB3_ICON          PNG                     "resources\\tomb3.png"
+IDB_TOMB3_ICON          PNG                     "Files\\tomb3.png"
 
-IDB_UNKNOWN_ICON        PNG                     "resources\\unknown.png"
+IDB_UNKNOWN_ICON        PNG                     "Files\\unknown.png"
 
-IDB_TOMB2_ICON          PNG                     "resources\\tomb2.png"
+IDB_TOMB2_ICON          PNG                     "Files\\tomb2.png"
 
-IDB_TOMB1_ICON          PNG                     "resources\\tomb1.png"
+IDB_TOMB1_ICON          PNG                     "Files\\tomb1.png"
 
-IDB_TOMB4_ICON          PNG                     "resources\\tomb4.png"
+IDB_TOMB4_ICON          PNG                     "Files\\tomb4.png"
 
-IDB_TOMB5_ICON          PNG                     "resources\\tomb5.png"
+IDB_TOMB5_ICON          PNG                     "Files\\tomb5.png"
 
-IDB_NUMERIC_UP          PNG                     "resources\\numericup.png"
+IDB_NUMERIC_UP          PNG                     "Files\\numericup.png"
 
-IDB_NUMERIC_DOWN        PNG                     "resources\\numericdown.png"
+IDB_NUMERIC_DOWN        PNG                     "Files\\numericdown.png"
 
-IDB_SETTINGS            PNG                     "resources\\settings.png"
+IDB_SETTINGS            PNG                     "Files\\settings.png"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -255,11 +255,11 @@ IDB_SETTINGS            PNG                     "resources\\settings.png"
 // TEXT
 //
 
-IDR_TEXTURE_LIST        TEXT                    "texturelist.txt"
+IDR_TEXTURE_LIST        TEXT                    "Files\\texturelist.txt"
 
-IDR_FONT_LIST           TEXT                    "fontlist.txt"
+IDR_FONT_LIST           TEXT                    "Files\\fontlist.txt"
 
-IDR_TYPE_NAMES          TEXT                    "resources\\type_names.txt"
+IDR_TYPE_NAMES          TEXT                    "Files\\type_names.txt"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -267,15 +267,15 @@ IDR_TYPE_NAMES          TEXT                    "resources\\type_names.txt"
 // SHADER
 //
 
-IDR_LEVEL_VERTEX_SHADER SHADER                  "resources\\level_vertex_shader.cso"
+IDR_LEVEL_VERTEX_SHADER SHADER                  "Generated\\level_vertex_shader.cso"
 
-IDR_LEVEL_PIXEL_SHADER  SHADER                  "resources\\level_pixel_shader.cso"
+IDR_LEVEL_PIXEL_SHADER  SHADER                  "Generated\\level_pixel_shader.cso"
 
-IDR_UI_VERTEX_SHADER    SHADER                  "resources\\ui_vertex_shader.cso"
+IDR_UI_VERTEX_SHADER    SHADER                  "Generated\\ui_vertex_shader.cso"
 
-IDR_UI_PIXEL_SHADER     SHADER                  "resources\\ui_pixel_shader.cso"
+IDR_UI_PIXEL_SHADER     SHADER                  "Generated\\ui_pixel_shader.cso"
 
-IDR_SELECTION_SHADER    SHADER                  "resources\\selection_pixel_shader.cso"
+IDR_SELECTION_SHADER    SHADER                  "Generated\\selection_pixel_shader.cso"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -283,9 +283,9 @@ IDR_SELECTION_SHADER    SHADER                  "resources\\selection_pixel_shad
 // SPRITEFONT
 //
 
-IDF_ARIAL8              SPRITEFONT              "resources\\arial8.bin"
+IDF_ARIAL8              SPRITEFONT              "Files\\arial8.bin"
 
-IDF_ARIAL7              SPRITEFONT              "resources\\arial7.bin"
+IDF_ARIAL7              SPRITEFONT              "Files\\arial7.bin"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 #include "CollapsiblePanel.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
-#include <trview/resource.h>
+#include <trview.app/Resources/resource.h>
 
 using namespace trview::graphics;
 using namespace trview::ui;
@@ -23,20 +23,6 @@ namespace trview
             LRESULT CALLBACK panel_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-
-            bool is_message_only(const Window& window)
-            {
-                auto current = FindWindowEx(HWND_MESSAGE, nullptr, nullptr, nullptr);
-                while (current != nullptr)
-                {
-                    if (current == window)
-                    {
-                        return true;
-                    }
-                    current = GetNextWindow(current, GW_HWNDNEXT);
-                }
-                return false;
             }
 
             Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)

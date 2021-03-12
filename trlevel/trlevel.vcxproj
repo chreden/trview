@@ -160,16 +160,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ILevel.h" />
+    <ClInclude Include="ILevelLoader.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="LevelLoadException.h" />
     <ClInclude Include="LevelVersion.h" />
+    <ClInclude Include="Mocks\ILevel.h" />
+    <ClInclude Include="Mocks\ILevelLoader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trlevel.h" />
     <ClInclude Include="trtypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
+    <ClCompile Include="ILevelLoader.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

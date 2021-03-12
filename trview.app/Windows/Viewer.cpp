@@ -9,14 +9,8 @@
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.input/WindowTester.h>
-
-#include "DefaultTextures.h"
-#include "DefaultShaders.h"
-#include "DefaultFonts.h"
-#include <trview.app/Graphics/TextureStorage.h>
-#include <trview.app/Elements/TypeNameLookup.h>
-#include "ResourceHelper.h"
-#include "resource.h"
+#include "Resources/ResourceHelper.h"
+#include "Resources/resource.h"
 
 #include <trview.common/Strings.h>
 
@@ -27,85 +21,25 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window)
-        : _window(window), _shortcuts(window), _camera(window.size()), _free_camera(window.size()),
-        _timer(default_time_source()), _keyboard(window), _mouse(window, std::make_unique<input::WindowTester>(window)), _level_switcher(window),
-        _window_resizer(window), _recent_files(window), _file_dropper(window), _alternate_group_toggler(window),
-        _view_menu(window), _update_checker(window), _menu_detector(window)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking, std::unique_ptr<input::IMouse> mouse, IShortcuts& shortcuts, IRoute* route)
+        : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
+        _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking))
     {
-        _update_checker.check_for_updates();
-
-        _settings = load_user_settings();
         apply_acceleration_settings();
 
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-
-        _shader_storage = std::make_unique<graphics::ShaderStorage>();
-        load_default_shaders(_device, *_shader_storage.get());
-
         _scene_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite = std::make_unique<graphics::Sprite>(_device, *_shader_storage, window.size());
+        _scene_sprite = std::make_unique<graphics::Sprite>(_device, shader_storage, window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
-        load_default_fonts(_device, _font_factory);
-
         _main_window = _device.create_for_window(window);
-        _items_windows = std::make_unique<ItemsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
-        if (_settings.items_startup)
-        {
-            _items_windows->create_window();
-        }
-        _token_store += _items_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _items_windows->on_item_visibility += [this](const auto& item, bool state) { set_item_visibility(item, state); };
-        _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _items_windows->on_add_to_route += [this](const auto& item)
-        {
-            uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
-        };
-
-        _triggers_windows = std::make_unique<TriggersWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
-        if (_settings.triggers_startup)
-        {
-            _triggers_windows->create_window();
-        }
-        _token_store += _triggers_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _triggers_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
-        _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
-        {
-            uint32_t new_index = _route->insert(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
-        };
-
-        _rooms_windows = std::make_unique<RoomsWindowManager>(_device, *_shader_storage.get(), _font_factory, window, _shortcuts);
-        if (_settings.rooms_startup)
-        {
-            _rooms_windows->create_window();
-        }
-
-        _token_store += _rooms_windows->on_room_selected += [this](const auto& room) { select_room(room); };
-        _token_store += _rooms_windows->on_item_selected += [this](const auto& item) { select_item(item); };
-        _token_store += _rooms_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
-
-        _token_store += _level_switcher.on_switch_level += [=](const auto& file) { open(file); };
-        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher.open_file(file); };
 
         _token_store += _window_resizer.on_resize += [=]()
         {
             _main_window->resize();
             resize_elements();
         };
-
-        _token_store += _recent_files.on_file_open += [=](const auto& file) { open(file); };
-        _recent_files.set_recent_files(_settings.recent_files);
-        _token_store += on_recent_files_changed += [&](const auto& files) { _recent_files.set_recent_files(files); };
-
-        _token_store += _file_dropper.on_file_dropped += [&](const auto& file) { open(file); };
 
         _token_store += _alternate_group_toggler.on_alternate_group += [&](uint32_t group)
         {
@@ -117,19 +51,16 @@ namespace trview
 
         initialise_input();
 
-        _texture_storage = std::make_unique<TextureStorage>(_device);
-        load_default_textures(_device, *_texture_storage.get());
-
-        _ui = std::make_unique<ViewerUI>(_window, _device, *_shader_storage, _font_factory, *_texture_storage, _shortcuts);
+        _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
         {
             if (_level && index < _level->items().size())
             {
-                select_item(_level->items()[index]);
+                on_item_selected(_level->items()[index]);
             }
         };
-        _token_store += _ui->on_select_room += [&](uint32_t room) { select_room(room); };
+        _token_store += _ui->on_select_room += [&](uint32_t room) { on_room_selected(room); };
         _token_store += _ui->on_highlight += [&](bool) { toggle_highlight(); };
         _token_store += _ui->on_show_hidden_geometry += [&](bool value) { set_show_hidden_geometry(value); };
         _token_store += _ui->on_show_water += [&](bool value) { set_show_water(value); };
@@ -137,7 +68,7 @@ namespace trview
         _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
         _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(Level::RoomHighlightMode::Neighbours, value); } };
+        _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
@@ -155,25 +86,29 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
-            uint32_t new_index = _route->insert(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
-            _route_window_manager->set_route(_route.get());
-            select_waypoint(new_index);
+            on_waypoint_added(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
         };
-        _token_store += _ui->on_remove_waypoint += [&]() { remove_waypoint(_context_pick.index); };
+        _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
         {
             if (_context_pick.type == PickResult::Type::Entity)
             {
-                set_item_visibility(_level->items()[_context_pick.index], false);
+                on_item_visibility(_level->items()[_context_pick.index], false);
             }
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
-                set_trigger_visibility(_level->triggers()[_context_pick.index], false);
+                on_trigger_visibility(_level->triggers()[_context_pick.index], false);
             }
         };
         _token_store += _ui->on_orbit += [&]()
         {
-            select_room(room_from_pick(_context_pick), true);
+            bool was_alternate_select = _was_alternate_select;
+            on_room_selected(room_from_pick(_context_pick));
+            if (_settings.auto_orbit && !was_alternate_select)
+            {
+                set_camera_mode(CameraMode::Orbit);
+            }
+
             _target = _context_pick.position;
 
             auto stored_pick = _context_pick;
@@ -181,11 +116,7 @@ namespace trview
             stored_pick.type = PickResult::Type::Room;
             add_recent_orbit(stored_pick);
         };
-        _token_store += _ui->on_settings += [&](auto settings)
-        {
-            _settings = settings;
-            apply_acceleration_settings();
-        };
+        _ui->on_settings += on_settings;
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
@@ -205,63 +136,12 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
 
         _measure = std::make_unique<Measure>(_device);
-        _compass = std::make_unique<Compass>(_device, *_shader_storage);
-        _route = std::make_unique<Route>(_device, *_shader_storage);
+        _compass = std::make_unique<Compass>(_device, shader_storage);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
         _token_store += _measure->on_distance += [&](float distance) { _ui->set_measure_distance(distance); };
 
-        _route_window_manager = std::make_unique<RouteWindowManager>(_device, *_shader_storage, _font_factory, window, _shortcuts);
-        _token_store += _route_window_manager->on_waypoint_selected += [&](auto index)
-        {
-            select_waypoint(index);
-        };
-        _token_store += _route_window_manager->on_item_selected += [&](const auto& item) { select_item(item); };
-        _token_store += _route_window_manager->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window_manager->on_route_import += [&](const std::string& path)
-        {
-            auto route = import_route(_device, *_shader_storage, path);
-            if (route)
-            {
-                _route = std::move(route);
-                _route_window_manager->set_route(_route.get());
-                _scene_changed = true;
-            }
-        };
-        _token_store += _route_window_manager->on_route_export += [&](const std::string& path)
-        {
-            export_route(*_route, path);
-        };
-        _token_store += _route_window_manager->on_waypoint_deleted += [&](auto index)
-        {
-            remove_waypoint(index);
-        };
-        _token_store += _route_window_manager->on_colour_changed += [&](const Colour& colour)
-        {
-            _route->set_colour(colour);
-            _scene_changed = true;
-        };
-
-        _token_store += _view_menu.on_show_minimap += [&](bool show) { _ui->set_show_minimap(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_tooltip += [&](bool show) { _ui->set_show_tooltip(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_ui += [&](bool show) { _ui->set_visible(show); _ui_changed = true; };
-        _token_store += _view_menu.on_show_compass += [&](bool show) { _compass->set_visible(show); _scene_changed = true; };
-        _token_store += _view_menu.on_show_selection += [&](bool show) { _show_selection = show; _scene_changed = true; };
-        _token_store += _view_menu.on_show_route += [&](bool show) { _show_route = show; _scene_changed = true; };
-        _token_store += _view_menu.on_show_tools += [&](bool show) { _measure->set_visible(show); _scene_changed = true; };
-        _token_store += _view_menu.on_colour_change += [&](Colour colour) 
-        { 
-            _settings.background_colour = static_cast<uint32_t>(colour);
-            _scene_changed = true; 
-        };
-        _token_store += _view_menu.on_unhide_all += [&]()
-        {
-            for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
-            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
-        };
-
-        _picking = std::make_unique<Picking>();
         _token_store += _picking->pick_sources += [&](PickInfo, PickResult& result) { result.stop = !should_pick(); };
         _token_store += _picking->pick_sources += [&](PickInfo info, PickResult& result)
         {
@@ -368,16 +248,6 @@ namespace trview
         register_lua();
     }
 
-    Viewer::~Viewer()
-    {
-        save_user_settings(_settings);
-    }
-
-    UserSettings Viewer::settings() const
-    {
-        return _settings;
-    }
-
     void Viewer::initialise_input()
     {
         _token_store += _keyboard.on_key_up += [&](auto key, bool, bool) 
@@ -407,9 +277,6 @@ namespace trview
         add_shortcut(false, 'G', [&]() { toggle_show_hidden_geometry(); });
         add_shortcut(false, VK_OEM_MINUS, [&]() { select_previous_orbit(); });
         add_shortcut(false, VK_OEM_PLUS, [&]() { select_next_orbit(); });
-        add_shortcut(false, VK_LEFT, [&]() { select_previous_waypoint(); });
-        add_shortcut(false, VK_RIGHT, [&]() { select_next_waypoint(); });
-        add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
         add_shortcut(false, VK_F1, [&]() { _ui->toggle_settings_visibility(); });
         add_shortcut(false, 'H', [&]() { toggle_highlight(); });
         add_shortcut(false, VK_INSERT, [&]()
@@ -436,7 +303,7 @@ namespace trview
 
         using namespace input;
 
-        _token_store += _mouse.mouse_click += [&](Mouse::Button button)
+        _token_store += _mouse->mouse_click += [&](Mouse::Button button)
         {
             if (button == Mouse::Button::Left)
             {
@@ -492,20 +359,20 @@ namespace trview
                     {
                         if (sector->flags & SectorFlag::Portal)
                         {
-                            select_room(sector->portal());
+                            on_room_selected(sector->portal());
                         }
                         else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
                         {
-                            select_room(sector->room_below());
+                            on_room_selected(sector->room_below());
                         }
                         else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
                         {
-                            select_room(sector->room_above());
+                            on_room_selected(sector->room_above());
                         }
                     }
                     else
                     {
-                        select_trigger(*trigger);
+                        on_trigger_selected(*trigger);
                     }
                 }
             }
@@ -517,19 +384,19 @@ namespace trview
                 {
                     if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
                     {
-                        select_room(sector->room_above());
+                        on_room_selected(sector->room_above());
                     }
                     else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
                     {
-                        select_room(sector->room_below());
+                        on_room_selected(sector->room_below());
                     }
                 }
             }
         };
 
-        _token_store += _mouse.mouse_click += [&](auto button)
+        _token_store += _mouse->mouse_click += [&](auto button)
         {
-            if (button == input::Mouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
+            if (button == input::IMouse::Button::Right && _current_pick.hit && _current_pick.type != PickResult::Type::Compass)
             {
                 _context_pick = _current_pick;
                 _ui->set_show_context_menu(true);
@@ -556,40 +423,13 @@ namespace trview
         current_camera().update(_timer.elapsed());
     }
 
-    void Viewer::open(const std::string& filename)
+    void Viewer::open(ILevel* level)
     {
-        std::unique_ptr<trlevel::ILevel> new_level;
-        try
-        {
-            new_level = trlevel::load_level(filename);
-        }
-        catch(...)
-        {
-            MessageBox(_window.window(), L"Failed to load level", L"Error", MB_OK);
-            return;
-        }
+        _level = level;
 
-        on_file_loaded(filename);
-        _settings.add_recent_file(filename);
-        on_recent_files_changed(_settings.recent_files);
-        save_user_settings(_settings);
-
-        _level = std::make_unique<Level>(_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
-        _token_store += _level->on_room_selected += [&](uint16_t room) { select_room(room); };
         _token_store += _level->on_alternate_mode_selected += [&](bool enabled) { set_alternate_mode(enabled); };
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
-
-        _items_windows->set_items(_level->items());
-        _items_windows->set_triggers(_level->triggers());
-        _triggers_windows->set_items(_level->items());
-        _triggers_windows->set_triggers(_level->triggers());
-        _route_window_manager->set_items(_level->items());
-        _route_window_manager->set_triggers(_level->triggers());
-        _route_window_manager->set_rooms(_level->rooms());
-        _rooms_windows->set_items(_level->items());
-        _rooms_windows->set_triggers(_level->triggers());
-        _rooms_windows->set_rooms(_level->rooms());
 
         _level->set_show_triggers(_ui->show_triggers());
         _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
@@ -611,24 +451,23 @@ namespace trview
         Item lara;
         if (_settings.go_to_lara && find_item_by_type_id(*_level, 0u, lara))
         {
-            select_item(lara);
+            on_item_selected(lara);
         }
         else
         {
-            select_room(0);
+            on_room_selected(0);
         }
 
         _ui->set_depth_enabled(false);
         _ui->set_depth_level(1);
 
         // Strip the last part of the path away.
+        const auto filename = _level->filename();
         auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
         auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
         _ui->set_level(name, _level->version());
         _window.set_title("trview - " + name);
         _measure->reset();
-        _route->clear();
-        _route_window_manager->set_route(_route.get());
 
         _recent_orbits.clear();
         _recent_orbit_index = 0u;
@@ -638,13 +477,6 @@ namespace trview
 
     void Viewer::render()
     {
-        // If minimised, don't render like crazy. Sleep so we don't hammer the CPU either.
-        if (window_is_minimised(_window))
-        {
-            Sleep(1);
-            return;
-        }
-
         _timer.update();
         update_camera();
 
@@ -680,11 +512,6 @@ namespace trview
 
             _main_window->present(_settings.vsync);
         }
-
-        _items_windows->render(_device, _settings.vsync);
-        _triggers_windows->render(_device, _settings.vsync);
-        _route_window_manager->render(_device, _settings.vsync);
-        _rooms_windows->render(_device, _settings.vsync);
 
         lua_fire_event ( LuaEvent::ON_RENDER );
     }
@@ -777,61 +604,33 @@ namespace trview
         }
     }
 
-    void Viewer::select_room(uint32_t room, bool force_orbit)
+    void Viewer::select_room(uint32_t room)
     {
         if (!_level || room >= _level->number_of_rooms())
         {
             return;
         }
 
-        _level->set_selected_room(static_cast<uint16_t>(room));
         _ui->set_selected_room(_level->room(_level->selected_room()));
-
-        if (force_orbit || (_settings.auto_orbit && !_was_alternate_select))
-        {
-            set_camera_mode(CameraMode::Orbit);
-        }
-
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room())->centre();
-
-        _items_windows->set_room(room);
-        _triggers_windows->set_room(room);
-        _rooms_windows->set_room(room);
     }
 
     void Viewer::select_item(const Item& item)
     {
-        if (!_level || item.number() >= _level->items().size())
-        {
-            return;
-        }
-
-        select_room(item.room());
         _target = item.position();
-        _level->set_selected_item(item.number());
-        _items_windows->set_selected_item(item);
-        _rooms_windows->set_selected_item(item);
+        _scene_changed = true;
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
     {
-        if (_level)
-        {
-            select_room(trigger->room());
-            _target = trigger->position();
-            _level->set_selected_trigger(trigger->number());
-            _triggers_windows->set_selected_trigger(trigger);
-            _rooms_windows->set_selected_trigger(trigger);
-        }
+        _target = trigger->position();
+        _scene_changed = true;
     }
 
-    void Viewer::select_waypoint(uint32_t index)
+    void Viewer::select_waypoint(const Waypoint& waypoint)
     {
-        select_room(_route->waypoint(index).room());
-        _target = _route->waypoint(index).position();
-        _route->select_waypoint(index);
-        _route_window_manager->select_waypoint(index);
+        _target = waypoint.position();
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);
@@ -839,53 +638,57 @@ namespace trview
         _scene_changed = true;
     }
 
-    void Viewer::select_next_waypoint()
+    void Viewer::set_route(IRoute* route)
     {
-        if (_route->selected_waypoint() + 1 < _route->waypoints())
-        {
-            select_waypoint(_route->selected_waypoint() + 1);
-        }
-    }
-
-    void Viewer::select_previous_waypoint()
-    {
-        if (_route->selected_waypoint() > 0)
-        {
-            select_waypoint(_route->selected_waypoint() - 1);
-        }
-    }
-
-    void Viewer::set_item_visibility(const Item& item, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        _level->set_item_visibility(item.number(), visible);
-        _items_windows->set_item_visible(item, visible);
-    }
-
-    void Viewer::set_trigger_visibility(Trigger* trigger, bool visible)
-    {
-        if (!_level)
-        {
-            return;
-        }
-
-        _level->set_trigger_visibility(trigger->number(), visible);
-        _triggers_windows->set_trigger_visible(trigger, visible);
-    }
-
-    void Viewer::remove_waypoint(uint32_t index)
-    {
-        _route->remove(index);
-        _route_window_manager->set_route(_route.get());
-        if (_route->waypoints() > 0)
-        {
-            select_waypoint(_route->selected_waypoint());
-        }
+        _route = route;
         _scene_changed = true;
+    }
+
+    void Viewer::set_show_compass(bool value)
+    {
+        _compass->set_visible(value);
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_minimap(bool value)
+    {
+        _ui->set_show_minimap(value);
+        _ui_changed = true;
+    }
+
+    void Viewer::set_show_route(bool value)
+    {
+        _show_route = value;
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_selection(bool value)
+    {
+        _show_selection = value;
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_tools(bool value)
+    {
+        _measure->set_visible(value);
+        _scene_changed = true;
+    }
+
+    void Viewer::set_show_tooltip(bool value)
+    {
+        _ui->set_show_tooltip(value);
+        _ui_changed = true;
+    }
+
+    void Viewer::set_show_ui(bool value)
+    {
+        _ui->set_visible(value);
+        _ui_changed = true;
+    }
+
+    bool Viewer::ui_input_active() const
+    {
+        return _ui->is_input_active();
     }
 
     void Viewer::set_alternate_mode(bool enabled)
@@ -942,10 +745,10 @@ namespace trview
     {
         using namespace input;
 
-        _token_store += _mouse.mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
-        _token_store += _mouse.mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
-        _token_store += _mouse.mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
-        _token_store += _mouse.mouse_wheel += [&](int16_t scroll) 
+        _token_store += _mouse->mouse_down += [&](auto button) { _camera_input.mouse_down(button); };
+        _token_store += _mouse->mouse_up += [&](auto button) { _camera_input.mouse_up(button); };
+        _token_store += _mouse->mouse_move += [&](long x, long y) { _mouse_changed = true; _camera_input.mouse_move(x, y); };
+        _token_store += _mouse->mouse_wheel += [&](int16_t scroll) 
         {
             if (window_under_cursor() == _window)
             {
@@ -1159,20 +962,20 @@ namespace trview
         switch (pick.type)
         {
         case PickResult::Type::Room:
-            select_room(pick.index);
+            on_room_selected(pick.index);
             if (pick.override_centre)
             {
                 _target = pick.position;
             }
             break;
         case PickResult::Type::Entity:
-            select_item(_level->items()[pick.index]);
+            on_item_selected(_level->items()[pick.index]);
             break;
         case PickResult::Type::Trigger:
-            select_trigger(_level->triggers()[pick.index]);
+            on_trigger_selected(_level->triggers()[pick.index]);
             break;
         case PickResult::Type::Waypoint:
-            select_waypoint(pick.index);
+            on_waypoint_selected(pick.index);
             break;
         }
 
@@ -1185,5 +988,12 @@ namespace trview
     void Viewer::apply_acceleration_settings()
     {
         _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
+    }
+
+    void Viewer::set_settings(const UserSettings& settings)
+    {
+        _settings = settings;
+        apply_acceleration_settings();
+        _scene_changed = true;
     }
 }

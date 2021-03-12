@@ -30,6 +30,7 @@
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="mocks\IFont.h" />
     <ClInclude Include="mocks\IFontFactory.h" />
+    <ClInclude Include="Mocks\IShaderStorage.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PixelShaderStore.h" />

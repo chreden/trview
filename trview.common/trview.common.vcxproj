@@ -25,6 +25,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="MessageHandler.h" />
+    <ClInclude Include="Mocks\Windows\IShortcuts.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="stdafx.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="TokenStore.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Windows\Clipboard.h" />
+    <ClInclude Include="Windows\IShortcuts.h" />
     <ClInclude Include="Windows\Shortcuts.h" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +55,7 @@
     <ClCompile Include="TokenStore.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Windows\Clipboard.cpp" />
+    <ClCompile Include="Windows\IShortcuts.cpp" />
     <ClCompile Include="Windows\Shortcuts.cpp" />
   </ItemGroup>
   <ItemGroup>

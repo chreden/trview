@@ -261,6 +261,6 @@ __pycache__/
 *.pyc
 
 # Generated compiled shaders
-trview/resources/*.cso
+trview.app/Resources/Generated/*.cso
 
 lau/drm

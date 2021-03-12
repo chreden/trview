@@ -1,6 +1,6 @@
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview/resource.h>
+#include <trview.app/Resources/resource.h>
 
 using namespace trview;
 using namespace trview::tests;

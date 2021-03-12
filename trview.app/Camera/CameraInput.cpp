@@ -104,28 +104,28 @@ namespace trview
         }
     }
 
-    void CameraInput::mouse_down(input::Mouse::Button button)
+    void CameraInput::mouse_down(input::IMouse::Button button)
     {
-        if (button == input::Mouse::Button::Right)
+        if (button == input::IMouse::Button::Right)
         {
             _rotating = true;
             _panning_vertical = _panning;
         }
-        else if (button == input::Mouse::Button::Left)
+        else if (button == input::IMouse::Button::Left)
         {
             _panning = true;
             _panning_vertical = _rotating;
         }
     }
 
-    void CameraInput::mouse_up(input::Mouse::Button button)
+    void CameraInput::mouse_up(input::IMouse::Button button)
     {
-        if (button == input::Mouse::Button::Right)
+        if (button == input::IMouse::Button::Right)
         {
             _rotating = false;
             _panning_vertical = false;
         }
-        else if (button == input::Mouse::Button::Left)
+        else if (button == input::IMouse::Button::Left)
         {
             _panning = false;
             _panning_vertical = false;

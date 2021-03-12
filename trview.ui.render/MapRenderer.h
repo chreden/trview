@@ -48,7 +48,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::FontFactory& font_factory, const Size& window_size);
+                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size);
 
                 // Renders the map 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true);

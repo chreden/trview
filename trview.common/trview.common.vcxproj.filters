@@ -26,6 +26,12 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
+    <ClInclude Include="Mocks\Windows\IShortcuts.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IShortcuts.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -51,6 +57,9 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Windows\IShortcuts.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -58,6 +67,12 @@
     </Filter>
     <Filter Include="Events">
       <UniqueIdentifier>{f9a72a9b-c9a0-4dcb-af51-1009cd50dec1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{7717a068-ac6a-4646-abf0-f28738da18c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Windows">
+      <UniqueIdentifier>{c6b999cb-3cb8-4d5b-9141-a00ea66d75e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

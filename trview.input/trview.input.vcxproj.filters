@@ -6,6 +6,7 @@
     <ClCompile Include="WindowTester.cpp" />
     <ClCompile Include="IWindowTester.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="IMouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mouse.h" />
@@ -13,5 +14,14 @@
     <ClInclude Include="IWindowTester.h" />
     <ClInclude Include="WindowTester.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="IMouse.h" />
+    <ClInclude Include="Mocks\IMouse.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{956b28be-905f-4d7b-a2d8-e860bc0113ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

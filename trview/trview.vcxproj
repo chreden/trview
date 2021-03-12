@@ -97,14 +97,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;winhttp.lib;version.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;$(OutDir)trview.app.res;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -121,14 +118,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;winhttp.lib;version.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;$(OutDir)trview.app.res;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -149,14 +143,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;winhttp.lib;version.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;$(OutDir)trview.app.res;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -177,32 +168,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;winhttp.lib;version.lib;Crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;Shlwapi.lib;$(OutDir)trview.app.res;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);</AdditionalIncludeDirectories>
     </ResourceCompile>
-    <PreBuildEvent>
-      <Command>copy "$(OutDir)\*.cso" "$(ProjectDir)\resources"</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="DefaultFonts.h" />
-    <ClInclude Include="DefaultShaders.h" />
-    <ClInclude Include="DefaultTextures.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="trview.h" />
-    <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DefaultFonts.cpp" />
-    <ClCompile Include="DefaultShaders.cpp" />
-    <ClCompile Include="DefaultTextures.cpp" />
-    <ClCompile Include="ViewerLuaRegistry.cpp" />
-    <ClCompile Include="ResourceHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -210,27 +185,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="trview.cpp" />
-    <ClCompile Include="Viewer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="trview.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resources\numericdown.png" />
-    <Image Include="resources\numericup.png" />
-    <Image Include="resources\settings.png" />
-    <Image Include="resources\tomb1.png" />
-    <Image Include="resources\tomb2.png" />
-    <Image Include="resources\tomb3.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="resources\tomb4.png" />
-    <Image Include="resources\tomb5.png" />
-    <Image Include="resources\unknown.png">
-      <DeploymentContent>true</DeploymentContent>
-    </Image>
-    <Image Include="small.ico" />
-    <Image Include="trview.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\DirectXTK\DirectXTK_Desktop_2017.vcxproj">
@@ -257,20 +211,6 @@
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="fontlist.txt" />
-    <Text Include="resources\type_names.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resources\arial7.bin" />
-    <None Include="resources\arial8.bin" />
-    <None Include="resources\level_pixel_shader.cso" />
-    <None Include="resources\level_vertex_shader.cso" />
-    <None Include="resources\selection_pixel_shader.cso" />
-    <None Include="resources\ui_pixel_shader.cso" />
-    <None Include="resources\ui_vertex_shader.cso" />
-    <None Include="texturelist.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

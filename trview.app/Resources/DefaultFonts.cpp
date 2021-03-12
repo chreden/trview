@@ -1,6 +1,8 @@
 #include "DefaultFonts.h"
 #include "resource.h"
 #include "ResourceHelper.h"
+#include <trview.graphics/FontFactory.h>
+#include <trview.graphics/Device.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX;
@@ -23,7 +25,7 @@ namespace trview
     /// Loads the fonts that have been embedded in the resource file and puts them into the font storage provided.
     /// @param device The Direct3D device to use to load the fonts.
     /// @param font_factory The FontFactory instance to store the fonts in.
-    void load_default_fonts(const graphics::Device& device, graphics::FontFactory& font_factory)
+    void load_default_fonts(const graphics::Device& device, graphics::IFontFactory& font_factory)
     {
         // Load some sort of manifest that contains the files to load.
         // For each font, load it with the given key.

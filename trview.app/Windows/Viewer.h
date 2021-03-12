@@ -23,27 +23,20 @@
 #include <trview.app/Camera/CameraMode.h>
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Settings/UserSettings.h>
-#include <trview.app/Menus/LevelSwitcher.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.app/Menus/RecentFiles.h>
-#include <trview.app/Menus/FileDropper.h>
-#include <trview.app/Windows/ItemsWindowManager.h>
-#include <trview.app/Windows/TriggersWindowManager.h>
-#include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Tools/Measure.h>
 #include <trview.app/Tools/Compass.h>
 #include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.app/Routing/Route.h>
-#include <trview.app/Windows/RouteWindowManager.h>
-#include <trview.app/Menus/ViewMenu.h>
-#include <trview.app/Geometry/Picking.h>
+#include <trview.app/Geometry/IPicking.h>
 #include <trview.app/Graphics/SectorHighlight.h>
-#include <trview.app/UI/ViewerUI.h>
-#include <trview.app/Menus/UpdateChecker.h>
+#include <trview.app/UI/IViewerUI.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/Shortcuts.h>
+#include <trview.graphics/DeviceWindow.h>
+#include <trview.app/Windows/IViewer.h>
 
 namespace trview
 {
@@ -52,53 +45,89 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
-        class FontFactory;
+        struct IFontFactory;
         class DeviceWindow;
     }
 
     /// Class that coordinates all the parts of the application.
-    class Viewer
+    class Viewer : public IViewer
     {
     public:
         /// Create a new viewer.
         /// @param window The window that the viewer should use.
-        explicit Viewer(const Window& window);
+        explicit Viewer(
+            const Window& window, 
+            graphics::Device& device, 
+            const graphics::IShaderStorage& shader_storage, 
+            std::unique_ptr<IViewerUI> ui, 
+            std::unique_ptr<IPicking> picking,
+            std::unique_ptr<input::IMouse> mouse,
+            IShortcuts& shortcuts, 
+            IRoute* route);
 
         /// Destructor for the viewer.
-        ~Viewer();
+        virtual ~Viewer() = default;
 
         /// Render the viewer.
-        void render();
+        virtual void render() override;
 
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
-        void open(const std::string& filename);
+        virtual void open(ILevel* level) override;
 
-        /// Get the current user settings.
-        /// @returns The current settings.
-        UserSettings settings() const;
+        virtual void set_settings(const UserSettings& settings) override;
 
-        /// Event raised when a level file is successfully opened.
-        /// @remarks The filename is passed as a parameter to the listener functions.
-        Event<std::string> on_file_loaded;
+        /// Select the specified item.
+        /// @param item The item to select.
+        /// @remarks This will not raise the on_item_selected event.
+        virtual void select_item(const Item& item) override;
 
-        /// Event raised when the recent files list is updated.
-        /// @remarks The list of filenames is passed as a parameter to the listener functions.
-        Event<std::list<std::string>> on_recent_files_changed;
+        /// Select the specified room.
+        /// @param room The room to select.
+        /// @remarks This will not raise the on_room_selected event.
+        virtual void select_room(uint32_t room) override;
+
+        /// Select the specified trigger.
+        /// @param trigger The trigger to select.
+        /// @remarks This will not raise the on_trigger_selected event.
+        virtual void select_trigger(const Trigger* const trigger) override;
+
+        /// Select the specified waypoint
+        /// @param index The waypoint to select.
+        /// @remarks This will not raise the on_waypoint_selected event.
+        virtual void select_waypoint(const Waypoint& waypoint) override;
+
+        /// Set the current route.
+        /// @param route The new route.
+        virtual void set_route(IRoute* route) override;
+
+        /// Set whether the compass is visible.
+        virtual void set_show_compass(bool value) override;
+
+        /// Set whether the minimap is visible.
+        virtual void set_show_minimap(bool value) override;
+
+        /// Set whether the route is visible.
+        virtual void set_show_route(bool value) override;
+
+        /// Set whether the selection is visible.
+        virtual void set_show_selection(bool value) override;
+
+        /// Set whether the tools are visible.
+        virtual void set_show_tools(bool value) override;
+
+        /// Set whether the tooltip is visible.
+        virtual void set_show_tooltip(bool value) override;
+
+        /// Set whether the ui is visible.
+        virtual void set_show_ui(bool value) override;
+
+        virtual bool ui_input_active() const override;
     private:
         void initialise_input();
         void toggle_highlight();
         void update_camera();
         void render_scene();
-        void select_room(uint32_t room, bool force_orbit = false);
-        void select_item(const Item& item);
-        void select_trigger(const Trigger* const trigger);
-        void select_waypoint(uint32_t index);
-        void select_next_waypoint();
-        void select_previous_waypoint();
-        void set_item_visibility(const Item& item, bool visible);
-        void set_trigger_visibility(Trigger* trigger, bool visible);
-        void remove_waypoint(uint32_t index);
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
@@ -127,42 +156,31 @@ namespace trview
         void register_lua();
         void apply_acceleration_settings();
 
-        graphics::Device _device;
-        Shortcuts _shortcuts;
-        std::unique_ptr<graphics::DeviceWindow> _main_window;
-        std::unique_ptr<ItemsWindowManager> _items_windows;
-        std::unique_ptr<TriggersWindowManager> _triggers_windows;
-        std::unique_ptr<RoomsWindowManager> _rooms_windows;
-        std::unique_ptr<Level> _level;
+        graphics::Device& _device;
         Window _window;
+        IShortcuts& _shortcuts;
+        std::unique_ptr<graphics::DeviceWindow> _main_window;
+        ILevel* _level{ nullptr };
         Timer _timer;
         OrbitCamera _camera;
         FreeCamera _free_camera;
         input::Keyboard _keyboard;
-        input::Mouse _mouse;
-        std::unique_ptr<ViewerUI> _ui;
+        std::unique_ptr<input::IMouse> _mouse;
+        std::unique_ptr<IViewerUI> _ui;
         CameraMode _camera_mode{ CameraMode::Orbit };
         CameraInput _camera_input;
-        std::unique_ptr<ITextureStorage> _texture_storage;
-        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
-        graphics::FontFactory _font_factory;
         UserSettings _settings;
-        std::unique_ptr<Picking> _picking;
+        std::unique_ptr<IPicking> _picking;
         PickResult _current_pick;
-        LevelSwitcher _level_switcher;
         WindowResizer _window_resizer;
-        RecentFiles _recent_files;
-        FileDropper _file_dropper;
         TokenStore _token_store;
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
-        ViewMenu _view_menu;
         bool _show_selection{ true };
         SectorHighlight _sector_highlight;
         MenuDetector _menu_detector;
 
         // Tools:
-
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
         std::unique_ptr<Compass> _compass;
@@ -170,8 +188,7 @@ namespace trview
 
         // Temporary route objects.
         PickResult _context_pick;
-        std::unique_ptr<Route> _route;
-        std::unique_ptr<RouteWindowManager> _route_window_manager;
+        IRoute* _route;
         bool _show_route{ true };
 
         /// Was the room just changed due to an alternate group or flip being performed?
@@ -183,13 +200,8 @@ namespace trview
         bool _mouse_changed{ true };
         bool _ui_changed{ true };
 
-        UpdateChecker _update_checker;
-        std::unique_ptr<ITypeNameLookup> _type_name_lookup;
-
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
-
-        LuaFunctionRegistry _lua_registry;
     };
 }
 
