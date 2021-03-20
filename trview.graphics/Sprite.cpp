@@ -20,7 +20,7 @@ namespace trview
             };
         }
 
-        Sprite::Sprite(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& host_size)
+        Sprite::Sprite(const graphics::Device& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)
             : _host_size(host_size)
         {
             using namespace DirectX::SimpleMath;
@@ -59,8 +59,8 @@ namespace trview
 
             hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
 
-            _vertex_shader = shader_storage.get("ui_vertex_shader");
-            _pixel_shader = shader_storage.get("ui_pixel_shader");
+            _vertex_shader = shader_storage->get("ui_vertex_shader");
+            _pixel_shader = shader_storage->get("ui_pixel_shader");
 
             // Create a texture sampler state description.
             D3D11_SAMPLER_DESC desc;

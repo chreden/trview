@@ -16,7 +16,7 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size)
+            Renderer::Renderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size)
                 : _device(device), 
                 _font_factory(font_factory),
                 _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_size)),

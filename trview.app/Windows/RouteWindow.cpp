@@ -35,7 +35,7 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const trview::Window& parent)
+    RouteWindow::RouteWindow(Device& device, const std::shared_ptr<IShaderStorage>& shader_storage, const IFontFactory& font_factory, const trview::Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
     {
         set_panels(create_left_panel(), create_right_panel());

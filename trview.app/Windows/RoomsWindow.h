@@ -22,7 +22,7 @@ namespace trview
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent);
+        explicit RoomsWindow(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent);
 
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;

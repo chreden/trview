@@ -45,7 +45,7 @@ namespace trview
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
         explicit CollapsiblePanel(graphics::Device& device,
-            const graphics::IShaderStorage& shader_storage,
+            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IFontFactory& font_factory,
             const Window& parent,
             const std::wstring& window_class,

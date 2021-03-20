@@ -21,7 +21,7 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking, std::unique_ptr<input::IMouse> mouse, IShortcuts& shortcuts, IRoute* route)
+    Viewer::Viewer(const Window& window, graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking, std::unique_ptr<input::IMouse> mouse, IShortcuts& shortcuts, IRoute* route)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking))

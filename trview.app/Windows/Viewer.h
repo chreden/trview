@@ -58,7 +58,7 @@ namespace trview
         explicit Viewer(
             const Window& window, 
             graphics::Device& device, 
-            const graphics::IShaderStorage& shader_storage, 
+            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             std::unique_ptr<IViewerUI> ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,

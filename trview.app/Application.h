@@ -38,7 +38,7 @@ namespace trview
             std::unique_ptr<ILevelSwitcher> level_switcher,
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
-            std::unique_ptr<graphics::IShaderStorage> shader_storage,
+            std::shared_ptr<graphics::IShaderStorage> shader_storage,
             std::unique_ptr<graphics::IFontFactory> font_factory,
             std::unique_ptr<ITextureStorage> texture_storage,
             std::unique_ptr<graphics::Device> device,
@@ -106,7 +106,7 @@ namespace trview
 
         // Rendering
         std::unique_ptr<graphics::Device> _device;
-        std::unique_ptr<graphics::IShaderStorage> _shader_storage;
+        std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         std::unique_ptr<graphics::IFontFactory> _font_factory;
         std::unique_ptr<ITextureStorage> _texture_storage;
 

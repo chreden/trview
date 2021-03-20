@@ -32,6 +32,8 @@
 #include "Resources/DefaultTextures.h"
 #include "Elements/TypeNameLookup.h"
 
+#include <external/boost/di.hpp>
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -112,7 +114,7 @@ namespace trview
         std::unique_ptr<ILevelSwitcher> level_switcher,
         std::unique_ptr<IRecentFiles> recent_files,
         std::unique_ptr<IViewer> viewer,
-        std::unique_ptr<graphics::IShaderStorage> shader_storage,
+        std::shared_ptr<graphics::IShaderStorage> shader_storage,
         std::unique_ptr<graphics::IFontFactory> font_factory,
         std::unique_ptr<ITextureStorage> texture_storage,
         std::unique_ptr<graphics::Device> device,
@@ -549,11 +551,28 @@ namespace trview
 
     Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
-        auto window = create_window(instance, command_show);
+        using namespace boost;
+        using namespace graphics;
+
+        Window window = create_window(instance, command_show);
+
+        const auto injector = di::make_injector(
+            di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
+            di::bind<IShaderStorage>.to<ShaderStorage>(),
+            di::bind<IFontFactory>.to<FontFactory>(),
+            di::bind<IUpdateChecker>.to<UpdateChecker>(),
+            di::bind<ISettingsLoader>.to<SettingsLoader>(),
+            di::bind<IFileDropper>.to<FileDropper>(),
+            di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
+            di::bind<IRecentFiles>.to<RecentFiles>(),
+            di::bind<Window>.to(window),
+            di::bind<input::IWindowTester>.to<input::WindowTester>(),
+            di::bind<IPicking>.to<Picking>()
+        );
 
         auto device = std::make_unique<graphics::Device>();
-        auto shader_storage = std::make_unique<graphics::ShaderStorage>();
-        auto font_factory = std::make_unique<graphics::FontFactory>();
+        auto shader_storage = injector.create<std::shared_ptr<IShaderStorage>>();
+        auto font_factory = injector.create<std::unique_ptr<IFontFactory>>();
         auto texture_storage = std::make_unique<TextureStorage>(*device);
 
         load_default_shaders(*device, *shader_storage);
@@ -563,24 +582,24 @@ namespace trview
         auto route = std::make_unique<Route>(*device, *shader_storage);
         auto shortcuts = std::make_unique<Shortcuts>(window);
 
-        auto ui = std::make_unique<ViewerUI>(window, *device, *shader_storage, *font_factory, *texture_storage, *shortcuts);
-        auto mouse = std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window));
-        auto viewer = std::make_unique<Viewer>(window, *device, *shader_storage, std::move(ui), std::make_unique<Picking>(), std::move(mouse), *shortcuts, route.get());
-        auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
-        auto triggers_window_manager = std::make_unique<TriggersWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
-        auto route_window_manager = std::make_unique<RouteWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
-        auto rooms_window_manager = std::make_unique<RoomsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
+        auto ui = std::make_unique<ViewerUI>(window, *device, shader_storage, *font_factory, *texture_storage, *shortcuts);
+        auto mouse = injector.create<std::unique_ptr<input::Mouse>>();
+        auto viewer = std::make_unique<Viewer>(window, *device, shader_storage, std::move(ui), injector.create<std::unique_ptr<IPicking>>(), std::move(mouse), *shortcuts, route.get());
+        auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
+        auto triggers_window_manager = std::make_unique<TriggersWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
+        auto route_window_manager = std::make_unique<RouteWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
+        auto rooms_window_manager = std::make_unique<RoomsWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
 
         return Application(
             window, 
-            std::make_unique<UpdateChecker>(window), 
-            std::make_unique<SettingsLoader>(), 
-            std::make_unique<FileDropper>(window),
-            std::make_unique<trlevel::LevelLoader>(),
-            std::make_unique<LevelSwitcher>(window),
-            std::make_unique<RecentFiles>(window),
+            injector.create<std::unique_ptr<IUpdateChecker>>(),
+            injector.create<std::unique_ptr<ISettingsLoader>>(),
+            injector.create<std::unique_ptr<IFileDropper>>(),
+            injector.create<std::unique_ptr<trlevel::ILevelLoader>>(),
+            injector.create<std::unique_ptr<ILevelSwitcher>>(),
+            injector.create<std::unique_ptr<IRecentFiles>>(),
             std::move(viewer),
-            std::move(shader_storage),
+            shader_storage,
             std::move(font_factory),
             std::move(texture_storage),
             std::move(device),

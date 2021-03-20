@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    RoomsWindowManager::RoomsWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
+    RoomsWindowManager::RoomsWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
         _token_store += shortcuts.add_shortcut(true, 'M') += [&]() { create_window(); };

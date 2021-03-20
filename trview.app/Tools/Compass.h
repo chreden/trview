@@ -33,7 +33,7 @@ namespace trview
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        Compass(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         /// Render the compass.
         /// @param device The device to use to render the compass.

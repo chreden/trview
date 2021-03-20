@@ -32,7 +32,7 @@ namespace trview
     public:
         explicit ViewerUI(const Window& window, 
             const graphics::Device& device, 
-            const graphics::IShaderStorage& shader_storage,
+            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IFontFactory& font_factory,
             const ITextureStorage& texture_storage,
             IShortcuts& shortcuts);

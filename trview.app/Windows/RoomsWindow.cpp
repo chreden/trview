@@ -50,7 +50,7 @@ namespace trview
         }
     }
 
-    RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent)
+    RoomsWindow::RoomsWindow(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(630, 680))
     {
         set_panels(create_left_panel(), create_right_panel());

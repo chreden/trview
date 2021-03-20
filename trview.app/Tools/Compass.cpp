@@ -40,7 +40,7 @@ namespace trview
         };
     }
 
-    Compass::Compass(const graphics::Device& device, const IShaderStorage& shader_storage)
+    Compass::Compass(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
         : _mesh_camera(Size(View_Size, View_Size)),
           _mesh(create_cube_mesh(device)),
           _sprite(std::make_unique<Sprite>(device, shader_storage, Size(View_Size, View_Size))),

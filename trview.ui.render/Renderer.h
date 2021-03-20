@@ -26,7 +26,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
+                explicit Renderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
 
                 ~Renderer();
 
