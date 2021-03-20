@@ -9,6 +9,7 @@
 #include <trview.app/Mocks/Windows/IViewer.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
+#include <trview.app/Mocks/Windows/IRouteWindowManager.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
@@ -45,6 +46,7 @@ TEST(Application, ChecksForUpdates)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 }
 
@@ -71,6 +73,7 @@ TEST(Application, SettingsLoadedAndSaved)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 }
 
@@ -101,6 +104,7 @@ TEST(Application, FileDropperOpensFile)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
     file_dropper.on_file_dropped("test_path.tr2");
 }
@@ -131,6 +135,7 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 
     level_switcher.on_switch_level("test_path.tr2");
@@ -162,6 +167,7 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 
     recent_files.on_file_open("test_path.tr2");
@@ -194,6 +200,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 
     application.open("test_path.tr2");
@@ -226,6 +233,7 @@ TEST(Application, FileOpenedInViewer)
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
+        std::make_unique<MockRouteWindowManager>(),
         std::wstring());
 
     application.open("test_path.tr2");

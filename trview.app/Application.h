@@ -46,6 +46,7 @@ namespace trview
             std::unique_ptr<IShortcuts> shortcuts,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+            std::unique_ptr<IRouteWindowManager> route_window_manager,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -119,7 +120,7 @@ namespace trview
         std::unique_ptr<IViewer> _viewer;
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
-        std::unique_ptr<RouteWindowManager> _route_window;
+        std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;
     };
 

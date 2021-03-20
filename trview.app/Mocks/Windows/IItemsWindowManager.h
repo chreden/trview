@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        class MockItemsWindowManager : public IItemsWindowManager
+        class MockItemsWindowManager final : public IItemsWindowManager
         {
         public:
             MOCK_METHOD(void, render, (graphics::Device&, bool));

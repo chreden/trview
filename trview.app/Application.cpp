@@ -115,12 +115,13 @@ namespace trview
         std::unique_ptr<IShortcuts> shortcuts,
         std::unique_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+        std::unique_ptr<IRouteWindowManager> route_window_manager,
         const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
         _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage)),
-        _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager))
+        _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -380,7 +381,6 @@ namespace trview
 
     void Application::setup_route_window()
     {
-        _route_window = std::make_unique<RouteWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
@@ -563,6 +563,7 @@ namespace trview
         auto viewer = std::make_unique<Viewer>(window, *device, *shader_storage, std::move(ui), std::make_unique<Picking>(), std::move(mouse), *shortcuts, route.get());
         auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
         auto triggers_window_manager = std::make_unique<TriggersWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
+        auto route_window_manager = std::make_unique<RouteWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
 
         return Application(
             window, 
@@ -581,6 +582,7 @@ namespace trview
             std::move(shortcuts),
             std::move(items_window_manager),
             std::move(triggers_window_manager),
+            std::move(route_window_manager),
             command_line);
     }
 }

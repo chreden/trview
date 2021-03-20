@@ -107,6 +107,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
     <ClCompile Include="Windows\IItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\IRouteWindowManager.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
     <ClCompile Include="Windows\ITriggersWindowManager.cpp" />
@@ -184,6 +185,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
     <ClInclude Include="Resources\DefaultFonts.h" />
@@ -216,6 +218,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Windows\IRouteWindowManager.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
     <ClInclude Include="Windows\ITriggersWindowManager.h" />

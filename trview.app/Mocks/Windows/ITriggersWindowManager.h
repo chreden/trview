@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        class MockTriggersWindowManager : public ITriggersWindowManager
+        class MockTriggersWindowManager final : public ITriggersWindowManager
         {
             MOCK_METHOD(void, render, (graphics::Device&, bool));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
