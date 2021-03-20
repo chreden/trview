@@ -113,11 +113,13 @@ namespace trview
         std::unique_ptr<graphics::Device> device,
         std::unique_ptr<IRoute> route,
         std::unique_ptr<IShortcuts> shortcuts,
+        std::unique_ptr<IItemsWindowManager> items_window_manager,
         const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
-        _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage))
+        _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage)),
+        _items_windows(std::move(items_window_manager))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -331,7 +333,6 @@ namespace trview
 
     void Application::setup_items_windows()
     {
-        _items_windows = std::make_unique<ItemsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -560,6 +561,8 @@ namespace trview
         auto ui = std::make_unique<ViewerUI>(window, *device, *shader_storage, *font_factory, *texture_storage, *shortcuts);
         auto mouse = std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window));
         auto viewer = std::make_unique<Viewer>(window, *device, *shader_storage, std::move(ui), std::make_unique<Picking>(), std::move(mouse), *shortcuts, route.get());
+        auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
+        auto
 
         return Application(
             window, 
@@ -576,6 +579,7 @@ namespace trview
             std::move(device),
             std::move(route),
             std::move(shortcuts),
+            std::move(items_window_manager),
             command_line);
     }
 }

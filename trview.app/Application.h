@@ -44,6 +44,7 @@ namespace trview
             std::unique_ptr<graphics::Device> device,
             std::unique_ptr<IRoute> route,
             std::unique_ptr<IShortcuts> shortcuts,
+            std::unique_ptr<IItemsWindowManager> items_window_manager,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -115,7 +116,7 @@ namespace trview
 
         // Windows
         std::unique_ptr<IViewer> _viewer;
-        std::unique_ptr<ItemsWindowManager> _items_windows;
+        std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<TriggersWindowManager> _triggers_windows;
         std::unique_ptr<RouteWindowManager> _route_window;
         std::unique_ptr<RoomsWindowManager> _rooms_windows;

@@ -7,18 +7,18 @@
 #include <memory>
 #include <optional>
 
+#include "IItemsWindowManager.h"
 #include <trview.common/MessageHandler.h>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IFontFactory.h>
 #include <trview.common/TokenStore.h>
-#include "ItemsWindow.h"
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
     /// Controls and creates ItemsWindows.
-    class ItemsWindowManager final : public MessageHandler
+    class ItemsWindowManager final : public IItemsWindowManager, public MessageHandler
     {
     public:
         /// Create an ItemsWindowManager.
@@ -37,45 +37,34 @@ namespace trview
         /// @param lParam The LPARAM for the message.
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
-        /// Event raised when an item is selected in one of the item windows.
-        Event<Item> on_item_selected;
-
-        Event<Item, bool> on_item_visibility;
-
-        /// Event raised when a trigger is selected in one of the item windows.
-        Event<Trigger*> on_trigger_selected;
-
-        /// Event raised when the 'add to route' button is pressed in one of the item windows.
-        Event<Item> on_add_to_route;
-
         /// Render all of the item windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        void render(graphics::Device& device, bool vsync);
+        virtual void render(graphics::Device& device, bool vsync) override;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.
-        void set_items(const std::vector<Item>& items);
+        virtual void set_items(const std::vector<Item>& items) override;
 
         /// Set whether an item is visible.
         /// @param item The item.
         /// @param visible Whether the item is visible.
-        void set_item_visible(const Item& item, bool visible);
+        virtual void set_item_visible(const Item& item, bool visible) override;
 
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Set the current room to filter item windows.
         /// @param room The current room.
-        void set_room(uint32_t room);
+        virtual void set_room(uint32_t room) override;
 
         /// Set the currently selected item.
         /// @param item The selected item.
-        void set_selected_item(const Item& item);
+        virtual void set_selected_item(const Item& item) override;
 
         /// Create a new items window.
-        ItemsWindow* create_window();
+        virtual ItemsWindow* create_window() override;
     private:
         std::vector<std::unique_ptr<ItemsWindow>> _windows;
         std::vector<ItemsWindow*> _closing_windows;

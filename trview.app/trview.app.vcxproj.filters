@@ -250,6 +250,9 @@
     <ClCompile Include="Routing\IRoute.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\IItemsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -554,6 +557,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Routing\IRoute.h">
       <Filter>Mocks\Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IItemsWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
