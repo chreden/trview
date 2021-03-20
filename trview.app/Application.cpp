@@ -20,6 +20,11 @@
 #include <trview.input/WindowTester.h>
 #include <trview.app/Windows/Viewer.h>
 
+#include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/RoomsWindowManager.h>
+#include <trview.app/Windows/RouteWindowManager.h>
+#include <trview.app/Windows/TriggersWindowManager.h>
+
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
 #include "Resources/DefaultShaders.h"
@@ -116,12 +121,13 @@ namespace trview
         std::unique_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
+        std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const std::wstring& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
         _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage)),
-        _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager))
+        _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -368,7 +374,6 @@ namespace trview
 
     void Application::setup_rooms_windows()
     {
-        _rooms_windows = std::make_unique<RoomsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -564,6 +569,7 @@ namespace trview
         auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
         auto triggers_window_manager = std::make_unique<TriggersWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
         auto route_window_manager = std::make_unique<RouteWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
+        auto rooms_window_manager = std::make_unique<RoomsWindowManager>(*device, *shader_storage, *font_factory, window, *shortcuts);
 
         return Application(
             window, 
@@ -583,6 +589,7 @@ namespace trview
             std::move(items_window_manager),
             std::move(triggers_window_manager),
             std::move(route_window_manager),
+            std::move(rooms_window_manager),
             command_line);
     }
 }

@@ -13,10 +13,10 @@
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Settings/ISettingsLoader.h>
-#include <trview.app/Windows/ItemsWindowManager.h>
-#include <trview.app/Windows/RoomsWindowManager.h>
-#include <trview.app/Windows/RouteWindowManager.h>
-#include <trview.app/Windows/TriggersWindowManager.h>
+#include <trview.app/Windows/IItemsWindowManager.h>
+#include <trview.app/Windows/IRoomsWindowManager.h>
+#include <trview.app/Windows/IRouteWindowManager.h>
+#include <trview.app/Windows/ITriggersWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.app/Graphics/ITextureStorage.h>
@@ -47,6 +47,7 @@ namespace trview
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
+            std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const std::wstring& command_line);
         virtual ~Application();
 
@@ -121,7 +122,7 @@ namespace trview
         std::unique_ptr<IItemsWindowManager> _items_windows;
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
-        std::unique_ptr<RoomsWindowManager> _rooms_windows;
+        std::unique_ptr<IRoomsWindowManager> _rooms_windows;
     };
 
     Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);

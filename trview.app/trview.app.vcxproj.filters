@@ -259,6 +259,9 @@
     <ClCompile Include="Windows\IRouteWindowManager.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\IRoomsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -580,6 +583,12 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRoomsWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,6 +8,7 @@ namespace trview
     {
         class MockRouteWindowManager final : public IRouteWindowManager
         {
+        public:
             MOCK_METHOD(void, render, (graphics::Device&, bool));
             MOCK_METHOD(void, set_route, (IRoute*));
             MOCK_METHOD(void, create_window, ());
