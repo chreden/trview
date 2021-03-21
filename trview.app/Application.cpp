@@ -184,7 +184,7 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        _level = std::make_unique<Level>(*_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        _level = std::make_unique<Level>(*_device, _shader_storage, std::move(new_level), *_type_name_lookup);
         _level->set_filename(filename);
 
         _viewer->open(_level.get());
@@ -393,7 +393,7 @@ namespace trview
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(*_device, *_shader_storage, path);
+            auto route = import_route(*_device, _shader_storage, path);
             if (route)
             {
                 _route = std::move(route);
@@ -579,7 +579,7 @@ namespace trview
         load_default_fonts(*device, *font_factory);
         load_default_textures(*device, *texture_storage);
 
-        auto route = std::make_unique<Route>(*device, *shader_storage);
+        auto route = std::make_unique<Route>(*device, shader_storage);
         auto shortcuts = std::make_unique<Shortcuts>(window);
 
         auto ui = std::make_unique<ViewerUI>(window, *device, shader_storage, *font_factory, *texture_storage, *shortcuts);

@@ -45,5 +45,5 @@ TEST(Level, LoadTypeNames)
     MockTypeNameLookup mock_type_name_lookup;
     EXPECT_CALL(mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
 
-    Level level(graphics::Device(), NiceMock<MockShaderStorage>(), std::move(mock_level), mock_type_name_lookup);
+    Level level(graphics::Device(), std::make_shared<NiceMock<MockShaderStorage>>(), std::move(mock_level), mock_type_name_lookup);
 }

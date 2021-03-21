@@ -15,7 +15,7 @@ namespace trview
     public:
         /// Create a route.
         /// @param device The device to use.
-        explicit Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        explicit Route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         virtual ~Route() = default;
 
@@ -113,6 +113,6 @@ namespace trview
         Colour                _colour{ Colour::Green };
     };
 
-    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
+    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename);
     void export_route(const IRoute& route, const std::string& filename);
 }

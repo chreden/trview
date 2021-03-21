@@ -44,7 +44,7 @@ namespace trview
         }
     }
 
-    Route::Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
+    Route::Route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
         : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
     {
     }
@@ -218,7 +218,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename)
+    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename)
     {
         try
         {

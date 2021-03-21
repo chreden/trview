@@ -36,10 +36,10 @@ namespace trview
         }; 
     }
 
-    SelectionRenderer::SelectionRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
+    SelectionRenderer::SelectionRenderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
     {
-        _pixel_shader = shader_storage.get("selection_pixel_shader");
-        _vertex_shader = shader_storage.get("ui_vertex_shader");
+        _pixel_shader = shader_storage->get("selection_pixel_shader");
+        _vertex_shader = shader_storage->get("ui_vertex_shader");
         _transparency = std::make_unique<TransparencyBuffer>(device);
         create_buffers(device);
     }

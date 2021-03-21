@@ -17,11 +17,11 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names)
+    Level::Level(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names)
         : _version(level->get_version())
     {
-        _vertex_shader = shader_storage.get("level_vertex_shader");
-        _pixel_shader = shader_storage.get("level_pixel_shader");
+        _vertex_shader = shader_storage->get("level_vertex_shader");
+        _pixel_shader = shader_storage->get("level_pixel_shader");
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;

@@ -1,7 +1,7 @@
 #include <trview.app/Windows/Viewer.h>
 #include <trview.common/Windows/Shortcuts.h>
 #include <trview.graphics/Device.h>
-#include <trview.graphics/ShaderStorage.h>
+#include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Geometry/IPicking.h>
@@ -11,7 +11,9 @@
 using testing::NiceMock;
 using testing::Return;
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::graphics;
+using namespace trview::graphics::mocks;
 using namespace trview::tests;
 using namespace DirectX::SimpleMath;
 
@@ -19,7 +21,7 @@ namespace
 {
     /// Simulates a context menu activation - 
     void activate_context_menu(
-        mocks::MockPicking& picking,
+        MockPicking& picking,
         input::mocks::MockMouse& mouse,
         PickResult::Type type,
         uint32_t index)
@@ -39,20 +41,20 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
-    mocks::MockLevel level;
+    MockLevel level;
 
     std::vector<Item> items_list{ item };
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
     viewer.open(&level);
 
     std::optional<Item> raised_item;
@@ -70,13 +72,13 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<mocks::MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
 
     std::optional<Item> raised_item;
     auto token = viewer.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -92,19 +94,19 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
-    mocks::MockLevel level;
+    MockLevel level;
 
     std::vector<Item> items_list{ item };
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -128,12 +130,12 @@ TEST(Viewer, SettingsRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -156,12 +158,12 @@ TEST(Viewer, SelectRoomRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -181,15 +183,15 @@ TEST(Viewer, SelectTriggerRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    mocks::MockLevel level;
+    MockLevel level;
     std::vector<Trigger*> triggers_list(101);
     auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
     triggers_list[100] = trigger.get();
@@ -216,15 +218,15 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    mocks::MockLevel level;
+    MockLevel level;
     std::vector<Trigger*> triggers_list(101);
     auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
     triggers_list[100] = trigger.get();
@@ -253,12 +255,12 @@ TEST(Viewer, SelectWaypointRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -279,12 +281,12 @@ TEST(Viewer, RemoveWaypointRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
@@ -306,15 +308,15 @@ TEST(Viewer, AddWaypointRaised)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    mocks::MockLevel level;
+    MockLevel level;
     std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
     items_list[50] = item;
@@ -347,12 +349,12 @@ TEST(Viewer, RightClickActivatesContextMenu)
     auto window = create_test_window(L"ViewerTests");
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     Shortcuts shortcuts(window);
     Route route(device, shader_storage);
 
-    auto [ui_ptr, ui] = create_mock<mocks::MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<mocks::MockPicking>();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);

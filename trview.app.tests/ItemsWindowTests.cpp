@@ -1,7 +1,6 @@
 #include <trview.app/Windows/ItemsWindow.h>
 #include <trview.tests.common/Window.h>
 #include <trview.graphics/Device.h>
-#include <trview.graphics/ShaderStorage.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.graphics/IFont.h>
@@ -11,6 +10,7 @@
 
 #include <trview.graphics/mocks/IFontFactory.h>
 #include <trview.graphics/mocks/IFont.h>
+#include <trview.graphics/mocks/IShaderStorage.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -25,7 +25,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -54,7 +54,7 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -110,7 +110,7 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -147,7 +147,7 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -181,7 +181,7 @@ TEST(ItemsWindow, ItemVisibilityRaised)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<std::tuple<Item, bool>> raised_item;
@@ -216,7 +216,7 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -251,7 +251,7 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
@@ -290,7 +290,7 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
@@ -330,7 +330,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
@@ -369,7 +369,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
@@ -403,7 +403,7 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
@@ -440,7 +440,7 @@ TEST(ItemsWindow, TriggersLoadedForItem)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
@@ -479,7 +479,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
     Device device;
-    ShaderStorage shader_storage;
+    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
     ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Trigger*> raised_trigger;

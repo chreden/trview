@@ -36,7 +36,7 @@ namespace trview
         /// Create a new SelectionRenderer.
         /// @param device The device to use to render.
         /// @param shader_storage The shader storage instance.
-        explicit SelectionRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        explicit SelectionRenderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         /// Render the outline around the specified object.
         /// @param context The device context.
