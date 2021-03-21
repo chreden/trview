@@ -16,7 +16,7 @@ namespace trview
         _mesh.reset();
     }
 
-    void SectorHighlight::render(graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void SectorHighlight::render(graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_sector)
         {

@@ -45,7 +45,7 @@ namespace trview
         /// @param camera The current camera being used for rendering.
         /// @param texture_storage The current texture storage instance.
         /// @param colour The colour to render this object.
-        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
 
         /// Get the transparent triangles that are contained in this object.
         /// @param transparency The transparency buffer to add triangles to.

@@ -20,7 +20,7 @@ namespace trview
             };
         }
 
-        Sprite::Sprite(const graphics::Device& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)
+        Sprite::Sprite(const IDevice& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)
             : _host_size(host_size)
         {
             using namespace DirectX::SimpleMath;
@@ -101,7 +101,7 @@ namespace trview
             context->DrawIndexed(4, 0, 0);
         }
 
-        void Sprite::create_matrix(const graphics::Device& device)
+        void Sprite::create_matrix(const IDevice& device)
         {
             using namespace DirectX::SimpleMath;
             D3D11_BUFFER_DESC desc;

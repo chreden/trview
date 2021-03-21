@@ -13,7 +13,7 @@ namespace trview
             class ImageNode : public WindowNode
             {
             public:
-                explicit ImageNode(const graphics::Device& device, Image* image);
+                explicit ImageNode(const graphics::IDevice& device, Image* image);
                 virtual ~ImageNode();
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;

@@ -5,22 +5,16 @@
 
 #pragma once
 
-#include <memory>
-#include <wrl/client.h>
-#include <d3d11.h>
-#include <SimpleMath.h>
-
-#include <trview.common/Window.h>
+#include "IDevice.h"
 
 namespace trview
 {
     namespace graphics
     {
         class RenderTarget;
-        class DeviceWindow;
 
         /// Wraps the D3D device and manages common D3D operations.
-        class Device final
+        class Device final : public IDevice
         {
         public:
             /// Create a new device.
@@ -30,20 +24,20 @@ namespace trview
             ~Device();
 
             /// Begin rendering.
-            void begin();
+            virtual void begin() override;
 
             /// Gets the D3D device interface.
             /// @returns The D3D device interface.
-            const Microsoft::WRL::ComPtr<ID3D11Device>& device() const;
+            virtual const Microsoft::WRL::ComPtr<ID3D11Device>& device() const override;
 
             /// Gets the D3D device context for the device.
             /// @returns The D3D device context.
-            const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context() const;
+            virtual const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context() const override;
 
             /// Create a device window to render to a specific window.
             /// @param window The window to render to.
             /// @returns The device window object.
-            std::unique_ptr<DeviceWindow> create_for_window(const Window& window);
+            virtual std::unique_ptr<DeviceWindow> create_for_window(const Window& window) override;
         private:
             Microsoft::WRL::ComPtr<ID3D11Device>        _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;

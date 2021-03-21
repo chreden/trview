@@ -80,6 +80,9 @@
     <ClInclude Include="Mocks\IShaderStorage.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="IDevice.h">
+      <Filter>Device</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -145,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="RasterizerStateStore.cpp">
       <Filter>Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IDevice.cpp">
+      <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,7 @@
     <ClInclude Include="DeviceWindow.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
+    <ClInclude Include="IDevice.h" />
     <ClInclude Include="IFont.h" />
     <ClInclude Include="IFontFactory.h" />
     <ClInclude Include="IShader.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="DeviceWindow.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
+    <ClCompile Include="IDevice.cpp" />
     <ClCompile Include="IFont.cpp" />
     <ClCompile Include="IFontFactory.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />

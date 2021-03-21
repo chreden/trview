@@ -26,7 +26,7 @@ namespace trview
             class Renderer
             {
             public:
-                explicit Renderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
+                explicit Renderer(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
 
                 ~Renderer();
 
@@ -49,7 +49,7 @@ namespace trview
 
                 std::unique_ptr<RenderNode>                     _root_node;
                 std::unique_ptr<graphics::Sprite>               _sprite;
-                const graphics::Device&                         _device;
+                const graphics::IDevice&                        _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 const graphics::IFontFactory&                    _font_factory;
                 Size                                            _host_size;

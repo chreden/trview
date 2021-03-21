@@ -36,18 +36,18 @@ namespace trview
         /// Create a new SelectionRenderer.
         /// @param device The device to use to render.
         /// @param shader_storage The shader storage instance.
-        explicit SelectionRenderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
+        explicit SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         /// Render the outline around the specified object.
         /// @param context The device context.
         /// @param camera The current camera.
         /// @param texture_storage The current level texture storage instance.
         /// @param selected_item The entity to outline.
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour);
+        void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour);
     private:
         /// Create vertex, index and parameter buffers.
         /// @param device The device to use to create the buffers.
-        void create_buffers(const graphics::Device& device);
+        void create_buffers(const graphics::IDevice& device);
 
         std::unique_ptr<graphics::RenderTarget> _texture;
         std::unique_ptr<TransparencyBuffer> _transparency;

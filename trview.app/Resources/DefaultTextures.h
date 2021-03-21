@@ -4,7 +4,7 @@ namespace trview
 {
     namespace graphics
     {
-        class Device;
+        struct IDevice;
     }
 
     struct ITextureStorage;
@@ -13,5 +13,5 @@ namespace trview
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.
     // storage: The ITextureStorage instance to store the textures in.
-    void load_default_textures(const graphics::Device& device, ITextureStorage& storage);
+    void load_default_textures(const graphics::IDevice& device, ITextureStorage& storage);
 }

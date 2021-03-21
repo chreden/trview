@@ -3,13 +3,13 @@
 
 namespace trview
 {
-    LevelTextureStorage::LevelTextureStorage(const graphics::Device& device, const trlevel::ILevel& level)
-        : _device(device), _texture_storage(std::make_unique<TextureStorage>(device)), _version(level.get_version())
+    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, const trlevel::ILevel& level)
+        : _texture_storage(std::make_unique<TextureStorage>(device)), _version(level.get_version())
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {
             std::vector<uint32_t> data = level.get_textile(i);
-            _tiles.emplace_back(device, 256, 256, data);
+            _tiles.emplace_back(*device, 256, 256, data);
         }
 
         // Copy object textures locally from the level.

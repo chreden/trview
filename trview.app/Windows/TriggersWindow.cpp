@@ -47,7 +47,7 @@ namespace trview
 
     using namespace graphics;
 
-    TriggersWindow::TriggersWindow(Device& device, const std::shared_ptr<IShaderStorage>& shader_storage, const IFontFactory& font_factory, const Window& parent)
+    TriggersWindow::TriggersWindow(IDevice& device, const std::shared_ptr<IShaderStorage>& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(520, 400))
     {
         set_panels(create_left_panel(), create_right_panel());

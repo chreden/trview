@@ -19,7 +19,7 @@ namespace trview
         class Sprite
         {
         public:
-            Sprite(const graphics::Device& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size);
+            Sprite(const graphics::IDevice& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size);
 
             void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
 
@@ -30,7 +30,7 @@ namespace trview
             Sprite(const Sprite&) = delete;
             Sprite& operator=(const Sprite&) = delete;
         private:
-            void create_matrix(const graphics::Device& device);
+            void create_matrix(const graphics::IDevice& device);
 
             void update_matrix(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour);
 

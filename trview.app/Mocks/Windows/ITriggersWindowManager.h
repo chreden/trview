@@ -9,7 +9,7 @@ namespace trview
         class MockTriggersWindowManager final : public ITriggersWindowManager
         {
         public:
-            MOCK_METHOD(void, render, (graphics::Device&, bool));
+            MOCK_METHOD(void, render, (graphics::IDevice&, bool));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
             MOCK_METHOD(void, set_triggers, (const std::vector<Trigger*>&));
             MOCK_METHOD(void, set_trigger_visible, (Trigger* trigger, bool));

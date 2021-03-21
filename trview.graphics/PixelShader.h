@@ -13,7 +13,7 @@ namespace trview
         class PixelShader final : public IShader
         {
         public:
-            PixelShader(const graphics::Device& device, const std::vector<uint8_t>& data);
+            PixelShader(const graphics::IDevice& device, const std::vector<uint8_t>& data);
 
             virtual ~PixelShader() = default;
 

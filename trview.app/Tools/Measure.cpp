@@ -7,7 +7,7 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Measure::Measure(const Device& device)
+    Measure::Measure(const IDevice& device)
         : _mesh(create_cube_mesh(device))
     {
     }

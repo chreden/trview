@@ -9,7 +9,7 @@ namespace trview
         class MockRoomsWindowManager final : public IRoomsWindowManager
         {
         public:
-            MOCK_METHOD(void, render, (graphics::Device&, bool));
+            MOCK_METHOD(void, render, (graphics::IDevice&, bool));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
             MOCK_METHOD(void, set_room, (uint32_t));
             MOCK_METHOD(void, set_rooms, (const std::vector<Room*>&));

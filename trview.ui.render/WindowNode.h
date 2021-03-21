@@ -16,7 +16,7 @@ namespace trview
             class WindowNode : public RenderNode
             {
             public:
-                WindowNode(const graphics::Device& device, Window* window);
+                WindowNode(const graphics::IDevice& device, Window* window);
                 virtual ~WindowNode();
             protected:
                 virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;

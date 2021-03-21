@@ -7,7 +7,7 @@ namespace trview
     {
         namespace render
         {
-            ImageNode::ImageNode(const graphics::Device& device, Image* image)
+            ImageNode::ImageNode(const graphics::IDevice& device, Image* image)
                 : WindowNode(device, image), _image(image)
             {
             }

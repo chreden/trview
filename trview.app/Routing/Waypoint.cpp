@@ -20,7 +20,7 @@ namespace trview
     {
     }
 
-    void Waypoint::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Waypoint::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         using namespace DirectX::SimpleMath;
 

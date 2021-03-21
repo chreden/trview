@@ -29,7 +29,7 @@ namespace trview
         /// @param shader_storage The shader storage for rooms windows.
         /// @param font_factory The font_factory for rooms windows.
         /// @param window The parent window of the rooms window.
-        explicit RoomsWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
+        explicit RoomsWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
 
         /// Destructor for the RoomsWindowManager.
         virtual ~RoomsWindowManager() = default;
@@ -43,7 +43,7 @@ namespace trview
         /// Render all of the rooms windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::Device& device, bool vsync) override;
+        virtual void render(graphics::IDevice& device, bool vsync) override;
 
         /// Set the items in the current level.
         virtual void set_items(const std::vector<Item>& items) override;
@@ -76,7 +76,7 @@ namespace trview
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
-        graphics::Device& _device;
+        graphics::IDevice& _device;
         const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         const graphics::IFontFactory& _font_factory;
         TokenStore _token_store;

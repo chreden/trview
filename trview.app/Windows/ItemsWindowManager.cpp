@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
+    ItemsWindowManager::ItemsWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
         _token_store += shortcuts.add_shortcut(true, 'I') += [&]() { create_window(); };
@@ -19,7 +19,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::render(graphics::Device& device, bool vsync)
+    void ItemsWindowManager::render(graphics::IDevice& device, bool vsync)
     {
         if (!_closing_windows.empty())
         {

@@ -36,15 +36,15 @@ namespace trview
         }; 
     }
 
-    SelectionRenderer::SelectionRenderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
+    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
     {
         _pixel_shader = shader_storage->get("selection_pixel_shader");
         _vertex_shader = shader_storage->get("ui_vertex_shader");
         _transparency = std::make_unique<TransparencyBuffer>(device);
-        create_buffers(device);
+        create_buffers(*device);
     }
 
-    void SelectionRenderer::create_buffers(const graphics::Device& device)
+    void SelectionRenderer::create_buffers(const graphics::IDevice& device)
     {
         const SelectionVertex vertices[] =
         {
@@ -103,7 +103,7 @@ namespace trview
         device.device()->CreateBuffer(&scale_desc, nullptr, _scale_buffer.GetAddressOf());
     }
 
-    void SelectionRenderer::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
+    void SelectionRenderer::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
     {
         auto context = device.context();
 

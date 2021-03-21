@@ -31,7 +31,7 @@ namespace trview
     {
     public:
         explicit ViewerUI(const Window& window, 
-            const graphics::Device& device, 
+            const graphics::IDevice& device, 
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IFontFactory& font_factory,
             const ITextureStorage& texture_storage,
@@ -54,7 +54,7 @@ namespace trview
 
         /// Render the UI.
         /// @param device The device to use to render the UI.
-        virtual void render(const graphics::Device& device) override;
+        virtual void render(const graphics::IDevice& device) override;
 
         /// Set whether an alternate group is enabled.
         /// @param value The group to change.

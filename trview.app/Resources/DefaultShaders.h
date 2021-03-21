@@ -5,8 +5,8 @@ namespace trview
     namespace graphics
     {
         struct IShaderStorage;
-        class Device;
+        struct IDevice;
     }
 
-    void load_default_shaders(const graphics::Device& device, graphics::IShaderStorage& storage);
+    void load_default_shaders(const graphics::IDevice& device, graphics::IShaderStorage& storage);
 }

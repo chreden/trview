@@ -19,7 +19,7 @@ namespace trview
     public:
         /// Create a new measure tool.
         /// @param device The device to use to create graphics resources.
-        explicit Measure(const graphics::Device& device);
+        explicit Measure(const graphics::IDevice& device);
 
         /// Event raised when the measure distance has changed.
         Event<float> on_distance;

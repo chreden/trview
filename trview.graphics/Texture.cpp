@@ -43,12 +43,12 @@ namespace trview
         {
         }
 
-        Texture::Texture(const graphics::Device& device, uint32_t width, uint32_t height, Bind bind)
+        Texture::Texture(const IDevice& device, uint32_t width, uint32_t height, Bind bind)
             : Texture(device, width, height, std::vector<uint32_t>(width * height, 0x00000000), bind)
         {
         }
 
-        Texture::Texture(const graphics::Device& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
+        Texture::Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind)
         {
             D3D11_SUBRESOURCE_DATA srd;
             memset(&srd, 0, sizeof(srd));
@@ -101,12 +101,12 @@ namespace trview
             return _view;
         }
 
-        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour)
+        Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour)
         {
             return Texture(device, width, height, std::vector<uint32_t>(width * height, colour));
         }
 
-        Texture create_texture(const graphics::Device& device, const Colour& colour)
+        Texture create_texture(const IDevice& device, const Colour& colour)
         {
             return create_texture(device, 1, 1, colour);
         }

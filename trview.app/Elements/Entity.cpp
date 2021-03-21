@@ -14,7 +14,7 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    Entity::Entity(const graphics::Device& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
+    Entity::Entity(const graphics::IDevice& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
         : _room(entity.Room), _index(index)
     {
         using namespace DirectX;
@@ -119,7 +119,7 @@ namespace trview
         }
     }
 
-    void Entity::load_sprite(const graphics::Device& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
+    void Entity::load_sprite(const graphics::IDevice& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
     {
         // Get the first sprite image.
         auto sprite = level.get_sprite_texture(sprite_sequence.Offset);
@@ -160,7 +160,7 @@ namespace trview
         _offset = Matrix::CreateTranslation(0, object_height / -2.0f, 0);
     }
 
-    void Entity::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Entity::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         if (!_visible)
         {

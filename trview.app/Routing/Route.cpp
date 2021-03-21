@@ -44,8 +44,8 @@ namespace trview
         }
     }
 
-    Route::Route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
-        : _waypoint_mesh(create_cube_mesh(device)), _selection_renderer(device, shader_storage)
+    Route::Route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
+        : _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(device, shader_storage)
     {
     }
 
@@ -144,7 +144,7 @@ namespace trview
         }
     }
 
-    void Route::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Route::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
@@ -218,7 +218,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename)
+    std::unique_ptr<IRoute> import_route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename)
     {
         try
         {

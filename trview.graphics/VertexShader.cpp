@@ -4,7 +4,7 @@ namespace trview
 {
     namespace graphics
     {
-        VertexShader::VertexShader(const graphics::Device& device, const std::vector<uint8_t>& data, const std::vector<D3D11_INPUT_ELEMENT_DESC>& input_desc)
+        VertexShader::VertexShader(const IDevice& device, const std::vector<uint8_t>& data, const std::vector<D3D11_INPUT_ELEMENT_DESC>& input_desc)
         {
             if (data.empty())
             {

@@ -36,7 +36,7 @@ namespace trview
     class Level : public ILevel
     {
     public:
-        Level(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names);
+        Level(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names);
         ~Level();
 
         // Temporary, for the room info and texture window.
@@ -71,12 +71,12 @@ namespace trview
         /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.
-        void render(const graphics::Device& device, const ICamera& camera, bool render_selection);
+        void render(const graphics::IDevice& device, const ICamera& camera, bool render_selection);
 
         /// Render the transparent triangles in the scene.
         /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
-        void render_transparency(const graphics::Device& device, const ICamera& camera);
+        void render_transparency(const graphics::IDevice& device, const ICamera& camera);
 
         void set_highlight_mode(RoomHighlightMode mode, bool enabled);
         bool highlight_mode_enabled(RoomHighlightMode mode) const;
@@ -130,18 +130,18 @@ namespace trview
 
         void set_filename(const std::string& filename);
     private:
-        void generate_rooms(const graphics::Device& device, const trlevel::ILevel& level);
+        void generate_rooms(const graphics::IDevice& device, const trlevel::ILevel& level);
         void generate_triggers();
-        void generate_entities(const graphics::Device& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names);
+        void generate_entities(const graphics::IDevice& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
         // Render the rooms in the level.
         // context: The device context.
         // camera: The current camera to render the level with.
-        void render_rooms(const graphics::Device& device, const ICamera& camera);
+        void render_rooms(const graphics::IDevice& device, const ICamera& camera);
 
-        void render_selected_item(const graphics::Device& device, const ICamera& camera);
+        void render_selected_item(const graphics::IDevice& device, const ICamera& camera);
 
         struct RoomToRender
         {

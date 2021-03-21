@@ -2,14 +2,14 @@
 
 namespace trview
 {
-    TextureStorage::TextureStorage(const graphics::Device& device)
+    TextureStorage::TextureStorage(const std::shared_ptr<graphics::IDevice>& device)
         : _device(device)
     {
     }
 
     graphics::Texture TextureStorage::coloured(uint32_t colour) const
     {
-        return graphics::Texture(_device, 1, 1, std::vector<uint32_t>(1, colour));
+        return graphics::Texture(*_device, 1, 1, std::vector<uint32_t>(1, colour));
     }
 
     graphics::Texture TextureStorage::lookup(const std::string& key) const

@@ -51,11 +51,11 @@ namespace trview
         /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.
-        virtual void render(const graphics::Device& device, const ICamera& camera, bool render_selection) = 0;
+        virtual void render(const graphics::IDevice& device, const ICamera& camera, bool render_selection) = 0;
         /// Render the transparent triangles in the scene.
         /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
-        virtual void render_transparency(const graphics::Device& device, const ICamera& camera) = 0;
+        virtual void render_transparency(const graphics::IDevice& device, const ICamera& camera) = 0;
         // Returns the room with ID provided 
         virtual Room* room(std::size_t id) const = 0;
         virtual std::vector<RoomInfo> room_info() const = 0;

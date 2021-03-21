@@ -24,7 +24,7 @@ namespace trview
         /// @param shader_storage The shader storage for triggers windows.
         /// @param font_factory The font_factory for triggers windows.
         /// @param window The parent window of the triggers window.
-        explicit TriggersWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
+        explicit TriggersWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
 
         /// Destructor for the TriggersWindowManager.
         virtual ~TriggersWindowManager() = default;
@@ -38,7 +38,7 @@ namespace trview
         /// Render all of the triggers windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::Device& device, bool vsync) override;
+        virtual void render(graphics::IDevice& device, bool vsync) override;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.
@@ -68,7 +68,7 @@ namespace trview
         std::vector<TriggersWindow*> _closing_windows;
         std::vector<Item> _items;
         std::vector<Trigger*> _triggers;
-        graphics::Device& _device;
+        graphics::IDevice& _device;
         const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         const graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };

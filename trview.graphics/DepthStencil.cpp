@@ -10,7 +10,7 @@ namespace trview
         // device: The device to use to create the depth stencil.
         // width: The width of the depth stencil.
         // height: The height of the depth stencil.
-        DepthStencil::DepthStencil(const graphics::Device& device, uint32_t width, uint32_t height)
+        DepthStencil::DepthStencil(const graphics::IDevice& device, uint32_t width, uint32_t height)
         {
             graphics::Texture depth_stencil_buffer{ device, width, height, graphics::Texture::Bind::DepthStencil };
 

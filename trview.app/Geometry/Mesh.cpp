@@ -26,7 +26,7 @@ namespace trview
         }
     }
 
-    Mesh::Mesh(const graphics::Device& device,
+    Mesh::Mesh(const graphics::IDevice& device,
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
@@ -216,7 +216,7 @@ namespace trview
         return result;
     }
 
-    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::Device& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::IDevice& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -232,7 +232,7 @@ namespace trview
         return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
-    std::unique_ptr<Mesh> create_cube_mesh(const graphics::Device& device)
+    std::unique_ptr<Mesh> create_cube_mesh(const graphics::IDevice& device)
     {
         const std::vector<MeshVertex> vertices
         {

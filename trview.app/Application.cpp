@@ -117,7 +117,7 @@ namespace trview
         std::shared_ptr<graphics::IShaderStorage> shader_storage,
         std::unique_ptr<graphics::IFontFactory> font_factory,
         std::unique_ptr<ITextureStorage> texture_storage,
-        std::unique_ptr<graphics::Device> device,
+        std::shared_ptr<graphics::IDevice> device,
         std::unique_ptr<IRoute> route,
         std::unique_ptr<IShortcuts> shortcuts,
         std::unique_ptr<IItemsWindowManager> items_window_manager,
@@ -184,7 +184,7 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        _level = std::make_unique<Level>(*_device, _shader_storage, std::move(new_level), *_type_name_lookup);
+        _level = std::make_unique<Level>(_device, _shader_storage, std::move(new_level), *_type_name_lookup);
         _level->set_filename(filename);
 
         _viewer->open(_level.get());
@@ -393,7 +393,7 @@ namespace trview
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(*_device, _shader_storage, path);
+            auto route = import_route(_device, _shader_storage, path);
             if (route)
             {
                 _route = std::move(route);
@@ -567,19 +567,22 @@ namespace trview
             di::bind<IRecentFiles>.to<RecentFiles>(),
             di::bind<Window>.to(window),
             di::bind<input::IWindowTester>.to<input::WindowTester>(),
-            di::bind<IPicking>.to<Picking>()
+            di::bind<IPicking>.to<Picking>(),
+            di::bind<IRoute>.to<Route>(),
+            di::bind<ITextureStorage>.to<TextureStorage>(),
+            di::bind<graphics::IDevice>.to<graphics::Device>()
         );
 
-        auto device = std::make_unique<graphics::Device>();
+        auto device = injector.create<std::shared_ptr<graphics::IDevice>>();
         auto shader_storage = injector.create<std::shared_ptr<IShaderStorage>>();
         auto font_factory = injector.create<std::unique_ptr<IFontFactory>>();
-        auto texture_storage = std::make_unique<TextureStorage>(*device);
+        auto texture_storage = injector.create<std::unique_ptr<ITextureStorage>>();
 
         load_default_shaders(*device, *shader_storage);
         load_default_fonts(*device, *font_factory);
         load_default_textures(*device, *texture_storage);
 
-        auto route = std::make_unique<Route>(*device, shader_storage);
+        auto route = injector.create<std::unique_ptr<IRoute>>();
         auto shortcuts = std::make_unique<Shortcuts>(window);
 
         auto ui = std::make_unique<ViewerUI>(window, *device, shader_storage, *font_factory, *texture_storage, *shortcuts);
@@ -591,7 +594,7 @@ namespace trview
         auto rooms_window_manager = std::make_unique<RoomsWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
 
         return Application(
-            window, 
+            window,
             injector.create<std::unique_ptr<IUpdateChecker>>(),
             injector.create<std::unique_ptr<ISettingsLoader>>(),
             injector.create<std::unique_ptr<IFileDropper>>(),
@@ -602,7 +605,7 @@ namespace trview
             shader_storage,
             std::move(font_factory),
             std::move(texture_storage),
-            std::move(device),
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
             std::move(route),
             std::move(shortcuts),
             std::move(items_window_manager),

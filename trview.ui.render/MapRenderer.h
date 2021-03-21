@@ -48,7 +48,7 @@ namespace trview
             class MapRenderer
             {
             public:
-                MapRenderer(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size);
+                MapRenderer(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size);
 
                 // Renders the map 
                 void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true);
@@ -113,7 +113,7 @@ namespace trview
                 // Determines if the minimap needs to be re-drawn.
                 bool needs_redraw();
 
-                const graphics::Device&                            _device;
+                const graphics::IDevice&                           _device;
                 bool                                               _visible = true;
                 int                                                _window_width, _window_height;
                 graphics::Sprite                                   _sprite; 

@@ -35,7 +35,7 @@ namespace trview
             public:
                 friend class Renderer;
 
-                RenderNode(const graphics::Device& device, Control* control);
+                RenderNode(const graphics::IDevice& device, Control* control);
 
                 virtual ~RenderNode() = 0;
 
@@ -74,7 +74,7 @@ namespace trview
 
                 void regenerate_texture();
 
-                const graphics::Device&                  _device;
+                const graphics::IDevice&                 _device;
                 std::unique_ptr<graphics::RenderTarget>  _render_target;
                 std::vector<std::unique_ptr<RenderNode>> _child_nodes;
                 Control*                                 _control;

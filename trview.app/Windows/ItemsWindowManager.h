@@ -26,7 +26,7 @@ namespace trview
         /// @param shader_storage The shader storage for items windows.
         /// @param font_factory The font_factory for items windows.
         /// @param window The parent window of the items window.
-        explicit ItemsWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
+        explicit ItemsWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;
@@ -40,7 +40,7 @@ namespace trview
         /// Render all of the item windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::Device& device, bool vsync) override;
+        virtual void render(graphics::IDevice& device, bool vsync) override;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.
@@ -70,7 +70,7 @@ namespace trview
         std::vector<ItemsWindow*> _closing_windows;
         std::vector<Item> _items;
         std::vector<Trigger*> _triggers;
-        graphics::Device& _device;
+        graphics::IDevice& _device;
         const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         const graphics::IFontFactory& _font_factory;
         uint32_t _current_room{ 0u };

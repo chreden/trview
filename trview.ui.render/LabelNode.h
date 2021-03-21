@@ -20,7 +20,7 @@ namespace trview
             class LabelNode : public WindowNode, public IFontMeasurer
             {
             public:
-                LabelNode(const graphics::Device& device, Label* label, const graphics::IFontFactory& font_factory);
+                LabelNode(const graphics::IDevice& device, Label* label, const graphics::IFontFactory& font_factory);
                 virtual ~LabelNode();
                 virtual Size measure(const std::wstring& text) const override;
                 virtual bool is_valid_character(wchar_t character) const override;

@@ -33,13 +33,13 @@ namespace trview
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
+        Compass(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         /// Render the compass.
         /// @param device The device to use to render the compass.
         /// @param camera The current camera being used to view the level.
         /// @param texture_storage The texture storage instance to use.
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.

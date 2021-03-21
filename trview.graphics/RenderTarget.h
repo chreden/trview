@@ -33,13 +33,13 @@ namespace trview
             // width: The width of the new render target.
             // height: The height of the new render target.
             // depth_mode: Whether a depth stencil should be created.
-            RenderTarget(const graphics::Device& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
+            RenderTarget(const graphics::IDevice& device, uint32_t width, uint32_t height, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
 
             // Create a render target using the specfied pre-existing texture.
             // device: The D3D device.
             // texture: The texture to use as the render target.
             // depth_mode: Whether a depth stencil should be created.
-            RenderTarget(const graphics::Device& device, const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
+            RenderTarget(const graphics::IDevice& device, const Microsoft::WRL::ComPtr<ID3D11Texture2D>& texture, DepthStencilMode depth_mode = DepthStencilMode::Disabled);
 
             ~RenderTarget();
 

@@ -19,13 +19,13 @@ namespace trview
     class MeshStorage final : public IMeshStorage
     {
     public:
-        explicit MeshStorage(const graphics::Device& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        explicit MeshStorage(const std::shared_ptr<graphics::IDevice>& device, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
 
         virtual ~MeshStorage() = default;
 
         virtual Mesh* mesh(uint32_t mesh_pointer) const override;
     private:
-        const graphics::Device& _device;
+        std::shared_ptr<graphics::IDevice> _device;
         const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;
     };

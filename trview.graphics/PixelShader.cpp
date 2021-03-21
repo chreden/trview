@@ -4,7 +4,7 @@ namespace trview
 {
     namespace graphics
     {
-        PixelShader::PixelShader(const graphics::Device& device, const std::vector<uint8_t>& data)
+        PixelShader::PixelShader(const IDevice& device, const std::vector<uint8_t>& data)
         {
             if (data.empty())
             {

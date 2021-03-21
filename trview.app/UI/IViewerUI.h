@@ -109,7 +109,7 @@ namespace trview
 
         /// Render the UI.
         /// @param device The device to use to render the UI.
-        virtual void render(const graphics::Device& device) = 0;
+        virtual void render(const graphics::IDevice& device) = 0;
 
         /// Set whether an alternate group is enabled.
         /// @param value The group to change.

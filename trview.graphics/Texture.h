@@ -53,7 +53,7 @@ namespace trview
             /// @param height The height in pixels of the new texture.
             /// @param bind An optional parameter to specify the bind mode. By default this is set to Bind::Texture.
             /// @see Bind
-            Texture(const graphics::Device& device, uint32_t width, uint32_t height, Bind bind = Bind::Texture);
+            Texture(const IDevice& device, uint32_t width, uint32_t height, Bind bind = Bind::Texture);
 
             /// Create a texture of the specified dimensions with the pixel data provided. The optional bind mode will affect the way that this
             /// texture is created and can be used.
@@ -63,7 +63,7 @@ namespace trview
             /// @param pixels The pixel data to use to initialise the texture. This must contain at least as many elements as width x height.
             /// @param bind An optional parameter to specify the bind mode. By default this is set to Bind::Texture.
             /// @see Bind
-            Texture(const graphics::Device& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
+            Texture(const IDevice& device, uint32_t width, uint32_t height, const std::vector<uint32_t>& pixels, Bind bind = Bind::Texture);
 
             /// Indicates whether this texture has any texture content.
             /// @returns True if the texture has content.
@@ -97,11 +97,11 @@ namespace trview
         /// @param width The width of the texture.
         /// @param height The height of the texture.
         /// @param colour The colour to fill the texture.
-        Texture create_texture(const graphics::Device& device, uint32_t width, uint32_t height, const Colour& colour);
+        Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour);
 
         /// Create a 1x1 texture filled with the specified colour.
         /// @param device The device to use.
         /// @param colour The colour to fill the texture.
-        Texture create_texture(const graphics::Device& device, const Colour& colour);
+        Texture create_texture(const IDevice& device, const Colour& colour);
     }
 }

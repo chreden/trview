@@ -28,9 +28,9 @@ namespace trview
     class Entity : public IRenderable
     {
     public:
-        explicit Entity(const graphics::Device& device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index);
+        explicit Entity(const graphics::IDevice& device, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index);
         virtual ~Entity() = default;
-        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         uint16_t room() const;
         uint32_t index() const;
 
@@ -44,7 +44,7 @@ namespace trview
     private:
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
-        void load_sprite(const graphics::Device& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
+        void load_sprite(const graphics::IDevice& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage);
         void generate_bounding_box();
         void apply_ocb_adjustment(uint32_t ocb);
 

@@ -44,7 +44,7 @@ namespace trview
         /// @param shader_storage The shader storage instance to use.
         /// @param font_factory The font factory to use.
         /// @param parent The parent window.
-        explicit CollapsiblePanel(graphics::Device& device,
+        explicit CollapsiblePanel(graphics::IDevice& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IFontFactory& font_factory,
             const Window& parent,
@@ -63,7 +63,7 @@ namespace trview
         /// Render the window.
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
-        void render(const graphics::Device& device, bool vsync);
+        void render(const graphics::IDevice& device, bool vsync);
 
         /// Get the root control for the window.
         /// @returns The root control.

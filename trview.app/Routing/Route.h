@@ -15,7 +15,7 @@ namespace trview
     public:
         /// Create a route.
         /// @param device The device to use.
-        explicit Route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
+        explicit Route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         virtual ~Route() = default;
 
@@ -80,7 +80,7 @@ namespace trview
         /// @param device The device to use to render.
         /// @param camera The camera to use to render.
         /// @param texture_storage Texture storage for the mesh.
-        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
+        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
 
         /// Get the index of the currently selected waypoint.
         virtual uint32_t selected_waypoint() const override;
@@ -113,6 +113,6 @@ namespace trview
         Colour                _colour{ Colour::Green };
     };
 
-    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename);
+    std::unique_ptr<IRoute> import_route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename);
     void export_route(const IRoute& route, const std::string& filename);
 }

@@ -19,7 +19,7 @@ namespace trview
     class TransparencyBuffer
     {
     public:
-        explicit TransparencyBuffer(const graphics::Device& device);
+        explicit TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device);
         TransparencyBuffer(const TransparencyBuffer&) = delete;
         TransparencyBuffer& operator=(const TransparencyBuffer&) = delete;
 
@@ -48,7 +48,7 @@ namespace trview
         void complete();
         void set_blend_mode(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, TransparentTriangle::Mode mode) const;
 
-        const graphics::Device& _device;
+        std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _vertex_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _matrix_buffer;
         Microsoft::WRL::ComPtr<ID3D11BlendState> _alpha_blend;

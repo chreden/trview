@@ -14,7 +14,7 @@ namespace trview
     class RouteWindowManager final : public IRouteWindowManager, public MessageHandler
     {
     public:
-        explicit RouteWindowManager(graphics::Device& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
+        explicit RouteWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
 
         virtual ~RouteWindowManager() = default;
 
@@ -27,7 +27,7 @@ namespace trview
         /// Render all of the route windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::Device& device, bool vsync) override;
+        virtual void render(graphics::IDevice& device, bool vsync) override;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.
@@ -48,7 +48,7 @@ namespace trview
 
         virtual void select_waypoint(uint32_t index) override;
     private:
-        graphics::Device& _device;
+        graphics::IDevice& _device;
         const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         const graphics::IFontFactory& _font_factory;
         TokenStore _token_store;

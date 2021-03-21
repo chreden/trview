@@ -41,7 +41,7 @@ namespace trview
             std::shared_ptr<graphics::IShaderStorage> shader_storage,
             std::unique_ptr<graphics::IFontFactory> font_factory,
             std::unique_ptr<ITextureStorage> texture_storage,
-            std::unique_ptr<graphics::Device> device,
+            std::shared_ptr<graphics::IDevice> device,
             std::unique_ptr<IRoute> route,
             std::unique_ptr<IShortcuts> shortcuts,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
@@ -105,7 +105,7 @@ namespace trview
         HINSTANCE _instance{ nullptr };
 
         // Rendering
-        std::unique_ptr<graphics::Device> _device;
+        std::shared_ptr<graphics::IDevice> _device;
         std::shared_ptr<graphics::IShaderStorage> _shader_storage;
         std::unique_ptr<graphics::IFontFactory> _font_factory;
         std::unique_ptr<ITextureStorage> _texture_storage;

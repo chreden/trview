@@ -57,7 +57,7 @@ namespace trview
         /// @param window The window that the viewer should use.
         explicit Viewer(
             const Window& window, 
-            graphics::Device& device, 
+            graphics::IDevice& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             std::unique_ptr<IViewerUI> ui, 
             std::unique_ptr<IPicking> picking,
@@ -156,7 +156,7 @@ namespace trview
         void register_lua();
         void apply_acceleration_settings();
 
-        graphics::Device& _device;
+        graphics::IDevice& _device;
         Window _window;
         IShortcuts& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;

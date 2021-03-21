@@ -195,7 +195,7 @@ namespace trview
         return std::any_of(types.begin(), types.end(), [&](const auto& type) { return has_command(type); });
     }
 
-    void Trigger::render(const graphics::Device&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
+    void Trigger::render(const graphics::IDevice&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
     {
     }
 

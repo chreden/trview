@@ -20,7 +20,7 @@ namespace trview
         /// Render all of the rooms windows.
         /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::Device& device, bool vsync) = 0;
+        virtual void render(graphics::IDevice& device, bool vsync) = 0;
 
         /// Set the items in the current level.
         virtual void set_items(const std::vector<Item>& items) = 0;
