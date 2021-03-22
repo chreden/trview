@@ -83,6 +83,9 @@
     <ClInclude Include="IDevice.h">
       <Filter>Device</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\IDevice.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">

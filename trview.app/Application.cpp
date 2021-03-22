@@ -87,7 +87,7 @@ namespace trview
             return RegisterClassExW(&wcex);
         }
 
-        HWND create_window(HINSTANCE hInstance, int nCmdShow)
+        Window create_window(HINSTANCE hInstance, int nCmdShow)
         {
             register_class(hInstance);
 

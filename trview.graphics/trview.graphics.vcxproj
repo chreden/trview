@@ -29,6 +29,7 @@
     <ClInclude Include="IFontFactory.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
+    <ClInclude Include="Mocks\IDevice.h" />
     <ClInclude Include="mocks\IFont.h" />
     <ClInclude Include="mocks\IFontFactory.h" />
     <ClInclude Include="Mocks\IShaderStorage.h" />
