@@ -5,6 +5,7 @@
 #include <set>
 
 #include <trview.common/TokenStore.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 
 namespace trview
 {
@@ -17,8 +18,6 @@ namespace trview
         class Window;
         class StackPanel;
     }
-
-    struct ITextureStorage;
 
     class ViewOptions final
     {

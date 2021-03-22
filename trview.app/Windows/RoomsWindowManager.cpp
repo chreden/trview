@@ -6,10 +6,10 @@
 
 namespace trview
 {
-    RoomsWindowManager::RoomsWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
+    RoomsWindowManager::RoomsWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
-        _token_store += shortcuts.add_shortcut(true, 'M') += [&]() { create_window(); };
+        _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create_window(); };
     }
 
     void RoomsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -91,7 +91,7 @@ namespace trview
 
     void RoomsWindowManager::create_window()
     {
-        auto rooms_window = std::make_unique<RoomsWindow>(_device, _shader_storage, _font_factory, window());
+        auto rooms_window = std::make_unique<RoomsWindow>(*_device, _shader_storage, *_font_factory, window());
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;

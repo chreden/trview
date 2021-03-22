@@ -5,10 +5,10 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
+    ItemsWindowManager::ItemsWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
-        _token_store += shortcuts.add_shortcut(true, 'I') += [&]() { create_window(); };
+        _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create_window(); };
     }
 
     void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -36,7 +36,7 @@ namespace trview
 
     ItemsWindow* ItemsWindowManager::create_window()
     {
-        auto items_window = std::make_unique<ItemsWindow>(_device, _shader_storage, _font_factory, window());
+        auto items_window = std::make_unique<ItemsWindow>(*_device, _shader_storage, *_font_factory, window());
         items_window->on_item_selected += on_item_selected;
         items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;

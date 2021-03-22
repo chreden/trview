@@ -40,8 +40,6 @@
 
 namespace trview
 {
-    struct ITextureStorage;
-
     namespace graphics
     {
         struct IShaderStorage;
@@ -57,13 +55,13 @@ namespace trview
         /// @param window The window that the viewer should use.
         explicit Viewer(
             const Window& window, 
-            graphics::IDevice& device,
+            const std::shared_ptr<graphics::IDevice>& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             std::unique_ptr<IViewerUI> ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,
-            IShortcuts& shortcuts, 
-            IRoute* route);
+            const std::shared_ptr<IShortcuts>& shortcuts,
+            const std::shared_ptr<IRoute> route);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -99,7 +97,7 @@ namespace trview
 
         /// Set the current route.
         /// @param route The new route.
-        virtual void set_route(IRoute* route) override;
+        virtual void set_route(const std::shared_ptr<IRoute>& route) override;
 
         /// Set whether the compass is visible.
         virtual void set_show_compass(bool value) override;
@@ -156,9 +154,9 @@ namespace trview
         void register_lua();
         void apply_acceleration_settings();
 
-        graphics::IDevice& _device;
+        const std::shared_ptr<graphics::IDevice> _device;
         Window _window;
-        IShortcuts& _shortcuts;
+        const std::shared_ptr<IShortcuts>& _shortcuts;
         std::unique_ptr<graphics::DeviceWindow> _main_window;
         ILevel* _level{ nullptr };
         Timer _timer;
@@ -188,7 +186,7 @@ namespace trview
 
         // Temporary route objects.
         PickResult _context_pick;
-        IRoute* _route;
+        std::shared_ptr<IRoute> _route;
         bool _show_route{ true };
 
         /// Was the room just changed due to an alternate group or flip being performed?

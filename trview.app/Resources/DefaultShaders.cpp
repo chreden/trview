@@ -65,9 +65,9 @@ namespace trview
         }
     }
 
-    void load_default_shaders(const graphics::IDevice& device, graphics::IShaderStorage& storage)
+    void load_default_shaders(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& storage)
     {
-        load_level_shaders(device, storage);
-        load_ui_shaders(device, storage);
+        load_level_shaders(*device, *storage);
+        load_ui_shaders(*device, *storage);
     }
 }

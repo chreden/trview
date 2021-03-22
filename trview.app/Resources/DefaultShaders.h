@@ -8,5 +8,5 @@ namespace trview
         struct IDevice;
     }
 
-    void load_default_shaders(const graphics::IDevice& device, graphics::IShaderStorage& storage);
+    void load_default_shaders(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& storage);
 }

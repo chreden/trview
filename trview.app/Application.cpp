@@ -106,6 +106,10 @@ namespace trview
         }
     }
 
+    IApplication::~IApplication()
+    {
+    }
+
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::unique_ptr<ISettingsLoader> settings_loader,
@@ -115,20 +119,20 @@ namespace trview
         std::unique_ptr<IRecentFiles> recent_files,
         std::unique_ptr<IViewer> viewer,
         std::shared_ptr<graphics::IShaderStorage> shader_storage,
-        std::unique_ptr<graphics::IFontFactory> font_factory,
-        std::unique_ptr<ITextureStorage> texture_storage,
+        std::shared_ptr<graphics::IFontFactory> font_factory,
+        std::shared_ptr<ITextureStorage> texture_storage,
         std::shared_ptr<graphics::IDevice> device,
-        std::unique_ptr<IRoute> route,
-        std::unique_ptr<IShortcuts> shortcuts,
+        std::shared_ptr<IRoute> route,
+        std::shared_ptr<IShortcuts> shortcuts,
         std::unique_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
-        const std::wstring& command_line)
+        const CommandLine& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
-        _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage)),
+        _font_factory(font_factory), _device(std::move(device)), _route(route), _shortcuts(shortcuts), _texture_storage(texture_storage),
         _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager))
     {
         _update_checker->check_for_updates();
@@ -202,7 +206,7 @@ namespace trview
 
         _route->clear();
         _route_window->set_route(_route.get());
-        _viewer->set_route(_route.get());
+        _viewer->set_route(_route);
     }
 
     void Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -398,7 +402,7 @@ namespace trview
             {
                 _route = std::move(route);
                 _route_window->set_route(_route.get());
-                _viewer->set_route(_route.get());
+                _viewer->set_route(_route);
             }
         };
         _token_store += _route_window->on_route_export += [&](const std::string& path) { export_route(*_route, path); };
@@ -406,7 +410,7 @@ namespace trview
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
             _route->set_colour(colour);
-            _viewer->set_route(_route.get());
+            _viewer->set_route(_route);
         };
     }
 
@@ -436,7 +440,7 @@ namespace trview
     {
         _route->remove(index);
         _route_window->set_route(_route.get());
-        _viewer->set_route(_route.get());
+        _viewer->set_route(_route);
 
         if (_route->waypoints() > 0)
         {
@@ -549,12 +553,10 @@ namespace trview
         _route_window->render(*_device, _settings.vsync);
     }
 
-    Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
+    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
         using namespace boost;
         using namespace graphics;
-
-        Window window = create_window(instance, command_show);
 
         const auto injector = di::make_injector(
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
@@ -565,53 +567,34 @@ namespace trview
             di::bind<IFileDropper>.to<FileDropper>(),
             di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
             di::bind<IRecentFiles>.to<RecentFiles>(),
-            di::bind<Window>.to(window),
+            di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<input::IWindowTester>.to<input::WindowTester>(),
             di::bind<IPicking>.to<Picking>(),
             di::bind<IRoute>.to<Route>(),
             di::bind<ITextureStorage>.to<TextureStorage>(),
-            di::bind<graphics::IDevice>.to<graphics::Device>()
+            di::bind<graphics::IDevice>.to<graphics::Device>(),
+            di::bind<IShortcuts>.to<Shortcuts>(),
+            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
+            di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
+            di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
+            di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
+            di::bind<IViewerUI>.to<ViewerUI>(),
+            di::bind<IViewer>.to<Viewer>(),
+            di::bind<input::IMouse>.to<input::Mouse>(),
+            di::bind<IApplication>.to<Application>(),
+            di::bind<Application::CommandLine>.to(command_line)
         );
 
-        auto device = injector.create<std::shared_ptr<graphics::IDevice>>();
-        auto shader_storage = injector.create<std::shared_ptr<IShaderStorage>>();
-        auto font_factory = injector.create<std::unique_ptr<IFontFactory>>();
-        auto texture_storage = injector.create<std::unique_ptr<ITextureStorage>>();
-
-        load_default_shaders(*device, *shader_storage);
-        load_default_fonts(*device, *font_factory);
-        load_default_textures(*device, *texture_storage);
-
-        auto route = injector.create<std::unique_ptr<IRoute>>();
-        auto shortcuts = std::make_unique<Shortcuts>(window);
-
-        auto ui = std::make_unique<ViewerUI>(window, *device, shader_storage, *font_factory, *texture_storage, *shortcuts);
-        auto mouse = injector.create<std::unique_ptr<input::Mouse>>();
-        auto viewer = std::make_unique<Viewer>(window, *device, shader_storage, std::move(ui), injector.create<std::unique_ptr<IPicking>>(), std::move(mouse), *shortcuts, route.get());
-        auto items_window_manager = std::make_unique<ItemsWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
-        auto triggers_window_manager = std::make_unique<TriggersWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
-        auto route_window_manager = std::make_unique<RouteWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
-        auto rooms_window_manager = std::make_unique<RoomsWindowManager>(*device, shader_storage, *font_factory, window, *shortcuts);
-
-        return Application(
-            window,
-            injector.create<std::unique_ptr<IUpdateChecker>>(),
-            injector.create<std::unique_ptr<ISettingsLoader>>(),
-            injector.create<std::unique_ptr<IFileDropper>>(),
-            injector.create<std::unique_ptr<trlevel::ILevelLoader>>(),
-            injector.create<std::unique_ptr<ILevelSwitcher>>(),
-            injector.create<std::unique_ptr<IRecentFiles>>(),
-            std::move(viewer),
-            shader_storage,
-            std::move(font_factory),
-            std::move(texture_storage),
+        load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
-            std::move(route),
-            std::move(shortcuts),
-            std::move(items_window_manager),
-            std::move(triggers_window_manager),
-            std::move(route_window_manager),
-            std::move(rooms_window_manager),
-            command_line);
+            injector.create<std::shared_ptr<IShaderStorage>>());
+        load_default_fonts(
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
+            injector.create<std::shared_ptr<IFontFactory>>());
+        load_default_textures(
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
+            injector.create<std::shared_ptr<ITextureStorage>>());
+
+        return injector.create<std::unique_ptr<IApplication>>();
     }
 }

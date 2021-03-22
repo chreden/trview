@@ -31,11 +31,11 @@ namespace trview
     {
     public:
         explicit ViewerUI(const Window& window, 
-            const graphics::IDevice& device, 
+            const std::shared_ptr<graphics::IDevice>& device, 
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-            const graphics::IFontFactory& font_factory,
-            const ITextureStorage& texture_storage,
-            IShortcuts& shortcuts);
+            const std::shared_ptr<graphics::IFontFactory>& font_factory,
+            const std::shared_ptr<ITextureStorage>& texture_storage,
+            const std::shared_ptr<IShortcuts>& shortcuts);
 
         virtual ~ViewerUI() = default;
 
@@ -217,7 +217,7 @@ namespace trview
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
-        IShortcuts& _shortcuts;
+        std::shared_ptr<IShortcuts> _shortcuts;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::Renderer> _ui_renderer;
         std::unique_ptr<ui::Input> _ui_input;

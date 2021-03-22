@@ -26,9 +26,19 @@
 
 namespace trview
 {
-    class Application final : public MessageHandler
+    struct IApplication
+    {
+        virtual ~IApplication() = 0;
+        virtual int run() = 0;
+    };
+
+    
+
+    class Application final : public IApplication, public MessageHandler
     {
     public:
+        using CommandLine = std::wstring;
+
         explicit Application(
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
@@ -39,16 +49,16 @@ namespace trview
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
             std::shared_ptr<graphics::IShaderStorage> shader_storage,
-            std::unique_ptr<graphics::IFontFactory> font_factory,
-            std::unique_ptr<ITextureStorage> texture_storage,
+            std::shared_ptr<graphics::IFontFactory> font_factory,
+            std::shared_ptr<ITextureStorage> texture_storage,
             std::shared_ptr<graphics::IDevice> device,
-            std::unique_ptr<IRoute> route,
-            std::unique_ptr<IShortcuts> shortcuts,
+            std::shared_ptr<IRoute> route,
+            std::shared_ptr<IShortcuts> shortcuts,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
-            const std::wstring& command_line);
+            const CommandLine& command_line);
         virtual ~Application();
 
         /// Event raised when a level file is successfully opened.
@@ -61,7 +71,7 @@ namespace trview
 
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
-        int run();
+        virtual int run() override;
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -101,21 +111,21 @@ namespace trview
         std::unique_ptr<IRecentFiles> _recent_files;
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
-        std::unique_ptr<IShortcuts> _shortcuts;
+        std::shared_ptr<IShortcuts> _shortcuts;
         HINSTANCE _instance{ nullptr };
 
         // Rendering
         std::shared_ptr<graphics::IDevice> _device;
         std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        std::unique_ptr<graphics::IFontFactory> _font_factory;
-        std::unique_ptr<ITextureStorage> _texture_storage;
+        std::shared_ptr<graphics::IFontFactory> _font_factory;
+        std::shared_ptr<ITextureStorage> _texture_storage;
 
         // Level data components
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
         std::unique_ptr<Level> _level;
 
         // Routing and tools.
-        std::unique_ptr<IRoute> _route;
+        std::shared_ptr<IRoute> _route;
 
         // Windows
         std::unique_ptr<IViewer> _viewer;
@@ -125,5 +135,5 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
     };
 
-    Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
+    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
 }

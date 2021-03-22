@@ -40,7 +40,7 @@ namespace trview
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.
     // storage: The ITextureStorage instance to store the textures in.
-    void load_default_textures(const graphics::IDevice& device, ITextureStorage& storage)
+    void load_default_textures(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<ITextureStorage>& storage)
     {
         // Load some sort of manifest that contains the files to load.
         // For each texture, load it with the given key.
@@ -58,7 +58,7 @@ namespace trview
                 break;
             }
 
-            storage.store(key, load_texture_from_resource(device, resource_id));
+            storage->store(key, load_texture_from_resource(*device, resource_id));
 
             if (!std::getline(stream, key))
             {

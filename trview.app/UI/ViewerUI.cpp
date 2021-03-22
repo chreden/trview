@@ -12,7 +12,7 @@ using namespace trview::ui;
 
 namespace trview
 {
-    ViewerUI::ViewerUI(const Window& window, const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const ITextureStorage& texture_storage, IShortcuts& shortcuts)
+    ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const std::shared_ptr<ITextureStorage>& texture_storage, const std::shared_ptr<IShortcuts>& shortcuts)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _shortcuts(shortcuts)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -30,7 +30,7 @@ namespace trview
             }
         };
 
-        _token_store += shortcuts.add_shortcut(true, 'G') += [&]()
+        _token_store += shortcuts->add_shortcut(true, 'G') += [&]()
         {
             if (!is_input_active())
             {
@@ -39,7 +39,7 @@ namespace trview
             }
         };
 
-        _token_store += shortcuts.add_shortcut(true, 'E') += [&]()
+        _token_store += shortcuts->add_shortcut(true, 'E') += [&]()
         {
             if (!is_input_active())
             {
@@ -48,7 +48,7 @@ namespace trview
             }
         };
 
-        _token_store += shortcuts.add_shortcut(false, VK_F11) += [&]()
+        _token_store += shortcuts->add_shortcut(false, VK_F11) += [&]()
         {
             if (!is_input_active())
             {
@@ -56,7 +56,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(texture_storage);
+        generate_tool_window(*texture_storage);
 
         _go_to = std::make_unique<GoTo>(*_control.get());
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -96,7 +96,7 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*_control.get(), texture_storage);
+        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window = std::make_unique<SettingsWindow>(*_control.get());
@@ -168,10 +168,10 @@ namespace trview
         _console->on_command += on_command;
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(device, shader_storage, font_factory, window.size());
+        _ui_renderer = std::make_unique<ui::render::Renderer>(*device, shader_storage, *font_factory, window.size());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, window.size());
+        _map_renderer = std::make_unique<ui::render::MapRenderer>(*device, shader_storage, *font_factory, window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
         {
             on_ui_changed();
@@ -499,6 +499,6 @@ namespace trview
 
     void ViewerUI::initialise_input()
     {
-        _ui_input = std::make_unique<Input>(_window, *_control, _shortcuts);
+        _ui_input = std::make_unique<Input>(_window, *_control, *_shortcuts);
     }
 }

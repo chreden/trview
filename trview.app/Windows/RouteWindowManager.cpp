@@ -3,10 +3,10 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
+    RouteWindowManager::RouteWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
         : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
     {
-        _token_store += shortcuts.add_shortcut(true, 'R') += [&]() { create_window(); };
+        _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create_window(); };
     }
 
     void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -27,7 +27,7 @@ namespace trview
         }
 
         // Otherwise create the window.
-        _route_window = std::make_unique<RouteWindow>(_device, _shader_storage, _font_factory, window());
+        _route_window = std::make_unique<RouteWindow>(*_device, _shader_storage, *_font_factory, window());
         _route_window->on_colour_changed += on_colour_changed;
         _route_window->on_route_import += on_route_import;
         _route_window->on_route_export += on_route_export;
