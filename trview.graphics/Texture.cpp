@@ -67,10 +67,10 @@ namespace trview
             desc.CPUAccessFlags = 0;
             desc.MiscFlags = 0;
 
-            device.device()->CreateTexture2D(&desc, &srd, &_texture);
+            _texture = device.create_texture_2D(desc, srd);
             if (bind != Texture::Bind::DepthStencil)
             {
-                device.device()->CreateShaderResourceView(_texture.Get(), nullptr, &_view);
+                _view = device.create_shader_resource_view(_texture);
             }
         }
 

@@ -16,7 +16,7 @@ namespace trview
             MOCK_METHOD(void, select_room, (uint32_t));
             MOCK_METHOD(void, select_trigger, (const Trigger* const));
             MOCK_METHOD(void, select_waypoint, (const Waypoint&));
-            MOCK_METHOD(void, set_route, (IRoute*));
+            MOCK_METHOD(void, set_route, (const std::shared_ptr<IRoute>&));
             MOCK_METHOD(void, set_show_compass, (bool));
             MOCK_METHOD(void, set_show_minimap, (bool));
             MOCK_METHOD(void, set_show_route, (bool));

@@ -14,16 +14,16 @@ namespace trview
         {
             graphics::Texture depth_stencil_buffer{ device, width, height, graphics::Texture::Bind::DepthStencil };
 
-            D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-            memset(&depthStencilViewDesc, 0, sizeof(depthStencilViewDesc));
+            D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc;
+            memset(&depth_stencil_view_desc, 0, sizeof(depth_stencil_view_desc));
 
             // Set up the depth stencil view description.
-            depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-            depthStencilViewDesc.Texture2D.MipSlice = 0;
+            depth_stencil_view_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+            depth_stencil_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+            depth_stencil_view_desc.Texture2D.MipSlice = 0;
 
             // Create the depth stencil view.
-            device.device()->CreateDepthStencilView(depth_stencil_buffer.texture().Get(), &depthStencilViewDesc, &_view);
+            _view = device.create_depth_stencil_view(depth_stencil_buffer.texture(), depth_stencil_view_desc);
         }
 
         // Get the depth stencil view for the depth stencil.

@@ -46,7 +46,7 @@ namespace trview
             memset(&vertex_data, 0, sizeof(vertex_data));
             vertex_data.pSysMem = &vertices[0];
 
-            HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+            _vertex_buffer = device.create_buffer(vertex_desc, vertex_data);
 
             for (const auto& tex_indices : indices)
             {
@@ -68,9 +68,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &tex_indices[0];
 
-                ComPtr<ID3D11Buffer> index_buffer;
-                hr = device.device()->CreateBuffer(&index_desc, &index_data, &index_buffer);
-                _index_buffers.push_back(index_buffer);
+                _index_buffers.push_back(device.create_buffer(index_desc, index_data));
             }
 
             if (!untextured_indices.empty())
@@ -85,8 +83,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &untextured_indices[0];
 
-                ComPtr<ID3D11Buffer> index_buffer;
-                hr = device.device()->CreateBuffer(&index_desc, &index_data, &_untextured_index_buffer);
+                _untextured_index_buffer = device.create_buffer(index_desc, index_data);
                 _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
 
@@ -98,7 +95,7 @@ namespace trview
             matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-            device.device()->CreateBuffer(&matrix_desc, nullptr, &_matrix_buffer);
+            _matrix_buffer = device.create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
 
         // Generate the bounding box for use in picking.

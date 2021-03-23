@@ -1,11 +1,13 @@
 #include <trview.app/Windows/Viewer.h>
-#include <trview.common/Windows/Shortcuts.h>
+#include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
+#include <trview.graphics/mocks/IDevice.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Geometry/IPicking.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
+#include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.input/Mocks/IMouse.h>
 
 using testing::NiceMock;
@@ -40,10 +42,12 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
@@ -54,7 +58,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route);
     viewer.open(&level);
 
     std::optional<Item> raised_item;
@@ -71,14 +75,16 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route);
 
     std::optional<Item> raised_item;
     auto token = viewer.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -93,10 +99,12 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     Item item(123, 0, 0, L"Test", 0, 0, {}, Vector3::Zero);
     MockLevel level;
@@ -109,7 +117,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
     viewer.open(&level);
 
     std::optional<std::tuple<Item, bool>> raised_item;
@@ -129,16 +137,18 @@ TEST(Viewer, SettingsRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
 
     std::optional<UserSettings> raised_settings;
     auto token = viewer.on_settings += [&raised_settings](const auto& settings) { raised_settings = settings; };
@@ -157,16 +167,18 @@ TEST(Viewer, SelectRoomRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
 
     std::optional<uint32_t> raised_room;
     auto token = viewer.on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
@@ -182,10 +194,12 @@ TEST(Viewer, SelectTriggerRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -199,7 +213,7 @@ TEST(Viewer, SelectTriggerRaised)
     EXPECT_CALL(level, triggers)
         .WillRepeatedly([&]() { return triggers_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
     viewer.open(&level);
 
     std::optional<Trigger*> selected_trigger;
@@ -217,10 +231,12 @@ TEST(Viewer, TriggerVisibilityRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -234,7 +250,7 @@ TEST(Viewer, TriggerVisibilityRaised)
     EXPECT_CALL(level, triggers)
         .WillRepeatedly([&]() { return triggers_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
     viewer.open(&level);
 
     std::optional<std::tuple<Trigger*, bool>> raised_trigger;
@@ -254,16 +270,18 @@ TEST(Viewer, SelectWaypointRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
 
     std::optional<uint32_t> selected_waypoint;
     auto token = viewer.on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
@@ -280,16 +298,18 @@ TEST(Viewer, RemoveWaypointRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
 
     std::optional<uint32_t> removed_waypoint;
     auto token = viewer.on_waypoint_removed += [&removed_waypoint](const auto& waypoint) { removed_waypoint = waypoint; };
@@ -307,10 +327,12 @@ TEST(Viewer, AddWaypointRaised)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
@@ -324,7 +346,7 @@ TEST(Viewer, AddWaypointRaised)
     EXPECT_CALL(level, items)
         .WillRepeatedly([&]() { return items_list; });
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
     viewer.open(&level);
 
     std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
@@ -348,16 +370,18 @@ TEST(Viewer, RightClickActivatesContextMenu)
 {
     auto window = create_test_window(L"ViewerTests");
 
-    Device device;
+    auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
-    Shortcuts shortcuts(window);
-    Route route(device, shader_storage);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    auto route = std::make_shared<MockRoute>();
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
-    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, &route);
+    Viewer viewer(window, device, shader_storage, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route);
 
     EXPECT_CALL(ui, set_show_context_menu(false));
     EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);

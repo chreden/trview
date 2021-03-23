@@ -1,6 +1,7 @@
 #include <trview.app/Windows/TriggersWindowManager.h>
 
-#include <trview.graphics/Device.h>
+#include <trview.common/Mocks/Windows/IShortcuts.h>
+#include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.graphics/mocks/IFontFactory.h>
 #include <trview.graphics/mocks/IFont.h>
@@ -8,36 +9,38 @@
 #include <trview.ui/Checkbox.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::tests;
 using namespace trview::graphics;
+using namespace trview::graphics::mocks;
 
 TEST(TriggersWindowManager, CreateTriggersWindowKeyboardShortcut)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
 
-    Shortcuts shortcuts(test_window);
-    ASSERT_TRUE(shortcuts.shortcuts().empty());
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
-    ASSERT_FALSE(shortcuts.shortcuts().empty());
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 }
 
 TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
@@ -53,15 +56,16 @@ TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
 
 TEST(TriggersWindowManager, ItemSelectedEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<Item> raised_item;
     auto token = manager.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -78,15 +82,16 @@ TEST(TriggersWindowManager, ItemSelectedEventRaised)
 
 TEST(TriggersWindowManager, TriggerSelectedEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -103,15 +108,16 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
 
 TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = manager.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -129,15 +135,16 @@ TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
 
 TEST(TriggersWindowManager, AddToRouteEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -154,15 +161,16 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
 
 TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
     ASSERT_NE(created_window, nullptr);
@@ -192,15 +200,16 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
 
 TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
     ASSERT_NE(created_window, nullptr);
@@ -218,15 +227,16 @@ TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
 
 TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
     ASSERT_NE(created_window, nullptr);
@@ -247,15 +257,16 @@ TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
 
 TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
     ASSERT_NE(created_window, nullptr);
@@ -283,15 +294,16 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
 
 TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
+    auto font_factory = std::make_shared<MockFontFactory>();
+    EXPECT_CALL(*font_factory, create_font)
+        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<MockFont>(); });
 
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
+    auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"TriggersWindowManagerTests");
-    Shortcuts shortcuts(test_window);
-    TriggersWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+    TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});

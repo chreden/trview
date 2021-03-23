@@ -1,9 +1,12 @@
 #include <trview.app/Elements/Level.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trlevel/Mocks/ILevel.h>
+#include <trview.graphics/mocks/IDevice.h>
+#include <trview.graphics/mocks/IShaderStorage.h>
 
 using namespace trview;
 using namespace trview::graphics;
+using namespace trview::graphics::mocks;
 using namespace trlevel;
 using namespace trlevel::mocks;
 using testing::NiceMock;
@@ -11,13 +14,6 @@ using testing::Return;
 
 namespace
 {
-    class MockShaderStorage : public IShaderStorage
-    {
-    public:
-        MOCK_METHOD(void, add, (const std::string&, std::unique_ptr<IShader>), (override));
-        MOCK_METHOD(IShader*, get, (const std::string&), (const, override));
-    };
-
     class MockTypeNameLookup : public ITypeNameLookup
     {
     public:
@@ -45,5 +41,5 @@ TEST(Level, LoadTypeNames)
     MockTypeNameLookup mock_type_name_lookup;
     EXPECT_CALL(mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
 
-    Level level(graphics::Device(), std::make_shared<NiceMock<MockShaderStorage>>(), std::move(mock_level), mock_type_name_lookup);
+    Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level), mock_type_name_lookup);
 }

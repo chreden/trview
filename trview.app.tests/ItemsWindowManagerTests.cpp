@@ -25,7 +25,9 @@ TEST(ItemsWindowManager, AddToRouteEventRaised)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>& { return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<Item> raised_item;
@@ -50,7 +52,9 @@ TEST(ItemsWindowManager, ItemSelectedEventRaised)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<Item> raised_item;
@@ -75,7 +79,9 @@ TEST(ItemsWindowManager, ItemVisibilityEventRaised)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<std::tuple<Item, bool>> raised_item;
@@ -101,7 +107,9 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::optional<Trigger*> raised_trigger;
@@ -127,7 +135,9 @@ TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
@@ -156,7 +166,9 @@ TEST(ItemsWindowManager, SetItemVisibilityUpdatesWindows)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
@@ -188,7 +200,9 @@ TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
@@ -220,7 +234,9 @@ TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     auto created_window = manager.create_window();
@@ -260,7 +276,9 @@ TEST(ItemsWindowManager, SetSelectedItemSetsSelectedItemOnWindows)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::vector<Item> items
@@ -288,7 +306,9 @@ TEST(ItemsWindowManager, CreateWindowCreatesNewWindowWithSavedValues)
     auto device = std::make_shared<MockDevice>();
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
+    Event<> shortcut_handler;
     auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
 
     std::vector<Item> items
@@ -317,9 +337,8 @@ TEST(ItemsWindowManager, CreateItemsWindowKeyboardShortcut)
     auto shader_storage = std::make_shared<MockShaderStorage>();
     auto test_window = create_test_window(L"ItemsWindowManagerTests");
 
-    // TODO: Use Mock.
-    auto shortcuts = std::make_shared<Shortcuts>(test_window);
-    ASSERT_TRUE(shortcuts->shortcuts().empty());
+    Event<> shortcut_handler;
+    auto shortcuts = std::make_shared<MockShortcuts>();
+    EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     ItemsWindowManager manager(device, shader_storage, font_factory, test_window, shortcuts);
-    ASSERT_FALSE(shortcuts->shortcuts().empty());
 }

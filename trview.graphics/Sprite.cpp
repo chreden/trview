@@ -43,7 +43,7 @@ namespace trview
             memset(&vertex_data, 0, sizeof(vertex_data));
             vertex_data.pSysMem = vertices;
 
-            HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+            _vertex_buffer = device.create_buffer(vertex_desc, vertex_data);
 
             uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -57,7 +57,7 @@ namespace trview
             memset(&index_data, 0, sizeof(index_data));
             index_data.pSysMem = indices;
 
-            hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+            _index_buffer = device.create_buffer(index_desc, index_data);
 
             _vertex_shader = shader_storage->get("ui_vertex_shader");
             _pixel_shader = shader_storage->get("ui_pixel_shader");
@@ -74,7 +74,7 @@ namespace trview
             desc.MaxLOD = D3D11_FLOAT32_MAX;
 
             // Create the texture sampler state.
-            device.device()->CreateSamplerState(&desc, &_sampler_state);
+            _sampler_state = device.create_sampler_state(desc);
 
             create_matrix(device);
         }
@@ -112,7 +112,7 @@ namespace trview
             desc.Usage = D3D11_USAGE_DYNAMIC;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-            device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+            _matrix_buffer = device.create_buffer(desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
 
         void Sprite::update_matrix(const ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)

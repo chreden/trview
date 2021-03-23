@@ -64,7 +64,7 @@ namespace trview
         memset(&vertex_data, 0, sizeof(vertex_data));
         vertex_data.pSysMem = vertices;
 
-        HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+        _vertex_buffer = device.create_buffer(vertex_desc, vertex_data);
 
         uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -78,7 +78,7 @@ namespace trview
         memset(&index_data, 0, sizeof(index_data));
         index_data.pSysMem = indices;
 
-        hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+        _index_buffer = device.create_buffer(index_desc, index_data);
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC desc;
@@ -89,7 +89,7 @@ namespace trview
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+        _matrix_buffer = device.create_buffer(desc, std::optional<D3D11_SUBRESOURCE_DATA>());
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC scale_desc;
@@ -100,7 +100,7 @@ namespace trview
         scale_desc.Usage = D3D11_USAGE_DYNAMIC;
         scale_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device.device()->CreateBuffer(&scale_desc, nullptr, _scale_buffer.GetAddressOf());
+        _scale_buffer = device.create_buffer(scale_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
     }
 
     void SelectionRenderer::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)

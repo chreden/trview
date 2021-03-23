@@ -24,7 +24,7 @@ namespace trview
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-                device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
+                _depth_stencil_state = device.create_depth_stencil_state(ui_depth_stencil_desc);
             }
 
             Renderer::~Renderer()

@@ -24,7 +24,7 @@ namespace trview
         alpha_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
         alpha_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         alpha_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        _device->device()->CreateBlendState(&alpha_desc, &_alpha_blend);
+        _alpha_blend = _device->create_blend_state(alpha_desc);
 
         D3D11_BLEND_DESC additive_desc;
         memset(&additive_desc, 0, sizeof(additive_desc));
@@ -36,7 +36,7 @@ namespace trview
         additive_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
         additive_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         additive_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        _device->device()->CreateBlendState(&additive_desc, &_additive_blend);
+        _alpha_blend = _device->create_blend_state(additive_desc);
 
         // Depth stencil that will test depth, but will not write it.
         D3D11_DEPTH_STENCIL_DESC stencil_desc;
@@ -55,7 +55,7 @@ namespace trview
         stencil_desc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
         stencil_desc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
         stencil_desc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-        _device->device()->CreateDepthStencilState(&stencil_desc, &_transparency_depth_state);
+        _transparency_depth_state = _device->create_depth_stencil_state(stencil_desc);
     }
 
     void TransparencyBuffer::add(const TransparentTriangle& triangle)
@@ -149,7 +149,7 @@ namespace trview
         memset(&vertex_data, 0, sizeof(vertex_data));
         vertex_data.pSysMem = &_vertices[0];
 
-        _device->device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+        _vertex_buffer = _device->create_buffer(vertex_desc, vertex_data);
     }
 
     void TransparencyBuffer::create_matrix_buffer()
@@ -164,7 +164,7 @@ namespace trview
         matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
         matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        _device->device()->CreateBuffer(&matrix_desc, nullptr, _matrix_buffer.GetAddressOf());
+        _matrix_buffer = _device->create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
     }
 
     void TransparencyBuffer::complete()

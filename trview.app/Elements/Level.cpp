@@ -39,10 +39,10 @@ namespace trview
         rasterizer_desc.FillMode = D3D11_FILL_WIREFRAME;
         rasterizer_desc.CullMode = D3D11_CULL_BACK;
         rasterizer_desc.DepthClipEnable = true;
-        device->device()->CreateRasterizerState(&rasterizer_desc, &_wireframe_rasterizer);
+        _wireframe_rasterizer = device->create_rasterizer_state(rasterizer_desc);
 
         // Create the texture sampler state.
-        device->device()->CreateSamplerState(&sampler_desc, &_sampler_state);
+        _sampler_state = device->create_sampler_state(sampler_desc);
 
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
         _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
