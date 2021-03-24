@@ -50,6 +50,7 @@ namespace trview
     TriggersWindow::TriggersWindow(IDevice& device, const std::shared_ptr<IShaderStorage>& shader_storage, const IFontFactory& font_factory, const Window& parent)
         : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.triggers", L"Triggers", Size(520, 400))
     {
+        CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
     }
 
@@ -410,5 +411,15 @@ namespace trview
     std::optional<const Trigger*> TriggersWindow::selected_trigger() const
     {
         return _selected_trigger;
+    }
+
+    void TriggersWindow::render(const graphics::IDevice& device, bool vsync)
+    {
+        CollapsiblePanel::render(device, vsync);
+    }
+
+    ui::Control* TriggersWindow::root_control() const
+    {
+        return CollapsiblePanel::root_control();
     }
 }

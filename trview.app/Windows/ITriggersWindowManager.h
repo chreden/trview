@@ -46,6 +46,6 @@ namespace trview
         virtual void set_selected_trigger(const Trigger* const trigger) = 0;
 
         /// Create a new triggers window.
-        virtual TriggersWindow* create_window() = 0;
+        virtual std::weak_ptr<ITriggersWindow> create_window() = 0;
     };
 }

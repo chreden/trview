@@ -36,7 +36,7 @@ namespace trview
         additive_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
         additive_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         additive_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        _alpha_blend = _device->create_blend_state(additive_desc);
+        _additive_blend = _device->create_blend_state(additive_desc);
 
         // Depth stencil that will test depth, but will not write it.
         D3D11_DEPTH_STENCIL_DESC stencil_desc;

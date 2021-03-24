@@ -6,6 +6,7 @@
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
+#include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
 #include <trview.graphics/IFontFactory.h>
 
@@ -17,7 +18,7 @@ namespace trview
         class Dropdown;
     }
 
-    class TriggersWindow final : public CollapsiblePanel
+    class TriggersWindow final : public ITriggersWindow, public CollapsiblePanel
     {
     public:
         struct Names
@@ -41,40 +42,32 @@ namespace trview
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;
 
+        virtual void render(const graphics::IDevice& device, bool vsync) override;
+
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
         /// @param reset_filters Whether to reset the trigger filters.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Update the trigers - this doesn't reset the filters.
-        void update_triggers(const std::vector<Trigger*>& triggers);
+        virtual void update_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Clear the currently selected trigger from the details panel.
-        void clear_selected_trigger();
-
-        /// Event raised when a trigger is selected in the list.
-        Event<Trigger*> on_trigger_selected;
-
-        /// Event raised when the visibility of a trigger is changed.
-        Event<Trigger*, bool> on_trigger_visibility;
-
-        /// Event raised when an item is selected in the list.
-        Event<Item> on_item_selected;
-
-        /// Event raised when the 'add to route' button is pressed.
-        Event<const Trigger*> on_add_to_route;
+        virtual void clear_selected_trigger() override;
 
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
-        void set_current_room(uint32_t room);
+        virtual void set_current_room(uint32_t room) override;
 
         /// Set the selected item.
         /// @param item The selected item.
-        void set_selected_trigger(const Trigger* const item);
+        virtual void set_selected_trigger(const Trigger* const item) override;
 
-        void set_items(const std::vector<Item>& items);
+        virtual void set_items(const std::vector<Item>& items) override;
 
-        std::optional<const Trigger*> selected_trigger() const;
+        virtual std::optional<const Trigger*> selected_trigger() const override;
+
+        virtual ui::Control* root_control() const override;
     protected:
         virtual void update_layout() override;
     private:

@@ -24,8 +24,11 @@ namespace trview
     {
         if (!_closing_windows.empty())
         {
-            _windows.erase(std::remove_if(_windows.begin(), _windows.end(),
-                [&](auto& window) { return std::find(_closing_windows.begin(), _closing_windows.end(), window.get()) != _closing_windows.end(); }), _windows.end());
+            for (const auto window_ptr : _closing_windows)
+            {
+                auto window = window_ptr.lock();
+                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
+            }
             _closing_windows.clear();
         }
 
@@ -35,9 +38,9 @@ namespace trview
         }
     }
 
-    TriggersWindow* TriggersWindowManager::create_window()
+    std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
-        auto triggers_window = std::make_unique<TriggersWindow>(*_device, _shader_storage, *_font_factory, window());
+        std::shared_ptr<ITriggersWindow> triggers_window = std::make_shared<TriggersWindow>(*_device, _shader_storage, *_font_factory, window());
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_trigger_visibility += on_trigger_visibility;
@@ -50,14 +53,13 @@ namespace trview
             triggers_window->set_selected_trigger(_selected_trigger.value());
         }
 
-        const auto window = triggers_window.get();
-        _token_store += triggers_window->on_window_closed += [window, this]()
+        _token_store += triggers_window->on_window_closed += [triggers_window, this]()
         {
-            _closing_windows.push_back(window);
+            _closing_windows.push_back(triggers_window);
         };
 
-        _windows.push_back(std::move(triggers_window));
-        return window;
+        _windows.push_back(triggers_window);
+        return triggers_window;
     }
 
     void TriggersWindowManager::set_items(const std::vector<Item>& items)

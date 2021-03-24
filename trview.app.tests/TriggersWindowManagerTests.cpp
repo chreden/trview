@@ -46,7 +46,7 @@ TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
     auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
     manager.set_triggers({ trigger1.get(), trigger2.get() });
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -70,7 +70,7 @@ TEST(TriggersWindowManager, ItemSelectedEventRaised)
     std::optional<Item> raised_item;
     auto token = manager.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     Item test_item(100, 10, 1, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero);
@@ -96,7 +96,7 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
@@ -122,7 +122,7 @@ TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = manager.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
@@ -149,7 +149,7 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
@@ -172,7 +172,7 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -211,7 +211,7 @@ TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -238,7 +238,7 @@ TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -268,7 +268,7 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     TriggersWindowManager manager(std::make_shared<MockDevice>(), shader_storage, font_factory, test_window, shortcuts);
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
     auto list = created_window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -309,7 +309,7 @@ TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
     auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
     manager.set_triggers({ trigger1.get(), trigger2.get() });
 
-    auto created_window = manager.create_window();
+    auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_FALSE(created_window->selected_trigger().has_value());
 

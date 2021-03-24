@@ -62,10 +62,10 @@ namespace trview
         virtual void set_selected_trigger(const Trigger* const trigger) override;
 
         /// Create a new triggers window.
-        virtual TriggersWindow* create_window() override;
+        virtual std::weak_ptr<ITriggersWindow> create_window() override;
     private:
-        std::vector<std::unique_ptr<TriggersWindow>> _windows;
-        std::vector<TriggersWindow*> _closing_windows;
+        std::vector<std::shared_ptr<ITriggersWindow>> _windows;
+        std::vector<std::weak_ptr<ITriggersWindow>> _closing_windows;
         std::vector<Item> _items;
         std::vector<Trigger*> _triggers;
         std::shared_ptr<graphics::IDevice> _device;

@@ -262,6 +262,9 @@
     <ClCompile Include="Windows\IRoomsWindowManager.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\ITriggersWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -590,6 +593,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h">
       <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ITriggersWindow.h">
+      <Filter>Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
