@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../IFontFactory.h"
+#include "../IFont.h"
 
 namespace trview
 {
