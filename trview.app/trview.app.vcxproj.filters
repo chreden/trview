@@ -597,6 +597,9 @@
     <ClInclude Include="Windows\ITriggersWindow.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITriggersWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

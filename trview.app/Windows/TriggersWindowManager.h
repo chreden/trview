@@ -10,11 +10,10 @@
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IFontFactory.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Windows/IShortcuts.h>
 
 namespace trview
 {
-    class Shortcuts;
-
     /// Controls and creates TriggersWindows.
     class TriggersWindowManager final : public ITriggersWindowManager, public MessageHandler
     {
@@ -24,7 +23,7 @@ namespace trview
         /// @param shader_storage The shader storage for triggers windows.
         /// @param font_factory The font_factory for triggers windows.
         /// @param window The parent window of the triggers window.
-        explicit TriggersWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);
+        explicit TriggersWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const TriggersWindowSource& triggers_window_source);
 
         /// Destructor for the TriggersWindowManager.
         virtual ~TriggersWindowManager() = default;
@@ -74,6 +73,6 @@ namespace trview
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<const Trigger*> _selected_trigger;
+        TriggersWindowSource _triggers_window_source;
     };
 }
-

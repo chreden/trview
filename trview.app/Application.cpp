@@ -575,6 +575,11 @@ namespace trview
             di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
+            di::bind<ITriggersWindowManager::TriggersWindowSource>.to(
+                [](auto device, auto shader_storage, auto font_factory, auto window)
+                {
+                    return std::make_shared<TriggersWindow>(device, shader_storage, font_factory, window);
+                }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
             di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
