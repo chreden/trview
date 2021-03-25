@@ -6,12 +6,7 @@ namespace trview
 {
     struct ITriggersWindowManager
     {
-        using TriggersWindowSource = std::function<
-            std::shared_ptr<ITriggersWindow>
-            (const std::shared_ptr<graphics::IDevice>&,
-                const std::shared_ptr<graphics::IShaderStorage>&,
-                const std::shared_ptr<graphics::IFontFactory>&,
-                const Window)>;
+        using TriggersWindowSource = std::function<std::shared_ptr<ITriggersWindow> (const Window)>;
 
         virtual ~ITriggersWindowManager() = 0;
 

@@ -32,12 +32,7 @@ namespace trview
             static const std::string trigger_commands_listbox;
         };
 
-        /// Create an items window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param shader_storage The shader storage instance to use.
-        /// @param font_factory The font factory to use.
-        /// @param parent The parent window.
-        explicit TriggersWindow(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& parent);
+        explicit TriggersWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const Window& parent);
 
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;

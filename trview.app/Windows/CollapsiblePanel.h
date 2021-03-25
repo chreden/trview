@@ -7,7 +7,7 @@
 #include <trview.graphics/Device.h>
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
-#include <trview.ui.render/Renderer.h>
+#include <trview.ui.render/IRenderer.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Input.h>
 #include <trview.ui/Window.h>
@@ -29,10 +29,6 @@ namespace trview
         class Control;
         class Button;
         class StackPanel;
-        namespace render
-        {
-            class Renderer;
-        }
     }
 
     /// A window with two panels where the right panel can be collapsed.
@@ -47,6 +43,13 @@ namespace trview
         explicit CollapsiblePanel(graphics::IDevice& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             const graphics::IFontFactory& font_factory,
+            const Window& parent,
+            const std::wstring& window_class,
+            const std::wstring& title,
+            const Size& size);
+
+        CollapsiblePanel(const std::shared_ptr<graphics::IDevice>& device,
+            std::unique_ptr<ui::render::IRenderer> ui_renderer,
             const Window& parent,
             const std::wstring& window_class,
             const std::wstring& title,
@@ -101,7 +104,7 @@ namespace trview
         void register_change_detection(ui::Control* control);
 
         Window _parent;
-        std::unique_ptr<ui::render::Renderer>   _ui_renderer;
+        std::unique_ptr<ui::render::IRenderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
         ui::Control* _divider;

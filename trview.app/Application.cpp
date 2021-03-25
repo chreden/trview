@@ -575,10 +575,28 @@ namespace trview
             di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
-            di::bind<ITriggersWindowManager::TriggersWindowSource>.to(
-                [](auto device, auto shader_storage, auto font_factory, auto window)
+            di::bind<ui::render::IRenderer::RendererSource>.to(
+                [&](const auto& injector) -> ui::render::IRenderer::RendererSource
                 {
-                    return std::make_shared<TriggersWindow>(device, shader_storage, font_factory, window);
+                    return [&](auto size)
+                    {
+                        return std::make_unique<ui::render::Renderer>(
+                            *injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            *injector.create<std::shared_ptr<IFontFactory>>(),
+                            size);
+                    };
+                }),
+            di::bind<ITriggersWindowManager::TriggersWindowSource>.to(
+                [&](const auto& injector) -> ITriggersWindowManager::TriggersWindowSource
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<TriggersWindow>(
+                            injector.create<std::shared_ptr<Device>>(),
+                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            window);
+                    };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
             di::bind<IRouteWindowManager>.to<RouteWindowManager>(),

@@ -10,6 +10,7 @@
 #include <trview.ui/Control.h>
 #include <trview.common/TokenStore.h>
 #include <trview.graphics/IFontFactory.h>
+#include "IRenderer.h"
 
 namespace trview
 {
@@ -23,12 +24,12 @@ namespace trview
     {
         namespace render
         {
-            class Renderer
+            class Renderer : public IRenderer
             {
             public:
                 explicit Renderer(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
 
-                ~Renderer();
+                virtual ~Renderer();
 
                 // Examine a control hierarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering

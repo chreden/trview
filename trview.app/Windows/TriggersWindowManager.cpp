@@ -1,13 +1,11 @@
 #include "TriggersWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.graphics/DeviceWindow.h>
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
-    TriggersWindowManager::TriggersWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const TriggersWindowSource& triggers_window_source)
-        : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), _triggers_window_source(triggers_window_source), MessageHandler(window)
+    TriggersWindowManager::TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const TriggersWindowSource& triggers_window_source)
+        : _triggers_window_source(triggers_window_source), MessageHandler(window)
     {
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { create_window(); };
     }
@@ -40,7 +38,7 @@ namespace trview
 
     std::weak_ptr<ITriggersWindow> TriggersWindowManager::create_window()
     {
-        auto triggers_window = _triggers_window_source(_device, _shader_storage, _font_factory, window());
+        auto triggers_window = _triggers_window_source(window());
         triggers_window->on_item_selected += on_item_selected;
         triggers_window->on_trigger_selected += on_trigger_selected;
         triggers_window->on_trigger_visibility += on_trigger_visibility;

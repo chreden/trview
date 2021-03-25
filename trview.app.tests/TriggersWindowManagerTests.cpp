@@ -2,15 +2,10 @@
 #include <trview.app/Elements/Types.h>
 #include <trview.app/Mocks/Windows/ITriggersWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.graphics/mocks/IDevice.h>
-#include <trview.graphics/mocks/IShaderStorage.h>
-#include <trview.graphics/mocks/IFontFactory.h>
 
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
-using namespace trview::graphics;
-using namespace trview::graphics::mocks;
 
 TEST(TriggersWindowManager, CreateTriggersWindowKeyboardShortcut)
 {
@@ -18,8 +13,7 @@ TEST(TriggersWindowManager, CreateTriggersWindowKeyboardShortcut)
     auto shortcuts = std::make_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 }
 
 TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
@@ -29,8 +23,7 @@ TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
     EXPECT_CALL(*shortcuts, add_shortcut).Times(1).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_triggers).Times(1);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
@@ -48,8 +41,7 @@ TEST(TriggersWindowManager, CreateTriggersWindowSetsSelectedTriggerOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_selected_trigger).Times(1);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
@@ -67,8 +59,7 @@ TEST(TriggersWindowManager, ItemSelectedEventRaised)
     auto shortcuts = std::make_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     std::optional<Item> raised_item;
     auto token = manager.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -89,8 +80,7 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     auto shortcuts = std::make_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -111,8 +101,7 @@ TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
     auto shortcuts = std::make_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = manager.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -134,8 +123,7 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
     auto shortcuts = std::make_shared<MockShortcuts>();
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     std::optional<const Trigger*> raised_trigger;
     auto token = manager.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -157,8 +145,7 @@ TEST(TriggersWindowManager, SetItemsSetsItemsOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_items).Times(2);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
@@ -178,8 +165,7 @@ TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_triggers).Times(2);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
@@ -197,8 +183,7 @@ TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, update_triggers).Times(1);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
@@ -216,8 +201,7 @@ TEST(TriggersWindowManager, SetRoomSetsRoomOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_current_room).Times(2);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
@@ -232,8 +216,7 @@ TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
     EXPECT_CALL(*shortcuts, add_shortcut).WillOnce([&](auto, auto) -> Event<>&{ return shortcut_handler; });
     auto mock_window = std::make_shared<MockTriggersWindow>();
     EXPECT_CALL(*mock_window, set_selected_trigger).Times(1);
-    TriggersWindowManager manager(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::make_shared<MockFontFactory>(), create_test_window(L"TriggersWindowManagerTests"),
-        shortcuts, [&mock_window](...) { return mock_window; });
+    TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
