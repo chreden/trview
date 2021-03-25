@@ -66,8 +66,6 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) override;
 
         virtual std::optional<const Trigger*> selected_trigger() const override;
-
-        virtual ui::Control* root_control() const override;
     protected:
         virtual void update_layout() override;
     private:

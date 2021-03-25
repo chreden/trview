@@ -417,9 +417,4 @@ namespace trview
     {
         CollapsiblePanel::render(device, vsync);
     }
-
-    ui::Control* TriggersWindow::root_control() const
-    {
-        return CollapsiblePanel::root_control();
-    }
 }

@@ -55,10 +55,6 @@ namespace trview
 
         /// Update the trigers - this doesn't reset the filters.
         virtual void update_triggers(const std::vector<Trigger*>& triggers) = 0;
-
-        /// Get the root control for the window.
-        /// @returns The root control.
-        virtual ui::Control* root_control() const = 0;
     };
 }
 

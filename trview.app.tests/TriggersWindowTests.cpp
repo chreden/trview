@@ -21,9 +21,7 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -53,9 +51,7 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -88,9 +84,7 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -120,9 +114,7 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -156,9 +148,7 @@ TEST(TriggersWindow, TriggersListFilteredByCommand)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -201,9 +191,7 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -228,9 +216,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = window.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -260,9 +246,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -299,9 +283,7 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -350,9 +332,7 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -374,9 +354,7 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{});
@@ -408,9 +386,7 @@ TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
     EXPECT_CALL(*font_factory, create_font)
         .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
 
-    auto device = std::make_shared<MockDevice>();
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    TriggersWindow window(std::make_shared<MockDevice>(), std::make_shared<mocks::MockShaderStorage>(), font_factory, create_test_window(L"TriggersWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOff, 0 } } });
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOn, 0 } } });

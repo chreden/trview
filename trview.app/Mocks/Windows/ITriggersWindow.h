@@ -15,6 +15,5 @@ namespace trview
         MOCK_METHOD(void, set_selected_trigger, (const Trigger* const));
         MOCK_METHOD(void, set_triggers, (const std::vector<Trigger*>&));
         MOCK_METHOD(void, update_triggers, (const std::vector<Trigger*>&));
-        MOCK_METHOD(ui::Control*, root_control, (), (const));
     };
 }
