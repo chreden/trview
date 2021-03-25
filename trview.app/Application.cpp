@@ -574,9 +574,8 @@ namespace trview
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
             di::bind<ui::render::IRenderer::RendererSource>.to(
-                [&](const auto& injector) -> ui::render::IRenderer::RendererSource
+                [](const auto& injector) -> ui::render::IRenderer::RendererSource
                 {
                     return [&](auto size)
                     {
@@ -587,19 +586,67 @@ namespace trview
                             size);
                     };
                 }),
+            di::bind<ui::render::IMapRenderer::MapRendererSource>.to(
+                [](const auto& injector) -> ui::render::IMapRenderer::MapRendererSource
+                {
+                    return [&](auto size)
+                    {
+                        return std::make_unique<ui::render::MapRenderer>(
+                            *injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            *injector.create<std::shared_ptr<IFontFactory>>(),
+                            size);
+                    };
+                }),
+            di::bind<IItemsWindowManager::ItemsWindowSource>.to(
+                [](const auto& injector) -> IItemsWindowManager::ItemsWindowSource
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<ItemsWindow>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            window);
+                    };
+                }),
+            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
             di::bind<ITriggersWindowManager::TriggersWindowSource>.to(
-                [&](const auto& injector) -> ITriggersWindowManager::TriggersWindowSource
+                [](const auto& injector) -> ITriggersWindowManager::TriggersWindowSource
                 {
                     return [&](auto window)
                     {
                         return std::make_shared<TriggersWindow>(
-                            injector.create<std::shared_ptr<Device>>(),
+                            injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<ui::render::IRenderer::RendererSource>(),
                             window);
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
+            di::bind<IRouteWindowManager::RouteWindowSource>.to(
+                [](const auto& injector) -> IRouteWindowManager::RouteWindowSource
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<RouteWindow>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            window);
+                    };
+                }
+            ),
             di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
+            di::bind<IRoomsWindowManager::RoomsWindowSource>.to(
+                [](const auto& injector) -> IRoomsWindowManager::RoomsWindowSource
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<RoomsWindow>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            injector.create<ui::render::IMapRenderer::MapRendererSource>(),
+                            window);
+                    };
+                }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IViewer>.to<Viewer>(),

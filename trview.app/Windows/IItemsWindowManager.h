@@ -7,6 +7,8 @@ namespace trview
 {
     struct IItemsWindowManager
     {
+        using ItemsWindowSource = std::function<std::shared_ptr<IItemsWindow>(const Window)>;
+
         virtual ~IItemsWindowManager() = 0;
 
         /// Event raised when an item is selected in one of the item windows.
@@ -47,6 +49,6 @@ namespace trview
         virtual void set_selected_item(const Item& item) = 0;
 
         /// Create a new items window.
-        virtual ItemsWindow* create_window() = 0;
+        virtual std::weak_ptr<IItemsWindow> create_window() = 0;
     };
 }

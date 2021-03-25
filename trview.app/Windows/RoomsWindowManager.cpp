@@ -6,8 +6,8 @@
 
 namespace trview
 {
-    RoomsWindowManager::RoomsWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
-        : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
+    RoomsWindowManager::RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RoomsWindowSource& rooms_window_source)
+        : MessageHandler(window), _rooms_window_source(rooms_window_source)
     {
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create_window(); };
     }
@@ -24,8 +24,11 @@ namespace trview
     {
         if (!_closing_windows.empty())
         {
-            _windows.erase(std::remove_if(_windows.begin(), _windows.end(),
-                [&](auto& window) { return std::find(_closing_windows.begin(), _closing_windows.end(), window.get()) != _closing_windows.end(); }), _windows.end());
+            for (const auto window_ptr : _closing_windows)
+            {
+                auto window = window_ptr.lock();
+                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
+            }
             _closing_windows.clear();
         }
 
@@ -91,15 +94,14 @@ namespace trview
 
     void RoomsWindowManager::create_window()
     {
-        auto rooms_window = std::make_unique<RoomsWindow>(*_device, _shader_storage, *_font_factory, window());
+        auto rooms_window = _rooms_window_source(window());
         rooms_window->on_room_selected += on_room_selected;
         rooms_window->on_item_selected += on_item_selected;
         rooms_window->on_trigger_selected += on_trigger_selected;
 
-        const auto window = rooms_window.get();
-        _token_store += rooms_window->on_window_closed += [window, this]()
+        _token_store += rooms_window->on_window_closed += [rooms_window, this]()
         {
-            _closing_windows.push_back(window);
+            _closing_windows.push_back(rooms_window);
         };
 
         rooms_window->set_items(_all_items);
@@ -107,6 +109,6 @@ namespace trview
         rooms_window->set_rooms(_all_rooms);
         rooms_window->set_current_room(_current_room);
 
-        _windows.push_back(std::move(rooms_window));
+        _windows.push_back(rooms_window);
     }
 }

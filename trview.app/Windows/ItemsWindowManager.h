@@ -21,12 +21,11 @@ namespace trview
     class ItemsWindowManager final : public IItemsWindowManager, public MessageHandler
     {
     public:
-        /// Create an ItemsWindowManager.
-        /// @param device The device to use for items windows.
-        /// @param shader_storage The shader storage for items windows.
-        /// @param font_factory The font_factory for items windows.
-        /// @param window The parent window of the items window.
-        explicit ItemsWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);
+        /// Create an TriggersWindowManager.
+        /// @param window The parent window of the triggers window.
+        /// @param shortcuts The shortcuts instance to use.
+        /// @param items_window_source Function to call to create a triggers window.
+        explicit ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ItemsWindowSource& items_window_source);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;
@@ -64,18 +63,15 @@ namespace trview
         virtual void set_selected_item(const Item& item) override;
 
         /// Create a new items window.
-        virtual ItemsWindow* create_window() override;
+        virtual std::weak_ptr<IItemsWindow> create_window() override;
     private:
-        std::vector<std::unique_ptr<ItemsWindow>> _windows;
-        std::vector<ItemsWindow*> _closing_windows;
+        std::vector<std::shared_ptr<IItemsWindow>> _windows;
+        std::vector<std::weak_ptr<IItemsWindow>> _closing_windows;
         std::vector<Item> _items;
         std::vector<Trigger*> _triggers;
-        std::shared_ptr<graphics::IDevice> _device;
-        const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        const std::shared_ptr<graphics::IFontFactory> _font_factory;
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<Item> _selected_item;
+        ItemsWindowSource _items_window_source;
     };
 }
-

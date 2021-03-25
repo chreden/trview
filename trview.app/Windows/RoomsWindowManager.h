@@ -9,9 +9,6 @@
 
 #include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.graphics/Device.h>
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
 #include <trview.common/TokenStore.h>
 #include <trview.app/Elements/Item.h>
 
@@ -29,7 +26,7 @@ namespace trview
         /// @param shader_storage The shader storage for rooms windows.
         /// @param font_factory The font_factory for rooms windows.
         /// @param window The parent window of the rooms window.
-        explicit RoomsWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);
+        explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RoomsWindowSource& rooms_window_source);
 
         /// Destructor for the RoomsWindowManager.
         virtual ~RoomsWindowManager() = default;
@@ -71,18 +68,16 @@ namespace trview
         /// Create a new rooms window.
         virtual void create_window() override;
     private:
-        std::vector<std::unique_ptr<RoomsWindow>> _windows;
-        std::vector<RoomsWindow*> _closing_windows;
+        std::vector<std::shared_ptr<IRoomsWindow>> _windows;
+        std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
-        std::shared_ptr<graphics::IDevice> _device;
-        const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        const std::shared_ptr<graphics::IFontFactory> _font_factory;
         TokenStore _token_store;
         uint32_t _current_room;
         std::optional<const Trigger*> _selected_trigger;
         std::optional<Item> _selected_item;
+        RoomsWindowSource _rooms_window_source;
     };
 }
 

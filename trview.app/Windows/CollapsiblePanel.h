@@ -4,26 +4,17 @@
 
 #include <memory>
 #include <string>
-#include <trview.graphics/Device.h>
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
 #include <trview.ui.render/IRenderer.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.ui/Input.h>
 #include <trview.ui/Window.h>
-
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
-    namespace graphics
-    {
-        class  Device;
-        struct IShaderStorage;
-        struct IFontFactory;
-    }
-
     namespace ui
     {
         class Control;
@@ -37,17 +28,11 @@ namespace trview
     public:
         /// Create a collapsible panel window as a child of the specified window.
         /// @param device The graphics device
-        /// @param shader_storage The shader storage instance to use.
-        /// @param font_factory The font factory to use.
+        /// @param ui_renderer The renderer to use.
         /// @param parent The parent window.
-        explicit CollapsiblePanel(graphics::IDevice& device,
-            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-            const graphics::IFontFactory& font_factory,
-            const Window& parent,
-            const std::wstring& window_class,
-            const std::wstring& title,
-            const Size& size);
-
+        /// @param window_class Window class name
+        /// @param title Window title
+        /// @param size Window size
         CollapsiblePanel(const std::shared_ptr<graphics::IDevice>& device,
             std::unique_ptr<ui::render::IRenderer> ui_renderer,
             const Window& parent,

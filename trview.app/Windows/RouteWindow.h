@@ -10,62 +10,45 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.graphics/FontFactory.h>
+#include "IRouteWindow.h"
 
 namespace trview
 {
     struct IRoute;
 
-    class RouteWindow final : public CollapsiblePanel
+    class RouteWindow final : public IRouteWindow, public CollapsiblePanel
     {
     public:
-        /// Create an items window as a child of the specified window.
+        /// Create a route window as a child of the specified window.
         /// @param device The graphics device
-        /// @param shader_storage The shader storage instance to use.
-        /// @param font_factory The font factory to use.
+        /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RouteWindow(graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const trview::Window& parent);
+        explicit RouteWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const trview::Window& parent);
 
         /// Destructor for triggers window
         virtual ~RouteWindow() = default;
 
+        virtual void render(const graphics::IDevice& device, bool vsync) override;
+
         /// Load the waypoints from the route.
         /// @param route The route to load from.
-        void set_route(IRoute* route);
-
-        /// Event raised when a waypoint is selected.
-        Event<uint32_t> on_waypoint_selected;
-
-        /// Event raised when an item is selected.
-        Event<Item> on_item_selected;
-
-        /// Event raised when a trigger is selected.
-        Event<Trigger*> on_trigger_selected;
-
-        /// Event raised when the route colour has been changed.
-        Event<Colour> on_colour_changed;
-
-        /// Event raised when a route file is opened.
-        Event<std::string> on_route_import;
-
-        /// Event raised when a route is exported.
-        Event<std::string> on_route_export;
-
-        /// Event raised when a waypoint is deleted.
-        Event<uint32_t> on_waypoint_deleted;
+        virtual void set_route(IRoute* route) override;
 
         /// Select the specified waypoint.
         /// @param index The index of the waypoint to select.
-        void select_waypoint(uint32_t index);
+        virtual void select_waypoint(uint32_t index) override;
 
         /// Set the items to that are in the level.
         /// @param items The items to show.
-        void set_items(const std::vector<Item>& items);
+        virtual void set_items(const std::vector<Item>& items) override;
 
-        void set_rooms(const std::vector<Room*>& rooms);
+        virtual void set_rooms(const std::vector<Room*>& rooms) override;
 
         /// Set the triggers in the level.
         /// @param triggers The triggers.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
+
+        virtual void focus() override;
     private:
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();

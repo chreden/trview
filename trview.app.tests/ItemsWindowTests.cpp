@@ -1,6 +1,5 @@
 #include <trview.app/Windows/ItemsWindow.h>
 #include <trview.tests.common/Window.h>
-#include <trview.graphics/Device.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.graphics/IFont.h>
@@ -8,25 +7,20 @@
 
 #include <trview.app/Elements/Types.h>
 
-#include <trview.graphics/mocks/IFontFactory.h>
-#include <trview.graphics/mocks/IFont.h>
-#include <trview.graphics/mocks/IShaderStorage.h>
+#include <trview.graphics/mocks/IDevice.h>
+#include <trview.ui.render/Mocks/IRenderer.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
-using testing::NiceMock;
-using testing::Return;
+using namespace trview::graphics::mocks;
+using namespace trview::ui::render::mocks;
 
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
@@ -49,13 +43,9 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 
 TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -105,13 +95,9 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 
 TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -142,13 +128,9 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
 TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -176,13 +158,9 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
 TEST(ItemsWindow, ItemVisibilityRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = window.on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
@@ -211,13 +189,9 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
 TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -246,13 +220,9 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
 TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -285,13 +255,9 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
 TEST(ItemsWindow, ItemsListPopulatedOnSet)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
     {
@@ -325,13 +291,9 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
     {
@@ -364,13 +326,9 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
     {
@@ -398,13 +356,9 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
 TEST(ItemsWindow, SelectionSurvivesFiltering)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::vector<Item> items
     {
@@ -435,13 +389,9 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
 
 TEST(ItemsWindow, TriggersLoadedForItem)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
     auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
@@ -474,13 +424,9 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 
 TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    auto shader_storage = std::make_shared<mocks::MockShaderStorage>();
-    ItemsWindow window(device, shader_storage, font_factory, create_test_window(L"ItemsWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    ItemsWindow window(std::make_shared<MockDevice>(), [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };

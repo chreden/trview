@@ -3,8 +3,8 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts)
-        : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
+    RouteWindowManager::RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RouteWindowSource& route_window_source)
+        : MessageHandler(window), _route_window_source(route_window_source)
     {
         _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create_window(); };
     }
@@ -22,12 +22,12 @@ namespace trview
         // If the window already exists, just focus on the window.
         if (_route_window)
         {
-            SetForegroundWindow(_route_window->window());
+            _route_window->focus();
             return;
         }
 
         // Otherwise create the window.
-        _route_window = std::make_unique<RouteWindow>(*_device, _shader_storage, *_font_factory, window());
+        _route_window = _route_window_source(window());
         _route_window->on_colour_changed += on_colour_changed;
         _route_window->on_route_import += on_route_import;
         _route_window->on_route_export += on_route_export;

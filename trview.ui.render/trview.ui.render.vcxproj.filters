@@ -25,6 +25,9 @@
     <ClInclude Include="Mocks\IRenderer.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="IMapRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -48,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="IRenderer.cpp" />
+    <ClCompile Include="IMapRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Nodes">

@@ -14,7 +14,7 @@ namespace trview
     class RouteWindowManager final : public IRouteWindowManager, public MessageHandler
     {
     public:
-        explicit RouteWindowManager(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const Window& window, const std::shared_ptr<IShortcuts>& shortcuts);
+        explicit RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RouteWindowSource& route_window_source);
 
         virtual ~RouteWindowManager() = default;
 
@@ -48,16 +48,14 @@ namespace trview
 
         virtual void select_waypoint(uint32_t index) override;
     private:
-        const std::shared_ptr<graphics::IDevice> _device;
-        const std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        const std::shared_ptr<graphics::IFontFactory> _font_factory;
         TokenStore _token_store;
-        std::unique_ptr<RouteWindow> _route_window;
+        std::shared_ptr<IRouteWindow> _route_window;
         bool _closing{ false };
         IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
         uint32_t _selected_waypoint{ 0u };
+        RouteWindowSource _route_window_source;
     };
 }
