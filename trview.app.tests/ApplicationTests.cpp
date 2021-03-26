@@ -14,7 +14,6 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
-#include <trview.graphics/mocks/IFontFactory.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
 
 using namespace trview;
@@ -40,7 +39,6 @@ TEST(Application, ChecksForUpdates)
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -68,7 +66,6 @@ TEST(Application, SettingsLoadedAndSaved)
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -100,7 +97,6 @@ TEST(Application, FileDropperOpensFile)
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -132,7 +128,6 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -165,7 +160,6 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         std::move(recent_files_ptr),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -199,7 +193,6 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
         std::move(recent_files_ptr),
         std::make_unique<MockViewer>(),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),
@@ -233,7 +226,6 @@ TEST(Application, FileOpenedInViewer)
         std::make_unique<MockRecentFiles>(),
         std::move(viewer_ptr),
         std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockFontFactory>(),
         std::make_unique<MockTextureStorage>(),
         std::make_unique<graphics::Device>(),
         std::make_unique<MockRoute>(),

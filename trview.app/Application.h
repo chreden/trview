@@ -49,7 +49,6 @@ namespace trview
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
             std::shared_ptr<graphics::IShaderStorage> shader_storage,
-            std::shared_ptr<graphics::IFontFactory> font_factory,
             std::shared_ptr<ITextureStorage> texture_storage,
             std::shared_ptr<graphics::IDevice> device,
             std::shared_ptr<IRoute> route,
@@ -117,7 +116,6 @@ namespace trview
         // Rendering
         std::shared_ptr<graphics::IDevice> _device;
         std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        std::shared_ptr<graphics::IFontFactory> _font_factory;
         std::shared_ptr<ITextureStorage> _texture_storage;
 
         // Level data components
