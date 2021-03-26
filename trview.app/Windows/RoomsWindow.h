@@ -86,7 +86,7 @@ namespace trview
         std::optional<Item> _selected_item;
         std::optional<const Trigger*> _selected_trigger;
 
-        std::shared_ptr<ui::render::IMapRenderer> _map_renderer;
+        std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
     };
 }

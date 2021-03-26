@@ -1,7 +1,6 @@
 #include "ViewerUI.h"
 #include <trview.ui/Window.h>
 #include <trview.ui/Label.h>
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include "GoTo.h"
 #include <trview.app/UI/ContextMenu.h>
@@ -12,7 +11,9 @@ using namespace trview::ui;
 
 namespace trview
 {
-    ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::shared_ptr<graphics::IFontFactory>& font_factory, const std::shared_ptr<ITextureStorage>& texture_storage, const std::shared_ptr<IShortcuts>& shortcuts)
+    ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage, const std::shared_ptr<IShortcuts>& shortcuts,
+        const ui::render::IRenderer::RendererSource& ui_renderer_source,
+        const ui::render::IMapRenderer::MapRendererSource& map_renderer_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _shortcuts(shortcuts)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -168,10 +169,10 @@ namespace trview
         _console->on_command += on_command;
 
         // Create the renderer for the UI based on the controls created.
-        _ui_renderer = std::make_unique<ui::render::Renderer>(*device, shader_storage, *font_factory, window.size());
+        _ui_renderer = ui_renderer_source(window.size());
         _ui_renderer->load(_control.get());
 
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(*device, shader_storage, *font_factory, window.size());
+        _map_renderer = map_renderer_source(window.size());
         _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
         {
             on_ui_changed();

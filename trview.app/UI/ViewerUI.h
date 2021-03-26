@@ -21,21 +21,14 @@ namespace trview
 {
     struct IShortcuts;
 
-    namespace graphics
-    {
-        struct IShaderStorage;
-        struct IFontFactory;
-    }
-
     class ViewerUI final : public IViewerUI
     {
     public:
-        explicit ViewerUI(const Window& window, 
-            const std::shared_ptr<graphics::IDevice>& device, 
-            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-            const std::shared_ptr<graphics::IFontFactory>& font_factory,
+        explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
-            const std::shared_ptr<IShortcuts>& shortcuts);
+            const std::shared_ptr<IShortcuts>& shortcuts,
+            const ui::render::IRenderer::RendererSource& ui_renderer_source,
+            const ui::render::IMapRenderer::MapRendererSource& map_renderer_source);
 
         virtual ~ViewerUI() = default;
 
@@ -219,7 +212,7 @@ namespace trview
         UserSettings _settings;
         std::shared_ptr<IShortcuts> _shortcuts;
         std::unique_ptr<ui::Control> _control;
-        std::unique_ptr<ui::render::Renderer> _ui_renderer;
+        std::unique_ptr<ui::render::IRenderer> _ui_renderer;
         std::unique_ptr<ui::Input> _ui_input;
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
@@ -230,7 +223,7 @@ namespace trview
         std::unique_ptr<SettingsWindow> _settings_window;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
-        std::unique_ptr<ui::render::MapRenderer> _map_renderer;
+        std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<Tooltip> _tooltip;
         std::unique_ptr<Console> _console;
