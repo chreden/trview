@@ -17,7 +17,7 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names)
+    Level::Level(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const std::shared_ptr<ITypeNameLookup>& type_names)
         : _device(device), _version(level->get_version())
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
@@ -44,19 +44,22 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
+        // TODO: Use DI
         _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
+        // TODO: Use DI
         _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
         generate_rooms(*level);
         generate_triggers();
-        generate_entities(*level, type_names);
+        generate_entities(*level, *type_names);
 
         for (auto& room : _rooms)
         {
             room->update_bounding_box();
         }
 
+        // TODO: Use DI
         _transparency = std::make_unique<TransparencyBuffer>(device);
-
+        // TODO: Use DI
         _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
 
@@ -355,6 +358,7 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Trigger)
                 {
+                    // TODO: Use DI?
                     _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
@@ -374,6 +378,7 @@ namespace trview
         {
             // Entity for rendering.
             auto level_entity = level.get_entity(i);
+            // TODO: Use DI?
             auto entity = std::make_unique<Entity>(*_device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));

@@ -41,6 +41,7 @@ namespace trview
 
     Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::SpriteSource& sprite_source)
         : _device(device), _mesh_camera(Size(View_Size, View_Size)), _mesh(create_cube_mesh(*device)), _sprite(sprite_source(Size(View_Size, View_Size))),
+        // TODO: Use DI
         _render_target(std::make_unique<RenderTarget>(*device, static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), RenderTarget::DepthStencilMode::Enabled))
     {
     }

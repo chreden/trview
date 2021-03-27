@@ -19,10 +19,6 @@
 #include <trview.app/Windows/ITriggersWindowManager.h>
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Lua/Lua.h>
-#include <trview.app/Graphics/ITextureStorage.h>
-
-#include <trview.graphics/Device.h>
-#include <trview.graphics/IShaderStorage.h>
 
 namespace trview
 {
@@ -31,8 +27,6 @@ namespace trview
         virtual ~IApplication() = 0;
         virtual int run() = 0;
     };
-
-    
 
     class Application final : public IApplication, public MessageHandler
     {
@@ -48,15 +42,13 @@ namespace trview
             std::unique_ptr<ILevelSwitcher> level_switcher,
             std::unique_ptr<IRecentFiles> recent_files,
             std::unique_ptr<IViewer> viewer,
-            std::shared_ptr<graphics::IShaderStorage> shader_storage,
-            std::shared_ptr<ITextureStorage> texture_storage,
-            std::shared_ptr<graphics::IDevice> device,
-            std::shared_ptr<IRoute> route,
+            const IRoute::Source& route_source,
             std::shared_ptr<IShortcuts> shortcuts,
             std::unique_ptr<IItemsWindowManager> items_window_manager,
             std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
+            const ILevel::Source& level_source,
             const CommandLine& command_line);
         virtual ~Application();
 
@@ -113,16 +105,13 @@ namespace trview
         std::shared_ptr<IShortcuts> _shortcuts;
         HINSTANCE _instance{ nullptr };
 
-        // Rendering
-        std::shared_ptr<graphics::IDevice> _device;
-        std::shared_ptr<graphics::IShaderStorage> _shader_storage;
-        std::shared_ptr<ITextureStorage> _texture_storage;
-
         // Level data components
         std::unique_ptr<ITypeNameLookup> _type_name_lookup;
-        std::unique_ptr<Level> _level;
+        std::unique_ptr<ILevel> _level;
+        ILevel::Source _level_source;
 
         // Routing and tools.
+        IRoute::Source _route_source;
         std::shared_ptr<IRoute> _route;
 
         // Windows

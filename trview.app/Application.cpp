@@ -119,21 +119,19 @@ namespace trview
         std::unique_ptr<ILevelSwitcher> level_switcher,
         std::unique_ptr<IRecentFiles> recent_files,
         std::unique_ptr<IViewer> viewer,
-        std::shared_ptr<graphics::IShaderStorage> shader_storage,
-        std::shared_ptr<ITextureStorage> texture_storage,
-        std::shared_ptr<graphics::IDevice> device,
-        std::shared_ptr<IRoute> route,
+        const IRoute::Source& route_source,
         std::shared_ptr<IShortcuts> shortcuts,
         std::unique_ptr<IItemsWindowManager> items_window_manager,
         std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
+        const ILevel::Source& level_source,
         const CommandLine& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(shader_storage),
-        _device(std::move(device)), _route(route), _shortcuts(shortcuts), _texture_storage(texture_storage),
-        _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager))
+        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
+        _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
+        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source)
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -145,9 +143,6 @@ namespace trview
 
         _recent_files->set_recent_files(_settings.recent_files);
         _token_store += _recent_files->on_file_open += [=](const auto& file) { open(file); };
-
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
 
         setup_shortcuts();
         setup_view_menu();
@@ -188,7 +183,7 @@ namespace trview
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        _level = std::make_unique<Level>(_device, _shader_storage, std::move(new_level), *_type_name_lookup);
+        _level = _level_source(std::move(new_level));
         _level->set_filename(filename);
 
         _viewer->open(_level.get());
@@ -397,7 +392,7 @@ namespace trview
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(_device, _shader_storage, path);
+            auto route = import_route(_route_source, path);
             if (route)
             {
                 _route = std::move(route);
@@ -571,6 +566,14 @@ namespace trview
             di::bind<input::IWindowTester>.to<input::WindowTester>(),
             di::bind<IPicking>.to<Picking>(),
             di::bind<IRoute>.to<Route>(),
+            di::bind<IRoute::Source>.to(
+                [](const auto& injector) -> IRoute::Source
+                {
+                    return [&]()
+                    {
+                        return injector.create<std::unique_ptr<IRoute>>();
+                    };
+                }),
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
@@ -660,6 +663,24 @@ namespace trview
                     };
                 }),
             di::bind<ICompass>.to<Compass>(),
+            di::bind<ITypeNameLookup>.to(
+                []()
+                {
+                    Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+                    return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
+                }),
+            di::bind<ILevel::Source>.to(
+                [](const auto& injector) -> ILevel::Source
+                {
+                    return [&](auto level)
+                    {
+                        return std::make_unique<Level>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            std::move(level),
+                            injector.create<std::shared_ptr<ITypeNameLookup>>());
+                    };
+                }),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IViewer>.to<Viewer>(),
             di::bind<input::IMouse>.to<input::Mouse>(),

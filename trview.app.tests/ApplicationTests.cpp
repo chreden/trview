@@ -1,5 +1,4 @@
 #include <trview.app/Application.h>
-#include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileDropper.h>
 #include <trview.app/Mocks/Menus/ILevelSwitcher.h>
@@ -14,13 +13,12 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
-#include <trview.graphics/mocks/IShaderStorage.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace testing;
 using namespace trview::mocks;
-using namespace trview::graphics::mocks;
 using namespace trlevel::mocks;
 using testing::_;
 
@@ -38,15 +36,13 @@ TEST(Application, ChecksForUpdates)
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 }
 
@@ -65,15 +61,13 @@ TEST(Application, SettingsLoadedAndSaved)
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 }
 
@@ -96,15 +90,13 @@ TEST(Application, FileDropperOpensFile)
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
     file_dropper.on_file_dropped("test_path.tr2");
 }
@@ -127,15 +119,13 @@ TEST(Application, LevelLoadedOnSwitchLevel)
         std::move(level_switcher_ptr),
         std::make_unique<MockRecentFiles>(),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 
     level_switcher.on_switch_level("test_path.tr2");
@@ -159,15 +149,13 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
         std::make_unique<MockLevelSwitcher>(),
         std::move(recent_files_ptr),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 
     recent_files.on_file_open("test_path.tr2");
@@ -180,7 +168,7 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
 
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
-    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<MockLevel>())));
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<trlevel::mocks::MockLevel>())));
 
     CoInitialize(nullptr);
     auto window = create_test_window(L"ApplicationTests");
@@ -192,15 +180,13 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
         std::make_unique<MockLevelSwitcher>(),
         std::move(recent_files_ptr),
         std::make_unique<MockViewer>(),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 
     application.open("test_path.tr2");
@@ -210,7 +196,7 @@ TEST(Application, FileOpenedInViewer)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
-    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto [level_ptr, level] = create_mock<trlevel::mocks::MockLevel>();
 
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
     EXPECT_CALL(viewer, open(NotNull())).Times(1);
@@ -225,15 +211,13 @@ TEST(Application, FileOpenedInViewer)
         std::make_unique<MockLevelSwitcher>(),
         std::make_unique<MockRecentFiles>(),
         std::move(viewer_ptr),
-        std::make_unique<MockShaderStorage>(),
-        std::make_unique<MockTextureStorage>(),
-        std::make_unique<graphics::Device>(),
-        std::make_unique<MockRoute>(),
+        []() { return std::make_unique<MockRoute>(); },
         std::make_unique<Shortcuts>(window),
         std::make_unique<MockItemsWindowManager>(),
         std::make_unique<MockTriggersWindowManager>(),
         std::make_unique<MockRouteWindowManager>(),
         std::make_unique<MockRoomsWindowManager>(),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
         std::wstring());
 
     application.open("test_path.tr2");

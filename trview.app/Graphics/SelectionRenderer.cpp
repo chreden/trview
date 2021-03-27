@@ -40,6 +40,7 @@ namespace trview
     {
         _pixel_shader = shader_storage->get("selection_pixel_shader");
         _vertex_shader = shader_storage->get("ui_vertex_shader");
+        // TODO: Use DI
         _transparency = std::make_unique<TransparencyBuffer>(device);
         create_buffers(*device);
     }
@@ -116,6 +117,7 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
+            // TODO: Use DI
             _texture = std::make_unique<RenderTarget>(device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
         }
 

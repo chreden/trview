@@ -113,6 +113,6 @@ namespace trview
         Colour                _colour{ Colour::Green };
     };
 
-    std::unique_ptr<IRoute> import_route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename);
+    std::unique_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::string& filename);
     void export_route(const IRoute& route, const std::string& filename);
 }

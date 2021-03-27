@@ -43,6 +43,7 @@ namespace trview
             };
 
             const std::vector<uint32_t> indices{ 0,  1,  2,  3,  4,  5, };
+            // TODO: Use DI
             _mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
         }
 

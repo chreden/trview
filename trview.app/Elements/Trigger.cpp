@@ -166,6 +166,7 @@ namespace trview
         std::vector<Triangle> collision;
         std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
             [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
+        // TODO: Use DI
         _mesh = std::make_unique<Mesh>(transparent_triangles, collision);
     }
 

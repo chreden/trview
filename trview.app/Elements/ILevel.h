@@ -11,6 +11,8 @@ namespace trview
 {
     struct ILevel
     {
+        using Source = std::function<std::unique_ptr<ILevel>(std::unique_ptr<trlevel::ILevel>)>;
+
         enum class RoomHighlightMode
         {
             None,

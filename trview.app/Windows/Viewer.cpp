@@ -28,6 +28,7 @@ namespace trview
     {
         apply_acceleration_settings();
 
+        // TODO: Use DI
         _scene_target = std::make_unique<graphics::RenderTarget>(*_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
@@ -135,6 +136,7 @@ namespace trview
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);
 
+        // TODO: Use DI
         _measure = std::make_unique<Measure>(*_device);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
@@ -734,6 +736,7 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
+        // TODO: Use DI
         _scene_target = std::make_unique<graphics::RenderTarget>(*_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
         _scene_changed = true;

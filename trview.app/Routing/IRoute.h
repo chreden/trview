@@ -8,6 +8,8 @@ namespace trview
 {
     struct IRoute
     {
+        using Source = std::function<std::unique_ptr<IRoute>()>;
+
         virtual ~IRoute() = 0;
         
         /// Add a new waypoint to the end of the route.

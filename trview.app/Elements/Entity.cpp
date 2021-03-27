@@ -149,6 +149,7 @@ namespace trview
 
         std::vector<Triangle> collision_triangles;
 
+        // TODO: Use DI
         _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
 
         // Scale is computed from the 'side' values.

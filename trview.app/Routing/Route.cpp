@@ -218,7 +218,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<IRoute> import_route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const std::string& filename)
+    std::unique_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::string& filename)
     {
         try
         {
@@ -226,10 +226,11 @@ namespace trview
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             if (!file.is_open())
             {
-                return std::unique_ptr<Route>();
+                return nullptr;
             }
 
-            auto route = std::make_unique<Route>(device, shader_storage);
+            // TODO: Use DI
+            auto route = route_source();
 
             nlohmann::json json;
             file >> json;
@@ -273,7 +274,7 @@ namespace trview
         }
         catch (std::exception&)
         {
-            return std::unique_ptr<Route>();
+            return nullptr;
         }
     }
 

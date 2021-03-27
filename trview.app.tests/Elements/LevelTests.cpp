@@ -38,8 +38,7 @@ TEST(Level, LoadTypeNames)
     EXPECT_CALL(*mock_level, get_entity(0))
         .WillRepeatedly(Return(entity));
 
-    MockTypeNameLookup mock_type_name_lookup;
-    EXPECT_CALL(mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
-
+    auto mock_type_name_lookup = std::make_shared<MockTypeNameLookup>();
+    EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
     Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level), mock_type_name_lookup);
 }
