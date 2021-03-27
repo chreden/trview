@@ -137,9 +137,7 @@ namespace trview
         _settings = _settings_loader->load_user_settings();
 
         _token_store += _file_dropper->on_file_dropped += [&](const auto& file) { open(file); };
-
         _token_store += _level_switcher->on_switch_level += [=](const auto& file) { open(file); };
-        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher->open_file(file); };
 
         _recent_files->set_recent_files(_settings.recent_files);
         _token_store += _recent_files->on_file_open += [=](const auto& file) { open(file); };
@@ -177,7 +175,7 @@ namespace trview
             return;
         }
 
-        on_file_loaded(filename);
+        _level_switcher->open_file(filename);
         _settings.add_recent_file(filename);
         _recent_files->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);

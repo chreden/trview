@@ -52,10 +52,6 @@ namespace trview
             const CommandLine& command_line);
         virtual ~Application();
 
-        /// Event raised when a level file is successfully opened.
-        /// @remarks The filename is passed as a parameter to the listener functions.
-        Event<std::string> on_file_loaded;
-
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         void open(const std::string& filename);
