@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trview.graphics/IDevice.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Camera/Camera.h>
 
@@ -22,11 +21,12 @@ namespace trview
             Neg_Z
         };
 
+        virtual ~ICompass() = 0;
+
         /// Render the compass.
-        /// @param device The device to use to render the compass.
         /// @param camera The current camera being used to view the level.
         /// @param texture_storage The texture storage instance to use.
-        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.

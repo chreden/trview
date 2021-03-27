@@ -91,6 +91,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tools\Compass.cpp" />
+    <ClCompile Include="Tools\ICompass.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />

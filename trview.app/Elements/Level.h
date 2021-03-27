@@ -68,15 +68,13 @@ namespace trview
         PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
 
         /// Render the current scene.
-        /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
         /// @param render_selection Whether to render selection highlights on selected items.
-        void render(const graphics::IDevice& device, const ICamera& camera, bool render_selection);
+        void render(const ICamera& camera, bool render_selection);
 
         /// Render the transparent triangles in the scene.
-        /// @param device The graphics device to use to render the scene.
         /// @param camera The current camera.
-        void render_transparency(const graphics::IDevice& device, const ICamera& camera);
+        void render_transparency(const ICamera& camera);
 
         void set_highlight_mode(RoomHighlightMode mode, bool enabled);
         bool highlight_mode_enabled(RoomHighlightMode mode) const;
@@ -130,18 +128,18 @@ namespace trview
 
         void set_filename(const std::string& filename);
     private:
-        void generate_rooms(const graphics::IDevice& device, const trlevel::ILevel& level);
+        void generate_rooms(const trlevel::ILevel& level);
         void generate_triggers();
-        void generate_entities(const graphics::IDevice& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
         // Render the rooms in the level.
         // context: The device context.
         // camera: The current camera to render the level with.
-        void render_rooms(const graphics::IDevice& device, const ICamera& camera);
+        void render_rooms(const ICamera& camera);
 
-        void render_selected_item(const graphics::IDevice& device, const ICamera& camera);
+        void render_selected_item(const ICamera& camera);
 
         struct RoomToRender
         {
@@ -170,6 +168,7 @@ namespace trview
 
         bool is_alternate_group_set(uint16_t group) const;
 
+        std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::unique_ptr<Entity>> _entities;

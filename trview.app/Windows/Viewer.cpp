@@ -530,7 +530,7 @@ namespace trview
             {
                 _camera.set_target(_target);
             }
-            _level->render(*_device, current_camera(), _show_selection);
+            _level->render(current_camera(), _show_selection);
             _sector_highlight.render(*_device, current_camera(), _level->texture_storage());
 
             _measure->render(_device->context(), current_camera(), _level->texture_storage());
@@ -540,8 +540,8 @@ namespace trview
                 _route->render(*_device, current_camera(), _level->texture_storage());
             }
 
-            _level->render_transparency(*_device, current_camera());
-            _compass->render(*_device, current_camera(), _level->texture_storage());
+            _level->render_transparency(current_camera());
+            _compass->render(current_camera(), _level->texture_storage());
         }
     }
 
