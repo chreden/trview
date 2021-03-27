@@ -14,7 +14,7 @@ namespace trview
             MOCK_METHOD(std::shared_ptr<Sector>, current_minimap_sector, (), (const));
             MOCK_METHOD(bool, is_input_active, (), (const));
             MOCK_METHOD(bool, is_cursor_over, (), (const));
-            MOCK_METHOD(void, render, (const graphics::IDevice&));
+            MOCK_METHOD(void, render, ());
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool));
             MOCK_METHOD(void, set_alternate_groups, (const std::set<uint32_t>&));
             MOCK_METHOD(void, set_camera_position, (const DirectX::SimpleMath::Vector3&));

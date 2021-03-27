@@ -30,7 +30,7 @@ namespace trview
                 /// Render the node.
                 /// @param context The D3D context to use to render.
                 /// @param sprite The sprite to use to render.
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) override;
             private:
                 graphics::Texture _blank;
                 Button*           _button;

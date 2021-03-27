@@ -11,11 +11,6 @@ namespace trview
 {
     struct ILevelTextureStorage;
 
-    namespace graphics 
-    {
-        struct IShaderStorage;
-    }
-
     /// The compass shows the X, Y and Z axes.
     class Compass final : public ICompass
     {
@@ -23,7 +18,7 @@ namespace trview
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
+        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::SpriteSource& sprite_source);
 
         /// Render the compass.
         /// @param device The device to use to render the compass.
@@ -43,7 +38,7 @@ namespace trview
     private:
         std::unique_ptr<graphics::RenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;
-        std::unique_ptr<graphics::Sprite> _sprite;
+        std::unique_ptr<graphics::ISprite> _sprite;
         OrbitCamera _mesh_camera;
         bool _visible{ true };
     };

@@ -27,7 +27,7 @@ namespace trview
                 return _render_target->texture();
             }
 
-            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
+            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite)
             {
                 if (!needs_redraw() && !needs_recompositing())
                 {
@@ -67,7 +67,7 @@ namespace trview
                     // Render the child in the correct position on the render target.
                     auto pos = child->position();
                     auto size = child->size();
-                    sprite.render(context, child->node_texture(), pos.x, pos.y, size.width, size.height);
+                    sprite.render(child->node_texture(), pos.x, pos.y, size.width, size.height);
                 }
 
                 _needs_redraw = false;

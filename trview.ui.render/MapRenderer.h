@@ -23,11 +23,6 @@
 
 namespace trview
 {
-    namespace graphics
-    {
-        struct IShaderStorage;
-    }
-
     namespace ui
     {
         namespace render
@@ -49,12 +44,12 @@ namespace trview
             class MapRenderer final : public IMapRenderer
             {
             public:
-                MapRenderer(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size);
+                MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::SpriteSource& sprite_source);
 
                 virtual ~MapRenderer() = default;
 
                 // Renders the map 
-                virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true) override;
+                virtual void render(bool to_screen = true) override;
 
                 // Changes the room to specified room, reloads map
                 virtual void load(const trview::Room* room) override;
@@ -98,7 +93,7 @@ namespace trview
                 Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
-                void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, DirectX::SimpleMath::Color c);
+                void draw(Point p, Size s, DirectX::SimpleMath::Color c);
 
                 // Update the stored positions of the corners of the map.
                 void update_map_position();
@@ -113,10 +108,10 @@ namespace trview
                 // Determines if the minimap needs to be re-drawn.
                 bool needs_redraw();
 
-                const graphics::IDevice&                           _device;
+                std::shared_ptr<graphics::IDevice>                 _device;
                 bool                                               _visible = true;
                 int                                                _window_width, _window_height;
-                graphics::Sprite                                   _sprite; 
+                std::unique_ptr<graphics::ISprite>                 _sprite; 
                 graphics::Texture                                  _texture;
                 std::vector<Tile>                                  _tiles; 
                 std::unique_ptr<graphics::RenderTarget>            _render_target;

@@ -1,7 +1,6 @@
 #include "Viewer.h"
 
 #include <trlevel/trlevel.h>
-#include <trview.graphics/ShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/DeviceWindow.h>
 
@@ -505,10 +504,10 @@ namespace trview
                 _scene_changed = false;
             }
 
-            _scene_sprite->render(_device->context(), _scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
+            _scene_sprite->render(_scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
             _ui->set_camera_position(current_camera().position());
 
-            _ui->render(*_device);
+            _ui->render();
             _ui_changed = false;
 
             _main_window->present(_settings.vsync);

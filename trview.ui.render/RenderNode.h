@@ -18,7 +18,7 @@ namespace trview
 
     namespace graphics
     {
-        class Sprite;
+        struct ISprite;
     }
 
     namespace ui
@@ -41,7 +41,7 @@ namespace trview
 
                 const graphics::Texture& node_texture() const;
 
-                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite);
+                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite);
 
                 void add_child(std::unique_ptr<RenderNode>&& child);
 
@@ -61,7 +61,7 @@ namespace trview
 
                 int z() const;
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) = 0;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) = 0;
 
                 TokenStore _token_store;
             public:

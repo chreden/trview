@@ -19,7 +19,7 @@ namespace trview
                 Event<std::shared_ptr<Sector>> on_sector_hover;
 
                 // Renders the map 
-                virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true) = 0;
+                virtual void render(bool to_screen = true) = 0;
 
                 // Changes the room to specified room, reloads map
                 virtual void load(const trview::Room* room) = 0;

@@ -46,8 +46,7 @@ namespace trview
         virtual bool is_cursor_over() const override;
 
         /// Render the UI.
-        /// @param device The device to use to render the UI.
-        virtual void render(const graphics::IDevice& device) override;
+        virtual void render() override;
 
         /// Set whether an alternate group is enabled.
         /// @param value The group to change.

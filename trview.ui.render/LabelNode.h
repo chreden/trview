@@ -25,7 +25,7 @@ namespace trview
                 virtual Size measure(const std::wstring& text) const override;
                 virtual bool is_valid_character(wchar_t character) const override;
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
+                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) override;
             private:
                 // Generate the font texture and other textures required to render the label. This will also
                 // resize the label if the label has been set to auto size mode.

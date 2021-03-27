@@ -42,8 +42,6 @@ namespace trview
 {
     namespace graphics
     {
-        struct IShaderStorage;
-        struct IFontFactory;
         class DeviceWindow;
     }
 

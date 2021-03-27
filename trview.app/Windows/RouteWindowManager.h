@@ -4,7 +4,6 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
 #include <trview.graphics/Device.h>
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.common/Windows/Shortcuts.h>
 

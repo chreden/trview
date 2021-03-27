@@ -9,7 +9,7 @@ namespace trview
         // after storing the old host size for later restoration.
         // sprite: The sprite to operate on.
         // new_size: The new host size of the sprite.
-        SpriteSizeStore::SpriteSizeStore(Sprite& sprite, const Size& new_size)
+        SpriteSizeStore::SpriteSizeStore(ISprite& sprite, const Size& new_size)
             : _sprite(sprite), _size(sprite.host_size())
         {
             _sprite.set_host_size(new_size);

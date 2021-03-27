@@ -131,7 +131,7 @@ namespace trview
         const CommandLine& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
+        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(shader_storage),
         _device(std::move(device)), _route(route), _shortcuts(shortcuts), _texture_storage(texture_storage),
         _items_windows(std::move(items_window_manager)), _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager))
     {
@@ -580,10 +580,10 @@ namespace trview
                     return [&](auto size)
                     {
                         return std::make_unique<ui::render::Renderer>(
-                            *injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            injector.create<std::shared_ptr<IDevice>>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size);
+                            size,
+                            injector.create<graphics::ISprite::SpriteSource>());
                     };
                 }),
             di::bind<ui::render::IMapRenderer::MapRendererSource>.to(
@@ -592,10 +592,10 @@ namespace trview
                     return [&](auto size)
                     {
                         return std::make_unique<ui::render::MapRenderer>(
-                            *injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            injector.create<std::shared_ptr<IDevice>>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size);
+                            size,
+                            injector.create<graphics::ISprite::SpriteSource>());
                     };
                 }),
             di::bind<IItemsWindowManager::ItemsWindowSource>.to(
@@ -654,7 +654,7 @@ namespace trview
                     return [&](auto size)
                     {
                         return std::make_unique<Sprite>(
-                            *injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<std::shared_ptr<IShaderStorage>>(),
                             size);
                     };

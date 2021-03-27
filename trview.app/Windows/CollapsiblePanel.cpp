@@ -139,7 +139,7 @@ namespace trview
 
         _device_window->begin();
         _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
-        _ui_renderer->render(device.context());
+        _ui_renderer->render();
         _device_window->present(vsync);
         _ui_changed = false;
     }

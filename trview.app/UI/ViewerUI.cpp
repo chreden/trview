@@ -266,10 +266,10 @@ namespace trview
         _camera_controls->on_projection_mode_selected += on_camera_projection_mode;
     }
 
-    void ViewerUI::render(const graphics::IDevice& device)
+    void ViewerUI::render()
     {
-        _map_renderer->render(device.context());
-        _ui_renderer->render(device.context());
+        _map_renderer->render();
+        _ui_renderer->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)

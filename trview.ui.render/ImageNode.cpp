@@ -16,7 +16,7 @@ namespace trview
             {
             }
 
-            void ImageNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite)
+            void ImageNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite)
             {
                 WindowNode::render_self(context, sprite);
                 auto texture = _image->texture();
@@ -28,7 +28,7 @@ namespace trview
                     _render_target->apply(context);
 
                     auto size = _image->size();
-                    sprite.render(context, texture, 0, 0, size.width, size.height);
+                    sprite.render(texture, 0, 0, size.width, size.height);
                 }
             }
         }

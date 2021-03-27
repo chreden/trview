@@ -2,7 +2,6 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.graphics/Sprite.h>
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
 
@@ -40,10 +39,10 @@ namespace trview
         };
     }
 
-    Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
+    Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::SpriteSource& sprite_source)
         : _mesh_camera(Size(View_Size, View_Size)),
           _mesh(create_cube_mesh(*device)),
-          _sprite(std::make_unique<Sprite>(*device, shader_storage, Size(View_Size, View_Size))),
+          _sprite(sprite_source(Size(View_Size, View_Size))),
           _render_target(std::make_unique<RenderTarget>(*device, static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), RenderTarget::DepthStencilMode::Enabled))
     {
     }
@@ -92,7 +91,7 @@ namespace trview
 
         auto screen_size = camera.view_size();
         _sprite->set_host_size(screen_size);
-        _sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
+        _sprite->render(_render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 
     bool Compass::pick(const Point& mouse_position, const Size& screen_size, Axis& axis)

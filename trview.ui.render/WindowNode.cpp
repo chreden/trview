@@ -16,7 +16,7 @@ namespace trview
             {
             }
 
-            void WindowNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite&)
+            void WindowNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite&)
             {
                 _render_target->clear(context, _window->background_colour());
             }
