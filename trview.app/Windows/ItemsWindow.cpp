@@ -343,8 +343,8 @@ namespace trview
         return _selected_item;
     }
 
-    void ItemsWindow::render(const graphics::IDevice& device, bool vsync)
+    void ItemsWindow::render(bool vsync)
     {
-        CollapsiblePanel::render(device, vsync);
+        CollapsiblePanel::render(vsync);
     }
 }

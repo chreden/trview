@@ -9,7 +9,6 @@
 #include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
-#include <trview.graphics/FontFactory.h>
 #include "IRouteWindow.h"
 
 namespace trview
@@ -28,7 +27,7 @@ namespace trview
         /// Destructor for triggers window
         virtual ~RouteWindow() = default;
 
-        virtual void render(const graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.

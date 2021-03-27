@@ -3,8 +3,6 @@
 #include <trview.app/Windows/IRouteWindowManager.h>
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
-#include <trview.graphics/Device.h>
-#include <trview.graphics/FontFactory.h>
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
@@ -24,9 +22,8 @@ namespace trview
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render all of the route windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.

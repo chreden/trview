@@ -413,8 +413,8 @@ namespace trview
         return _selected_trigger;
     }
 
-    void TriggersWindow::render(const graphics::IDevice& device, bool vsync)
+    void TriggersWindow::render(bool vsync)
     {
-        CollapsiblePanel::render(device, vsync);
+        CollapsiblePanel::render(vsync);
     }
 }

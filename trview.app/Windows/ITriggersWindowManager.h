@@ -22,9 +22,8 @@ namespace trview
         Event<const Trigger*> on_add_to_route;
 
         /// Render all of the triggers windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::IDevice& device, bool vsync) = 0;
+        virtual void render(bool vsync) = 0;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.

@@ -25,9 +25,8 @@ namespace trview
         Event<> on_window_closed;
 
         /// Render the window.
-        /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
-        virtual void render(const graphics::IDevice& device, bool vsync) = 0;
+        virtual void render(bool vsync) = 0;
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.

@@ -35,9 +35,8 @@ namespace trview
         virtual void update_items(const std::vector<Item>& items) = 0;
 
         /// Render the window.
-        /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
-        virtual void render(const graphics::IDevice& device, bool vsync) = 0;
+        virtual void render(bool vsync) = 0;
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.

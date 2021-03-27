@@ -547,10 +547,10 @@ namespace trview
         }
 
         _viewer->render();
-        _items_windows->render(*_device, _settings.vsync);
-        _triggers_windows->render(*_device, _settings.vsync);
-        _rooms_windows->render(*_device, _settings.vsync);
-        _route_window->render(*_device, _settings.vsync);
+        _items_windows->render(_settings.vsync);
+        _triggers_windows->render(_settings.vsync);
+        _rooms_windows->render(_settings.vsync);
+        _route_window->render(_settings.vsync);
     }
 
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)

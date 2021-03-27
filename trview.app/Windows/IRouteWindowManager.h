@@ -33,9 +33,8 @@ namespace trview
         Event<uint32_t> on_waypoint_deleted;
 
         /// Render all of the route windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::IDevice& device, bool vsync) = 0;
+        virtual void render(bool vsync) = 0;
 
         /// Load the waypoints from the route.
         /// @param route The route to load from.

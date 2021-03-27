@@ -38,7 +38,7 @@ namespace trview
         /// Destructor for items window
         virtual ~ItemsWindow() = default;
 
-        virtual void render(const graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Set the items to display in the window.
         /// @param items The items to show.

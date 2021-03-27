@@ -18,7 +18,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::render(graphics::IDevice& device, bool vsync)
+    void TriggersWindowManager::render(bool vsync)
     {
         if (!_closing_windows.empty())
         {
@@ -32,7 +32,7 @@ namespace trview
 
         for (auto& window : _windows)
         {
-            window->render(device, vsync);
+            window->render(vsync);
         }
     }
 

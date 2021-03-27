@@ -27,7 +27,7 @@ namespace trview
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
 
-        virtual void render(const graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.

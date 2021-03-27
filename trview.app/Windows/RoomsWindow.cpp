@@ -521,8 +521,8 @@ namespace trview
         }
     }
 
-    void RoomsWindow::render(const graphics::IDevice& device, bool vsync)
+    void RoomsWindow::render(bool vsync)
     {
-        CollapsiblePanel::render(device, vsync);
+        CollapsiblePanel::render(vsync);
     }
 }

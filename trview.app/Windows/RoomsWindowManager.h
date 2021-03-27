@@ -37,9 +37,8 @@ namespace trview
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render all of the rooms windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Set the items in the current level.
         virtual void set_items(const std::vector<Item>& items) override;

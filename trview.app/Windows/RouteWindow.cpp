@@ -42,9 +42,9 @@ namespace trview
         set_panels(create_left_panel(), create_right_panel());
     }
 
-    void RouteWindow::render(const graphics::IDevice& device, bool vsync)
+    void RouteWindow::render(bool vsync)
     {
-        CollapsiblePanel::render(device, vsync);
+        CollapsiblePanel::render(vsync);
     }
 
     void RouteWindow::set_route(IRoute* route) 

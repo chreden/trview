@@ -51,7 +51,7 @@ namespace trview
         /// Render the window.
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
-        void render(const graphics::IDevice& device, bool vsync);
+        void render(bool vsync);
 
         /// Get the root control for the window.
         /// @returns The root control.

@@ -130,7 +130,7 @@ namespace trview
         }
     }
 
-    void CollapsiblePanel::render(const IDevice& device, bool vsync)
+    void CollapsiblePanel::render(bool vsync)
     {
         if (!_ui_changed)
         {

@@ -6,7 +6,6 @@
 
 #include <trview.app/Windows/ITriggersWindowManager.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.graphics/Device.h>
 #include <trview.common/TokenStore.h>
 #include <trview.common/Windows/IShortcuts.h>
 
@@ -32,9 +31,8 @@ namespace trview
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render all of the triggers windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        virtual void render(graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Set the items to use in the windows.
         /// @param items The items in the level.

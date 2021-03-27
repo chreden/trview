@@ -8,7 +8,6 @@
 #include <trview.app/Elements/Trigger.h>
 #include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
-#include <trview.graphics/IFontFactory.h>
 
 namespace trview
 {
@@ -37,7 +36,7 @@ namespace trview
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;
 
-        virtual void render(const graphics::IDevice& device, bool vsync) override;
+        virtual void render(bool vsync) override;
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.

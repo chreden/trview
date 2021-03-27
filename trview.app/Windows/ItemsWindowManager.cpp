@@ -1,7 +1,5 @@
 #include "ItemsWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.graphics/DeviceWindow.h>
 
 namespace trview
 {
@@ -19,7 +17,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::render(graphics::IDevice& device, bool vsync)
+    void ItemsWindowManager::render(bool vsync)
     {
         if (!_closing_windows.empty())
         {
@@ -33,7 +31,7 @@ namespace trview
 
         for (auto& window : _windows)
         {
-            window->render(device, vsync);
+            window->render(vsync);
         }
     }
 

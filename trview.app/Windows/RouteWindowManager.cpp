@@ -47,7 +47,7 @@ namespace trview
         _route_window->select_waypoint(_selected_waypoint);
     }
 
-    void RouteWindowManager::render(graphics::IDevice& device, bool vsync)
+    void RouteWindowManager::render(bool vsync)
     {
         if (_closing)
         {
@@ -57,7 +57,7 @@ namespace trview
 
         if (_route_window)
         {
-            _route_window->render(device, vsync);
+            _route_window->render(vsync);
         }
     }
 
