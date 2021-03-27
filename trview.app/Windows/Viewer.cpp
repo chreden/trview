@@ -21,15 +21,17 @@ namespace trview
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
     }
 
-    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking, std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route)
+    Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
+        std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::SpriteSource& sprite_source,
+        std::unique_ptr<ICompass> compass)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking))
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass))
     {
         apply_acceleration_settings();
 
         _scene_target = std::make_unique<graphics::RenderTarget>(*_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
-        _scene_sprite = std::make_unique<graphics::Sprite>(*_device, shader_storage, window.size());
+        _scene_sprite = sprite_source(window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
@@ -136,7 +138,6 @@ namespace trview
         _ui->set_camera_mode(CameraMode::Orbit);
 
         _measure = std::make_unique<Measure>(*_device);
-        _compass = std::make_unique<Compass>(*_device, shader_storage);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };

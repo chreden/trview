@@ -188,6 +188,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
     <ClInclude Include="Mocks\Routing\IRoute.h" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
+    <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
@@ -210,6 +211,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
+    <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
     <ClInclude Include="UI\CameraControls.h" />

@@ -56,12 +56,13 @@ namespace trview
         explicit Viewer(
             const Window& window, 
             const std::shared_ptr<graphics::IDevice>& device,
-            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             std::unique_ptr<IViewerUI> ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,
             const std::shared_ptr<IShortcuts>& shortcuts,
-            const std::shared_ptr<IRoute> route);
+            const std::shared_ptr<IRoute> route,
+            const graphics::ISprite::SpriteSource& sprite_source,
+            std::unique_ptr<ICompass> compass);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -181,7 +182,7 @@ namespace trview
         // Tools:
         Tool _active_tool{ Tool::None };
         std::unique_ptr<Measure> _measure;
-        std::unique_ptr<Compass> _compass;
+        std::unique_ptr<ICompass> _compass;
         std::optional<Compass::Axis> _compass_axis;
 
         // Temporary route objects.
@@ -193,7 +194,7 @@ namespace trview
         bool _was_alternate_select{ false };
 
         std::unique_ptr<graphics::RenderTarget> _scene_target;
-        std::unique_ptr<graphics::Sprite> _scene_sprite;
+        std::unique_ptr<graphics::ISprite> _scene_sprite;
         bool _scene_changed{ true };
         bool _mouse_changed{ true };
         bool _ui_changed{ true };

@@ -621,6 +621,12 @@
     <ClInclude Include="Mocks\Windows\IItemsWindow.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\ICompass.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\ICompass.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -691,6 +697,9 @@
     </Filter>
     <Filter Include="Mocks\Routing">
       <UniqueIdentifier>{06dfb4a3-f717-4461-b283-e43999dbc039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Tools">
+      <UniqueIdentifier>{ecb3edf3-c2bd-4da3-aec9-51e0f8a92548}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

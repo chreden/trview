@@ -5,6 +5,7 @@
 #include <trview.graphics/Sprite.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Camera/OrbitCamera.h>
+#include "ICompass.h"
 
 namespace trview
 {
@@ -16,24 +17,13 @@ namespace trview
     }
 
     /// The compass shows the X, Y and Z axes.
-    class Compass final
+    class Compass final : public ICompass
     {
     public:
-        /// The axis on the compass.
-        enum class Axis
-        {
-            Pos_X,
-            Pos_Y,
-            Pos_Z,
-            Neg_X,
-            Neg_Y,
-            Neg_Z
-        };
-
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const graphics::IDevice& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
+        Compass(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage);
 
         /// Render the compass.
         /// @param device The device to use to render the compass.

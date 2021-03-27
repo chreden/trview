@@ -29,10 +29,12 @@
     <ClInclude Include="IFontFactory.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
+    <ClInclude Include="ISprite.h" />
     <ClInclude Include="Mocks\IDevice.h" />
     <ClInclude Include="mocks\IFont.h" />
     <ClInclude Include="mocks\IFontFactory.h" />
     <ClInclude Include="Mocks\IShaderStorage.h" />
+    <ClInclude Include="Mocks\ISprite.h" />
     <ClInclude Include="ParagraphAlignment.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PixelShaderStore.h" />
@@ -59,6 +61,7 @@
     <ClCompile Include="IFont.cpp" />
     <ClCompile Include="IFontFactory.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />
+    <ClCompile Include="ISprite.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PixelShaderStore.cpp" />
     <ClCompile Include="RasterizerStateStore.cpp" />

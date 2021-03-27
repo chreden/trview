@@ -86,6 +86,12 @@
     <ClInclude Include="Mocks\IDevice.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="ISprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\ISprite.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -154,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="IDevice.cpp">
       <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="ISprite.cpp">
+      <Filter>Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

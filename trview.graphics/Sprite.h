@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <trview.common/Size.h>
 #include <trview.graphics/Device.h>
+#include "ISprite.h"
 
 #include <SimpleMath.h>
 
@@ -14,18 +15,17 @@ namespace trview
     {
         struct IShader;
         struct IShaderStorage;
-        class Texture;
 
-        class Sprite
+        class Sprite : public ISprite
         {
         public:
             Sprite(const graphics::IDevice& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size);
 
-            void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 });
+            virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour = { 1,1,1,1 }) override;
 
-            Size host_size() const;
+            virtual Size host_size() const override;
 
-            void set_host_size(const Size& size);
+            virtual void set_host_size(const Size& size) override;
 
             Sprite(const Sprite&) = delete;
             Sprite& operator=(const Sprite&) = delete;

@@ -19,6 +19,7 @@
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.input/WindowTester.h>
 #include <trview.app/Windows/Viewer.h>
+#include <trview.app/Tools/ICompass.h>
 
 #include <trview.app/Windows/ItemsWindowManager.h>
 #include <trview.app/Windows/RoomsWindowManager.h>
@@ -647,6 +648,18 @@ namespace trview
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
+            di::bind<ISprite::SpriteSource>.to(
+                [](const auto& injector) -> ISprite::SpriteSource
+                {
+                    return [&](auto size)
+                    {
+                        return std::make_unique<Sprite>(
+                            *injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            size);
+                    };
+                }),
+            di::bind<ICompass>.to<Compass>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IViewer>.to<Viewer>(),
             di::bind<input::IMouse>.to<input::Mouse>(),

@@ -22,10 +22,9 @@ namespace trview
     {
     public:
         /// Create an RoomsWindowManager.
-        /// @param device The device to use for rooms windows.
-        /// @param shader_storage The shader storage for rooms windows.
-        /// @param font_factory The font_factory for rooms windows.
         /// @param window The parent window of the rooms window.
+        /// @param shortcuts The shortcuts instance.
+        /// @param rooms_window_source The function to call to get a rooms window.
         explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RoomsWindowSource& rooms_window_source);
 
         /// Destructor for the RoomsWindowManager.
