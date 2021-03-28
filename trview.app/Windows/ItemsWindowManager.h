@@ -22,7 +22,7 @@ namespace trview
         /// @param window The parent window of the triggers window.
         /// @param shortcuts The shortcuts instance to use.
         /// @param items_window_source Function to call to create a triggers window.
-        explicit ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ItemsWindowSource& items_window_source);
+        explicit ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source);
 
         /// Destructor for the ItemsWindowManager.
         virtual ~ItemsWindowManager() = default;
@@ -68,6 +68,6 @@ namespace trview
         uint32_t _current_room{ 0u };
         TokenStore _token_store;
         std::optional<Item> _selected_item;
-        ItemsWindowSource _items_window_source;
+        IItemsWindow::Source _items_window_source;
     };
 }

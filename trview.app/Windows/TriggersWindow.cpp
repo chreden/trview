@@ -47,7 +47,7 @@ namespace trview
 
     using namespace graphics;
 
-    TriggersWindow::TriggersWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const Window& parent)
+    TriggersWindow::TriggersWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const Window& parent)
         : CollapsiblePanel(device, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", Size(520, 400))
     {
         CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;

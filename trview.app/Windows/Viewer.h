@@ -59,7 +59,7 @@ namespace trview
             std::unique_ptr<input::IMouse> mouse,
             const std::shared_ptr<IShortcuts>& shortcuts,
             const std::shared_ptr<IRoute> route,
-            const graphics::ISprite::SpriteSource& sprite_source,
+            const graphics::ISprite::Source& sprite_source,
             std::unique_ptr<ICompass> compass);
 
         /// Destructor for the viewer.

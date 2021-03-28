@@ -22,7 +22,7 @@ namespace trview
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RouteWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const trview::Window& parent);
+        explicit RouteWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent);
 
         /// Destructor for triggers window
         virtual ~RouteWindow() = default;

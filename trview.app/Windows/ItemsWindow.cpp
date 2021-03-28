@@ -40,7 +40,7 @@ namespace trview
     const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
 
-    ItemsWindow::ItemsWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const Window& parent)
+    ItemsWindow::ItemsWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const Window& parent)
         : CollapsiblePanel(device, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", Size(450, Height))
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;

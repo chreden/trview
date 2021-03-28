@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    RoomsWindowManager::RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RoomsWindowSource& rooms_window_source)
+    RoomsWindowManager::RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source)
         : MessageHandler(window), _rooms_window_source(rooms_window_source)
     {
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create_window(); };

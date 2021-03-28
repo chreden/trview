@@ -20,7 +20,7 @@ namespace trview
     }
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
-        std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::SpriteSource& sprite_source,
+        std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),

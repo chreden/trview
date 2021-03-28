@@ -11,7 +11,7 @@ namespace trview
         {
             struct IMapRenderer
             {
-                using MapRendererSource = std::function<std::unique_ptr<IMapRenderer>(const Size&)>;
+                using Source = std::function<std::unique_ptr<IMapRenderer>(const Size&)>;
 
                 virtual ~IMapRenderer() = 0;
 

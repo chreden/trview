@@ -11,7 +11,7 @@ namespace trview
     class RouteWindowManager final : public IRouteWindowManager, public MessageHandler
     {
     public:
-        explicit RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RouteWindowSource& route_window_source);
+        explicit RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRouteWindow::Source& route_window_source);
 
         virtual ~RouteWindowManager() = default;
 
@@ -52,6 +52,6 @@ namespace trview
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
         uint32_t _selected_waypoint{ 0u };
-        RouteWindowSource _route_window_source;
+        IRouteWindow::Source _route_window_source;
     };
 }

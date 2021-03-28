@@ -575,8 +575,8 @@ namespace trview
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<ui::render::IRenderer::RendererSource>.to(
-                [](const auto& injector) -> ui::render::IRenderer::RendererSource
+            di::bind<ui::render::IRenderer::Source>.to(
+                [](const auto& injector) -> ui::render::IRenderer::Source
                 {
                     return [&](auto size)
                     {
@@ -584,11 +584,11 @@ namespace trview
                             injector.create<std::shared_ptr<IDevice>>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
                             size,
-                            injector.create<graphics::ISprite::SpriteSource>());
+                            injector.create<graphics::ISprite::Source>());
                     };
                 }),
-            di::bind<ui::render::IMapRenderer::MapRendererSource>.to(
-                [](const auto& injector) -> ui::render::IMapRenderer::MapRendererSource
+            di::bind<ui::render::IMapRenderer::Source>.to(
+                [](const auto& injector) -> ui::render::IMapRenderer::Source
                 {
                     return [&](auto size)
                     {
@@ -596,61 +596,61 @@ namespace trview
                             injector.create<std::shared_ptr<IDevice>>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
                             size,
-                            injector.create<graphics::ISprite::SpriteSource>());
+                            injector.create<graphics::ISprite::Source>());
                     };
                 }),
-            di::bind<IItemsWindowManager::ItemsWindowSource>.to(
-                [](const auto& injector) -> IItemsWindowManager::ItemsWindowSource
+            di::bind<IItemsWindow::Source>.to(
+                [](const auto& injector) -> IItemsWindow::Source
                 {
                     return [&](auto window)
                     {
                         return std::make_shared<ItemsWindow>(
                             injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
                 }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
-            di::bind<ITriggersWindowManager::TriggersWindowSource>.to(
-                [](const auto& injector) -> ITriggersWindowManager::TriggersWindowSource
+            di::bind<ITriggersWindow::Source>.to(
+                [](const auto& injector) -> ITriggersWindow::Source
                 {
                     return [&](auto window)
                     {
                         return std::make_shared<TriggersWindow>(
                             injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
-            di::bind<IRouteWindowManager::RouteWindowSource>.to(
-                [](const auto& injector) -> IRouteWindowManager::RouteWindowSource
+            di::bind<IRouteWindow::Source>.to(
+                [](const auto& injector) -> IRouteWindow::Source
                 {
                     return [&](auto window)
                     {
                         return std::make_shared<RouteWindow>(
                             injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<ui::render::IRenderer::RendererSource>(),
+                            injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
                 }
             ),
             di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
-            di::bind<IRoomsWindowManager::RoomsWindowSource>.to(
-                [](const auto& injector) -> IRoomsWindowManager::RoomsWindowSource
+            di::bind<IRoomsWindow::Source>.to(
+                [](const auto& injector) -> IRoomsWindow::Source
                 {
                     return [&](auto window)
                     {
                         return std::make_shared<RoomsWindow>(
                             injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<ui::render::IRenderer::RendererSource>(),
-                            injector.create<ui::render::IMapRenderer::MapRendererSource>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            injector.create<ui::render::IMapRenderer::Source>(),
                             window);
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
-            di::bind<ISprite::SpriteSource>.to(
-                [](const auto& injector) -> ISprite::SpriteSource
+            di::bind<ISprite::Source>.to(
+                [](const auto& injector) -> ISprite::Source
                 {
                     return [&](auto size)
                     {

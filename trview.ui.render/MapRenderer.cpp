@@ -26,7 +26,7 @@ namespace trview
 
         namespace render
         {
-            MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::SpriteSource& sprite_source)
+            MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source)
                 : _device(device),
                 _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),

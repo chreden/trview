@@ -25,7 +25,7 @@ namespace trview
         /// @param window The parent window of the rooms window.
         /// @param shortcuts The shortcuts instance.
         /// @param rooms_window_source The function to call to get a rooms window.
-        explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RoomsWindowSource& rooms_window_source);
+        explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source);
 
         /// Destructor for the RoomsWindowManager.
         virtual ~RoomsWindowManager() = default;
@@ -75,7 +75,7 @@ namespace trview
         uint32_t _current_room;
         std::optional<const Trigger*> _selected_trigger;
         std::optional<Item> _selected_item;
-        RoomsWindowSource _rooms_window_source;
+        IRoomsWindow::Source _rooms_window_source;
     };
 }
 

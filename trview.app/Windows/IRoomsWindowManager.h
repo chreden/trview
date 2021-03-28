@@ -6,8 +6,6 @@ namespace trview
 {
     struct IRoomsWindowManager
     {
-        using RoomsWindowSource = std::function<std::shared_ptr<IRoomsWindow>(const Window)>;
-
         virtual ~IRoomsWindowManager() = 0;
 
         /// Event raised when the user has selected a room in the room window.

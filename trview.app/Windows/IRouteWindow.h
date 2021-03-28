@@ -10,6 +10,8 @@ namespace trview
 {
     struct IRouteWindow
     {
+        using Source = std::function<std::shared_ptr<IRouteWindow>(const Window)>;
+
         virtual ~IRouteWindow() = 0;
 
         /// Event raised when a waypoint is selected.

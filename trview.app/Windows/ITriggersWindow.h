@@ -11,6 +11,8 @@ namespace trview
 {
     struct ITriggersWindow
     {
+        using Source = std::function<std::shared_ptr<ITriggersWindow>(const Window)>;
+
         virtual ~ITriggersWindow() = 0;
 
         /// Event raised when a trigger is selected in the list.

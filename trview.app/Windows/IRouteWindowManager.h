@@ -7,8 +7,6 @@ namespace trview
 {
     struct IRouteWindowManager
     {
-        using RouteWindowSource = std::function<std::shared_ptr<IRouteWindow>(const Window)>;
-
         virtual ~IRouteWindowManager() = 0;
 
         /// Event raised when the route colour has changed.

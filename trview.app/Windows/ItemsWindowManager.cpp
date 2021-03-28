@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ItemsWindowSource& items_window_source)
+    ItemsWindowManager::ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source)
         : _items_window_source(items_window_source), MessageHandler(window)
     {
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create_window(); };

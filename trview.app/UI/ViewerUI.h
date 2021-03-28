@@ -27,8 +27,8 @@ namespace trview
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
-            const ui::render::IRenderer::RendererSource& ui_renderer_source,
-            const ui::render::IMapRenderer::MapRendererSource& map_renderer_source);
+            const ui::render::IRenderer::Source& ui_renderer_source,
+            const ui::render::IMapRenderer::Source& map_renderer_source);
 
         virtual ~ViewerUI() = default;
 

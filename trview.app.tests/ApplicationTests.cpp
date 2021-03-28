@@ -26,7 +26,6 @@ TEST(Application, ChecksForUpdates)
 {
     auto [update_checker_ptr, update_checker] = create_mock<MockUpdateChecker>();
     EXPECT_CALL(update_checker, check_for_updates).Times(1);
-    CoInitialize(nullptr);
     auto window = create_test_window(L"ApplicationTests");
     Application application(window,
         std::move(update_checker_ptr),
@@ -51,7 +50,6 @@ TEST(Application, SettingsLoadedAndSaved)
     auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
     EXPECT_CALL(settings_loader, load_user_settings).Times(1);
     EXPECT_CALL(settings_loader, save_user_settings).Times(1);
-    CoInitialize(nullptr);
     auto window = create_test_window(L"ApplicationTests");
     Application application(window,
         std::make_unique<MockUpdateChecker>(),
@@ -75,7 +73,6 @@ TEST(Application, FileDropperOpensFile)
 {
     auto [file_dropper_ptr, file_dropper] = create_mock<MockFileDropper>();
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-    CoInitialize(nullptr);
 
     EXPECT_CALL(level_loader, load_level("test_path.tr2"))
         .Times(1)
@@ -170,7 +167,6 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<trlevel::mocks::MockLevel>())));
 
-    CoInitialize(nullptr);
     auto window = create_test_window(L"ApplicationTests");
     Application application(window,
         std::make_unique<MockUpdateChecker>(),
@@ -201,7 +197,6 @@ TEST(Application, FileOpenedInViewer)
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
     EXPECT_CALL(viewer, open(NotNull())).Times(1);
 
-    CoInitialize(nullptr);
     auto window = create_test_window(L"ApplicationTests");
     Application application(window,
         std::make_unique<MockUpdateChecker>(),

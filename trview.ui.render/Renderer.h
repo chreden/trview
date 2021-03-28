@@ -26,7 +26,7 @@ namespace trview
                     const std::shared_ptr<graphics::IDevice>& device,
                     const graphics::IFontFactory& font_factory,
                     const Size& host_size,
-                    const graphics::ISprite::SpriteSource& sprite_source);
+                    const graphics::ISprite::Source& sprite_source);
 
                 virtual ~Renderer();
 

@@ -44,7 +44,7 @@ namespace trview
             class MapRenderer final : public IMapRenderer
             {
             public:
-                MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::SpriteSource& sprite_source);
+                MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source);
 
                 virtual ~MapRenderer() = default;
 

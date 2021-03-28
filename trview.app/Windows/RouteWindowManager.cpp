@@ -3,7 +3,7 @@
 
 namespace trview
 {
-    RouteWindowManager::RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const RouteWindowSource& route_window_source)
+    RouteWindowManager::RouteWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRouteWindow::Source& route_window_source)
         : MessageHandler(window), _route_window_source(route_window_source)
     {
         _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create_window(); };

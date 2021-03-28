@@ -10,6 +10,8 @@ namespace trview
 {
     struct IItemsWindow
     {
+        using Source = std::function<std::shared_ptr<IItemsWindow>(const Window)>;
+
         virtual ~IItemsWindow() = 0;
 
         /// Event raised when an item is selected in the list.

@@ -4,7 +4,7 @@
 
 namespace trview
 {
-    TriggersWindowManager::TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const TriggersWindowSource& triggers_window_source)
+    TriggersWindowManager::TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ITriggersWindow::Source& triggers_window_source)
         : _triggers_window_source(triggers_window_source), MessageHandler(window)
     {
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { create_window(); };

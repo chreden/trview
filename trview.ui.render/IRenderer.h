@@ -11,7 +11,7 @@ namespace trview
         {
             struct IRenderer
             {
-                using RendererSource = std::function<std::unique_ptr<IRenderer>(const Size&)>;
+                using Source = std::function<std::unique_ptr<IRenderer>(const Size&)>;
 
                 virtual ~IRenderer() = 0;
                 virtual void load(Control* control) = 0;

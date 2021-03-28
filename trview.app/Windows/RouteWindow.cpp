@@ -35,7 +35,7 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::RendererSource& renderer_source, const trview::Window& parent)
+    RouteWindow::RouteWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent)
         : CollapsiblePanel(device, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
