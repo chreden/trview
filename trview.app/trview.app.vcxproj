@@ -92,6 +92,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ClCompile>
     <ClCompile Include="Tools\Compass.cpp" />
     <ClCompile Include="Tools\ICompass.cpp" />
+    <ClCompile Include="Tools\IMeasure.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
@@ -190,6 +191,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Routing\IRoute.h" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
+    <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
@@ -213,6 +215,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
     <ClInclude Include="Tools\ICompass.h" />
+    <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
     <ClInclude Include="UI\CameraControls.h" />

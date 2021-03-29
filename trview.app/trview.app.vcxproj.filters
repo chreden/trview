@@ -277,6 +277,9 @@
     <ClCompile Include="Tools\ICompass.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Tools\IMeasure.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -628,6 +631,12 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Tools\ICompass.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\IMeasure.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\IMeasure.h">
       <Filter>Mocks\Tools</Filter>
     </ClInclude>
   </ItemGroup>

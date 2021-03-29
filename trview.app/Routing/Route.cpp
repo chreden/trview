@@ -45,7 +45,7 @@ namespace trview
     }
 
     Route::Route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
-        : _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(device, shader_storage)
+        : _device(device), _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(device, shader_storage)
     {
     }
 
@@ -144,12 +144,12 @@ namespace trview
         }
     }
 
-    void Route::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint.render(device, camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            waypoint.render(*_device, camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
@@ -160,14 +160,14 @@ namespace trview
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(device.context(), to_wvp, texture_storage, _colour);
+                _waypoint_mesh->render(_device->context(), to_wvp, texture_storage, _colour);
             }
         }
 
         // Render selected waypoint...
         if (_selected_index < _waypoints.size())
         {
-            _selection_renderer.render(device, camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+            _selection_renderer.render(*_device, camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
         }
     }
 

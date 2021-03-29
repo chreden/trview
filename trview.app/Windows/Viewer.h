@@ -60,7 +60,8 @@ namespace trview
             const std::shared_ptr<IShortcuts>& shortcuts,
             const std::shared_ptr<IRoute> route,
             const graphics::ISprite::Source& sprite_source,
-            std::unique_ptr<ICompass> compass);
+            std::unique_ptr<ICompass> compass,
+            std::unique_ptr<IMeasure> measure);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -179,7 +180,7 @@ namespace trview
 
         // Tools:
         Tool _active_tool{ Tool::None };
-        std::unique_ptr<Measure> _measure;
+        std::unique_ptr<IMeasure> _measure;
         std::unique_ptr<ICompass> _compass;
         std::optional<Compass::Axis> _compass_axis;
 

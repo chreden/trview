@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        class MockTriggersWindow : public ITriggersWindow
+        class MockTriggersWindow final : public ITriggersWindow
         {
         public:
             MOCK_METHOD(void, clear_selected_trigger, ());

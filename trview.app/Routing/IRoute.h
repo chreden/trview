@@ -68,10 +68,9 @@ namespace trview
         virtual void remove(uint32_t index) = 0;
 
         /// Render the route.
-        /// @param device The device to use to render.
         /// @param camera The camera to use to render.
         /// @param texture_storage Texture storage for the mesh.
-        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
 
         /// Get the index of the currently selected waypoint.
         virtual uint32_t selected_waypoint() const = 0;

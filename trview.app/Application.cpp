@@ -679,6 +679,7 @@ namespace trview
                             injector.create<std::shared_ptr<ITypeNameLookup>>());
                     };
                 }),
+            di::bind<IMeasure>.to<Measure>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IViewer>.to<Viewer>(),
             di::bind<input::IMouse>.to<input::Mouse>(),

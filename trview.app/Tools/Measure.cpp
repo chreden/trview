@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Measure::Measure(const IDevice& device)
-        : _mesh(create_cube_mesh(device))
+    Measure::Measure(const std::shared_ptr<IDevice>& device)
+        : _device(device), _mesh(create_cube_mesh(*device))
     {
     }
 
@@ -46,7 +46,7 @@ namespace trview
         on_distance((_end.value() - _start.value()).Length());
     }
 
-    void Measure::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Measure::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_start.has_value() || !_end.has_value() || !_visible)
         {
@@ -55,6 +55,7 @@ namespace trview
 
         using namespace DirectX::SimpleMath;
 
+        auto context = _device->context();
         auto to = _end.value() - _start.value();
         auto halfway = Vector3::Lerp(_start.value(), _end.value(), 0.5f);
 

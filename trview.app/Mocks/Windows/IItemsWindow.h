@@ -9,7 +9,6 @@ namespace trview
         class MockItemsWindow final : public IItemsWindow
         {
         public:
-            // Inherited via IItemsWindow
             virtual ~MockItemsWindow() = default;
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
             MOCK_METHOD(void, update_items, (const std::vector<Item>&));

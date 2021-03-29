@@ -21,10 +21,10 @@ namespace trview
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
-        std::unique_ptr<ICompass> compass)
+        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass))
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure))
     {
         apply_acceleration_settings();
 
@@ -135,9 +135,6 @@ namespace trview
 
         _ui->set_settings(_settings);
         _ui->set_camera_mode(CameraMode::Orbit);
-
-        // TODO: Use DI
-        _measure = std::make_unique<Measure>(*_device);
 
         _token_store += _measure->on_visible += [&](bool show) { _ui->set_show_measure(show); };
         _token_store += _measure->on_position += [&](auto pos) { _ui->set_measure_position(pos); };
@@ -531,18 +528,21 @@ namespace trview
             {
                 _camera.set_target(_target);
             }
-            _level->render(current_camera(), _show_selection);
-            _sector_highlight.render(*_device, current_camera(), _level->texture_storage());
+            
+            const auto& camera = current_camera();
 
-            _measure->render(_device->context(), current_camera(), _level->texture_storage());
+            _level->render(camera, _show_selection);
+            _sector_highlight.render(*_device, camera, _level->texture_storage());
+
+            _measure->render(camera, _level->texture_storage());
 
             if (_show_route)
             {
-                _route->render(*_device, current_camera(), _level->texture_storage());
+                _route->render(camera, _level->texture_storage());
             }
 
-            _level->render_transparency(current_camera());
-            _compass->render(current_camera(), _level->texture_storage());
+            _level->render_transparency(camera);
+            _compass->render(camera, _level->texture_storage());
         }
     }
 
