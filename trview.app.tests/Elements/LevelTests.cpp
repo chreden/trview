@@ -3,6 +3,8 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
+#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Mocks/Graphics/IMeshStorage.h>
 
 using namespace trview;
 using namespace trview::graphics;
@@ -40,5 +42,6 @@ TEST(Level, LoadTypeNames)
 
     auto mock_type_name_lookup = std::make_shared<MockTypeNameLookup>();
     EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
-    Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level), mock_type_name_lookup);
+    Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level),
+        std::make_unique<MockLevelTextureStorage>(), std::make_unique<MockMeshStorage>(), mock_type_name_lookup);
 }

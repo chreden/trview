@@ -639,6 +639,12 @@
     <ClInclude Include="Mocks\Tools\IMeasure.h">
       <Filter>Mocks\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\IMeshStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

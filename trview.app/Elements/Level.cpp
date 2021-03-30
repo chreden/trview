@@ -17,8 +17,14 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const std::shared_ptr<ITypeNameLookup>& type_names)
-        : _device(device), _version(level->get_version())
+    Level::Level(const std::shared_ptr<graphics::IDevice>& device,
+        const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
+        std::unique_ptr<trlevel::ILevel>&& level,
+        std::unique_ptr<ILevelTextureStorage> level_texture_storage,
+        std::unique_ptr<IMeshStorage> mesh_storage,
+        const std::shared_ptr<ITypeNameLookup>& type_names)
+        : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
+        _mesh_storage(std::move(mesh_storage))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -44,10 +50,6 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
-        // TODO: Use DI
-        _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
-        // TODO: Use DI
-        _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
         generate_rooms(*level);
         generate_triggers();
         generate_entities(*level, *type_names);

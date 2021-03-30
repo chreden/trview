@@ -25,6 +25,8 @@
 #include <trview.app/Windows/RoomsWindowManager.h>
 #include <trview.app/Windows/RouteWindowManager.h>
 #include <trview.app/Windows/TriggersWindowManager.h>
+#include <trview.app/Graphics/LevelTextureStorage.h>
+#include <trview.app/Graphics/MeshStorage.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -667,15 +669,41 @@ namespace trview
                     Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
                     return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
                 }),
+            di::bind<ILevelTextureStorage::Source>.to(
+                [](const auto& injector) -> ILevelTextureStorage::Source
+                {
+                    return [&](auto&& level)
+                    {
+                        return std::make_unique<LevelTextureStorage>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            level);
+                    };
+                }),
+            di::bind<IMeshStorage::Source>.to(
+                [](const auto& injector) -> IMeshStorage::Source
+                {
+                    return [&](auto&& level, auto&& level_texture_storage)
+                    {
+                        return std::make_unique<MeshStorage>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            level,
+                            level_texture_storage);
+                    };
+                }),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {
-                    return [&](auto level)
+                    return [&](auto&& level)
                     {
+                        auto texture_storage = injector.create<ILevelTextureStorage::Source>()(*level);
+                        auto mesh_storage = injector.create<IMeshStorage::Source>()(*level, *texture_storage);
+
                         return std::make_unique<Level>(
                             injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<std::shared_ptr<IShaderStorage>>(),
                             std::move(level),
+                            std::move(texture_storage),
+                            std::move(mesh_storage),
                             injector.create<std::shared_ptr<ITypeNameLookup>>());
                     };
                 }),

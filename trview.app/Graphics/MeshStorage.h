@@ -1,7 +1,5 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11.h>
 #include <unordered_map>
 #include <cstdint>
 #include <memory>
@@ -10,7 +8,7 @@
 
 #include "IMeshStorage.h"
 #include <trview.app/Geometry/Mesh.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 
 namespace trview
 {
@@ -25,8 +23,6 @@ namespace trview
 
         virtual Mesh* mesh(uint32_t mesh_pointer) const override;
     private:
-        std::shared_ptr<graphics::IDevice> _device;
-        const ILevelTextureStorage& _texture_storage;
         mutable std::unordered_map<uint32_t, std::unique_ptr<Mesh>> _meshes;
     };
 }

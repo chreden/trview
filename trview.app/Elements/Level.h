@@ -36,7 +36,12 @@ namespace trview
     class Level : public ILevel
     {
     public:
-        Level(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const std::shared_ptr<ITypeNameLookup>& type_names);
+        Level(const std::shared_ptr<graphics::IDevice>& device,
+            const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
+            std::unique_ptr<trlevel::ILevel>&& level,
+            std::unique_ptr<ILevelTextureStorage> level_texture_storage,
+            std::unique_ptr<IMeshStorage> mesh_storage,
+            const std::shared_ptr<ITypeNameLookup>& type_names);
         ~Level();
 
         // Temporary, for the room info and texture window.
