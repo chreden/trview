@@ -51,7 +51,7 @@ namespace trview
         /// @param transparency The transparency buffer to add triangles to.
         /// @param camera The current camera being used for rendering.
         /// @param colour The colour to render the triangles.
-        virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 
         /// Get the position of the waypoint in the 3D view.
         DirectX::SimpleMath::Vector3 position() const;

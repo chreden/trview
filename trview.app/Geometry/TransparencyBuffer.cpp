@@ -73,13 +73,14 @@ namespace trview
         complete();
     }
 
-    void TransparencyBuffer::render(const ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend)
+    void TransparencyBuffer::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend)
     {
         if (!_vertices.size())
         {
             return;
         }
 
+        auto context = _device->context();
         ComPtr<ID3D11DepthStencilState> old_depth_state;
         ComPtr<ID3D11BlendState> old_blend_state;
         context->OMGetDepthStencilState(&old_depth_state, nullptr);

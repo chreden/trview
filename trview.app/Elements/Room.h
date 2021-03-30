@@ -96,14 +96,14 @@ namespace trview
         /// @param camera The current viewpoint.
         /// @param selected The current selection mode.
         /// @param include_triggers Whether to render triggers.
-        void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water);
+        void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water);
 
         // Add the transparent triangles for entities that are contained inside this room. This is called automatically
         // if get_transparent_triangles is used.
         // transparency: The buffer to add triangles to.
         // camera: The current viewpoint.
         // selected: The current selection mode.
-        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false);
+        void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false);
 
         // Determines the alternate state of the room.
         AlternateMode alternate_mode() const;
@@ -154,7 +154,7 @@ namespace trview
         void generate_adjacency();
         void generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
         void render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
-        void get_contained_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
+        void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
         Sector*  get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;

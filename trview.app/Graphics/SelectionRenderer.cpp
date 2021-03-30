@@ -36,12 +36,11 @@ namespace trview
         }; 
     }
 
-    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
+    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<ITransparencyBuffer> transparency)
+        : _device(device), _transparency(std::move(transparency))
     {
         _pixel_shader = shader_storage->get("selection_pixel_shader");
         _vertex_shader = shader_storage->get("ui_vertex_shader");
-        // TODO: Use DI
-        _transparency = std::make_unique<TransparencyBuffer>(device);
         create_buffers(*device);
     }
 
@@ -104,9 +103,9 @@ namespace trview
         _scale_buffer = device.create_buffer(scale_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
     }
 
-    void SelectionRenderer::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
+    void SelectionRenderer::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
     {
-        auto context = device.context();
+        auto context = _device->context();
 
         // Get viewport size - this is used for checking if the texture size needs to change and for
         // scaling the coordinates that the pixel shader uses for the edge detection.
@@ -118,7 +117,7 @@ namespace trview
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
             // TODO: Use DI
-            _texture = std::make_unique<RenderTarget>(device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
+            _texture = std::make_unique<RenderTarget>(*_device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.
@@ -131,13 +130,13 @@ namespace trview
             // Draw the regular faces of the item with a black colouring.
             const bool was_visible = selected_item.visible();
             selected_item.set_visible(true);
-            selected_item.render(device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            selected_item.render(*_device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.rendering_position());
-            _transparency->render(context, camera, texture_storage, true);
+            _transparency->render(camera, texture_storage, true);
             selected_item.set_visible(was_visible);
         }
 

@@ -690,6 +690,8 @@ namespace trview
                             level_texture_storage);
                     };
                 }),
+            di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
+            di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {
@@ -697,13 +699,14 @@ namespace trview
                     {
                         auto texture_storage = injector.create<ILevelTextureStorage::Source>()(*level);
                         auto mesh_storage = injector.create<IMeshStorage::Source>()(*level, *texture_storage);
-
                         return std::make_unique<Level>(
                             injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<std::shared_ptr<IShaderStorage>>(),
                             std::move(level),
                             std::move(texture_storage),
                             std::move(mesh_storage),
+                            injector.create<std::unique_ptr<ITransparencyBuffer>>(),
+                            injector.create<std::unique_ptr<ISelectionRenderer>>(),
                             injector.create<std::shared_ptr<ITypeNameLookup>>());
                     };
                 }),

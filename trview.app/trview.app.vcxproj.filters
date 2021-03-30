@@ -280,6 +280,12 @@
     <ClCompile Include="Tools\IMeasure.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ISelectionRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\ITransparencyBuffer.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -644,6 +650,18 @@
     </ClInclude>
     <ClInclude Include="Mocks\Graphics\IMeshStorage.h">
       <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ISelectionRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\ITransparencyBuffer.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h">
+      <Filter>Mocks\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,9 +5,9 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <trview.app/Geometry/MeshVertex.h>
-#include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.graphics/Device.h>
 #include <trview.graphics/Texture.h>
+#include "ITransparencyBuffer.h"
 
 namespace trview
 {
@@ -16,7 +16,7 @@ namespace trview
 
     // Collects transparent triangles to be rendered and provides
     // the buffers required for rendering.
-    class TransparencyBuffer
+    class TransparencyBuffer final : public ITransparencyBuffer
     {
     public:
         explicit TransparencyBuffer(const std::shared_ptr<graphics::IDevice>& device);
@@ -34,11 +34,10 @@ namespace trview
         void sort(const DirectX::SimpleMath::Vector3& eye_position);
 
         /// Render the accumulated transparent triangles. Sort should be called before this function is called.
-        /// @param context Current device context.
         /// @param camera The current camera.
         /// @param texture_storage Texture storage for the level.
         /// @param ignore_blend Optional. Set to true to render this without transparency.
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false);
+        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, bool ignore_blend = false);
 
         // Reset the triangles buffer.
         void reset();

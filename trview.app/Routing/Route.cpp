@@ -44,8 +44,8 @@ namespace trview
         }
     }
 
-    Route::Route(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage)
-        : _device(device), _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(device, shader_storage)
+    Route::Route(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ISelectionRenderer> selection_renderer)
+        : _device(device), _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(std::move(selection_renderer))
     {
     }
 
@@ -167,7 +167,7 @@ namespace trview
         // Render selected waypoint...
         if (_selected_index < _waypoints.size())
         {
-            _selection_renderer.render(*_device, camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+            _selection_renderer->render(camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
         }
     }
 

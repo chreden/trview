@@ -22,9 +22,12 @@ namespace trview
         std::unique_ptr<trlevel::ILevel>&& level,
         std::unique_ptr<ILevelTextureStorage> level_texture_storage,
         std::unique_ptr<IMeshStorage> mesh_storage,
+        std::unique_ptr<ITransparencyBuffer> transparency_buffer,
+        std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ITypeNameLookup>& type_names)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
-        _mesh_storage(std::move(mesh_storage))
+        _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
+        _selection_renderer(std::move(selection_renderer))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -58,11 +61,6 @@ namespace trview
         {
             room->update_bounding_box();
         }
-
-        // TODO: Use DI
-        _transparency = std::make_unique<TransparencyBuffer>(device);
-        // TODO: Use DI
-        _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
 
     Level::~Level()
@@ -261,7 +259,7 @@ namespace trview
             context->RSSetState(_wireframe_rasterizer.Get());
         }
         // Render the triangles that the transparency buffer has produced.
-        _transparency->render(context, camera, *_texture_storage.get());
+        _transparency->render(camera, *_texture_storage.get());
     }
 
     void Level::render_selected_item(const ICamera& camera)
@@ -271,12 +269,12 @@ namespace trview
 
         if (_selected_item)
         {
-            _selection_renderer->render(*_device, camera, *_texture_storage, *_selected_item, Item_Outline);
+            _selection_renderer->render(camera, *_texture_storage, *_selected_item, Item_Outline);
         }
 
         if (_show_triggers && _selected_trigger)
         {
-            _selection_renderer->render(*_device, camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
+            _selection_renderer->render(camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
         }
     }
 

@@ -6,19 +6,16 @@
 #include <vector>
 #include <set>
 
+#include <trlevel/ILevel.h>
+#include <trview.app/Elements/ILevel.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
+#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Graphics/ISelectionRenderer.h>
+#include <trview.app/Graphics/IMeshStorage.h>
+#include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Texture.h>
 
-#include <trlevel/ILevel.h>
-
-
-#include <trview.app/Geometry/Mesh.h>
 #include "StaticMesh.h"
-
-
-#include <trview.app/Graphics/IMeshStorage.h>
-
-#include <trview.graphics/RenderTarget.h>
-#include <trview.app/Elements/ILevel.h>
 
 namespace trview
 {
@@ -41,6 +38,8 @@ namespace trview
             std::unique_ptr<trlevel::ILevel>&& level,
             std::unique_ptr<ILevelTextureStorage> level_texture_storage,
             std::unique_ptr<IMeshStorage> mesh_storage,
+            std::unique_ptr<ITransparencyBuffer> transparency_buffer,
+            std::unique_ptr<ISelectionRenderer> selection_renderer,
             const std::shared_ptr<ITypeNameLookup>& type_names);
         ~Level();
 
@@ -195,7 +194,7 @@ namespace trview
 
         std::unique_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<IMeshStorage> _mesh_storage;
-        std::unique_ptr<TransparencyBuffer> _transparency;
+        std::unique_ptr<ITransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };
         bool _alternate_mode{ false };
@@ -204,7 +203,7 @@ namespace trview
         bool _show_water{ true };
         bool _show_wireframe{ false };
 
-        std::unique_ptr<SelectionRenderer> _selection_renderer;
+        std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
         trlevel::LevelVersion _version;
         std::string _filename;
