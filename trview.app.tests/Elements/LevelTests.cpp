@@ -9,6 +9,7 @@
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trlevel;

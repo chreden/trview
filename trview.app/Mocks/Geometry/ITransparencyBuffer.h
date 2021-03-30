@@ -4,12 +4,15 @@
 
 namespace trview
 {
-    class MockTransparencyBuffer final : public ITransparencyBuffer
+    namespace mocks
     {
-    public:
-        MOCK_METHOD(void, add, (const TransparentTriangle&));
-        MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&));
-        MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool));
-        MOCK_METHOD(void, reset, ());
-    };
+        class MockTransparencyBuffer final : public ITransparencyBuffer
+        {
+        public:
+            MOCK_METHOD(void, add, (const TransparentTriangle&));
+            MOCK_METHOD(void, sort, (const DirectX::SimpleMath::Vector3&));
+            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, bool));
+            MOCK_METHOD(void, reset, ());
+        };
+    }
 }
