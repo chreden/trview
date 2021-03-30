@@ -1,10 +1,9 @@
 #pragma once
 
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Geometry/Mesh.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Routing/IRoute.h>
+#include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
 
 namespace trview

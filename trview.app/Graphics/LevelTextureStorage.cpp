@@ -3,9 +3,8 @@
 
 namespace trview
 {
-    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, const trlevel::ILevel& level)
-        // TODO: Use DI
-        : _texture_storage(std::make_unique<TextureStorage>(device)), _version(level.get_version())
+    LevelTextureStorage::LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level)
+        : _texture_storage(std::move(texture_storage)), _version(level.get_version())
     {
         for (uint32_t i = 0; i < level.num_textiles(); ++i)
         {

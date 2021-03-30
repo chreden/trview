@@ -27,6 +27,7 @@
 #include <trview.app/Windows/TriggersWindowManager.h>
 #include <trview.app/Graphics/LevelTextureStorage.h>
 #include <trview.app/Graphics/MeshStorage.h>
+#include <trview.app/Graphics/SelectionRenderer.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -676,6 +677,7 @@ namespace trview
                     {
                         return std::make_unique<LevelTextureStorage>(
                             injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::unique_ptr<ITextureStorage>>(),
                             level);
                     };
                 }),

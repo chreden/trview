@@ -1,6 +1,5 @@
 #include "Route.h"
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.common/Strings.h>
 
 using namespace DirectX;
@@ -229,7 +228,6 @@ namespace trview
                 return nullptr;
             }
 
-            // TODO: Use DI
             auto route = route_source();
 
             nlohmann::json json;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <trview.graphics/Device.h>
 #include <trview.app/Routing/Waypoint.h>
 
 namespace trview
