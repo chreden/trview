@@ -1,5 +1,5 @@
 #include "DeviceWindow.h"
-#include "Device.h"
+#include "RenderTarget.h"
 
 using namespace Microsoft::WRL;
 
@@ -7,8 +7,8 @@ namespace trview
 {
     namespace graphics
     {
-        DeviceWindow::DeviceWindow(Device& device, const Window& window)
-            : _device(device), _context(device.context())
+        DeviceWindow::DeviceWindow(const std::shared_ptr<IDevice>& device, const Window& window)
+            : _device(device), _context(device->context())
         {
             // Swap chain description.
             DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
@@ -26,12 +26,12 @@ namespace trview
             swap_chain_desc.SampleDesc.Quality = 0;
 
             ComPtr<IDXGIDevice> dxgi_device;
-            _device.device().As(&dxgi_device);
+            _device->device().As(&dxgi_device);
             ComPtr<IDXGIAdapter> dxgi_adapter;
             dxgi_device->GetAdapter(&dxgi_adapter);
             ComPtr<IDXGIFactory> factory;
             dxgi_adapter->GetParent(__uuidof(IDXGIFactory), &factory);
-            factory->CreateSwapChain(_device.device().Get(), &swap_chain_desc, &_swap_chain);
+            factory->CreateSwapChain(_device->device().Get(), &swap_chain_desc, &_swap_chain);
 
             create_render_target();
         }
@@ -41,18 +41,19 @@ namespace trview
         {
             ComPtr<ID3D11Texture2D> back_buffer;
             _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(back_buffer.GetAddressOf()));
+            // TODO: Use DI
             _render_target = std::make_unique<graphics::RenderTarget>(_device, back_buffer, graphics::RenderTarget::DepthStencilMode::Enabled);
         }
 
         void DeviceWindow::begin()
         {
-            _device.begin();
-            _render_target->apply(_context);
+            _device->begin();
+            _render_target->apply();
         }
 
         void DeviceWindow::clear(const DirectX::SimpleMath::Color& colour)
         {
-            _render_target->clear(_context, colour);
+            _render_target->clear(colour);
         }
 
         void DeviceWindow::resize()

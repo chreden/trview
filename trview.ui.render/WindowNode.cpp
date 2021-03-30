@@ -7,7 +7,7 @@ namespace trview
     {
         namespace render
         {
-            WindowNode::WindowNode(const graphics::IDevice& device, Window* window)
+            WindowNode::WindowNode(const std::shared_ptr<graphics::IDevice>& device, Window* window)
                 : _window(window), RenderNode(device, window)
             {
             }
@@ -18,7 +18,7 @@ namespace trview
 
             void WindowNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite&)
             {
-                _render_target->clear(context, _window->background_colour());
+                _render_target->clear(_window->background_colour());
             }
         }
     }

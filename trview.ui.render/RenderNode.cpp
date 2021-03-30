@@ -1,4 +1,5 @@
 #include "RenderNode.h"
+#include <trview.graphics/RenderTarget.h>
 
 #include <trview.ui/Control.h>
 
@@ -10,7 +11,7 @@ namespace trview
     {
         namespace render
         {
-            RenderNode::RenderNode(const graphics::IDevice& device, Control* control)
+            RenderNode::RenderNode(const std::shared_ptr<graphics::IDevice>& device, Control* control)
                 : _device(device), _control(control)
             {
                 regenerate_texture();
@@ -48,7 +49,7 @@ namespace trview
                 graphics::RenderTargetStore render_target_store(context);
                 graphics::ViewportStore vp_store(context);
                 graphics::SpriteSizeStore s_store(sprite, _render_target->size());
-                _render_target->apply(context);
+                _render_target->apply();
 
                 render_self(context, sprite);
 
@@ -114,6 +115,7 @@ namespace trview
             {
                 auto size = _control->size();
                 size = Size(size.width == 0 ? 1 : size.width, size.height == 0 ? 1 : size.height);
+                // TODO: Use DI
                 _render_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
             }
 

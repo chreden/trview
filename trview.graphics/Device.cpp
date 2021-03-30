@@ -65,11 +65,6 @@ namespace trview
             return _context;
         }
 
-        std::unique_ptr<DeviceWindow> Device::create_for_window(const Window& window)
-        {
-            return std::make_unique<DeviceWindow>(*this, window);
-        }
-
         ComPtr<ID3D11BlendState> Device::create_blend_state(const D3D11_BLEND_DESC& blend_desc) const
         {
             ComPtr<ID3D11BlendState> blend_state;

@@ -7,7 +7,7 @@ namespace trview
     {
         namespace render
         {
-            ImageNode::ImageNode(const graphics::IDevice& device, Image* image)
+            ImageNode::ImageNode(const std::shared_ptr<graphics::IDevice>& device, Image* image)
                 : WindowNode(device, image), _image(image)
             {
             }
@@ -25,7 +25,7 @@ namespace trview
                     graphics::RenderTargetStore rt_store(context);
                     graphics::ViewportStore vp_store(context);
                     graphics::SpriteSizeStore s_store(sprite, _render_target->size());
-                    _render_target->apply(context);
+                    _render_target->apply();
 
                     auto size = _image->size();
                     sprite.render(texture, 0, 0, size.width, size.height);

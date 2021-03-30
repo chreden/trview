@@ -36,8 +36,8 @@ namespace trview
         }; 
     }
 
-    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<ITransparencyBuffer> transparency)
-        : _device(device), _transparency(std::move(transparency))
+    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<ITransparencyBuffer> transparency, const graphics::IRenderTarget::SizeSource& render_target_source)
+        : _device(device), _transparency(std::move(transparency)), _render_target_source(render_target_source)
     {
         _pixel_shader = shader_storage->get("selection_pixel_shader");
         _vertex_shader = shader_storage->get("ui_vertex_shader");
@@ -116,16 +116,15 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
-            // TODO: Use DI
-            _texture = std::make_unique<RenderTarget>(*_device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
+            _texture = _render_target_source(static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.
         {
             // Clear the render target with red. This also clears depth. Start rendering to the render target.
             graphics::RenderTargetStore store(context);
-            _texture->clear(context, Color(1.0f, 0.0f, 0.0f, 1.0f));
-            _texture->apply(context);
+            _texture->clear(Color(1.0f, 0.0f, 0.0f, 1.0f));
+            _texture->apply();
 
             // Draw the regular faces of the item with a black colouring.
             const bool was_visible = selected_item.visible();

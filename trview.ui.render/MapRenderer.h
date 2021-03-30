@@ -44,7 +44,11 @@ namespace trview
             class MapRenderer final : public IMapRenderer
             {
             public:
-                MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source);
+                MapRenderer(const std::shared_ptr<graphics::IDevice>& device,
+                    const graphics::IFontFactory& font_factory,
+                    const Size& window_size,
+                    const graphics::ISprite::Source& sprite_source,
+                    const graphics::IRenderTarget::SizeSource& render_target_source);
 
                 virtual ~MapRenderer() = default;
 
@@ -114,7 +118,8 @@ namespace trview
                 std::unique_ptr<graphics::ISprite>                 _sprite; 
                 graphics::Texture                                  _texture;
                 std::vector<Tile>                                  _tiles; 
-                std::unique_ptr<graphics::RenderTarget>            _render_target;
+                std::unique_ptr<graphics::IRenderTarget>           _render_target;
+                graphics::IRenderTarget::SizeSource                _render_target_source;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor relative to the top left of the control.

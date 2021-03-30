@@ -8,14 +8,13 @@
 #include <d3d11.h>
 #include <trview.common/Window.h>
 #include <trview.common/Colour.h>
-#include "RenderTarget.h"
+#include "IRenderTarget.h"
+#include "IDevice.h"
 
 namespace trview
 {
     namespace graphics
     {
-        class Device;
-
         /// Wraps the D3D resources for rendering to a window.
         class DeviceWindow final
         {
@@ -23,7 +22,7 @@ namespace trview
             /// Create a new device window.
             /// @param device The device to use to render.
             /// @param window The window to render to.
-            explicit DeviceWindow(Device& device, const Window& window);
+            explicit DeviceWindow(const std::shared_ptr<IDevice>& device, const Window& window);
 
             /// Begin rendering to the main render target.
             void begin();
@@ -43,10 +42,10 @@ namespace trview
         private:
             void create_render_target();
 
-            Device& _device;
+            std::shared_ptr<IDevice> _device;
             Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<IDXGISwapChain> _swap_chain;
-            std::unique_ptr<RenderTarget> _render_target;
+            std::unique_ptr<IRenderTarget> _render_target;
         };
     }
 }

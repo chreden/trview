@@ -1,8 +1,8 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Sprite.h>
+#include <trview.graphics/IDevice.h>
+#include <trview.graphics/IRenderTarget.h>
+#include <trview.graphics/ISprite.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Camera/OrbitCamera.h>
 #include "ICompass.h"
@@ -18,7 +18,7 @@ namespace trview
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source);
+        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source);
 
         /// Render the compass.
         /// @param camera The current camera being used to view the level.
@@ -36,7 +36,7 @@ namespace trview
         void set_visible(bool value);
     private:
         std::shared_ptr<graphics::IDevice> _device;
-        std::unique_ptr<graphics::RenderTarget> _render_target;
+        std::unique_ptr<graphics::IRenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;
         std::unique_ptr<graphics::ISprite> _sprite;
         OrbitCamera _mesh_camera;

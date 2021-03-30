@@ -54,19 +54,19 @@ namespace trview
                 // rendering node.
                 if (auto label = dynamic_cast<Label*>(control))
                 {
-                    node = std::make_unique<LabelNode>(*_device, label, _font_factory);
+                    node = std::make_unique<LabelNode>(_device, label, _font_factory);
                 }
                 else if (auto button = dynamic_cast<Button*>(control))
                 {
-                    node = std::make_unique<ButtonNode>(*_device, button);
+                    node = std::make_unique<ButtonNode>(_device, button);
                 }
                 else if (auto image = dynamic_cast<Image*>(control))
                 {
-                    node = std::make_unique<ImageNode>(*_device, image);
+                    node = std::make_unique<ImageNode>(_device, image);
                 }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {
-                    node = std::make_unique<WindowNode>(*_device, window);
+                    node = std::make_unique<WindowNode>(_device, window);
                 }
 
                 // Process the child nodes and build the structure to match the UI model.

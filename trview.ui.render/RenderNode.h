@@ -9,8 +9,8 @@
 
 #include <trview.common/TokenStore.h>
 #include <trview.common/Point.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IRenderTarget.h>
+#include <trview.graphics/IDevice.h>
 
 namespace trview
 {
@@ -35,7 +35,7 @@ namespace trview
             public:
                 friend class Renderer;
 
-                RenderNode(const graphics::IDevice& device, Control* control);
+                RenderNode(const std::shared_ptr<graphics::IDevice>& device, Control* control);
 
                 virtual ~RenderNode() = 0;
 
@@ -74,8 +74,8 @@ namespace trview
 
                 void regenerate_texture();
 
-                const graphics::IDevice&                 _device;
-                std::unique_ptr<graphics::RenderTarget>  _render_target;
+                std::shared_ptr<graphics::IDevice>       _device;
+                std::unique_ptr<graphics::IRenderTarget> _render_target;
                 std::vector<std::unique_ptr<RenderNode>> _child_nodes;
                 Control*                                 _control;
                 bool                                     _needs_redraw{ true };

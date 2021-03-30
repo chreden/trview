@@ -2,7 +2,6 @@
 
 #include <trlevel/trlevel.h>
 #include <trview.graphics/DeviceWindow.h>
-
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/ViewportStore.h>
@@ -21,20 +20,21 @@ namespace trview
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
-        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure)
+        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
-        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure))
+        _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
+        _render_target_source(render_target_source)
     {
         apply_acceleration_settings();
 
-        // TODO: Use DI
-        _scene_target = std::make_unique<graphics::RenderTarget>(*_device, static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = _render_target_source(static_cast<uint32_t>(window.size().width), static_cast<uint32_t>(window.size().height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite = sprite_source(window.size());
         _token_store += _free_camera.on_view_changed += [&]() { _scene_changed = true; };
         _token_store += _camera.on_view_changed += [&]() { _scene_changed = true; };
 
-        _main_window = _device->create_for_window(window);
+        // TODO: Use DI
+        _main_window = std::make_unique<graphics::DeviceWindow>(_device, window);
 
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -492,11 +492,11 @@ namespace trview
 
             if (_scene_changed)
             {
-                _scene_target->clear(_device->context(), Colour::Transparent);
+                _scene_target->clear(Colour::Transparent);
 
                 graphics::RenderTargetStore rs_store(_device->context());
                 graphics::ViewportStore vp_store(_device->context());
-                _scene_target->apply(_device->context());
+                _scene_target->apply();
 
                 render_scene();
                 _scene_changed = false;
@@ -736,8 +736,7 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
-        // TODO: Use DI
-        _scene_target = std::make_unique<graphics::RenderTarget>(*_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
         _scene_changed = true;
     }

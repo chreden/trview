@@ -78,7 +78,7 @@ namespace trview
         const std::wstring& window_class,
         const std::wstring& title,
         const Size& size)
-        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device->create_for_window(window())),
+        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(std::make_unique<DeviceWindow>(device, window())),
         _ui_renderer(std::move(ui_renderer)), _parent(parent), _initial_size(size), _shortcuts(window())
     {
         _token_store += _window_resizer.on_resize += [=]()

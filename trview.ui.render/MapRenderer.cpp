@@ -26,13 +26,15 @@ namespace trview
 
         namespace render
         {
-            MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source)
+            MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
+                const graphics::IRenderTarget::SizeSource& render_target_source)
                 : _device(device),
                 _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),
                 _sprite(sprite_source(window_size)),
                 _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
-                _texture(create_texture(*device, Colour::White))
+                _texture(create_texture(*device, Colour::White)),
+                _render_target_source(render_target_source)
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
@@ -53,14 +55,14 @@ namespace trview
                 if (needs_redraw())
                 {
                     // Clear the render target to be transparent (as it may not be using the entire area).
-                    _render_target->clear(context, Color(1, 1, 1, 1));
+                    _render_target->clear(Color(1, 1, 1, 1));
 
                     graphics::RenderTargetStore rs_store(context);
                     graphics::ViewportStore vp_store(context);
                     // Set the host size to match the render target as we will have adjusted the viewport.
                     graphics::SpriteSizeStore s_store(*_sprite, _render_target->size());
  
-                    _render_target->apply(context);
+                    _render_target->apply();
                     render_internal(context);
                     _force_redraw = false;
                 }
@@ -271,7 +273,7 @@ namespace trview
                 // Minor optimisation - don't recreate the render target if the room dimensions are the same.
                 if (!_render_target || (_render_target->width() != width || _render_target->height() != height))
                 {
-                    _render_target = std::make_unique<graphics::RenderTarget>(*_device, width, height);
+                    _render_target = _render_target_source(width, height, graphics::IRenderTarget::DepthStencilMode::Disabled);
                 }
                 _force_redraw = true;
             }

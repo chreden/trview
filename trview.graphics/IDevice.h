@@ -27,10 +27,6 @@ namespace trview
             /// @returns The D3D device context.
             virtual Microsoft::WRL::ComPtr<ID3D11DeviceContext> context() const = 0;
 
-            /// Create a device window to render to a specific window.
-            /// @param window The window to render to.
-            /// @returns The device window object.
-            virtual std::unique_ptr<DeviceWindow> create_for_window(const Window& window) = 0;
             virtual Microsoft::WRL::ComPtr<ID3D11BlendState> create_blend_state(const D3D11_BLEND_DESC& blend_desc) const = 0;
             virtual Microsoft::WRL::ComPtr<ID3D11Buffer> create_buffer(const D3D11_BUFFER_DESC& buffer_desc, const std::optional<D3D11_SUBRESOURCE_DATA>& buffer_data) const = 0;
             virtual Microsoft::WRL::ComPtr<ID3D11DepthStencilState> create_depth_stencil_state(const D3D11_DEPTH_STENCIL_DESC& depth_stencil_desc) const = 0;

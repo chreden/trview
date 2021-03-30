@@ -40,7 +40,8 @@ namespace trview
         explicit SelectionRenderer(
             const std::shared_ptr<graphics::IDevice>& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-            std::unique_ptr<ITransparencyBuffer> transparency);
+            std::unique_ptr<ITransparencyBuffer> transparency,
+            const graphics::IRenderTarget::SizeSource& render_target_source);
 
         /// Render the outline around the specified object.
         /// @param camera The current camera.
@@ -52,7 +53,8 @@ namespace trview
         void create_buffers(const graphics::IDevice& device);
 
         std::shared_ptr<graphics::IDevice> _device;
-        std::unique_ptr<graphics::RenderTarget> _texture;
+        std::unique_ptr<graphics::IRenderTarget> _texture;
+        graphics::IRenderTarget::SizeSource _render_target_source;
         std::unique_ptr<ITransparencyBuffer> _transparency;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _vertex_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer> _index_buffer;

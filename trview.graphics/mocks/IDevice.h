@@ -16,7 +16,6 @@ namespace trview
                 MOCK_METHOD(void, begin, ());
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11Device>, device, (), (const));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11DeviceContext>, context, (), (const));
-                MOCK_METHOD(std::unique_ptr<DeviceWindow>, create_for_window, (const Window&));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11BlendState>, create_blend_state, (const D3D11_BLEND_DESC&), (const));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11Buffer>, create_buffer, (const D3D11_BUFFER_DESC&, const std::optional<D3D11_SUBRESOURCE_DATA>&), (const));
                 MOCK_METHOD(Microsoft::WRL::ComPtr<ID3D11DepthStencilState>, create_depth_stencil_state, (const D3D11_DEPTH_STENCIL_DESC&), (const));

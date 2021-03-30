@@ -39,10 +39,9 @@ namespace trview
         };
     }
 
-    Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source)
+    Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source)
         : _device(device), _mesh_camera(Size(View_Size, View_Size)), _mesh(create_cube_mesh(*device)), _sprite(sprite_source(Size(View_Size, View_Size))),
-        // TODO: Use DI
-        _render_target(std::make_unique<RenderTarget>(*device, static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), RenderTarget::DepthStencilMode::Enabled))
+        _render_target(render_target_source(static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), IRenderTarget::DepthStencilMode::Enabled))
     {
     }
 
@@ -58,8 +57,8 @@ namespace trview
         {
             RenderTargetStore rs_store(context);
             ViewportStore vp_store(context);
-            _render_target->apply(context);
-            _render_target->clear(context, Color(0.0f, 0.0f, 0.0f, 0.0f));
+            _render_target->apply();
+            _render_target->clear(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
             // Have a camera that looks at the compass and match rotation to the real camera
             _mesh_camera.set_target(Vector3::Zero);

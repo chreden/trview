@@ -599,7 +599,8 @@ namespace trview
                             injector.create<std::shared_ptr<IDevice>>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
                             size,
-                            injector.create<graphics::ISprite::Source>());
+                            injector.create<graphics::ISprite::Source>(),
+                            injector.create<graphics::IRenderTarget::SizeSource>());
                     };
                 }),
             di::bind<IItemsWindow::Source>.to(
@@ -710,6 +711,18 @@ namespace trview
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
                             injector.create<std::shared_ptr<ITypeNameLookup>>());
+                    };
+                }),
+            di::bind<IRenderTarget::SizeSource>.to(
+                [](const auto& injector) -> IRenderTarget::SizeSource
+                {
+                    return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
+                    {
+                        return std::make_unique<RenderTarget>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            width,
+                            height,
+                            depth_stencil_mode);
                     };
                 }),
             di::bind<IMeasure>.to<Measure>(),

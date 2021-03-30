@@ -61,7 +61,8 @@ namespace trview
             const std::shared_ptr<IRoute> route,
             const graphics::ISprite::Source& sprite_source,
             std::unique_ptr<ICompass> compass,
-            std::unique_ptr<IMeasure> measure);
+            std::unique_ptr<IMeasure> measure,
+            const graphics::IRenderTarget::SizeSource& render_target_source);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -192,7 +193,8 @@ namespace trview
         /// Was the room just changed due to an alternate group or flip being performed?
         bool _was_alternate_select{ false };
 
-        std::unique_ptr<graphics::RenderTarget> _scene_target;
+        graphics::IRenderTarget::SizeSource _render_target_source;
+        std::unique_ptr<graphics::IRenderTarget> _scene_target;
         std::unique_ptr<graphics::ISprite> _scene_sprite;
         bool _scene_changed{ true };
         bool _mouse_changed{ true };
