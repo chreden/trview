@@ -72,13 +72,9 @@ namespace trview
         }
     }
 
-    CollapsiblePanel::CollapsiblePanel(const std::shared_ptr<graphics::IDevice>& device,
-        std::unique_ptr<ui::render::IRenderer> ui_renderer,
-        const Window& parent,
-        const std::wstring& window_class,
-        const std::wstring& title,
-        const Size& size)
-        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(std::make_unique<DeviceWindow>(device, window())),
+    CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
+        const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device_window_source(window())),
         _ui_renderer(std::move(ui_renderer)), _parent(parent), _initial_size(size), _shortcuts(window())
     {
         _token_store += _window_resizer.on_resize += [=]()

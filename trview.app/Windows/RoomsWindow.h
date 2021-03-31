@@ -22,7 +22,7 @@ namespace trview
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RoomsWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent);
+        explicit RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent);
 
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;

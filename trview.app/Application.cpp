@@ -609,7 +609,7 @@ namespace trview
                     return [&](auto window)
                     {
                         return std::make_shared<ItemsWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
@@ -621,7 +621,7 @@ namespace trview
                     return [&](auto window)
                     {
                         return std::make_shared<TriggersWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
@@ -633,7 +633,7 @@ namespace trview
                     return [&](auto window)
                     {
                         return std::make_shared<RouteWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
                             window);
                     };
@@ -646,7 +646,7 @@ namespace trview
                     return [&](auto window)
                     {
                         return std::make_shared<RoomsWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
                             injector.create<ui::render::IMapRenderer::Source>(),
                             window);
@@ -723,6 +723,16 @@ namespace trview
                             width,
                             height,
                             depth_stencil_mode);
+                    };
+                }),
+            di::bind<IDeviceWindow::Source>.to(
+                [](const auto& injector) -> IDeviceWindow::Source
+                {
+                    return [&](auto&& window)
+                    {
+                        return std::make_unique<DeviceWindow>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            window);
                     };
                 }),
             di::bind<IMeasure>.to<Measure>(),

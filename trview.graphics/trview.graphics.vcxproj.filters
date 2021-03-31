@@ -98,6 +98,12 @@
     <ClInclude Include="mocks\IRenderTarget.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="IDeviceWindow.h">
+      <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="mocks\IDeviceWindow.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="IRenderTarget.cpp">
       <Filter>RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="IDeviceWindow.cpp">
+      <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

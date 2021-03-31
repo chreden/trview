@@ -31,7 +31,7 @@ namespace trview
             static const std::string trigger_commands_listbox;
         };
 
-        explicit TriggersWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const Window& parent);
+        explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent);
 
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;

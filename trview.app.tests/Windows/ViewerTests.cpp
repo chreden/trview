@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/Tools/IMeasure.h>
 #include <trview.graphics/mocks/ISprite.h>
 #include <trview.graphics/mocks/IRenderTarget.h>
+#include <trview.graphics/mocks/IDeviceWindow.h>
 
 using testing::NiceMock;
 using testing::Return;
@@ -63,7 +64,8 @@ TEST(Viewer, SelectItemRaisedForValidItem)
         .WillRepeatedly([&]() { return items_list; });
 
     Viewer viewer(window, device, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
     viewer.open(&level);
 
     std::optional<Item> raised_item;
@@ -91,7 +93,8 @@ TEST(Viewer, SelectItemNotRaisedForInvalidItem)
     auto sprite_ptr = std::move(sprite_ptr_source);
 
     Viewer viewer(window, device, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     std::optional<Item> raised_item;
     auto token = viewer.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -126,7 +129,8 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
     viewer.open(&level);
 
     std::optional<std::tuple<Item, bool>> raised_item;
@@ -159,7 +163,8 @@ TEST(Viewer, SettingsRaised)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     std::optional<UserSettings> raised_settings;
     auto token = viewer.on_settings += [&raised_settings](const auto& settings) { raised_settings = settings; };
@@ -191,7 +196,8 @@ TEST(Viewer, SelectRoomRaised)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::make_unique<MockPicking>(), std::make_unique<input::mocks::MockMouse>(), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     std::optional<uint32_t> raised_room;
     auto token = viewer.on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
@@ -228,7 +234,8 @@ TEST(Viewer, SelectTriggerRaised)
         .WillRepeatedly([&]() { return triggers_list; });
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
     viewer.open(&level);
 
     std::optional<Trigger*> selected_trigger;
@@ -267,7 +274,8 @@ TEST(Viewer, TriggerVisibilityRaised)
         .WillRepeatedly([&]() { return triggers_list; });
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
     viewer.open(&level);
 
     std::optional<std::tuple<Trigger*, bool>> raised_trigger;
@@ -300,7 +308,8 @@ TEST(Viewer, SelectWaypointRaised)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     std::optional<uint32_t> selected_waypoint;
     auto token = viewer.on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
@@ -330,7 +339,8 @@ TEST(Viewer, RemoveWaypointRaised)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     std::optional<uint32_t> removed_waypoint;
     auto token = viewer.on_waypoint_removed += [&removed_waypoint](const auto& waypoint) { removed_waypoint = waypoint; };
@@ -369,7 +379,8 @@ TEST(Viewer, AddWaypointRaised)
         .WillRepeatedly([&]() { return items_list; });
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
     viewer.open(&level);
 
     std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
@@ -406,7 +417,8 @@ TEST(Viewer, RightClickActivatesContextMenu)
     auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
 
     Viewer viewer(window, device, std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr), shortcuts, route,
-        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); });
+        [&](auto) { return std::move(sprite_ptr); }, std::make_unique<MockCompass>(), std::make_unique<MockMeasure>(), [](auto, auto, auto) { return std::make_unique<MockRenderTarget>(); },
+        [&](auto) { return std::make_unique<MockDeviceWindow>(); });
 
     EXPECT_CALL(ui, set_show_context_menu(false));
     EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);

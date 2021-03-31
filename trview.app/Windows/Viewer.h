@@ -62,7 +62,8 @@ namespace trview
             const graphics::ISprite::Source& sprite_source,
             std::unique_ptr<ICompass> compass,
             std::unique_ptr<IMeasure> measure,
-            const graphics::IRenderTarget::SizeSource& render_target_source);
+            const graphics::IRenderTarget::SizeSource& render_target_source,
+            const graphics::IDeviceWindow::Source& device_window_source);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -158,7 +159,7 @@ namespace trview
         const std::shared_ptr<graphics::IDevice> _device;
         Window _window;
         const std::shared_ptr<IShortcuts>& _shortcuts;
-        std::unique_ptr<graphics::DeviceWindow> _main_window;
+        std::unique_ptr<graphics::IDeviceWindow> _main_window;
         ILevel* _level{ nullptr };
         Timer _timer;
         OrbitCamera _camera;

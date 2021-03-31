@@ -50,8 +50,8 @@ namespace trview
         }
     }
 
-    RoomsWindow::RoomsWindow(const std::shared_ptr<graphics::IDevice>& device, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent)
-        : CollapsiblePanel(device, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
+    RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 

@@ -25,6 +25,7 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
     <ClInclude Include="IDevice.h" />
+    <ClInclude Include="IDeviceWindow.h" />
     <ClInclude Include="IFont.h" />
     <ClInclude Include="IFontFactory.h" />
     <ClInclude Include="IRenderTarget.h" />
@@ -32,6 +33,7 @@
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="ISprite.h" />
     <ClInclude Include="Mocks\IDevice.h" />
+    <ClInclude Include="mocks\IDeviceWindow.h" />
     <ClInclude Include="mocks\IFont.h" />
     <ClInclude Include="mocks\IFontFactory.h" />
     <ClInclude Include="mocks\IRenderTarget.h" />
@@ -60,6 +62,7 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="IDevice.cpp" />
+    <ClCompile Include="IDeviceWindow.cpp" />
     <ClCompile Include="IFont.cpp" />
     <ClCompile Include="IFontFactory.cpp" />
     <ClCompile Include="IRenderTarget.cpp" />
