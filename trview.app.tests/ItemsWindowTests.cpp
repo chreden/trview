@@ -2,11 +2,8 @@
 #include <trview.tests.common/Window.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
-#include <trview.graphics/IFont.h>
 #include <trview.common/Size.h>
-
 #include <trview.app/Elements/Types.h>
-
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.ui.render/Mocks/IRenderer.h>
 

@@ -2,7 +2,6 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
-#include <trview.ui/Checkbox.h>
 
 using namespace trview;
 using namespace trview::tests;

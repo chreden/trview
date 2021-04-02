@@ -4,7 +4,6 @@
 
 #include <trlevel/ILevelLoader.h>
 
-#include <trview.app/Elements/Level.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/IFileDropper.h>
 #include <trview.app/Menus/ILevelSwitcher.h>

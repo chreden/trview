@@ -1,6 +1,5 @@
 #include <trview.app/Windows/Viewer.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
-#include <trview.graphics/Device.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
