@@ -13,10 +13,10 @@ namespace trview
             class ImageNode : public WindowNode
             {
             public:
-                explicit ImageNode(const std::shared_ptr<graphics::IDevice>& device, Image* image);
+                explicit ImageNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Image* image);
                 virtual ~ImageNode();
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) override;
+                virtual void render_self(graphics::ISprite& sprite) override;
             private:
                 Image * _image;
             };

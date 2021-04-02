@@ -20,12 +20,12 @@ namespace trview
             class LabelNode : public WindowNode, public IFontMeasurer
             {
             public:
-                LabelNode(const std::shared_ptr<graphics::IDevice>& device, Label* label, const graphics::IFontFactory& font_factory);
+                LabelNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Label* label, const graphics::IFontFactory& font_factory);
                 virtual ~LabelNode();
                 virtual Size measure(const std::wstring& text) const override;
                 virtual bool is_valid_character(wchar_t character) const override;
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) override;
+                virtual void render_self(graphics::ISprite& sprite) override;
             private:
                 // Generate the font texture and other textures required to render the label. This will also
                 // resize the label if the label has been set to auto size mode.

@@ -585,6 +585,7 @@ namespace trview
                     {
                         return std::make_unique<ui::render::Renderer>(
                             injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IRenderTarget::SizeSource>(),
                             *injector.create<std::shared_ptr<IFontFactory>>(),
                             size,
                             injector.create<graphics::ISprite::Source>());
@@ -725,6 +726,17 @@ namespace trview
                             depth_stencil_mode);
                     };
                 }),
+            di::bind<IRenderTarget::TextureSource>.to(
+                [](const auto& injector) -> IRenderTarget::TextureSource
+                {
+                    return [&](auto&& texture, auto&& depth_stencil_mode)
+                    {
+                        return std::make_unique<RenderTarget>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            texture,
+                            depth_stencil_mode);
+                    };
+                }),
             di::bind<IDeviceWindow::Source>.to(
                 [](const auto& injector) -> IDeviceWindow::Source
                 {
@@ -732,6 +744,7 @@ namespace trview
                     {
                         return std::make_unique<DeviceWindow>(
                             injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IRenderTarget::TextureSource>(),
                             window);
                     };
                 }),

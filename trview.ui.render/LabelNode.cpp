@@ -8,8 +8,8 @@ namespace trview
     {
         namespace render
         {
-            LabelNode::LabelNode(const std::shared_ptr<graphics::IDevice>& device, Label* label, const graphics::IFontFactory& font_factory)
-                : WindowNode(device, label), 
+            LabelNode::LabelNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Label* label, const graphics::IFontFactory& font_factory)
+                : WindowNode(device, render_target_source, label), 
                 _font(font_factory.create_font("Arial", label->text_size(), label->text_alignment(), label->paragraph_alignment())), _label(label)
             {
                 generate_font_texture();
@@ -45,16 +45,16 @@ namespace trview
                 return _font->is_valid_character(character);
             }
 
-            void LabelNode::render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite)
+            void LabelNode::render_self(graphics::ISprite& sprite)
             {
-                WindowNode::render_self(context, sprite);
+                WindowNode::render_self(sprite);
                 if (!_label)
                 {
                     return;
                 }
 
                 const auto size = _label->size();
-                _font->render(context, _label->text(), size.width, size.height, _label->text_colour());
+                _font->render(_device->context(), _label->text(), size.width, size.height, _label->text_colour());
             }
 
             // Generate the font texture and other textures required to render the label. This will also

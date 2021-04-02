@@ -10,8 +10,8 @@ namespace trview
     {
         namespace render
         {
-            ButtonNode::ButtonNode(const std::shared_ptr<graphics::IDevice>& device, Button* button)
-                : RenderNode(device, button), _button(button), _blank(*_device, 1, 1, std::vector<uint32_t>(1, 0xffffffff))
+            ButtonNode::ButtonNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Button* button)
+                : RenderNode(device, render_target_source, button), _button(button), _blank(*device, 1, 1, std::vector<uint32_t>(1, 0xffffffff))
             {
             }
 
@@ -19,7 +19,7 @@ namespace trview
             {
             }
 
-            void ButtonNode::render_self(const ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite)
+            void ButtonNode::render_self(graphics::ISprite& sprite)
             {
                 const float thickness = _button->border_thickness();
                 if (thickness)
@@ -27,6 +27,7 @@ namespace trview
                     _render_target->clear(Colour::Black);
                 }
 
+                auto context = _device->context();
                 graphics::RenderTargetStore rt_store(context);
                 graphics::ViewportStore vp_store(context);
                 graphics::SpriteSizeStore s_store(sprite, _render_target->size());

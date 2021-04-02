@@ -22,15 +22,14 @@ namespace trview
                 /// Create a new ButtonNode.
                 /// @param device The device to use to render.
                 /// @param button The button to render.
-                explicit ButtonNode(const std::shared_ptr<graphics::IDevice>& device, Button* button);
+                explicit ButtonNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Button* button);
 
                 /// Destructor for the button node.
                 virtual ~ButtonNode();
             protected:
                 /// Render the node.
-                /// @param context The D3D context to use to render.
                 /// @param sprite The sprite to use to render.
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite) override;
+                virtual void render_self(graphics::ISprite& sprite) override;
             private:
                 graphics::Texture _blank;
                 Button*           _button;

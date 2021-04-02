@@ -20,7 +20,7 @@ namespace trview
             /// Create a new device window.
             /// @param device The device to use to render.
             /// @param window The window to render to.
-            explicit DeviceWindow(const std::shared_ptr<IDevice>& device, const Window& window);
+            explicit DeviceWindow(const std::shared_ptr<IDevice>& device, const IRenderTarget::TextureSource& render_target_source, const Window& window);
 
             virtual ~DeviceWindow() = default;
 
@@ -43,9 +43,9 @@ namespace trview
             void create_render_target();
 
             std::shared_ptr<IDevice> _device;
-            Microsoft::WRL::ComPtr<ID3D11DeviceContext> _context;
             Microsoft::WRL::ComPtr<IDXGISwapChain> _swap_chain;
             std::unique_ptr<IRenderTarget> _render_target;
+            IRenderTarget::TextureSource _render_target_source;
         };
     }
 }

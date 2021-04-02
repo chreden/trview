@@ -7,8 +7,8 @@ namespace trview
 {
     namespace graphics
     {
-        DeviceWindow::DeviceWindow(const std::shared_ptr<IDevice>& device, const Window& window)
-            : _device(device), _context(device->context())
+        DeviceWindow::DeviceWindow(const std::shared_ptr<IDevice>& device, const IRenderTarget::TextureSource& source, const Window& window)
+            : _device(device), _render_target_source(source)
         {
             // Swap chain description.
             DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
@@ -41,8 +41,7 @@ namespace trview
         {
             ComPtr<ID3D11Texture2D> back_buffer;
             _swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(back_buffer.GetAddressOf()));
-            // TODO: Use DI
-            _render_target = std::make_unique<graphics::RenderTarget>(_device, back_buffer, graphics::RenderTarget::DepthStencilMode::Enabled);
+            _render_target = _render_target_source(back_buffer, IRenderTarget::DepthStencilMode::Enabled);
         }
 
         void DeviceWindow::begin()
@@ -58,7 +57,7 @@ namespace trview
 
         void DeviceWindow::resize()
         {
-            _context->ClearState();
+            _device->context()->ClearState();
             _render_target.reset();
 
             _swap_chain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
@@ -72,7 +71,7 @@ namespace trview
 
         Microsoft::WRL::ComPtr<ID3D11DeviceContext> DeviceWindow::context() const
         {
-            return _context;
+            return _device->context();
         }
     }
 }

@@ -4,6 +4,7 @@
 #include <trview.ui/Control.h>
 
 using namespace Microsoft::WRL;
+using namespace trview::graphics;
 
 namespace trview
 {
@@ -11,8 +12,8 @@ namespace trview
     {
         namespace render
         {
-            RenderNode::RenderNode(const std::shared_ptr<graphics::IDevice>& device, Control* control)
-                : _device(device), _control(control)
+            RenderNode::RenderNode(const std::shared_ptr<IDevice>& device, const IRenderTarget::SizeSource& render_target_source, Control* control)
+                : _device(device), _render_target_source(render_target_source), _control(control)
             {
                 regenerate_texture();
                 _token_store += _control->on_size_changed += [&](auto) {regenerate_texture(); };
@@ -23,12 +24,12 @@ namespace trview
             {
             }
 
-            const graphics::Texture& RenderNode::node_texture() const
+            const Texture& RenderNode::node_texture() const
             {
                 return _render_target->texture();
             }
 
-            void RenderNode::render(const ComPtr<ID3D11DeviceContext>& context, graphics::ISprite& sprite)
+            void RenderNode::render(ISprite& sprite)
             {
                 if (!needs_redraw() && !needs_recompositing())
                 {
@@ -43,15 +44,16 @@ namespace trview
 
                 for (auto& child : _child_nodes)
                 {
-                    child->render(context, sprite);
+                    child->render(sprite);
                 }
 
-                graphics::RenderTargetStore render_target_store(context);
-                graphics::ViewportStore vp_store(context);
-                graphics::SpriteSizeStore s_store(sprite, _render_target->size());
+                auto context = _device->context();
+                RenderTargetStore render_target_store(context);
+                ViewportStore vp_store(context);
+                SpriteSizeStore s_store(sprite, _render_target->size());
                 _render_target->apply();
 
-                render_self(context, sprite);
+                render_self(sprite);
 
                 std::vector<RenderNode*> children;
                 std::transform(_child_nodes.begin(), _child_nodes.end(), std::back_inserter(children),
@@ -115,8 +117,7 @@ namespace trview
             {
                 auto size = _control->size();
                 size = Size(size.width == 0 ? 1 : size.width, size.height == 0 ? 1 : size.height);
-                // TODO: Use DI
-                _render_target = std::make_unique<graphics::RenderTarget>(_device, static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height));
+                _render_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), IRenderTarget::DepthStencilMode::Disabled);
             }
 
             void RenderNode::set_hierarchy_changed(bool value)

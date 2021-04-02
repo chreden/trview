@@ -24,6 +24,7 @@ namespace trview
             public:
                 explicit Renderer(
                     const std::shared_ptr<graphics::IDevice>& device,
+                    const graphics::IRenderTarget::SizeSource& render_target_source,
                     const graphics::IFontFactory& font_factory,
                     const Size& host_size,
                     const graphics::ISprite::Source& sprite_source);
@@ -52,6 +53,7 @@ namespace trview
                 std::shared_ptr<graphics::IDevice> _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
                 const graphics::IFontFactory& _font_factory;
+                graphics::IRenderTarget::SizeSource _render_target_source;
                 Size _host_size;
                 TokenStore _token_store;
                 bool _hierarchy_changed{ false };
