@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClInclude Include="ILevel.h" />
     <ClInclude Include="Level.h" />
-    <ClInclude Include="trlevel.h" />
     <ClInclude Include="trtypes.h" />
     <ClInclude Include="LevelVersion.h" />
     <ClInclude Include="LevelLoadException.h" />
@@ -20,7 +19,6 @@
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
     <ClCompile Include="Level.cpp" />
-    <ClCompile Include="trlevel.cpp" />
     <ClCompile Include="trtypes.cpp" />
     <ClCompile Include="LevelVersion.cpp" />
     <ClCompile Include="stdafx.cpp" />

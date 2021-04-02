@@ -1,6 +1,6 @@
 #include "Viewer.h"
 
-#include <trlevel/trlevel.h>
+#include <trlevel/ILevel.h>
 #include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/Sprite.h>
