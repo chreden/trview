@@ -4,7 +4,6 @@
 #include <Shlwapi.h>
 #include <commdlg.h>
 
-#include <trlevel/trlevel.h>
 #include <trlevel/LevelLoader.h>
 
 #include <trview.app/Geometry/Picking.h>
