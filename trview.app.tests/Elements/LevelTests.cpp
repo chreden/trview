@@ -7,6 +7,7 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
+#include <trview.app/Mocks/Elements/ITypeNameLookup.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -16,15 +17,6 @@ using namespace trlevel;
 using namespace trlevel::mocks;
 using testing::NiceMock;
 using testing::Return;
-
-namespace
-{
-    class MockTypeNameLookup : public ITypeNameLookup
-    {
-    public:
-        MOCK_METHOD(std::wstring, lookup_type_name, (LevelVersion, uint32_t), (const, override));
-    };
-}
 
 // Tests that the level class loads the type names with the correct level version.
 TEST(Level, LoadTypeNames)

@@ -186,6 +186,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" />
     <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" />

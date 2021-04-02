@@ -663,6 +663,9 @@
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h">
       <Filter>Mocks\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
