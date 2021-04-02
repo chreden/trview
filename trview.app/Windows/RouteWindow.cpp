@@ -35,10 +35,16 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const trview::Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.route", L"Route", Size(470, 400))
+    RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400))
     {
+        CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
+    }
+
+    void RouteWindow::render(bool vsync)
+    {
+        CollapsiblePanel::render(vsync);
     }
 
     void RouteWindow::set_route(IRoute* route) 
@@ -467,5 +473,10 @@ namespace trview
     void RouteWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
+    }
+
+    void RouteWindow::focus()
+    {
+        SetForegroundWindow(window());
     }
 }

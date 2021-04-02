@@ -1,14 +1,12 @@
 #include "ItemsWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.graphics/DeviceWindow.h>
 
 namespace trview
 {
-    ItemsWindowManager::ItemsWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts)
-        : _device(device), _shader_storage(shader_storage), _font_factory(font_factory), MessageHandler(window)
+    ItemsWindowManager::ItemsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IItemsWindow::Source& items_window_source)
+        : _items_window_source(items_window_source), MessageHandler(window)
     {
-        _token_store += shortcuts.add_shortcut(true, 'I') += [&]() { create_window(); };
+        _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create_window(); };
     }
 
     void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -19,24 +17,27 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::render(graphics::Device& device, bool vsync)
+    void ItemsWindowManager::render(bool vsync)
     {
         if (!_closing_windows.empty())
         {
-            _windows.erase(std::remove_if(_windows.begin(), _windows.end(),
-                [&](auto& window) { return std::find(_closing_windows.begin(), _closing_windows.end(), window.get()) != _closing_windows.end(); }), _windows.end());
+            for (const auto window_ptr : _closing_windows)
+            {
+                auto window = window_ptr.lock();
+                _windows.erase(std::remove(_windows.begin(), _windows.end(), window));
+            }
             _closing_windows.clear();
         }
 
         for (auto& window : _windows)
         {
-            window->render(device, vsync);
+            window->render(vsync);
         }
     }
 
-    ItemsWindow* ItemsWindowManager::create_window()
+    std::weak_ptr<IItemsWindow> ItemsWindowManager::create_window()
     {
-        auto items_window = std::make_unique<ItemsWindow>(_device, _shader_storage, _font_factory, window());
+        auto items_window = _items_window_source(window());
         items_window->on_item_selected += on_item_selected;
         items_window->on_item_visibility += on_item_visibility;
         items_window->on_trigger_selected += on_trigger_selected;
@@ -49,14 +50,13 @@ namespace trview
             items_window->set_selected_item(_selected_item.value());
         }
 
-        const auto window = items_window.get();
-        _token_store += items_window->on_window_closed += [window, this]()
+        _token_store += items_window->on_window_closed += [items_window, this]()
         {
-            _closing_windows.push_back(window);
+            _closing_windows.push_back(items_window);
         };
 
-        _windows.push_back(std::move(items_window));
-        return window;
+        _windows.push_back(items_window);
+        return items_window;
     }
 
     void ItemsWindowManager::set_items(const std::vector<Item>& items)

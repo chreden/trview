@@ -48,6 +48,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\TypeNameLookup.cpp" />
     <ClCompile Include="Geometry\IPicking.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
+    <ClCompile Include="Geometry\ITransparencyBuffer.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
     <ClCompile Include="Geometry\PickResult.cpp" />
@@ -55,6 +56,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\TransparentTriangle.cpp" />
     <ClCompile Include="Graphics\ILevelTextureStorage.cpp" />
     <ClCompile Include="Graphics\IMeshStorage.cpp" />
+    <ClCompile Include="Graphics\ISelectionRenderer.cpp" />
     <ClCompile Include="Graphics\ITextureStorage.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorage.cpp" />
     <ClCompile Include="Graphics\MeshStorage.cpp" />
@@ -91,6 +93,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tools\Compass.cpp" />
+    <ClCompile Include="Tools\ICompass.cpp" />
+    <ClCompile Include="Tools\IMeasure.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
@@ -106,8 +110,16 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ViewerUI.cpp" />
     <ClCompile Include="UI\ViewOptions.cpp" />
     <ClCompile Include="Windows\CollapsiblePanel.cpp" />
+    <ClCompile Include="Windows\IItemsWindow.cpp" />
+    <ClCompile Include="Windows\IItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\IRoomsWindow.cpp" />
+    <ClCompile Include="Windows\IRoomsWindowManager.cpp" />
+    <ClCompile Include="Windows\IRouteWindow.cpp" />
+    <ClCompile Include="Windows\IRouteWindowManager.cpp" />
     <ClCompile Include="Windows\ItemsWindow.cpp" />
     <ClCompile Include="Windows\ItemsWindowManager.cpp" />
+    <ClCompile Include="Windows\ITriggersWindow.cpp" />
+    <ClCompile Include="Windows\ITriggersWindowManager.cpp" />
     <ClCompile Include="Windows\IViewer.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
@@ -142,6 +154,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Types.h" />
     <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
+    <ClInclude Include="Geometry\ITransparencyBuffer.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\MeshVertex.h" />
     <ClInclude Include="Geometry\PickInfo.h" />
@@ -152,6 +165,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\Triangle.h" />
     <ClInclude Include="Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Graphics\IMeshStorage.h" />
+    <ClInclude Include="Graphics\ISelectionRenderer.h" />
     <ClInclude Include="Graphics\ITextureStorage.h" />
     <ClInclude Include="Graphics\LevelTextureStorage.h" />
     <ClInclude Include="Graphics\MeshStorage.h" />
@@ -172,7 +186,12 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\UpdateChecker.h" />
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
+    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
+    <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" />
+    <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" />
+    <ClInclude Include="Mocks\Graphics\IMeshStorage.h" />
+    <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h" />
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" />
     <ClInclude Include="Mocks\Menus\IFileDropper.h" />
     <ClInclude Include="Mocks\Menus\ILevelSwitcher.h" />
@@ -180,7 +199,15 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
     <ClInclude Include="Mocks\Routing\IRoute.h" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
+    <ClInclude Include="Mocks\Tools\ICompass.h" />
+    <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
+    <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
+    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
+    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
     <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
@@ -196,6 +223,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
+    <ClInclude Include="Tools\ICompass.h" />
+    <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
     <ClInclude Include="UI\CameraControls.h" />
@@ -211,8 +240,16 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
+    <ClInclude Include="Windows\IItemsWindow.h" />
+    <ClInclude Include="Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Windows\IRoomsWindow.h" />
+    <ClInclude Include="Windows\IRoomsWindowManager.h" />
+    <ClInclude Include="Windows\IRouteWindow.h" />
+    <ClInclude Include="Windows\IRouteWindowManager.h" />
     <ClInclude Include="Windows\ItemsWindow.h" />
     <ClInclude Include="Windows\ItemsWindowManager.h" />
+    <ClInclude Include="Windows\ITriggersWindow.h" />
+    <ClInclude Include="Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Windows\IViewer.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
@@ -355,6 +392,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -379,6 +417,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -401,6 +440,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -425,6 +465,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

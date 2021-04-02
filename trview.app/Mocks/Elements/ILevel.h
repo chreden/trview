@@ -20,8 +20,8 @@ namespace trview
             MOCK_METHOD(uint32_t, number_of_rooms, (), (const));
             MOCK_METHOD(void, on_camera_moved, ());
             MOCK_METHOD(PickResult, pick, (const ICamera&, const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const));
-            MOCK_METHOD(void, render, (const graphics::Device&, const ICamera&, bool));
-            MOCK_METHOD(void, render_transparency, (const graphics::Device&, const ICamera&));
+            MOCK_METHOD(void, render, (const ICamera&, bool));
+            MOCK_METHOD(void, render_transparency, (const ICamera&));
             MOCK_METHOD(Room*, room, (std::size_t), (const));
             MOCK_METHOD(std::vector<RoomInfo>, room_info, (), (const));
             MOCK_METHOD(RoomInfo, room_info, (uint32_t), (const));

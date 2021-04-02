@@ -36,15 +36,15 @@ namespace trview
         }; 
     }
 
-    SelectionRenderer::SelectionRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage)
+    SelectionRenderer::SelectionRenderer(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& shader_storage, std::unique_ptr<ITransparencyBuffer> transparency, const graphics::IRenderTarget::SizeSource& render_target_source)
+        : _device(device), _transparency(std::move(transparency)), _render_target_source(render_target_source)
     {
-        _pixel_shader = shader_storage.get("selection_pixel_shader");
-        _vertex_shader = shader_storage.get("ui_vertex_shader");
-        _transparency = std::make_unique<TransparencyBuffer>(device);
-        create_buffers(device);
+        _pixel_shader = shader_storage->get("selection_pixel_shader");
+        _vertex_shader = shader_storage->get("ui_vertex_shader");
+        create_buffers(*device);
     }
 
-    void SelectionRenderer::create_buffers(const graphics::Device& device)
+    void SelectionRenderer::create_buffers(const graphics::IDevice& device)
     {
         const SelectionVertex vertices[] =
         {
@@ -64,7 +64,7 @@ namespace trview
         memset(&vertex_data, 0, sizeof(vertex_data));
         vertex_data.pSysMem = vertices;
 
-        HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+        _vertex_buffer = device.create_buffer(vertex_desc, vertex_data);
 
         uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -78,7 +78,7 @@ namespace trview
         memset(&index_data, 0, sizeof(index_data));
         index_data.pSysMem = indices;
 
-        hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+        _index_buffer = device.create_buffer(index_desc, index_data);
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC desc;
@@ -89,7 +89,7 @@ namespace trview
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+        _matrix_buffer = device.create_buffer(desc, std::optional<D3D11_SUBRESOURCE_DATA>());
 
         using namespace DirectX::SimpleMath;
         D3D11_BUFFER_DESC scale_desc;
@@ -100,12 +100,12 @@ namespace trview
         scale_desc.Usage = D3D11_USAGE_DYNAMIC;
         scale_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-        device.device()->CreateBuffer(&scale_desc, nullptr, _scale_buffer.GetAddressOf());
+        _scale_buffer = device.create_buffer(scale_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
     }
 
-    void SelectionRenderer::render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
+    void SelectionRenderer::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, IRenderable& selected_item, const DirectX::SimpleMath::Color& outline_colour)
     {
-        auto context = device.context();
+        auto context = _device->context();
 
         // Get viewport size - this is used for checking if the texture size needs to change and for
         // scaling the coordinates that the pixel shader uses for the edge detection.
@@ -116,26 +116,26 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
-            _texture = std::make_unique<RenderTarget>(device, static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
+            _texture = _render_target_source(static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.
         {
             // Clear the render target with red. This also clears depth. Start rendering to the render target.
             graphics::RenderTargetStore store(context);
-            _texture->clear(context, Color(1.0f, 0.0f, 0.0f, 1.0f));
-            _texture->apply(context);
+            _texture->clear(Color(1.0f, 0.0f, 0.0f, 1.0f));
+            _texture->apply();
 
             // Draw the regular faces of the item with a black colouring.
             const bool was_visible = selected_item.visible();
             selected_item.set_visible(true);
-            selected_item.render(device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
+            selected_item.render(*_device, camera, texture_storage, Color(0.0f, 0.0f, 0.0f));
 
             // Also render the transparent parts of the meshes, again with black.
             _transparency->reset();
             selected_item.get_transparent_triangles(*_transparency, camera, Color(0.0f, 0.0f, 0.0f));
             _transparency->sort(camera.rendering_position());
-            _transparency->render(context, camera, texture_storage, true);
+            _transparency->render(camera, texture_storage, true);
             selected_item.set_visible(was_visible);
         }
 

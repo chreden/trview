@@ -80,6 +80,30 @@
     <ClInclude Include="Mocks\IShaderStorage.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="IDevice.h">
+      <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\IDevice.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="ISprite.h">
+      <Filter>Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\ISprite.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderTarget.h">
+      <Filter>RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="mocks\IRenderTarget.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="IDeviceWindow.h">
+      <Filter>Device</Filter>
+    </ClInclude>
+    <ClInclude Include="mocks\IDeviceWindow.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -145,6 +169,18 @@
     </ClCompile>
     <ClCompile Include="RasterizerStateStore.cpp">
       <Filter>Rasterizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IDevice.cpp">
+      <Filter>Device</Filter>
+    </ClCompile>
+    <ClCompile Include="ISprite.cpp">
+      <Filter>Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderTarget.cpp">
+      <Filter>RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="IDeviceWindow.cpp">
+      <Filter>Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

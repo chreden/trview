@@ -4,35 +4,22 @@
 
 #include <memory>
 #include <string>
-#include <trview.graphics/Device.h>
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.graphics/DeviceWindow.h>
+#include <trview.ui.render/IRenderer.h>
+#include <trview.graphics/IDeviceWindow.h>
 #include <trview.ui/Input.h>
 #include <trview.ui/Window.h>
-
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
-    namespace graphics
-    {
-        class  Device;
-        struct IShaderStorage;
-        struct IFontFactory;
-    }
-
     namespace ui
     {
         class Control;
         class Button;
         class StackPanel;
-        namespace render
-        {
-            class Renderer;
-        }
     }
 
     /// A window with two panels where the right panel can be collapsed.
@@ -40,17 +27,14 @@ namespace trview
     {
     public:
         /// Create a collapsible panel window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param shader_storage The shader storage instance to use.
-        /// @param font_factory The font factory to use.
+        /// @param device_window_source The device window source function.
+        /// @param ui_renderer The renderer to use.
         /// @param parent The parent window.
-        explicit CollapsiblePanel(graphics::Device& device,
-            const graphics::IShaderStorage& shader_storage,
-            const graphics::IFontFactory& font_factory,
-            const Window& parent,
-            const std::wstring& window_class,
-            const std::wstring& title,
-            const Size& size);
+        /// @param window_class Window class name
+        /// @param title Window title
+        /// @param size Window size
+        CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
+            const std::wstring& window_class, const std::wstring& title, const Size& size);
 
         virtual ~CollapsiblePanel() = default;
 
@@ -63,7 +47,7 @@ namespace trview
         /// Render the window.
         /// @param device The device to render with.
         /// @param vsync Whether to use vsync or not.
-        void render(const graphics::Device& device, bool vsync);
+        void render(bool vsync);
 
         /// Get the root control for the window.
         /// @returns The root control.
@@ -93,7 +77,7 @@ namespace trview
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
         std::unique_ptr<ui::Input> _input;
-        std::unique_ptr<graphics::DeviceWindow> _device_window;
+        std::unique_ptr<graphics::IDeviceWindow> _device_window;
         Shortcuts _shortcuts;
     private:
         void toggle_expand();
@@ -101,7 +85,7 @@ namespace trview
         void register_change_detection(ui::Control* control);
 
         Window _parent;
-        std::unique_ptr<ui::render::Renderer>   _ui_renderer;
+        std::unique_ptr<ui::render::IRenderer>   _ui_renderer;
         ui::StackPanel* _panels;
         WindowResizer   _window_resizer;
         ui::Control* _divider;

@@ -26,40 +26,43 @@ namespace trview
 
         namespace render
         {
-            MapRenderer::MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size)
+            MapRenderer::MapRenderer(const std::shared_ptr<graphics::IDevice>& device, const graphics::IFontFactory& font_factory, const Size& window_size, const graphics::ISprite::Source& sprite_source,
+                const graphics::IRenderTarget::SizeSource& render_target_source)
                 : _device(device),
                 _window_width(static_cast<int>(window_size.width)),
                 _window_height(static_cast<int>(window_size.height)),
-                _sprite(device, shader_storage, window_size),
+                _sprite(sprite_source(window_size)),
                 _font(font_factory.create_font("Arial", 7, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre)),
-                _texture(create_texture(device, Colour::White))
+                _texture(create_texture(*device, Colour::White)),
+                _render_target_source(render_target_source)
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-                device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
+                _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
             }
 
             void
-            MapRenderer::render(const ComPtr<ID3D11DeviceContext>& context, bool to_screen)
+            MapRenderer::render(bool to_screen)
             {
                 if (!_render_target || !_visible)
                 {
                     return;
                 }
 
+                auto context = _device->context();
                 context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
 
                 if (needs_redraw())
                 {
                     // Clear the render target to be transparent (as it may not be using the entire area).
-                    _render_target->clear(context, Color(1, 1, 1, 1));
+                    _render_target->clear(Color(1, 1, 1, 1));
 
                     graphics::RenderTargetStore rs_store(context);
                     graphics::ViewportStore vp_store(context);
                     // Set the host size to match the render target as we will have adjusted the viewport.
-                    graphics::SpriteSizeStore s_store(_sprite, _render_target->size());
+                    graphics::SpriteSizeStore s_store(*_sprite, _render_target->size());
  
-                    _render_target->apply(context);
+                    _render_target->apply();
                     render_internal(context);
                     _force_redraw = false;
                 }
@@ -68,7 +71,7 @@ namespace trview
                 {
                     // Now render the render target in the correct position.
                     auto p = Point(_first.x - 1, _first.y - 1);
-                    _sprite.render(context, _render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
+                    _sprite->render(_render_target->texture(), p.x, p.y, static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height()));
                 }
             }
 
@@ -76,7 +79,7 @@ namespace trview
             MapRenderer::render_internal(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
             {
                 // Draw base square, this is the backdrop for the map 
-                draw(context, Point(), Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
+                draw(Point(), Size(static_cast<float>(_render_target->width()), static_cast<float>(_render_target->height())), Color(0.0f, 0.0f, 0.0f));
 
                 std::for_each(_tiles.begin(), _tiles.end(), [&](const Tile &tile)
                 {
@@ -116,32 +119,32 @@ namespace trview
                     }
 
                     // Draw the base tile 
-                    draw(context, tile.position, tile.size, draw_color);
+                    draw(tile.position, tile.size, draw_color);
 
                     // Draw climbable walls. This draws 4 separate lines - one per climbable edge. 
                     // In the future I'd like to just draw a hollow square instead.
                     const float thickness = _DRAW_SCALE / 4;
 
                     if (tile.sector->flags & SectorFlag::ClimbableUp)
-                        draw(context, tile.position, Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableUp]);
+                        draw(tile.position, Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableUp]);
                     if (tile.sector->flags & SectorFlag::ClimbableRight)
-                        draw(context, Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableRight]);
+                        draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableRight]);
                     if (tile.sector->flags & SectorFlag::ClimbableDown)
-                        draw(context, Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableDown]);
+                        draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableDown]);
                     if (tile.sector->flags & SectorFlag::ClimbableLeft)
-                        draw(context, tile.position, Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableLeft]);
+                        draw(tile.position, Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableLeft]);
 
                     // If sector is a down portal, draw a transparent black square over it 
                     if (tile.sector->flags & SectorFlag::RoomBelow)
-                        draw(context, tile.position, tile.size, Color(0.0f, 0.0f, 0.0f, 0.6f));
+                        draw(tile.position, tile.size, Color(0.0f, 0.0f, 0.0f, 0.6f));
 
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
                     if (tile.sector->flags & SectorFlag::RoomAbove)
-                        draw(context, tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
+                        draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
 
                     if (tile.sector->flags & SectorFlag::Death && tile.sector->flags & SectorFlag::Trigger)
                     {
-                        draw(context, tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, default_colours[SectorFlag::Death]);
+                        draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, default_colours[SectorFlag::Death]);
                     }
 
                     if (tile.sector->flags & SectorFlag::Portal)
@@ -152,9 +155,9 @@ namespace trview
             }
 
             void 
-            MapRenderer::draw(const ComPtr<ID3D11DeviceContext>& context, Point p, Size s, Color c)
+            MapRenderer::draw(Point p, Size s, Color c)
             {
-                _sprite.render(context, _texture, p.x, p.y, s.width, s.height, c); 
+                _sprite->render(_texture, p.x, p.y, s.width, s.height, c); 
             }
 
             void
@@ -243,7 +246,7 @@ namespace trview
             {
                 _window_width = static_cast<int>(size.width);
                 _window_height = static_cast<int>(size.height);
-                _sprite.set_host_size(size);
+                _sprite->set_host_size(size);
                 update_map_position();
             }
 
@@ -270,7 +273,7 @@ namespace trview
                 // Minor optimisation - don't recreate the render target if the room dimensions are the same.
                 if (!_render_target || (_render_target->width() != width || _render_target->height() != height))
                 {
-                    _render_target = std::make_unique<graphics::RenderTarget>(_device, width, height);
+                    _render_target = _render_target_source(width, height, graphics::IRenderTarget::DepthStencilMode::Disabled);
                 }
                 _force_redraw = true;
             }

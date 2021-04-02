@@ -13,6 +13,7 @@
 #include <trview.graphics/Texture.h>
 #include <trview.common/Event.h>
 #include <trview.common/TokenStore.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 
 namespace trview
 {
@@ -22,8 +23,6 @@ namespace trview
         class Label;
         class Image;
     }
-
-    struct ITextureStorage;
 
     /// The level info display shows the name of the current level as well
     /// as the game that the level was built for.

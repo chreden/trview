@@ -14,7 +14,6 @@ namespace trview
         class Checkbox;
         class Slider;
     }
-    struct ITextureStorage;
 
     /// UI window for program level settings.
     class SettingsWindow final

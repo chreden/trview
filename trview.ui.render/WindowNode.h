@@ -16,10 +16,10 @@ namespace trview
             class WindowNode : public RenderNode
             {
             public:
-                WindowNode(const graphics::Device& device, Window* window);
+                WindowNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Window* window);
                 virtual ~WindowNode();
             protected:
-                virtual void render_self(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, graphics::Sprite& sprite) override;
+                virtual void render_self(graphics::ISprite& sprite) override;
             private:
                 Window* _window;
             };

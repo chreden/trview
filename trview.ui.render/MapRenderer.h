@@ -16,17 +16,13 @@
 #include <trview.common/Size.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.graphics/RenderTarget.h>
-#include <trview.common/Event.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/IFont.h>
 
+#include "IMapRenderer.h"
+
 namespace trview
 {
-    namespace graphics
-    {
-        struct IShaderStorage;
-    }
-
     namespace ui
     {
         namespace render
@@ -45,51 +41,54 @@ namespace trview
                 };
             }
 
-            class MapRenderer
+            class MapRenderer final : public IMapRenderer
             {
             public:
-                MapRenderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& window_size);
+                MapRenderer(const std::shared_ptr<graphics::IDevice>& device,
+                    const graphics::IFontFactory& font_factory,
+                    const Size& window_size,
+                    const graphics::ISprite::Source& sprite_source,
+                    const graphics::IRenderTarget::SizeSource& render_target_source);
+
+                virtual ~MapRenderer() = default;
 
                 // Renders the map 
-                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, bool to_screen = true);
+                virtual void render(bool to_screen = true) override;
 
                 // Changes the room to specified room, reloads map
-                void load(const trview::Room* room);
+                virtual void load(const trview::Room* room) override;
 
                 // Returns the total area of the room 
-                inline std::uint16_t area() const { return _columns * _rows; }
+                virtual inline std::uint16_t area() const override { return _columns * _rows; }
 
                 // Returns the sector under the specified position, or nullptr if none
-                std::shared_ptr<Sector> sector_at(const Point& p) const;
+                virtual std::shared_ptr<Sector> sector_at(const Point& p) const override;
 
                 // Returns the sector that the cursor is within, or nullptr if none
-                std::shared_ptr<Sector> sector_at_cursor() const;
+                virtual std::shared_ptr<Sector> sector_at_cursor() const override;
 
                 // Returns true if cursor is on the control
-                bool cursor_is_over_control() const;
+                virtual bool cursor_is_over_control() const override;
 
                 // Sets the position of the cursor 
-                void set_cursor_position(const Point& cursor);
+                virtual void set_cursor_position(const Point& cursor) override;
 
                 // Returns whether the map is loaded
-                inline bool loaded() const { return _loaded; }
+                virtual inline bool loaded() const override { return _loaded; }
 
                 // Set the size of the host window.
-                void set_window_size(const Size& size);
+                virtual void set_window_size(const Size& size) override;
 
                 /// Set whether the map is visible.
-                void set_visible(bool visible);
+                virtual void set_visible(bool visible) override;
 
-                void clear_highlight();
+                virtual void clear_highlight() override;
 
-                void set_highlight(uint16_t x, uint16_t z);
+                virtual void set_highlight(uint16_t x, uint16_t z) override;
 
-                /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
-                Event<std::shared_ptr<Sector>> on_sector_hover;
+                virtual graphics::Texture texture() const override;
 
-                graphics::Texture texture() const;
-
-                Point first() const;
+                virtual Point first() const override;
             private:
                 // Determines the position (on screen) to draw a sector 
                 Point get_position(const Sector& sector); 
@@ -98,7 +97,7 @@ namespace trview
                 Size get_size() const;
 
                 // Draws a square at given position, size with given colour.
-                void draw(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, Point p, Size s, DirectX::SimpleMath::Color c);
+                void draw(Point p, Size s, DirectX::SimpleMath::Color c);
 
                 // Update the stored positions of the corners of the map.
                 void update_map_position();
@@ -113,13 +112,14 @@ namespace trview
                 // Determines if the minimap needs to be re-drawn.
                 bool needs_redraw();
 
-                const graphics::Device&                            _device;
+                std::shared_ptr<graphics::IDevice>                 _device;
                 bool                                               _visible = true;
                 int                                                _window_width, _window_height;
-                graphics::Sprite                                   _sprite; 
+                std::unique_ptr<graphics::ISprite>                 _sprite; 
                 graphics::Texture                                  _texture;
                 std::vector<Tile>                                  _tiles; 
-                std::unique_ptr<graphics::RenderTarget>            _render_target;
+                std::unique_ptr<graphics::IRenderTarget>           _render_target;
+                graphics::IRenderTarget::SizeSource                _render_target_source;
 
                 Point                               _first, _last; // top-left corner, bottom-right corner (of control) 
                 Point                               _cursor; // Position of the cursor relative to the top left of the control.

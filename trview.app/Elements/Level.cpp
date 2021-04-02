@@ -17,11 +17,20 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Level::Level(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, std::unique_ptr<trlevel::ILevel>&& level, const ITypeNameLookup& type_names)
-        : _version(level->get_version())
+    Level::Level(const std::shared_ptr<graphics::IDevice>& device,
+        const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
+        std::unique_ptr<trlevel::ILevel>&& level,
+        std::unique_ptr<ILevelTextureStorage> level_texture_storage,
+        std::unique_ptr<IMeshStorage> mesh_storage,
+        std::unique_ptr<ITransparencyBuffer> transparency_buffer,
+        std::unique_ptr<ISelectionRenderer> selection_renderer,
+        const std::shared_ptr<ITypeNameLookup>& type_names)
+        : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
+        _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
+        _selection_renderer(std::move(selection_renderer))
     {
-        _vertex_shader = shader_storage.get("level_vertex_shader");
-        _pixel_shader = shader_storage.get("level_pixel_shader");
+        _vertex_shader = shader_storage->get("level_vertex_shader");
+        _pixel_shader = shader_storage->get("level_pixel_shader");
 
         // Create a texture sampler state description.
         D3D11_SAMPLER_DESC sampler_desc;
@@ -39,25 +48,19 @@ namespace trview
         rasterizer_desc.FillMode = D3D11_FILL_WIREFRAME;
         rasterizer_desc.CullMode = D3D11_CULL_BACK;
         rasterizer_desc.DepthClipEnable = true;
-        device.device()->CreateRasterizerState(&rasterizer_desc, &_wireframe_rasterizer);
+        _wireframe_rasterizer = device->create_rasterizer_state(rasterizer_desc);
 
         // Create the texture sampler state.
-        device.device()->CreateSamplerState(&sampler_desc, &_sampler_state);
+        _sampler_state = device->create_sampler_state(sampler_desc);
 
-        _texture_storage = std::make_unique<LevelTextureStorage>(device, *level);
-        _mesh_storage = std::make_unique<MeshStorage>(device, *level, *_texture_storage.get());
-        generate_rooms(device, *level);
+        generate_rooms(*level);
         generate_triggers();
-        generate_entities(device, *level, type_names);
+        generate_entities(*level, *type_names);
 
         for (auto& room : _rooms)
         {
             room->update_bounding_box();
         }
-
-        _transparency = std::make_unique<TransparencyBuffer>(device);
-
-        _selection_renderer = std::make_unique<SelectionRenderer>(device, shader_storage);
     }
 
     Level::~Level()
@@ -176,11 +179,11 @@ namespace trview
         on_level_changed();
     }
 
-    void Level::render(const graphics::Device& device, const ICamera& camera, bool render_selection)
+    void Level::render(const ICamera& camera, bool render_selection)
     {
         using namespace DirectX;
 
-        auto context = device.context();
+        auto context = _device->context();
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
@@ -194,19 +197,19 @@ namespace trview
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
 
-            render_rooms(device, camera);
+            render_rooms(camera);
         }
 
         if (render_selection)
         {
-            render_selected_item(device, camera);
+            render_selected_item(camera);
         }
     }
 
     // Render the rooms in the level.
     // context: The device context.
     // camera: The current camera to render the level with.
-    void Level::render_rooms(const graphics::Device& device, const ICamera& camera)
+    void Level::render_rooms(const ICamera& camera)
     {
         // Only render the rooms that the current view mode includes.
         auto rooms = get_rooms_to_render(camera);
@@ -220,7 +223,7 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
+            room.room.render(*_device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
@@ -230,7 +233,7 @@ namespace trview
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(device, camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
+                original_room->render_contained(*_device, camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
                 if (_regenerate_transparency)
                 {
                     original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, room.room.water(), _show_water);
@@ -247,30 +250,31 @@ namespace trview
         _regenerate_transparency = false;
     }
 
-    void Level::render_transparency(const graphics::Device& device, const ICamera& camera)
+    void Level::render_transparency(const ICamera& camera)
     {
-        graphics::RasterizerStateStore rasterizer_store(device.context());
+        auto context = _device->context();
+        graphics::RasterizerStateStore rasterizer_store(context);
         if (_show_wireframe)
         {
-            device.context()->RSSetState(_wireframe_rasterizer.Get());
+            context->RSSetState(_wireframe_rasterizer.Get());
         }
         // Render the triangles that the transparency buffer has produced.
-        _transparency->render(device.context(), camera, *_texture_storage.get());
+        _transparency->render(camera, *_texture_storage.get());
     }
 
-    void Level::render_selected_item(const graphics::Device& device, const ICamera& camera)
+    void Level::render_selected_item(const ICamera& camera)
     {
         const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
         const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
 
         if (_selected_item)
         {
-            _selection_renderer->render(device, camera, *_texture_storage, *_selected_item, Item_Outline);
+            _selection_renderer->render(camera, *_texture_storage, *_selected_item, Item_Outline);
         }
 
         if (_show_triggers && _selected_trigger)
         {
-            _selection_renderer->render(device, camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
+            _selection_renderer->render(camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
         }
     }
 
@@ -316,13 +320,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const graphics::Device& device, const trlevel::ILevel& level)
+    void Level::generate_rooms(const trlevel::ILevel& level)
     {
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
-            _rooms.push_back(std::make_unique<Room>(device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
+            _rooms.push_back(std::make_unique<Room>(*_device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -354,6 +358,7 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Trigger)
                 {
+                    // TODO: Use DI?
                     _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger()));
                     room->add_trigger(_triggers.back().get());
                 }
@@ -366,14 +371,15 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const graphics::Device& device, const trlevel::ILevel& level, const ITypeNameLookup& type_names)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             // Entity for rendering.
             auto level_entity = level.get_entity(i);
-            auto entity = std::make_unique<Entity>(device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
+            // TODO: Use DI?
+            auto entity = std::make_unique<Entity>(*_device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 

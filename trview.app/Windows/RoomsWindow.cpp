@@ -50,13 +50,13 @@ namespace trview
         }
     }
 
-    RoomsWindow::RoomsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent)
-        : CollapsiblePanel(device, shader_storage, font_factory, parent, L"trview.rooms", L"Rooms", Size(630, 680))
+    RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
     {
+        CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
+
         set_panels(create_left_panel(), create_right_panel());
         set_allow_increase_height(false);
-
-        _map_renderer = std::make_unique<ui::render::MapRenderer>(device, shader_storage, font_factory, Size(341, 341));
 
         using namespace input;
         using namespace ui;
@@ -336,7 +336,7 @@ namespace trview
 
     void RoomsWindow::render_minimap()
     {
-        _map_renderer->render(_device_window->context(), false);
+        _map_renderer->render(false);
         auto map_size = _map_renderer->texture().size();
 
         _minimap->set_texture(_map_renderer->texture());
@@ -519,5 +519,10 @@ namespace trview
         {
             _track_trigger_checkbox->set_state(_track_trigger);
         }
+    }
+
+    void RoomsWindow::render(bool vsync)
+    {
+        CollapsiblePanel::render(vsync);
     }
 }

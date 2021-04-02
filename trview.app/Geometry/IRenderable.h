@@ -7,7 +7,7 @@ namespace trview
 {
     struct ICamera;
     struct ILevelTextureStorage;
-    class TransparencyBuffer;
+    struct ITransparencyBuffer;
 
     /// Interface for something that can be rendered by the viewer.
     struct IRenderable
@@ -20,13 +20,13 @@ namespace trview
         /// @param camera The current camera to render with.
         /// @param texture_storage The current texture storage instance.
         /// @param colour The colour tint to use to render the object.
-        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
 
         /// Populate the transparency buffer with the transparent faces for the object.
         /// @param transparency The transparency buffer to populate.
         /// @param camera The current camera to render with.
         /// @param colour The colour tint to use for the triangles.
-        virtual void get_transparent_triangles(TransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) = 0;
 
         /// Get whether the object is visible.
         virtual bool visible() const = 0;

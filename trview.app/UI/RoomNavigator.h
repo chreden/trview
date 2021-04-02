@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <trview.common/Event.h>
+#include <trview.app/Graphics/ITextureStorage.h>
 
 namespace trview
 {
@@ -20,7 +21,6 @@ namespace trview
         class Listbox;
     }
 
-    struct ITextureStorage;
     struct RoomInfo;
 
     /// The room navigator control allows the user to select which room to look at and

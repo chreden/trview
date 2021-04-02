@@ -11,7 +11,7 @@ namespace trview
 {
     struct ILevelTextureStorage;
     class Mesh;
-    class TransparencyBuffer;
+    struct ITransparencyBuffer;
 
     class StaticMesh
     {
@@ -20,7 +20,7 @@ namespace trview
 
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
-        void get_transparent_triangles(TransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour);
+        void get_transparent_triangles(ITransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour);
     private:
         float                        _rotation;
         DirectX::SimpleMath::Vector3 _position;

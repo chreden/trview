@@ -1,45 +1,29 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
-#include <trview.graphics/RenderTarget.h>
-#include <trview.graphics/Sprite.h>
+#include <trview.graphics/IDevice.h>
+#include <trview.graphics/IRenderTarget.h>
+#include <trview.graphics/ISprite.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Camera/OrbitCamera.h>
+#include "ICompass.h"
 
 namespace trview
 {
     struct ILevelTextureStorage;
 
-    namespace graphics 
-    {
-        struct IShaderStorage;
-    }
-
     /// The compass shows the X, Y and Z axes.
-    class Compass final
+    class Compass final : public ICompass
     {
     public:
-        /// The axis on the compass.
-        enum class Axis
-        {
-            Pos_X,
-            Pos_Y,
-            Pos_Z,
-            Neg_X,
-            Neg_Y,
-            Neg_Z
-        };
-
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source);
 
         /// Render the compass.
-        /// @param device The device to use to render the compass.
         /// @param camera The current camera being used to view the level.
         /// @param texture_storage The texture storage instance to use.
-        void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage);
 
         /// Pick against the compass points.
         /// @param mouse_position The mouse position in screen space.
@@ -51,9 +35,10 @@ namespace trview
         /// @param value Whether to render the compass.
         void set_visible(bool value);
     private:
-        std::unique_ptr<graphics::RenderTarget> _render_target;
+        std::shared_ptr<graphics::IDevice> _device;
+        std::unique_ptr<graphics::IRenderTarget> _render_target;
         std::unique_ptr<Mesh> _mesh;
-        std::unique_ptr<graphics::Sprite> _sprite;
+        std::unique_ptr<graphics::ISprite> _sprite;
         OrbitCamera _mesh_camera;
         bool _visible{ true };
     };

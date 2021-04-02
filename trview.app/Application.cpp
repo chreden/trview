@@ -4,7 +4,6 @@
 #include <Shlwapi.h>
 #include <commdlg.h>
 
-#include <trlevel/trlevel.h>
 #include <trlevel/LevelLoader.h>
 
 #include <trview.app/Geometry/Picking.h>
@@ -19,6 +18,15 @@
 #include <trview.graphics/ShaderStorage.h>
 #include <trview.input/WindowTester.h>
 #include <trview.app/Windows/Viewer.h>
+#include <trview.app/Tools/ICompass.h>
+
+#include <trview.app/Windows/ItemsWindowManager.h>
+#include <trview.app/Windows/RoomsWindowManager.h>
+#include <trview.app/Windows/RouteWindowManager.h>
+#include <trview.app/Windows/TriggersWindowManager.h>
+#include <trview.app/Graphics/LevelTextureStorage.h>
+#include <trview.app/Graphics/MeshStorage.h>
+#include <trview.app/Graphics/SelectionRenderer.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -26,6 +34,8 @@
 #include "Resources/DefaultFonts.h"
 #include "Resources/DefaultTextures.h"
 #include "Elements/TypeNameLookup.h"
+
+#include <external/boost/di.hpp>
 
 using namespace DirectX::SimpleMath;
 
@@ -80,7 +90,7 @@ namespace trview
             return RegisterClassExW(&wcex);
         }
 
-        HWND create_window(HINSTANCE hInstance, int nCmdShow)
+        Window create_window(HINSTANCE hInstance, int nCmdShow)
         {
             register_class(hInstance);
 
@@ -99,6 +109,10 @@ namespace trview
         }
     }
 
+    IApplication::~IApplication()
+    {
+    }
+
     Application::Application(const Window& application_window,
         std::unique_ptr<IUpdateChecker> update_checker,
         std::unique_ptr<ISettingsLoader> settings_loader,
@@ -107,31 +121,28 @@ namespace trview
         std::unique_ptr<ILevelSwitcher> level_switcher,
         std::unique_ptr<IRecentFiles> recent_files,
         std::unique_ptr<IViewer> viewer,
-        std::unique_ptr<graphics::IShaderStorage> shader_storage,
-        std::unique_ptr<graphics::IFontFactory> font_factory,
-        std::unique_ptr<ITextureStorage> texture_storage,
-        std::unique_ptr<graphics::Device> device,
-        std::unique_ptr<IRoute> route,
-        std::unique_ptr<IShortcuts> shortcuts,
-        const std::wstring& command_line)
+        const IRoute::Source& route_source,
+        std::shared_ptr<IShortcuts> shortcuts,
+        std::unique_ptr<IItemsWindowManager> items_window_manager,
+        std::unique_ptr<ITriggersWindowManager> triggers_window_manager,
+        std::unique_ptr<IRouteWindowManager> route_window_manager,
+        std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
+        const ILevel::Source& level_source,
+        const CommandLine& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
-        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _shader_storage(std::move(shader_storage)),
-        _font_factory(std::move(font_factory)), _device(std::move(device)), _route(std::move(route)), _shortcuts(std::move(shortcuts)), _texture_storage(std::move(texture_storage))
+        _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
+        _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
+        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source)
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
 
         _token_store += _file_dropper->on_file_dropped += [&](const auto& file) { open(file); };
-
         _token_store += _level_switcher->on_switch_level += [=](const auto& file) { open(file); };
-        _token_store += on_file_loaded += [&](const auto& file) { _level_switcher->open_file(file); };
 
         _recent_files->set_recent_files(_settings.recent_files);
         _token_store += _recent_files->on_file_open += [=](const auto& file) { open(file); };
-
-        Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-        _type_name_lookup = std::make_unique<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
 
         setup_shortcuts();
         setup_view_menu();
@@ -166,13 +177,13 @@ namespace trview
             return;
         }
 
-        on_file_loaded(filename);
+        _level_switcher->open_file(filename);
         _settings.add_recent_file(filename);
         _recent_files->set_recent_files(_settings.recent_files);
         _settings_loader->save_user_settings(_settings);
         _viewer->set_settings(_settings);
 
-        _level = std::make_unique<Level>(*_device, *_shader_storage.get(), std::move(new_level), *_type_name_lookup);
+        _level = _level_source(std::move(new_level));
         _level->set_filename(filename);
 
         _viewer->open(_level.get());
@@ -190,7 +201,7 @@ namespace trview
 
         _route->clear();
         _route_window->set_route(_route.get());
-        _viewer->set_route(_route.get());
+        _viewer->set_route(_route);
     }
 
     void Application::process_message(UINT message, WPARAM wParam, LPARAM)
@@ -331,7 +342,6 @@ namespace trview
 
     void Application::setup_items_windows()
     {
-        _items_windows = std::make_unique<ItemsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.items_startup)
         {
             _items_windows->create_window();
@@ -350,7 +360,6 @@ namespace trview
 
     void Application::setup_triggers_windows()
     {
-        _triggers_windows = std::make_unique<TriggersWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.triggers_startup)
         {
             _triggers_windows->create_window();
@@ -366,7 +375,6 @@ namespace trview
 
     void Application::setup_rooms_windows()
     {
-        _rooms_windows = std::make_unique<RoomsWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         if (_settings.rooms_startup)
         {
             _rooms_windows->create_window();
@@ -379,18 +387,17 @@ namespace trview
 
     void Application::setup_route_window()
     {
-        _route_window = std::make_unique<RouteWindowManager>(*_device, *_shader_storage, *_font_factory, window(), *_shortcuts);
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path)
         {
-            auto route = import_route(*_device, *_shader_storage, path);
+            auto route = import_route(_route_source, path);
             if (route)
             {
                 _route = std::move(route);
                 _route_window->set_route(_route.get());
-                _viewer->set_route(_route.get());
+                _viewer->set_route(_route);
             }
         };
         _token_store += _route_window->on_route_export += [&](const std::string& path) { export_route(*_route, path); };
@@ -398,7 +405,7 @@ namespace trview
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
             _route->set_colour(colour);
-            _viewer->set_route(_route.get());
+            _viewer->set_route(_route);
         };
     }
 
@@ -428,7 +435,7 @@ namespace trview
     {
         _route->remove(index);
         _route_window->set_route(_route.get());
-        _viewer->set_route(_route.get());
+        _viewer->set_route(_route);
 
         if (_route->waypoints() > 0)
         {
@@ -535,47 +542,229 @@ namespace trview
         }
 
         _viewer->render();
-        _items_windows->render(*_device, _settings.vsync);
-        _triggers_windows->render(*_device, _settings.vsync);
-        _rooms_windows->render(*_device, _settings.vsync);
-        _route_window->render(*_device, _settings.vsync);
+        _items_windows->render(_settings.vsync);
+        _triggers_windows->render(_settings.vsync);
+        _rooms_windows->render(_settings.vsync);
+        _route_window->render(_settings.vsync);
     }
 
-    Application create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
+    std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
-        auto window = create_window(instance, command_show);
+        using namespace boost;
+        using namespace graphics;
 
-        auto device = std::make_unique<graphics::Device>();
-        auto shader_storage = std::make_unique<graphics::ShaderStorage>();
-        auto font_factory = std::make_unique<graphics::FontFactory>();
-        auto texture_storage = std::make_unique<TextureStorage>(*device);
+        const auto injector = di::make_injector(
+            di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
+            di::bind<IShaderStorage>.to<ShaderStorage>(),
+            di::bind<IFontFactory>.to<FontFactory>(),
+            di::bind<IUpdateChecker>.to<UpdateChecker>(),
+            di::bind<ISettingsLoader>.to<SettingsLoader>(),
+            di::bind<IFileDropper>.to<FileDropper>(),
+            di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
+            di::bind<IRecentFiles>.to<RecentFiles>(),
+            di::bind<Window>.to(create_window(instance, command_show)),
+            di::bind<input::IWindowTester>.to<input::WindowTester>(),
+            di::bind<IPicking>.to<Picking>(),
+            di::bind<IRoute>.to<Route>(),
+            di::bind<IRoute::Source>.to(
+                [](const auto& injector) -> IRoute::Source
+                {
+                    return [&]()
+                    {
+                        return injector.create<std::unique_ptr<IRoute>>();
+                    };
+                }),
+            di::bind<ITextureStorage>.to<TextureStorage>(),
+            di::bind<graphics::IDevice>.to<graphics::Device>(),
+            di::bind<IShortcuts>.to<Shortcuts>(),
+            di::bind<ui::render::IRenderer::Source>.to(
+                [](const auto& injector) -> ui::render::IRenderer::Source
+                {
+                    return [&](auto size)
+                    {
+                        return std::make_unique<ui::render::Renderer>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IRenderTarget::SizeSource>(),
+                            *injector.create<std::shared_ptr<IFontFactory>>(),
+                            size,
+                            injector.create<graphics::ISprite::Source>());
+                    };
+                }),
+            di::bind<ui::render::IMapRenderer::Source>.to(
+                [](const auto& injector) -> ui::render::IMapRenderer::Source
+                {
+                    return [&](auto size)
+                    {
+                        return std::make_unique<ui::render::MapRenderer>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            *injector.create<std::shared_ptr<IFontFactory>>(),
+                            size,
+                            injector.create<graphics::ISprite::Source>(),
+                            injector.create<graphics::IRenderTarget::SizeSource>());
+                    };
+                }),
+            di::bind<IItemsWindow::Source>.to(
+                [](const auto& injector) -> IItemsWindow::Source
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<ItemsWindow>(
+                            injector.create<IDeviceWindow::Source>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            window);
+                    };
+                }),
+            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
+            di::bind<ITriggersWindow::Source>.to(
+                [](const auto& injector) -> ITriggersWindow::Source
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<TriggersWindow>(
+                            injector.create<IDeviceWindow::Source>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            window);
+                    };
+                }),
+            di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
+            di::bind<IRouteWindow::Source>.to(
+                [](const auto& injector) -> IRouteWindow::Source
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<RouteWindow>(
+                            injector.create<IDeviceWindow::Source>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            window);
+                    };
+                }
+            ),
+            di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
+            di::bind<IRoomsWindow::Source>.to(
+                [](const auto& injector) -> IRoomsWindow::Source
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<RoomsWindow>(
+                            injector.create<IDeviceWindow::Source>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            injector.create<ui::render::IMapRenderer::Source>(),
+                            window);
+                    };
+                }),
+            di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
+            di::bind<ISprite::Source>.to(
+                [](const auto& injector) -> ISprite::Source
+                {
+                    return [&](auto size)
+                    {
+                        return std::make_unique<Sprite>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            size);
+                    };
+                }),
+            di::bind<ICompass>.to<Compass>(),
+            di::bind<ITypeNameLookup>.to(
+                []()
+                {
+                    Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
+                    return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
+                }),
+            di::bind<ILevelTextureStorage::Source>.to(
+                [](const auto& injector) -> ILevelTextureStorage::Source
+                {
+                    return [&](auto&& level)
+                    {
+                        return std::make_unique<LevelTextureStorage>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::unique_ptr<ITextureStorage>>(),
+                            level);
+                    };
+                }),
+            di::bind<IMeshStorage::Source>.to(
+                [](const auto& injector) -> IMeshStorage::Source
+                {
+                    return [&](auto&& level, auto&& level_texture_storage)
+                    {
+                        return std::make_unique<MeshStorage>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            level,
+                            level_texture_storage);
+                    };
+                }),
+            di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
+            di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
+            di::bind<ILevel::Source>.to(
+                [](const auto& injector) -> ILevel::Source
+                {
+                    return [&](auto&& level)
+                    {
+                        auto texture_storage = injector.create<ILevelTextureStorage::Source>()(*level);
+                        auto mesh_storage = injector.create<IMeshStorage::Source>()(*level, *texture_storage);
+                        return std::make_unique<Level>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<std::shared_ptr<IShaderStorage>>(),
+                            std::move(level),
+                            std::move(texture_storage),
+                            std::move(mesh_storage),
+                            injector.create<std::unique_ptr<ITransparencyBuffer>>(),
+                            injector.create<std::unique_ptr<ISelectionRenderer>>(),
+                            injector.create<std::shared_ptr<ITypeNameLookup>>());
+                    };
+                }),
+            di::bind<IRenderTarget::SizeSource>.to(
+                [](const auto& injector) -> IRenderTarget::SizeSource
+                {
+                    return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
+                    {
+                        return std::make_unique<RenderTarget>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            width,
+                            height,
+                            depth_stencil_mode);
+                    };
+                }),
+            di::bind<IRenderTarget::TextureSource>.to(
+                [](const auto& injector) -> IRenderTarget::TextureSource
+                {
+                    return [&](auto&& texture, auto&& depth_stencil_mode)
+                    {
+                        return std::make_unique<RenderTarget>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            texture,
+                            depth_stencil_mode);
+                    };
+                }),
+            di::bind<IDeviceWindow::Source>.to(
+                [](const auto& injector) -> IDeviceWindow::Source
+                {
+                    return [&](auto&& window)
+                    {
+                        return std::make_unique<DeviceWindow>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IRenderTarget::TextureSource>(),
+                            window);
+                    };
+                }),
+            di::bind<IMeasure>.to<Measure>(),
+            di::bind<IViewerUI>.to<ViewerUI>(),
+            di::bind<IViewer>.to<Viewer>(),
+            di::bind<input::IMouse>.to<input::Mouse>(),
+            di::bind<IApplication>.to<Application>(),
+            di::bind<Application::CommandLine>.to(command_line)
+        );
 
-        load_default_shaders(*device, *shader_storage);
-        load_default_fonts(*device, *font_factory);
-        load_default_textures(*device, *texture_storage);
+        load_default_shaders(
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
+            injector.create<std::shared_ptr<IShaderStorage>>());
+        load_default_fonts(
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
+            injector.create<std::shared_ptr<IFontFactory>>());
+        load_default_textures(
+            injector.create<std::shared_ptr<graphics::IDevice>>(),
+            injector.create<std::shared_ptr<ITextureStorage>>());
 
-        auto route = std::make_unique<Route>(*device, *shader_storage);
-        auto shortcuts = std::make_unique<Shortcuts>(window);
-
-        auto ui = std::make_unique<ViewerUI>(window, *device, *shader_storage, *font_factory, *texture_storage, *shortcuts);
-        auto mouse = std::make_unique<input::Mouse>(window, std::make_unique<input::WindowTester>(window));
-        auto viewer = std::make_unique<Viewer>(window, *device, *shader_storage, std::move(ui), std::make_unique<Picking>(), std::move(mouse), *shortcuts, route.get());
-
-        return Application(
-            window, 
-            std::make_unique<UpdateChecker>(window), 
-            std::make_unique<SettingsLoader>(), 
-            std::make_unique<FileDropper>(window),
-            std::make_unique<trlevel::LevelLoader>(),
-            std::make_unique<LevelSwitcher>(window),
-            std::make_unique<RecentFiles>(window),
-            std::move(viewer),
-            std::move(shader_storage),
-            std::move(font_factory),
-            std::move(texture_storage),
-            std::move(device),
-            std::move(route),
-            std::move(shortcuts),
-            command_line);
+        return injector.create<std::unique_ptr<IApplication>>();
     }
 }

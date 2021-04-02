@@ -10,32 +10,33 @@
 #include <trview.ui/Control.h>
 #include <trview.common/TokenStore.h>
 #include <trview.graphics/IFontFactory.h>
+#include "IRenderer.h"
+#include <trview.graphics/ISprite.h>
 
 namespace trview
 {
-    namespace graphics
-    {
-        struct IShaderStorage;
-        class Sprite;
-    }
-
     namespace ui
     {
         namespace render
         {
-            class Renderer
+            class Renderer : public IRenderer
             {
             public:
-                explicit Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size);
+                explicit Renderer(
+                    const std::shared_ptr<graphics::IDevice>& device,
+                    const graphics::IRenderTarget::SizeSource& render_target_source,
+                    const graphics::IFontFactory& font_factory,
+                    const Size& host_size,
+                    const graphics::ISprite::Source& sprite_source);
 
-                ~Renderer();
+                virtual ~Renderer();
 
                 // Examine a control hierarchy and create the appropriate structures
                 // required to render it. This will replace any existing rendering
                 // structures.
                 void load(Control* control);
 
-                void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context);
+                void render();
 
                 // Set the size of the host render area.
                 // width: The size of the render area.
@@ -47,14 +48,15 @@ namespace trview
                 /// @param node The node to process.
                 void update_hierarchy(RenderNode& node);
 
-                std::unique_ptr<RenderNode>                     _root_node;
-                std::unique_ptr<graphics::Sprite>               _sprite;
-                const graphics::Device&                         _device;
+                std::unique_ptr<RenderNode> _root_node;
+                std::unique_ptr<graphics::ISprite> _sprite;
+                std::shared_ptr<graphics::IDevice> _device;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
-                const graphics::IFontFactory&                    _font_factory;
-                Size                                            _host_size;
-                TokenStore                                      _token_store;
-                bool                                            _hierarchy_changed{ false };
+                const graphics::IFontFactory& _font_factory;
+                graphics::IRenderTarget::SizeSource _render_target_source;
+                Size _host_size;
+                TokenStore _token_store;
+                bool _hierarchy_changed{ false };
             };
         }
     }

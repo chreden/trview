@@ -1,5 +1,5 @@
 #include "CameraPosition.h"
-#include <trlevel/trlevel.h>
+#include <trlevel/ILevel.h>
 #include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
 

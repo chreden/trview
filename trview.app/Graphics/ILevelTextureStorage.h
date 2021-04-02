@@ -4,10 +4,14 @@
 
 #include "ITextureStorage.h"
 
+#include <trlevel/ILevel.h>
+
 namespace trview
 {
     struct ILevelTextureStorage : public ITextureStorage
     {
+        using Source = std::function<std::unique_ptr<ILevelTextureStorage>(const trlevel::ILevel&)>;
+
         virtual ~ILevelTextureStorage() = 0;
 
         virtual graphics::Texture texture(uint32_t texture_index) const = 0;

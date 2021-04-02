@@ -2,7 +2,6 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/MeshVertex.h>
 #include <trview.graphics/Sprite.h>
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ViewportStore.h>
 
@@ -40,28 +39,26 @@ namespace trview
         };
     }
 
-    Compass::Compass(const graphics::Device& device, const IShaderStorage& shader_storage)
-        : _mesh_camera(Size(View_Size, View_Size)),
-          _mesh(create_cube_mesh(device)),
-          _sprite(std::make_unique<Sprite>(device, shader_storage, Size(View_Size, View_Size))),
-          _render_target(std::make_unique<RenderTarget>(device, static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), RenderTarget::DepthStencilMode::Enabled))
+    Compass::Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source)
+        : _device(device), _mesh_camera(Size(View_Size, View_Size)), _mesh(create_cube_mesh(*device)), _sprite(sprite_source(Size(View_Size, View_Size))),
+        _render_target(render_target_source(static_cast<uint32_t>(View_Size), static_cast<uint32_t>(View_Size), IRenderTarget::DepthStencilMode::Enabled))
     {
     }
 
-    void Compass::render(const Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void Compass::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_visible)
         {
             return;
         }
 
-        auto context = device.context();
+        auto context = _device->context();
 
         {
             RenderTargetStore rs_store(context);
             ViewportStore vp_store(context);
-            _render_target->apply(context);
-            _render_target->clear(context, Color(0.0f, 0.0f, 0.0f, 0.0f));
+            _render_target->apply();
+            _render_target->clear(Color(0.0f, 0.0f, 0.0f, 0.0f));
 
             // Have a camera that looks at the compass and match rotation to the real camera
             _mesh_camera.set_target(Vector3::Zero);
@@ -92,7 +89,7 @@ namespace trview
 
         auto screen_size = camera.view_size();
         _sprite->set_host_size(screen_size);
-        _sprite->render(context, _render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
+        _sprite->render(_render_target->texture(), screen_size.width - View_Size, screen_size.height - View_Size, View_Size, View_Size);
     }
 
     bool Compass::pick(const Point& mouse_position, const Size& screen_size, Axis& axis)

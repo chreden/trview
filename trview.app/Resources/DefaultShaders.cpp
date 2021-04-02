@@ -18,7 +18,7 @@ namespace trview
             return std::vector<uint8_t>(resource.data, resource.data + resource.size);
         }
 
-        void load_level_shaders(const graphics::Device& device, graphics::IShaderStorage& storage)
+        void load_level_shaders(const graphics::IDevice& device, graphics::IShaderStorage& storage)
         {
             std::vector<D3D11_INPUT_ELEMENT_DESC> input_desc(4);
             memset(&input_desc[0], 0, sizeof(D3D11_INPUT_ELEMENT_DESC) * input_desc.size());
@@ -47,7 +47,7 @@ namespace trview
             storage.add("selection_pixel_shader", std::make_unique<graphics::PixelShader>(device, get_shader_resource(IDR_SELECTION_SHADER)));
         }
 
-        void load_ui_shaders(const graphics::Device& device, graphics::IShaderStorage& storage)
+        void load_ui_shaders(const graphics::IDevice& device, graphics::IShaderStorage& storage)
         {
             std::vector<D3D11_INPUT_ELEMENT_DESC> input_desc(2);
             memset(&input_desc[0], 0, sizeof(D3D11_INPUT_ELEMENT_DESC) * input_desc.size());
@@ -65,9 +65,9 @@ namespace trview
         }
     }
 
-    void load_default_shaders(const graphics::Device& device, graphics::IShaderStorage& storage)
+    void load_default_shaders(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<graphics::IShaderStorage>& storage)
     {
-        load_level_shaders(device, storage);
-        load_ui_shaders(device, storage);
+        load_level_shaders(*device, *storage);
+        load_ui_shaders(*device, *storage);
     }
 }

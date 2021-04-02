@@ -27,7 +27,7 @@ namespace trview
         /// @param untextured_indices The indices for triangles that do not use level textures.
         /// @param transparent_triangles The transparent triangles to use to create the mesh.
         /// @param collision_triangles The triangles for picking.
-        Mesh(const graphics::Device& device,
+        Mesh(const graphics::IDevice& device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
@@ -71,10 +71,10 @@ namespace trview
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::Device& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
+    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::IDevice& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
     /// Create a new cube mesh.
-    std::unique_ptr<Mesh> create_cube_mesh(const graphics::Device& device);
+    std::unique_ptr<Mesh> create_cube_mesh(const graphics::IDevice& device);
 
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param level_version The level version - affects texture index.

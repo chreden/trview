@@ -15,7 +15,7 @@ namespace trview
         // device: The Direct3D device to use to load the textures.
         // resource_id: The integer ID of the texture in the resource file.
         // Returns: The texture loaded from the resource.
-        graphics::Texture load_texture_from_resource(const graphics::Device& device, int resource_id)
+        graphics::Texture load_texture_from_resource(const graphics::IDevice& device, int resource_id)
         {
             ComPtr<ID3D11Resource> resource;
             ComPtr<ID3D11ShaderResourceView> view;
@@ -40,7 +40,7 @@ namespace trview
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.
     // storage: The ITextureStorage instance to store the textures in.
-    void load_default_textures(const graphics::Device& device, ITextureStorage& storage)
+    void load_default_textures(const std::shared_ptr<graphics::IDevice>& device, const std::shared_ptr<ITextureStorage>& storage)
     {
         // Load some sort of manifest that contains the files to load.
         // For each texture, load it with the given key.
@@ -58,7 +58,7 @@ namespace trview
                 break;
             }
 
-            storage.store(key, load_texture_from_resource(device, resource_id));
+            storage->store(key, load_texture_from_resource(*device, resource_id));
 
             if (!std::getline(stream, key))
             {

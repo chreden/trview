@@ -1,27 +1,23 @@
 #include <trview.app/Windows/TriggersWindow.h>
-#include <trview.graphics/Device.h>
-#include <trview.graphics/ShaderStorage.h>
-#include <trview.graphics/mocks/IFontFactory.h>
-#include <trview.graphics/mocks/IFont.h>
+#include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Dropdown.h>
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
+#include <trview.graphics/mocks/IDeviceWindow.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
+using namespace trview::graphics::mocks;
+using namespace trview::ui::render::mocks;
 
 TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -47,13 +43,9 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 
 TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -82,13 +74,9 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 
 TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -114,13 +102,9 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
 TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -150,13 +134,9 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -195,13 +175,9 @@ TEST(TriggersWindow, TriggersListFilteredByCommand)
 
 TEST(TriggersWindow, AddToRouteEventRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -222,13 +198,9 @@ TEST(TriggersWindow, AddToRouteEventRaised)
 
 TEST(TriggersWindow, TriggerVisibilityRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = window.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -254,13 +226,9 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
 
 TEST(TriggersWindow, ItemSelectedRaised)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -289,17 +257,77 @@ TEST(TriggersWindow, ItemSelectedRaised)
 
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
+
+    auto selected = window.selected_trigger();
+    ASSERT_NE(selected, nullptr);
+    ASSERT_EQ(selected, trigger1.get());
+}
+
+TEST(TriggersWindow, SetTriggersLoadsTriggers)
+{
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } });
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } });
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_EQ(list->items().size(), 2);
+}
+
+TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
+{
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+    ASSERT_TRUE(list->items().empty());
+
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    window.set_triggers({ trigger1.get() });
+    ASSERT_EQ(list->items().size(), 1);
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
+
+    trigger1->set_visible(false);
+    window.update_triggers({ trigger1.get() });
+    ASSERT_EQ(list->items()[0].value(L"Hide"), L"1");
+}
+
+TEST(TriggersWindow, SetItemsLoadsItems)
+{
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
+    };
+    window.set_items(items);
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 0 }} });
+    window.set_triggers({ trigger1.get() });
+
+    window.set_selected_trigger(trigger1.get());
+
+    auto commands_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
+    ASSERT_NE(commands_list, nullptr);
+
+    auto command_items = commands_list->items();
+    ASSERT_NE(command_items.size(), 0);
+    ASSERT_EQ(command_items[0].value(L"Index"), L"0");
+    ASSERT_EQ(command_items[0].value(L"Entity"), L"Test Object");
 }
 
 TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -344,13 +372,9 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 
 TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -368,13 +392,9 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 
 TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{});
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{});
@@ -402,13 +422,9 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
 
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
-    mocks::MockFontFactory font_factory;
-    EXPECT_CALL(font_factory, create_font)
-        .WillRepeatedly([](auto, auto, auto, auto) { return std::make_unique<mocks::MockFont>(); });
-
-    Device device;
-    ShaderStorage shader_storage;
-    TriggersWindow window(device, shader_storage, font_factory, create_test_window(L"TriggersWindowTests"));
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOff, 0 } } });
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOn, 0 } } });

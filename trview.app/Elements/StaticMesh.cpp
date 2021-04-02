@@ -22,7 +22,7 @@ namespace trview
         _mesh->render(context, _world * view_projection, texture_storage, colour);
     }
 
-    void StaticMesh::get_transparent_triangles(TransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)
     {
         for (const auto& triangle : _mesh->transparent_triangles())
         {

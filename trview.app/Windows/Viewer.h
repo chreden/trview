@@ -40,12 +40,8 @@
 
 namespace trview
 {
-    struct ITextureStorage;
-
     namespace graphics
     {
-        struct IShaderStorage;
-        struct IFontFactory;
         class DeviceWindow;
     }
 
@@ -57,13 +53,17 @@ namespace trview
         /// @param window The window that the viewer should use.
         explicit Viewer(
             const Window& window, 
-            graphics::Device& device, 
-            const graphics::IShaderStorage& shader_storage, 
+            const std::shared_ptr<graphics::IDevice>& device,
             std::unique_ptr<IViewerUI> ui, 
             std::unique_ptr<IPicking> picking,
             std::unique_ptr<input::IMouse> mouse,
-            IShortcuts& shortcuts, 
-            IRoute* route);
+            const std::shared_ptr<IShortcuts>& shortcuts,
+            const std::shared_ptr<IRoute> route,
+            const graphics::ISprite::Source& sprite_source,
+            std::unique_ptr<ICompass> compass,
+            std::unique_ptr<IMeasure> measure,
+            const graphics::IRenderTarget::SizeSource& render_target_source,
+            const graphics::IDeviceWindow::Source& device_window_source);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -99,7 +99,7 @@ namespace trview
 
         /// Set the current route.
         /// @param route The new route.
-        virtual void set_route(IRoute* route) override;
+        virtual void set_route(const std::shared_ptr<IRoute>& route) override;
 
         /// Set whether the compass is visible.
         virtual void set_show_compass(bool value) override;
@@ -156,10 +156,10 @@ namespace trview
         void register_lua();
         void apply_acceleration_settings();
 
-        graphics::Device& _device;
+        const std::shared_ptr<graphics::IDevice> _device;
         Window _window;
-        IShortcuts& _shortcuts;
-        std::unique_ptr<graphics::DeviceWindow> _main_window;
+        const std::shared_ptr<IShortcuts>& _shortcuts;
+        std::unique_ptr<graphics::IDeviceWindow> _main_window;
         ILevel* _level{ nullptr };
         Timer _timer;
         OrbitCamera _camera;
@@ -182,20 +182,21 @@ namespace trview
 
         // Tools:
         Tool _active_tool{ Tool::None };
-        std::unique_ptr<Measure> _measure;
-        std::unique_ptr<Compass> _compass;
+        std::unique_ptr<IMeasure> _measure;
+        std::unique_ptr<ICompass> _compass;
         std::optional<Compass::Axis> _compass_axis;
 
         // Temporary route objects.
         PickResult _context_pick;
-        IRoute* _route;
+        std::shared_ptr<IRoute> _route;
         bool _show_route{ true };
 
         /// Was the room just changed due to an alternate group or flip being performed?
         bool _was_alternate_select{ false };
 
-        std::unique_ptr<graphics::RenderTarget> _scene_target;
-        std::unique_ptr<graphics::Sprite> _scene_sprite;
+        graphics::IRenderTarget::SizeSource _render_target_source;
+        std::unique_ptr<graphics::IRenderTarget> _scene_target;
+        std::unique_ptr<graphics::ISprite> _scene_sprite;
         bool _scene_changed{ true };
         bool _mouse_changed{ true };
         bool _ui_changed{ true };

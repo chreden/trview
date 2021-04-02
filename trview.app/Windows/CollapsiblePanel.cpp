@@ -2,6 +2,7 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 #include <trview.app/Resources/resource.h>
+#include <trview.ui.render/Renderer.h>
 
 using namespace trview::graphics;
 using namespace trview::ui;
@@ -71,10 +72,10 @@ namespace trview
         }
     }
 
-
-    CollapsiblePanel::CollapsiblePanel(Device& device, const IShaderStorage& shader_storage, const IFontFactory& font_factory, const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
-        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device.create_for_window(window())),
-        _ui_renderer(std::make_unique<render::Renderer>(device, shader_storage, font_factory, window().size())), _parent(parent), _initial_size(size), _shortcuts(window())
+    CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
+        const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+        : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device_window_source(window())),
+        _ui_renderer(std::move(ui_renderer)), _parent(parent), _initial_size(size), _shortcuts(window())
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -125,7 +126,7 @@ namespace trview
         }
     }
 
-    void CollapsiblePanel::render(const Device& device, bool vsync)
+    void CollapsiblePanel::render(bool vsync)
     {
         if (!_ui_changed)
         {
@@ -134,7 +135,7 @@ namespace trview
 
         _device_window->begin();
         _device_window->clear(DirectX::SimpleMath::Color(0.0f, 0.2f, 0.4f, 1.0f));
-        _ui_renderer->render(device.context());
+        _ui_renderer->render();
         _device_window->present(vsync);
         _ui_changed = false;
     }

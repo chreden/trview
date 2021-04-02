@@ -7,12 +7,9 @@
 #include <memory>
 #include <optional>
 
+#include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.common/MessageHandler.h>
-#include <trview.graphics/Device.h>
-#include <trview.graphics/IShaderStorage.h>
-#include <trview.graphics/FontFactory.h>
 #include <trview.common/TokenStore.h>
-#include "RoomsWindow.h"
 #include <trview.app/Elements/Item.h>
 
 namespace trview
@@ -21,15 +18,14 @@ namespace trview
     class Shortcuts;
 
     /// Controls and creates RoomsWindows.
-    class RoomsWindowManager final : public MessageHandler
+    class RoomsWindowManager final : public IRoomsWindowManager, public MessageHandler
     {
     public:
         /// Create an RoomsWindowManager.
-        /// @param device The device to use for rooms windows.
-        /// @param shader_storage The shader storage for rooms windows.
-        /// @param font_factory The font_factory for rooms windows.
         /// @param window The parent window of the rooms window.
-        explicit RoomsWindowManager(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& window, IShortcuts& shortcuts);
+        /// @param shortcuts The shortcuts instance.
+        /// @param rooms_window_source The function to call to get a rooms window.
+        explicit RoomsWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const IRoomsWindow::Source& rooms_window_source);
 
         /// Destructor for the RoomsWindowManager.
         virtual ~RoomsWindowManager() = default;
@@ -41,57 +37,45 @@ namespace trview
         virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Render all of the rooms windows.
-        /// @param device The device to use to render.
         /// @param vsync Whether to use vsync.
-        void render(graphics::Device& device, bool vsync);
+        virtual void render(bool vsync) override;
 
         /// Set the items in the current level.
-        void set_items(const std::vector<Item>& items);
+        virtual void set_items(const std::vector<Item>& items) override;
 
         /// Set the current room that the viewer is focusing on.
         /// @param room The current room.
-        void set_room(uint32_t room);
+        virtual void set_room(uint32_t room) override;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
-        void set_rooms(const std::vector<Room*>& items);
+        virtual void set_rooms(const std::vector<Room*>& items) override;
 
         /// Set the item currently selected in the viewer.
         /// @param item The item currently selected.
-        void set_selected_item(const Item& item);
+        virtual void set_selected_item(const Item& item) override;
 
         /// Set the trigger currently selected in the viewer.
         /// @param trigger The trigger currently selected.
-        void set_selected_trigger(const Trigger* const trigger);
+        virtual void set_selected_trigger(const Trigger* const trigger) override;
 
         /// Set the triggers in the level.
         /// @param triggers The triggers in the level.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Create a new rooms window.
-        void create_window();
-
-        /// Event raised when the user has selected a room in the room window.
-        Event<uint32_t> on_room_selected;
-
-        /// Event raised when the user has selected an item in the room window.
-        Event<Item> on_item_selected;
-
-        /// Event raised when the user has selected a trigger in the room window.
-        Event<Trigger*> on_trigger_selected;
+        virtual void create_window() override;
     private:
-        std::vector<std::unique_ptr<RoomsWindow>> _windows;
-        std::vector<RoomsWindow*> _closing_windows;
+        std::vector<std::shared_ptr<IRoomsWindow>> _windows;
+        std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;
         std::vector<Item> _all_items;
         std::vector<Room*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
-        graphics::Device& _device;
-        const graphics::IShaderStorage& _shader_storage;
-        const graphics::IFontFactory& _font_factory;
         TokenStore _token_store;
         uint32_t _current_room;
         std::optional<const Trigger*> _selected_trigger;
         std::optional<Item> _selected_item;
+        IRoomsWindow::Source _rooms_window_source;
     };
 }
 

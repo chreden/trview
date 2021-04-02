@@ -1,10 +1,9 @@
 #pragma once
 
-#include <trview.graphics/IShaderStorage.h>
 #include <trview.app/Geometry/Mesh.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Routing/IRoute.h>
+#include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
 
 namespace trview
@@ -15,7 +14,7 @@ namespace trview
     public:
         /// Create a route.
         /// @param device The device to use.
-        explicit Route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage);
+        explicit Route(const std::shared_ptr<graphics::IDevice>& device, const std::unique_ptr<ISelectionRenderer> selection_renderer);
 
         virtual ~Route() = default;
 
@@ -77,10 +76,9 @@ namespace trview
         virtual void remove(uint32_t index) override;
 
         /// Render the route.
-        /// @param device The device to use to render.
         /// @param camera The camera to use to render.
         /// @param texture_storage Texture storage for the mesh.
-        virtual void render(const graphics::Device& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
 
         /// Get the index of the currently selected waypoint.
         virtual uint32_t selected_waypoint() const override;
@@ -106,13 +104,14 @@ namespace trview
     private:
         uint32_t next_index() const;
 
+        std::shared_ptr<graphics::IDevice> _device;
         std::vector<Waypoint> _waypoints;
         std::unique_ptr<Mesh> _waypoint_mesh;
-        SelectionRenderer     _selection_renderer;
+        std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };
     };
 
-    std::unique_ptr<IRoute> import_route(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const std::string& filename);
+    std::unique_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::string& filename);
     void export_route(const IRoute& route, const std::string& filename);
 }

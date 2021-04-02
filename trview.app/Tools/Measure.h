@@ -1,64 +1,49 @@
 #pragma once
 
 #include <optional>
-#include <SimpleMath.h>
 #include <trview.app/Geometry/Mesh.h>
-#include <trview.common/Event.h>
+#include "IMeasure.h"
 
 namespace trview
 {
-    struct ICamera;
-
-    namespace graphics
-    {
-        class Device;
-    }
-
-    class Measure final
+    class Measure final : public IMeasure
     {
     public:
         /// Create a new measure tool.
         /// @param device The device to use to create graphics resources.
-        explicit Measure(const graphics::Device& device);
+        explicit Measure(const std::shared_ptr<graphics::IDevice>& device);
 
-        /// Event raised when the measure distance has changed.
-        Event<float> on_distance;
-
-        /// Event raised when the measure visibility has changed.
-        Event<bool> on_visible;
-
-        /// Event raised when the measure label position has moved.
-        Event<Point> on_position;
+        virtual ~Measure() = default;
 
         /// Start measuring or reset the current measurement.
-        void reset();
+        virtual void reset() override;
 
         /// Add the position to the measurement.
         /// @param position The position to add to the measurement.
         /// @returns True if the measurement is complete.
-        bool add(const DirectX::SimpleMath::Vector3& position);
+        virtual bool add(const DirectX::SimpleMath::Vector3& position) override;
 
         /// Set the position as the current temporary end of the measurement.
         /// @param position The position to use as the new end.
-        void set(const DirectX::SimpleMath::Vector3& position);
+        virtual void set(const DirectX::SimpleMath::Vector3& position) override;
 
         /// Render the measurement.
-        /// @param context D3D device context.
         /// @param camera The camera being used to render the scene.
         /// @param texture_storage Texture storage for the level.
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage);
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
 
         /// Get the current text version of the distance measured.
         /// @returns The text version of the distance.
-        std::wstring distance() const;
+        virtual std::wstring distance() const override;
 
         /// Get whether a distance is actively being measured.
         /// @returns True if start and end is set.
-        bool measuring() const;
+        virtual bool measuring() const override;
 
         /// Set whether the measure tool should be rendered.
-        void set_visible(bool value);
+        virtual void set_visible(bool value) override;
     private:
+        std::shared_ptr<graphics::IDevice> _device;
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
         std::unique_ptr<Mesh>                       _mesh;

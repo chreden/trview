@@ -16,15 +16,20 @@ namespace trview
     {
         namespace render
         {
-            Renderer::Renderer(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Size& host_size)
+            Renderer::Renderer(const std::shared_ptr<graphics::IDevice>& device,
+                const graphics::IRenderTarget::SizeSource& render_target_source,
+                const graphics::IFontFactory& font_factory,
+                const Size& host_size,
+                const graphics::ISprite::Source& sprite_source)
                 : _device(device), 
                 _font_factory(font_factory),
-                _sprite(std::make_unique<graphics::Sprite>(device, shader_storage, host_size)),
+                _render_target_source(render_target_source),
+                _sprite(sprite_source(host_size)),
                 _host_size(host_size)
             {
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
-                device.device()->CreateDepthStencilState(&ui_depth_stencil_desc, &_depth_stencil_state);
+                _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
             }
 
             Renderer::~Renderer()
@@ -47,23 +52,24 @@ namespace trview
             {
                 std::unique_ptr<RenderNode> node;
 
+                // TODO: Use DI
                 // Figure out what type of control this is and create the appropriate
                 // rendering node.
                 if (auto label = dynamic_cast<Label*>(control))
                 {
-                    node = std::make_unique<LabelNode>(_device, label, _font_factory);
+                    node = std::make_unique<LabelNode>(_device, _render_target_source, label, _font_factory);
                 }
                 else if (auto button = dynamic_cast<Button*>(control))
                 {
-                    node = std::make_unique<ButtonNode>(_device, button);
+                    node = std::make_unique<ButtonNode>(_device, _render_target_source, button);
                 }
                 else if (auto image = dynamic_cast<Image*>(control))
                 {
-                    node = std::make_unique<ImageNode>(_device, image);
+                    node = std::make_unique<ImageNode>(_device, _render_target_source, image);
                 }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {
-                    node = std::make_unique<WindowNode>(_device, window);
+                    node = std::make_unique<WindowNode>(_device, _render_target_source, window);
                 }
 
                 // Process the child nodes and build the structure to match the UI model.
@@ -104,8 +110,9 @@ namespace trview
                 }
             }
 
-            void Renderer::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context)
+            void Renderer::render()
             {
+                auto context = _device->context();
                 context->OMSetDepthStencilState(_depth_stencil_state.Get(), 1);
 
                 // The job of the renderer is to render the texture that has been generated
@@ -125,13 +132,13 @@ namespace trview
 
                         // The nodes will detect whether or not they need to actually re-render
                         // their content, based on changes to the control that they are watching.
-                        _root_node->render(context, *_sprite); 
+                        _root_node->render(*_sprite); 
                     }
 
                     auto texture = _root_node->node_texture();
                     if (texture.can_use_as_resource())
                     {
-                        _sprite->render(context, texture, 0, 0, _host_size.width, _host_size.height);
+                        _sprite->render(texture, 0, 0, _host_size.width, _host_size.height);
                     }
                 }
             }

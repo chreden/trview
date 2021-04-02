@@ -166,6 +166,7 @@ namespace trview
         std::vector<Triangle> collision;
         std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
             [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
+        // TODO: Use DI
         _mesh = std::make_unique<Mesh>(transparent_triangles, collision);
     }
 
@@ -195,11 +196,11 @@ namespace trview
         return std::any_of(types.begin(), types.end(), [&](const auto& type) { return has_command(type); });
     }
 
-    void Trigger::render(const graphics::Device&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
+    void Trigger::render(const graphics::IDevice&, const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&)
     {
     }
 
-    void Trigger::get_transparent_triangles(TransparencyBuffer& transparency, const ICamera&, const DirectX::SimpleMath::Color& colour)
+    void Trigger::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera&, const DirectX::SimpleMath::Color& colour)
     {
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())

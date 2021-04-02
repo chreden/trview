@@ -14,7 +14,7 @@ namespace trview
     class LevelTextureStorage final : public ILevelTextureStorage
     {
     public:
-        explicit LevelTextureStorage(const graphics::Device& device, const trlevel::ILevel& level);
+        explicit LevelTextureStorage(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ITextureStorage> texture_storage, const trlevel::ILevel& level);
         virtual ~LevelTextureStorage() = default;
         virtual graphics::Texture texture(uint32_t tile_index) const override;
         virtual graphics::Texture coloured(uint32_t colour) const override;
@@ -27,7 +27,6 @@ namespace trview
         virtual uint16_t attribute(uint32_t texture_index) const override;
         virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const override;
     private:
-        const graphics::Device& _device;
         std::vector<graphics::Texture> _tiles;
         std::vector<trlevel::tr_object_texture> _object_textures;
         std::unique_ptr<ITextureStorage> _texture_storage;

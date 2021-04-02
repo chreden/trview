@@ -6,6 +6,7 @@
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Item.h>
 #include "CollapsiblePanel.h"
+#include "IItemsWindow.h"
 
 namespace trview
 {
@@ -15,7 +16,7 @@ namespace trview
     }
 
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public CollapsiblePanel
+    class ItemsWindow final : public IItemsWindow, public CollapsiblePanel
     {
     public:
         struct Names
@@ -30,51 +31,40 @@ namespace trview
 
         /// Create an items window as a child of the specified window.
         /// @param device The graphics device
-        /// @param shader_storage The shader storage instance to use.
-        /// @param font_factory The font factory to use.
+        /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit ItemsWindow(graphics::Device& device, const graphics::IShaderStorage& shader_storage, const graphics::IFontFactory& font_factory, const Window& parent);
+        explicit ItemsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent);
 
         /// Destructor for items window
         virtual ~ItemsWindow() = default;
 
+        virtual void render(bool vsync) override;
+
         /// Set the items to display in the window.
         /// @param items The items to show.
-        void set_items(const std::vector<Item>& items);
+        virtual void set_items(const std::vector<Item>& items) override;
 
         /// Update the items - this doesn't reset the filters.
-        void update_items(const std::vector<Item>& items);
+        virtual void update_items(const std::vector<Item>& items) override;
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
-        void set_triggers(const std::vector<Trigger*>& triggers);
+        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Clear the currently selected item from the details panel.
-        void clear_selected_item();
-
-        /// Event raised when an item is selected in the list.
-        Event<Item> on_item_selected;
-
-        /// Event raised when an item visibility is changed.
-        Event<Item, bool> on_item_visibility;
-
-        /// Event raised when a trigger is selected in the list.
-        Event<Trigger*> on_trigger_selected;
-
-        /// Event raised when the 'add to route' button is pressed.
-        Event<Item> on_add_to_route;
+        virtual void clear_selected_item() override;
 
         /// Set the current room. This will be used when the track room setting is on.
         /// @param room The current room number.
-        void set_current_room(uint32_t room);
+        virtual void set_current_room(uint32_t room) override;
 
         /// Set the selected item.
         /// @param item The selected item.
-        void set_selected_item(const Item& item);
+        virtual void set_selected_item(const Item& item) override;
 
         /// Get the selected item.
         /// @returns The selected item, if present.
-        std::optional<Item> selected_item() const;
+        virtual std::optional<Item> selected_item() const override;
     protected:
         /// After the window has been resized, adjust the sizes of the child elements.
         virtual void update_layout() override;

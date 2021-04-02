@@ -20,8 +20,8 @@ namespace trview
             };
         }
 
-        Sprite::Sprite(const graphics::Device& device, const graphics::IShaderStorage& shader_storage, const Size& host_size)
-            : _host_size(host_size)
+        Sprite::Sprite(const std::shared_ptr<IDevice>& device, const std::shared_ptr<IShaderStorage>& shader_storage, const Size& host_size)
+            : _device(device), _host_size(host_size)
         {
             using namespace DirectX::SimpleMath;
 
@@ -43,7 +43,7 @@ namespace trview
             memset(&vertex_data, 0, sizeof(vertex_data));
             vertex_data.pSysMem = vertices;
 
-            HRESULT hr = device.device()->CreateBuffer(&vertex_desc, &vertex_data, &_vertex_buffer);
+            _vertex_buffer = _device->create_buffer(vertex_desc, vertex_data);
 
             uint32_t indices[] = { 0, 1, 2, 3 };
 
@@ -57,10 +57,10 @@ namespace trview
             memset(&index_data, 0, sizeof(index_data));
             index_data.pSysMem = indices;
 
-            hr = device.device()->CreateBuffer(&index_desc, &index_data, &_index_buffer);
+            _index_buffer = _device->create_buffer(index_desc, index_data);
 
-            _vertex_shader = shader_storage.get("ui_vertex_shader");
-            _pixel_shader = shader_storage.get("ui_pixel_shader");
+            _vertex_shader = shader_storage->get("ui_vertex_shader");
+            _pixel_shader = shader_storage->get("ui_pixel_shader");
 
             // Create a texture sampler state description.
             D3D11_SAMPLER_DESC desc;
@@ -74,9 +74,9 @@ namespace trview
             desc.MaxLOD = D3D11_FLOAT32_MAX;
 
             // Create the texture sampler state.
-            device.device()->CreateSamplerState(&desc, &_sampler_state);
+            _sampler_state = _device->create_sampler_state(desc);
 
-            create_matrix(device);
+            create_matrix();
         }
 
         void Sprite::set_host_size(const Size& size)
@@ -84,8 +84,9 @@ namespace trview
             _host_size = size;
         }
 
-        void Sprite::render(const ComPtr<ID3D11DeviceContext>& context, const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
+        void Sprite::render(const Texture& texture, float x, float y, float width, float height, DirectX::SimpleMath::Color colour)
         {
+            auto context = _device->context();
             update_matrix(context, std::round(x), std::round(y), std::round(width), std::round(height), colour);
 
             _vertex_shader->apply(context);
@@ -101,7 +102,7 @@ namespace trview
             context->DrawIndexed(4, 0, 0);
         }
 
-        void Sprite::create_matrix(const graphics::Device& device)
+        void Sprite::create_matrix()
         {
             using namespace DirectX::SimpleMath;
             D3D11_BUFFER_DESC desc;
@@ -112,7 +113,7 @@ namespace trview
             desc.Usage = D3D11_USAGE_DYNAMIC;
             desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-            device.device()->CreateBuffer(&desc, nullptr, _matrix_buffer.GetAddressOf());
+            _matrix_buffer = _device->create_buffer(desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
 
         void Sprite::update_matrix(const ComPtr<ID3D11DeviceContext>& context, float x, float y, float width, float height, const DirectX::SimpleMath::Color& colour)

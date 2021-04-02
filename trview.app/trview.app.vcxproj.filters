@@ -250,6 +250,42 @@
     <ClCompile Include="Routing\IRoute.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\IItemsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ITriggersWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRouteWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRoomsWindowManager.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\ITriggersWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IItemsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRoomsWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IRouteWindow.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\ICompass.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\IMeasure.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ISelectionRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\ITransparencyBuffer.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -555,6 +591,81 @@
     <ClInclude Include="Mocks\Routing\IRoute.h">
       <Filter>Mocks\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\IItemsWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IItemsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ITriggersWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRouteWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRouteWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRoomsWindowManager.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ITriggersWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ITriggersWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IItemsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRouteWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\IRoomsWindow.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IItemsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\ICompass.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\ICompass.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\IMeasure.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Tools\IMeasure.h">
+      <Filter>Mocks\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\IMeshStorage.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h">
+      <Filter>Mocks\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ISelectionRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\ITransparencyBuffer.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h">
+      <Filter>Mocks\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ITypeNameLookup.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -617,14 +728,17 @@
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mocks\Windows">
-      <UniqueIdentifier>{bf510d34-b63f-4cfb-9448-1b62a72cdac3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mocks\Graphics">
       <UniqueIdentifier>{fc010d02-678c-4f36-977f-06c6b9379694}</UniqueIdentifier>
     </Filter>
     <Filter Include="Mocks\Routing">
       <UniqueIdentifier>{06dfb4a3-f717-4461-b283-e43999dbc039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Tools">
+      <UniqueIdentifier>{ecb3edf3-c2bd-4da3-aec9-51e0f8a92548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Windows">
+      <UniqueIdentifier>{bf510d34-b63f-4cfb-9448-1b62a72cdac3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

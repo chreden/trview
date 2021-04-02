@@ -76,7 +76,7 @@ namespace trview
 
         /// Set the current route.
         /// @param route The new route.
-        virtual void set_route(IRoute* route) = 0;
+        virtual void set_route(const std::shared_ptr<IRoute>& route) = 0;
 
         /// Set whether the compass is visible.
         virtual void set_show_compass(bool value) = 0;

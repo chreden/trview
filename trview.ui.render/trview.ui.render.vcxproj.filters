@@ -21,6 +21,13 @@
       <Filter>Nodes</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="IRenderer.h" />
+    <ClInclude Include="Mocks\IRenderer.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="IMapRenderer.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -43,6 +50,10 @@
       <Filter>Nodes</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="IRenderer.cpp" />
+    <ClCompile Include="IMapRenderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Nodes">
@@ -50,6 +61,9 @@
     </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{a4d98d00-a685-475a-b9de-eef4d7fc33bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{2cbb355f-09d9-4f7c-8390-93f7a04895a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
