@@ -232,10 +232,8 @@ namespace trview
             // Calculate UVs.
             float u = static_cast<float>(sprite.x) / 256.0f;
             float v = static_cast<float>(sprite.y) / 256.0f;
-            // float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
-            // float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
-            float width = sprite.Width / 65536.0f;
-            float height = sprite.Height / 65536.0f;
+            float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
+            float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
 
             // Generate quad.
             using namespace DirectX::SimpleMath;
@@ -259,6 +257,7 @@ namespace trview
             float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Y;
             auto scale = Matrix::CreateScale(object_width, object_height, 1);
 
+            // Put the sprite in the correct position.
             pos.y += (1 - object_height) * 0.5f;
 
             auto sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
