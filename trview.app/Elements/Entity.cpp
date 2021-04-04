@@ -213,12 +213,13 @@ namespace trview
 
         if (_sprite_mesh)
         {
+            using namespace DirectX::SimpleMath;
+            Vector3 forward = camera.forward();
+            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+            auto world = _scale * billboard * _offset;
+
             for (const auto& triangle : _sprite_mesh->transparent_triangles())
             {
-                using namespace DirectX::SimpleMath;
-                Vector3 forward = camera.forward();
-                auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
-                auto world = _scale * billboard * _offset;
                 transparency.add(triangle.transform(world, colour));
             }
         }

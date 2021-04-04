@@ -4,6 +4,8 @@
 
 namespace trview
 {
+    using namespace DirectX::SimpleMath;
+
     StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
@@ -17,16 +19,50 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<Mesh> mesh)
+        : _position(position), _sprite_mesh(std::move(mesh)), _rotation(0), _scale(scale)
     {
-        _mesh->render(context, _world * view_projection, texture_storage, colour);
+        using namespace DirectX::SimpleMath;
+        _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        for (const auto& triangle : _mesh->transparent_triangles())
+        if (_sprite_mesh)
         {
-            transparency.add(triangle.transform(_world, colour));
+            Vector3 forward = camera.forward();
+            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+            auto offset = Matrix::CreateTranslation(0, -0.5f, 0);
+            auto world = _scale * billboard * offset;
+            auto wvp = world * camera.view_projection();
+            _sprite_mesh->render(context, wvp, texture_storage, colour);
+        }
+        else
+        {
+            _mesh->render(context, _world * camera.view_projection(), texture_storage, colour);
+        }
+    }
+
+    void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
+        if (_sprite_mesh)
+        {
+            Vector3 forward = camera.forward();
+            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
+            auto offset = Matrix::CreateTranslation(0, -0.5f, 0);
+            auto world = _scale * billboard * offset;
+
+            for (const auto& triangle : _sprite_mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(world, colour));
+            }
+        }
+        else
+        {
+            for (const auto& triangle : _mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(_world, colour));
+            }
         }
     }
 }
