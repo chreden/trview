@@ -285,7 +285,7 @@ namespace trview
         return std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
     }
 
-    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, DirectX::SimpleMath::Matrix& scale, DirectX::SimpleMath::Vector3& offset)
+    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)
     {
         // Calculate UVs.
         float u = static_cast<float>(sprite.x) / 256.0f;
@@ -314,9 +314,25 @@ namespace trview
         float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / trlevel::Scale_X;
         float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Y;
         scale = Matrix::CreateScale(object_width, object_height, 1);
-        offset = Vector3(0, (1 - object_height) * 0.5f, 0);
+
+        if (offset_mode == SpriteOffsetMode::RoomSprite)
+        {
+            offset = Vector3(0, (1 - object_height) * 0.5f, 0);
+        }
+        else
+        {
+            offset = Vector3(0, object_height / -2.0f, 0);
+        }
 
         return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+    }
+
+    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)
+    {
+        Vector3 offset_vector;
+        auto mesh = create_sprite_mesh(source, sprite, scale, offset_vector, offset_mode);
+        offset = Matrix::CreateTranslation(offset_vector);
+        return std::move(mesh);
     }
 
     void process_textured_rectangles(

@@ -64,7 +64,7 @@ namespace trview
         generate_sectors(level, room);
         generate_geometry(level.get_version(), mesh_source, room, texture_storage);
         generate_adjacency();
-        generate_static_meshes(mesh_source, level, room, mesh_storage, texture_storage);
+        generate_static_meshes(mesh_source, level, room, mesh_storage);
     }
 
     RoomInfo Room::info() const
@@ -208,7 +208,7 @@ namespace trview
         }
     }
 
-    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage, const ILevelTextureStorage& texture_storage)
+    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
     {
         for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
         {
@@ -224,12 +224,11 @@ namespace trview
         {
             Matrix scale;
             Vector3 offset;
-            auto sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(room_sprite.texture), scale, offset);
+            auto sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(room_sprite.texture), scale, offset, SpriteOffsetMode::RoomSprite);
 
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
-            pos = Vector3::Transform(pos, _room_offset);
-            pos += offset;
+            pos = Vector3::Transform(pos, _room_offset) + offset;
 
             _static_meshes.push_back(std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh)));
         }

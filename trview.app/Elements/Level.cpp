@@ -56,7 +56,7 @@ namespace trview
 
         generate_rooms(*level, mesh_source);
         generate_triggers();
-        generate_entities(*level, *type_names);
+        generate_entities(*level, *type_names, mesh_source);
 
         for (auto& room : _rooms)
         {
@@ -372,7 +372,7 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
@@ -380,7 +380,7 @@ namespace trview
             // Entity for rendering.
             auto level_entity = level.get_entity(i);
             // TODO: Use DI?
-            auto entity = std::make_unique<Entity>(*_device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
+            auto entity = std::make_unique<Entity>(mesh_source, level, level_entity, *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 

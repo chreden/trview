@@ -71,6 +71,24 @@ namespace trview
     /// Create a new cube mesh.
     std::unique_ptr<Mesh> create_cube_mesh(const graphics::IDevice& device);
 
+    enum class SpriteOffsetMode
+    {
+        RoomSprite,
+        Entity
+    };
+
+    /// Create a new sprite mesh.
+    /// @param source The function to call to create a IMesh
+    /// @param sprite The game sprite definition to use.
+    /// @param scale The output scale matrix.
+    /// @param offset The output offset.
+    std::unique_ptr<IMesh> create_sprite_mesh(
+        const IMesh::Source& source,
+        const trlevel::tr_sprite_texture& sprite,
+        DirectX::SimpleMath::Matrix& scale,
+        DirectX::SimpleMath::Vector3& offset,
+        SpriteOffsetMode offset_mode);
+
     /// Create a new sprite mesh.
     /// @param source The function to call to create a IMesh
     /// @param sprite The game sprite definition to use.
@@ -79,7 +97,8 @@ namespace trview
         const IMesh::Source& source,
         const trlevel::tr_sprite_texture& sprite,
         DirectX::SimpleMath::Matrix& scale,
-        DirectX::SimpleMath::Vector3& offset);
+        DirectX::SimpleMath::Matrix& offset,
+        SpriteOffsetMode offset_mode);
 
     /// Convert the textured rectangles into collections required to create a mesh.
     /// @param level_version The level version - affects texture index.

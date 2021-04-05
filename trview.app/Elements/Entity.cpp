@@ -14,7 +14,7 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    Entity::Entity(const graphics::IDevice& device, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const ILevelTextureStorage& texture_storage, const IMeshStorage& mesh_storage, uint32_t index)
+    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index)
         : _room(entity.Room), _index(index)
     {
         using namespace DirectX;
@@ -36,7 +36,7 @@ namespace trview
         else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
         {
             _world = Matrix::CreateTranslation(entity.position());
-            load_sprite(device, sprite, level, texture_storage);
+            _sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(sprite.Offset), _scale, _offset, SpriteOffsetMode::Entity);
             _position = entity.position();
         }
 
@@ -117,48 +117,6 @@ namespace trview
                 previous_world = node_transform;
             }
         }
-    }
-
-    void Entity::load_sprite(const graphics::IDevice& device, const trlevel::tr_sprite_sequence& sprite_sequence, const trlevel::ILevel& level, const ILevelTextureStorage& texture_storage)
-    {
-        // Get the first sprite image.
-        auto sprite = level.get_sprite_texture(sprite_sequence.Offset);
-        auto texture = texture_storage.texture(sprite.Tile);
-
-        // Calculate UVs.
-        float u = static_cast<float>(sprite.x) / 256.0f;
-        float v = static_cast<float>(sprite.y) / 256.0f;
-        float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
-        float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
-
-        // Generate quad.
-        using namespace DirectX::SimpleMath;
-        std::vector<MeshVertex> vertices
-        {
-            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1)  },
-            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1) },
-            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
-            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
-        };
-
-        std::vector<TransparentTriangle> transparent_triangles
-        {
-            { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
-            { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
-        };
-
-        std::vector<Triangle> collision_triangles;
-
-        // TODO: Use DI
-        _sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
-
-        // Scale is computed from the 'side' values.
-        float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / trlevel::Scale_X;
-        float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Z;
-        _scale = Matrix::CreateScale(object_width, object_height, 1);
-
-        // An offset to move the sprite up a bit.
-        _offset = Matrix::CreateTranslation(0, object_height / -2.0f, 0);
     }
 
     void Entity::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)

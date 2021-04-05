@@ -135,7 +135,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source);
         void generate_triggers();
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
