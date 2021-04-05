@@ -19,7 +19,7 @@ namespace trview
     class StaticMesh
     {
     public:
-        StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh);
+        StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, IMesh* mesh);
 
         StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh);
 
@@ -34,7 +34,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _collision_min;
         DirectX::SimpleMath::Vector3 _collision_max;
         DirectX::SimpleMath::Matrix  _world;
-        Mesh*                        _mesh;
+        IMesh*                       _mesh;
         std::unique_ptr<IMesh> _sprite_mesh;
         DirectX::SimpleMath::Matrix _scale;
     };

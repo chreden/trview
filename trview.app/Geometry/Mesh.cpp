@@ -213,7 +213,7 @@ namespace trview
         return result;
     }
 
-    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::IDevice& device, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::unique_ptr<IMesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -226,11 +226,10 @@ namespace trview
         process_coloured_rectangles(mesh.coloured_rectangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
         process_coloured_triangles(mesh.coloured_triangles, mesh.vertices, texture_storage, vertices, untextured_indices, collision_triangles);
 
-        // TODO: Use DI
-        return std::make_unique<Mesh>(device, vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
+        return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
-    std::unique_ptr<Mesh> create_cube_mesh(const graphics::IDevice& device)
+    std::unique_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
     {
         const std::vector<MeshVertex> vertices
         {
@@ -281,8 +280,7 @@ namespace trview
             20, 21, 22, 22, 23, 20  // -y
         };
 
-        // TODO: Use DI
-        return std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
+        return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
     }
 
     std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)

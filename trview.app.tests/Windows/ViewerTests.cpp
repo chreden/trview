@@ -12,6 +12,7 @@
 #include <trview.graphics/mocks/ISprite.h>
 #include <trview.graphics/mocks/IRenderTarget.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
 
 using testing::NiceMock;
 using testing::Return;
@@ -226,7 +227,7 @@ TEST(Viewer, SelectTriggerRaised)
 
     MockLevel level;
     std::vector<Trigger*> triggers_list(101);
-    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
+    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     triggers_list[100] = trigger.get();
 
     EXPECT_CALL(level, triggers)
@@ -266,7 +267,7 @@ TEST(Viewer, TriggerVisibilityRaised)
 
     MockLevel level;
     std::vector<Trigger*> triggers_list(101);
-    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{});
+    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     triggers_list[100] = trigger.get();
 
     EXPECT_CALL(level, triggers)

@@ -18,7 +18,7 @@ namespace trview
         /// Create a compass.
         /// @param device The device to use to render the compass.
         /// @param shader_storage The shader storage instance.
-        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source);
+        Compass(const std::shared_ptr<graphics::IDevice>& device, const graphics::ISprite::Source& sprite_source, const graphics::IRenderTarget::SizeSource& render_target_source, const IMesh::Source& mesh_source);
 
         /// Render the compass.
         /// @param camera The current camera being used to view the level.
@@ -37,7 +37,7 @@ namespace trview
     private:
         std::shared_ptr<graphics::IDevice> _device;
         std::unique_ptr<graphics::IRenderTarget> _render_target;
-        std::unique_ptr<Mesh> _mesh;
+        std::unique_ptr<IMesh> _mesh;
         std::unique_ptr<graphics::ISprite> _sprite;
         OrbitCamera _mesh_camera;
         bool _visible{ true };

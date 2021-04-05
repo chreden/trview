@@ -25,7 +25,8 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ITypeNameLookup>& type_names,
-        const IMesh::Source& mesh_source)
+        const IMesh::Source& mesh_source,
+        const IMesh::TransparentSource& mesh_transparent_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -55,7 +56,7 @@ namespace trview
         _sampler_state = device->create_sampler_state(sampler_desc);
 
         generate_rooms(*level, mesh_source);
-        generate_triggers();
+        generate_triggers(mesh_transparent_source);
         generate_entities(*level, *type_names, mesh_source);
 
         for (auto& room : _rooms)
@@ -350,7 +351,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers()
+    void Level::generate_triggers(const IMesh::TransparentSource& mesh_transparent_source)
     {
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
@@ -360,7 +361,7 @@ namespace trview
                 if (sector->flags & SectorFlag::Trigger)
                 {
                     // TODO: Use DI?
-                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), mesh_transparent_source));
                     room->add_trigger(_triggers.back().get());
                 }
             }

@@ -6,12 +6,14 @@
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.ui.render/Mocks/IRenderer.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trview::ui::render::mocks;
+using namespace trview::mocks;
 
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
@@ -47,7 +49,7 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
-    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
+    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
@@ -390,8 +392,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     auto renderer_ptr = std::move(renderer_ptr_source);
     ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
-    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
@@ -428,7 +430,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
+    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),

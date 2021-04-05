@@ -62,14 +62,14 @@ namespace trview
     /// Create a new mesh based on the contents of the mesh specified.
     /// @param level_version The level version - affects texture index
     /// @param mesh The level mesh to generate.
-    /// @param device The D3D device to use to create the mesh.
+    /// @param source The mesh source function.
     /// @param texture_storage The textures for the level.
     /// @param transparent_collision Whether to include transparent triangles in collision triangles.
     /// @returns The new mesh.
-    std::unique_ptr<Mesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const graphics::IDevice& device, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
+    std::unique_ptr<IMesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision = true);
 
     /// Create a new cube mesh.
-    std::unique_ptr<Mesh> create_cube_mesh(const graphics::IDevice& device);
+    std::unique_ptr<IMesh> create_cube_mesh(const IMesh::Source& source);
 
     enum class SpriteOffsetMode
     {

@@ -16,6 +16,8 @@ namespace trview
             const std::vector<MeshVertex>&, const std::vector<std::vector<uint32_t>>&, const std::vector<uint32_t>&,
             const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
 
+        using TransparentSource = std::function<std::unique_ptr<IMesh>(const std::vector<TransparentTriangle>&, const std::vector<Triangle>&)>;
+
         virtual ~IMesh() = 0;
 
         virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,

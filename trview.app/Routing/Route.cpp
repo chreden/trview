@@ -43,8 +43,8 @@ namespace trview
         }
     }
 
-    Route::Route(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ISelectionRenderer> selection_renderer)
-        : _device(device), _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(std::move(selection_renderer))
+    Route::Route(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source)
+        : _device(device), _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer))
     {
     }
 

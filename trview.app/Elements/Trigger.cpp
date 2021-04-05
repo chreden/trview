@@ -86,8 +86,9 @@ namespace trview
         return _index;
     }
 
-    Trigger::Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info)
-        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer), _sector_id(trigger_info.sector_id)
+    Trigger::Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source)
+        : _number(number), _room(room), _x(x), _z(z), _type(trigger_info.type), _only_once(trigger_info.oneshot), _flags(trigger_info.mask), _timer(trigger_info.timer), _sector_id(trigger_info.sector_id),
+        _mesh_source(mesh_source)
     {
         uint32_t command_index = 0;
         for (auto action : trigger_info.commands)
@@ -166,8 +167,7 @@ namespace trview
         std::vector<Triangle> collision;
         std::transform(transparent_triangles.begin(), transparent_triangles.end(), std::back_inserter(collision),
             [](const auto& tri) { return Triangle(tri.vertices[0], tri.vertices[1], tri.vertices[2]); });
-        // TODO: Use DI
-        _mesh = std::make_unique<Mesh>(transparent_triangles, collision);
+        _mesh = _mesh_source(transparent_triangles, collision);
     }
 
     PickResult Trigger::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const

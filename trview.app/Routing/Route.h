@@ -14,7 +14,7 @@ namespace trview
     public:
         /// Create a route.
         /// @param device The device to use.
-        explicit Route(const std::shared_ptr<graphics::IDevice>& device, const std::unique_ptr<ISelectionRenderer> selection_renderer);
+        explicit Route(const std::shared_ptr<graphics::IDevice>& device, const std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source);
 
         virtual ~Route() = default;
 
@@ -106,7 +106,7 @@ namespace trview
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<Waypoint> _waypoints;
-        std::unique_ptr<Mesh> _waypoint_mesh;
+        std::unique_ptr<IMesh> _waypoint_mesh;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };

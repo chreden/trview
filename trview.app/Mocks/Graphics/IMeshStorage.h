@@ -8,7 +8,7 @@ namespace trview
     {
         class MockMeshStorage final : public IMeshStorage
         {
-            MOCK_METHOD(Mesh*, mesh, (uint32_t), (const));
+            MOCK_METHOD(IMesh*, mesh, (uint32_t), (const));
         };
     }
 }

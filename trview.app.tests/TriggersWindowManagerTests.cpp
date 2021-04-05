@@ -2,6 +2,7 @@
 #include <trview.app/Elements/Types.h>
 #include <trview.app/Mocks/Windows/ITriggersWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -25,8 +26,8 @@ TEST(TriggersWindowManager, CreateTriggersWindowCreatesNewWindowWithSavedValues)
     EXPECT_CALL(*mock_window, set_triggers).Times(1);
     TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
-    auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger1.get(), trigger2.get() });
 
     auto created_window = manager.create_window().lock();
@@ -43,8 +44,8 @@ TEST(TriggersWindowManager, CreateTriggersWindowSetsSelectedTriggerOnWindows)
     EXPECT_CALL(*mock_window, set_selected_trigger).Times(1);
     TriggersWindowManager manager(create_test_window(L"TriggersWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
-    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger1.get(), trigger2.get() });
     manager.set_selected_trigger(trigger2.get());
 
@@ -88,7 +89,7 @@ TEST(TriggersWindowManager, TriggerSelectedEventRaised)
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     created_window->on_trigger_selected(trigger.get());
 
     ASSERT_TRUE(raised_trigger.has_value());
@@ -109,7 +110,7 @@ TEST(TriggersWindowManager, TriggerVisibilityEventRaised)
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     created_window->on_trigger_visibility(trigger.get(), true);
 
     ASSERT_TRUE(raised_trigger.has_value());
@@ -131,7 +132,7 @@ TEST(TriggersWindowManager, AddToRouteEventRaised)
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     created_window->on_add_to_route(trigger.get());
 
     ASSERT_TRUE(raised_trigger.has_value());
@@ -171,8 +172,8 @@ TEST(TriggersWindowManager, SetTriggersSetsTriggersOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
-    auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger1.get(), trigger2.get() });
 }
 
@@ -189,7 +190,7 @@ TEST(TriggersWindowManager, SetTriggerVisibilityUpdatesWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{});
+    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger1.get() });
     manager.set_trigger_visible(trigger1.get(), false);
 }
@@ -222,8 +223,8 @@ TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{});
-    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{});
+    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(1, 1, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger1.get(), trigger2.get() });
     manager.set_selected_trigger(trigger2.get());
 }
