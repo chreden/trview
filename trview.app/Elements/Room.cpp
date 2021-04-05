@@ -222,47 +222,16 @@ namespace trview
         // Also read the room sprites - they're similar enough for now.
         for (const auto& room_sprite : room.data.sprites)
         {
+            Matrix scale;
+            Vector3 offset;
+            auto sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(room_sprite.texture), scale, offset);
+
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
             pos = Vector3::Transform(pos, _room_offset);
+            pos += offset;
 
-            auto sprite = level.get_sprite_texture(room_sprite.texture);
-            auto texture = texture_storage.texture(sprite.Tile);
-
-            // Calculate UVs.
-            float u = static_cast<float>(sprite.x) / 256.0f;
-            float v = static_cast<float>(sprite.y) / 256.0f;
-            float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
-            float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
-
-            // Generate quad.
-            using namespace DirectX::SimpleMath;
-            std::vector<MeshVertex> vertices
-            {
-                { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1)  },
-                { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1) },
-                { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
-                { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
-            };
-
-            std::vector<TransparentTriangle> transparent_triangles
-            {
-                { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
-                { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
-            };
-
-            std::vector<Triangle> collision_triangles;
-
-            float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / trlevel::Scale_X;
-            float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Y;
-            auto scale = Matrix::CreateScale(object_width, object_height, 1);
-
-            // Put the sprite in the correct position.
-            pos.y += (1 - object_height) * 0.5f;
-
-            auto sprite_mesh = mesh_source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
-            auto static_mesh = std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh));
-            _static_meshes.push_back(std::move(static_mesh));
+            _static_meshes.push_back(std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh)));
         }
     }
 

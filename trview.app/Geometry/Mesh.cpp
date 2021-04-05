@@ -285,6 +285,40 @@ namespace trview
         return std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
     }
 
+    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, DirectX::SimpleMath::Matrix& scale, DirectX::SimpleMath::Vector3& offset)
+    {
+        // Calculate UVs.
+        float u = static_cast<float>(sprite.x) / 256.0f;
+        float v = static_cast<float>(sprite.y) / 256.0f;
+        float width = static_cast<float>((sprite.Width - 255) / 256) / 256.0f;
+        float height = static_cast<float>((sprite.Height - 255) / 256) / 256.0f;
+
+        // Generate quad.
+        using namespace DirectX::SimpleMath;
+        std::vector<MeshVertex> vertices
+        {
+            { Vector3(-0.5f, -0.5f, 0), Vector3::Zero, Vector2(u, v + height), Color(1,1,1,1)  },
+            { Vector3(0.5f, -0.5f, 0), Vector3::Zero, Vector2(u + width, v + height), Color(1,1,1,1) },
+            { Vector3(-0.5f, 0.5f, 0), Vector3::Zero, Vector2(u, v), Color(1,1,1,1) },
+            { Vector3(0.5f, 0.5f, 0), Vector3::Zero, Vector2(u + width, v), Color(1,1,1,1) },
+        };
+
+        std::vector<TransparentTriangle> transparent_triangles
+        {
+            { vertices[0].pos, vertices[1].pos, vertices[2].pos, vertices[0].uv, vertices[1].uv, vertices[2].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
+            { vertices[2].pos, vertices[1].pos, vertices[3].pos, vertices[2].uv, vertices[1].uv, vertices[3].uv, sprite.Tile, TransparentTriangle::Mode::Normal },
+        };
+
+        std::vector<Triangle> collision_triangles;
+
+        float object_width = static_cast<float>(sprite.RightSide - sprite.LeftSide) / trlevel::Scale_X;
+        float object_height = static_cast<float>(sprite.BottomSide - sprite.TopSide) / trlevel::Scale_Y;
+        scale = Matrix::CreateScale(object_width, object_height, 1);
+        offset = Vector3(0, (1 - object_height) * 0.5f, 0);
+
+        return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+    }
+
     void process_textured_rectangles(
         trlevel::LevelVersion level_version,
         const std::vector<trlevel::tr4_mesh_face4>& rectangles, 
