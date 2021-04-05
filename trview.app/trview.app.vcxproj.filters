@@ -289,6 +289,9 @@
     <ClCompile Include="Geometry\IMesh.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\Matrix.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -674,6 +677,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Geometry\IMesh.h">
       <Filter>Mocks\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Matrix.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

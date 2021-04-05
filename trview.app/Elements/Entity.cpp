@@ -3,10 +3,10 @@
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
+#include <trview.app/Geometry/Matrix.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 #include <trview.common/Algorithms.h>
-
 #include <trlevel/ILevel.h>
 #include <trlevel/trtypes.h>
 
@@ -178,10 +178,7 @@ namespace trview
 
         if (_sprite_mesh)
         {
-            Vector3 forward = camera.forward();
-            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
-            auto world = _scale * billboard * _offset;
-            auto wvp = world * camera.view_projection();
+            auto wvp = create_billboard(_position, _offset, _scale, camera) * camera.view_projection();
             _sprite_mesh->render(device.context(), wvp, texture_storage, colour);
         }
     }
@@ -213,11 +210,7 @@ namespace trview
 
         if (_sprite_mesh)
         {
-            using namespace DirectX::SimpleMath;
-            Vector3 forward = camera.forward();
-            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
-            auto world = _scale * billboard * _offset;
-
+            auto world = create_billboard(_position, _offset, _scale, camera);
             for (const auto& triangle : _sprite_mesh->transparent_triangles())
             {
                 transparency.add(triangle.transform(world, colour));

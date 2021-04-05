@@ -1,4 +1,5 @@
 #include "StaticMesh.h"
+#include <trview.app/Geometry/Matrix.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 
@@ -30,11 +31,7 @@ namespace trview
     {
         if (_sprite_mesh)
         {
-            Vector3 forward = camera.forward();
-            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
-            auto offset = Matrix::CreateTranslation(0, -0.5f, 0);
-            auto world = _scale * billboard * offset;
-            auto wvp = world * camera.view_projection();
+            auto wvp = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera) * camera.view_projection();
             _sprite_mesh->render(context, wvp, texture_storage, colour);
         }
         else
@@ -47,11 +44,7 @@ namespace trview
     {
         if (_sprite_mesh)
         {
-            Vector3 forward = camera.forward();
-            auto billboard = Matrix::CreateBillboard(_position, camera.position(), camera.up(), &forward);
-            auto offset = Matrix::CreateTranslation(0, -0.5f, 0);
-            auto world = _scale * billboard * offset;
-
+            auto world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
             for (const auto& triangle : _sprite_mesh->transparent_triangles())
             {
                 transparency.add(triangle.transform(world, colour));

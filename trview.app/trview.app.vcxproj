@@ -50,6 +50,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\IPicking.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\ITransparencyBuffer.cpp" />
+    <ClCompile Include="Geometry\Matrix.cpp" />
     <ClCompile Include="Geometry\Mesh.cpp" />
     <ClCompile Include="Geometry\Picking.cpp" />
     <ClCompile Include="Geometry\PickResult.cpp" />
@@ -157,6 +158,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\ITransparencyBuffer.h" />
+    <ClInclude Include="Geometry\Matrix.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\MeshVertex.h" />
     <ClInclude Include="Geometry\PickInfo.h" />
