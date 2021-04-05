@@ -286,6 +286,9 @@
     <ClCompile Include="Geometry\ITransparencyBuffer.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\IMesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -665,6 +668,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\ITypeNameLookup.h">
       <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\IMesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Geometry\IMesh.h">
+      <Filter>Mocks\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

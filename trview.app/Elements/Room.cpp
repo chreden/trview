@@ -39,7 +39,7 @@ namespace trview
         }
     }
 
-    Room::Room(const graphics::IDevice& device,
+    Room::Room(const IMesh::Source& mesh_source,
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
@@ -62,9 +62,9 @@ namespace trview
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         generate_sectors(level, room);
-        generate_geometry(level.get_version(), device, room, texture_storage);
+        generate_geometry(level.get_version(), mesh_source, room, texture_storage);
         generate_adjacency();
-        generate_static_meshes(device, level, room, mesh_storage, texture_storage);
+        generate_static_meshes(mesh_source, level, room, mesh_storage, texture_storage);
     }
 
     RoomInfo Room::info() const
@@ -208,7 +208,7 @@ namespace trview
         }
     }
 
-    void Room::generate_static_meshes(const graphics::IDevice& device, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage, const ILevelTextureStorage& texture_storage)
+    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage, const ILevelTextureStorage& texture_storage)
     {
         for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
         {
@@ -260,7 +260,7 @@ namespace trview
             // Put the sprite in the correct position.
             pos.y += (1 - object_height) * 0.5f;
 
-            auto sprite_mesh = std::make_unique<Mesh>(device, std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
+            auto sprite_mesh = mesh_source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
             auto static_mesh = std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh));
             _static_meshes.push_back(std::move(static_mesh));
         }
@@ -280,7 +280,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(trlevel::LevelVersion level_version, const graphics::IDevice& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -298,14 +298,14 @@ namespace trview
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
+        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
         // Make the unmatched mesh.
         collision_triangles.clear();
         vertices.clear();
         std::vector<uint32_t> untextured_indices;
         process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
-        _unmatched_mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
+        _unmatched_mesh = mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();

@@ -1,23 +1,16 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11.h>
 #include <memory>
-
 #include <trlevel/trtypes.h>
 #include <trlevel/LevelVersion.h>
 #include <trview.graphics/Device.h>
-
-#include "MeshVertex.h"
-#include "TransparentTriangle.h"
-#include "Triangle.h"
-#include <trview.app/Geometry/PickResult.h>
+#include "IMesh.h"
 
 namespace trview
 {
     struct ILevelTextureStorage;
 
-    class Mesh
+    class Mesh : public IMesh
     {
     public:
         /// Create a mesh using the specified vertices and indices.
@@ -39,17 +32,19 @@ namespace trview
         /// @param collision_triangles The triangles for picking.
         Mesh(const std::vector<TransparentTriangle>& transparent_triangles, const std::vector<Triangle>& collision_triangles);
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
+        virtual ~Mesh() = default;
+
+        virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
             const DirectX::SimpleMath::Matrix& world_view_projection,
             const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
-            DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero);
+            DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
 
-        const std::vector<TransparentTriangle>& transparent_triangles() const;
+        virtual const std::vector<TransparentTriangle>& transparent_triangles() const override;
 
-        const DirectX::BoundingBox& bounding_box() const;
+        virtual const DirectX::BoundingBox& bounding_box() const override;
 
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
     private:
         void calculate_bounding_box(const std::vector<MeshVertex>& vertices, const std::vector<TransparentTriangle>& transparent_triangles);
 

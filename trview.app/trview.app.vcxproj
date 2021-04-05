@@ -46,6 +46,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\StaticMesh.cpp" />
     <ClCompile Include="Elements\Trigger.cpp" />
     <ClCompile Include="Elements\TypeNameLookup.cpp" />
+    <ClCompile Include="Geometry\IMesh.cpp" />
     <ClCompile Include="Geometry\IPicking.cpp" />
     <ClCompile Include="Geometry\IRenderable.cpp" />
     <ClCompile Include="Geometry\ITransparencyBuffer.cpp" />
@@ -152,6 +153,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\Trigger.h" />
     <ClInclude Include="Elements\TypeNameLookup.h" />
     <ClInclude Include="Elements\Types.h" />
+    <ClInclude Include="Geometry\IMesh.h" />
     <ClInclude Include="Geometry\IPicking.h" />
     <ClInclude Include="Geometry\IRenderable.h" />
     <ClInclude Include="Geometry\ITransparencyBuffer.h" />
@@ -187,6 +189,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Menus\ViewMenu.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />
+    <ClInclude Include="Mocks\Geometry\IMesh.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" />
     <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" />

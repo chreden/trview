@@ -693,6 +693,20 @@ namespace trview
                             level_texture_storage);
                     };
                 }),
+            di::bind<IMesh::Source>.to(
+                [](const auto& injector) -> IMesh::Source
+                {
+                    return [&](auto&& vertices, auto&& indices, auto&& untextured_indices, auto&& transparent_triangles, auto&& collision_triangles)
+                    {
+                        return std::make_unique<Mesh>(
+                            *injector.create<std::shared_ptr<IDevice>>(),
+                            vertices,
+                            indices,
+                            untextured_indices,
+                            transparent_triangles,
+                            collision_triangles);
+                    };
+                }),
             di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
             di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
@@ -710,7 +724,8 @@ namespace trview
                             std::move(mesh_storage),
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
-                            injector.create<std::shared_ptr<ITypeNameLookup>>());
+                            injector.create<std::shared_ptr<ITypeNameLookup>>(),
+                            injector.create<IMesh::Source>());
                     };
                 }),
             di::bind<IRenderTarget::SizeSource>.to(

@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <SimpleMath.h>
 #include <trview.app/Camera/ICamera.h>
+#include <trview.app/Geometry/IMesh.h>
+#include <trview.app/Geometry/Mesh.h>
 
 namespace trview
 {
@@ -19,7 +21,7 @@ namespace trview
     public:
         StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh);
 
-        StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<Mesh> mesh);
+        StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh);
 
         void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
@@ -33,7 +35,7 @@ namespace trview
         DirectX::SimpleMath::Vector3 _collision_max;
         DirectX::SimpleMath::Matrix  _world;
         Mesh*                        _mesh;
-        std::unique_ptr<Mesh> _sprite_mesh;
+        std::unique_ptr<IMesh> _sprite_mesh;
         DirectX::SimpleMath::Matrix _scale;
     };
 }

@@ -17,7 +17,7 @@
 
 #include "StaticMesh.h"
 #include <trview.app/Geometry/TransparencyBuffer.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Geometry/PickResult.h>
 
@@ -50,7 +50,7 @@ namespace trview
             IsAlternate
         };
 
-        explicit Room(const graphics::IDevice& device,
+        explicit Room(const IMesh::Source& mesh_source,
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
             const ILevelTextureStorage& texture_storage,
@@ -150,9 +150,9 @@ namespace trview
         /// Gets whether this room is a quicksand room.
         bool quicksand() const;
     private:
-        void generate_geometry(trlevel::LevelVersion level_version, const graphics::IDevice& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
+        void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
-        void generate_static_meshes(const graphics::IDevice& device, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage, const ILevelTextureStorage& texture_storage);
+        void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage, const ILevelTextureStorage& texture_storage);
         void render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
@@ -183,8 +183,8 @@ namespace trview
 
         std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
 
-        std::unique_ptr<Mesh>       _mesh;
-        std::unique_ptr<Mesh>       _unmatched_mesh;
+        std::unique_ptr<IMesh> _mesh;
+        std::unique_ptr<IMesh> _unmatched_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
 
         DirectX::BoundingBox  _bounding_box;
