@@ -532,7 +532,7 @@ namespace trview
             const auto& camera = current_camera();
 
             _level->render(camera, _show_selection);
-            _sector_highlight->render(*_device, camera, _level->texture_storage());
+            _sector_highlight->render(camera, _level->texture_storage());
 
             _measure->render(camera, _level->texture_storage());
 

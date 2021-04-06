@@ -21,7 +21,7 @@ namespace trview
         _mesh.reset();
     }
 
-    void SectorHighlight::render(graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage)
+    void SectorHighlight::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
     {
         if (!_sector)
         {
@@ -51,6 +51,6 @@ namespace trview
             _mesh = _mesh_source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
         }
 
-        _mesh->render(device.context(), _room_offset * camera.view_projection(), texture_storage, Color(1,1,1));
+        _mesh->render(_room_offset * camera.view_projection(), texture_storage, Color(1,1,1));
     }
 }

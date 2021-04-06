@@ -1,11 +1,8 @@
 #pragma once
 
-#include <trlevel/trtypes.h>
-
-#include <d3d11.h>
-#include <wrl/client.h>
 #include <cstdint>
 #include <SimpleMath.h>
+#include <trlevel/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Geometry/Mesh.h>
@@ -23,7 +20,7 @@ namespace trview
 
         StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh);
 
-        void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
 
         void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
     private:

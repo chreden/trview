@@ -119,7 +119,7 @@ namespace trview
         }
     }
 
-    void Entity::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void Entity::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         if (!_visible)
         {
@@ -131,13 +131,13 @@ namespace trview
         for (uint32_t i = 0; i < _meshes.size(); ++i)
         {
             auto wvp = _world_transforms[i] * _world * camera.view_projection();
-            _meshes[i]->render(device.context(), wvp, texture_storage, colour);
+            _meshes[i]->render(wvp, texture_storage, colour);
         }
 
         if (_sprite_mesh)
         {
             auto wvp = create_billboard(_position, _offset, _scale, camera) * camera.view_projection();
-            _sprite_mesh->render(device.context(), wvp, texture_storage, colour);
+            _sprite_mesh->render(wvp, texture_storage, colour);
         }
     }
 

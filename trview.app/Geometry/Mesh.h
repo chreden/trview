@@ -20,7 +20,7 @@ namespace trview
         /// @param untextured_indices The indices for triangles that do not use level textures.
         /// @param transparent_triangles The transparent triangles to use to create the mesh.
         /// @param collision_triangles The triangles for picking.
-        Mesh(const graphics::IDevice& device,
+        Mesh(const std::shared_ptr<graphics::IDevice>& device,
              const std::vector<MeshVertex>& vertices, 
              const std::vector<std::vector<uint32_t>>& indices, 
              const std::vector<uint32_t>& untextured_indices,
@@ -34,8 +34,7 @@ namespace trview
 
         virtual ~Mesh() = default;
 
-        virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
-            const DirectX::SimpleMath::Matrix& world_view_projection,
+        virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
@@ -48,6 +47,7 @@ namespace trview
     private:
         void calculate_bounding_box(const std::vector<MeshVertex>& vertices, const std::vector<TransparentTriangle>& transparent_triangles);
 
+        std::shared_ptr<graphics::IDevice> _device;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _vertex_buffer;
         std::vector<uint32_t>                             _index_counts;
         std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> _index_buffers;

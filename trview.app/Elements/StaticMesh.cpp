@@ -27,16 +27,16 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
         if (_sprite_mesh)
         {
             auto wvp = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera) * camera.view_projection();
-            _sprite_mesh->render(context, wvp, texture_storage, colour);
+            _sprite_mesh->render(wvp, texture_storage, colour);
         }
         else
         {
-            _mesh->render(context, _world * camera.view_projection(), texture_storage, colour);
+            _mesh->render(_world * camera.view_projection(), texture_storage, colour);
         }
     }
 

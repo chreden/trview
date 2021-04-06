@@ -20,8 +20,7 @@ namespace trview
 
         virtual ~IMesh() = 0;
 
-        virtual void render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context,
-            const DirectX::SimpleMath::Matrix& world_view_projection,
+        virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;

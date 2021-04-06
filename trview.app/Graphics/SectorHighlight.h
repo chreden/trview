@@ -11,7 +11,7 @@ namespace trview
         explicit SectorHighlight(const IMesh::Source& mesh_source);
         virtual ~SectorHighlight() = default;
         virtual void set_sector(const std::shared_ptr<Sector>& sector, const DirectX::SimpleMath::Matrix& room_offset) override;
-        virtual void render(graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
     private:
         DirectX::SimpleMath::Matrix _room_offset;
         std::shared_ptr<Sector> _sector;

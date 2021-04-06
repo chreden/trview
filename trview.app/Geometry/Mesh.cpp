@@ -26,13 +26,13 @@ namespace trview
         }
     }
 
-    Mesh::Mesh(const graphics::IDevice& device,
+    Mesh::Mesh(const std::shared_ptr<graphics::IDevice>& device,
         const std::vector<MeshVertex>& vertices, 
         const std::vector<std::vector<uint32_t>>& indices, 
         const std::vector<uint32_t>& untextured_indices, 
         const std::vector<TransparentTriangle>& transparent_triangles,
         const std::vector<Triangle>& collision_triangles)
-        : _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
+        : _device(device), _transparent_triangles(transparent_triangles), _collision_triangles(collision_triangles)
     {
         if (!vertices.empty())
         {
@@ -46,7 +46,7 @@ namespace trview
             memset(&vertex_data, 0, sizeof(vertex_data));
             vertex_data.pSysMem = &vertices[0];
 
-            _vertex_buffer = device.create_buffer(vertex_desc, vertex_data);
+            _vertex_buffer = device->create_buffer(vertex_desc, vertex_data);
 
             for (const auto& tex_indices : indices)
             {
@@ -68,7 +68,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &tex_indices[0];
 
-                _index_buffers.push_back(device.create_buffer(index_desc, index_data));
+                _index_buffers.push_back(device->create_buffer(index_desc, index_data));
             }
 
             if (!untextured_indices.empty())
@@ -83,7 +83,7 @@ namespace trview
                 memset(&index_data, 0, sizeof(index_data));
                 index_data.pSysMem = &untextured_indices[0];
 
-                _untextured_index_buffer = device.create_buffer(index_desc, index_data);
+                _untextured_index_buffer = device->create_buffer(index_desc, index_data);
                 _untextured_index_count = static_cast<uint32_t>(untextured_indices.size());
             }
 
@@ -95,7 +95,7 @@ namespace trview
             matrix_desc.Usage = D3D11_USAGE_DYNAMIC;
             matrix_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-            _matrix_buffer = device.create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
+            _matrix_buffer = device->create_buffer(matrix_desc, std::optional<D3D11_SUBRESOURCE_DATA>());
         }
 
         // Generate the bounding box for use in picking.
@@ -135,13 +135,15 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const ComPtr<ID3D11DeviceContext>& context, const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, Vector3 light_direction)
+    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, Vector3 light_direction)
     {
         // There are no vertices.
         if (!_vertex_buffer)
         {
             return;
         }
+
+        auto context = _device->context();
 
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));

@@ -174,37 +174,35 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
+    void Room::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        auto context = device.context();
-
-        _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+        _mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
         if (show_hidden_geometry)
         {
-            _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+            _unmatched_mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
         }
 
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render(context, camera, texture_storage, colour);
+            mesh->render(camera, texture_storage, colour);
         }
 
-        render_contained(device, camera, texture_storage, colour);
+        render_contained(camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
+    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
     {
         Color colour = room_colour((water() || force_water) && show_water, selected);
-        render_contained(device, camera, texture_storage, colour);
+        render_contained(camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         for (const auto& entity : _entities)
         {
-            entity->render(device, camera, texture_storage, colour);
+            entity->render(camera, texture_storage, colour);
         }
     }
 

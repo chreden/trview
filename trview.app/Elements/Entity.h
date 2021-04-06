@@ -30,7 +30,7 @@ namespace trview
     public:
         explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const IMeshStorage& mesh_storage, uint32_t index);
         virtual ~Entity() = default;
-        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         uint16_t room() const;
         uint32_t index() const;
 
