@@ -39,7 +39,7 @@ namespace trview
         }
     }
 
-    Room::Room(const graphics::IDevice& device,
+    Room::Room(const IMesh::Source& mesh_source,
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
         const ILevelTextureStorage& texture_storage,
@@ -62,9 +62,9 @@ namespace trview
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         generate_sectors(level, room);
-        generate_geometry(level.get_version(), device, room, texture_storage);
+        generate_geometry(level.get_version(), mesh_source, room, texture_storage);
         generate_adjacency();
-        generate_static_meshes(level, room, mesh_storage);
+        generate_static_meshes(mesh_source, level, room, mesh_storage);
     }
 
     RoomInfo Room::info() const
@@ -174,41 +174,39 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
+    void Room::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        auto context = device.context();
-
-        _mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+        _mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
         if (show_hidden_geometry)
         {
-            _unmatched_mesh->render(context, _room_offset * camera.view_projection(), texture_storage, colour);
+            _unmatched_mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
         }
 
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render(context, camera.view_projection(), texture_storage, colour);
+            mesh->render(camera, texture_storage, colour);
         }
 
-        render_contained(device, camera, texture_storage, colour);
+        render_contained(camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
+    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
     {
         Color colour = room_colour((water() || force_water) && show_water, selected);
-        render_contained(device, camera, texture_storage, colour);
+        render_contained(camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
     {
         for (const auto& entity : _entities)
         {
-            entity->render(device, camera, texture_storage, colour);
+            entity->render(camera, texture_storage, colour);
         }
     }
 
-    void Room::generate_static_meshes(const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
+    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
     {
         for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
         {
@@ -217,6 +215,20 @@ namespace trview
             // TODO: Use DI?
             auto static_mesh = std::make_unique<StaticMesh>(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh));
             _static_meshes.push_back(std::move(static_mesh));
+        }
+
+        // Also read the room sprites - they're similar enough for now.
+        for (const auto& room_sprite : room.data.sprites)
+        {
+            Matrix scale;
+            Vector3 offset;
+            auto sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(room_sprite.texture), scale, offset, SpriteOffsetMode::RoomSprite);
+
+            auto vertex = room.data.vertices[room_sprite.vertex].vertex;
+            auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
+            pos = Vector3::Transform(pos, _room_offset) + offset;
+
+            _static_meshes.push_back(std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh)));
         }
     }
 
@@ -234,7 +246,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(trlevel::LevelVersion level_version, const graphics::IDevice& device, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -252,14 +264,14 @@ namespace trview
         process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
-        _mesh = std::make_unique<Mesh>(device, vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
+        _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
         // Make the unmatched mesh.
         collision_triangles.clear();
         vertices.clear();
         std::vector<uint32_t> untextured_indices;
         process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
-        _unmatched_mesh = std::make_unique<Mesh>(device, vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
+        _unmatched_mesh = mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
 
         // Generate the bounding box based on the room dimensions.
         update_bounding_box();
@@ -308,7 +320,7 @@ namespace trview
 
         for (const auto& static_mesh : _static_meshes)
         {
-            static_mesh->get_transparent_triangles(transparency, colour);
+            static_mesh->get_transparent_triangles(transparency, camera, colour);
         }
 
         if (include_triggers)

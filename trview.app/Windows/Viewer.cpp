@@ -20,11 +20,12 @@ namespace trview
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
-        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source)
+        std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
+        std::unique_ptr<ISectorHighlight> sector_highlight)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source)
+        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight))
     {
         apply_acceleration_settings();
 
@@ -78,7 +79,7 @@ namespace trview
             if (_level)
             {
                 const auto room_info = _level->room_info(_level->selected_room());
-                _sector_highlight.set_sector(sector,
+                _sector_highlight->set_sector(sector,
                     DirectX::SimpleMath::Matrix::CreateTranslation(room_info.x / trlevel::Scale_X, 0, room_info.z / trlevel::Scale_Z));
                 _scene_changed = true;
             }
@@ -531,7 +532,7 @@ namespace trview
             const auto& camera = current_camera();
 
             _level->render(camera, _show_selection);
-            _sector_highlight.render(*_device, camera, _level->texture_storage());
+            _sector_highlight->render(camera, _level->texture_storage());
 
             _measure->render(camera, _level->texture_storage());
 

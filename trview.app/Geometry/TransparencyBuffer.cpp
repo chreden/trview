@@ -2,7 +2,7 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Geometry/MeshVertex.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;

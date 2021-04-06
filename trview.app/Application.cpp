@@ -27,6 +27,7 @@
 #include <trview.app/Graphics/LevelTextureStorage.h>
 #include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
+#include <trview.app/Graphics/SectorHighlight.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -688,12 +689,35 @@ namespace trview
                     return [&](auto&& level, auto&& level_texture_storage)
                     {
                         return std::make_unique<MeshStorage>(
-                            injector.create<std::shared_ptr<IDevice>>(),
+                            injector.create<IMesh::Source>(),
                             level,
                             level_texture_storage);
                     };
                 }),
+            di::bind<IMesh::Source>.to(
+                [](const auto& injector) -> IMesh::Source
+                {
+                    return [&](auto&& vertices, auto&& indices, auto&& untextured_indices, auto&& transparent_triangles, auto&& collision_triangles)
+                    {
+                        return std::make_unique<Mesh>(
+                            injector.create<std::shared_ptr<IDevice>>(),
+                            vertices,
+                            indices,
+                            untextured_indices,
+                            transparent_triangles,
+                            collision_triangles);
+                    };
+                }),
+            di::bind<IMesh::TransparentSource>.to(
+                [](const auto& injector) -> IMesh::TransparentSource
+                {
+                    return [&](auto&& transparent_triangles, auto&& collision_triangles)
+                    {
+                        return std::make_unique<Mesh>(transparent_triangles, collision_triangles);
+                    };
+                }),
             di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
+            di::bind<ISectorHighlight>.to<SectorHighlight>(),
             di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
@@ -710,7 +734,9 @@ namespace trview
                             std::move(mesh_storage),
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
-                            injector.create<std::shared_ptr<ITypeNameLookup>>());
+                            injector.create<std::shared_ptr<ITypeNameLookup>>(),
+                            injector.create<IMesh::Source>(),
+                            injector.create<IMesh::TransparentSource>());
                     };
                 }),
             di::bind<IRenderTarget::SizeSource>.to(

@@ -3,7 +3,7 @@
 #include "IShaderStorage.h"
 #include "IShader.h"
 #include "Texture.h"
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 
 using namespace Microsoft::WRL;
 

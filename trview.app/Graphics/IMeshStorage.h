@@ -6,7 +6,7 @@
 
 namespace trview
 {
-    class Mesh;
+    struct IMesh;
 
     struct IMeshStorage
     {
@@ -14,6 +14,6 @@ namespace trview
 
         virtual ~IMeshStorage() = 0;
 
-        virtual Mesh* mesh(uint32_t mesh_pointer) const = 0;
+        virtual IMesh* mesh(uint32_t mesh_pointer) const = 0;
     };
 }

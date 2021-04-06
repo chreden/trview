@@ -29,7 +29,7 @@
 #include <trview.app/Menus/AlternateGroupToggler.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Geometry/IPicking.h>
-#include <trview.app/Graphics/SectorHighlight.h>
+#include <trview.app/Graphics/ISectorHighlight.h>
 #include <trview.app/UI/IViewerUI.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.app/Menus/MenuDetector.h>
@@ -63,7 +63,8 @@ namespace trview
             std::unique_ptr<ICompass> compass,
             std::unique_ptr<IMeasure> measure,
             const graphics::IRenderTarget::SizeSource& render_target_source,
-            const graphics::IDeviceWindow::Source& device_window_source);
+            const graphics::IDeviceWindow::Source& device_window_source,
+            std::unique_ptr<ISectorHighlight> sector_highlight);
 
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
@@ -177,7 +178,7 @@ namespace trview
         AlternateGroupToggler _alternate_group_toggler;
         DirectX::SimpleMath::Vector3 _target;
         bool _show_selection{ true };
-        SectorHighlight _sector_highlight;
+        std::unique_ptr<ISectorHighlight> _sector_highlight;
         MenuDetector _menu_detector;
 
         // Tools:

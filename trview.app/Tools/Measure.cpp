@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Measure::Measure(const std::shared_ptr<IDevice>& device)
-        : _device(device), _mesh(create_cube_mesh(*device))
+    Measure::Measure(const std::shared_ptr<IDevice>& device, const IMesh::Source& mesh_source)
+        : _device(device), _mesh(create_cube_mesh(mesh_source))
     {
     }
 
@@ -79,11 +79,11 @@ namespace trview
         {
             auto pos = _start.value() + to * 0.25f * static_cast<float>(i);
             auto wvp = scale * Matrix::CreateTranslation(pos) * view_projection;
-            _mesh->render(context, wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            _mesh->render(wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
         }
 
         auto wvp = scale * Matrix::CreateTranslation(_end.value()) * view_projection;
-        _mesh->render(context, wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
+        _mesh->render(wvp, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
         const auto window_size = camera.view_size();
 

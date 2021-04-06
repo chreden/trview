@@ -1,10 +1,13 @@
 #include "StaticMesh.h"
+#include <trview.app/Geometry/Matrix.h>
 #include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 
 namespace trview
 {
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, Mesh* mesh)
+    using namespace DirectX::SimpleMath;
+
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, IMesh* mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
         _visibility_max(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ),
@@ -17,16 +20,42 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::render(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& context, const DirectX::SimpleMath::Matrix& view_projection, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh)
+        : _position(position), _sprite_mesh(std::move(mesh)), _rotation(0), _scale(scale)
     {
-        _mesh->render(context, _world * view_projection, texture_storage, colour);
+        using namespace DirectX::SimpleMath;
+        _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const DirectX::SimpleMath::Color& colour)
+    void StaticMesh::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        for (const auto& triangle : _mesh->transparent_triangles())
+        if (_sprite_mesh)
         {
-            transparency.add(triangle.transform(_world, colour));
+            auto wvp = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera) * camera.view_projection();
+            _sprite_mesh->render(wvp, texture_storage, colour);
+        }
+        else
+        {
+            _mesh->render(_world * camera.view_projection(), texture_storage, colour);
+        }
+    }
+
+    void StaticMesh::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour)
+    {
+        if (_sprite_mesh)
+        {
+            auto world = create_billboard(_position, Vector3(0, -0.5f, 0), _scale, camera);
+            for (const auto& triangle : _sprite_mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(world, colour));
+            }
+        }
+        else
+        {
+            for (const auto& triangle : _mesh->transparent_triangles())
+            {
+                transparency.add(triangle.transform(_world, colour));
+            }
         }
     }
 }

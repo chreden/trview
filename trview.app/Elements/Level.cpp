@@ -24,7 +24,9 @@ namespace trview
         std::unique_ptr<IMeshStorage> mesh_storage,
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
-        const std::shared_ptr<ITypeNameLookup>& type_names)
+        const std::shared_ptr<ITypeNameLookup>& type_names,
+        const IMesh::Source& mesh_source,
+        const IMesh::TransparentSource& mesh_transparent_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -53,9 +55,9 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
-        generate_rooms(*level);
-        generate_triggers();
-        generate_entities(*level, *type_names);
+        generate_rooms(*level, mesh_source);
+        generate_triggers(mesh_transparent_source);
+        generate_entities(*level, *type_names, mesh_source);
 
         for (auto& room : _rooms)
         {
@@ -223,7 +225,7 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(*_device, camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
+            room.room.render(camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
@@ -233,7 +235,7 @@ namespace trview
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(*_device, camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
+                original_room->render_contained(camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
                 if (_regenerate_transparency)
                 {
                     original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, room.room.water(), _show_water);
@@ -320,13 +322,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const trlevel::ILevel& level)
+    void Level::generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source)
     {
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
-            _rooms.push_back(std::make_unique<Room>(*_device, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
+            _rooms.push_back(std::make_unique<Room>(mesh_source, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -349,7 +351,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers()
+    void Level::generate_triggers(const IMesh::TransparentSource& mesh_transparent_source)
     {
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
@@ -359,7 +361,7 @@ namespace trview
                 if (sector->flags & SectorFlag::Trigger)
                 {
                     // TODO: Use DI?
-                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger()));
+                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), mesh_transparent_source));
                     room->add_trigger(_triggers.back().get());
                 }
             }
@@ -371,7 +373,7 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
@@ -379,7 +381,7 @@ namespace trview
             // Entity for rendering.
             auto level_entity = level.get_entity(i);
             // TODO: Use DI?
-            auto entity = std::make_unique<Entity>(*_device, level, level_entity, *_texture_storage.get(), *_mesh_storage.get(), i);
+            auto entity = std::make_unique<Entity>(mesh_source, level, level_entity, *_mesh_storage.get(), i);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(std::move(entity));
 

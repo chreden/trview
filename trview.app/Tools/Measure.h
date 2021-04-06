@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include "IMeasure.h"
 
 namespace trview
@@ -11,7 +11,8 @@ namespace trview
     public:
         /// Create a new measure tool.
         /// @param device The device to use to create graphics resources.
-        explicit Measure(const std::shared_ptr<graphics::IDevice>& device);
+        explicit Measure(const std::shared_ptr<graphics::IDevice>& device,
+            const IMesh::Source& mesh_source);
 
         virtual ~Measure() = default;
 
@@ -46,7 +47,7 @@ namespace trview
         std::shared_ptr<graphics::IDevice> _device;
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
-        std::unique_ptr<Mesh>                       _mesh;
+        std::unique_ptr<IMesh>                      _mesh;
         bool                                        _visible{ true };
     };
 }

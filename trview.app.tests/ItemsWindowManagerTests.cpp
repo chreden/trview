@@ -2,6 +2,7 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -85,7 +86,7 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto test_trigger = std::make_unique<Trigger>(100, 10, 1, 2, TriggerInfo{ 0,0,0, TriggerType::Antipad, 0, {} });
+    auto test_trigger = std::make_unique<Trigger>(100, 10, 1, 2, TriggerInfo{ 0,0,0, TriggerType::Antipad, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     created_window->on_trigger_selected(test_trigger.get());
 
     ASSERT_TRUE(raised_trigger.has_value());
@@ -144,7 +145,7 @@ TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
     EXPECT_CALL(*mock_window, set_triggers).Times(2);
     ItemsWindowManager manager(create_test_window(L"ItemsWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
-    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} });
+    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     manager.set_triggers({ trigger.get() });
 
     auto created_window = manager.create_window().lock();

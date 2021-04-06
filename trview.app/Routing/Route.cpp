@@ -43,8 +43,8 @@ namespace trview
         }
     }
 
-    Route::Route(const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<ISelectionRenderer> selection_renderer)
-        : _device(device), _waypoint_mesh(create_cube_mesh(*device)), _selection_renderer(std::move(selection_renderer))
+    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source)
+        : _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer))
     {
     }
 
@@ -148,7 +148,7 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint.render(*_device, camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            waypoint.render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
             // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
@@ -159,7 +159,7 @@ namespace trview
                 const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
                 const auto length = (next_waypoint - current).Length();
                 const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(_device->context(), to_wvp, texture_storage, _colour);
+                _waypoint_mesh->render(to_wvp, texture_storage, _colour);
             }
         }
 

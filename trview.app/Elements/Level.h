@@ -21,7 +21,6 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct ICamera;
-    class SelectionRenderer;
     struct ITypeNameLookup;
 
     namespace graphics
@@ -40,7 +39,9 @@ namespace trview
             std::unique_ptr<IMeshStorage> mesh_storage,
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
-            const std::shared_ptr<ITypeNameLookup>& type_names);
+            const std::shared_ptr<ITypeNameLookup>& type_names,
+            const IMesh::Source& mesh_source,
+            const IMesh::TransparentSource& mesh_transparent_source);
         ~Level();
 
         // Temporary, for the room info and texture window.
@@ -132,9 +133,9 @@ namespace trview
 
         void set_filename(const std::string& filename);
     private:
-        void generate_rooms(const trlevel::ILevel& level);
-        void generate_triggers();
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names);
+        void generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source);
+        void generate_triggers(const IMesh::TransparentSource& mesh_transparent_source);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.app/Geometry/PickResult.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Geometry/IRenderable.h>
 
 namespace trview
@@ -42,7 +42,7 @@ namespace trview
     class Trigger final : public IRenderable
     {
     public:
-        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info);
+        explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
 
         uint32_t    number() const;
@@ -64,15 +64,16 @@ namespace trview
         void set_position(const DirectX::SimpleMath::Vector3& position);
         DirectX::SimpleMath::Vector3 position() const;
 
-        virtual void render(const graphics::IDevice& device, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
-        std::unique_ptr<Mesh> _mesh;
+        std::unique_ptr<IMesh> _mesh;
         DirectX::SimpleMath::Vector3 _position;
+        IMesh::TransparentSource _mesh_source;
         TriggerType _type;
         uint32_t _number;
         uint32_t _room;
