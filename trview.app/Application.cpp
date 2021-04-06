@@ -38,6 +38,8 @@
 
 #include <external/boost/di.hpp>
 
+#include <trview.graphics/di.h>
+
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -554,72 +556,51 @@ namespace trview
         using namespace boost;
         using namespace graphics;
 
-        auto graphics_module = [] {
-
-            using namespace graphics;
-
+        auto input_module = [] {
+            using namespace input;
             return di::make_injector(
-                di::bind<IDevice>().to<Device>(),
-                di::bind<IFontFactory>.to<FontFactory>(),
-                di::bind<IShaderStorage>.to<ShaderStorage>(),
-                di::bind<IRenderTarget::SizeSource>.to(
-                    [](const auto& injector) -> IRenderTarget::SizeSource
-                    {
-                        return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
-                        {
-                            return std::make_unique<RenderTarget>(
-                                injector.create<std::shared_ptr<IDevice>>(),
-                                width,
-                                height,
-                                depth_stencil_mode);
-                        };
-                    }),
-                di::bind<IRenderTarget::TextureSource>.to(
-                    [](const auto& injector) -> IRenderTarget::TextureSource
-                    {
-                        return [&](auto&& texture, auto&& depth_stencil_mode)
-                        {
-                            return std::make_unique<RenderTarget>(
-                                injector.create<std::shared_ptr<IDevice>>(),
-                                texture,
-                                depth_stencil_mode);
-                        };
-                    }),
-                di::bind<ISprite::Source>.to(
-                    [](const auto& injector) -> ISprite::Source
+                di::bind<IWindowTester>.to<WindowTester>(),
+                di::bind<IMouse>.to<Mouse>()
+            );
+        };
+
+        auto ui_render_module = [] {
+            using namespace ui::render;
+            using namespace graphics;
+            return di::make_injector(
+                di::bind<IRenderer::Source>.to(
+                    [](const auto& injector) -> IRenderer::Source
                     {
                         return [&](auto size)
                         {
-                            return std::make_unique<Sprite>(
+                            return std::make_unique<Renderer>(
                                 injector.create<std::shared_ptr<IDevice>>(),
-                                injector.create<std::shared_ptr<IShaderStorage>>(),
-                                size);
+                                injector.create<IRenderTarget::SizeSource>(),
+                                *injector.create<std::shared_ptr<IFontFactory>>(),
+                                size,
+                                injector.create<ISprite::Source>());
                         };
                     }),
-                di::bind<IDeviceWindow::Source>.to(
-                    [](const auto& injector) -> IDeviceWindow::Source
+                di::bind<ui::render::IMapRenderer::Source>.to(
+                    [](const auto& injector) -> IMapRenderer::Source
                     {
-                        return [&](auto&& window)
+                        return [&](auto size)
                         {
-                            return std::make_unique<DeviceWindow>(
+                            return std::make_unique<MapRenderer>(
                                 injector.create<std::shared_ptr<IDevice>>(),
-                                injector.create<IRenderTarget::TextureSource>(),
-                                window);
+                                *injector.create<std::shared_ptr<IFontFactory>>(),
+                                size,
+                                injector.create<ISprite::Source>(),
+                                injector.create<IRenderTarget::SizeSource>());
                         };
                     })
             );
         };
 
-        auto input_module = [] {
-            return di::make_injector(
-                di::bind<input::IWindowTester>.to<input::WindowTester>(),
-                di::bind<input::IMouse>.to<input::Mouse>()
-            );
-        };
-
         const auto injector = di::make_injector(
-            graphics_module(),
+            graphics::register_module(),
             input_module(),
+            ui_render_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
@@ -639,32 +620,6 @@ namespace trview
                 }),
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<ui::render::IRenderer::Source>.to(
-                [](const auto& injector) -> ui::render::IRenderer::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<ui::render::Renderer>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<IRenderTarget::SizeSource>(),
-                            *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size,
-                            injector.create<graphics::ISprite::Source>());
-                    };
-                }),
-            di::bind<ui::render::IMapRenderer::Source>.to(
-                [](const auto& injector) -> ui::render::IMapRenderer::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<ui::render::MapRenderer>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size,
-                            injector.create<graphics::ISprite::Source>(),
-                            injector.create<graphics::IRenderTarget::SizeSource>());
-                    };
-                }),
             di::bind<IItemsWindow::Source>.to(
                 [](const auto& injector) -> IItemsWindow::Source
                 {

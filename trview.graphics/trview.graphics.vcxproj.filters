@@ -104,6 +104,8 @@
     <ClInclude Include="mocks\IDeviceWindow.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
