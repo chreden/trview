@@ -58,6 +58,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Geometry\TransparentTriangle.cpp" />
     <ClCompile Include="Graphics\ILevelTextureStorage.cpp" />
     <ClCompile Include="Graphics\IMeshStorage.cpp" />
+    <ClCompile Include="Graphics\ISectorHighlight.cpp" />
     <ClCompile Include="Graphics\ISelectionRenderer.cpp" />
     <ClCompile Include="Graphics\ITextureStorage.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorage.cpp" />
@@ -169,6 +170,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\Triangle.h" />
     <ClInclude Include="Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Graphics\IMeshStorage.h" />
+    <ClInclude Include="Graphics\ISectorHighlight.h" />
     <ClInclude Include="Graphics\ISelectionRenderer.h" />
     <ClInclude Include="Graphics\ITextureStorage.h" />
     <ClInclude Include="Graphics\LevelTextureStorage.h" />
@@ -196,6 +198,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Geometry\ITransparencyBuffer.h" />
     <ClInclude Include="Mocks\Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Mocks\Graphics\IMeshStorage.h" />
+    <ClInclude Include="Mocks\Graphics\ISectorHighlight.h" />
     <ClInclude Include="Mocks\Graphics\ISelectionRenderer.h" />
     <ClInclude Include="Mocks\Graphics\ITextureStorage.h" />
     <ClInclude Include="Mocks\Menus\IFileDropper.h" />

@@ -292,6 +292,9 @@
     <ClCompile Include="Geometry\Matrix.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\ISectorHighlight.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -680,6 +683,12 @@
     </ClInclude>
     <ClInclude Include="Geometry\Matrix.h">
       <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ISectorHighlight.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Graphics\ISectorHighlight.h">
+      <Filter>Mocks\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

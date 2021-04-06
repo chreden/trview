@@ -27,6 +27,7 @@
 #include <trview.app/Graphics/LevelTextureStorage.h>
 #include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Graphics/SelectionRenderer.h>
+#include <trview.app/Graphics/SectorHighlight.h>
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -716,6 +717,7 @@ namespace trview
                     };
                 }),
             di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
+            di::bind<ISectorHighlight>.to<SectorHighlight>(),
             di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
