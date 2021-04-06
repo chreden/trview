@@ -554,17 +554,79 @@ namespace trview
         using namespace boost;
         using namespace graphics;
 
+        auto graphics_module = [] {
+
+            using namespace graphics;
+
+            return di::make_injector(
+                di::bind<IDevice>().to<Device>(),
+                di::bind<IFontFactory>.to<FontFactory>(),
+                di::bind<IShaderStorage>.to<ShaderStorage>(),
+                di::bind<IRenderTarget::SizeSource>.to(
+                    [](const auto& injector) -> IRenderTarget::SizeSource
+                    {
+                        return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
+                        {
+                            return std::make_unique<RenderTarget>(
+                                injector.create<std::shared_ptr<IDevice>>(),
+                                width,
+                                height,
+                                depth_stencil_mode);
+                        };
+                    }),
+                di::bind<IRenderTarget::TextureSource>.to(
+                    [](const auto& injector) -> IRenderTarget::TextureSource
+                    {
+                        return [&](auto&& texture, auto&& depth_stencil_mode)
+                        {
+                            return std::make_unique<RenderTarget>(
+                                injector.create<std::shared_ptr<IDevice>>(),
+                                texture,
+                                depth_stencil_mode);
+                        };
+                    }),
+                di::bind<ISprite::Source>.to(
+                    [](const auto& injector) -> ISprite::Source
+                    {
+                        return [&](auto size)
+                        {
+                            return std::make_unique<Sprite>(
+                                injector.create<std::shared_ptr<IDevice>>(),
+                                injector.create<std::shared_ptr<IShaderStorage>>(),
+                                size);
+                        };
+                    }),
+                di::bind<IDeviceWindow::Source>.to(
+                    [](const auto& injector) -> IDeviceWindow::Source
+                    {
+                        return [&](auto&& window)
+                        {
+                            return std::make_unique<DeviceWindow>(
+                                injector.create<std::shared_ptr<IDevice>>(),
+                                injector.create<IRenderTarget::TextureSource>(),
+                                window);
+                        };
+                    })
+            );
+        };
+
+        auto input_module = [] {
+            return di::make_injector(
+                di::bind<input::IWindowTester>.to<input::WindowTester>(),
+                di::bind<input::IMouse>.to<input::Mouse>()
+            );
+        };
+
         const auto injector = di::make_injector(
+            graphics_module(),
+            input_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
-            di::bind<IShaderStorage>.to<ShaderStorage>(),
-            di::bind<IFontFactory>.to<FontFactory>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
             di::bind<IFileDropper>.to<FileDropper>(),
             di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
             di::bind<IRecentFiles>.to<RecentFiles>(),
             di::bind<Window>.to(create_window(instance, command_show)),
-            di::bind<input::IWindowTester>.to<input::WindowTester>(),
             di::bind<IPicking>.to<Picking>(),
             di::bind<IRoute>.to<Route>(),
             di::bind<IRoute::Source>.to(
@@ -576,7 +638,6 @@ namespace trview
                     };
                 }),
             di::bind<ITextureStorage>.to<TextureStorage>(),
-            di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<ui::render::IRenderer::Source>.to(
                 [](const auto& injector) -> ui::render::IRenderer::Source
@@ -654,17 +715,6 @@ namespace trview
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
-            di::bind<ISprite::Source>.to(
-                [](const auto& injector) -> ISprite::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<Sprite>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
-                            size);
-                    };
-                }),
             di::bind<ICompass>.to<Compass>(),
             di::bind<ITypeNameLookup>.to(
                 []()
@@ -739,44 +789,9 @@ namespace trview
                             injector.create<IMesh::TransparentSource>());
                     };
                 }),
-            di::bind<IRenderTarget::SizeSource>.to(
-                [](const auto& injector) -> IRenderTarget::SizeSource
-                {
-                    return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
-                    {
-                        return std::make_unique<RenderTarget>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            width,
-                            height,
-                            depth_stencil_mode);
-                    };
-                }),
-            di::bind<IRenderTarget::TextureSource>.to(
-                [](const auto& injector) -> IRenderTarget::TextureSource
-                {
-                    return [&](auto&& texture, auto&& depth_stencil_mode)
-                    {
-                        return std::make_unique<RenderTarget>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            texture,
-                            depth_stencil_mode);
-                    };
-                }),
-            di::bind<IDeviceWindow::Source>.to(
-                [](const auto& injector) -> IDeviceWindow::Source
-                {
-                    return [&](auto&& window)
-                    {
-                        return std::make_unique<DeviceWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<IRenderTarget::TextureSource>(),
-                            window);
-                    };
-                }),
             di::bind<IMeasure>.to<Measure>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IViewer>.to<Viewer>(),
-            di::bind<input::IMouse>.to<input::Mouse>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
         );
