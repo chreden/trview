@@ -4,7 +4,7 @@
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/Matrix.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Geometry/TransparencyBuffer.h>
 #include <trview.common/Algorithms.h>
 #include <trlevel/ILevel.h>

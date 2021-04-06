@@ -2,7 +2,7 @@
 
 #include <SimpleMath.h>
 #include <trview.app/Geometry/IRenderable.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.common/Colour.h>
 
 namespace trview

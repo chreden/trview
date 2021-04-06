@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Routing/IRoute.h>

@@ -4,7 +4,7 @@
 #include <vector>
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.app/Geometry/PickResult.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Geometry/IRenderable.h>
 
 namespace trview

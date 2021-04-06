@@ -6,7 +6,7 @@
 
 #include <trlevel/ILevel.h>
 #include "IMeshStorage.h"
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 
 namespace trview
 {

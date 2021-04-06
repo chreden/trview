@@ -5,7 +5,6 @@
 #include <trlevel/trtypes.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Geometry/Mesh.h>
 
 namespace trview
 {

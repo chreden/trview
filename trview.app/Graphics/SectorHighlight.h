@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ISectorHighlight.h"
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 
 namespace trview
 {

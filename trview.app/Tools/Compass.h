@@ -3,7 +3,7 @@
 #include <trview.graphics/IDevice.h>
 #include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/ISprite.h>
-#include <trview.app/Geometry/Mesh.h>
+#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Camera/OrbitCamera.h>
 #include "ICompass.h"
 
