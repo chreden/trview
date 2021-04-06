@@ -1,7 +1,5 @@
 #pragma once
 
-#include <wrl/client.h>
-#include <d3d11.h>
 #include "TransparentTriangle.h"
 #include "MeshVertex.h"
 #include "Triangle.h"
