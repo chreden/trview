@@ -37,6 +37,7 @@
 
 #include <external/boost/di.hpp>
 
+#include <trlevel/di.h>
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
@@ -569,6 +570,7 @@ namespace trview
         const auto injector = di::make_injector(
             graphics::register_module(),
             input::register_module(),
+            trlevel::register_module(),
             ui::render::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),
@@ -579,7 +581,6 @@ namespace trview
             register_app_tools_module(),
             register_app_ui_module(),
             register_app_windows_module(),
-            di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
