@@ -740,6 +740,12 @@
     <ClInclude Include="UI\IViewerUI.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Settings\di.h">
+      <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\di.hpp">
+      <Filter>Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
