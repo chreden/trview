@@ -39,6 +39,7 @@
 #include <external/boost/di.hpp>
 
 #include <trview.graphics/di.h>
+#include <trview.ui.render/di.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -564,43 +565,10 @@ namespace trview
             );
         };
 
-        auto ui_render_module = [] {
-            using namespace ui::render;
-            using namespace graphics;
-            return di::make_injector(
-                di::bind<IRenderer::Source>.to(
-                    [](const auto& injector) -> IRenderer::Source
-                    {
-                        return [&](auto size)
-                        {
-                            return std::make_unique<Renderer>(
-                                injector.create<std::shared_ptr<IDevice>>(),
-                                injector.create<IRenderTarget::SizeSource>(),
-                                *injector.create<std::shared_ptr<IFontFactory>>(),
-                                size,
-                                injector.create<ISprite::Source>());
-                        };
-                    }),
-                di::bind<ui::render::IMapRenderer::Source>.to(
-                    [](const auto& injector) -> IMapRenderer::Source
-                    {
-                        return [&](auto size)
-                        {
-                            return std::make_unique<MapRenderer>(
-                                injector.create<std::shared_ptr<IDevice>>(),
-                                *injector.create<std::shared_ptr<IFontFactory>>(),
-                                size,
-                                injector.create<ISprite::Source>(),
-                                injector.create<IRenderTarget::SizeSource>());
-                        };
-                    })
-            );
-        };
-
         const auto injector = di::make_injector(
             graphics::register_module(),
             input_module(),
-            ui_render_module(),
+            ui::render::register_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),

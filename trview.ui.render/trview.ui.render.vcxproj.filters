@@ -28,6 +28,8 @@
     <ClInclude Include="IMapRenderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />

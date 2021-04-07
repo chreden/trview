@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ButtonNode.h" />
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
     <ClInclude Include="ImageNode.h" />
     <ClInclude Include="IMapRenderer.h" />
     <ClInclude Include="IRenderer.h" />
