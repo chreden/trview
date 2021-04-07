@@ -43,6 +43,7 @@
 #include <trview.input/di.h>
 #include <trview.app/Geometry/di.h>
 #include <trview.app/Graphics/di.h>
+#include <trview.app/Menus/di.h>
 #include <trview.app/Tools/di.h>
 #include <trview.app/Windows/di.h>
 
@@ -566,16 +567,13 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             ui::render::register_module(),
-            register_app_windows_module(),
-            register_app_tools_module(),
-            register_app_graphics_module(),
             register_app_geometry_module(),
+            register_app_graphics_module(),
+            register_app_menus_module(),
+            register_app_tools_module(),
+            register_app_windows_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
-            di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
-            di::bind<IFileDropper>.to<FileDropper>(),
-            di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
-            di::bind<IRecentFiles>.to<RecentFiles>(),
             di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<IRoute>.to<Route>(),
             di::bind<IRoute::Source>.to(

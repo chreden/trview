@@ -714,6 +714,12 @@
     <ClInclude Include="Geometry\di.hpp">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="Menus\di.h">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\di.hpp">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

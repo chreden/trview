@@ -184,6 +184,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Graphics\TextureStorage.h" />
     <ClInclude Include="Lua\Lua.h" />
     <ClInclude Include="Menus\AlternateGroupToggler.h" />
+    <ClInclude Include="Menus\di.h" />
+    <ClInclude Include="Menus\di.hpp" />
     <ClInclude Include="Menus\DirectoryListing.h" />
     <ClInclude Include="Menus\FileDropper.h" />
     <ClInclude Include="Menus\IFileDropper.h" />
