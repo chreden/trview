@@ -231,6 +231,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />
+    <ClInclude Include="Tools\di.h" />
+    <ClInclude Include="Tools\di.hpp" />
     <ClInclude Include="Tools\ICompass.h" />
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />

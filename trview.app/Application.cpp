@@ -41,6 +41,7 @@
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
+#include <trview.app/Tools/di.h>
 #include <trview.app/Windows/di.h>
 
 using namespace DirectX::SimpleMath;
@@ -564,6 +565,7 @@ namespace trview
             input::register_module(),
             ui::render::register_module(),
             register_app_windows_module(),
+            register_app_tools_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
@@ -583,7 +585,6 @@ namespace trview
                 }),
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<ICompass>.to<Compass>(),
             di::bind<ITypeNameLookup>.to(
                 []()
                 {
@@ -657,7 +658,6 @@ namespace trview
                             injector.create<IMesh::TransparentSource>());
                     };
                 }),
-            di::bind<IMeasure>.to<Measure>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)

@@ -696,6 +696,12 @@
     <ClInclude Include="Windows\di.hpp">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\di.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\di.hpp">
+      <Filter>Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
