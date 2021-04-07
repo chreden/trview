@@ -168,6 +168,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Geometry\TransparencyBuffer.h" />
     <ClInclude Include="Geometry\TransparentTriangle.h" />
     <ClInclude Include="Geometry\Triangle.h" />
+    <ClInclude Include="Graphics\di.h" />
+    <ClInclude Include="Graphics\di.hpp" />
     <ClInclude Include="Graphics\ILevelTextureStorage.h" />
     <ClInclude Include="Graphics\IMeshStorage.h" />
     <ClInclude Include="Graphics\ISectorHighlight.h" />

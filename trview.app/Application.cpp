@@ -41,6 +41,7 @@
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
+#include <trview.app/Graphics/di.h>
 #include <trview.app/Tools/di.h>
 #include <trview.app/Windows/di.h>
 
@@ -566,6 +567,7 @@ namespace trview
             ui::render::register_module(),
             register_app_windows_module(),
             register_app_tools_module(),
+            register_app_graphics_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
@@ -583,35 +585,12 @@ namespace trview
                         return injector.create<std::unique_ptr<IRoute>>();
                     };
                 }),
-            di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<ITypeNameLookup>.to(
                 []()
                 {
                     Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
                     return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-                }),
-            di::bind<ILevelTextureStorage::Source>.to(
-                [](const auto& injector) -> ILevelTextureStorage::Source
-                {
-                    return [&](auto&& level)
-                    {
-                        return std::make_unique<LevelTextureStorage>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::unique_ptr<ITextureStorage>>(),
-                            level);
-                    };
-                }),
-            di::bind<IMeshStorage::Source>.to(
-                [](const auto& injector) -> IMeshStorage::Source
-                {
-                    return [&](auto&& level, auto&& level_texture_storage)
-                    {
-                        return std::make_unique<MeshStorage>(
-                            injector.create<IMesh::Source>(),
-                            level,
-                            level_texture_storage);
-                    };
                 }),
             di::bind<IMesh::Source>.to(
                 [](const auto& injector) -> IMesh::Source
@@ -635,8 +614,6 @@ namespace trview
                         return std::make_unique<Mesh>(transparent_triangles, collision_triangles);
                     };
                 }),
-            di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
-            di::bind<ISectorHighlight>.to<SectorHighlight>(),
             di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
