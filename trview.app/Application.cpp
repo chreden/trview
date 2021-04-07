@@ -46,6 +46,7 @@
 #include <trview.app/Menus/di.h>
 #include <trview.app/Routing/di.h>
 #include <trview.app/Tools/di.h>
+#include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
 
 using namespace DirectX::SimpleMath;
@@ -574,12 +575,12 @@ namespace trview
             register_app_menus_module(),
             register_app_routing_module(),
             register_app_tools_module(),
+            register_app_ui_module(),
             register_app_windows_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
             di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
         );

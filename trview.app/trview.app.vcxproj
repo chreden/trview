@@ -143,6 +143,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Camera\ICamera.h" />
     <ClInclude Include="Camera\OrbitCamera.h" />
     <ClInclude Include="Camera\ProjectionMode.h" />
+    <ClInclude Include="Elements\di.h" />
+    <ClInclude Include="Elements\di.hpp" />
     <ClInclude Include="Elements\Entity.h" />
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\Item.h" />
@@ -229,6 +231,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Resources\ResourceHelper.h" />
     <ClInclude Include="Resources\targetver.h" />
+    <ClInclude Include="Routing\di.h" />
+    <ClInclude Include="Routing\di.hpp" />
     <ClInclude Include="Routing\IRoute.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
@@ -247,6 +251,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\Console.h" />
     <ClInclude Include="UI\ContextMenu.h" />
+    <ClInclude Include="UI\di.h" />
+    <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\LevelInfo.h" />

@@ -542,7 +542,6 @@
     <ClInclude Include="Mocks\UI\IViewerUI.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="Elements\ILevel.h">
       <Filter>Elements</Filter>
     </ClInclude>
@@ -719,6 +718,27 @@
     </ClInclude>
     <ClInclude Include="Menus\di.hpp">
       <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\di.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\di.hpp">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\di.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\di.hpp">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\di.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\di.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IViewerUI.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
