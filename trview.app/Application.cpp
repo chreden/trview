@@ -40,6 +40,7 @@
 
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
+#include <trview.input/di.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -557,17 +558,9 @@ namespace trview
         using namespace boost;
         using namespace graphics;
 
-        auto input_module = [] {
-            using namespace input;
-            return di::make_injector(
-                di::bind<IWindowTester>.to<WindowTester>(),
-                di::bind<IMouse>.to<Mouse>()
-            );
-        };
-
         const auto injector = di::make_injector(
             graphics::register_module(),
-            input_module(),
+            input::register_module(),
             ui::render::register_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),

@@ -14,7 +14,6 @@ namespace trview
     {
         auto register_module()
         {
-            using namespace graphics;
             using namespace boost;
 
             return di::make_injector(
