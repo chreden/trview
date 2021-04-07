@@ -41,6 +41,7 @@
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
+#include <trview.app/Geometry/di.h>
 #include <trview.app/Graphics/di.h>
 #include <trview.app/Tools/di.h>
 #include <trview.app/Windows/di.h>
@@ -568,6 +569,7 @@ namespace trview
             register_app_windows_module(),
             register_app_tools_module(),
             register_app_graphics_module(),
+            register_app_geometry_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
@@ -575,7 +577,6 @@ namespace trview
             di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
             di::bind<IRecentFiles>.to<RecentFiles>(),
             di::bind<Window>.to(create_window(instance, command_show)),
-            di::bind<IPicking>.to<Picking>(),
             di::bind<IRoute>.to<Route>(),
             di::bind<IRoute::Source>.to(
                 [](const auto& injector) -> IRoute::Source
@@ -592,29 +593,6 @@ namespace trview
                     Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
                     return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
                 }),
-            di::bind<IMesh::Source>.to(
-                [](const auto& injector) -> IMesh::Source
-                {
-                    return [&](auto&& vertices, auto&& indices, auto&& untextured_indices, auto&& transparent_triangles, auto&& collision_triangles)
-                    {
-                        return std::make_unique<Mesh>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            vertices,
-                            indices,
-                            untextured_indices,
-                            transparent_triangles,
-                            collision_triangles);
-                    };
-                }),
-            di::bind<IMesh::TransparentSource>.to(
-                [](const auto& injector) -> IMesh::TransparentSource
-                {
-                    return [&](auto&& transparent_triangles, auto&& collision_triangles)
-                    {
-                        return std::make_unique<Mesh>(transparent_triangles, collision_triangles);
-                    };
-                }),
-            di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {

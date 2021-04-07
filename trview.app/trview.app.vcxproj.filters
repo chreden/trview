@@ -708,6 +708,12 @@
     <ClInclude Include="Graphics\di.hpp">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\di.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\di.hpp">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
