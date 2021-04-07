@@ -4,36 +4,12 @@
 #include <Shlwapi.h>
 #include <commdlg.h>
 
-#include <trlevel/LevelLoader.h>
-
-#include <trview.app/Geometry/Picking.h>
-#include <trview.app/Graphics/TextureStorage.h>
-#include <trview.app/Settings/SettingsLoader.h>
-#include <trview.app/UI/ViewerUI.h>
-#include <trview.app/Menus/FileDropper.h>
-#include <trview.app/Menus/LevelSwitcher.h>
-#include <trview.app/Menus/UpdateChecker.h>
-#include <trview.app/Menus/RecentFiles.h>
 #include <trview.common/Strings.h>
-#include <trview.graphics/ShaderStorage.h>
-#include <trview.input/WindowTester.h>
-#include <trview.app/Windows/Viewer.h>
-#include <trview.app/Tools/ICompass.h>
-
-#include <trview.app/Windows/ItemsWindowManager.h>
-#include <trview.app/Windows/RoomsWindowManager.h>
-#include <trview.app/Windows/RouteWindowManager.h>
-#include <trview.app/Windows/TriggersWindowManager.h>
-#include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.app/Graphics/MeshStorage.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Graphics/SectorHighlight.h>
 
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
 #include "Resources/DefaultTextures.h"
-#include "Elements/TypeNameLookup.h"
 
 #include <external/boost/di.hpp>
 

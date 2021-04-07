@@ -10,6 +10,7 @@
 #include "TriggersWindowManager.h"
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
+#include "Viewer.h"
 
 namespace trview
 {
