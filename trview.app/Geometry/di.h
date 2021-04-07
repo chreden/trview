@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    auto register_app_geometry_module();
+    auto register_app_geometry_module() noexcept;
 }
 
 #include "di.hpp"

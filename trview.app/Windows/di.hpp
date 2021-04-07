@@ -13,7 +13,7 @@
 
 namespace trview
 {
-    auto register_app_windows_module()
+    auto register_app_windows_module() noexcept
     {
         using namespace boost;
         using namespace graphics;

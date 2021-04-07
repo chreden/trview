@@ -2,7 +2,7 @@
 
 namespace trlevel
 {
-    auto register_module();
+    auto register_module() noexcept;
 }
 
 #include "di.hpp"

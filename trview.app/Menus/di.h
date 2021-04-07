@@ -2,7 +2,7 @@
 
 namespace trview
 {
-    auto register_app_menus_module();
+    auto register_app_menus_module() noexcept;
 }
 
 #include "di.hpp"

@@ -5,7 +5,7 @@
 
 namespace trview
 {
-    auto register_app_routing_module()
+    auto register_app_routing_module() noexcept
     {
         using namespace boost;
         return di::make_injector(

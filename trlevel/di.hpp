@@ -5,7 +5,7 @@
 
 namespace trlevel
 {
-    auto register_module()
+    auto register_module() noexcept
     {
         using namespace boost;
         return di::make_injector(
