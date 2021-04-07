@@ -248,6 +248,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\ViewerUI.h" />
     <ClInclude Include="UI\ViewOptions.h" />
     <ClInclude Include="Windows\CollapsiblePanel.h" />
+    <ClInclude Include="Windows\di.h" />
+    <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
     <ClInclude Include="Windows\IRoomsWindow.h" />

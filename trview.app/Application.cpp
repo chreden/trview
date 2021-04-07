@@ -41,6 +41,7 @@
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
+#include <trview.app/Windows/di.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -562,6 +563,7 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             ui::render::register_module(),
+            register_app_windows_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<IUpdateChecker>.to<UpdateChecker>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
@@ -581,56 +583,6 @@ namespace trview
                 }),
             di::bind<ITextureStorage>.to<TextureStorage>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<IItemsWindow::Source>.to(
-                [](const auto& injector) -> IItemsWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<ItemsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
-            di::bind<ITriggersWindow::Source>.to(
-                [](const auto& injector) -> ITriggersWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<TriggersWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
-            di::bind<IRouteWindow::Source>.to(
-                [](const auto& injector) -> IRouteWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<RouteWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }
-            ),
-            di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
-            di::bind<IRoomsWindow::Source>.to(
-                [](const auto& injector) -> IRoomsWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<RoomsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::render::IMapRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
             di::bind<ICompass>.to<Compass>(),
             di::bind<ITypeNameLookup>.to(
                 []()
@@ -707,7 +659,6 @@ namespace trview
                 }),
             di::bind<IMeasure>.to<Measure>(),
             di::bind<IViewerUI>.to<ViewerUI>(),
-            di::bind<IViewer>.to<Viewer>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
         );

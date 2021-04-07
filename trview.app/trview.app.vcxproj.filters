@@ -690,6 +690,12 @@
     <ClInclude Include="Mocks\Graphics\ISectorHighlight.h">
       <Filter>Mocks\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\di.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\di.hpp">
+      <Filter>Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
