@@ -30,7 +30,6 @@
 #include <trview.app/Graphics/SectorHighlight.h>
 
 #include "Resources/resource.h"
-#include "Resources/ResourceHelper.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
 #include "Resources/DefaultTextures.h"
@@ -41,9 +40,11 @@
 #include <trview.graphics/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
+#include <trview.app/Elements/di.h>
 #include <trview.app/Geometry/di.h>
 #include <trview.app/Graphics/di.h>
 #include <trview.app/Menus/di.h>
+#include <trview.app/Routing/di.h>
 #include <trview.app/Tools/di.h>
 #include <trview.app/Windows/di.h>
 
@@ -567,50 +568,17 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             ui::render::register_module(),
+            register_app_elements_module(),
             register_app_geometry_module(),
             register_app_graphics_module(),
             register_app_menus_module(),
+            register_app_routing_module(),
             register_app_tools_module(),
             register_app_windows_module(),
             di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
             di::bind<ISettingsLoader>.to<SettingsLoader>(),
             di::bind<Window>.to(create_window(instance, command_show)),
-            di::bind<IRoute>.to<Route>(),
-            di::bind<IRoute::Source>.to(
-                [](const auto& injector) -> IRoute::Source
-                {
-                    return [&]()
-                    {
-                        return injector.create<std::unique_ptr<IRoute>>();
-                    };
-                }),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<ITypeNameLookup>.to(
-                []()
-                {
-                    Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-                    return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-                }),
-            di::bind<ILevel::Source>.to(
-                [](const auto& injector) -> ILevel::Source
-                {
-                    return [&](auto&& level)
-                    {
-                        auto texture_storage = injector.create<ILevelTextureStorage::Source>()(*level);
-                        auto mesh_storage = injector.create<IMeshStorage::Source>()(*level, *texture_storage);
-                        return std::make_unique<Level>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
-                            std::move(level),
-                            std::move(texture_storage),
-                            std::move(mesh_storage),
-                            injector.create<std::unique_ptr<ITransparencyBuffer>>(),
-                            injector.create<std::unique_ptr<ISelectionRenderer>>(),
-                            injector.create<std::shared_ptr<ITypeNameLookup>>(),
-                            injector.create<IMesh::Source>(),
-                            injector.create<IMesh::TransparentSource>());
-                    };
-                }),
             di::bind<IViewerUI>.to<ViewerUI>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
