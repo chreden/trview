@@ -4,7 +4,7 @@ namespace trview
 {
     namespace graphics
     {
-        auto register_module();
+        auto register_module() noexcept;
     }
 }
 

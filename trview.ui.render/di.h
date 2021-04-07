@@ -6,7 +6,7 @@ namespace trview
     {
         namespace render
         {
-            auto register_module();
+            auto register_module() noexcept;
         }
     }
 }

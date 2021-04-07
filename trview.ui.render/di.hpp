@@ -11,7 +11,7 @@ namespace trview
     {
         namespace render
         {
-            auto register_module()
+            auto register_module() noexcept
             {
                 using namespace graphics;
                 using namespace boost;
