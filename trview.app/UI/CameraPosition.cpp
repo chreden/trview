@@ -75,7 +75,7 @@ namespace trview
         line_area->add_child(std::make_unique<Window>(Size(10, 1), Colour::Transparent));
         line_area->add_child(std::make_unique<Label>(Size(10, 20), Colour::Transparent, name + L": ", 8));
         line->add_child(std::move(line_area));
-        auto entry = line->add_child(std::make_unique<TextArea>(Size(80, 20), Colour::Transparent, Colour::White));
+        auto entry = line->add_child(std::make_unique<TextArea>(Size(90, 20), Colour::Transparent, Colour::White));
         entry->set_mode(TextArea::Mode::SingleLine);
         entry->set_text(convert_number(0));
         entry->set_name(to_utf8(name));
