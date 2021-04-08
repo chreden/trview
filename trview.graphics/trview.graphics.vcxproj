@@ -22,6 +22,8 @@
     <ClInclude Include="DepthStencil.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="DeviceWindow.h" />
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
     <ClInclude Include="IDevice.h" />

@@ -4,39 +4,28 @@
 #include <Shlwapi.h>
 #include <commdlg.h>
 
-#include <trlevel/LevelLoader.h>
-
-#include <trview.app/Geometry/Picking.h>
-#include <trview.app/Graphics/TextureStorage.h>
-#include <trview.app/Settings/SettingsLoader.h>
-#include <trview.app/UI/ViewerUI.h>
-#include <trview.app/Menus/FileDropper.h>
-#include <trview.app/Menus/LevelSwitcher.h>
-#include <trview.app/Menus/UpdateChecker.h>
-#include <trview.app/Menus/RecentFiles.h>
 #include <trview.common/Strings.h>
-#include <trview.graphics/ShaderStorage.h>
-#include <trview.input/WindowTester.h>
-#include <trview.app/Windows/Viewer.h>
-#include <trview.app/Tools/ICompass.h>
-
-#include <trview.app/Windows/ItemsWindowManager.h>
-#include <trview.app/Windows/RoomsWindowManager.h>
-#include <trview.app/Windows/RouteWindowManager.h>
-#include <trview.app/Windows/TriggersWindowManager.h>
-#include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.app/Graphics/MeshStorage.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Graphics/SectorHighlight.h>
 
 #include "Resources/resource.h"
-#include "Resources/ResourceHelper.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
 #include "Resources/DefaultTextures.h"
-#include "Elements/TypeNameLookup.h"
 
 #include <external/boost/di.hpp>
+
+#include <trlevel/di.h>
+#include <trview.graphics/di.h>
+#include <trview.ui.render/di.h>
+#include <trview.input/di.h>
+#include <trview.app/Elements/di.h>
+#include <trview.app/Geometry/di.h>
+#include <trview.app/Graphics/di.h>
+#include <trview.app/Menus/di.h>
+#include <trview.app/Routing/di.h>
+#include <trview.app/Settings/di.h>
+#include <trview.app/Tools/di.h>
+#include <trview.app/UI/di.h>
+#include <trview.app/Windows/di.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -555,228 +544,21 @@ namespace trview
         using namespace graphics;
 
         const auto injector = di::make_injector(
-            di::bind<trlevel::ILevelLoader>.to<trlevel::LevelLoader>(),
-            di::bind<IShaderStorage>.to<ShaderStorage>(),
-            di::bind<IFontFactory>.to<FontFactory>(),
-            di::bind<IUpdateChecker>.to<UpdateChecker>(),
-            di::bind<ISettingsLoader>.to<SettingsLoader>(),
-            di::bind<IFileDropper>.to<FileDropper>(),
-            di::bind<ILevelSwitcher>.to<LevelSwitcher>(),
-            di::bind<IRecentFiles>.to<RecentFiles>(),
+            graphics::register_module(),
+            input::register_module(),
+            trlevel::register_module(),
+            ui::render::register_module(),
+            register_app_elements_module(),
+            register_app_geometry_module(),
+            register_app_graphics_module(),
+            register_app_menus_module(),
+            register_app_routing_module(),
+            register_app_settings_module(),
+            register_app_tools_module(),
+            register_app_ui_module(),
+            register_app_windows_module(),
             di::bind<Window>.to(create_window(instance, command_show)),
-            di::bind<input::IWindowTester>.to<input::WindowTester>(),
-            di::bind<IPicking>.to<Picking>(),
-            di::bind<IRoute>.to<Route>(),
-            di::bind<IRoute::Source>.to(
-                [](const auto& injector) -> IRoute::Source
-                {
-                    return [&]()
-                    {
-                        return injector.create<std::unique_ptr<IRoute>>();
-                    };
-                }),
-            di::bind<ITextureStorage>.to<TextureStorage>(),
-            di::bind<graphics::IDevice>.to<graphics::Device>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
-            di::bind<ui::render::IRenderer::Source>.to(
-                [](const auto& injector) -> ui::render::IRenderer::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<ui::render::Renderer>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<IRenderTarget::SizeSource>(),
-                            *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size,
-                            injector.create<graphics::ISprite::Source>());
-                    };
-                }),
-            di::bind<ui::render::IMapRenderer::Source>.to(
-                [](const auto& injector) -> ui::render::IMapRenderer::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<ui::render::MapRenderer>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            *injector.create<std::shared_ptr<IFontFactory>>(),
-                            size,
-                            injector.create<graphics::ISprite::Source>(),
-                            injector.create<graphics::IRenderTarget::SizeSource>());
-                    };
-                }),
-            di::bind<IItemsWindow::Source>.to(
-                [](const auto& injector) -> IItemsWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<ItemsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
-            di::bind<ITriggersWindow::Source>.to(
-                [](const auto& injector) -> ITriggersWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<TriggersWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
-            di::bind<IRouteWindow::Source>.to(
-                [](const auto& injector) -> IRouteWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<RouteWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            window);
-                    };
-                }
-            ),
-            di::bind<IRouteWindowManager>.to<RouteWindowManager>(),
-            di::bind<IRoomsWindow::Source>.to(
-                [](const auto& injector) -> IRoomsWindow::Source
-                {
-                    return [&](auto window)
-                    {
-                        return std::make_shared<RoomsWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::render::IMapRenderer::Source>(),
-                            window);
-                    };
-                }),
-            di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
-            di::bind<ISprite::Source>.to(
-                [](const auto& injector) -> ISprite::Source
-                {
-                    return [&](auto size)
-                    {
-                        return std::make_unique<Sprite>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
-                            size);
-                    };
-                }),
-            di::bind<ICompass>.to<Compass>(),
-            di::bind<ITypeNameLookup>.to(
-                []()
-                {
-                    Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
-                    return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
-                }),
-            di::bind<ILevelTextureStorage::Source>.to(
-                [](const auto& injector) -> ILevelTextureStorage::Source
-                {
-                    return [&](auto&& level)
-                    {
-                        return std::make_unique<LevelTextureStorage>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::unique_ptr<ITextureStorage>>(),
-                            level);
-                    };
-                }),
-            di::bind<IMeshStorage::Source>.to(
-                [](const auto& injector) -> IMeshStorage::Source
-                {
-                    return [&](auto&& level, auto&& level_texture_storage)
-                    {
-                        return std::make_unique<MeshStorage>(
-                            injector.create<IMesh::Source>(),
-                            level,
-                            level_texture_storage);
-                    };
-                }),
-            di::bind<IMesh::Source>.to(
-                [](const auto& injector) -> IMesh::Source
-                {
-                    return [&](auto&& vertices, auto&& indices, auto&& untextured_indices, auto&& transparent_triangles, auto&& collision_triangles)
-                    {
-                        return std::make_unique<Mesh>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            vertices,
-                            indices,
-                            untextured_indices,
-                            transparent_triangles,
-                            collision_triangles);
-                    };
-                }),
-            di::bind<IMesh::TransparentSource>.to(
-                [](const auto& injector) -> IMesh::TransparentSource
-                {
-                    return [&](auto&& transparent_triangles, auto&& collision_triangles)
-                    {
-                        return std::make_unique<Mesh>(transparent_triangles, collision_triangles);
-                    };
-                }),
-            di::bind<ISelectionRenderer>.to<SelectionRenderer>(),
-            di::bind<ISectorHighlight>.to<SectorHighlight>(),
-            di::bind<ITransparencyBuffer>.to<TransparencyBuffer>(),
-            di::bind<ILevel::Source>.to(
-                [](const auto& injector) -> ILevel::Source
-                {
-                    return [&](auto&& level)
-                    {
-                        auto texture_storage = injector.create<ILevelTextureStorage::Source>()(*level);
-                        auto mesh_storage = injector.create<IMeshStorage::Source>()(*level, *texture_storage);
-                        return std::make_unique<Level>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<std::shared_ptr<IShaderStorage>>(),
-                            std::move(level),
-                            std::move(texture_storage),
-                            std::move(mesh_storage),
-                            injector.create<std::unique_ptr<ITransparencyBuffer>>(),
-                            injector.create<std::unique_ptr<ISelectionRenderer>>(),
-                            injector.create<std::shared_ptr<ITypeNameLookup>>(),
-                            injector.create<IMesh::Source>(),
-                            injector.create<IMesh::TransparentSource>());
-                    };
-                }),
-            di::bind<IRenderTarget::SizeSource>.to(
-                [](const auto& injector) -> IRenderTarget::SizeSource
-                {
-                    return [&](auto&& width, auto&& height, auto&& depth_stencil_mode)
-                    {
-                        return std::make_unique<RenderTarget>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            width,
-                            height,
-                            depth_stencil_mode);
-                    };
-                }),
-            di::bind<IRenderTarget::TextureSource>.to(
-                [](const auto& injector) -> IRenderTarget::TextureSource
-                {
-                    return [&](auto&& texture, auto&& depth_stencil_mode)
-                    {
-                        return std::make_unique<RenderTarget>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            texture,
-                            depth_stencil_mode);
-                    };
-                }),
-            di::bind<IDeviceWindow::Source>.to(
-                [](const auto& injector) -> IDeviceWindow::Source
-                {
-                    return [&](auto&& window)
-                    {
-                        return std::make_unique<DeviceWindow>(
-                            injector.create<std::shared_ptr<IDevice>>(),
-                            injector.create<IRenderTarget::TextureSource>(),
-                            window);
-                    };
-                }),
-            di::bind<IMeasure>.to<Measure>(),
-            di::bind<IViewerUI>.to<ViewerUI>(),
-            di::bind<IViewer>.to<Viewer>(),
-            di::bind<input::IMouse>.to<input::Mouse>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
         );
