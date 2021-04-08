@@ -103,8 +103,9 @@ Triggers            | Toggle trigger visibility
 Geometry            | Toggle hidden geometry visibility
 Water               | Toggle water in water rooms
 Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
-Depth Selector      | Choose the depth of neighbours to show.
-Flip                | Toggle the level flipmap (if present in the level)
+Depth Selector      | Choose the depth of neighbours to show
+Wireframe           | Enable wireframe rendering mode
+Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
 ### Room
 
