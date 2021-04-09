@@ -186,11 +186,10 @@ namespace trview
         _route_window->set_items(_level->items());
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());
-
-        _viewer->open(_level.get());
-
         _route->clear();
         _route_window->set_route(_route.get());
+
+        _viewer->open(_level.get());
         _viewer->set_route(_route);
     }
 

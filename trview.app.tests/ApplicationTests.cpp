@@ -217,3 +217,57 @@ TEST(Application, FileOpenedInViewer)
 
     application.open("test_path.tr2");
 }
+
+TEST(Application, WindowContentsResetBeforeViewerLoaded)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    auto [level_ptr, level] = create_mock<trlevel::mocks::MockLevel>();
+    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    auto [route_ptr, route] = create_mock<MockRoute>();
+    auto route_ptr_src = std::move(route_ptr);
+
+    std::vector<std::string> events;
+
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
+    
+    EXPECT_CALL(items_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
+    EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
+    EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
+    EXPECT_CALL(triggers_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_triggers"); });
+    EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
+    EXPECT_CALL(rooms_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_triggers"); });
+    EXPECT_CALL(rooms_window_manager, set_rooms(A<const std::vector<Room*>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_rooms"); });
+    EXPECT_CALL(route_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
+    EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
+    EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<Room*>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
+    EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
+    EXPECT_CALL(route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
+    EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
+
+    auto window = create_test_window(L"ApplicationTests");
+    Application application(window,
+        std::make_unique<MockUpdateChecker>(),
+        std::make_unique<MockSettingsLoader>(),
+        std::make_unique<MockFileDropper>(),
+        std::move(level_loader_ptr),
+        std::make_unique<MockLevelSwitcher>(),
+        std::make_unique<MockRecentFiles>(),
+        std::move(viewer_ptr),
+        [&]() { return std::move(route_ptr_src); },
+        std::make_unique<Shortcuts>(window),
+        std::move(items_window_manager_ptr),
+        std::move(triggers_window_manager_ptr),
+        std::move(route_window_manager_ptr),
+        std::move(rooms_window_manager_ptr),
+        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
+        std::wstring());
+
+    application.open("test_path.tr2");
+
+    ASSERT_EQ(events.size(), 13);
+    ASSERT_EQ(events.back(), "viewer");
+}
