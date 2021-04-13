@@ -34,6 +34,9 @@ namespace trview
         /// @param vsync Whether to use vsync.
         virtual void render(bool vsync) override;
 
+        /// Get the currently selected trigger.
+        const Trigger* selected_trigger() const;
+
         /// Set the items to use in the windows.
         /// @param items The items in the level.
         virtual void set_items(const std::vector<Item>& items) override;

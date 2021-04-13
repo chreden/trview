@@ -27,6 +27,7 @@
     <ClInclude Include="IRenderer.h" />
     <ClInclude Include="LabelNode.h" />
     <ClInclude Include="MapRenderer.h" />
+    <ClInclude Include="Mocks\IMapRenderer.h" />
     <ClInclude Include="Mocks\IRenderer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />

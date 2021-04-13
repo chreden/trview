@@ -45,6 +45,6 @@ namespace trview
         virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
 
         /// Create a new rooms window.
-        virtual void create_window() = 0;
+        virtual std::weak_ptr<IRoomsWindow> create_window() = 0;
     };
 }

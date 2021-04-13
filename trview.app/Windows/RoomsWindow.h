@@ -18,6 +18,12 @@ namespace trview
     class RoomsWindow final : public IRoomsWindow, public CollapsiblePanel
     {
     public:
+        struct Names
+        {
+            static const std::string rooms_listbox;
+            static const std::string triggers_listbox;
+        };
+
         /// Create a rooms window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
@@ -26,6 +32,8 @@ namespace trview
 
         /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
+
+        virtual void clear_selected_trigger() override;
 
         virtual void render(bool vsync) override;
 

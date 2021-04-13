@@ -26,6 +26,9 @@ namespace trview
         /// Event raised when the window is closed.
         Event<> on_window_closed;
 
+        /// Clear the selected trigger.
+        virtual void clear_selected_trigger() = 0;
+
         /// Render the window.
         /// @param vsync Whether to use vsync or not.
         virtual void render(bool vsync) = 0;

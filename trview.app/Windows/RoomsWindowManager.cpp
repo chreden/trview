@@ -38,6 +38,11 @@ namespace trview
         }
     }
 
+    const Trigger* RoomsWindowManager::selected_trigger() const
+    {
+        return _selected_trigger.value_or(nullptr);
+    }
+
     void RoomsWindowManager::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
@@ -86,13 +91,15 @@ namespace trview
     void RoomsWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _all_triggers = triggers;
+        _selected_trigger.reset();
         for (auto& window : _windows)
         {
+            window->clear_selected_trigger();
             window->set_triggers(_all_triggers);
         }
     }
 
-    void RoomsWindowManager::create_window()
+    std::weak_ptr<IRoomsWindow> RoomsWindowManager::create_window()
     {
         auto rooms_window = _rooms_window_source(window());
         rooms_window->on_room_selected += on_room_selected;
@@ -110,5 +117,6 @@ namespace trview
         rooms_window->set_current_room(_current_room);
 
         _windows.push_back(rooms_window);
+        return rooms_window;
     }
 }

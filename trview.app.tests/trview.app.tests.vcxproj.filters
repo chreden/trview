@@ -56,6 +56,12 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="ApplicationTests.cpp" />
+    <ClCompile Include="RoomsWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomsWindowTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

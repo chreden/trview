@@ -50,6 +50,9 @@ namespace trview
         }
     }
 
+    const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
+    const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
+
     RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent)
         : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
     {
@@ -190,6 +193,7 @@ namespace trview
         using namespace ui;
 
         auto rooms_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
+        rooms_list->set_name(Names::rooms_listbox);
         rooms_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 40 },
@@ -257,6 +261,7 @@ namespace trview
 
         auto group_box = std::make_unique<GroupBox>(Size(190, 140), Colours::ItemDetails, Colours::DetailsBorder, L"Triggers");
         auto triggers_list = std::make_unique<Listbox>(Size(180, 140 - 21), Colours::LeftPanel);
+        triggers_list->set_name(Names::triggers_listbox);
         triggers_list->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
@@ -330,6 +335,7 @@ namespace trview
 
     void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
     {
+        _selected_trigger.reset();
         _triggers_list->set_items({});
         _all_triggers = triggers;
     }
@@ -337,8 +343,12 @@ namespace trview
     void RoomsWindow::render_minimap()
     {
         _map_renderer->render(false);
-        auto map_size = _map_renderer->texture().size();
-
+        auto texture = _map_renderer->texture();
+        if (!texture.has_content())
+        {
+            return;
+        }
+        auto map_size = texture.size();
         _minimap->set_texture(_map_renderer->texture());
         _minimap->set_size(map_size);
         _minimap->set_position(Point((341 - map_size.width) / 2.0f, (341 - map_size.height) / 2.0f));
@@ -524,5 +534,11 @@ namespace trview
     void RoomsWindow::render(bool vsync)
     {
         CollapsiblePanel::render(vsync);
+    }
+
+    void RoomsWindow::clear_selected_trigger()
+    {
+        _selected_trigger.reset();
+        _triggers_list->clear_selection();
     }
 }

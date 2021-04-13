@@ -60,6 +60,11 @@ namespace trview
         return triggers_window;
     }
 
+    const Trigger* TriggersWindowManager::selected_trigger() const
+    {
+        return _selected_trigger.value_or(nullptr);
+    }
+
     void TriggersWindowManager::set_items(const std::vector<Item>& items)
     {
         _items = items;
@@ -72,6 +77,7 @@ namespace trview
     void TriggersWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
     {
         _triggers = triggers;
+        _selected_trigger.reset();
         for (auto& window : _windows)
         {
             window->clear_selected_trigger();

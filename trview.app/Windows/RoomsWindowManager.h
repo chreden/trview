@@ -40,6 +40,9 @@ namespace trview
         /// @param vsync Whether to use vsync.
         virtual void render(bool vsync) override;
 
+        /// Get the currently selected trigger.
+        const Trigger* selected_trigger() const;
+
         /// Set the items in the current level.
         virtual void set_items(const std::vector<Item>& items) override;
 
@@ -64,7 +67,7 @@ namespace trview
         virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
 
         /// Create a new rooms window.
-        virtual void create_window() override;
+        virtual std::weak_ptr<IRoomsWindow> create_window() override;
     private:
         std::vector<std::shared_ptr<IRoomsWindow>> _windows;
         std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;
