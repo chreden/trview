@@ -220,6 +220,9 @@ namespace trview
         _all_triggers = triggers;
         populate_triggers(triggers);
 
+        _command_list->set_items({});
+        _stats_list->set_items({});
+
         // Populate command filter dropdown.
         _selected_commands.clear();
         std::set<TriggerCommandType> command_set;
@@ -246,6 +249,7 @@ namespace trview
     void TriggersWindow::clear_selected_trigger()
     {
         _selected_trigger.reset();
+        _triggers_list->clear_selection();
         _stats_list->set_items({});
         _command_list->set_items({});
     }

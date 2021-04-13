@@ -348,6 +348,7 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 
+    ASSERT_TRUE(list->selected_item().has_value());
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value()->number(), 1);
 
@@ -364,6 +365,56 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
     ASSERT_NE(commands_items.size(), 0);
 
     window.clear_selected_trigger();
+    ASSERT_FALSE(list->selected_item().has_value());
+
+    stats_items = stats_list->items();
+    ASSERT_EQ(stats_items.size(), 0);
+
+    commands_items = commands_list->items();
+    ASSERT_EQ(commands_items.size(), 0);
+}
+
+TEST(TriggersWindow, SetTriggersClearsSelection)
+{
+    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
+    auto renderer_ptr = std::move(renderer_ptr_source);
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"));
+
+    std::optional<Trigger*> raised_trigger;
+    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+
+    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    window.set_triggers({ trigger1.get(), trigger2.get() });
+
+    auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
+    ASSERT_NE(list, nullptr);
+
+    auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "#");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    ASSERT_TRUE(list->selected_item().has_value());
+    ASSERT_TRUE(raised_trigger.has_value());
+    ASSERT_EQ(raised_trigger.value()->number(), 1);
+
+    auto stats_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
+    ASSERT_NE(stats_list, nullptr);
+
+    auto stats_items = stats_list->items();
+    ASSERT_NE(stats_items.size(), 0);
+
+    auto commands_list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
+    ASSERT_NE(commands_list, nullptr);
+
+    auto commands_items = commands_list->items();
+    ASSERT_NE(commands_items.size(), 0);
+
+    window.set_triggers({});
+    ASSERT_FALSE(list->selected_item().has_value());
 
     stats_items = stats_list->items();
     ASSERT_EQ(stats_items.size(), 0);
