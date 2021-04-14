@@ -746,6 +746,9 @@
     <ClInclude Include="Settings\di.hpp">
       <Filter>Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRoomsWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

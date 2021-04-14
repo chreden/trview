@@ -16,7 +16,7 @@ namespace trview
             MOCK_METHOD(void, set_selected_item, (const Item&));
             MOCK_METHOD(void, set_selected_trigger, (const Trigger* const ));
             MOCK_METHOD(void, set_triggers, (const std::vector<Trigger*>&));
-            MOCK_METHOD(void, create_window, ());
+            MOCK_METHOD(std::weak_ptr<IRoomsWindow>, create_window, ());
         };
     }
 }

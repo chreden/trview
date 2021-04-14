@@ -65,6 +65,13 @@ namespace trview
             generate_rows();
             populate_rows();
 
+            if (_selected_item.has_value() &&
+                std::find_if(_items.begin(), _items.end(), [this](const auto& l) { return identity_equal(l, _selected_item.value()); }) == _items.end())
+            {
+                _selected_item.reset();
+                highlight_item();
+            }
+
             // Scroll to the highlighted item (if present in the list).
             if (_show_highlight && _selected_item.has_value())
             {

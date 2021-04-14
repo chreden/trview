@@ -29,7 +29,7 @@ namespace trview
     struct ICamera;
     class Mesh;
     class TransparencyBuffer;
-    class Level;
+    struct ILevel;
 
     class Room
     {
@@ -56,7 +56,7 @@ namespace trview
             const ILevelTextureStorage& texture_storage,
             const IMeshStorage& mesh_storage,
             uint32_t index,
-            Level& parent_level);
+            ILevel& parent_level);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -202,6 +202,6 @@ namespace trview
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
         uint16_t _flags{ 0 };
-        Level& _level;
+        ILevel& _level;
     };
 }

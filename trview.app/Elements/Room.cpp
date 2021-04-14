@@ -45,7 +45,7 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
-        Level& parent_level)
+        ILevel& parent_level)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
