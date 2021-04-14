@@ -22,7 +22,7 @@ namespace trview
         /// @param flags The flags for the entity.
         /// @param triggers The triggers that affect this entity.
         /// @param position The position of the entity.
-        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, uint32_t ocb, uint16_t flags, const std::vector<Trigger*>& triggers, const DirectX::SimpleMath::Vector3& position);
+        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, int32_t ocb, uint16_t flags, const std::vector<Trigger*>& triggers, const DirectX::SimpleMath::Vector3& position);
 
         /// Get the item number.
         /// @returns The item number.
@@ -42,7 +42,7 @@ namespace trview
 
         /// Get the OCB value of the item.
         /// @returns The OCB value of the item.
-        uint32_t ocb() const;
+        int32_t ocb() const;
 
         /// Get the activation flags for the entity.
         /// @returns The activation flags.
