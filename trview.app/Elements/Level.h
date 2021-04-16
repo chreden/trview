@@ -43,7 +43,7 @@ namespace trview
             const IMesh::Source& mesh_source,
             const IMesh::TransparentSource& mesh_transparent_source,
             const IEntity::EntitySource& entity_source,
-            const IEntity::AiSource ai_source);
+            const IEntity::AiSource& ai_source);
         ~Level();
 
         // Temporary, for the room info and texture window.

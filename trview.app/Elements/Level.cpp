@@ -28,7 +28,7 @@ namespace trview
         const IMesh::Source& mesh_source,
         const IMesh::TransparentSource& mesh_transparent_source,
         const IEntity::EntitySource& entity_source,
-        const IEntity::AiSource ai_source)
+        const IEntity::AiSource& ai_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
