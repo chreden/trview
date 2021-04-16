@@ -26,7 +26,9 @@ namespace trview
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         const std::shared_ptr<ITypeNameLookup>& type_names,
         const IMesh::Source& mesh_source,
-        const IMesh::TransparentSource& mesh_transparent_source)
+        const IMesh::TransparentSource& mesh_transparent_source,
+        const IEntity::EntitySource& entity_source,
+        const IEntity::AiSource ai_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -57,7 +59,7 @@ namespace trview
 
         generate_rooms(*level, mesh_source);
         generate_triggers(mesh_transparent_source);
-        generate_entities(*level, *type_names, mesh_source);
+        generate_entities(*level, *type_names, entity_source, ai_source);
 
         for (auto& room : _rooms)
         {
@@ -170,7 +172,7 @@ namespace trview
 
     void Level::set_selected_item(uint32_t index)
     {
-        _selected_item = _entities[index].get();
+        _selected_item = _entities[index];
         on_level_changed();
     }
 
@@ -269,9 +271,10 @@ namespace trview
         const Color Trigger_Outline{ 0.0f, 1.0f, 0.0f, 1.0f };
         const Color Item_Outline{ 1.0f, 1.0f, 0.0f, 1.0f };
 
-        if (_selected_item)
+        auto selected_item = _selected_item.lock();
+        if (selected_item)
         {
-            _selection_renderer->render(camera, *_texture_storage, *_selected_item, Item_Outline);
+            _selection_renderer->render(camera, *_texture_storage, *selected_item, Item_Outline);
         }
 
         if (_show_triggers && _selected_trigger)
@@ -373,19 +376,16 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
-            // Entity for rendering.
             auto level_entity = level.get_entity(i);
-            // TODO: Use DI?
-            auto entity = std::make_unique<Entity>(mesh_source, level, level_entity, *_mesh_storage.get(), i);
+            auto entity = entity_source(level, level_entity, i, *_mesh_storage);
             _rooms[entity->room()]->add_entity(entity.get());
-            _entities.push_back(std::move(entity));
+            _entities.push_back(entity);
 
-            // Relevant triggers.
             std::vector<Trigger*> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
@@ -395,21 +395,20 @@ namespace trview
                 }
             }
 
-            // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());        
+            _items.push_back(Item(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), 
+                version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position()));
         }
 
         const uint32_t num_ai_objects = level.num_ai_objects();
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
             auto ai_object = level.get_ai_object(i);
-
-            auto entity = std::make_unique<Entity>(mesh_source, level, ai_object, *_mesh_storage.get(), num_entities + i);
+            auto entity = ai_source(level, ai_object, num_entities + i, *_mesh_storage);
             _rooms[entity->room()]->add_entity(entity.get());
-            _entities.push_back(std::move(entity));
+            _entities.push_back(entity);
 
-            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb, ai_object.flags, {},
-                ai_object.position()));
+            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb,
+                ai_object.flags, {}, ai_object.position()));
         }
     }
 

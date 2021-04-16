@@ -9,6 +9,7 @@
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
+#include <trview.app/Mocks/Elements/IEntity.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -41,5 +42,6 @@ TEST(Level, LoadTypeNames)
     Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level),
         std::make_unique<MockLevelTextureStorage>(), std::make_unique<MockMeshStorage>(), std::make_unique<MockTransparencyBuffer>(),
         std::make_unique<MockSelectionRenderer>(), mock_type_name_lookup, [](auto, auto, auto, auto, auto) {return std::make_unique<MockMesh>(); },
-        [](auto, auto) { return std::make_unique<MockMesh>(); });
+        [](auto, auto) { return std::make_unique<MockMesh>(); }, [](auto&&, auto&&, auto&&, auto&&) { return std::make_shared<MockEntity>(); },
+        [](auto&&, auto&&, auto&&, auto&) { return std::make_shared<MockEntity>(); });
 }

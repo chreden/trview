@@ -20,6 +20,22 @@ namespace trview
                     Resource type_list = get_resource_memory(IDR_TYPE_NAMES, L"TEXT");
                     return std::make_shared<TypeNameLookup>(std::string(type_list.data, type_list.data + type_list.size));
                 }),
+            di::bind<IEntity::EntitySource>.to(
+                [](const auto& injector) -> IEntity::EntitySource
+                {
+                    return [&](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
+                    {
+                        return std::make_shared<Entity>(injector.create<IMesh::Source>(), level, entity, mesh_storage, index);
+                    };
+                }),
+            di::bind<IEntity::AiSource>.to(
+                [](const auto& injector) -> IEntity::AiSource
+                {
+                    return [&](auto&& level, auto&& ai_object, auto&& index, auto&& mesh_storage)
+                    {
+                        return std::make_shared<Entity>(injector.create<IMesh::Source>(), level, ai_object, mesh_storage, index);
+                    };
+                }),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {
@@ -37,7 +53,9 @@ namespace trview
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
                             injector.create<std::shared_ptr<ITypeNameLookup>>(),
                             injector.create<IMesh::Source>(),
-                            injector.create<IMesh::TransparentSource>());
+                            injector.create<IMesh::TransparentSource>(),
+                            injector.create<IEntity::EntitySource>(),
+                            injector.create<IEntity::AiSource>());
                     };
                 })
         );
