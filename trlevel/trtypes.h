@@ -550,6 +550,11 @@ namespace trlevel
         int16_t ocb;
         uint16_t flags;     // Activation mask, bitwise-shifted left by 1
         int32_t angle;
+
+        DirectX::SimpleMath::Vector3 position() const
+        {
+            return DirectX::SimpleMath::Vector3(x / Scale_X, y / Scale_Y, z / Scale_Z);
+        }
     };
 
 #pragma pack(pop)

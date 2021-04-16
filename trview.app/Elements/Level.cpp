@@ -396,8 +396,21 @@ namespace trview
             }
 
             // Item for item information.
-            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());
+            _items.emplace_back(i, level_entity.Room, level_entity.TypeID, type_names.lookup_type_name(_version, level_entity.TypeID), version() >= trlevel::LevelVersion::Tomb4 ? level_entity.Intensity2 : 0, level_entity.Flags, relevant_triggers, level_entity.position());        }
+
+        const uint32_t num_ai_objects = level.num_ai_objects();
+        for (uint32_t i = 0; i < num_ai_objects; ++i)
+        {
+            auto ai_object = level.get_ai_object(i);
+
+            auto entity = std::make_unique<Entity>(mesh_source, level, ai_object, *_mesh_storage.get(), i);
+            _rooms[entity->room()]->add_entity(entity.get());
+            _entities.push_back(std::move(entity));
+
+            _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb, ai_object.flags, {},
+                ai_object.position()));
         }
+        
     }
 
     void Level::regenerate_neighbours()

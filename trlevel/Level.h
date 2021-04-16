@@ -85,9 +85,12 @@ namespace trlevel
         // Returns: The floor data.
         virtual std::vector<std::uint16_t> get_floor_data_all() const override; 
 
+        virtual uint32_t num_ai_objects() const override;
+        virtual tr4_ai_object get_ai_object(uint32_t index) const override;
+
         // Get the number of entities in the level.
         // Returns: The number of entities.
-        virtual uint32_t num_entities() const override;
+        virtual uint32_t num_entities() const override;        
 
         // Get the entity at the specified index.
         // index: The index of the entity to get.
@@ -187,6 +190,7 @@ namespace trlevel
         std::vector<tr_model>          _models;
         std::vector<tr2_entity>        _entities;
         std::unordered_map<uint32_t, tr_staticmesh> _static_meshes;
+        std::vector<tr4_ai_object>     _ai_objects;
 
         uint16_t _lara_type{ 0u };
         uint16_t _weather_type{ 0u };

@@ -11,40 +11,50 @@
 #include <trlevel/trtypes.h>
 
 using namespace Microsoft::WRL;
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 namespace trview
 {
     Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index)
-        : _room(entity.Room), _index(index)
+        : Entity(mesh_source, mesh_storage, level, entity.Room, index, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2)
     {
-        using namespace DirectX;
-        using namespace DirectX::SimpleMath;
+        
+    }
 
+    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index)
+        : Entity(mesh_source, mesh_storage, level, entity.room, index, entity.type_id, entity.position(), entity.angle, entity.ocb)
+    {
+    }
+
+    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const Vector3& position, uint16_t angle, int32_t ocb)
+        : _room(room), _index(index)
+    {
         // Extract the meshes required from the model.
-        load_meshes(level, entity.TypeID, mesh_storage);
+        load_meshes(level, type_id, mesh_storage);
 
         trlevel::tr_model model;
         trlevel::tr_sprite_sequence sprite;
 
-        if (level.get_model_by_id(entity.TypeID, model))
+        if (level.get_model_by_id(type_id, model))
         {
             // Set up world matrix.
-            _world = Matrix::CreateRotationY((entity.Angle / 16384.0f) * XM_PIDIV2) * 
-                     Matrix::CreateTranslation(entity.position());
+            _world = Matrix::CreateRotationY((angle / 16384.0f) * XM_PIDIV2) *
+                Matrix::CreateTranslation(position);
             load_model(model, level);
         }
-        else if (level.get_sprite_sequence_by_id(entity.TypeID, sprite))
+        else if (level.get_sprite_sequence_by_id(type_id, sprite))
         {
-            _world = Matrix::CreateTranslation(entity.position());
+            _world = Matrix::CreateTranslation(position);
             _sprite_mesh = create_sprite_mesh(mesh_source, level.get_sprite_texture(sprite.Offset), _scale, _offset, SpriteOffsetMode::Entity);
-            _position = entity.position();
+            _position = position;
         }
 
         generate_bounding_box();
 
         if (level.get_version() >= trlevel::LevelVersion::Tomb4)
         {
-            apply_ocb_adjustment(entity.Intensity2);
+            apply_ocb_adjustment(ocb);
         }
     }
 
