@@ -40,7 +40,7 @@ namespace trview
             const ILevelTextureStorage& texture_storage,
             const IMeshStorage& mesh_storage,
             uint32_t index,
-            ILevel& parent_level);
+            const ILevel& parent_level);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -153,6 +153,6 @@ namespace trview
 
         std::unordered_map<uint32_t, Trigger*> _triggers;
         uint16_t _flags{ 0 };
-        ILevel& _level;
+        const ILevel& _level;
     };
 }

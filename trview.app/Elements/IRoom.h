@@ -1,6 +1,7 @@
 #pragma once
 
-#include <trview.app/Geometry/IRenderable.h>
+#include <trview.app/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Elements/RoomInfo.h>
 #include <trview.app/Elements/IEntity.h>
@@ -8,6 +9,8 @@
 
 namespace trview
 {
+    struct ILevel;
+
     struct IRoom
     {
         enum class AlternateMode
@@ -25,6 +28,9 @@ namespace trview
             Selected,
             NotSelected
         };
+
+        using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
+            const ILevelTextureStorage&, const IMeshStorage&,  uint32_t, const ILevel&)>;
 
         virtual ~IRoom() = 0;
         

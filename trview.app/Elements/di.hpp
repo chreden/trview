@@ -36,6 +36,21 @@ namespace trview
                         return std::make_shared<Entity>(injector.create<IMesh::Source>(), level, ai_object, mesh_storage, index);
                     };
                 }),
+            di::bind<IRoom::Source>.to(
+                [](const auto& injector) -> IRoom::Source
+                {
+                    return [&](auto&& level, auto&& room, auto&& texture_storage, auto&& mesh_storage, auto&& index, auto&& parent_level)
+                    {
+                        return std::make_shared<Room>(
+                            injector.create<IMesh::Source>(),
+                            level,
+                            room,
+                            texture_storage,
+                            mesh_storage,
+                            index,
+                            parent_level);
+                    };
+                }),
             di::bind<ILevel::Source>.to(
                 [](const auto& injector) -> ILevel::Source
                 {
@@ -52,10 +67,10 @@ namespace trview
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
                             injector.create<std::shared_ptr<ITypeNameLookup>>(),
-                            injector.create<IMesh::Source>(),
                             injector.create<IMesh::TransparentSource>(),
                             injector.create<IEntity::EntitySource>(),
-                            injector.create<IEntity::AiSource>());
+                            injector.create<IEntity::AiSource>(),
+                            injector.create<IRoom::Source>());
                     };
                 })
         );

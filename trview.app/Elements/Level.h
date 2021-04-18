@@ -40,10 +40,10 @@ namespace trview
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             const std::shared_ptr<ITypeNameLookup>& type_names,
-            const IMesh::Source& mesh_source,
             const IMesh::TransparentSource& mesh_transparent_source,
             const IEntity::EntitySource& entity_source,
-            const IEntity::AiSource& ai_source);
+            const IEntity::AiSource& ai_source,
+            const IRoom::Source& room_source);
         ~Level();
 
         // Temporary, for the room info and texture window.
@@ -135,7 +135,7 @@ namespace trview
 
         void set_filename(const std::string& filename);
     private:
-        void generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source);
+        void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source);
         void generate_triggers(const IMesh::TransparentSource& mesh_transparent_source);
         void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source);
         void regenerate_neighbours();
