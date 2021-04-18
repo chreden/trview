@@ -30,7 +30,7 @@ namespace trview
         };
 
         using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const ILevelTextureStorage&, const IMeshStorage&,  uint32_t, const ILevel&)>;
+            const ILevelTextureStorage&, const IMeshStorage&, uint32_t, const ILevel&)>;
 
         virtual ~IRoom() = 0;
         

@@ -764,6 +764,9 @@
     <ClInclude Include="Elements\IRoom.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\IRoom.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

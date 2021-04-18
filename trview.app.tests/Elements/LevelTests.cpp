@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
 #include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -41,9 +42,10 @@ TEST(Level, LoadTypeNames)
     EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
     Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level),
         std::make_unique<MockLevelTextureStorage>(), std::make_unique<MockMeshStorage>(), std::make_unique<MockTransparencyBuffer>(),
-        std::make_unique<MockSelectionRenderer>(), mock_type_name_lookup, [](auto, auto, auto, auto, auto) {return std::make_unique<MockMesh>(); },
-        [](auto, auto) { return std::make_unique<MockMesh>(); }, [](auto&&, auto&&, auto&&, auto&&) { return std::make_shared<MockEntity>(); },
-        [](auto&&, auto&&, auto&&, auto&) { return std::make_shared<MockEntity>(); });
+        std::make_unique<MockSelectionRenderer>(), mock_type_name_lookup, [](auto, auto) { return std::make_unique<MockMesh>(); },
+        [](auto&&, auto&&, auto&&, auto&&) { return std::make_shared<MockEntity>(); },
+        [](auto&&, auto&&, auto&&, auto&) { return std::make_shared<MockEntity>(); }, 
+        [](auto&&, auto&&, auto&&, auto&&, auto&&, auto&&) { return std::make_shared<MockRoom>(); });
 }
 
 TEST(Level, LoadFromEntitySources)
@@ -67,7 +69,7 @@ TEST(Level, LoadFromEntitySources)
 
     Level level(std::make_shared<MockDevice>(), std::make_shared<MockShaderStorage>(), std::move(mock_level),
         std::make_unique<MockLevelTextureStorage>(), std::make_unique<MockMeshStorage>(), std::make_unique<MockTransparencyBuffer>(),
-        std::make_unique<MockSelectionRenderer>(), std::make_shared<MockTypeNameLookup>(), [](auto, auto, auto, auto, auto) {return std::make_unique<MockMesh>(); },
+        std::make_unique<MockSelectionRenderer>(), std::make_shared<MockTypeNameLookup>(), 
         [](auto, auto) { return std::make_unique<MockMesh>(); }, 
         [&](auto&&, auto&&, auto&&, auto&&) 
         { 
@@ -78,7 +80,8 @@ TEST(Level, LoadFromEntitySources)
         { 
             ++ai_source_called;
             return std::make_shared<MockEntity>(); 
-        });
+        },
+        [](auto&&, auto&&, auto&&, auto&&, auto&&, auto&&) { return std::make_shared<MockRoom>(); });
 
     ASSERT_EQ(entity_source_called, 1);
     ASSERT_EQ(ai_source_called, 1);
