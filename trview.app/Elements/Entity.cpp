@@ -27,7 +27,8 @@ namespace trview
     {
     }
 
-    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const Vector3& position, int32_t angle, int32_t ocb)
+    Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id,
+        const Vector3& position, int32_t angle, int32_t ocb)
         : _room(room), _index(index)
     {
         // Extract the meshes required from the model.
