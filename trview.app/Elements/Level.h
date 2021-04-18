@@ -41,7 +41,9 @@ namespace trview
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             const std::shared_ptr<ITypeNameLookup>& type_names,
             const IMesh::Source& mesh_source,
-            const IMesh::TransparentSource& mesh_transparent_source);
+            const IMesh::TransparentSource& mesh_transparent_source,
+            const IEntity::EntitySource& entity_source,
+            const IEntity::AiSource& ai_source);
         ~Level();
 
         // Temporary, for the room info and texture window.
@@ -135,7 +137,7 @@ namespace trview
     private:
         void generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source);
         void generate_triggers(const IMesh::TransparentSource& mesh_transparent_source);
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IMesh::Source& mesh_source);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
@@ -176,7 +178,7 @@ namespace trview
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::unique_ptr<Room>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
-        std::vector<std::unique_ptr<Entity>> _entities;
+        std::vector<std::shared_ptr<IEntity>> _entities;
         std::vector<Item> _items;
 
         graphics::IShader*          _vertex_shader;
@@ -188,7 +190,7 @@ namespace trview
         std::set<RoomHighlightMode> _room_highlight_modes;
         
         uint16_t           _selected_room{ 0u };
-        Entity*            _selected_item{ nullptr };
+        std::weak_ptr<IEntity> _selected_item;
         Trigger*           _selected_trigger{ nullptr };
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;

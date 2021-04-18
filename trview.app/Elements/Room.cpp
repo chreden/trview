@@ -289,7 +289,7 @@ namespace trview
         });
     }
 
-    void Room::add_entity(Entity* entity)
+    void Room::add_entity(IEntity* entity)
     {
         _entities.push_back(entity);
     }

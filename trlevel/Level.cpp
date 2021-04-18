@@ -487,6 +487,16 @@ namespace trlevel
         return _floor_data;
     }
 
+    uint32_t Level::num_ai_objects() const
+    {
+        return static_cast<uint32_t>(_ai_objects.size());
+    }
+
+    tr4_ai_object Level::get_ai_object(uint32_t index) const
+    {
+        return _ai_objects[index];
+    }
+
     uint32_t Level::num_entities() const
     {
         return static_cast<uint32_t>(_entities.size());
@@ -874,23 +884,7 @@ namespace trlevel
 
         if (_version >= LevelVersion::Tomb4)
         {
-            std::vector<tr4_ai_object> ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
-            std::transform(ai_objects.begin(), ai_objects.end(), std::back_inserter(_entities),
-                [](const auto& ai_object)
-                {
-                    tr2_entity entity {};
-                    entity.TypeID = ai_object.type_id;
-                    entity.Room = ai_object.room;
-                    entity.x = ai_object.x;
-                    entity.y = ai_object.y;
-                    entity.z = ai_object.z;
-                    // Loses some of the angle, but not important at the moment.
-                    entity.Angle = static_cast<int16_t>(ai_object.angle);
-                    entity.Intensity1 = 0;
-                    entity.Intensity2 = ai_object.ocb;
-                    entity.Flags = ai_object.flags;
-                    return entity;
-                });
+            _ai_objects = read_vector<uint32_t, tr4_ai_object>(file);
         }
 
         if (_version < LevelVersion::Tomb4)

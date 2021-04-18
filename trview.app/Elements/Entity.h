@@ -9,6 +9,7 @@
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/IMesh.h>
+#include "IEntity.h"
 
 namespace trlevel
 {
@@ -25,23 +26,26 @@ namespace trview
     struct ICamera;
     class TransparencyBuffer;
 
-    class Entity : public IRenderable
+    class Entity final : public IEntity
     {
     public:
-        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& room, const IMeshStorage& mesh_storage, uint32_t index);
+        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index);
+        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index);
         virtual ~Entity() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
-        uint16_t room() const;
+        virtual uint16_t room() const override;
         uint32_t index() const;
 
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
 
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
-        DirectX::BoundingBox bounding_box() const;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        virtual DirectX::BoundingBox bounding_box() const override;
 
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
     private:
+        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb);
+
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
         void generate_bounding_box();

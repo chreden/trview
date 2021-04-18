@@ -24,6 +24,8 @@ namespace trlevel
             MOCK_METHOD(uint32_t, num_floor_data, (), (const, override));
             MOCK_METHOD(uint16_t, get_floor_data, (uint32_t), (const, override));
             MOCK_METHOD(std::vector<uint16_t>, get_floor_data_all, (), (const, override));
+            MOCK_METHOD(uint32_t, num_ai_objects, (), (const, override));
+            MOCK_METHOD(tr4_ai_object, get_ai_object, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_entities, (), (const, override));
             MOCK_METHOD(tr2_entity, get_entity, (uint32_t), (const, override));
             MOCK_METHOD(uint32_t, num_models, (), (const, override));

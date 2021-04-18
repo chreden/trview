@@ -79,6 +79,15 @@ namespace trlevel
         // Returns: The floor data.
         virtual std::vector<std::uint16_t> get_floor_data_all() const = 0;
 
+        /// Get the number of ai objects in the level.
+        /// Returns: The number of ai objects.
+        virtual uint32_t num_ai_objects() const = 0;
+
+        // Get the ai object at the specified index.
+        // index: The index of the ai object to get.
+        // Returns: The ai object.
+        virtual tr4_ai_object get_ai_object(uint32_t index) const = 0;
+
         // Get the number of entities in the level.
         // Returns: The number of entities.
         virtual uint32_t num_entities() const = 0;

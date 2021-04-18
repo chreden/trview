@@ -25,7 +25,7 @@ namespace trview
 {
     struct ILevelTextureStorage;
     struct IMeshStorage;
-    class Entity;
+    struct IEntity;
     struct ICamera;
     class Mesh;
     class TransparencyBuffer;
@@ -81,7 +81,7 @@ namespace trview
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
-        void add_entity(Entity* entity);
+        void add_entity(IEntity* entity);
 
         /// Add the specified trigger to the room.
         /// @paramt trigger The trigger to add.
@@ -188,7 +188,7 @@ namespace trview
 
         DirectX::BoundingBox  _bounding_box;
 
-        std::vector<Entity*> _entities;
+        std::vector<IEntity*> _entities;
 
         // Maps a sector to its sector ID 
         std::vector<std::shared_ptr<Sector>> _sectors; 
