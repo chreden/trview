@@ -191,7 +191,7 @@ namespace trview
 
         /// Set the selected room.
         /// @param room The selected room.
-        virtual void set_selected_room(Room* room) = 0;
+        virtual void set_selected_room(IRoom* room) = 0;
 
         /// Set the user settings.
         /// @param settings The user settings.

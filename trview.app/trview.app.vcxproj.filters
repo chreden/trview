@@ -298,6 +298,9 @@
     <ClCompile Include="Elements\IEntity.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\IRoom.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -757,6 +760,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IEntity.h">
       <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\IRoom.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

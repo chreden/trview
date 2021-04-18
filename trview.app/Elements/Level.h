@@ -60,7 +60,7 @@ namespace trview
         /// Get the number of rooms in the level.
         uint32_t number_of_rooms() const;
 
-        std::vector<Room*> rooms() const;
+        virtual std::vector<IRoom*> rooms() const override;
 
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
@@ -107,7 +107,7 @@ namespace trview
         bool alternate_group(uint32_t group) const;
 
         // Returns the room with ID provided 
-        inline Room *room(std::size_t id) const { return _rooms.at(id).get(); }
+        std::weak_ptr<IRoom> room(uint32_t id) const;
 
         // Get the current state of the alternate mode (flipmap).
         bool alternate_mode() const;
@@ -150,13 +150,13 @@ namespace trview
 
         struct RoomToRender
         {
-            RoomToRender(Room& room, Room::SelectionMode selection_mode, uint16_t number)
+            RoomToRender(IRoom& room, IRoom::SelectionMode selection_mode, uint16_t number)
                 : room(room), selection_mode(selection_mode), number(number)
             {
             }
 
-            Room&               room;
-            Room::SelectionMode selection_mode;
+            IRoom&               room;
+            IRoom::SelectionMode selection_mode;
             uint16_t            number;
         };
 
@@ -171,12 +171,12 @@ namespace trview
 
         // Determines whether the alternate mode specified is a mismatch with the current setting of 
         // the alternate mode flag.
-        bool is_alternate_mismatch(const Room& room) const;
+        bool is_alternate_mismatch(const IRoom& room) const;
 
         bool is_alternate_group_set(uint16_t group) const;
 
         std::shared_ptr<graphics::IDevice> _device;
-        std::vector<std::unique_ptr<Room>>   _rooms;
+        std::vector<std::shared_ptr<IRoom>>   _rooms;
         std::vector<std::unique_ptr<Trigger>> _triggers;
         std::vector<std::shared_ptr<IEntity>> _entities;
         std::vector<Item> _items;

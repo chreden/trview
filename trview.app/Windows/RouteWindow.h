@@ -48,7 +48,7 @@ namespace trview
         /// @param items The items to show.
         virtual void set_items(const std::vector<Item>& items) override;
 
-        virtual void set_rooms(const std::vector<Room*>& rooms) override;
+        virtual void set_rooms(const std::vector<IRoom*>& rooms) override;
 
         /// Set the triggers in the level.
         /// @param triggers The triggers.
@@ -70,7 +70,7 @@ namespace trview
         ui::Button* _clear_save;
         IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
-        std::vector<Room*> _all_rooms;
+        std::vector<IRoom*> _all_rooms;
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };

@@ -475,7 +475,7 @@ namespace trview
         _all_items = items;
     }
 
-    void RouteWindow::set_rooms(const std::vector<Room*>& rooms)
+    void RouteWindow::set_rooms(const std::vector<IRoom*>& rooms)
     {
         _all_rooms = rooms;
     }

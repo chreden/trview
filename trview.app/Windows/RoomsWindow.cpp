@@ -21,7 +21,7 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const Room* const room, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
+        ui::Listbox::Item create_listbox_item(const IRoom* const room, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
         {
             auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
             auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) { return trigger->room() == room->number(); });
@@ -306,7 +306,7 @@ namespace trview
         _all_items = items;
     }
 
-    void RoomsWindow::set_rooms(const std::vector<Room*>& rooms)
+    void RoomsWindow::set_rooms(const std::vector<IRoom*>& rooms)
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
@@ -359,7 +359,7 @@ namespace trview
         _minimap->set_position(Point((341 - map_size.width) / 2.0f, (341 - map_size.height) / 2.0f));
     }
 
-    void RoomsWindow::load_room_details(const Room& room)
+    void RoomsWindow::load_room_details(const IRoom& room)
     {
         using namespace ui;
 

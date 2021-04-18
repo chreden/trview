@@ -213,14 +213,14 @@ namespace trview
                     if (_current_pick.type == PickResult::Type::Room &&
                         _current_pick.index == _level->selected_room())
                     {
-                        info = _level->room(_current_pick.index)->info();
+                        info = _level->room(_current_pick.index).lock()->info();
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
                         auto trigger = _level->triggers()[_current_pick.index];
                         if (trigger->room() == _level->selected_room())
                         {
-                            info = _level->room(trigger->room())->info();
+                            info = _level->room(trigger->room()).lock()->info();
                         }
                     }
                 }
@@ -612,9 +612,9 @@ namespace trview
             return;
         }
 
-        _ui->set_selected_room(_level->room(_level->selected_room()));
+        _ui->set_selected_room(_level->room(_level->selected_room()).lock().get());
         _was_alternate_select = false;
-        _target = _level->room(_level->selected_room())->centre();
+        _target = _level->room(_level->selected_room()).lock()->centre();
         _scene_changed = true;
         if (_settings.auto_orbit)
         {

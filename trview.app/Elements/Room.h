@@ -9,7 +9,6 @@
 #include <DirectXCollision.h>
 #include <SimpleMath.h>
 
-#include <trview.app/Elements/RoomInfo.h>
 #include <trview.graphics/Texture.h>
 
 #include <trlevel/trtypes.h>
@@ -20,6 +19,7 @@
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Geometry/PickResult.h>
+#include "IRoom.h"
 
 namespace trview
 {
@@ -31,25 +31,9 @@ namespace trview
     class TransparencyBuffer;
     struct ILevel;
 
-    class Room
+    class Room : public IRoom
     {
     public:
-        enum class SelectionMode
-        {
-            Selected,
-            NotSelected
-        };
-
-        enum class AlternateMode
-        {
-            // This room does not have an alternate room and is not an alternate room to another room.
-            None,
-            // This room has an alternate room.
-            HasAlternate,
-            // This room is an alternate room to another room.
-            IsAlternate
-        };
-
         explicit Room(const IMesh::Source& mesh_source,
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
@@ -61,93 +45,60 @@ namespace trview
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
 
-        RoomInfo           info() const;
-        std::set<uint16_t> neighbours() const;
+        virtual RoomInfo info() const override;
+        virtual std::set<uint16_t> neighbours() const override;
 
-        // Determine whether the specified ray hits any of the triangles in the room geometry.
-        // position: The world space position of the source of the ray.
-        // direction: The direction of the ray.
-        // Returns: The result of the operation. If 'hit' is true, distance and position contain
-        // how far along the ray the hit was and the position in world space.
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const override;
 
         // Render the level geometry and the objects contained in this room.
         // camera: The camera to use to render.
         // texture_storage: The textures for the level.
         // selected: The selection mode to use to highlight geometry and objects.
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water);
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
 
-        void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false);
+        virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) override;
 
         // Add the specified entity to the room.
         // Entity: The entity to add.
-        void add_entity(IEntity* entity);
+        virtual void add_entity(IEntity* entity) override;
 
         /// Add the specified trigger to the room.
         /// @paramt trigger The trigger to add.
-        void add_trigger(Trigger* trigger);
+        virtual void add_trigger(Trigger* trigger) override;
 
-        // Returns all sectors 
-        const std::vector<std::shared_ptr<Sector>>& sectors() const;
+        virtual const std::vector<std::shared_ptr<Sector>> sectors() const override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
 
-        /// Add the transparent triangles to the specified transparency buffer.
-        /// @param transparency The buffer to add triangles to.
-        /// @param camera The current viewpoint.
-        /// @param selected The current selection mode.
-        /// @param include_triggers Whether to render triggers.
-        void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water);
+        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false) override;
 
-        // Add the transparent triangles for entities that are contained inside this room. This is called automatically
-        // if get_transparent_triangles is used.
-        // transparency: The buffer to add triangles to.
-        // camera: The current viewpoint.
-        // selected: The current selection mode.
-        void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false);
-
-        // Determines the alternate state of the room.
-        AlternateMode alternate_mode() const;
-
-        // Gets the room number of the room that is the alternate to this room.
-        // If this room does not have an alternate this will be -1.
-        // Returns: The room number of the alternate room.
-        int16_t alternate_room() const;
-
-        /// Gets the alternate group for the room.
-        /// @returns The alternate group number.
-        int16_t alternate_group() const;
+        virtual AlternateMode alternate_mode() const override;
+        virtual int16_t alternate_room() const override;
+        virtual int16_t alternate_group() const override;
 
         // Set this room to be the alternate room of the room specified.
         // This will change the alternate_mode of this room to IsAlternate.
         // number: The room number.
-        void set_is_alternate(int16_t number);
+        virtual void set_is_alternate(int16_t number) override;
 
-        // Returns the number of x sectors in the room 
-        inline std::uint16_t num_x_sectors() const { return _num_x_sectors; }
+        virtual uint16_t num_x_sectors() const override;
+        virtual uint16_t num_z_sectors() const override;
 
-        // Returns the number of z sectors in the room 
-        inline std::uint16_t num_z_sectors() const { return _num_z_sectors; }
+        virtual DirectX::SimpleMath::Vector3 centre() const override;
 
-        /// Get the centre point of the room.
-        /// @returns The centre position of the room.
-        DirectX::SimpleMath::Vector3 centre() const;
+        virtual DirectX::BoundingBox bounding_box() const override;
 
-        /// Get the bounding box of the room. The bounding box is pre-transformed to the coordinates of the room.
-        /// @returns The bounding box for the room.
-        const DirectX::BoundingBox& bounding_box() const;
+        virtual void generate_trigger_geometry() override;
 
-        void generate_trigger_geometry();
+        virtual uint32_t number() const override;
+        virtual void update_bounding_box() override;
 
-        uint32_t number() const;
-        void update_bounding_box();
+        virtual bool outside() const override;
 
-        /// Gets whether this room is outside (can see the skybox).
-        bool outside() const;
+        virtual bool water() const override;
 
-        /// Gets whether this room is a water room.
-        bool water() const;
+        virtual bool quicksand() const override;
 
-        /// Gets whether this room is a quicksand room.
-        bool quicksand() const;
+        virtual Trigger* trigger_at(int32_t x, int32_t z) const override;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();

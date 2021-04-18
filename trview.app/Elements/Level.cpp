@@ -111,9 +111,9 @@ namespace trview
         return static_cast<uint32_t>(_rooms.size());
     }
 
-    std::vector<Room*> Level::rooms() const
+    std::vector<IRoom*> Level::rooms() const
     {
-        std::vector<Room*> rooms;
+        std::vector<IRoom*> rooms;
         std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](const auto& room) { return room.get(); });
         return rooms;
     }
@@ -291,7 +291,7 @@ namespace trview
 
         DirectX::BoundingFrustum frustum = camera.frustum();
 
-        auto in_view = [&](const Room& room)
+        auto in_view = [&](const IRoom& room)
         {
             return camera.projection_mode() == ProjectionMode::Orthographic || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
@@ -574,7 +574,7 @@ namespace trview
 
     // Determines whether the alternate mode specified is a mismatch with the current setting of 
     // the alternate mode flag.
-    bool Level::is_alternate_mismatch(const Room& room) const
+    bool Level::is_alternate_mismatch(const IRoom& room) const
     {
         if (version() >= trlevel::LevelVersion::Tomb4)
         {
@@ -594,7 +594,7 @@ namespace trview
 
     bool Level::any_alternates() const
     {
-        return std::any_of(_rooms.begin(), _rooms.end(), [](const std::unique_ptr<Room>& room)
+        return std::any_of(_rooms.begin(), _rooms.end(), [](const std::shared_ptr<IRoom>& room)
         {
             return room->alternate_mode() != Room::AlternateMode::None;
         });
@@ -680,6 +680,11 @@ namespace trview
     void Level::set_filename(const std::string& filename)
     {
         _filename = filename;
+    }
+
+    std::weak_ptr<IRoom> Level::room(uint32_t id) const
+    {
+        return _rooms[id];
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

@@ -57,10 +57,10 @@ namespace trview
         /// @param camera The current camera.
         virtual void render_transparency(const ICamera& camera) = 0;
         // Returns the room with ID provided 
-        virtual Room* room(std::size_t id) const = 0;
+        virtual std::weak_ptr<IRoom> room(uint32_t id) const = 0;
         virtual std::vector<RoomInfo> room_info() const = 0;
         virtual RoomInfo room_info(uint32_t room) const = 0;
-        virtual std::vector<Room*> rooms() const = 0;
+        virtual std::vector<IRoom*> rooms() const = 0;
         virtual uint16_t selected_room() const = 0;
         // Set whether to render the alternate mode (the flipmap) or the regular room.
         // enabled: Whether to render the flipmap.

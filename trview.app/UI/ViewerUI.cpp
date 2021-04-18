@@ -402,7 +402,7 @@ namespace trview
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
     }
 
-    void ViewerUI::set_selected_room(Room* room)
+    void ViewerUI::set_selected_room(IRoom* room)
     {
         _room_navigator->set_selected_room(room->number());
         _room_navigator->set_room_info(room->info());

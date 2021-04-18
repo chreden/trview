@@ -54,7 +54,7 @@ namespace trview
         /// @param items The items to show.
         virtual void set_items(const std::vector<Item>& items) = 0;
 
-        virtual void set_rooms(const std::vector<Room*>& rooms) = 0;
+        virtual void set_rooms(const std::vector<IRoom*>& rooms) = 0;
 
         /// Set the triggers in the level.
         /// @param triggers The triggers.
