@@ -41,14 +41,7 @@ namespace trview
                 {
                     return [&](auto&& level, auto&& room, auto&& texture_storage, auto&& mesh_storage, auto&& index, auto&& parent_level)
                     {
-                        return std::make_shared<Room>(
-                            injector.create<IMesh::Source>(),
-                            level,
-                            room,
-                            texture_storage,
-                            mesh_storage,
-                            index,
-                            parent_level);
+                        return std::make_shared<Room>(injector.create<IMesh::Source>(), level, room, texture_storage, mesh_storage, index, parent_level);
                     };
                 }),
             di::bind<ILevel::Source>.to(
