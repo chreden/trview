@@ -90,7 +90,7 @@ namespace trlevel
 
         // Get the number of entities in the level.
         // Returns: The number of entities.
-        virtual uint32_t num_entities() const override;        
+        virtual uint32_t num_entities() const override;
 
         // Get the entity at the specified index.
         // index: The index of the entity to get.

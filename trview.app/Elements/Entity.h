@@ -26,7 +26,7 @@ namespace trview
     struct ICamera;
     class TransparencyBuffer;
 
-    class Entity : public IEntity
+    class Entity final : public IEntity
     {
     public:
         explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index);

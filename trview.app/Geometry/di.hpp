@@ -27,7 +27,7 @@ namespace trview
                     };
                 }),
             di::bind<IMesh::TransparentSource>.to(
-                [](const auto& injector) -> IMesh::TransparentSource
+                [](auto&&) -> IMesh::TransparentSource
                 {
                     return [&](auto&& transparent_triangles, auto&& collision_triangles)
                     {
