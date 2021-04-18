@@ -99,20 +99,22 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 243, 145
+IDD_ABOUTBOX DIALOGEX 0, 0, 220, 130
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About trview"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_TRVIEW,IDC_STATIC,14,14,21,20
-    LTEXT           "trview, Version 1.4.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2020 trview team",IDC_STATIC,42,26,127,17
-    DEFPUSHBUTTON   "OK",IDOK,186,124,50,14,WS_GROUP
-    LTEXT           "Licensed under the MIT license",IDC_STATIC,42,38,127,17
-    LTEXT           "Uses DirectXTK (MIT license)",IDC_STATIC,42,49,136,13
-    LTEXT           "Based on the information in TRosettaStone3 - https://trwiki.earvillage.net. TRosettaStone3 uses the CC BY-SA 4.0 license. https://creativecommons.org/licenses/by-sa/4.0/#",IDC_STATIC,41,84,174,39
-    LTEXT           "Uses zlib (zlib license)",IDC_STATIC,42,60,136,13
-    LTEXT           "Uses nlohmann/json (MIT)",IDC_STATIC,42,72,180,13
+    LTEXT           "trview, Version 1.5.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2021 trview team",IDC_STATIC,42,26,127,17
+    LTEXT           "Licensed under the MIT license\r\n\
+Uses DirectXTK (MIT)\r\n\
+Uses zlib (zlib)\r\n\
+Uses nlohmann/json (MIT)\r\n\
+Uses boost-ext/di (boost)\r\n\
+Based on the information in TRosettaStone3 - https://github.com/opentomb/TRosettaStone3\
+\r\n\r\n",IDC_STATIC,42,38,200,70
+    DEFPUSHBUTTON   "OK", IDOK, 134, 108, 50, 14, WS_GROUP
 END
 
 
@@ -194,8 +196,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,4,1,0
- PRODUCTVERSION 1,4,1,0
+ FILEVERSION 1,5,0,0
+ PRODUCTVERSION 1,5,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -211,12 +213,12 @@ BEGIN
         BLOCK "080904b0"
         BEGIN
             VALUE "FileDescription", "TRView"
-            VALUE "FileVersion", "1.4.1.0"
+            VALUE "FileVersion", "1.5.0.0"
             VALUE "InternalName", "trview.exe"
-            VALUE "LegalCopyright", "Copyright (C) chreden 2020"
+            VALUE "LegalCopyright", "Copyright (C) chreden 2021"
             VALUE "OriginalFilename", "trview.exe"
             VALUE "ProductName", "TRView"
-            VALUE "ProductVersion", "1.4.1.0"
+            VALUE "ProductVersion", "1.5.0.0"
         END
     END
     BLOCK "VarFileInfo"
