@@ -14,7 +14,7 @@ namespace trview
                 {
                     virtual ~MockMapRenderer() = default;
                     MOCK_METHOD(void, render, (bool));
-                    MOCK_METHOD(void, load, (const trview::IRoom*));
+                    MOCK_METHOD(void, load, (const std::shared_ptr<trview::IRoom>&));
                     MOCK_METHOD(std::uint16_t, area, (), (const));
                     MOCK_METHOD(std::shared_ptr<Sector>, sector_at, (const Point&), (const));
                     MOCK_METHOD(std::shared_ptr<Sector>, sector_at_cursor, (), (const));

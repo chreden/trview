@@ -56,7 +56,7 @@ namespace trview
                 virtual void render(bool to_screen = true) override;
 
                 // Changes the room to specified room, reloads map
-                virtual void load(const trview::IRoom* room) override;
+                virtual void load(const std::shared_ptr<trview::IRoom>& room) override;
 
                 // Returns the total area of the room 
                 virtual inline std::uint16_t area() const override { return _columns * _rows; }

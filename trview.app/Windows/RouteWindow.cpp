@@ -399,7 +399,7 @@ namespace trview
         {
             if (waypoint.room() < _all_rooms.size())
             {
-                const auto info = _all_rooms[waypoint.room()]->info();
+                const auto info = _all_rooms[waypoint.room()].lock()->info();
                 const Vector3 bottom_left = Vector3(info.x, info.yBottom, info.z) / trlevel::Scale_X;
                 return waypoint.position() - bottom_left;
             }
@@ -475,7 +475,7 @@ namespace trview
         _all_items = items;
     }
 
-    void RouteWindow::set_rooms(const std::vector<IRoom*>& rooms)
+    void RouteWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         _all_rooms = rooms;
     }

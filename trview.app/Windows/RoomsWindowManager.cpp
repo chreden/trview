@@ -61,7 +61,7 @@ namespace trview
         }
     }
 
-    void RoomsWindowManager::set_rooms(const std::vector<IRoom*>& rooms)
+    void RoomsWindowManager::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         _all_rooms = rooms;
         for (auto& window : _windows)

@@ -61,14 +61,14 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
     auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
     trlevel::tr3_room tr_room{};
 
-    auto room = std::make_unique<Room>(
+    auto room = std::make_shared<Room>(
         [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
         trlevel, tr_room, texture_storage, mesh_storage, 0, level);
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     room->add_trigger(trigger1.get());
 
-    window->set_rooms({ room.get() });
+    window->set_rooms({ room });
     window->set_triggers({ trigger1.get() });
 
     auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
@@ -112,14 +112,14 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
     trlevel::tr3_room tr_room{};
 
-    auto room = std::make_unique<Room>(
+    auto room = std::make_shared<Room>(
         [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
         trlevel, tr_room, texture_storage, mesh_storage, 0, level);
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     room->add_trigger(trigger1.get());
 
-    window->set_rooms({ room.get() });
+    window->set_rooms({ room });
     window->set_triggers({ trigger1.get() });
 
     auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);

@@ -111,10 +111,10 @@ namespace trview
         return static_cast<uint32_t>(_rooms.size());
     }
 
-    std::vector<IRoom*> Level::rooms() const
+    std::vector<std::weak_ptr<IRoom>> Level::rooms() const
     {
-        std::vector<IRoom*> rooms;
-        std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](const auto& room) { return room.get(); });
+        std::vector<std::weak_ptr<IRoom>> rooms;
+        std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](auto&& room) { return room; });;
         return rooms;
     }
 

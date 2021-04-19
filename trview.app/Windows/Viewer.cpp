@@ -612,7 +612,7 @@ namespace trview
             return;
         }
 
-        _ui->set_selected_room(_level->room(_level->selected_room()).lock().get());
+        _ui->set_selected_room(_level->room(_level->selected_room()).lock());
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room()).lock()->centre();
         _scene_changed = true;

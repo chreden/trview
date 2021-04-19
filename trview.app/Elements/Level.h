@@ -60,7 +60,7 @@ namespace trview
         /// Get the number of rooms in the level.
         uint32_t number_of_rooms() const;
 
-        virtual std::vector<IRoom*> rooms() const override;
+        virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
 
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
