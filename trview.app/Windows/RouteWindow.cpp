@@ -7,10 +7,11 @@
 namespace trview
 {
     using namespace ui;
+    using namespace DirectX::SimpleMath;
 
     namespace
     {
-        std::wstring pos_to_string(const DirectX::SimpleMath::Vector3& position)
+        std::wstring pos_to_string(const Vector3& position)
         {
             return std::to_wstring(static_cast<int>(position.x * 1024)) + L", " +
                 std::to_wstring(static_cast<int>(position.y * 1024)) + L", " + 
@@ -22,6 +23,8 @@ namespace trview
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
     }
+
+    const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
 
     namespace Colours
     {
@@ -168,18 +171,18 @@ namespace trview
         right_panel->set_margin(Size(0, 8));
 
         auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
-
         auto details_panel = std::make_unique<StackPanel>(Size(panel_width - 20, 140), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
 
-        auto stats_box = std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails);
-        stats_box->set_show_headers(false);
-        stats_box->set_show_scrollbar(true);
-        stats_box->set_columns(
+        _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
+        _stats->set_name(Names::waypoint_stats);
+        _stats->set_show_headers(false);
+        _stats->set_show_scrollbar(true);
+        _stats->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 140 }
             });
-        _token_store += stats_box->on_item_selected += [&](const auto&)
+        _token_store += _stats->on_item_selected += [&](const auto&)
         {
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
@@ -198,7 +201,6 @@ namespace trview
                 break;
             }
         };
-        _stats = details_panel->add_child(std::move(stats_box));
 
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
@@ -383,13 +385,13 @@ namespace trview
 
         const auto& waypoint = _route->waypoint(index);
 
-        auto get_room_pos = [&waypoint, this]() 
+        auto get_room_pos = [&waypoint, this]()
         {
             if (waypoint.room() < _all_rooms.size())
             {
                 const auto info = _all_rooms[waypoint.room()]->info();
-                DirectX::SimpleMath::Vector3 top_left = DirectX::SimpleMath::Vector3(info.x, info.yTop, info.z) / trlevel::Scale_X;
-                return waypoint.position() - top_left;
+                const Vector3 bottom_left = Vector3(info.x, info.yBottom, info.z) / trlevel::Scale_X;
+                return waypoint.position() - bottom_left;
             }
             return waypoint.position();
         };

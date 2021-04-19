@@ -18,6 +18,11 @@ namespace trview
     class RouteWindow final : public IRouteWindow, public CollapsiblePanel
     {
     public:
+        struct Names
+        {
+            static const std::string waypoint_stats;
+        };
+
         /// Create a route window as a child of the specified window.
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
