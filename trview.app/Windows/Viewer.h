@@ -86,9 +86,9 @@ namespace trview
         virtual void select_item(const Item& item) override;
 
         /// Select the specified room.
-        /// @param room The room to select.
+        /// @param room_number The room to select.
         /// @remarks This will not raise the on_room_selected event.
-        virtual void select_room(uint32_t room) override;
+        virtual void select_room(uint32_t room_number) override;
 
         /// Select the specified trigger.
         /// @param trigger The trigger to select.

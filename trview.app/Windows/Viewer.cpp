@@ -605,16 +605,22 @@ namespace trview
         }
     }
 
-    void Viewer::select_room(uint32_t room)
+    void Viewer::select_room(uint32_t room_number)
     {
-        if (!_level || room >= _level->number_of_rooms())
+        if (!_level || room_number >= _level->number_of_rooms())
         {
             return;
         }
 
-        _ui->set_selected_room(_level->room(_level->selected_room()).lock());
+        const auto room = _level->room(room_number).lock();
+        if (!room)
+        {
+            return;
+        }
+
+        _ui->set_selected_room(room);
         _was_alternate_select = false;
-        _target = _level->room(_level->selected_room()).lock()->centre();
+        _target = room->centre();
         _scene_changed = true;
         if (_settings.auto_orbit)
         {
