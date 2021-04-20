@@ -36,6 +36,7 @@
     <ClCompile Include="RecentFilesTests.cpp" />
     <ClCompile Include="RoomsWindowManagerTests.cpp" />
     <ClCompile Include="RoomsWindowTests.cpp" />
+    <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
