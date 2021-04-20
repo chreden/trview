@@ -39,8 +39,9 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400))
+    RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
+        const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -189,7 +190,7 @@ namespace trview
             if (item.value(L"Name") == L"Room Position" || 
                 item.value(L"Name") == L"Position")
             {
-                write_clipboard(window(), item.value(L"Value"));
+                _clipboard->write(window(), item.value(L"Value"));
                 return;
             }
 

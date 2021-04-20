@@ -26,6 +26,7 @@
 #include <trview.app/Tools/di.h>
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
+#include <trview.common/windows/Clipboard.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -557,6 +558,7 @@ namespace trview
             register_app_ui_module(),
             register_app_windows_module(),
             di::bind<Window>.to(create_window(instance, command_show)),
+            di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)

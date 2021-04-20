@@ -52,7 +52,8 @@ namespace trview
                         return std::make_shared<RouteWindow>(
                             injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
-                            window);
+                            window,
+                            injector.create<std::shared_ptr<IClipboard>>());
                     };
                 }
             ),

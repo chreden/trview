@@ -9,6 +9,7 @@
 #include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
+#include <trview.common/Windows/IClipboard.h>
 #include "IRouteWindow.h"
 
 namespace trview
@@ -27,7 +28,8 @@ namespace trview
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent);
+        explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
+            const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard);
 
         /// Destructor for triggers window
         virtual ~RouteWindow() = default;
@@ -72,5 +74,6 @@ namespace trview
         std::vector<Trigger*> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
+        std::shared_ptr<IClipboard> _clipboard;
     };
 }

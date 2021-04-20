@@ -32,6 +32,12 @@
     <ClInclude Include="Windows\IShortcuts.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\IClipboard.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IClipboard.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -58,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Windows\IShortcuts.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IClipboard.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
   </ItemGroup>

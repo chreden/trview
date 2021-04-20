@@ -31,4 +31,14 @@ namespace trview
         SetClipboardData(CF_UNICODETEXT, memory);
         CloseClipboard();
     }
+
+    std::wstring Clipboard::read(const Window& window) const
+    {
+        return read_clipboard(window);
+    }
+
+    void Clipboard::write(const Window& window, const std::wstring& text)
+    {
+        write_clipboard(window, text);
+    }
 }
