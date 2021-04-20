@@ -4,9 +4,8 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
@@ -45,19 +44,13 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 
     auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
 
-    // All of these dependencies can be removed when room comes from DI (is IRoom)
-    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
-    auto [level_ptr, level] = create_mock<MockLevel>();
-    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
-    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
-    trlevel::tr3_room tr_room{};
-    tr_room.info.x = room_pos.x;
-    tr_room.info.yBottom = room_pos.y;
-    tr_room.info.z = room_pos.z;
+    RoomInfo info {};
+    info.x = room_pos.x;
+    info.yBottom = room_pos.y;
+    info.z = room_pos.z;
 
-    auto room = std::make_shared<Room>(
-        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
-        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
+    auto room = std::make_shared<MockRoom>();
+    EXPECT_CALL(*room, info).WillRepeatedly(Return(info));
 
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
     Waypoint waypoint(&mesh, waypoint_pos, 0);
