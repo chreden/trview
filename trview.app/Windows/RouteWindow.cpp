@@ -3,6 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 
 namespace trview
 {
@@ -175,6 +176,7 @@ namespace trview
 
         _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
         _stats->set_name(Names::waypoint_stats);
+        _stats->set_show_highlight(false);
         _stats->set_show_headers(false);
         _stats->set_show_scrollbar(true);
         _stats->set_columns(
@@ -182,8 +184,15 @@ namespace trview
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 140 }
             });
-        _token_store += _stats->on_item_selected += [&](const auto&)
+        _token_store += _stats->on_item_selected += [&](const auto& item)
         {
+            if (item.value(L"Name") == L"Room Position" || 
+                item.value(L"Name") == L"Position")
+            {
+                write_clipboard(window(), item.value(L"Value"));
+                return;
+            }
+
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
             {
