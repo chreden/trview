@@ -55,7 +55,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     tr_room.info.yBottom = room_pos.y;
     tr_room.info.z = room_pos.z;
 
-    auto room = std::make_unique<Room>(
+    auto room = std::make_shared<Room>(
         [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
         trlevel, tr_room, texture_storage, mesh_storage, 0, level);
 
@@ -66,7 +66,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
 
-    window->set_rooms({ room.get() });
+    window->set_rooms({ room });
     window->set_route(&route);
 
     window->select_waypoint(0);
