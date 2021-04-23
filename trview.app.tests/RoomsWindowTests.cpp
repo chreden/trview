@@ -11,6 +11,7 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.ui/Mocks/Input/IInput.h>
+#include <trview.input/Mocks/IMouse.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -19,13 +20,20 @@ using namespace trview::graphics::mocks;
 using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
+using namespace trview::input::mocks;
+using testing::ReturnRef;
 
 TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
+    auto [input_ptr_source, input] = create_mock<MockInput>();
+    auto input_ptr = std::move(input_ptr_source);
+    MockMouse mouse;
+    EXPECT_CALL(*input_ptr, mouse).WillRepeatedly(ReturnRef(mouse));
+
     RoomsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, 
-        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RoomsWindowTests"));
+        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::move(input_ptr); }, create_test_window(L"RoomsWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -78,8 +86,13 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
+    auto [input_ptr_source, input] = create_mock<MockInput>();
+    auto input_ptr = std::move(input_ptr_source);
+    MockMouse mouse;
+    EXPECT_CALL(*input_ptr, mouse).WillRepeatedly(ReturnRef(mouse));
+
     RoomsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); },
-        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RoomsWindowTests"));
+        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::move(input_ptr); }, create_test_window(L"RoomsWindowTests"));
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
