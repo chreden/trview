@@ -9,6 +9,7 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
+#include <external/boost/di.hpp>
 
 using namespace trview;
 using namespace trview::tests;
@@ -18,25 +19,38 @@ using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 
+namespace
+{
+    auto register_test_module()
+    {
+        using namespace boost;
+        return di::make_injector(
+            di::bind<IDeviceWindow::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockDeviceWindow>(); }; }),
+            di::bind<ui::render::IRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockRenderer>(); }; }),
+            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }; }),
+            di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
+            di::bind<IClipboard>.to<MockClipboard>(),
+            di::bind<ItemsWindow>()
+        );
+    }
+}
+
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, 
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
 
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_selected_item(items[1]);
+    window->set_items(items);
+    window->set_selected_item(items[1]);
 
-    auto button = window.root_control()->find<ui::Button>(ItemsWindow::Names::add_to_route_button);
+    auto button = window->root_control()->find<ui::Button>(ItemsWindow::Names::add_to_route_button);
     ASSERT_NE(button, nullptr);
 
     button->clicked(Point());
@@ -46,13 +60,10 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 
 TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
     auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     std::vector<Item> items
@@ -60,10 +71,10 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, { trigger.get() }, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_triggers({ trigger.get() });
+    window->set_items(items);
+    window->set_triggers({ trigger.get() });
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -76,19 +87,19 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 
-    auto stats_list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::stats_listbox);
+    auto stats_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::stats_listbox);
     ASSERT_NE(stats_list, nullptr);
 
     auto stats_items = stats_list->items();
     ASSERT_NE(stats_items.size(), 0);
 
-    auto triggers_list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
+    auto triggers_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
     ASSERT_NE(triggers_list, nullptr);
 
     auto triggers_items = triggers_list->items();
     ASSERT_NE(triggers_items.size(), 0);
 
-    window.clear_selected_item();
+    window->clear_selected_item();
 
     stats_items = stats_list->items();
     ASSERT_EQ(stats_items.size(), 0);
@@ -99,26 +110,23 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 
 TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
+    window->set_items(items);
 
-    auto sync = window.root_control()->find<ui::Checkbox>(ItemsWindow::Names::sync_item_checkbox);
+    auto sync = window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::sync_item_checkbox);
     ASSERT_NE(sync, nullptr);
     sync->clicked(Point());
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -133,22 +141,19 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
 TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
+    window->set_items(items);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -164,22 +169,19 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
 TEST(ItemsWindow, ItemVisibilityRaised)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<std::tuple<Item, bool>> raised_item;
-    auto token = window.on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
+    auto token = window->on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
 
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
+    window->set_items(items);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -196,23 +198,20 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
 TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_current_room(78);
+    window->set_items(items);
+    window->set_current_room(78);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -228,27 +227,24 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
 TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Item> raised_item;
-    auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
+    auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_current_room(78);
+    window->set_items(items);
+    window->set_current_room(78);
 
-    auto track = window.root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
+    auto track = window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
     ASSERT_NE(track, nullptr);
     track->clicked(Point());
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -264,19 +260,16 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
 TEST(ItemsWindow, ItemsListPopulatedOnSet)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Lara", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Winston", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
+    window->set_items(items);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     for (auto i = 0; i < items.size(); ++i)
@@ -301,24 +294,21 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_current_room(78);
+    window->set_items(items);
+    window->set_current_room(78);
 
-    auto track = window.root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
+    auto track = window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
     ASSERT_NE(track, nullptr);
     track->clicked(Point());
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -329,7 +319,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
     ASSERT_FALSE(cell->state());
 
     items[1].set_visible(false);
-    window.update_items(items);
+    window->update_items(items);
 
     cell = row->find<ui::Checkbox>(ui::Listbox::Row::Names::cell_name_format + "Hide");
     ASSERT_TRUE(cell->state());
@@ -337,19 +327,16 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
+    window->set_items(items);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -360,7 +347,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
     ASSERT_FALSE(cell->state());
 
     items[1].set_visible(false);
-    window.update_items(items);
+    window->update_items(items);
 
     cell = row->find<ui::Checkbox>(ui::Listbox::Row::Names::cell_name_format + "Hide");
     ASSERT_TRUE(cell->state());
@@ -368,20 +355,17 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
 TEST(ItemsWindow, SelectionSurvivesFiltering)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::vector<Item> items
     {
         Item(0, 55, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 78, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_current_room(78);
+    window->set_items(items);
+    window->set_current_room(78);
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -391,7 +375,7 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 
-    auto track = window.root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
+    auto track = window->root_control()->find<ui::Checkbox>(ItemsWindow::Names::track_room_checkbox);
     ASSERT_NE(track, nullptr);
     track->clicked(Point());
 
@@ -402,10 +386,7 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
 
 TEST(ItemsWindow, TriggersLoadedForItem)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
@@ -414,10 +395,10 @@ TEST(ItemsWindow, TriggersLoadedForItem)
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, { trigger1.get(), trigger2.get() }, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_triggers({ trigger1.get(), trigger2.get() });
+    window->set_items(items);
+    window->set_triggers({ trigger1.get(), trigger2.get() });
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -427,7 +408,7 @@ TEST(ItemsWindow, TriggersLoadedForItem)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 
-    auto triggers_list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
+    auto triggers_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
     ASSERT_NE(triggers_list, nullptr);
 
     auto triggers_items = triggers_list->items();
@@ -438,13 +419,10 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 
 TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
-        create_test_window(L"ItemsWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
     std::optional<Trigger*> raised_trigger;
-    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
     auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     std::vector<Item> items
@@ -452,10 +430,10 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
         Item(1, 0, 0, L"Type", 0, 0, { trigger.get() }, DirectX::SimpleMath::Vector3::Zero)
     };
-    window.set_items(items);
-    window.set_triggers({ trigger.get() });
+    window->set_items(items);
+    window->set_triggers({ trigger.get() });
 
-    auto list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -465,7 +443,7 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     ASSERT_NE(row, nullptr);
     cell->clicked(Point());
 
-    auto triggers_list = window.root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
+    auto triggers_list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::triggers_listbox);
     ASSERT_NE(triggers_list, nullptr);
 
     auto triggers_row = triggers_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
