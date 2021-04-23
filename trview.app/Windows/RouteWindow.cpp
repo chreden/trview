@@ -40,8 +40,8 @@ namespace trview
     using namespace graphics;
 
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-        const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400)), _clipboard(clipboard)
+        const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());

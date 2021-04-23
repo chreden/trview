@@ -19,14 +19,13 @@
 
 namespace trview
 {
-    struct IShortcuts;
-
     class ViewerUI final : public IViewerUI
     {
     public:
         explicit ViewerUI(const Window& window,
             const std::shared_ptr<ITextureStorage>& texture_storage,
             const std::shared_ptr<IShortcuts>& shortcuts,
+            const ui::IInput::Source& input_source,
             const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source);
 
@@ -209,10 +208,10 @@ namespace trview
         input::Mouse _mouse;
         Window _window;
         UserSettings _settings;
-        std::shared_ptr<IShortcuts> _shortcuts;
+        ui::IInput::Source _input_source;
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::IRenderer> _ui_renderer;
-        std::unique_ptr<ui::Input> _ui_input;
+        std::unique_ptr<ui::IInput> _ui_input;
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;

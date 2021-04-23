@@ -65,6 +65,11 @@
     <ClInclude Include="IInput.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
+    <ClInclude Include="Mocks\Input\IInput.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -159,6 +164,9 @@
     </Filter>
     <Filter Include="Controls\Grid">
       <UniqueIdentifier>{1106c79a-72c2-4484-9448-0c9d678a06dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks">
+      <UniqueIdentifier>{d34f0bba-8f6c-4c35-b327-fdef824630ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -9,10 +9,10 @@ TEST(Grid, ControlsPositionedCorrectly)
 {
     Grid grid(Size(100, 200), Colour::Transparent, 2, 2);
 
-    auto x1y1 = grid.add_child(std::make_unique<Window>(Size(10, 10), Colour::Transparent));
-    auto x2y1 = grid.add_child(std::make_unique<Window>(Size(10, 10), Colour::Transparent));
-    auto x1y2 = grid.add_child(std::make_unique<Window>(Size(10, 10), Colour::Transparent));
-    auto x2y2 = grid.add_child(std::make_unique<Window>(Size(10, 10), Colour::Transparent));
+    auto x1y1 = grid.add_child(std::make_unique<ui::Window>(Size(10, 10), Colour::Transparent));
+    auto x2y1 = grid.add_child(std::make_unique<ui::Window>(Size(10, 10), Colour::Transparent));
+    auto x1y2 = grid.add_child(std::make_unique<ui::Window>(Size(10, 10), Colour::Transparent));
+    auto x2y2 = grid.add_child(std::make_unique<ui::Window>(Size(10, 10), Colour::Transparent));
 
     ASSERT_EQ(x1y1->absolute_position(), Point(0, 0));
     ASSERT_EQ(x1y1->position(), Point());

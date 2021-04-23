@@ -15,6 +15,7 @@
 
 #include <trlevel/di.h>
 #include <trview.graphics/di.h>
+#include <trview.ui/di.h>
 #include <trview.ui.render/di.h>
 #include <trview.input/di.h>
 #include <trview.app/Elements/di.h>
@@ -547,6 +548,7 @@ namespace trview
             graphics::register_module(),
             input::register_module(),
             trlevel::register_module(),
+            ui::register_module(),
             ui::render::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),
@@ -560,6 +562,14 @@ namespace trview
             di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
+            di::bind<IShortcuts::Source>.to(
+                [](const auto&)-> IShortcuts::Source
+                {
+                    return [&](auto&& window)
+                    {
+                        return std::make_shared<Shortcuts>(window);
+                    };
+                }),
             di::bind<IApplication>.to<Application>(),
             di::bind<Application::CommandLine>.to(command_line)
         );

@@ -8,11 +8,13 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.ui/Mocks/Input/IInput.h>
 
 using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
+using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 
@@ -20,8 +22,8 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -49,8 +51,8 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -81,8 +83,8 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -110,8 +112,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -143,8 +145,8 @@ TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -185,8 +187,8 @@ TEST(TriggersWindow, AddToRouteEventRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<const Trigger*> raised_trigger;
     auto token = window.on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -209,8 +211,8 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
     auto token = window.on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -238,8 +240,8 @@ TEST(TriggersWindow, ItemSelectedRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -278,8 +280,8 @@ TEST(TriggersWindow, SetTriggersLoadsTriggers)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
@@ -294,7 +296,8 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"),
         std::make_shared<MockClipboard>());
 
     auto list = window.root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -315,8 +318,8 @@ TEST(TriggersWindow, SetItemsLoadsItems)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::vector<Item> items
     {
@@ -341,8 +344,8 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -391,8 +394,8 @@ TEST(TriggersWindow, SetTriggersClearsSelection)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -441,8 +444,8 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -462,8 +465,8 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
@@ -493,8 +496,8 @@ TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"TriggersWindowTests"),
-        std::make_shared<MockClipboard>());
+    TriggersWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, [&](auto&&, auto&&) { return std::make_unique<MockInput>(); },
+        create_test_window(L"TriggersWindowTests"), std::make_shared<MockClipboard>());
 
     auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOff, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOn, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });

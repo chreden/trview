@@ -34,7 +34,10 @@ namespace trview
         /// @param device The graphics device
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
-        explicit ItemsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent,
+        explicit ItemsWindow(const graphics::IDeviceWindow::Source& device_window_source,
+            const ui::render::IRenderer::Source& renderer_source,
+            const ui::IInput::Source& input_source,
+            const Window& parent,
             const std::shared_ptr<IClipboard>& clipboard);
 
         /// Destructor for items window

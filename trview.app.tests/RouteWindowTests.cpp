@@ -8,6 +8,7 @@
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.ui/Mocks/Input/IInput.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -15,6 +16,7 @@ using namespace trview;
 using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using namespace trview::tests;
+using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 
 TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
@@ -26,7 +28,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
     RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); },
-        create_test_window(L"RouteWindowTests"), std::make_shared<MockClipboard>());
+        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), std::make_shared<MockClipboard>());
 
     // All of these dependencies can be removed when room comes from DI (is IRoom)
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
@@ -83,7 +85,7 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::make_unique<MockRenderer>(); },
-        create_test_window(L"RouteWindowTests"), clipboard);
+        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), clipboard);
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
@@ -113,7 +115,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::make_unique<MockRenderer>(); },
-        create_test_window(L"RouteWindowTests"), clipboard);
+        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), clipboard);
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();

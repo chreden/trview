@@ -8,7 +8,7 @@
 #include <trview.common/TokenStore.h>
 #include <trview.ui.render/IRenderer.h>
 #include <trview.graphics/IDeviceWindow.h>
-#include <trview.ui/Input.h>
+#include <trview.ui/IInput.h>
 #include <trview.ui/Window.h>
 #include <trview.app/Windows/WindowResizer.h>
 #include <trview.common/Windows/Shortcuts.h>
@@ -34,7 +34,7 @@ namespace trview
         /// @param title Window title
         /// @param size Window size
         CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
-            const std::wstring& window_class, const std::wstring& title, const Size& size);
+            const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size);
 
         virtual ~CollapsiblePanel() = default;
 
@@ -76,9 +76,8 @@ namespace trview
         ui::Control* _left_panel;
         ui::Control* _right_panel;
         std::unique_ptr<ui::Window> _ui;
-        std::unique_ptr<ui::Input> _input;
+        std::unique_ptr<ui::IInput> _input;
         std::unique_ptr<graphics::IDeviceWindow> _device_window;
-        Shortcuts _shortcuts;
     private:
         void toggle_expand();
         std::unique_ptr<ui::Control> create_divider();

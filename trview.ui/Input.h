@@ -18,7 +18,7 @@ namespace trview
         class Input final : public IInput
         {
         public:
-            explicit Input(const trview::Window& window, Control& control, IShortcuts& shortcuts);
+            explicit Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
             virtual input::IMouse& mouse() override;
@@ -57,7 +57,7 @@ namespace trview
             Control&       _control;
             Control*       _hover_control{ nullptr };
             Control*       _focus_control{ nullptr };
-            IShortcuts&     _shortcuts;
+            std::shared_ptr<IShortcuts> _shortcuts;
         };
     }
 }
