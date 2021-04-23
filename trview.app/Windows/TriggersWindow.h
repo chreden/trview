@@ -8,6 +8,7 @@
 #include <trview.app/Elements/Trigger.h>
 #include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
+#include <trview.common/Windows/IClipboard.h>
 
 namespace trview
 {
@@ -31,7 +32,8 @@ namespace trview
             static const std::string trigger_commands_listbox;
         };
 
-        explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent);
+        explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent,
+            const std::shared_ptr<IClipboard>& clipboard);
 
         /// Destructor for triggers window
         virtual ~TriggersWindow() = default;
@@ -90,5 +92,6 @@ namespace trview
         bool _sync_trigger{ true };
         std::optional<const Trigger*> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
+        std::shared_ptr<IClipboard> _clipboard;
     };
 }

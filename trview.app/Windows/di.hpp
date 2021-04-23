@@ -28,7 +28,8 @@ namespace trview
                     return std::make_shared<ItemsWindow>(
                         injector.create<IDeviceWindow::Source>(),
                         injector.create<ui::render::IRenderer::Source>(),
-                        window);
+                        window,
+                        injector.create<std::shared_ptr<IClipboard>>());
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
@@ -40,7 +41,8 @@ namespace trview
                         return std::make_shared<TriggersWindow>(
                             injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
-                            window);
+                            window,
+                            injector.create<std::shared_ptr<IClipboard>>());
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),

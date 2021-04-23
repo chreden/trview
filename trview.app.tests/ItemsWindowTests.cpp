@@ -7,6 +7,7 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.common/Mocks/Windows/IClipboard.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -19,7 +20,8 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
@@ -44,7 +46,8 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -96,7 +99,8 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -129,7 +133,8 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -159,7 +164,8 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = window.on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
@@ -190,7 +196,8 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -221,7 +228,8 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Item> raised_item;
     auto token = window.on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -256,7 +264,8 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::vector<Item> items
     {
@@ -292,7 +301,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::vector<Item> items
     {
@@ -327,7 +337,8 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::vector<Item> items
     {
@@ -357,7 +368,8 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::vector<Item> items
     {
@@ -390,7 +402,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
@@ -425,7 +438,8 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
     auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
     auto renderer_ptr = std::move(renderer_ptr_source);
-    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"));
+    ItemsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, create_test_window(L"ItemsWindowTests"),
+        std::make_shared<MockClipboard>());
 
     std::optional<Trigger*> raised_trigger;
     auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
