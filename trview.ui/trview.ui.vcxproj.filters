@@ -58,12 +58,12 @@
     <ClInclude Include="Input.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="IInputQuery.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Grid.h">
       <Filter>Controls\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="IInput.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -124,12 +124,12 @@
     <ClCompile Include="Input.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="IInputQuery.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Grid.cpp">
       <Filter>Controls\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="IInput.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

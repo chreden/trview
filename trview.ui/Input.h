@@ -2,9 +2,9 @@
 
 #include <trview.common/Window.h>
 #include <trview.common/TokenStore.h>
-#include <trview.input/Mouse.h>
 #include <trview.input/Keyboard.h>
-#include "IInputQuery.h"
+#include "IInput.h"
+#include <trview.input/Mouse.h>
 
 namespace trview
 {
@@ -15,13 +15,13 @@ namespace trview
         class Control;
 
         /// Manages the mouse and keyboard input state for a control tree.
-        class Input final : public IInputQuery
+        class Input final : public IInput
         {
         public:
             explicit Input(const trview::Window& window, Control& control, IShortcuts& shortcuts);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
-            input::Mouse& mouse();
+            virtual input::IMouse& mouse() override;
         private:
             void     register_events();
             void     register_focus_controls(Control* control);

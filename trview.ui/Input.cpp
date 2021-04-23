@@ -27,7 +27,7 @@ namespace trview
             return _focus_control;
         }
 
-        input::Mouse& Input::mouse()
+        input::IMouse& Input::mouse()
         {
             return _mouse;
         }
@@ -66,7 +66,7 @@ namespace trview
 
         void Input::register_focus_controls(Control* control)
         {
-            control->set_input_query(this);
+            control->set_input(this);
 
             _token_store += control->on_focus_requested += [this, control]() { set_focus_control(control); };
             _token_store += control->on_focus_clear_requested += [&]() { set_focus_control(nullptr); };

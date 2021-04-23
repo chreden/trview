@@ -275,9 +275,9 @@ namespace trview
             return child;
         }
 
-        void Control::set_input_query(IInputQuery* query)
+        void Control::set_input(IInput* input)
         {
-            _input_query = query;
+            _input = input;
         }
 
         bool Control::focused() const

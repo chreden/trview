@@ -26,7 +26,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GroupBox.h" />
     <ClInclude Include="IFontMeasurer.h" />
-    <ClInclude Include="IInputQuery.h" />
+    <ClInclude Include="IInput.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Label.h" />
@@ -49,7 +49,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="IFontMeasurer.cpp" />
-    <ClCompile Include="IInputQuery.cpp" />
+    <ClCompile Include="IInput.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Label.cpp" />
