@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.input/Mocks/IMouse.h>
+#include <external/boost/di.hpp>
 
 using namespace trview;
 using namespace trview::tests;
@@ -23,20 +24,36 @@ using namespace trview::mocks;
 using namespace trview::input::mocks;
 using testing::ReturnRef;
 
+namespace
+{
+    MockMouse mouse;
+
+    auto register_test_module()
+    {
+        using namespace boost;
+        return di::make_injector(
+            di::bind<IDeviceWindow::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockDeviceWindow>(); }; }),
+            di::bind<ui::render::IRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockRenderer>(); }; }),
+            di::bind<ui::render::IMapRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockMapRenderer>(); }; }),
+            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&, auto&&) 
+                { 
+                    auto input = std::make_unique<MockInput>();
+                    EXPECT_CALL(*input, mouse).WillRepeatedly(ReturnRef(mouse));
+                    return std::move(input);
+                };
+            }),
+            di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
+            di::bind<RoomsWindow>()
+        );
+    }
+}
+
 TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    auto [input_ptr_source, input] = create_mock<MockInput>();
-    auto input_ptr = std::move(input_ptr_source);
-    MockMouse mouse;
-    EXPECT_CALL(*input_ptr, mouse).WillRepeatedly(ReturnRef(mouse));
-
-    RoomsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); }, 
-        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::move(input_ptr); }, create_test_window(L"RoomsWindowTests"));
+    auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
 
     std::optional<Trigger*> raised_trigger;
-    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
@@ -51,10 +68,10 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     room->add_trigger(trigger1.get());
 
-    window.set_rooms({ room.get() });
-    window.set_triggers({ trigger1.get() });
+    window->set_rooms({ room.get() });
+    window->set_triggers({ trigger1.get() });
 
-    auto list = window.root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -64,7 +81,7 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 
-    auto triggers_list = window.root_control()->find<ui::Listbox>(RoomsWindow::Names::triggers_listbox);
+    auto triggers_list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::triggers_listbox);
     ASSERT_NE(triggers_list, nullptr);
 
     auto triggers_row = triggers_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -78,24 +95,16 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
     triggers_cell->clicked(Point());
     ASSERT_TRUE(triggers_list->selected_item().has_value());
 
-    window.clear_selected_trigger();
+    window->clear_selected_trigger();
     ASSERT_FALSE(triggers_list->selected_item().has_value());
 }
 
 TEST(RoomsWindow, SetTriggersClearsSelection)
 {
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    auto [input_ptr_source, input] = create_mock<MockInput>();
-    auto input_ptr = std::move(input_ptr_source);
-    MockMouse mouse;
-    EXPECT_CALL(*input_ptr, mouse).WillRepeatedly(ReturnRef(mouse));
-
-    RoomsWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); },
-        [&](auto) { return std::make_unique<MockMapRenderer>(); }, [&](auto&&, auto&&) { return std::move(input_ptr); }, create_test_window(L"RoomsWindowTests"));
+    auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
 
     std::optional<Trigger*> raised_trigger;
-    auto token = window.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
+    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
@@ -110,10 +119,10 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
     room->add_trigger(trigger1.get());
 
-    window.set_rooms({ room.get() });
-    window.set_triggers({ trigger1.get() });
+    window->set_rooms({ room.get() });
+    window->set_triggers({ trigger1.get() });
 
-    auto list = window.root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
+    auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
     ASSERT_NE(list, nullptr);
 
     auto row = list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -123,7 +132,7 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 
-    auto triggers_list = window.root_control()->find<ui::Listbox>(RoomsWindow::Names::triggers_listbox);
+    auto triggers_list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::triggers_listbox);
     ASSERT_NE(triggers_list, nullptr);
 
     auto triggers_row = triggers_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
@@ -137,6 +146,6 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     triggers_cell->clicked(Point());
     ASSERT_TRUE(triggers_list->selected_item().has_value());
 
-    window.set_triggers({});
+    window->set_triggers({});
     ASSERT_FALSE(triggers_list->selected_item().has_value());
 }
