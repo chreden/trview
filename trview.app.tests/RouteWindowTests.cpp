@@ -9,15 +9,33 @@
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
+#include <external/boost/di.hpp>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
 using namespace trview;
+using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using namespace trview::tests;
 using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
+
+namespace
+{
+    auto register_test_module(const std::shared_ptr<IClipboard> clipboard = nullptr)
+    {
+        using namespace boost;
+        return di::make_injector(
+            di::bind<IDeviceWindow::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockDeviceWindow>(); }; }),
+            di::bind<ui::render::IRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockRenderer>(); }; }),
+            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }; }),
+            di::bind<Window>.to(create_test_window(L"RouteWindowTests")),
+            di::bind<RouteWindow>(),
+            di::bind<IClipboard>.to(clipboard ? clipboard : std::make_shared<MockClipboard>())
+        );
+    }
+}
 
 TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 {
@@ -25,10 +43,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     const Vector3 waypoint_pos{ 130, 250, 325 };
     const Vector3 expected{ 30720, 51200, 25600 };
 
-    auto [renderer_ptr_source, renderer] = create_mock<MockRenderer>();
-    auto renderer_ptr = std::move(renderer_ptr_source);
-    RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::move(renderer_ptr); },
-        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), std::make_shared<MockClipboard>());
+    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
 
     // All of these dependencies can be removed when room comes from DI (is IRoom)
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
@@ -51,11 +66,11 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
 
-    window.set_rooms({ room.get() });
-    window.set_route(&route);
+    window->set_rooms({ room.get() });
+    window->set_route(&route);
 
-    window.select_waypoint(0);
-    auto waypoint_stats = window.root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
+    window->select_waypoint(0);
+    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
     ASSERT_NE(waypoint_stats, nullptr);
 
     auto items = waypoint_stats->items();
@@ -84,8 +99,7 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     auto clipboard = std::make_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
-    RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::make_unique<MockRenderer>(); },
-        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), clipboard);
+    auto window = register_test_module(clipboard).create<std::unique_ptr<RouteWindow>>();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
@@ -95,10 +109,10 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
 
-    window.set_route(&route);
-    window.select_waypoint(0);
+    window->set_route(&route);
+    window->select_waypoint(0);
 
-    auto waypoint_stats = window.root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
+    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
     ASSERT_NE(waypoint_stats, nullptr);
 
     auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
@@ -114,8 +128,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     auto clipboard = std::make_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
-    RouteWindow window([&](auto) { return std::make_unique<MockDeviceWindow>(); }, [&](auto) { return std::make_unique<MockRenderer>(); },
-        [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }, create_test_window(L"RouteWindowTests"), clipboard);
+    auto window = register_test_module(clipboard).create<std::unique_ptr<RouteWindow>>();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
@@ -125,10 +138,10 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
 
-    window.set_route(&route);
-    window.select_waypoint(0);
+    window->set_route(&route);
+    window->select_waypoint(0);
 
-    auto waypoint_stats = window.root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
+    auto waypoint_stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
     ASSERT_NE(waypoint_stats, nullptr);
 
     auto row = waypoint_stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "3");
