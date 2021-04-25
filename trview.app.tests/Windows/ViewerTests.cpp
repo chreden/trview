@@ -33,7 +33,7 @@ namespace
     /// Simulates a context menu activation - 
     void activate_context_menu(
         MockPicking& picking,
-        input::mocks::MockMouse& mouse,
+        MockMouse& mouse,
         PickResult::Type type,
         uint32_t index)
     {
@@ -42,7 +42,7 @@ namespace
         pick_result.type = type;
         pick_result.index = index;
         picking.on_pick({}, pick_result);
-        mouse.mouse_click(input::IMouse::Button::Right);
+        mouse.mouse_click(IMouse::Button::Right);
     }
 
     Event<> shortcut_handler;
@@ -119,7 +119,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
     viewer->open(&level);
 
@@ -173,7 +173,7 @@ TEST(Viewer, SelectTriggerRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
     std::vector<Trigger*> triggers_list(101);
@@ -189,7 +189,7 @@ TEST(Viewer, SelectTriggerRaised)
     auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
 
     activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
-    mouse.mouse_click(input::IMouse::Button::Left);
+    mouse.mouse_click(IMouse::Button::Left);
 
     ASSERT_TRUE(selected_trigger.has_value());
     ASSERT_EQ(selected_trigger.value(), trigger.get());
@@ -200,7 +200,7 @@ TEST(Viewer, TriggerVisibilityRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
     std::vector<Trigger*> triggers_list(101);
@@ -229,14 +229,14 @@ TEST(Viewer, SelectWaypointRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
 
     std::optional<uint32_t> selected_waypoint;
     auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
 
     activate_context_menu(picking, mouse, PickResult::Type::Waypoint, 100);
-    mouse.mouse_click(input::IMouse::Button::Left);
+    mouse.mouse_click(IMouse::Button::Left);
 
     ASSERT_TRUE(selected_waypoint.has_value());
     ASSERT_EQ(selected_waypoint.value(), 100u);
@@ -247,7 +247,7 @@ TEST(Viewer, RemoveWaypointRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
 
     std::optional<uint32_t> removed_waypoint;
@@ -266,7 +266,7 @@ TEST(Viewer, AddWaypointRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
     std::vector<Item> items_list(51);
@@ -298,7 +298,7 @@ TEST(Viewer, RightClickActivatesContextMenu)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<input::mocks::MockMouse>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
 
     EXPECT_CALL(ui, set_show_context_menu(false));
