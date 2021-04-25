@@ -31,11 +31,7 @@ using namespace boost;
 namespace
 {
     /// Simulates a context menu activation - 
-    void activate_context_menu(
-        MockPicking& picking,
-        MockMouse& mouse,
-        PickResult::Type type,
-        uint32_t index)
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, PickResult::Type type, uint32_t index)
     {
         PickResult pick_result{};
         pick_result.hit = true;

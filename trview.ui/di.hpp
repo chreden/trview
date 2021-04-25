@@ -16,11 +16,11 @@ namespace trview
                     {
                         return [&](auto&& window, auto&& control)
                         {
-                            const auto shortcuts_source = injector.create<IShortcuts::Source>();
                             return std::make_unique<Input>(
                                 window,
                                 control,
-                                shortcuts_source(window));
+                                injector.create<std::shared_ptr<IShortcuts>>(),
+                                injector.create<std::shared_ptr<IClipboard>>());
                         };
                     })
             );
