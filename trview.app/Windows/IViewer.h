@@ -10,6 +10,7 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Routing/Waypoint.h>
 #include <trview.app/Settings/UserSettings.h>
+#include <trview.app/Camera/CameraMode.h>
 
 namespace trview
 {
@@ -45,6 +46,8 @@ namespace trview
         /// Event raised when the viewer wants to add a waypoint.
         Event<DirectX::SimpleMath::Vector3, uint32_t, Waypoint::Type, uint32_t> on_waypoint_added;
 
+        virtual CameraMode camera_mode() const = 0;
+
         /// Render the viewer.
         virtual void render() = 0;
 
@@ -73,6 +76,8 @@ namespace trview
         /// @param index The waypoint to select.
         /// @remarks This will not raise the on_waypoint_selected event.
         virtual void select_waypoint(const Waypoint& waypoint) = 0;
+
+        virtual void set_camera_mode(CameraMode camera_mode) = 0;
 
         /// Set the current route.
         /// @param route The new route.

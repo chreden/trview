@@ -615,17 +615,30 @@ namespace trview
         _ui->set_selected_room(_level->room(_level->selected_room()));
         _was_alternate_select = false;
         _target = _level->room(_level->selected_room())->centre();
+        _scene_changed = true;
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
     }
 
     void Viewer::select_item(const Item& item)
     {
         _target = item.position();
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
         _scene_changed = true;
     }
 
     void Viewer::select_trigger(const Trigger* const trigger)
     {
         _target = trigger->position();
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
         _scene_changed = true;
     }
 
@@ -979,11 +992,6 @@ namespace trview
             on_waypoint_selected(pick.index);
             break;
         }
-
-        if (_settings.auto_orbit)
-        {
-            set_camera_mode(CameraMode::Orbit);
-        }
     }
 
     void Viewer::apply_acceleration_settings()
@@ -996,5 +1004,10 @@ namespace trview
         _settings = settings;
         apply_acceleration_settings();
         _scene_changed = true;
+    }
+
+    CameraMode Viewer::camera_mode() const
+    {
+        return _camera_mode;
     }
 }
