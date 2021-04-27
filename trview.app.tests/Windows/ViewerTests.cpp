@@ -308,7 +308,11 @@ TEST(Viewer, RightClickActivatesContextMenu)
 
 TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -323,7 +327,11 @@ TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
 
 TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -338,7 +346,11 @@ TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
 
 TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -347,6 +359,7 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
+    // TODO: Remove once Trigger is converted to DI.
     Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
     viewer->select_trigger(&trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
@@ -354,7 +367,11 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
 
 TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -363,6 +380,7 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
+    // TODO: Remove once Trigger is converted to DI.
     Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
     viewer->select_trigger(&trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
@@ -370,7 +388,11 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
 
 TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -387,7 +409,11 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
 
 TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -405,13 +431,17 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
 
 TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    // To be removed once Room is converted to DI.
+    // TODO: Remove once Room is converted to DI.
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
     auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
@@ -436,13 +466,17 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
 
 TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
 {
-    auto viewer = register_test_module();
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
 
     UserSettings settings;
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    // To be removed once Room is converted to DI.
+    // TODO: Remove once Room is converted to DI.
     auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
     auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
