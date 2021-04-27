@@ -2,9 +2,10 @@
 
 #include <trview.common/Window.h>
 #include <trview.common/TokenStore.h>
-#include <trview.input/Mouse.h>
 #include <trview.input/Keyboard.h>
-#include "IInputQuery.h"
+#include "IInput.h"
+#include <trview.input/Mouse.h>
+#include <trview.common/Windows/IClipboard.h>
 
 namespace trview
 {
@@ -15,13 +16,13 @@ namespace trview
         class Control;
 
         /// Manages the mouse and keyboard input state for a control tree.
-        class Input final : public IInputQuery
+        class Input final : public IInput
         {
         public:
-            explicit Input(const trview::Window& window, Control& control, IShortcuts& shortcuts);
+            explicit Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
-            input::Mouse& mouse();
+            virtual input::IMouse& mouse() override;
         private:
             void     register_events();
             void     register_focus_controls(Control* control);
@@ -57,7 +58,8 @@ namespace trview
             Control&       _control;
             Control*       _hover_control{ nullptr };
             Control*       _focus_control{ nullptr };
-            IShortcuts&     _shortcuts;
+            std::shared_ptr<IShortcuts> _shortcuts;
+            std::shared_ptr<IClipboard> _clipboard;
         };
     }
 }

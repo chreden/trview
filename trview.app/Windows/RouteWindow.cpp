@@ -3,6 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Windows/Clipboard.h>
 
 namespace trview
 {
@@ -38,8 +39,9 @@ namespace trview
 
     using namespace graphics;
 
-    RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const trview::Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", Size(470, 400))
+    RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
+        const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -175,6 +177,7 @@ namespace trview
 
         _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
         _stats->set_name(Names::waypoint_stats);
+        _stats->set_show_highlight(false);
         _stats->set_show_headers(false);
         _stats->set_show_scrollbar(true);
         _stats->set_columns(
@@ -182,8 +185,15 @@ namespace trview
                 { Listbox::Column::Type::String, L"Name", 100 },
                 { Listbox::Column::Type::String, L"Value", 140 }
             });
-        _token_store += _stats->on_item_selected += [&](const auto&)
+        _token_store += _stats->on_item_selected += [&](const auto& item)
         {
+            if (item.value(L"Name") == L"Room Position" || 
+                item.value(L"Name") == L"Position")
+            {
+                _clipboard->write(window(), item.value(L"Value"));
+                return;
+            }
+
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
             {

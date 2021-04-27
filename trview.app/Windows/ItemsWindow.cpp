@@ -40,8 +40,9 @@ namespace trview
     const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
 
-    ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", Size(450, Height))
+    ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
+        const std::shared_ptr<IClipboard>& clipboard)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -200,7 +201,7 @@ namespace trview
 
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
-            write_clipboard(window(), item.value(L"Value"));
+            _clipboard->write(window(), item.value(L"Value"));
         };
 
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));

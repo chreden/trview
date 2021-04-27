@@ -6,6 +6,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Trigger.h>
 #include <trview.common/Strings.h>
+#include <trview.input/IMouse.h>
 
 namespace trview
 {
@@ -53,8 +54,12 @@ namespace trview
     const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
     const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
 
-    RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::render::IMapRenderer::Source& map_renderer_source, const Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
+    RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source,
+        const ui::render::IRenderer::Source& renderer_source,
+        const ui::render::IMapRenderer::Source& map_renderer_source,
+        const ui::IInput::Source& input_source,
+        const Window& parent)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 
@@ -64,7 +69,7 @@ namespace trview
         using namespace input;
         using namespace ui;
 
-        _token_store += _input->mouse().mouse_click += [&](Mouse::Button button)
+        _token_store += _input->mouse().mouse_click += [&](IMouse::Button button)
         {
             auto sector = _map_renderer->sector_at_cursor();
             if (!sector)
@@ -72,7 +77,7 @@ namespace trview
                 return;
             }
 
-            if (button == Mouse::Button::Left)
+            if (button == IMouse::Button::Left)
             {
                 if (sector->flags & SectorFlag::Portal)
                 {
@@ -99,7 +104,7 @@ namespace trview
                     }
                 }
             }
-            else if (button == Mouse::Button::Right)
+            else if (button == IMouse::Button::Right)
             {
                 if (sector->room_above() != 0xff)
                 {

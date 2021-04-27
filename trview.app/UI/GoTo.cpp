@@ -18,7 +18,7 @@ namespace trview
 
         auto parent_size = parent.size();
 
-        auto window = std::make_unique<Window>(
+        auto window = std::make_unique<ui::Window>(
             Point(parent_size.width / 2.0f - WindowWidth / 2.0f, parent_size.height / 2.0f - WindowHeight / 2.0f),
             Size(WindowWidth, WindowHeight),
             Colour(0.5f, 0.0f, 0.0f, 0.0f));

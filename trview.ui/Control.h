@@ -10,7 +10,7 @@
 #include <trview.common/Point.h>
 #include <trview.common/TokenStore.h>
 #include "Align.h"
-#include "IInputQuery.h"
+#include "IInput.h"
 
 namespace trview
 {
@@ -232,7 +232,7 @@ namespace trview
 
             virtual bool cut(std::wstring& output);
 
-            void set_input_query(IInputQuery* query);
+            void set_input(IInput* input);
 
             bool focused() const;
         protected:
@@ -241,7 +241,7 @@ namespace trview
             virtual void inner_add_child(Control* child_element);
 
             TokenStore _token_store;
-            IInputQuery* _input_query{ nullptr };
+            IInput* _input{ nullptr };
         private:
             std::vector<std::unique_ptr<Control>> _child_elements;
 

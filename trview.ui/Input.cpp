@@ -16,8 +16,8 @@ namespace trview
             }
         }
 
-        Input::Input(const trview::Window& window, Control& control, IShortcuts& shortcuts)
-            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts)
+        Input::Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard)
+            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts), _clipboard(clipboard)
         {
             register_events();
         }
@@ -27,7 +27,7 @@ namespace trview
             return _focus_control;
         }
 
-        input::Mouse& Input::mouse()
+        input::IMouse& Input::mouse()
         {
             return _mouse;
         }
@@ -45,28 +45,28 @@ namespace trview
             _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control, bool shift) { process_key_down(key, control, shift); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
-            _token_store += _shortcuts.add_shortcut(true, 'V') += [&]() { process_paste(read_clipboard(_window)); };
-            _token_store += _shortcuts.add_shortcut(true, 'C') += [&]() 
+            _token_store += _shortcuts->add_shortcut(true, 'V') += [&]() { process_paste(_clipboard->read(_window)); };
+            _token_store += _shortcuts->add_shortcut(true, 'C') += [&]() 
             {
                 std::wstring output;
                 if (process_copy(output))
                 {
-                    write_clipboard(_window, output);
+                    _clipboard->write(_window, output);
                 }
             };
-            _token_store += _shortcuts.add_shortcut(true, 'X') += [&]()
+            _token_store += _shortcuts->add_shortcut(true, 'X') += [&]()
             {
                 std::wstring output;
                 if (process_cut(output))
                 {
-                    write_clipboard(_window, output);
+                    _clipboard->write(_window, output);
                 }
             };
         }
 
         void Input::register_focus_controls(Control* control)
         {
-            control->set_input_query(this);
+            control->set_input(this);
 
             _token_store += control->on_focus_requested += [this, control]() { set_focus_control(control); };
             _token_store += control->on_focus_clear_requested += [&]() { set_focus_control(nullptr); };

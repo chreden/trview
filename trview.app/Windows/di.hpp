@@ -28,7 +28,9 @@ namespace trview
                     return std::make_shared<ItemsWindow>(
                         injector.create<IDeviceWindow::Source>(),
                         injector.create<ui::render::IRenderer::Source>(),
-                        window);
+                        injector.create<ui::IInput::Source>(),
+                        window,
+                        injector.create<std::shared_ptr<IClipboard>>());
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
@@ -40,7 +42,9 @@ namespace trview
                         return std::make_shared<TriggersWindow>(
                             injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
-                            window);
+                            injector.create<ui::IInput::Source>(),
+                            window,
+                            injector.create<std::shared_ptr<IClipboard>>());
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
@@ -52,7 +56,9 @@ namespace trview
                         return std::make_shared<RouteWindow>(
                             injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
-                            window);
+                            injector.create<ui::IInput::Source>(),
+                            window,
+                            injector.create<std::shared_ptr<IClipboard>>());
                     };
                 }
             ),
@@ -66,6 +72,7 @@ namespace trview
                             injector.create<IDeviceWindow::Source>(),
                             injector.create<ui::render::IRenderer::Source>(),
                             injector.create<ui::render::IMapRenderer::Source>(),
+                            injector.create<ui::IInput::Source>(),
                             window);
                     };
                 }),

@@ -1,10 +1,10 @@
-#include "IInputQuery.h"
+#include "IInput.h"
 
 namespace trview
 {
     namespace ui
     {
-        IInputQuery::~IInputQuery()
+        IInput::~IInput()
         {
         }
     }
