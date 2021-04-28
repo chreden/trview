@@ -1002,6 +1002,7 @@ namespace trview
     void Viewer::set_settings(const UserSettings& settings)
     {
         _settings = settings;
+        _ui->set_settings(_settings);
         apply_acceleration_settings();
         _scene_changed = true;
     }

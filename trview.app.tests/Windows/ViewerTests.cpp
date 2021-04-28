@@ -498,3 +498,12 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     viewer->select_room(0);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
+
+TEST(Viewer, SetSettingsUpdatesUI)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_settings).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+    viewer->set_settings({});
+}

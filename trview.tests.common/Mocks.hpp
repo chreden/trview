@@ -11,5 +11,14 @@ namespace trview
             auto& ref = *ptr;
             return { std::move(ptr), ref };
         }
+
+        template <typename Mock, typename T>
+        auto choose_mock(std::unique_ptr<T>& ptr)
+        {
+            if (!ptr)
+            {
+                ptr = std::make_unique<Mock>();
+            }
+        }
     }
 }

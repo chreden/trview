@@ -14,6 +14,7 @@
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <external/boost/di.hpp>
 
 using namespace trview;
 using namespace trview::tests;
@@ -21,28 +22,59 @@ using namespace testing;
 using namespace trview::mocks;
 using namespace trlevel::mocks;
 using testing::_;
+using namespace boost;
+
+namespace
+{
+    Event<> shortcut_handler;
+
+    auto register_test_module(std::unique_ptr<IUpdateChecker> update_checker = nullptr, std::unique_ptr<ISettingsLoader> settings_loader = nullptr, std::unique_ptr<IFileDropper> file_dropper = nullptr,
+        std::unique_ptr<trlevel::ILevelLoader> level_loader = nullptr, std::unique_ptr<ILevelSwitcher> level_switcher = nullptr, std::unique_ptr<IRecentFiles> recent_files = nullptr,
+        std::unique_ptr<IViewer> viewer = nullptr, std::unique_ptr<IRoute> route = nullptr, std::unique_ptr<IItemsWindowManager> items_window_manager = nullptr, std::unique_ptr<ITriggersWindowManager> triggers_window_manager = nullptr,
+        std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr)
+    {
+        choose_mock<MockUpdateChecker>(update_checker);
+        choose_mock<MockSettingsLoader>(settings_loader);
+        choose_mock<MockFileDropper>(file_dropper);
+        choose_mock<MockLevelLoader>(level_loader);
+        choose_mock<MockLevelSwitcher>(level_switcher);
+        choose_mock<MockRecentFiles>(recent_files);
+        choose_mock<MockViewer>(viewer);
+        choose_mock<MockRoute>(route);
+        choose_mock<MockItemsWindowManager>(items_window_manager);
+        choose_mock<MockTriggersWindowManager>(triggers_window_manager);
+        choose_mock<MockRouteWindowManager>(route_window_manager);
+        choose_mock<MockRoomsWindowManager>(rooms_window_manager);
+
+        auto shortcuts = std::make_shared<MockShortcuts>();
+        EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+
+        return di::make_injector(
+            di::bind<Window>.to(create_test_window(L"ApplicationTests")),
+            di::bind<IUpdateChecker>.to([&](auto&&) { return std::move(update_checker); }),
+            di::bind<ISettingsLoader>.to([&](auto&&) { return std::move(settings_loader); }),
+            di::bind<IFileDropper>.to([&](auto&&) { return std::move(file_dropper); }),
+            di::bind<trlevel::ILevelLoader>.to([&](auto&&) { return std::move(level_loader); }),
+            di::bind<ILevelSwitcher>.to([&](auto&&) { return std::move(level_switcher); }),
+            di::bind<IRecentFiles>.to([&](auto&&) { return std::move(recent_files); }),
+            di::bind<IViewer>.to([&](auto&&) { return std::move(viewer); }),
+            di::bind<IRoute::Source>.to([&](const auto& injector)->IRoute::Source { return [&]() { return std::move(route); }; }),
+            di::bind<IShortcuts>.to(shortcuts),
+            di::bind<IItemsWindowManager>.to([&](auto&&) { return std::move(items_window_manager); }),
+            di::bind<ITriggersWindowManager>.to([&](auto&&) { return std::move(triggers_window_manager); }),
+            di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
+            di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
+            di::bind<ILevel::Source>.to([](const auto& injector)->ILevel::Source { return [](auto) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
+            di::bind<Application::CommandLine>.to(std::wstring())
+        ).create<std::unique_ptr<Application>>();
+    }
+}
 
 TEST(Application, ChecksForUpdates)
 {
     auto [update_checker_ptr, update_checker] = create_mock<MockUpdateChecker>();
     EXPECT_CALL(update_checker, check_for_updates).Times(1);
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::move(update_checker_ptr),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::make_unique<MockLevelLoader>(),
-        std::make_unique<MockLevelSwitcher>(),
-        std::make_unique<MockRecentFiles>(),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
+    auto application = register_test_module(std::move(update_checker_ptr));
 }
 
 TEST(Application, SettingsLoadedAndSaved)
@@ -50,51 +82,15 @@ TEST(Application, SettingsLoadedAndSaved)
     auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
     EXPECT_CALL(settings_loader, load_user_settings).Times(1);
     EXPECT_CALL(settings_loader, save_user_settings).Times(1);
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::move(settings_loader_ptr),
-        std::make_unique<MockFileDropper>(),
-        std::make_unique<MockLevelLoader>(),
-        std::make_unique<MockLevelSwitcher>(),
-        std::make_unique<MockRecentFiles>(),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
+    auto application = register_test_module(nullptr, std::move(settings_loader_ptr));
 }
 
 TEST(Application, FileDropperOpensFile)
 {
     auto [file_dropper_ptr, file_dropper] = create_mock<MockFileDropper>();
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-
-    EXPECT_CALL(level_loader, load_level("test_path.tr2"))
-        .Times(1)
-        .WillRepeatedly(Throw(std::exception()));
-
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::move(file_dropper_ptr),
-        std::move(level_loader_ptr),
-        std::make_unique<MockLevelSwitcher>(),
-        std::make_unique<MockRecentFiles>(),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
+    auto application = register_test_module(nullptr, nullptr, std::move(file_dropper_ptr), std::move(level_loader_ptr));
     file_dropper.on_file_dropped("test_path.tr2");
 }
 
@@ -102,29 +98,8 @@ TEST(Application, LevelLoadedOnSwitchLevel)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [level_switcher_ptr, level_switcher] = create_mock<MockLevelSwitcher>();
-
-    EXPECT_CALL(level_loader, load_level("test_path.tr2"))
-        .Times(1)
-        .WillRepeatedly(Throw(std::exception()));
-
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::move(level_loader_ptr),
-        std::move(level_switcher_ptr),
-        std::make_unique<MockRecentFiles>(),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
-
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), std::move(level_switcher_ptr));
     level_switcher.on_switch_level("test_path.tr2");
 }
 
@@ -132,29 +107,8 @@ TEST(Application, LevelLoadedOnRecentFileOpen)
 {
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
-
-    EXPECT_CALL(level_loader, load_level("test_path.tr2"))
-        .Times(1)
-        .WillRepeatedly(Throw(std::exception()));
-
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::move(level_loader_ptr),
-        std::make_unique<MockLevelSwitcher>(),
-        std::move(recent_files_ptr),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
-
+    EXPECT_CALL(level_loader, load_level("test_path.tr2")).Times(1).WillRepeatedly(Throw(std::exception()));
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, std::move(recent_files_ptr));
     recent_files.on_file_open("test_path.tr2");
 }
 
@@ -162,30 +116,11 @@ TEST(Application, RecentFilesUpdatedOnFileOpen)
 {
     auto [recent_files_ptr, recent_files] = create_mock<MockRecentFiles>();
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
-
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{})).Times(1);
     EXPECT_CALL(recent_files, set_recent_files(std::list<std::string>{"test_path.tr2"})).Times(1);
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::make_unique<trlevel::mocks::MockLevel>())));
-
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::move(level_loader_ptr),
-        std::make_unique<MockLevelSwitcher>(),
-        std::move(recent_files_ptr),
-        std::make_unique<MockViewer>(),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
-
-    application.open("test_path.tr2");
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, std::move(recent_files_ptr));
+    application->open("test_path.tr2");
 }
 
 TEST(Application, FileOpenedInViewer)
@@ -193,29 +128,10 @@ TEST(Application, FileOpenedInViewer)
     auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     auto [level_ptr, level] = create_mock<trlevel::mocks::MockLevel>();
-
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
     EXPECT_CALL(viewer, open(NotNull())).Times(1);
-
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::move(level_loader_ptr),
-        std::make_unique<MockLevelSwitcher>(),
-        std::make_unique<MockRecentFiles>(),
-        std::move(viewer_ptr),
-        []() { return std::make_unique<MockRoute>(); },
-        std::make_unique<Shortcuts>(window),
-        std::make_unique<MockItemsWindowManager>(),
-        std::make_unique<MockTriggersWindowManager>(),
-        std::make_unique<MockRouteWindowManager>(),
-        std::make_unique<MockRoomsWindowManager>(),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
-
-    application.open("test_path.tr2");
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr));
+    application->open("test_path.tr2");
 }
 
 TEST(Application, WindowContentsResetBeforeViewerLoaded)
@@ -228,7 +144,6 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto route_ptr_src = std::move(route_ptr);
 
     std::vector<std::string> events;
 
@@ -248,26 +163,26 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
     EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
 
-    auto window = create_test_window(L"ApplicationTests");
-    Application application(window,
-        std::make_unique<MockUpdateChecker>(),
-        std::make_unique<MockSettingsLoader>(),
-        std::make_unique<MockFileDropper>(),
-        std::move(level_loader_ptr),
-        std::make_unique<MockLevelSwitcher>(),
-        std::make_unique<MockRecentFiles>(),
-        std::move(viewer_ptr),
-        [&]() { return std::move(route_ptr_src); },
-        std::make_unique<Shortcuts>(window),
-        std::move(items_window_manager_ptr),
-        std::move(triggers_window_manager_ptr),
-        std::move(route_window_manager_ptr),
-        std::move(rooms_window_manager_ptr),
-        [](auto) { return std::make_unique<trview::mocks::MockLevel>(); },
-        std::wstring());
-
-    application.open("test_path.tr2");
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr), std::move(route_ptr),
+        std::move(items_window_manager_ptr), std::move(triggers_window_manager_ptr), std::move(route_window_manager_ptr), std::move(rooms_window_manager_ptr));
+    application->open("test_path.tr2");
 
     ASSERT_EQ(events.size(), 13);
     ASSERT_EQ(events.back(), "viewer");
+}
+
+TEST(Application, PropagatesSettingsWhenUpdated)
+{
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, set_settings).Times(2);
+
+    auto application = register_test_module(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, std::move(viewer_ptr));
+    viewer.on_settings({});
+}
+
+TEST(Application, SavesSettingsOnShutdown)
+{
+    auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
+    EXPECT_CALL(settings_loader, save_user_settings).Times(1);
+    auto application = register_test_module(nullptr, std::move(settings_loader_ptr));
 }
