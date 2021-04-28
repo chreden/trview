@@ -6,10 +6,7 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
-#include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.input/Mocks/IMouse.h>
 #include <external/boost/di.hpp>
@@ -55,18 +52,8 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
     std::optional<Trigger*> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
-    auto [level_ptr, level] = create_mock<MockLevel>();
-    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
-    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
-    trlevel::tr3_room tr_room{};
-
-    auto room = std::make_shared<Room>(
-        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
-        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
-
+    auto room = std::make_shared<MockRoom>();
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    room->add_trigger(trigger1.get());
 
     window->set_rooms({ room });
     window->set_triggers({ trigger1.get() });
@@ -106,18 +93,8 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
     std::optional<Trigger*> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
-    auto [level_ptr, level] = create_mock<MockLevel>();
-    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
-    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
-    trlevel::tr3_room tr_room{};
-
-    auto room = std::make_shared<Room>(
-        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
-        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
-
+    auto room = std::make_shared<MockRoom>();
     auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    room->add_trigger(trigger1.get());
 
     window->set_rooms({ room });
     window->set_triggers({ trigger1.get() });
