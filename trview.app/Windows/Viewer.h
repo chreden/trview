@@ -69,6 +69,8 @@ namespace trview
         /// Destructor for the viewer.
         virtual ~Viewer() = default;
 
+        virtual CameraMode camera_mode() const override;
+
         /// Render the viewer.
         virtual void render() override;
 
@@ -97,6 +99,8 @@ namespace trview
         /// @param index The waypoint to select.
         /// @remarks This will not raise the on_waypoint_selected event.
         virtual void select_waypoint(const Waypoint& waypoint) override;
+
+        virtual void set_camera_mode(CameraMode camera_mode) override;
 
         /// Set the current route.
         /// @param route The new route.
@@ -132,7 +136,6 @@ namespace trview
         bool should_pick() const;
         const ICamera& current_camera() const;
         ICamera& current_camera();
-        void set_camera_mode(CameraMode camera_mode);
         void set_camera_projection_mode(ProjectionMode projection_mode);
         void set_alternate_mode(bool enabled);
         void toggle_alternate_mode();

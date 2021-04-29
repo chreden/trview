@@ -15,6 +15,9 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
 #include <external/boost/di.hpp>
+#include <trview.app/mocks/Graphics/ILevelTextureStorage.h>
+#include <trview.app/mocks/Graphics/IMeshStorage.h>
+#include <trlevel/Mocks/ILevel.h>
 
 using testing::NiceMock;
 using testing::Return;
@@ -43,7 +46,7 @@ namespace
 
     Event<> shortcut_handler;
 
-    auto register_test_module(std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking = std::make_unique<MockPicking>(), std::unique_ptr<IMouse> mouse = std::make_unique<MockMouse>())
+    auto register_test_module(std::unique_ptr<IViewerUI> ui = std::make_unique<MockViewerUI>(), std::unique_ptr<IPicking> picking = std::make_unique<MockPicking>(), std::unique_ptr<IMouse> mouse = std::make_unique<MockMouse>())
     {
         auto shortcuts = std::make_shared<MockShortcuts>();
         EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
@@ -301,4 +304,206 @@ TEST(Viewer, RightClickActivatesContextMenu)
     EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);
 
     activate_context_menu(picking, mouse, PickResult::Type::Room, 0);
+}
+
+TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = true;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    viewer->select_item({});
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
+
+TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = false;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    viewer->select_item({});
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+}
+
+TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = true;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    // TODO: Remove once Trigger is converted to DI.
+    Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
+    viewer->select_trigger(&trigger);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
+
+TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = false;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    // TODO: Remove once Trigger is converted to DI.
+    Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
+    viewer->select_trigger(&trigger);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+}
+
+TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = true;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    MockMesh mesh;
+    Waypoint waypoint(&mesh, Vector3::Zero, 0);
+    viewer->select_waypoint(waypoint);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
+
+TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = false;
+    viewer->set_settings(settings);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    MockMesh mesh;
+    Waypoint waypoint(&mesh, Vector3::Zero, 0);
+    viewer->select_waypoint(waypoint);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+}
+
+
+TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = true;
+    viewer->set_settings(settings);
+
+    // TODO: Remove once Room is converted to DI.
+    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
+    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
+    trlevel::tr3_room tr_room{};
+
+    auto room = std::make_unique<Room>(
+        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
+        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
+
+    EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
+    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<Room*>{ room.get() }));
+    EXPECT_CALL(level, room).WillRepeatedly(Return(room.get()));
+    viewer->open(&level);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    viewer->select_room(0);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
+}
+
+TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_camera_mode);
+    EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+
+    UserSettings settings;
+    settings.auto_orbit = false;
+    viewer->set_settings(settings);
+
+    // TODO: Remove once Room is converted to DI.
+    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
+    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
+    trlevel::tr3_room tr_room{};
+
+    auto room = std::make_unique<Room>(
+        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
+        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
+
+    EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
+    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<Room*>{ room.get() }));
+    EXPECT_CALL(level, room).WillRepeatedly(Return(room.get()));
+    viewer->open(&level);
+
+    viewer->set_camera_mode(CameraMode::Free);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+
+    viewer->select_room(0);
+    ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
+}
+
+TEST(Viewer, SetSettingsUpdatesUI)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    EXPECT_CALL(ui, set_settings).Times(2);
+
+    auto viewer = register_test_module(std::move(ui_ptr));
+    viewer->set_settings({});
 }
