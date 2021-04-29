@@ -18,7 +18,6 @@
 #include <external/boost/di.hpp>
 #include <trlevel/Mocks/ILevel.h>
 
-using testing::NiceMock;
 using testing::Return;
 using namespace trview;
 using namespace trview::mocks;

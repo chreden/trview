@@ -15,8 +15,6 @@
 #include <trview.graphics/RenderTarget.h>
 #include <trview.graphics/Texture.h>
 
-#include "StaticMesh.h"
-
 namespace trview
 {
     struct ILevelTextureStorage;
@@ -44,96 +42,44 @@ namespace trview
             const IEntity::EntitySource& entity_source,
             const IEntity::AiSource& ai_source,
             const IRoom::Source& room_source);
-        ~Level();
-
-        // Temporary, for the room info and texture window.
-        std::vector<RoomInfo> room_info() const;
-        RoomInfo room_info(uint32_t room) const;
-        std::vector<graphics::Texture> level_textures() const;
-
-        uint16_t selected_room() const;
-
-        /// Get the items in this level.
-        /// @returns All items in the level.
-        std::vector<Item> items() const;
-
-        /// Get the number of rooms in the level.
-        uint32_t number_of_rooms() const;
-
+        virtual ~Level() = default;
+        virtual std::vector<RoomInfo> room_info() const override;
+        virtual RoomInfo room_info(uint32_t room) const override;
+        virtual std::vector<graphics::Texture> level_textures() const override;
+        virtual uint16_t selected_room() const override;
+        virtual std::vector<Item> items() const override;
+        virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
-
-        /// Get the triggers in this level.
-        /// @returns All triggers in the level.
-        std::vector<Trigger*> triggers() const;
-
-        // Determine whether the specified ray hits any of the triangles in any of the room geometry.
-        // position: The world space position of the source of the ray.
-        // direction: The direction of the ray.
-        // Returns: The result of the operation. If 'hit' is true, distance and position contain
-        // how far along the ray the hit was and the position in world space. The room that was hit
-        // is also specified.
-        PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
-
-        /// Render the current scene.
-        /// @param camera The current camera.
-        /// @param render_selection Whether to render selection highlights on selected items.
-        void render(const ICamera& camera, bool render_selection);
-
-        /// Render the transparent triangles in the scene.
-        /// @param camera The current camera.
-        void render_transparency(const ICamera& camera);
-
-        void set_highlight_mode(RoomHighlightMode mode, bool enabled);
-        bool highlight_mode_enabled(RoomHighlightMode mode) const;
-        void set_selected_room(uint16_t index);
-        void set_selected_item(uint32_t index);
-        void set_neighbour_depth(uint32_t depth);
-        void on_camera_moved();
-        void set_item_visibility(uint32_t index, bool state);
-        void set_trigger_visibility(uint32_t index, bool state);
-
-        // Set whether to render the alternate mode (the flipmap) or the regular room.
-        // enabled: Whether to render the flipmap.
-        void set_alternate_mode(bool enabled);
-
-        /// Set whether to render the alternate group specified.
-        /// @param group The group to toggle.
-        /// @param enabled Whether the group is enabled.
-        void set_alternate_group(uint32_t group, bool enabled);
-
-        /// Gets whether the specified alternate group is active.
-        /// @param group The group to check.
-        /// @returns True if the group is active.
-        bool alternate_group(uint32_t group) const;
-
-        // Returns the room with ID provided 
-        std::weak_ptr<IRoom> room(uint32_t id) const;
-
-        // Get the current state of the alternate mode (flipmap).
-        bool alternate_mode() const;
-
-        /// Determines if there are any flipmaps in the level.
-        /// @returns True if there are flipmaps.
-        bool any_alternates() const;
-        void set_show_triggers(bool show);
-        void set_show_hidden_geometry(bool show);
-        bool show_hidden_geometry() const;
-        void set_show_water(bool show);
-        void set_show_wireframe(bool show);
-        bool show_triggers() const;
-        void set_selected_trigger(uint32_t number);
-
-        const ILevelTextureStorage& texture_storage() const;
-
-        /// Gets the alternate groups that exist in the level.
-        /// @returns The set of alternate groups in the level.
-        std::set<uint32_t> alternate_groups() const;
-
-        trlevel::LevelVersion version() const;
-
-        std::string filename() const;
-
-        void set_filename(const std::string& filename);
+        virtual std::vector<Trigger*> triggers() const override;
+        virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        virtual void render(const ICamera& camera, bool render_selection) override;
+        virtual void render_transparency(const ICamera& camera) override;
+        virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) override;
+        virtual bool highlight_mode_enabled(RoomHighlightMode mode) const override;
+        virtual void set_selected_room(uint16_t index) override;
+        virtual void set_selected_item(uint32_t index) override;
+        virtual void set_neighbour_depth(uint32_t depth) override;
+        virtual void on_camera_moved() override;
+        virtual void set_item_visibility(uint32_t index, bool state) override;
+        virtual void set_trigger_visibility(uint32_t index, bool state) override;
+        virtual void set_alternate_mode(bool enabled) override;
+        virtual void set_alternate_group(uint32_t group, bool enabled) override;
+        virtual bool alternate_group(uint32_t group) const override;
+        virtual std::weak_ptr<IRoom> room(uint32_t id) const override;
+        virtual bool alternate_mode() const override;
+        virtual bool any_alternates() const override;
+        virtual void set_show_triggers(bool show) override;
+        virtual void set_show_hidden_geometry(bool show) override;
+        virtual bool show_hidden_geometry() const override;
+        virtual void set_show_water(bool show) override;
+        virtual void set_show_wireframe(bool show) override;
+        virtual bool show_triggers() const override;
+        virtual void set_selected_trigger(uint32_t number) override;
+        virtual const ILevelTextureStorage& texture_storage() const override;
+        virtual std::set<uint32_t> alternate_groups() const override;
+        virtual trlevel::LevelVersion version() const override;
+        virtual std::string filename() const override;
+        virtual void set_filename(const std::string& filename) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source);
         void generate_triggers(const IMesh::TransparentSource& mesh_transparent_source);

@@ -67,10 +67,6 @@ namespace trview
         }
     }
 
-    Level::~Level()
-    {
-    }
-
     std::vector<RoomInfo> Level::room_info() const
     {
         std::vector<RoomInfo> room_infos;
