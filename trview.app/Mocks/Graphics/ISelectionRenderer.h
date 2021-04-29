@@ -9,7 +9,8 @@ namespace trview
         class MockSelectionRenderer final : public ISelectionRenderer
         {
         public:
-            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, IRenderable&, const DirectX::SimpleMath::Color&));
+            virtual ~MockSelectionRenderer() = default;
+            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, IRenderable&, const DirectX::SimpleMath::Color&), (override));
         };
     }
 }

@@ -20,5 +20,14 @@ namespace trview
                 ptr = std::make_unique<Mock>();
             }
         }
+
+        template <typename Mock, typename T>
+        auto choose_mock(std::shared_ptr<T>& ptr)
+        {
+            if (!ptr)
+            {
+                ptr = std::make_shared<Mock>();
+            }
+        }
     }
 }
