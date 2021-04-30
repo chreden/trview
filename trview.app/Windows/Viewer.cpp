@@ -213,14 +213,22 @@ namespace trview
                     if (_current_pick.type == PickResult::Type::Room &&
                         _current_pick.index == _level->selected_room())
                     {
-                        info = _level->room(_current_pick.index).lock()->info();
+                        const auto room = _level->room(_current_pick.index).lock();
+                        if (room)
+                        {
+                            info = room->info();
+                        }
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
                         auto trigger = _level->triggers()[_current_pick.index];
                         if (trigger->room() == _level->selected_room())
                         {
-                            info = _level->room(trigger->room()).lock()->info();
+                            const auto room = _level->room(trigger->room()).lock();
+                            if (room)
+                            {
+                                info = room->info();
+                            }
                         }
                     }
                 }
