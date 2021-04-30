@@ -316,7 +316,7 @@ namespace trview
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](auto&& room) { return create_listbox_item(room.lock(), _all_items, _all_triggers); });
+        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](auto&& room) { return create_listbox_item(room, _all_items, _all_triggers); });
         _rooms_list->set_items(list_items);
         _all_rooms = rooms;
         _current_room = 0xffffffff;

@@ -399,7 +399,12 @@ namespace trview
         {
             if (waypoint.room() < _all_rooms.size())
             {
-                const auto info = _all_rooms[waypoint.room()].lock()->info();
+                const auto room = _all_rooms[waypoint.room()].lock();
+                if (!room)
+                {
+                    return waypoint.position();
+                }
+                const auto info = room->info();
                 const Vector3 bottom_left = Vector3(info.x, info.yBottom, info.z) / trlevel::Scale_X;
                 return waypoint.position() - bottom_left;
             }

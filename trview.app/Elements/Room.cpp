@@ -518,8 +518,11 @@ namespace trview
             return nullptr;
         }
 
-        auto room_number = sector->portal();
-        auto room = _level.room(room_number).lock();
+        auto room = _level.room(sector->portal()).lock();
+        if (!room)
+        {
+            return nullptr;
+        }
 
         // Get the world position of the target sector.
         auto world_x = (_info.x / trlevel::Scale_X) + x;
