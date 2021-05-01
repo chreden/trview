@@ -301,6 +301,9 @@
     <ClCompile Include="Elements\IRoom.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ITrigger.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -766,6 +769,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IRoom.h">
       <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ITrigger.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
