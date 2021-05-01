@@ -128,7 +128,7 @@ namespace trview
 
         /// Set the selected room.
         /// @param room The selected room.
-        virtual void set_selected_room(Room* room) override;
+        virtual void set_selected_room(const std::shared_ptr<IRoom>& room) override;
 
         /// Set the user settings.
         /// @param settings The user settings.

@@ -3,6 +3,7 @@
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Geometry/IPicking.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
@@ -15,11 +16,8 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
 #include <external/boost/di.hpp>
-#include <trview.app/mocks/Graphics/ILevelTextureStorage.h>
-#include <trview.app/mocks/Graphics/IMeshStorage.h>
 #include <trlevel/Mocks/ILevel.h>
 
-using testing::NiceMock;
 using testing::Return;
 using namespace trview;
 using namespace trview::mocks;
@@ -441,20 +439,12 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     settings.auto_orbit = true;
     viewer->set_settings(settings);
 
-    // TODO: Remove once Room is converted to DI.
-    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
-    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
-    trlevel::tr3_room tr_room{};
-
-    auto room = std::make_unique<Room>(
-        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
-        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
+    auto room = std::make_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
-    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<Room*>{ room.get() }));
-    EXPECT_CALL(level, room).WillRepeatedly(Return(room.get()));
+    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
+    EXPECT_CALL(level, room).WillRepeatedly(Return(room));
     viewer->open(&level);
 
     viewer->set_camera_mode(CameraMode::Free);
@@ -476,20 +466,12 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     settings.auto_orbit = false;
     viewer->set_settings(settings);
 
-    // TODO: Remove once Room is converted to DI.
-    auto [trlevel_ptr, trlevel] = create_mock<trlevel::mocks::MockLevel>();
     auto [level_ptr, level] = create_mock<MockLevel>();
-    auto [texture_storage_ptr, texture_storage] = create_mock<MockLevelTextureStorage>();
-    auto [mesh_storage_ptr, mesh_storage] = create_mock<MockMeshStorage>();
-    trlevel::tr3_room tr_room{};
-
-    auto room = std::make_unique<Room>(
-        [](auto, auto, auto, auto, auto) { return std::make_unique<MockMesh>(); },
-        trlevel, tr_room, texture_storage, mesh_storage, 0, level);
+    auto room = std::make_shared<MockRoom>();
 
     EXPECT_CALL(level, number_of_rooms).WillRepeatedly(Return(1));
-    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<Room*>{ room.get() }));
-    EXPECT_CALL(level, room).WillRepeatedly(Return(room.get()));
+    EXPECT_CALL(level, rooms).WillRepeatedly(Return(std::vector<std::weak_ptr<IRoom>>{ room }));
+    EXPECT_CALL(level, room).WillRepeatedly(Return(room));
     viewer->open(&level);
 
     viewer->set_camera_mode(CameraMode::Free);

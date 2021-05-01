@@ -34,7 +34,7 @@ namespace trview
             MOCK_METHOD(void, set_minimap_highlight, (uint16_t, uint16_t));
             MOCK_METHOD(void, set_pick, (const PickInfo&, const PickResult&));
             MOCK_METHOD(void, set_remove_waypoint_enabled, (bool));
-            MOCK_METHOD(void, set_selected_room, (Room*));
+            MOCK_METHOD(void, set_selected_room, (const std::shared_ptr<IRoom>&));
             MOCK_METHOD(void, set_settings, (const UserSettings&));
             MOCK_METHOD(void, set_show_context_menu, (bool));
             MOCK_METHOD(void, set_show_hidden_geometry, (bool));

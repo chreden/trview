@@ -22,7 +22,7 @@ namespace trview
                 virtual void render(bool to_screen = true) = 0;
 
                 // Changes the room to specified room, reloads map
-                virtual void load(const trview::Room* room) = 0;
+                virtual void load(const std::shared_ptr<trview::IRoom>& room) = 0;
 
                 // Returns the total area of the room 
                 virtual std::uint16_t area() const = 0;

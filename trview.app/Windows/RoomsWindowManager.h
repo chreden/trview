@@ -52,7 +52,7 @@ namespace trview
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
-        virtual void set_rooms(const std::vector<Room*>& items) override;
+        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) override;
 
         /// Set the item currently selected in the viewer.
         /// @param item The item currently selected.
@@ -72,7 +72,7 @@ namespace trview
         std::vector<std::shared_ptr<IRoomsWindow>> _windows;
         std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;
         std::vector<Item> _all_items;
-        std::vector<Room*> _all_rooms;
+        std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Trigger*> _all_triggers;
         TokenStore _token_store;
         uint32_t _current_room;

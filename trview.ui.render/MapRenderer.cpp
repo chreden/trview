@@ -161,7 +161,7 @@ namespace trview
             }
 
             void
-            MapRenderer::load(const trview::Room* room)
+            MapRenderer::load(const std::shared_ptr<trview::IRoom>& room)
             {
                 // Set window position and size 
                 _columns = room->num_x_sectors();

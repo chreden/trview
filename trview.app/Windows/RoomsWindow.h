@@ -51,7 +51,7 @@ namespace trview
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
-        virtual void set_rooms(const std::vector<Room*>& rooms) override;
+        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
 
         /// Set the item currently selected in the viewer.
         /// @param item The item currently selected.
@@ -65,7 +65,7 @@ namespace trview
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
     private:
-        void load_room_details(const Room& room);
+        void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         std::unique_ptr<ui::Listbox> create_rooms_list();
@@ -77,7 +77,7 @@ namespace trview
         void set_track_trigger(bool value);
         void render_minimap();
 
-        std::vector<Room*> _all_rooms;
+        std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
         std::vector<Trigger*> _all_triggers;
 

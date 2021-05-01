@@ -21,8 +21,14 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const Room* const room, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
+        ui::Listbox::Item create_listbox_item(const std::weak_ptr<IRoom>& room_ptr, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
         {
+            const auto room = room_ptr.lock();
+            if (!room)
+            {
+                return {{}};
+            }
+
             auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
             auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) { return trigger->room() == room->number(); });
 
@@ -81,14 +87,14 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Portal)
                 {
-                    load_room_details(*_all_rooms[sector->portal()]);
+                    load_room_details(_all_rooms[sector->portal()]);
                     on_room_selected(sector->portal());
                     return;
                 }
 
                 if (sector->room_below() != 0xff)
                 {
-                    load_room_details(*_all_rooms[sector->room_below()]);
+                    load_room_details(_all_rooms[sector->room_below()]);
                     on_room_selected(sector->room_below());
                     return;
                 }
@@ -108,7 +114,7 @@ namespace trview
             {
                 if (sector->room_above() != 0xff)
                 {
-                    load_room_details(*_all_rooms[sector->room_above()]);
+                    load_room_details(_all_rooms[sector->room_above()]);
                     on_room_selected(sector->room_above());
                     return;
                 }
@@ -209,7 +215,7 @@ namespace trview
         _token_store += rooms_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            load_room_details(*_all_rooms[index]);
+            load_room_details(_all_rooms[index]);
             if (_sync_room)
             {
                 on_room_selected(index);
@@ -232,7 +238,7 @@ namespace trview
         _token_store += neighbours_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            load_room_details(*_all_rooms[index]);
+            load_room_details(_all_rooms[index]);
             on_room_selected(index);
         };
         _neighbours_list = group_box->add_child(std::move(neighbours_list));
@@ -295,7 +301,7 @@ namespace trview
             auto item = create_listbox_item(_all_rooms[room], _all_items, _all_triggers);
             _rooms_list->set_selected_item(item);
 
-            load_room_details(*_all_rooms[_current_room]);
+            load_room_details(_all_rooms[_current_room]);
         }
     }
 
@@ -306,11 +312,11 @@ namespace trview
         _all_items = items;
     }
 
-    void RoomsWindow::set_rooms(const std::vector<Room*>& rooms)
+    void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
-        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](const auto& room) { return create_listbox_item(room, _all_items, _all_triggers); });
+        std::transform(rooms.begin(), rooms.end(), std::back_inserter(list_items), [&](auto&& room) { return create_listbox_item(room, _all_items, _all_triggers); });
         _rooms_list->set_items(list_items);
         _all_rooms = rooms;
         _current_room = 0xffffffff;
@@ -321,7 +327,7 @@ namespace trview
         _selected_item = item;
         if (_track_item)
         {
-            load_room_details(*_all_rooms[item.room()]);
+            load_room_details(_all_rooms[item.room()]);
             const auto& list_item = create_listbox_item(item);
             _items_list->set_selected_item(list_item);
         }
@@ -332,7 +338,7 @@ namespace trview
         _selected_trigger = trigger;
         if (_track_trigger)
         {
-            load_room_details(*_all_rooms[trigger->room()]);
+            load_room_details(_all_rooms[trigger->room()]);
             const auto& list_item = create_listbox_item(*trigger);
             _triggers_list->set_selected_item(list_item);
         }
@@ -359,8 +365,14 @@ namespace trview
         _minimap->set_position(Point((341 - map_size.width) / 2.0f, (341 - map_size.height) / 2.0f));
     }
 
-    void RoomsWindow::load_room_details(const Room& room)
+    void RoomsWindow::load_room_details(const std::weak_ptr<IRoom>& room_ptr)
     {
+        const auto room = room_ptr.lock();
+        if (!room)
+        {
+            return;
+        }
+
         using namespace ui;
 
         // Clear lists.
@@ -369,7 +381,7 @@ namespace trview
         _neighbours_list->clear_selection();
 
         // Minimap stuff 
-        _map_renderer->load(&room);
+        _map_renderer->load(room);
         render_minimap();
 
         // Load the stats for the room.
@@ -379,33 +391,33 @@ namespace trview
         };
 
         std::vector<Listbox::Item> stats;
-        stats.push_back(make_item(L"X", std::to_wstring(room.info().x)));
-        stats.push_back(make_item(L"Y", std::to_wstring(room.info().yBottom)));
-        stats.push_back(make_item(L"Z", std::to_wstring(room.info().z)));
-        if (room.water())
+        stats.push_back(make_item(L"X", std::to_wstring(room->info().x)));
+        stats.push_back(make_item(L"Y", std::to_wstring(room->info().yBottom)));
+        stats.push_back(make_item(L"Z", std::to_wstring(room->info().z)));
+        if (room->water())
         {
-            stats.push_back(make_item(L"Water", format_bool(room.water())));
+            stats.push_back(make_item(L"Water", format_bool(room->water())));
         }
-        if (room.outside())
+        if (room->outside())
         {
-            stats.push_back(make_item(L"Outside", format_bool(room.outside())));
+            stats.push_back(make_item(L"Outside", format_bool(room->outside())));
         }
-        if (room.quicksand())
+        if (room->quicksand())
         {
-            stats.push_back(make_item(L"Quicksand", format_bool(room.quicksand())));
+            stats.push_back(make_item(L"Quicksand", format_bool(room->quicksand())));
         }
-        if (room.alternate_mode() != Room::AlternateMode::None)
+        if (room->alternate_mode() != Room::AlternateMode::None)
         {
-            stats.push_back(make_item(L"Alternate", std::to_wstring(room.alternate_room())));
-            if (room.alternate_group() != 0xff)
+            stats.push_back(make_item(L"Alternate", std::to_wstring(room->alternate_room())));
+            if (room->alternate_group() != 0xff)
             {
-                stats.push_back(make_item(L"Alternate Group", std::to_wstring(room.alternate_group())));
+                stats.push_back(make_item(L"Alternate Group", std::to_wstring(room->alternate_group())));
             }
         }
         _stats_box->set_items(stats);
 
         std::vector<Listbox::Item> list_neighbours;
-        for (auto& neighbour : room.neighbours())
+        for (auto& neighbour : room->neighbours())
         {
             list_neighbours.push_back({{{{ L"#", std::to_wstring(neighbour)}}}});
         }
@@ -415,7 +427,7 @@ namespace trview
         std::vector<Listbox::Item> list_items;
         for (const auto& item : _all_items)
         {
-            if (item.room() == room.number())
+            if (item.room() == room->number())
             {
                 list_items.push_back(create_listbox_item(item));
             }
@@ -425,7 +437,7 @@ namespace trview
         std::vector<Listbox::Item> list_triggers;
         for (const auto& trigger : _all_triggers)
         {
-            if (trigger->room() == room.number())
+            if (trigger->room() == room->number())
             {
                 list_triggers.push_back(create_listbox_item(*trigger));
             }

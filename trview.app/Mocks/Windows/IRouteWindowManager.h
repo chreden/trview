@@ -13,7 +13,7 @@ namespace trview
             MOCK_METHOD(void, set_route, (IRoute*));
             MOCK_METHOD(void, create_window, ());
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
-            MOCK_METHOD(void, set_rooms, (const std::vector<Room*>&) );
+            MOCK_METHOD(void, set_rooms, (const std::vector<std::weak_ptr<IRoom>>&) );
             MOCK_METHOD(void, set_triggers, (const std::vector<Trigger*>&));
             MOCK_METHOD(void, select_waypoint, (uint32_t));
         };

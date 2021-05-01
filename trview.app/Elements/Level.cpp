@@ -19,16 +19,16 @@ namespace trview
 {
     Level::Level(const std::shared_ptr<graphics::IDevice>& device,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
-        std::unique_ptr<trlevel::ILevel>&& level,
+        std::unique_ptr<trlevel::ILevel> level,
         std::unique_ptr<ILevelTextureStorage> level_texture_storage,
         std::unique_ptr<IMeshStorage> mesh_storage,
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
-        const std::shared_ptr<ITypeNameLookup>& type_names,
-        const IMesh::Source& mesh_source,
+        std::shared_ptr<ITypeNameLookup> type_names,
         const IMesh::TransparentSource& mesh_transparent_source,
         const IEntity::EntitySource& entity_source,
-        const IEntity::AiSource& ai_source)
+        const IEntity::AiSource& ai_source,
+        const IRoom::Source& room_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -57,7 +57,7 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
-        generate_rooms(*level, mesh_source);
+        generate_rooms(*level, room_source);
         generate_triggers(mesh_transparent_source);
         generate_entities(*level, *type_names, entity_source, ai_source);
 
@@ -65,10 +65,6 @@ namespace trview
         {
             room->update_bounding_box();
         }
-    }
-
-    Level::~Level()
-    {
     }
 
     std::vector<RoomInfo> Level::room_info() const
@@ -111,10 +107,10 @@ namespace trview
         return static_cast<uint32_t>(_rooms.size());
     }
 
-    std::vector<Room*> Level::rooms() const
+    std::vector<std::weak_ptr<IRoom>> Level::rooms() const
     {
-        std::vector<Room*> rooms;
-        std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](const auto& room) { return room.get(); });
+        std::vector<std::weak_ptr<IRoom>> rooms;
+        std::transform(_rooms.begin(), _rooms.end(), std::back_inserter(rooms), [](auto&& room) { return room; });;
         return rooms;
     }
 
@@ -291,7 +287,7 @@ namespace trview
 
         DirectX::BoundingFrustum frustum = camera.frustum();
 
-        auto in_view = [&](const Room& room)
+        auto in_view = [&](const IRoom& room)
         {
             return camera.projection_mode() == ProjectionMode::Orthographic || frustum.Contains(room.bounding_box()) != DirectX::DISJOINT;
         };
@@ -325,13 +321,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const trlevel::ILevel& level, const IMesh::Source& mesh_source)
+    void Level::generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source)
     {
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
-            _rooms.push_back(std::make_unique<Room>(mesh_source, level, room, *_texture_storage.get(), *_mesh_storage.get(), i, *this));
+            _rooms.push_back(room_source(level, room, *_texture_storage, *_mesh_storage, i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -574,7 +570,7 @@ namespace trview
 
     // Determines whether the alternate mode specified is a mismatch with the current setting of 
     // the alternate mode flag.
-    bool Level::is_alternate_mismatch(const Room& room) const
+    bool Level::is_alternate_mismatch(const IRoom& room) const
     {
         if (version() >= trlevel::LevelVersion::Tomb4)
         {
@@ -594,7 +590,7 @@ namespace trview
 
     bool Level::any_alternates() const
     {
-        return std::any_of(_rooms.begin(), _rooms.end(), [](const std::unique_ptr<Room>& room)
+        return std::any_of(_rooms.begin(), _rooms.end(), [](const std::shared_ptr<IRoom>& room)
         {
             return room->alternate_mode() != Room::AlternateMode::None;
         });
@@ -680,6 +676,11 @@ namespace trview
     void Level::set_filename(const std::string& filename)
     {
         _filename = filename;
+    }
+
+    std::weak_ptr<IRoom> Level::room(uint32_t id) const
+    {
+        return _rooms[id];
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

@@ -45,7 +45,7 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
-        ILevel& parent_level)
+        const ILevel& parent_level)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
@@ -391,7 +391,7 @@ namespace trview
                  (_info.z / trlevel::Scale_Z) + _num_z_sectors / 2.f);
     }
 
-    const DirectX::BoundingBox& Room::bounding_box() const
+    DirectX::BoundingBox Room::bounding_box() const
     {
         return _bounding_box;
     }
@@ -518,22 +518,24 @@ namespace trview
             return nullptr;
         }
 
-        auto room_number = sector->portal();
-        auto room = _level.room(room_number);
+        auto room = _level.room(sector->portal()).lock();
+        if (!room)
+        {
+            return nullptr;
+        }
 
         // Get the world position of the target sector.
         auto world_x = (_info.x / trlevel::Scale_X) + x;
         auto world_z = (_info.z / trlevel::Scale_Z) + z;
 
         // Convert the world position into the space of the other room.
-        auto other_x = static_cast<int32_t>(world_x - (room->_info.x / trlevel::Scale_X));
-        auto other_z = static_cast<int32_t>(world_z - (room->_info.z / trlevel::Scale_Z));
+        auto other_x = static_cast<int32_t>(world_x - (room->info().x / trlevel::Scale_X));
+        auto other_z = static_cast<int32_t>(world_z - (room->info().z / trlevel::Scale_Z));
 
-        auto other_sector_id = room->get_sector_id(other_x, other_z);
-        auto other_trigger = room->_triggers.find(other_sector_id);
-        if (other_trigger != room->_triggers.end())
+        auto other_trigger = room->trigger_at(other_x, other_z);
+        if (other_trigger)
         {
-            return room->_sectors[other_sector_id].get();
+            return room->sectors()[other_trigger->sector_id()].get();
         }
 
         return nullptr;
@@ -700,8 +702,30 @@ namespace trview
         return _level.version() == trlevel::LevelVersion::Tomb3 && (_flags & 0x80);
     }
 
-    const std::vector<std::shared_ptr<Sector>>& Room::sectors() const
+    const std::vector<std::shared_ptr<Sector>> Room::sectors() const
     {
         return _sectors; 
+    }
+
+    Trigger* Room::trigger_at(int32_t x, int32_t z) const
+    {
+        auto sector_id = get_sector_id(x, z);
+        auto found = _triggers.find(sector_id);
+        if (found != _triggers.end())
+        {
+            return found->second;
+        }
+        return nullptr;
+    }
+
+    uint16_t Room::num_x_sectors() const
+    {
+        return _num_x_sectors; 
+    }
+
+    // Returns the number of z sectors in the room 
+    uint16_t Room::num_z_sectors() const 
+    {
+        return _num_z_sectors; 
     }
 }

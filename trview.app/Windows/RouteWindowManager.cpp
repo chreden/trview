@@ -80,7 +80,7 @@ namespace trview
         }
     }
 
-    void RouteWindowManager::set_rooms(const std::vector<Room*>& rooms)
+    void RouteWindowManager::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         _all_rooms = rooms;
         if (_route_window)

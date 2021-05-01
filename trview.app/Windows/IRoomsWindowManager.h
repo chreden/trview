@@ -30,7 +30,7 @@ namespace trview
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.
-        virtual void set_rooms(const std::vector<Room*>& items) = 0;
+        virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& items) = 0;
 
         /// Set the item currently selected in the viewer.
         /// @param item The item currently selected.
