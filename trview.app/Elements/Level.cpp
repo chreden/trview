@@ -28,7 +28,8 @@ namespace trview
         const IMesh::TransparentSource& mesh_transparent_source,
         const IEntity::EntitySource& entity_source,
         const IEntity::AiSource& ai_source,
-        const IRoom::Source& room_source)
+        const IRoom::Source& room_source,
+        const ITrigger::Source& trigger_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -58,7 +59,7 @@ namespace trview
         _sampler_state = device->create_sampler_state(sampler_desc);
 
         generate_rooms(*level, room_source);
-        generate_triggers(mesh_transparent_source);
+        generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source);
 
         for (auto& room : _rooms)
@@ -114,11 +115,10 @@ namespace trview
         return rooms;
     }
 
-    std::vector<Trigger*> Level::triggers() const
+    std::vector<std::weak_ptr<ITrigger>> Level::triggers() const
     {
-        std::vector<Trigger*> triggers;
-        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers),
-            [](const auto& trigger) { return trigger.get(); });
+        std::vector<std::weak_ptr<ITrigger>> triggers;
+        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers), [](const auto& trigger) { return trigger; });
         return triggers;
     }
 
@@ -273,9 +273,13 @@ namespace trview
             _selection_renderer->render(camera, *_texture_storage, *selected_item, Item_Outline);
         }
 
-        if (_show_triggers && _selected_trigger)
+        if (_show_triggers)
         {
-            _selection_renderer->render(camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
+            auto selected_trigger = _selected_trigger.lock();
+            if (selected_trigger)
+            {
+                _selection_renderer->render(camera, *_texture_storage, *selected_trigger, Trigger_Outline);
+            }
         }
     }
 
@@ -350,7 +354,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers(const IMesh::TransparentSource& mesh_transparent_source)
+    void Level::generate_triggers(const ITrigger::Source& trigger_source)
     {
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
@@ -359,9 +363,8 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Trigger)
                 {
-                    // TODO: Use DI?
-                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), mesh_transparent_source));
-                    room->add_trigger(_triggers.back().get());
+                    _triggers.push_back(trigger_source(_triggers.size(), i, sector->x(), sector->z(), sector->trigger()));
+                    room->add_trigger(_triggers.back());
                 }
             }
         }
@@ -382,12 +385,12 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(entity);
 
-            std::vector<Trigger*> relevant_triggers;
+            std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
                 if (trigger->triggers_item(i))
                 {
-                    relevant_triggers.push_back(trigger.get());
+                    relevant_triggers.push_back(trigger);
                 }
             }
 
@@ -635,7 +638,7 @@ namespace trview
 
     void Level::set_selected_trigger(uint32_t number)
     {
-        _selected_trigger = _triggers[number].get();
+        _selected_trigger = _triggers[number];
         on_level_changed();
     }
 

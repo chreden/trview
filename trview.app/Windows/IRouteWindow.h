@@ -21,7 +21,7 @@ namespace trview
         Event<Item> on_item_selected;
 
         /// Event raised when a trigger is selected.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the route colour has been changed.
         Event<Colour> on_colour_changed;
@@ -58,7 +58,7 @@ namespace trview
 
         /// Set the triggers in the level.
         /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& trigger) = 0;
 
         virtual void focus() = 0;
     };

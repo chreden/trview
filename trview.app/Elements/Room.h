@@ -39,7 +39,7 @@ namespace trview
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
         virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) override;
         virtual void add_entity(IEntity* entity) override;
-        virtual void add_trigger(Trigger* trigger) override;
+        virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual const std::vector<std::shared_ptr<Sector>> sectors() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false) override;
@@ -57,7 +57,7 @@ namespace trview
         virtual bool outside() const override;
         virtual bool water() const override;
         virtual bool quicksand() const override;
-        virtual Trigger* trigger_at(int32_t x, int32_t z) const override;
+        virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const override;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
@@ -110,7 +110,7 @@ namespace trview
         int16_t              _alternate_group;
         AlternateMode        _alternate_mode;
 
-        std::unordered_map<uint32_t, Trigger*> _triggers;
+        std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
         const ILevel& _level;
     };

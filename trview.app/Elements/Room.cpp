@@ -115,14 +115,15 @@ namespace trview
 
         if (include_triggers && pick_results.empty())
         {
-            for (const auto& trigger : _triggers)
+            for (const auto& trigger_pair : _triggers)
             {
-                if (!trigger.second->visible())
+                auto trigger = trigger_pair.second.lock();
+                if (!trigger || !trigger->visible())
                 {
                     continue;
                 }
 
-                auto trigger_result = trigger.second->pick(position, direction);
+                auto trigger_result = trigger->pick(position, direction);
                 if (trigger_result.hit)
                 {
                     pick_results.push_back(trigger_result);
@@ -294,9 +295,14 @@ namespace trview
         _entities.push_back(entity);
     }
 
-    void Room::add_trigger(Trigger* trigger)
+    void Room::add_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _triggers.insert({ trigger->sector_id(), trigger });
+        auto trigger_ptr = trigger.lock();
+        if (!trigger_ptr)
+        {
+            return;
+        }
+        _triggers.insert({ trigger_ptr->sector_id(), trigger });
     }
 
     void 
@@ -325,14 +331,15 @@ namespace trview
 
         if (include_triggers)
         {
-            for (const auto& trigger : _triggers)
+            for (const auto& trigger_pair : _triggers)
             {
-                if (!trigger.second->visible())
+                auto trigger = trigger_pair.second.lock();
+                if (!trigger || !trigger->visible())
                 {
                     continue;
                 }
 
-                for (const auto& triangle : trigger.second->triangles())
+                for (const auto& triangle : trigger->triangles())
                 {
                     transparency.add(triangle);
                 }
@@ -400,8 +407,12 @@ namespace trview
     {
         for (auto& trigger_iter : _triggers)
         {
-            // Information about sector height.
-            auto trigger = trigger_iter.second;
+            auto trigger = trigger_iter.second.lock();
+            if (!trigger)
+            {
+                continue;
+            }
+
             auto sector = _sectors[trigger->sector_id()];
             auto y_bottom = sector->corners();
 
@@ -532,7 +543,7 @@ namespace trview
         auto other_x = static_cast<int32_t>(world_x - (room->info().x / trlevel::Scale_X));
         auto other_z = static_cast<int32_t>(world_z - (room->info().z / trlevel::Scale_Z));
 
-        auto other_trigger = room->trigger_at(other_x, other_z);
+        auto other_trigger = room->trigger_at(other_x, other_z).lock();
         if (other_trigger)
         {
             return room->sectors()[other_trigger->sector_id()].get();
@@ -707,7 +718,7 @@ namespace trview
         return _sectors; 
     }
 
-    Trigger* Room::trigger_at(int32_t x, int32_t z) const
+    std::weak_ptr<ITrigger> Room::trigger_at(int32_t x, int32_t z) const
     {
         auto sector_id = get_sector_id(x, z);
         auto found = _triggers.find(sector_id);
@@ -715,7 +726,7 @@ namespace trview
         {
             return found->second;
         }
-        return nullptr;
+        return {};
     }
 
     uint16_t Room::num_x_sectors() const

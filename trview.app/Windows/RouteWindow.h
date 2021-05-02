@@ -30,30 +30,13 @@ namespace trview
         /// @param parent The parent window.
         explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard);
-
-        /// Destructor for triggers window
         virtual ~RouteWindow() = default;
-
         virtual void render(bool vsync) override;
-
-        /// Load the waypoints from the route.
-        /// @param route The route to load from.
         virtual void set_route(IRoute* route) override;
-
-        /// Select the specified waypoint.
-        /// @param index The index of the waypoint to select.
         virtual void select_waypoint(uint32_t index) override;
-
-        /// Set the items to that are in the level.
-        /// @param items The items to show.
         virtual void set_items(const std::vector<Item>& items) override;
-
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-
-        /// Set the triggers in the level.
-        /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
-
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void focus() override;
     private:
         void load_waypoint_details(uint32_t index);
@@ -71,7 +54,7 @@ namespace trview
         IRoute* _route{ nullptr };
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
-        std::vector<Trigger*> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
         std::shared_ptr<IClipboard> _clipboard;

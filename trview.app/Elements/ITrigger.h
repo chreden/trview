@@ -5,36 +5,14 @@
 #include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/TransparentTriangle.h>
 #include <trview.app/Geometry/PickResult.h>
+#include <trview.app/Elements/Types.h>
 
 namespace trview
 {
-    enum class TriggerType
-    {
-        Trigger, Pad, Switch, Key, Pickup, HeavyTrigger, Antipad, Combat, Dummy,
-        AntiTrigger, HeavySwitch, HeavyAntiTrigger, Monkey, Skeleton, Tightrope, Crawl, Climb
-    };
-
-    enum class TriggerCommandType
-    {
-        Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
-        EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies, Flyby, Cutscene
-    };
-
-    class Command final
-    {
-    public:
-        Command(uint32_t number, TriggerCommandType type, uint16_t index);
-        uint32_t number() const;
-        TriggerCommandType type() const;
-        uint16_t index() const;
-    private:
-        uint32_t _number;
-        TriggerCommandType _type;
-        uint16_t _index;
-    };
-
     struct ITrigger : public IRenderable
     {
+        using Source = std::function<std::shared_ptr<ITrigger>(uint32_t, uint32_t, uint16_t, uint16_t, const TriggerInfo&)>;
+
         virtual ~ITrigger() = 0;
         virtual uint32_t number() const = 0;
         virtual uint32_t room() const = 0;

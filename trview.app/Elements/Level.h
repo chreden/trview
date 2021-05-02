@@ -41,7 +41,8 @@ namespace trview
             const IMesh::TransparentSource& mesh_transparent_source,
             const IEntity::EntitySource& entity_source,
             const IEntity::AiSource& ai_source,
-            const IRoom::Source& room_source);
+            const IRoom::Source& room_source,
+            const ITrigger::Source& trigger_source);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -50,7 +51,7 @@ namespace trview
         virtual std::vector<Item> items() const override;
         virtual uint32_t number_of_rooms() const override;
         virtual std::vector<std::weak_ptr<IRoom>> rooms() const override;
-        virtual std::vector<Trigger*> triggers() const override;
+        virtual std::vector<std::weak_ptr<ITrigger>> triggers() const override;
         virtual PickResult pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void render(const ICamera& camera, bool render_selection) override;
         virtual void render_transparency(const ICamera& camera) override;
@@ -82,7 +83,7 @@ namespace trview
         virtual void set_filename(const std::string& filename) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source);
-        void generate_triggers(const IMesh::TransparentSource& mesh_transparent_source);
+        void generate_triggers(const ITrigger::Source& trigger_source);
         void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
@@ -123,7 +124,7 @@ namespace trview
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
-        std::vector<std::unique_ptr<Trigger>> _triggers;
+        std::vector<std::shared_ptr<ITrigger>> _triggers;
         std::vector<std::shared_ptr<IEntity>> _entities;
         std::vector<Item> _items;
 
@@ -137,7 +138,7 @@ namespace trview
         
         uint16_t           _selected_room{ 0u };
         std::weak_ptr<IEntity> _selected_item;
-        Trigger*           _selected_trigger{ nullptr };
+        std::weak_ptr<ITrigger> _selected_trigger;
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 

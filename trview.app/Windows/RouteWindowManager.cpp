@@ -89,12 +89,9 @@ namespace trview
         }
     }
 
-    /// Set the triggers in the level.
-    /// @param triggers The triggers.
-    void RouteWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
+    void RouteWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
-
         if (_route_window)
         {
             _route_window->set_triggers(triggers);

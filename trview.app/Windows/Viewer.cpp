@@ -221,11 +221,10 @@ namespace trview
                     }
                     else if (_current_pick.type == PickResult::Type::Trigger)
                     {
-                        auto trigger = _level->triggers()[_current_pick.index];
-                        if (trigger->room() == _level->selected_room())
+                        auto trigger = _level->triggers()[_current_pick.index].lock();
+                        if (trigger && trigger->room() == _level->selected_room())
                         {
-                            const auto room = _level->room(trigger->room()).lock();
-                            if (room)
+                            if (const auto room = _level->room(trigger->room()).lock())
                             {
                                 info = room->info();
                             }
@@ -358,7 +357,8 @@ namespace trview
                     auto trigger = std::find_if(triggers.begin(), triggers.end(),
                         [&](auto t)
                     {
-                        return t->room() == sector->room() && t->sector_id() == sector->id();
+                        const auto t_ptr = t.lock();
+                        return t_ptr->room() == sector->room() && t_ptr->sector_id() == sector->id();
                     });
 
                     if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
@@ -646,9 +646,10 @@ namespace trview
         _scene_changed = true;
     }
 
-    void Viewer::select_trigger(const Trigger* const trigger)
+    void Viewer::select_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
-        _target = trigger->position();
+        auto trigger_ptr = trigger.lock();
+        _target = trigger_ptr->position();
         if (_settings.auto_orbit)
         {
             set_camera_mode(CameraMode::Orbit);
@@ -944,7 +945,14 @@ namespace trview
         case PickResult::Type::Entity:
             return _level->items()[pick.index].room();
         case PickResult::Type::Trigger:
-            return _level->triggers()[pick.index]->room();
+        {
+            const auto trigger = _level->triggers()[pick.index].lock();
+            if (trigger)
+            {
+                return trigger->room();
+            }
+            break;
+        }
         case PickResult::Type::Waypoint:
             return _route->waypoint(pick.index).room();
         }

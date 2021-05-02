@@ -366,7 +366,10 @@ namespace trview
         {
             if (waypoint.index() < _all_triggers.size())
             {
-                type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+                if (auto trigger = _all_triggers[waypoint.index()].lock())
+                {
+                    type = trigger_type_name(trigger->type());
+                }
             }
             else
             {
@@ -437,7 +440,10 @@ namespace trview
                 std::wstring type = L"Invalid trigger";
                 if (waypoint.index() < _all_triggers.size())
                 {
-                    type = trigger_type_name(_all_triggers[waypoint.index()]->type());
+                    if (auto trigger = _all_triggers[waypoint.index()].lock())
+                    {
+                        type = trigger_type_name(trigger->type());
+                    }
                 }
                 stats.push_back(make_item(L"Trigger Type", type));
             }
@@ -485,9 +491,7 @@ namespace trview
         _all_rooms = rooms;
     }
 
-    /// Set the triggers in the level.
-    /// @param triggers The triggers.
-    void RouteWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    void RouteWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
     }

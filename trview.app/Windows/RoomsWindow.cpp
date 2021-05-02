@@ -21,7 +21,7 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const std::weak_ptr<IRoom>& room_ptr, const std::vector<Item>& items, const std::vector<Trigger*>& triggers)
+        ui::Listbox::Item create_listbox_item(const std::weak_ptr<IRoom>& room_ptr, const std::vector<Item>& items, const std::vector<std::weak_ptr<ITrigger>>& triggers)
         {
             const auto room = room_ptr.lock();
             if (!room)
@@ -30,7 +30,11 @@ namespace trview
             }
 
             auto item_count = std::count_if(items.begin(), items.end(), [&room](const auto& item) { return item.room() == room->number(); });
-            auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) { return trigger->room() == room->number(); });
+            auto trigger_count = std::count_if(triggers.begin(), triggers.end(), [&room](const auto& trigger) 
+                { 
+                    auto trigger_ptr = trigger.lock();
+                    return trigger_ptr && trigger_ptr->room() == room->number();
+                });
 
             return
             {
@@ -50,7 +54,7 @@ namespace trview
                      { L"Type", item.type() }} };
         }
 
-        ui::Listbox::Item create_listbox_item(const Trigger& item)
+        ui::Listbox::Item create_listbox_item(const ITrigger& item)
         {
             return { {{ L"#", std::to_wstring(item.number()) },
                      { L"Type", trigger_type_name(item.type()) }} };
@@ -102,9 +106,10 @@ namespace trview
                 // Select triggers
                 for (const auto& trigger : _all_triggers)
                 {
-                    if (trigger->room() == _current_room && trigger->sector_id() == sector->id())
+                    auto trigger_ptr = trigger.lock();
+                    if (trigger_ptr && trigger_ptr->room() == _current_room && trigger_ptr->sector_id() == sector->id())
                     {
-                        _triggers_list->set_selected_item(create_listbox_item(*trigger));
+                        _triggers_list->set_selected_item(create_listbox_item(*trigger_ptr));
                         on_trigger_selected(trigger);
                         break;
                     }
@@ -333,18 +338,21 @@ namespace trview
         }
     }
 
-    void RoomsWindow::set_selected_trigger(const Trigger* const trigger)
+    void RoomsWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _selected_trigger = trigger;
         if (_track_trigger)
         {
-            load_room_details(_all_rooms[trigger->room()]);
-            const auto& list_item = create_listbox_item(*trigger);
-            _triggers_list->set_selected_item(list_item);
+            if (auto trigger_ptr = trigger.lock())
+            {
+                load_room_details(_all_rooms[trigger_ptr->room()]);
+                const auto& list_item = create_listbox_item(*trigger_ptr);
+                _triggers_list->set_selected_item(list_item);
+            }
         }
     }
 
-    void RoomsWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    void RoomsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _selected_trigger.reset();
         _triggers_list->set_items({});
@@ -437,9 +445,10 @@ namespace trview
         std::vector<Listbox::Item> list_triggers;
         for (const auto& trigger : _all_triggers)
         {
-            if (trigger->room() == room->number())
+            auto trigger_ptr = trigger.lock();
+            if (trigger_ptr && trigger_ptr->room() == room->number())
             {
-                list_triggers.push_back(create_listbox_item(*trigger));
+                list_triggers.push_back(create_listbox_item(*trigger_ptr));
             }
         }
         _triggers_list->set_items(list_triggers);
@@ -536,10 +545,7 @@ namespace trview
         if (_track_trigger != value)
         {
             _track_trigger = value;
-            if (_selected_trigger.has_value())
-            {
-                set_selected_trigger(_selected_trigger.value());
-            }
+            set_selected_trigger(_selected_trigger);
         }
 
         if (_track_trigger_checkbox->state() != _track_trigger)

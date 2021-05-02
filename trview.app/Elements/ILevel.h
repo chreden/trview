@@ -86,7 +86,7 @@ namespace trview
         virtual const ILevelTextureStorage& texture_storage() const = 0;
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
-        virtual std::vector<Trigger*> triggers() const = 0;
+        virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;

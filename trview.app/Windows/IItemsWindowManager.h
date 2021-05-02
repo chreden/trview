@@ -15,7 +15,7 @@ namespace trview
         Event<Item, bool> on_item_visibility;
 
         /// Event raised when a trigger is selected in one of the item windows.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the 'add to route' button is pressed in one of the item windows.
         Event<Item> on_add_to_route;
@@ -36,7 +36,7 @@ namespace trview
 
         /// Set the triggers to use in the windows.
         /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         /// Set the current room to filter item windows.
         /// @param room The current room.

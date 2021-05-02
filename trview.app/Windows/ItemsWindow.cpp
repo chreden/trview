@@ -64,7 +64,7 @@ namespace trview
         }
     }
 
-    void ItemsWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    void ItemsWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
         _trigger_list->set_items({});
@@ -276,12 +276,17 @@ namespace trview
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
+            auto trigger_ptr = trigger.lock();
+            if (!trigger_ptr)
+            {
+                continue;
+            }
             triggers.push_back(
                 {
                     {
-                        { L"#", std::to_wstring(trigger->number()) },
-                        { L"Room", std::to_wstring(trigger->room()) },
-                        { L"Type", trigger_type_name(trigger->type()) },
+                        { L"#", std::to_wstring(trigger_ptr->number()) },
+                        { L"Room", std::to_wstring(trigger_ptr->room()) },
+                        { L"Type", trigger_type_name(trigger_ptr->type()) },
                     }
                 });
         }
