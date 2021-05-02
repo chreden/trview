@@ -4,7 +4,6 @@
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
 #include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
@@ -45,7 +44,6 @@ namespace
             di::bind<ILevelTextureStorage>.to<MockLevelTextureStorage>(),
             di::bind<trlevel::ILevel>.to([&](auto&&) { return std::move(level); }),
             di::bind<IMeshStorage>.to<MockMeshStorage>(),
-            di::bind<IMesh::TransparentSource>.to([&](auto&) { return [](auto, auto) { return std::make_unique<MockMesh>(); }; }),
             di::bind<IEntity::EntitySource>.to(entity_source),
             di::bind<IEntity::AiSource>.to(ai_source),
             di::bind<IRoom::Source>.to(room_source),

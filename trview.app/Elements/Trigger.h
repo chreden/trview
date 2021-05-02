@@ -8,14 +8,11 @@ namespace trview
 {
     struct TriggerInfo;
 
-    class TransparencyBuffer;
-
     class Trigger final : public ITrigger
     {
     public:
         explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
-
         virtual uint32_t number() const override;
         virtual uint32_t room() const override;
         virtual uint16_t x() const override;
@@ -32,7 +29,6 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
-
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;

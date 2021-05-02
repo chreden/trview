@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
 #include <SimpleMath.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 

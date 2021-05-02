@@ -1,8 +1,5 @@
 #include "Trigger.h"
 #include <trview.app/Elements/Types.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
-
-using namespace Microsoft::WRL;
 
 namespace trview
 {

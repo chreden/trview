@@ -4,15 +4,10 @@
 #include <trview.graphics/IShader.h>
 
 #include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 
-using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -462,7 +457,7 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    PickResult Level::pick(const ICamera& camera, const Vector3& position, const Vector3& direction) const
     {
         PickResult final_result;
         

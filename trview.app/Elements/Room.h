@@ -10,7 +10,7 @@
 
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Geometry/PickResult.h>
