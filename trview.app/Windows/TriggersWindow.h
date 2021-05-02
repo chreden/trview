@@ -5,7 +5,7 @@
 
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 #include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
 #include <trview.common/Windows/IClipboard.h>

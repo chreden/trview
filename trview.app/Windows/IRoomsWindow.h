@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
-#include <trview.app/Elements/Room.h>
+#include <trview.app/Elements/ITrigger.h>
+#include <trview.app/Elements/IRoom.h>
 
 namespace trview
 {

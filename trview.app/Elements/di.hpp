@@ -3,6 +3,7 @@
 #include <external/boost/di.hpp>
 #include "Level.h"
 #include "TypeNameLookup.h"
+#include "Entity.h"
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -68,7 +69,6 @@ namespace trview
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
                             injector.create<std::shared_ptr<ITypeNameLookup>>(),
-                            injector.create<IMesh::TransparentSource>(),
                             injector.create<IEntity::EntitySource>(),
                             injector.create<IEntity::AiSource>(),
                             injector.create<IRoom::Source>(),

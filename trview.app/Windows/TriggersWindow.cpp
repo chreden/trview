@@ -31,7 +31,7 @@ namespace trview
                      { L"Hide", std::to_wstring(!item.visible()) }}};
         }
 
-        ui::Listbox::Item create_listbox_item_pointer(const std::weak_ptr<ITrigger>& const trigger)
+        ui::Listbox::Item create_listbox_item_pointer(const std::weak_ptr<ITrigger>& trigger)
         {
             if (const auto trigger_ptr = trigger.lock())
             {
@@ -297,7 +297,7 @@ namespace trview
                 return;
             }
 
-            if (!_selected_commands.empty() && !trigger_ptr->has_any_command(_selected_commands))
+            if (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands))
             {
                 _selected_commands.clear();
                 _command_filter->set_selected_value(L"All");
@@ -413,7 +413,7 @@ namespace trview
 
         auto command_filter = [&](const auto& trigger)
         {
-            return _selected_commands.empty() || trigger->has_any_command(_selected_commands);
+            return _selected_commands.empty() || has_any_command(*trigger, _selected_commands);
         };
 
         std::vector<std::weak_ptr<ITrigger>> filtered_triggers;

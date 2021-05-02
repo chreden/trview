@@ -12,9 +12,6 @@
 
 namespace trview
 {
-    class Room;
-    class Trigger;
-
     class RoomsWindow final : public IRoomsWindow, public CollapsiblePanel
     {
     public:

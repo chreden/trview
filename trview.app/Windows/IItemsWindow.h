@@ -4,7 +4,7 @@
 #include <optional>
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 
 namespace trview
 {

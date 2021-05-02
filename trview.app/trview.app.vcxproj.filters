@@ -773,6 +773,9 @@
     <ClInclude Include="Elements\ITrigger.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\ITrigger.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -150,14 +150,14 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(level_loader, load_level("test_path.tr2")).WillOnce(Return(ByMove(std::move(level_ptr))));
     
     EXPECT_CALL(items_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_items"); });
-    EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
+    EXPECT_CALL(items_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("items_triggers"); });
     EXPECT_CALL(triggers_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_items"); });
-    EXPECT_CALL(triggers_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_triggers"); });
+    EXPECT_CALL(triggers_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("triggers_triggers"); });
     EXPECT_CALL(rooms_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_items"); });
-    EXPECT_CALL(rooms_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_triggers"); });
+    EXPECT_CALL(rooms_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_triggers"); });
     EXPECT_CALL(rooms_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("rooms_rooms"); });
     EXPECT_CALL(route_window_manager, set_items(A<const std::vector<Item>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_items"); });
-    EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<Trigger*>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
+    EXPECT_CALL(route_window_manager, set_triggers(A<const std::vector<std::weak_ptr<ITrigger>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_triggers"); });
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });

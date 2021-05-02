@@ -24,12 +24,10 @@ namespace trview
         virtual uint16_t flags() const = 0;
         virtual uint8_t timer() const = 0;
         virtual uint16_t sector_id() const = 0;
-        virtual const std::vector<Command>& commands() const = 0;
+        virtual const std::vector<Command> commands() const = 0;
         virtual const std::vector<TransparentTriangle>& triangles() const = 0;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
-        virtual bool has_command(TriggerCommandType type) const = 0;
-        virtual bool has_any_command(const std::vector<TriggerCommandType>& type) const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
     };
@@ -49,4 +47,7 @@ namespace trview
     /// @param name The string to convert.
     /// @returns The trigger command type.
     TriggerCommandType command_from_name(const std::wstring& name);
+
+    bool has_command(const ITrigger& trigger, TriggerCommandType type);
+    bool has_any_command(const ITrigger& trigger, const std::vector<TriggerCommandType>& type);
 }

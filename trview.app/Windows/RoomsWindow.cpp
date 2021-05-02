@@ -2,9 +2,9 @@
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Image.h>
-#include <trview.app/Elements/Room.h>
+#include <trview.app/Elements/IRoom.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 #include <trview.common/Strings.h>
 #include <trview.input/IMouse.h>
 

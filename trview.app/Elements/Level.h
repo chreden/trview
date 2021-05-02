@@ -38,7 +38,6 @@ namespace trview
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
             std::shared_ptr<ITypeNameLookup> type_names,
-            const IMesh::TransparentSource& mesh_transparent_source,
             const IEntity::EntitySource& entity_source,
             const IEntity::AiSource& ai_source,
             const IRoom::Source& room_source,

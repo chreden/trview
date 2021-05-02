@@ -5,7 +5,7 @@
 
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/ILevel.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Routing/Waypoint.h>

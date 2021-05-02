@@ -10,6 +10,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -388,15 +389,17 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 {
     auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, number).WillByDefault(testing::Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(testing::Return(1));
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger1.get(), trigger2.get() }, DirectX::SimpleMath::Vector3::Zero)
+        Item(1, 0, 0, L"Type", 0, 0, { trigger1, trigger2 }, DirectX::SimpleMath::Vector3::Zero)
     };
     window->set_items(items);
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
@@ -421,17 +424,17 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
     auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger = std::make_shared<MockTrigger>();
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
-        Item(1, 0, 0, L"Type", 0, 0, { trigger.get() }, DirectX::SimpleMath::Vector3::Zero)
+        Item(1, 0, 0, L"Type", 0, 0, { trigger }, DirectX::SimpleMath::Vector3::Zero)
     };
     window->set_items(items);
-    window->set_triggers({ trigger.get() });
+    window->set_triggers({ trigger });
 
     auto list = window->root_control()->find<ui::Listbox>(ItemsWindow::Names::items_listbox);
     ASSERT_NE(list, nullptr);
@@ -454,5 +457,5 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
     triggers_cell->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value()->number(), 0);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }

@@ -25,7 +25,6 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         std::shared_ptr<ITypeNameLookup> type_names,
-        const IMesh::TransparentSource& mesh_transparent_source,
         const IEntity::EntitySource& entity_source,
         const IEntity::AiSource& ai_source,
         const IRoom::Source& room_source,
@@ -230,7 +229,7 @@ namespace trview
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
-            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
                 original_room->render_contained(camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
@@ -306,7 +305,7 @@ namespace trview
                 {
                     continue;
                 }
-                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, i);
+                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, i);
             }
         }
         else
@@ -318,7 +317,7 @@ namespace trview
                 {
                     continue;
                 }
-                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, static_cast<uint16_t>(i));
+                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, static_cast<uint16_t>(i));
             }
         }
 
@@ -341,7 +340,7 @@ namespace trview
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
-            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            if (room->alternate_mode() == IRoom::AlternateMode::HasAlternate)
             {
                 alternate_groups.insert(room->alternate_group());
 
@@ -484,7 +483,7 @@ namespace trview
         for (auto& room : rooms)
         {
             choose(room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry));
-            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
                 choose(original_room->pick(position, direction, true, false, false, false));
@@ -577,12 +576,12 @@ namespace trview
     {
         if (version() >= trlevel::LevelVersion::Tomb4)
         {
-            return room.alternate_mode() == Room::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
-                   room.alternate_mode() == Room::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
+            return room.alternate_mode() == IRoom::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
+                   room.alternate_mode() == IRoom::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
         }
 
-        return room.alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode ||
-               room.alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode;
+        return room.alternate_mode() == IRoom::AlternateMode::IsAlternate && !_alternate_mode ||
+               room.alternate_mode() == IRoom::AlternateMode::HasAlternate && _alternate_mode;
     }
 
     // Get the current state of the alternate mode (flipmap).
@@ -595,7 +594,7 @@ namespace trview
     {
         return std::any_of(_rooms.begin(), _rooms.end(), [](const std::shared_ptr<IRoom>& room)
         {
-            return room->alternate_mode() != Room::AlternateMode::None;
+            return room->alternate_mode() != IRoom::AlternateMode::None;
         });
     }
 
@@ -653,7 +652,7 @@ namespace trview
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
-            if (room->alternate_mode() != Room::AlternateMode::None)
+            if (room->alternate_mode() != IRoom::AlternateMode::None)
             {
                 groups.insert(room->alternate_group());
             }

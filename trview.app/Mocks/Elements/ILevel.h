@@ -44,7 +44,7 @@ namespace trview
             MOCK_METHOD(bool, show_hidden_geometry, (), (const));
             MOCK_METHOD(bool, show_triggers, (), (const));
             MOCK_METHOD(const ILevelTextureStorage&, texture_storage, (), (const));
-            MOCK_METHOD(std::vector<Trigger*>, triggers, (), (const));
+            MOCK_METHOD(std::vector<std::weak_ptr<ITrigger>>, triggers, (), (const));
             MOCK_METHOD(trlevel::LevelVersion, version, (), (const));
         };
     }

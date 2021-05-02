@@ -10,6 +10,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -18,6 +19,7 @@ using namespace trview::graphics::mocks;
 using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
+using testing::Return;
 
 namespace
 {
@@ -39,13 +41,14 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<const Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
-    window->set_triggers(triggers);
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, number).WillByDefault(Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
@@ -58,20 +61,19 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value(), trigger2.get());
+    ASSERT_EQ(raised_trigger.value().lock(), trigger2);
 }
 
 TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<const Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
-    window->set_triggers(triggers);
+    auto trigger1 = std::make_shared<MockTrigger>();
+    auto trigger2 = std::make_shared<MockTrigger>();
+    window->set_triggers({ trigger1, trigger2 });
 
     auto sync = window->root_control()->find<ui::Checkbox>(TriggersWindow::Names::sync_trigger_checkbox);
     ASSERT_NE(sync, nullptr);
@@ -94,12 +96,12 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    auto trigger2 = std::make_shared<MockTrigger>();
+    window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -113,19 +115,23 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value()->number(), 0);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger1);
 }
 
 TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, room).WillByDefault(Return(55));
+    ON_CALL(*trigger1, number).WillByDefault(Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, room).WillByDefault(Return(78));
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
     auto track = window->root_control()->find<ui::Checkbox>(TriggersWindow::Names::track_room_checkbox);
@@ -143,19 +149,18 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value()->number(), 1);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger2);
 }
 
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-
-    std::optional<const Trigger*> raised_trigger;
-    auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
-
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Camera, 1 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get(), trigger2.get() };
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 1) }));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1, trigger2 };
     window->set_triggers(triggers);
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -189,32 +194,33 @@ TEST(TriggersWindow, AddToRouteEventRaised)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<const Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get() };
+    auto trigger1 = std::make_shared<MockTrigger>();
+    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1 };
 
     window->set_triggers(triggers);
-    window->set_selected_trigger(trigger1.get());
+    window->set_selected_trigger(trigger1);
 
     auto button = window->root_control()->find<ui::Button>(TriggersWindow::Names::add_to_route_button);
     ASSERT_NE(button, nullptr);
     button->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value(), trigger1.get());
+    ASSERT_EQ(raised_trigger.value().lock(), trigger1);
 }
 
 TEST(TriggersWindow, TriggerVisibilityRaised)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<std::tuple<const Trigger*, bool>> raised_trigger;
+    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = window->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get() };
+    auto trigger = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger, visible).WillByDefault(Return(true));
+    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
     window->set_triggers(triggers);
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -228,7 +234,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     cell->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()), trigger1.get());
+    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
     ASSERT_FALSE(std::get<1>(raised_trigger.value()));
 }
 
@@ -245,11 +251,11 @@ TEST(TriggersWindow, ItemSelectedRaised)
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 1 }}}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    std::vector<Trigger*> triggers{ trigger1.get() };
+    auto trigger = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 1) }));
     window->set_items(items);
-    window->set_triggers(triggers);
-    window->set_selected_trigger(trigger1.get());
+    window->set_triggers({ trigger });
+    window->set_selected_trigger(trigger);
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
     ASSERT_NE(list, nullptr);
@@ -264,18 +270,18 @@ TEST(TriggersWindow, ItemSelectedRaised)
     ASSERT_TRUE(raised_item.has_value());
     ASSERT_EQ(raised_item.value().number(), 1);
 
-    auto selected = window->selected_trigger();
+    auto selected = window->selected_trigger().lock();
     ASSERT_NE(selected, nullptr);
-    ASSERT_EQ(selected, trigger1.get());
+    ASSERT_EQ(selected, trigger);
 }
 
 TEST(TriggersWindow, SetTriggersLoadsTriggers)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    auto trigger2 = std::make_shared<MockTrigger>();
+    window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
@@ -290,13 +296,15 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
     ASSERT_NE(list, nullptr);
     ASSERT_TRUE(list->items().empty());
 
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get() });
+    bool visible = true;
+    auto trigger = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger, visible).WillByDefault([&]() { return visible; });
+    window->set_triggers({ trigger });
     ASSERT_EQ(list->items().size(), 1);
     ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
 
-    trigger1->set_visible(false);
-    window->update_triggers({ trigger1.get() });
+    visible = false;
+    window->update_triggers({ trigger });
     ASSERT_EQ(list->items()[0].value(L"Hide"), L"1");
 }
 
@@ -309,10 +317,10 @@ TEST(TriggersWindow, SetItemsLoadsItems)
         Item(0, 0, 0, L"Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
     };
     window->set_items(items);
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, { { TriggerCommandType::Object, 0 }} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get() });
-
-    window->set_selected_trigger(trigger1.get());
+    auto trigger = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 0) }));
+    window->set_triggers({ trigger });
+    window->set_selected_trigger(trigger);
 
     auto commands_list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::trigger_commands_listbox);
     ASSERT_NE(commands_list, nullptr);
@@ -327,12 +335,15 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, number).WillByDefault(Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
@@ -346,7 +357,7 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 
     ASSERT_TRUE(list->selected_item().has_value());
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value()->number(), 1);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger2);
 
     auto stats_list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
     ASSERT_NE(stats_list, nullptr);
@@ -374,12 +385,14 @@ TEST(TriggersWindow, SetTriggersClearsSelection)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Antipad, 0, { { TriggerCommandType::Camera, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
@@ -393,7 +406,7 @@ TEST(TriggersWindow, SetTriggersClearsSelection)
 
     ASSERT_TRUE(list->selected_item().has_value());
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value()->number(), 1);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger2);
 
     auto stats_list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
     ASSERT_NE(stats_list, nullptr);
@@ -421,27 +434,27 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
 
-    std::optional<Trigger*> raised_trigger;
-    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
-
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get() });
+    auto trigger = std::make_shared<MockTrigger>();
+    window->set_triggers({ trigger });
 
     auto stats_list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
     ASSERT_NE(stats_list, nullptr);
     ASSERT_EQ(stats_list->items().size(), 0);
 
-    window->set_selected_trigger(trigger1.get());
+    window->set_selected_trigger(trigger);
     ASSERT_NE(stats_list->items().size(), 0);
 }
 
 TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, room).WillByDefault(Return(55));
+    ON_CALL(*trigger1, number).WillByDefault(Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, room).WillByDefault(Return(78));
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -466,12 +479,18 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-
-    auto trigger1 = std::make_unique<Trigger>(0, 55, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOff, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger2 = std::make_unique<Trigger>(1, 78, 100, 200, TriggerInfo{0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipOn, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger3 = std::make_unique<Trigger>(2, 78, 100, 200, TriggerInfo{ 0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::FlipMap, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    auto trigger4 = std::make_unique<Trigger>(3, 78, 100, 200, TriggerInfo{ 0,0,0,TriggerType::Trigger, 0, { { TriggerCommandType::Object, 0 } } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    window->set_triggers({ trigger1.get(), trigger2.get(), trigger3.get(), trigger4.get() });
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, number).WillByDefault(Return(0));
+    ON_CALL(*trigger1, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipOff, 0) }));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipOn, 0) }));
+    auto trigger3 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger3, number).WillByDefault(Return(2));
+    ON_CALL(*trigger3, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipMap, 0) }));
+    auto trigger4 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger4, number).WillByDefault(Return(3));
+    window->set_triggers({ trigger1, trigger2, trigger3, trigger4 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
