@@ -1,5 +1,4 @@
 #include <trview.app/Elements/Level.h>
-#include <trview.app/Elements/ITypeNameLookup.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.graphics/mocks/IDevice.h>
 #include <trview.graphics/mocks/IShaderStorage.h>
