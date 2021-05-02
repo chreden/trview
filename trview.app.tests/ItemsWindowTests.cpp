@@ -66,7 +66,7 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
 
-    auto trigger = std::make_shared<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger = std::make_shared<MockTrigger>();
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
