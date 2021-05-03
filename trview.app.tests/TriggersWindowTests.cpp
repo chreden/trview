@@ -44,10 +44,8 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, number).WillByDefault(Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
     window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -125,12 +123,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, room).WillByDefault(Return(55));
-    ON_CALL(*trigger1, number).WillByDefault(Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, room).WillByDefault(Return(78));
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_room(55);
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_room(78);
     window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
@@ -155,11 +149,8 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 1) }));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
-    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1, trigger2 };
     window->set_triggers(triggers);
 
@@ -197,18 +188,18 @@ TEST(TriggersWindow, AddToRouteEventRaised)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<MockTrigger>();
-    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1 };
+    auto trigger = std::make_shared<MockTrigger>();
+    std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
 
     window->set_triggers(triggers);
-    window->set_selected_trigger(trigger1);
+    window->set_selected_trigger(trigger);
 
     auto button = window->root_control()->find<ui::Button>(TriggersWindow::Names::add_to_route_button);
     ASSERT_NE(button, nullptr);
     button->clicked(Point());
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value().lock(), trigger1);
+    ASSERT_EQ(raised_trigger.value().lock(), trigger);
 }
 
 TEST(TriggersWindow, TriggerVisibilityRaised)
@@ -218,8 +209,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = window->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
 
-    auto trigger = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger, visible).WillByDefault(Return(true));
+    auto trigger = std::make_shared<MockTrigger>()->with_visible(true);
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger };
     window->set_triggers(triggers);
 
@@ -251,8 +241,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
         Item(1, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
     };
 
-    auto trigger = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 1) }));
+    auto trigger = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
     window->set_items(items);
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);
@@ -297,8 +286,7 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
     ASSERT_TRUE(list->items().empty());
 
     bool visible = true;
-    auto trigger = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger, visible).WillByDefault([&]() { return visible; });
+    auto trigger = std::make_shared<MockTrigger>()->with_visible([&]() { return visible; });
     window->set_triggers({ trigger });
     ASSERT_EQ(list->items().size(), 1);
     ASSERT_EQ(list->items()[0].value(L"Hide"), L"0");
@@ -317,8 +305,7 @@ TEST(TriggersWindow, SetItemsLoadsItems)
         Item(0, 0, 0, L"Test Object", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),
     };
     window->set_items(items);
-    auto trigger = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Object, 0) }));
+    auto trigger = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 0) });
     window->set_triggers({ trigger });
     window->set_selected_trigger(trigger);
 
@@ -338,11 +325,8 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, number).WillByDefault(Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
-    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
     window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -389,9 +373,7 @@ TEST(TriggersWindow, SetTriggersClearsSelection)
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
     auto trigger1 = std::make_shared<MockTrigger>();
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
-    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::Camera, 1) }));
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
     window->set_triggers({ trigger1, trigger2 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
@@ -448,12 +430,8 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, room).WillByDefault(Return(55));
-    ON_CALL(*trigger1, number).WillByDefault(Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, room).WillByDefault(Return(78));
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_room(55);
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_room(78);
     window->set_triggers({ trigger1, trigger2 });
     window->set_current_room(78);
 
@@ -479,17 +457,10 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
     auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, number).WillByDefault(Return(0));
-    ON_CALL(*trigger1, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipOff, 0) }));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(Return(1));
-    ON_CALL(*trigger2, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipOn, 0) }));
-    auto trigger3 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger3, number).WillByDefault(Return(2));
-    ON_CALL(*trigger3, commands).WillByDefault(Return<std::vector<Command>>({ Command(0, TriggerCommandType::FlipMap, 0) }));
-    auto trigger4 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger4, number).WillByDefault(Return(3));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, 0) });
+    auto trigger3 = std::make_shared<MockTrigger>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, 0) });
+    auto trigger4 = std::make_shared<MockTrigger>()->with_number(3);
     window->set_triggers({ trigger1, trigger2, trigger3, trigger4 });
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);

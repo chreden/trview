@@ -1,4 +1,5 @@
 #include <trview.app/Application.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Menus/IUpdateChecker.h>
 #include <trview.app/Mocks/Menus/IFileDropper.h>
 #include <trview.app/Mocks/Menus/ILevelSwitcher.h>
@@ -13,7 +14,6 @@
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
 #include <external/boost/di.hpp>
 
 using namespace trview;

@@ -389,10 +389,8 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 {
     auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
 
-    auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, number).WillByDefault(testing::Return(0));
-    auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, number).WillByDefault(testing::Return(1));
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
+    auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
     std::vector<Item> items
     {
         Item(0, 0, 0, L"Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero),

@@ -6,7 +6,7 @@ namespace trview
 {
     namespace mocks
     {
-        struct MockTrigger final : public ITrigger
+        struct MockTrigger final : public ITrigger, public std::enable_shared_from_this<MockTrigger>
         {
             virtual ~MockTrigger() = default;
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, const DirectX::SimpleMath::Color&));
@@ -29,6 +29,36 @@ namespace trview
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const));
             MOCK_METHOD(void, set_position, (const DirectX::SimpleMath::Vector3&));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, position, (), (const));
+
+            std::shared_ptr<MockTrigger> with_number(uint32_t number)
+            {
+                ON_CALL(*this, number).WillByDefault(testing::Return(number));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_room(uint32_t room)
+            {
+                ON_CALL(*this, room).WillByDefault(testing::Return(room));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_commands(const std::vector<Command>& commands)
+            {
+                ON_CALL(*this, commands).WillByDefault(testing::Return(commands));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_visible(bool visible)
+            {
+                ON_CALL(*this, visible).WillByDefault(testing::Return(visible));
+                return shared_from_this();
+            }
+
+            std::shared_ptr<MockTrigger> with_visible(const std::function<bool()>& visible)
+            {
+                ON_CALL(*this, visible).WillByDefault(visible);
+                return shared_from_this();
+            }
         };
     }
 }
