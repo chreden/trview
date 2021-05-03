@@ -25,7 +25,8 @@ namespace trview
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
-        _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer))
+        _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
+        _selection_renderer(std::move(selection_renderer))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
         _pixel_shader = shader_storage->get("level_pixel_shader");
@@ -51,9 +52,9 @@ namespace trview
         // Create the texture sampler state.
         _sampler_state = device->create_sampler_state(sampler_desc);
 
-        generate_rooms(*level, room_source, *mesh_storage);
+        generate_rooms(*level, room_source);
         generate_triggers(trigger_source);
-        generate_entities(*level, *type_names, entity_source, ai_source, *mesh_storage);
+        generate_entities(*level, *type_names, entity_source, ai_source);
 
         for (auto& room : _rooms)
         {
@@ -318,13 +319,13 @@ namespace trview
         return rooms;
     }
 
-    void Level::generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage)
+    void Level::generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source)
     {
         const auto num_rooms = level.num_rooms();
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
-            _rooms.push_back(room_source(level, room, *_texture_storage, mesh_storage, i, *this));
+            _rooms.push_back(room_source(level, room, *_texture_storage, *_mesh_storage, i, *this));
         }
 
         std::set<uint32_t> alternate_groups;
@@ -368,13 +369,13 @@ namespace trview
         }
     }
 
-    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage)
+    void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source)
     {
         const uint32_t num_entities = level.num_entities();
         for (uint32_t i = 0; i < num_entities; ++i)
         {
             auto level_entity = level.get_entity(i);
-            auto entity = entity_source(level, level_entity, i, mesh_storage);
+            auto entity = entity_source(level, level_entity, i, *_mesh_storage);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(entity);
 
@@ -395,7 +396,7 @@ namespace trview
         for (uint32_t i = 0; i < num_ai_objects; ++i)
         {
             auto ai_object = level.get_ai_object(i);
-            auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage);
+            auto entity = ai_source(level, ai_object, num_entities + i, *_mesh_storage);
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(entity);
 
