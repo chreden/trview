@@ -9,7 +9,6 @@
 #include <trlevel/ILevel.h>
 #include <trview.app/Elements/ILevel.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.app/Geometry/Mesh.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.graphics/RenderTarget.h>
@@ -81,9 +80,9 @@ namespace trview
         virtual std::string filename() const override;
         virtual void set_filename(const std::string& filename) override;
     private:
-        void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source);
+        void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
-        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source);
+        void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
 
@@ -142,7 +141,6 @@ namespace trview
         std::set<uint16_t> _neighbours;
 
         std::unique_ptr<ILevelTextureStorage> _texture_storage;
-        std::unique_ptr<IMeshStorage> _mesh_storage;
         std::unique_ptr<ITransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };

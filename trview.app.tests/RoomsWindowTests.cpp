@@ -4,7 +4,6 @@
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.ui/Mocks/Input/IInput.h>

@@ -6,7 +6,6 @@
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
