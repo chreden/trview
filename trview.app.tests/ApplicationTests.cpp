@@ -189,3 +189,15 @@ TEST(Application, SavesSettingsOnShutdown)
     EXPECT_CALL(settings_loader, save_user_settings).Times(1);
     auto application = register_test_module(nullptr, std::move(settings_loader_ptr));
 }
+
+TEST(Application, FileOpenedFromCommandLine)
+{
+    auto startup_options = std::make_shared<MockStartupOptions>();
+    ON_CALL(*startup_options, filename).WillByDefault(testing::Return("test.tr2"));
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(1);
+    EXPECT_CALL(viewer, open).Times(1);
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr),
+        nullptr, nullptr, nullptr, nullptr, nullptr, startup_options);
+}
