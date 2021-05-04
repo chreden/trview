@@ -201,3 +201,12 @@ TEST(Application, FileOpenedFromCommandLine)
     auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr),
         nullptr, nullptr, nullptr, nullptr, nullptr, startup_options);
 }
+
+TEST(Application, FileNotOpenedWhenNotSpecified)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(0);
+    EXPECT_CALL(viewer, open).Times(0);
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr));
+}
