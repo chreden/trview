@@ -24,7 +24,6 @@ namespace trview
     struct IMeshStorage;
     struct ILevelTextureStorage;
     struct ICamera;
-    class TransparencyBuffer;
 
     class Entity final : public IEntity
     {
@@ -52,7 +51,7 @@ namespace trview
         void apply_ocb_adjustment(uint32_t ocb);
 
         DirectX::SimpleMath::Matrix               _world;
-        std::vector<IMesh*>                       _meshes;
+        std::vector<std::shared_ptr<IMesh>>       _meshes;
         std::unique_ptr<IMesh>                    _sprite_mesh;
         std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
         uint16_t                                  _room;

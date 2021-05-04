@@ -1,13 +1,12 @@
 #include "StaticMesh.h"
 #include <trview.app/Geometry/Matrix.h>
-#include <trview.app/Geometry/Mesh.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
 
 namespace trview
 {
     using namespace DirectX::SimpleMath;
 
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, IMesh* mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
         _visibility_max(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ),

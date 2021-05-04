@@ -13,12 +13,12 @@ namespace trview
         }
     }
 
-    IMesh* MeshStorage::mesh(uint32_t mesh_pointer) const 
+    std::shared_ptr<IMesh> MeshStorage::mesh(uint32_t mesh_pointer) const 
     {
         auto found = _meshes.find(mesh_pointer);
         if (found != _meshes.end())
         {
-            return found->second.get();
+            return found->second;
         }
         return nullptr;
     }
