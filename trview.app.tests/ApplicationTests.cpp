@@ -65,7 +65,7 @@ namespace
             di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
             di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
             di::bind<ILevel::Source>.to([](const auto& injector)->ILevel::Source { return [](auto) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
-            di::bind<Application::CommandLine>.to(std::wstring())
+            di::bind<IStartupOptions::CommandLine>.to(std::wstring())
         ).create<std::unique_ptr<Application>>();
     }
 }

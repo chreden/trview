@@ -2,6 +2,7 @@
 
 #include <external/boost/di.hpp>
 #include "SettingsLoader.h"
+#include "StartupOptions.h"
 
 namespace trview
 {
@@ -9,7 +10,8 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<ISettingsLoader>.to<SettingsLoader>()
+            di::bind<ISettingsLoader>.to<SettingsLoader>(),
+            di::bind<IStartupOptions>.to<StartupOptions>()
         );
     }
 }

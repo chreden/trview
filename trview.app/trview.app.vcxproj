@@ -89,7 +89,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
     <ClCompile Include="Settings\ISettingsLoader.cpp" />
+    <ClCompile Include="Settings\IStartupOptions.cpp" />
     <ClCompile Include="Settings\SettingsLoader.cpp" />
+    <ClCompile Include="Settings\StartupOptions.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -245,8 +247,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Routing\Waypoint.h" />
     <ClInclude Include="Settings\di.h" />
     <ClInclude Include="Settings\di.hpp" />
+    <ClInclude Include="Settings\IStartupOptions.h" />
     <ClInclude Include="Settings\ISettingsLoader.h" />
     <ClInclude Include="Settings\SettingsLoader.h" />
+    <ClInclude Include="Settings\StartupOptions.h" />
     <ClInclude Include="Settings\UserSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tools\Compass.h" />

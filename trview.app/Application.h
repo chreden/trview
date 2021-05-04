@@ -12,6 +12,7 @@
 #include <trview.app/Menus/ViewMenu.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Settings/ISettingsLoader.h>
+#include <trview.app/Settings/IStartupOptions.h>
 #include <trview.app/Windows/IItemsWindowManager.h>
 #include <trview.app/Windows/IRoomsWindowManager.h>
 #include <trview.app/Windows/IRouteWindowManager.h>
@@ -30,8 +31,6 @@ namespace trview
     class Application final : public IApplication, public MessageHandler
     {
     public:
-        using CommandLine = std::wstring;
-
         explicit Application(
             const Window& application_window,
             std::unique_ptr<IUpdateChecker> update_checker,
@@ -48,7 +47,7 @@ namespace trview
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const ILevel::Source& level_source,
-            const CommandLine& command_line);
+            const IStartupOptions::CommandLine& command_line);
         virtual ~Application();
 
         /// Attempt to open the specified level file.

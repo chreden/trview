@@ -28,6 +28,7 @@
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
 #include <trview.common/windows/Clipboard.h>
+#include <trview.app/Settings/IStartupOptions.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -120,7 +121,7 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
-        const CommandLine& command_line)
+        const IStartupOptions::CommandLine& command_line)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
@@ -568,7 +569,7 @@ namespace trview
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
-            di::bind<Application::CommandLine>.to(command_line)
+            di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 
         load_default_shaders(
