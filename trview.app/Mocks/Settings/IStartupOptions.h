@@ -10,8 +10,8 @@ namespace trview
         {
         public:
             virtual ~MockStartupOptions() = default;
-            MOCK_METHOD(std::string, filename, (), (const));
-            MOCK_METHOD(bool, feature, (const std::string&), (const));
+            MOCK_METHOD(std::string, filename, (), (const, override));
+            MOCK_METHOD(bool, feature, (const std::string&), (const, override));
         };
     }
 }
