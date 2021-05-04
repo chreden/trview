@@ -65,6 +65,9 @@
     <ClCompile Include="RouteWindowTests.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\StartupOptionsTests.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -87,6 +90,9 @@
     </Filter>
     <Filter Include="Windows">
       <UniqueIdentifier>{0c7c1192-4ae6-44cc-960c-e3f136dea95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Settings">
+      <UniqueIdentifier>{42d0c262-c6f9-4419-b646-41d45f31fc72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

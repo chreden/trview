@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IStartupOptions.h"
+#include <set>
 
 namespace trview
 {
@@ -13,5 +14,6 @@ namespace trview
         virtual bool feature(const std::wstring& flag) const override;
     private:
         std::string _filename;
+        std::set<std::wstring> _flags;
     };
 }

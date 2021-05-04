@@ -7,9 +7,17 @@ namespace trview
     {
         int number_of_arguments = 0;
         const LPWSTR* const arguments = CommandLineToArgvW(command_line.c_str(), &number_of_arguments);
-        if (number_of_arguments > 1)
+        for (int i = 1; i < number_of_arguments; ++i)
         {
-            _filename = trview::to_utf8(arguments[1]);
+            std::wstring arg = arguments[i];
+            if (arg.front() == L'-')
+            {
+                _flags.insert(arg.substr(1));
+            }
+            else if(i == 1)
+            {
+                _filename = trview::to_utf8(arg);
+            }
         }
     }
 
@@ -20,7 +28,7 @@ namespace trview
 
     bool StartupOptions::feature(const std::wstring& flag) const
     {
-        return false;
+        return _flags.find(flag) != _flags.end();
     }
 }
 
