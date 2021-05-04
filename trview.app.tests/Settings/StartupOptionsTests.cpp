@@ -23,3 +23,9 @@ TEST(StartupOptions, FlagsWithFile)
     ASSERT_EQ(startup_options.feature("ff1"), true);
     ASSERT_EQ(startup_options.feature("ff2"), true);
 }
+
+TEST(StartupOptions, MissingFlagIsFalse)
+{
+    StartupOptions startup_options{ L"trview.exe c:\\test.tr2 -ff2" };
+    ASSERT_EQ(startup_options.feature("ff1"), false);
+}
