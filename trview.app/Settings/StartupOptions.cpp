@@ -12,7 +12,7 @@ namespace trview
             std::wstring arg = arguments[i];
             if (arg.front() == L'-')
             {
-                _flags.insert(arg.substr(1));
+                _flags.insert(to_utf8(arg.substr(1)));
             }
             else if(i == 1)
             {
@@ -26,7 +26,7 @@ namespace trview
         return _filename;
     }
 
-    bool StartupOptions::feature(const std::wstring& flag) const
+    bool StartupOptions::feature(const std::string& flag) const
     {
         return _flags.find(flag) != _flags.end();
     }
