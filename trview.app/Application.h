@@ -47,7 +47,7 @@ namespace trview
             std::unique_ptr<IRouteWindowManager> route_window_manager,
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const ILevel::Source& level_source,
-            const IStartupOptions::CommandLine& command_line);
+            std::shared_ptr<IStartupOptions> startup_options);
         virtual ~Application();
 
         /// Attempt to open the specified level file.
@@ -60,7 +60,7 @@ namespace trview
     private:
         // Window setup functions.
         void setup_view_menu();
-        void setup_viewer(const std::wstring& command_line);
+        void setup_viewer(const IStartupOptions& startup_options);
         void setup_items_windows();
         void setup_triggers_windows();
         void setup_rooms_windows();

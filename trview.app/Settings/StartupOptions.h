@@ -9,7 +9,9 @@ namespace trview
     public:
         explicit StartupOptions(const CommandLine& command_line);
         virtual ~StartupOptions() = default;
-        virtual std::wstring filename() const override;
+        virtual std::string filename() const override;
         virtual bool feature(const std::wstring& flag) const override;
+    private:
+        std::string _filename;
     };
 }
