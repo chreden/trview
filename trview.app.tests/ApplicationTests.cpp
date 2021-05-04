@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Menus/IRecentFiles.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Settings/ISettingsLoader.h>
+#include <trview.app/Mocks/Settings/IStartupOptions.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
@@ -31,7 +32,8 @@ namespace
     auto register_test_module(std::unique_ptr<IUpdateChecker> update_checker = nullptr, std::unique_ptr<ISettingsLoader> settings_loader = nullptr, std::unique_ptr<IFileDropper> file_dropper = nullptr,
         std::unique_ptr<trlevel::ILevelLoader> level_loader = nullptr, std::unique_ptr<ILevelSwitcher> level_switcher = nullptr, std::unique_ptr<IRecentFiles> recent_files = nullptr,
         std::unique_ptr<IViewer> viewer = nullptr, std::unique_ptr<IRoute> route = nullptr, std::unique_ptr<IItemsWindowManager> items_window_manager = nullptr, std::unique_ptr<ITriggersWindowManager> triggers_window_manager = nullptr,
-        std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr)
+        std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr,
+        std::shared_ptr<IStartupOptions> startup_options = nullptr)
     {
         choose_mock<MockUpdateChecker>(update_checker);
         choose_mock<MockSettingsLoader>(settings_loader);
@@ -45,6 +47,7 @@ namespace
         choose_mock<MockTriggersWindowManager>(triggers_window_manager);
         choose_mock<MockRouteWindowManager>(route_window_manager);
         choose_mock<MockRoomsWindowManager>(rooms_window_manager);
+        choose_mock<MockStartupOptions>(startup_options);
 
         auto shortcuts = std::make_shared<MockShortcuts>();
         EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
@@ -65,7 +68,7 @@ namespace
             di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
             di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
             di::bind<ILevel::Source>.to([](const auto& injector)->ILevel::Source { return [](auto) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
-            di::bind<IStartupOptions::CommandLine>.to(std::wstring())
+            di::bind<IStartupOptions>.to(startup_options)
         ).create<std::unique_ptr<Application>>();
     }
 }

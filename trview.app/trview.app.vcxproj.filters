@@ -779,6 +779,9 @@
     <ClInclude Include="Settings\StartupOptions.h">
       <Filter>Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Settings\IStartupOptions.h">
+      <Filter>Mocks\Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

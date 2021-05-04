@@ -223,6 +223,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Menus\IUpdateChecker.h" />
     <ClInclude Include="Mocks\Routing\IRoute.h" />
     <ClInclude Include="Mocks\Settings\ISettingsLoader.h" />
+    <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
