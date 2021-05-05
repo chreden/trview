@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Menus/IRecentFiles.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
 #include <trview.app/Mocks/Settings/ISettingsLoader.h>
+#include <trview.app/Mocks/Settings/IStartupOptions.h>
 #include <trview.app/Mocks/Windows/IViewer.h>
 #include <trview.app/Mocks/Windows/IItemsWindowManager.h>
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
@@ -31,7 +32,8 @@ namespace
     auto register_test_module(std::unique_ptr<IUpdateChecker> update_checker = nullptr, std::unique_ptr<ISettingsLoader> settings_loader = nullptr, std::unique_ptr<IFileDropper> file_dropper = nullptr,
         std::unique_ptr<trlevel::ILevelLoader> level_loader = nullptr, std::unique_ptr<ILevelSwitcher> level_switcher = nullptr, std::unique_ptr<IRecentFiles> recent_files = nullptr,
         std::unique_ptr<IViewer> viewer = nullptr, std::unique_ptr<IRoute> route = nullptr, std::unique_ptr<IItemsWindowManager> items_window_manager = nullptr, std::unique_ptr<ITriggersWindowManager> triggers_window_manager = nullptr,
-        std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr)
+        std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr,
+        std::shared_ptr<IStartupOptions> startup_options = nullptr)
     {
         choose_mock<MockUpdateChecker>(update_checker);
         choose_mock<MockSettingsLoader>(settings_loader);
@@ -45,6 +47,7 @@ namespace
         choose_mock<MockTriggersWindowManager>(triggers_window_manager);
         choose_mock<MockRouteWindowManager>(route_window_manager);
         choose_mock<MockRoomsWindowManager>(rooms_window_manager);
+        choose_mock<MockStartupOptions>(startup_options);
 
         auto shortcuts = std::make_shared<MockShortcuts>();
         EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
@@ -65,7 +68,7 @@ namespace
             di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
             di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
             di::bind<ILevel::Source>.to([](const auto& injector)->ILevel::Source { return [](auto) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
-            di::bind<Application::CommandLine>.to(std::wstring())
+            di::bind<IStartupOptions>.to(startup_options)
         ).create<std::unique_ptr<Application>>();
     }
 }
@@ -185,4 +188,25 @@ TEST(Application, SavesSettingsOnShutdown)
     auto [settings_loader_ptr, settings_loader] = create_mock<MockSettingsLoader>();
     EXPECT_CALL(settings_loader, save_user_settings).Times(1);
     auto application = register_test_module(nullptr, std::move(settings_loader_ptr));
+}
+
+TEST(Application, FileOpenedFromCommandLine)
+{
+    auto startup_options = std::make_shared<MockStartupOptions>();
+    ON_CALL(*startup_options, filename).WillByDefault(testing::Return("test.tr2"));
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(1);
+    EXPECT_CALL(viewer, open).Times(1);
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr),
+        nullptr, nullptr, nullptr, nullptr, nullptr, startup_options);
+}
+
+TEST(Application, FileNotOpenedWhenNotSpecified)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(level_loader, load_level("test.tr2")).Times(0);
+    EXPECT_CALL(viewer, open).Times(0);
+    auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr));
 }

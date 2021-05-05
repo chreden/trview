@@ -1,7 +1,6 @@
 #include "Application.h"
 
 #include <shellapi.h>
-#include <Shlwapi.h>
 #include <commdlg.h>
 
 #include <trview.common/Strings.h>
@@ -28,6 +27,7 @@
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
 #include <trview.common/windows/Clipboard.h>
+#include <trview.app/Settings/IStartupOptions.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -120,7 +120,7 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
-        const CommandLine& command_line)
+        std::shared_ptr<IStartupOptions> startup_options)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
@@ -142,7 +142,7 @@ namespace trview
         setup_triggers_windows();
         setup_rooms_windows();
         setup_route_window();
-        setup_viewer(command_line);
+        setup_viewer(*startup_options);
 
         register_lua();
         lua_init(&lua_registry);
@@ -310,7 +310,7 @@ namespace trview
         };
     }
 
-    void Application::setup_viewer(const std::wstring& command_line)
+    void Application::setup_viewer(const IStartupOptions& startup_options)
     {
         _token_store += _viewer->on_item_visibility += [this](const auto& item, bool value) { set_item_visibility(item, value); };
         _token_store += _viewer->on_item_selected += [this](const auto& item) { select_item(item); };
@@ -327,12 +327,10 @@ namespace trview
         };
         _viewer->set_settings(_settings);
 
-        // Open the level passed in on the command line, if there is one.
-        int number_of_arguments = 0;
-        const LPWSTR* const arguments = CommandLineToArgvW(command_line.c_str(), &number_of_arguments);
-        if (number_of_arguments > 1)
+        auto filename = startup_options.filename();
+        if (!filename.empty())
         {
-            open(trview::to_utf8(arguments[1]));
+            open(filename);
         }
     }
 
@@ -578,7 +576,7 @@ namespace trview
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
-            di::bind<Application::CommandLine>.to(command_line)
+            di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 
         load_default_shaders(
