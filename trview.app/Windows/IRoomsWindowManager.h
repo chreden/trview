@@ -15,7 +15,7 @@ namespace trview
         Event<Item> on_item_selected;
 
         /// Event raised when the user has selected a trigger in the room window.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Render all of the rooms windows.
         /// @param vsync Whether to use vsync.
@@ -38,11 +38,11 @@ namespace trview
 
         /// Set the trigger currently selected in the viewer.
         /// @param trigger The trigger currently selected.
-        virtual void set_selected_trigger(const Trigger* const trigger) = 0;
+        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
         /// Set the triggers in the level.
         /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         /// Create a new rooms window.
         virtual std::weak_ptr<IRoomsWindow> create_window() = 0;

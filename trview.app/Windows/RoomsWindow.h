@@ -12,9 +12,6 @@
 
 namespace trview
 {
-    class Room;
-    class Trigger;
-
     class RoomsWindow final : public IRoomsWindow, public CollapsiblePanel
     {
     public:
@@ -33,37 +30,15 @@ namespace trview
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ui::IInput::Source& input_source,
             const Window& parent);
-
-        /// Destructor for rooms window
         virtual ~RoomsWindow() = default;
-
         virtual void clear_selected_trigger() override;
-
         virtual void render(bool vsync) override;
-
-        /// Set the current room that the viewer is focusing on.
-        /// @param room The current room.
         virtual void set_current_room(uint32_t room) override;
-
-        /// Set the items in the level.
-        /// @param items The items in the level.
         virtual void set_items(const std::vector<Item>& items) override;
-
-        /// Set the rooms to display in the window.
-        /// @param rooms The rooms to show.
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
-
-        /// Set the item currently selected in the viewer.
-        /// @param item The item currently selected.
         virtual void set_selected_item(const Item& item) override;
-
-        /// Set the trigger currently selected in the viewer.
-        /// @param trigger The trigger currently selected.
-        virtual void set_selected_trigger(const Trigger* const trigger) override;
-
-        /// Set the triggers in the level.
-        /// @param triggers The triggers in the level.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
+        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
     private:
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
         std::unique_ptr<ui::Control> create_left_panel();
@@ -79,7 +54,7 @@ namespace trview
 
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<Item> _all_items;
-        std::vector<Trigger*> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 
         ui::Listbox* _rooms_list;
         ui::Listbox* _neighbours_list;
@@ -96,7 +71,7 @@ namespace trview
         bool _track_trigger{ false };
         uint32_t _current_room{ 0u };
         std::optional<Item> _selected_item;
-        std::optional<const Trigger*> _selected_trigger;
+        std::weak_ptr<ITrigger> _selected_trigger;
 
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;

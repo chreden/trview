@@ -5,7 +5,7 @@
 
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/ILevel.h>
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Routing/Waypoint.h>
@@ -32,10 +32,10 @@ namespace trview
         Event<uint32_t> on_room_selected;
 
         /// Event raised when the viewer wants to select a trigger.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the viewer wants to change the visibility of a trigger.
-        Event<Trigger*, bool> on_trigger_visibility;
+        Event<std::weak_ptr<ITrigger>, bool> on_trigger_visibility;
 
         /// Event raised when the viewer wants to select a waypoint.
         Event<uint32_t> on_waypoint_selected;
@@ -70,7 +70,7 @@ namespace trview
         /// Select the specified trigger.
         /// @param trigger The trigger to select.
         /// @remarks This will not raise the on_trigger_selected event.
-        virtual void select_trigger(const Trigger* const trigger) = 0;
+        virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
 
         /// Select the specified waypoint
         /// @param index The waypoint to select.

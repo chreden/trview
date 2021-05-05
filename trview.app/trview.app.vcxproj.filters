@@ -307,6 +307,9 @@
     <ClCompile Include="Settings\IStartupOptions.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ITrigger.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -781,6 +784,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h">
       <Filter>Mocks\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ITrigger.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ITrigger.h">
+      <Filter>Mocks\Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

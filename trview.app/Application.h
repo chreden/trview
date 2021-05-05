@@ -72,12 +72,12 @@ namespace trview
         void remove_waypoint(uint32_t index);
         void select_item(const Item& item);
         void select_room(uint32_t room);
-        void select_trigger(const Trigger* const trigger);
+        void select_trigger(const std::weak_ptr<ITrigger>& trigger);
         void select_waypoint(uint32_t index);
         void select_next_waypoint();
         void select_previous_waypoint();
         void set_item_visibility(const Item& item, bool visible);
-        void set_trigger_visibility(Trigger* const trigger, bool visible);
+        void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
 
         // Rendering
         void render();

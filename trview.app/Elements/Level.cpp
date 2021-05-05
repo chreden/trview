@@ -4,15 +4,10 @@
 #include <trview.graphics/IShader.h>
 
 #include <trview.app/Graphics/LevelTextureStorage.h>
-#include <trview.app/Graphics/IMeshStorage.h>
 #include <trview.app/Camera/ICamera.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
-#include <trview.app/Graphics/SelectionRenderer.h>
-#include <trview.app/Graphics/MeshStorage.h>
 #include <trview.app/Elements/ITypeNameLookup.h>
 #include <trview.graphics/RasterizerStateStore.h>
 
-using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
 
 namespace trview
@@ -25,10 +20,10 @@ namespace trview
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
         std::shared_ptr<ITypeNameLookup> type_names,
-        const IMesh::TransparentSource& mesh_transparent_source,
         const IEntity::EntitySource& entity_source,
         const IEntity::AiSource& ai_source,
-        const IRoom::Source& room_source)
+        const IRoom::Source& room_source,
+        const ITrigger::Source& trigger_source)
         : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
         _mesh_storage(std::move(mesh_storage)), _transparency(std::move(transparency_buffer)),
         _selection_renderer(std::move(selection_renderer))
@@ -58,7 +53,7 @@ namespace trview
         _sampler_state = device->create_sampler_state(sampler_desc);
 
         generate_rooms(*level, room_source);
-        generate_triggers(mesh_transparent_source);
+        generate_triggers(trigger_source);
         generate_entities(*level, *type_names, entity_source, ai_source);
 
         for (auto& room : _rooms)
@@ -114,11 +109,10 @@ namespace trview
         return rooms;
     }
 
-    std::vector<Trigger*> Level::triggers() const
+    std::vector<std::weak_ptr<ITrigger>> Level::triggers() const
     {
-        std::vector<Trigger*> triggers;
-        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers),
-            [](const auto& trigger) { return trigger.get(); });
+        std::vector<std::weak_ptr<ITrigger>> triggers;
+        std::transform(_triggers.begin(), _triggers.end(), std::back_inserter(triggers), [](const auto& trigger) { return trigger; });
         return triggers;
     }
 
@@ -230,7 +224,7 @@ namespace trview
             }
 
             // If this is an alternate room, render the items from the original room in the sample places.
-            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
                 original_room->render_contained(camera, *_texture_storage.get(), room.selection_mode, room.room.water(), _show_water);
@@ -273,9 +267,13 @@ namespace trview
             _selection_renderer->render(camera, *_texture_storage, *selected_item, Item_Outline);
         }
 
-        if (_show_triggers && _selected_trigger)
+        if (_show_triggers)
         {
-            _selection_renderer->render(camera, *_texture_storage, *_selected_trigger, Trigger_Outline);
+            auto selected_trigger = _selected_trigger.lock();
+            if (selected_trigger)
+            {
+                _selection_renderer->render(camera, *_texture_storage, *selected_trigger, Trigger_Outline);
+            }
         }
     }
 
@@ -302,7 +300,7 @@ namespace trview
                 {
                     continue;
                 }
-                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, i);
+                rooms.emplace_back(*room.get(), highlight ? (i == _selected_room ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, i);
             }
         }
         else
@@ -314,7 +312,7 @@ namespace trview
                 {
                     continue;
                 }
-                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? Room::SelectionMode::Selected : Room::SelectionMode::NotSelected) : Room::SelectionMode::Selected, static_cast<uint16_t>(i));
+                rooms.emplace_back(*room, highlight ? (_selected_room == static_cast<uint16_t>(i) ? IRoom::SelectionMode::Selected : IRoom::SelectionMode::NotSelected) : IRoom::SelectionMode::Selected, static_cast<uint16_t>(i));
             }
         }
 
@@ -337,7 +335,7 @@ namespace trview
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
-            if (room->alternate_mode() == Room::AlternateMode::HasAlternate)
+            if (room->alternate_mode() == IRoom::AlternateMode::HasAlternate)
             {
                 alternate_groups.insert(room->alternate_group());
 
@@ -350,7 +348,7 @@ namespace trview
         }
     }
 
-    void Level::generate_triggers(const IMesh::TransparentSource& mesh_transparent_source)
+    void Level::generate_triggers(const ITrigger::Source& trigger_source)
     {
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
@@ -359,9 +357,8 @@ namespace trview
             {
                 if (sector->flags & SectorFlag::Trigger)
                 {
-                    // TODO: Use DI?
-                    _triggers.emplace_back(std::make_unique<Trigger>(static_cast<uint32_t>(_triggers.size()), i, sector->x(), sector->z(), sector->trigger(), mesh_transparent_source));
-                    room->add_trigger(_triggers.back().get());
+                    _triggers.push_back(trigger_source(_triggers.size(), i, sector->x(), sector->z(), sector->trigger()));
+                    room->add_trigger(_triggers.back());
                 }
             }
         }
@@ -382,12 +379,12 @@ namespace trview
             _rooms[entity->room()]->add_entity(entity.get());
             _entities.push_back(entity);
 
-            std::vector<Trigger*> relevant_triggers;
+            std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
             for (const auto& trigger : _triggers)
             {
                 if (trigger->triggers_item(i))
                 {
-                    relevant_triggers.push_back(trigger.get());
+                    relevant_triggers.push_back(trigger);
                 }
             }
 
@@ -460,7 +457,7 @@ namespace trview
     // Returns: The result of the operation. If 'hit' is true, distance and position contain
     // how far along the ray the hit was and the position in world space. The room that was hit
     // is also specified.
-    PickResult Level::pick(const ICamera& camera, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    PickResult Level::pick(const ICamera& camera, const Vector3& position, const Vector3& direction) const
     {
         PickResult final_result;
         
@@ -481,7 +478,7 @@ namespace trview
         for (auto& room : rooms)
         {
             choose(room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry));
-            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == Room::AlternateMode::IsAlternate)
+            if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
                 choose(original_room->pick(position, direction, true, false, false, false));
@@ -574,12 +571,12 @@ namespace trview
     {
         if (version() >= trlevel::LevelVersion::Tomb4)
         {
-            return room.alternate_mode() == Room::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
-                   room.alternate_mode() == Room::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
+            return room.alternate_mode() == IRoom::AlternateMode::HasAlternate && is_alternate_group_set(room.alternate_group()) ||
+                   room.alternate_mode() == IRoom::AlternateMode::IsAlternate && !is_alternate_group_set(room.alternate_group());
         }
 
-        return room.alternate_mode() == Room::AlternateMode::IsAlternate && !_alternate_mode ||
-               room.alternate_mode() == Room::AlternateMode::HasAlternate && _alternate_mode;
+        return room.alternate_mode() == IRoom::AlternateMode::IsAlternate && !_alternate_mode ||
+               room.alternate_mode() == IRoom::AlternateMode::HasAlternate && _alternate_mode;
     }
 
     // Get the current state of the alternate mode (flipmap).
@@ -592,7 +589,7 @@ namespace trview
     {
         return std::any_of(_rooms.begin(), _rooms.end(), [](const std::shared_ptr<IRoom>& room)
         {
-            return room->alternate_mode() != Room::AlternateMode::None;
+            return room->alternate_mode() != IRoom::AlternateMode::None;
         });
     }
 
@@ -635,7 +632,7 @@ namespace trview
 
     void Level::set_selected_trigger(uint32_t number)
     {
-        _selected_trigger = _triggers[number].get();
+        _selected_trigger = _triggers[number];
         on_level_changed();
     }
 
@@ -650,7 +647,7 @@ namespace trview
         for (auto i = 0u; i < _rooms.size(); ++i)
         {
             const auto& room = _rooms[i];
-            if (room->alternate_mode() != Room::AlternateMode::None)
+            if (room->alternate_mode() != IRoom::AlternateMode::None)
             {
                 groups.insert(room->alternate_group());
             }

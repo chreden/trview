@@ -3,6 +3,7 @@
 #include <trview.app/Mocks/Windows/IItemsWindow.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -80,18 +81,17 @@ TEST(ItemsWindowManager, TriggerSelectedEventRaised)
     auto mock_window = std::make_shared<MockItemsWindow>();
     ItemsWindowManager manager(create_test_window(L"ItemsWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
-    std::optional<Trigger*> raised_trigger;
+    std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = manager.on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
 
-    auto test_trigger = std::make_unique<Trigger>(100, 10, 1, 2, TriggerInfo{ 0,0,0, TriggerType::Antipad, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    created_window->on_trigger_selected(test_trigger.get());
+    auto test_trigger = std::make_shared<MockTrigger>();
+    created_window->on_trigger_selected(test_trigger);
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(raised_trigger.value(), test_trigger.get());
-    ASSERT_EQ(raised_trigger.value()->number(), 100);
+    ASSERT_EQ(raised_trigger.value().lock(), test_trigger);
 }
 
 TEST(ItemsWindowManager, SetItemsSetsItemsOnWindows)
@@ -145,13 +145,13 @@ TEST(ItemsWindowManager, SetTriggersSetsTriggersOnWindows)
     EXPECT_CALL(*mock_window, set_triggers).Times(2);
     ItemsWindowManager manager(create_test_window(L"ItemsWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 
-    auto trigger = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {} }, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    manager.set_triggers({ trigger.get() });
+    auto trigger = std::make_shared<MockTrigger>();
+    manager.set_triggers({ trigger });
 
     auto created_window = manager.create_window().lock();
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
-    manager.set_triggers({ trigger.get() });
+    manager.set_triggers({ trigger });
 }
 
 TEST(ItemsWindowManager, SetRoomSetsRoomOnWindows)

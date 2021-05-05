@@ -5,7 +5,7 @@
 
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 #include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
 #include <trview.common/Windows/IClipboard.h>
@@ -34,43 +34,24 @@ namespace trview
 
         explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard);
-
-        /// Destructor for triggers window
         virtual ~TriggersWindow() = default;
-
         virtual void render(bool vsync) override;
-
-        /// Set the triggers to display in the window.
-        /// @param triggers The triggers.
-        /// @param reset_filters Whether to reset the trigger filters.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
-
-        /// Update the trigers - this doesn't reset the filters.
-        virtual void update_triggers(const std::vector<Trigger*>& triggers) override;
-
-        /// Clear the currently selected trigger from the details panel.
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_trigger() override;
-
-        /// Set the current room. This will be used when the track room setting is on.
-        /// @param room The current room number.
         virtual void set_current_room(uint32_t room) override;
-
-        /// Set the selected item.
-        /// @param item The selected item.
-        virtual void set_selected_trigger(const Trigger* const item) override;
-
+        virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_items(const std::vector<Item>& items) override;
-
-        virtual std::optional<const Trigger*> selected_trigger() const override;
+        virtual std::weak_ptr<ITrigger> selected_trigger() const override;
     protected:
         virtual void update_layout() override;
     private:
-        void populate_triggers(const std::vector<Trigger*>& triggers);
+        void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
-        void load_trigger_details(const Trigger& trigger);
+        void load_trigger_details(const ITrigger& trigger);
         void apply_filters();
 
         ui::StackPanel* _controls;
@@ -81,7 +62,7 @@ namespace trview
         ui::Dropdown* _command_filter;
 
         std::vector<Item> _all_items;
-        std::vector<Trigger*> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
 
         /// Whether the trigger window is tracking the current room.
         bool _track_room{ false };
@@ -90,7 +71,7 @@ namespace trview
         /// Whether the room tracking filter has been applied.
         bool _filter_applied{ false };
         bool _sync_trigger{ true };
-        std::optional<const Trigger*> _selected_trigger;
+        std::weak_ptr<ITrigger> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
     };

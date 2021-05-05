@@ -4,6 +4,7 @@
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Geometry/IPicking.h>
 #include <trview.app/Mocks/UI/IViewerUI.h>
 #include <trview.app/Mocks/Routing/IRoute.h>
@@ -173,23 +174,23 @@ TEST(Viewer, SelectTriggerRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
-    std::vector<Trigger*> triggers_list(101);
-    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    triggers_list[100] = trigger.get();
+    auto trigger = std::make_shared<MockTrigger>();
+    std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
+    triggers_list[100] = trigger;
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
     viewer->open(&level);
 
-    std::optional<Trigger*> selected_trigger;
+    std::optional<std::weak_ptr<ITrigger>> selected_trigger;
     auto token = viewer->on_trigger_selected += [&selected_trigger](const auto& trigger) { selected_trigger = trigger; };
 
     activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
     mouse.mouse_click(IMouse::Button::Left);
 
     ASSERT_TRUE(selected_trigger.has_value());
-    ASSERT_EQ(selected_trigger.value(), trigger.get());
+    ASSERT_EQ(selected_trigger.value().lock(), trigger);
 }
 
 /// Tests that the on_hide event from the UI is observed and forwarded for triggers.
@@ -200,16 +201,16 @@ TEST(Viewer, TriggerVisibilityRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
-    std::vector<Trigger*> triggers_list(101);
-    auto trigger = std::make_unique<Trigger>(100, 10, 0, 0, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    triggers_list[100] = trigger.get();
+    std::vector<std::weak_ptr<ITrigger>> triggers_list(101);
+    auto trigger = std::make_shared<MockTrigger>();
+    triggers_list[100] = trigger;
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
     auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
     viewer->open(&level);
 
-    std::optional<std::tuple<Trigger*, bool>> raised_trigger;
+    std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = viewer->on_trigger_visibility += [&raised_trigger](const auto& trigger, auto visible) { raised_trigger = { trigger, visible }; };
 
     activate_context_menu(picking, mouse, PickResult::Type::Trigger, 100);
@@ -217,7 +218,7 @@ TEST(Viewer, TriggerVisibilityRaised)
     ui.on_hide();
 
     ASSERT_TRUE(raised_trigger.has_value());
-    ASSERT_EQ(std::get<0>(raised_trigger.value()), trigger.get());
+    ASSERT_EQ(std::get<0>(raised_trigger.value()).lock(), trigger);
     ASSERT_FALSE(std::get<1>(raised_trigger.value()));
 }
 
@@ -357,9 +358,8 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    // TODO: Remove once Trigger is converted to DI.
-    Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
-    viewer->select_trigger(&trigger);
+    auto trigger = std::make_shared<MockTrigger>();
+    viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -378,9 +378,8 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    // TODO: Remove once Trigger is converted to DI.
-    Trigger trigger(0, 0, 0, 0, {}, [](auto&&, auto&&) { return std::make_unique<MockMesh>(); });
-    viewer->select_trigger(&trigger);
+    auto trigger = std::make_shared<MockTrigger>();
+    viewer->select_trigger(trigger);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 

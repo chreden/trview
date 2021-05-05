@@ -1,69 +1,34 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
-#include <trview.app/Geometry/TransparentTriangle.h>
-#include <trview.app/Geometry/PickResult.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Geometry/IRenderable.h>
+#include <trview.app/Elements/ITrigger.h>
+#include <trview.app/Camera/ICamera.h>
 
 namespace trview
 {
     struct TriggerInfo;
 
-    enum class TriggerType
-    {
-        Trigger, Pad, Switch, Key, Pickup, HeavyTrigger, Antipad, Combat, Dummy,
-        AntiTrigger, HeavySwitch, HeavyAntiTrigger, Monkey, Skeleton, Tightrope, Crawl, Climb
-    };
-
-    enum class TriggerCommandType
-    {
-        Object, Camera, UnderwaterCurrent, FlipMap, FlipOn, FlipOff, LookAtItem,
-        EndLevel, PlaySoundtrack, Flipeffect, SecretFound, ClearBodies, Flyby, Cutscene
-    };
-
-    class Command final
-    {
-    public:
-        Command(uint32_t number, TriggerCommandType type, uint16_t index);
-        uint32_t number() const;
-        TriggerCommandType type() const;
-        uint16_t index() const;
-    private:
-        uint32_t _number;
-        TriggerCommandType _type;
-        uint16_t _index;
-    };
-
-    class TransparencyBuffer;
-    struct ICamera;
-
-    class Trigger final : public IRenderable
+    class Trigger final : public ITrigger
     {
     public:
         explicit Trigger(uint32_t number, uint32_t room, uint16_t x, uint16_t z, const TriggerInfo& trigger_info, const IMesh::TransparentSource& mesh_source);
         virtual ~Trigger() = default;
-
-        uint32_t    number() const;
-        uint32_t    room() const;
-        uint16_t    x() const;
-        uint16_t    z() const;
-        bool        triggers_item(uint32_t index) const;
-        TriggerType type() const;
-        bool        only_once() const;
-        uint16_t    flags() const;
-        uint8_t     timer() const;
-        uint16_t    sector_id() const;
-        const std::vector<Command>& commands() const;
-        const std::vector<TransparentTriangle>& triangles() const;
-        void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles);
-        PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const;
-        bool has_command(TriggerCommandType type) const;
-        bool has_any_command(const std::vector<TriggerCommandType>& type) const;
-        void set_position(const DirectX::SimpleMath::Vector3& position);
-        DirectX::SimpleMath::Vector3 position() const;
-
+        virtual uint32_t number() const override;
+        virtual uint32_t room() const override;
+        virtual uint16_t x() const override;
+        virtual uint16_t z() const override;
+        virtual bool triggers_item(uint32_t index) const override;
+        virtual TriggerType type() const override;
+        virtual bool only_once() const override;
+        virtual uint16_t flags() const override;
+        virtual uint8_t timer() const override;
+        virtual uint16_t sector_id() const override;
+        virtual const std::vector<Command> commands() const override;
+        virtual const std::vector<TransparentTriangle>& triangles() const override;
+        virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
+        virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
+        virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual bool visible() const override;
@@ -85,19 +50,4 @@ namespace trview
         uint16_t _sector_id;
         bool _visible{ true };
     };
-
-    /// Get the string representation of the trigger type specified.
-    /// @param type The type to test.
-    /// @returns The string version of the enum.
-    std::wstring trigger_type_name(TriggerType type);
-
-    /// Get the string representation of the command type specified.
-    /// @param type The type to test.
-    /// @returns The string version of the enum.
-    std::wstring command_type_name(TriggerCommandType type);
-
-    /// Get the trigger command type from a string.
-    /// @param name The string to convert.
-    /// @returns The trigger command type.
-    TriggerCommandType command_from_name(const std::wstring& name);
 }

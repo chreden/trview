@@ -5,7 +5,7 @@
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Elements/RoomInfo.h>
 #include <trview.app/Elements/IEntity.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 
 namespace trview
 {
@@ -39,7 +39,7 @@ namespace trview
         virtual void add_entity(IEntity* entity) = 0;
         /// Add the specified trigger to the room.
         /// @paramt trigger The trigger to add.
-        virtual void add_trigger(Trigger* trigger) = 0;
+        virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) = 0;
         /// Gets the alternate group for the room.
         /// @returns The alternate group number.
         virtual int16_t alternate_group() const = 0;
@@ -90,7 +90,7 @@ namespace trview
         /// This will change the alternate_mode of this room to IsAlternate.
         /// @param number The room number.
         virtual void set_is_alternate(int16_t number) = 0;
-        virtual Trigger* trigger_at(int32_t x, int32_t z) const = 0;
+        virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const = 0;
         virtual void update_bounding_box() = 0;
         virtual bool water() const = 0;
     };

@@ -25,7 +25,7 @@ namespace trview
         Event<Item> on_item_selected;
 
         /// Event raised when a trigger is selected.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;
@@ -49,7 +49,7 @@ namespace trview
 
         /// Set the triggers in the level.
         /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         virtual void select_waypoint(uint32_t index) = 0;
     };

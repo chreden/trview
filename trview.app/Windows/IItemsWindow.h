@@ -4,7 +4,7 @@
 #include <optional>
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
-#include <trview.app/Elements/Trigger.h>
+#include <trview.app/Elements/ITrigger.h>
 
 namespace trview
 {
@@ -21,7 +21,7 @@ namespace trview
         Event<Item, bool> on_item_visibility;
 
         /// Event raised when a trigger is selected in the list.
-        Event<Trigger*> on_trigger_selected;
+        Event<std::weak_ptr<ITrigger>> on_trigger_selected;
 
         /// Event raised when the 'add to route' button is pressed.
         Event<Item> on_add_to_route;
@@ -42,7 +42,7 @@ namespace trview
 
         /// Set the triggers to display in the window.
         /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) = 0;
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         /// Clear the currently selected item from the details panel.
         virtual void clear_selected_item() = 0;

@@ -4,12 +4,12 @@
 #include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Types.h>
 #include <trview.graphics/mocks/IDeviceWindow.h>
-#include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.ui.render/Mocks/IMapRenderer.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.input/Mocks/IMouse.h>
 #include <external/boost/di.hpp>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -48,15 +48,11 @@ namespace
 TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 {
     auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
-
-    std::optional<Trigger*> raised_trigger;
-    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
-
     auto room = std::make_shared<MockRoom>();
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger = std::make_shared<MockTrigger>();
 
     window->set_rooms({ room });
-    window->set_triggers({ trigger1.get() });
+    window->set_triggers({ trigger });
 
     auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
     ASSERT_NE(list, nullptr);
@@ -89,15 +85,11 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 TEST(RoomsWindow, SetTriggersClearsSelection)
 {
     auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
-
-    std::optional<Trigger*> raised_trigger;
-    auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
-
     auto room = std::make_shared<MockRoom>();
-    auto trigger1 = std::make_unique<Trigger>(0, 0, 100, 200, TriggerInfo{ 0, 0, 0, TriggerType::Trigger, 0, {  } }, [](auto, auto) { return std::make_unique<MockMesh>(); });
+    auto trigger = std::make_shared<MockTrigger>();
 
     window->set_rooms({ room });
-    window->set_triggers({ trigger1.get() });
+    window->set_triggers({ trigger });
 
     auto list = window->root_control()->find<ui::Listbox>(RoomsWindow::Names::rooms_listbox);
     ASSERT_NE(list, nullptr);

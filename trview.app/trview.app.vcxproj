@@ -40,6 +40,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\IEntity.cpp" />
     <ClCompile Include="Elements\IRoom.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
+    <ClCompile Include="Elements\ITrigger.cpp" />
     <ClCompile Include="Elements\ITypeNameLookup.cpp" />
     <ClCompile Include="Elements\ILevel.cpp" />
     <ClCompile Include="Elements\Level.cpp" />
@@ -154,6 +155,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\IRoom.h" />
     <ClInclude Include="Elements\Item.h" />
+    <ClInclude Include="Elements\ITrigger.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />
     <ClInclude Include="Elements\Level.h" />
     <ClInclude Include="Elements\Room.h" />
@@ -208,6 +210,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Elements\IEntity.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Elements\IRoom.h" />
+    <ClInclude Include="Mocks\Elements\ITrigger.h" />
     <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />
     <ClInclude Include="Mocks\Geometry\IMesh.h" />
     <ClInclude Include="Mocks\Geometry\IPicking.h" />

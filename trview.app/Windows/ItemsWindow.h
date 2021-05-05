@@ -39,36 +39,14 @@ namespace trview
             const ui::IInput::Source& input_source,
             const Window& parent,
             const std::shared_ptr<IClipboard>& clipboard);
-
-        /// Destructor for items window
         virtual ~ItemsWindow() = default;
-
         virtual void render(bool vsync) override;
-
-        /// Set the items to display in the window.
-        /// @param items The items to show.
         virtual void set_items(const std::vector<Item>& items) override;
-
-        /// Update the items - this doesn't reset the filters.
         virtual void update_items(const std::vector<Item>& items) override;
-
-        /// Set the triggers to display in the window.
-        /// @param triggers The triggers.
-        virtual void set_triggers(const std::vector<Trigger*>& triggers) override;
-
-        /// Clear the currently selected item from the details panel.
+        virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void clear_selected_item() override;
-
-        /// Set the current room. This will be used when the track room setting is on.
-        /// @param room The current room number.
         virtual void set_current_room(uint32_t room) override;
-
-        /// Set the selected item.
-        /// @param item The selected item.
         virtual void set_selected_item(const Item& item) override;
-
-        /// Get the selected item.
-        /// @returns The selected item, if present.
         virtual std::optional<Item> selected_item() const override;
     protected:
         /// After the window has been resized, adjust the sizes of the child elements.
@@ -87,7 +65,7 @@ namespace trview
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
         std::vector<Item> _all_items;
-        std::vector<Trigger*> _all_triggers;
+        std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         /// Whether the item window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.
