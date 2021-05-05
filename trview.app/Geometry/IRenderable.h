@@ -1,13 +1,12 @@
 #pragma once
 
-#include <trview.graphics/Device.h>
 #include <SimpleMath.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
 
 namespace trview
 {
     struct ICamera;
     struct ILevelTextureStorage;
-    struct ITransparencyBuffer;
 
     /// Interface for something that can be rendered by the viewer.
     struct IRenderable

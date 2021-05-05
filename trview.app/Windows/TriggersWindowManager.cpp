@@ -46,10 +46,7 @@ namespace trview
         triggers_window->set_items(_items);
         triggers_window->set_triggers(_triggers);
         triggers_window->set_current_room(_current_room);
-        if (_selected_trigger.has_value())
-        {
-            triggers_window->set_selected_trigger(_selected_trigger.value());
-        }
+        triggers_window->set_selected_trigger(_selected_trigger);
 
         _token_store += triggers_window->on_window_closed += [triggers_window, this]()
         {
@@ -60,9 +57,9 @@ namespace trview
         return triggers_window;
     }
 
-    const Trigger* TriggersWindowManager::selected_trigger() const
+    const std::weak_ptr<ITrigger> TriggersWindowManager::selected_trigger() const
     {
-        return _selected_trigger.value_or(nullptr);
+        return _selected_trigger;
     }
 
     void TriggersWindowManager::set_items(const std::vector<Item>& items)
@@ -74,7 +71,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
+    void TriggersWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _triggers = triggers;
         _selected_trigger.reset();
@@ -85,14 +82,20 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_trigger_visible(Trigger* trigger, bool visible)
+    void TriggersWindowManager::set_trigger_visible(const std::weak_ptr<ITrigger>& trigger, bool visible)
     {
-        auto found = std::find(_triggers.begin(), _triggers.end(), trigger);
+        const auto trigger_ptr = trigger.lock();
+        auto found = std::find_if(_triggers.begin(), _triggers.end(), 
+            [&](const auto& t) 
+            {
+                return t.lock() == trigger_ptr;
+            });
         if (found == _triggers.end())
         {
             return;
         }
-        trigger->set_visible(visible);
+        
+        trigger_ptr->set_visible(visible);
         for (auto& window : _windows)
         {
             window->update_triggers(_triggers);
@@ -108,7 +111,7 @@ namespace trview
         }
     }
 
-    void TriggersWindowManager::set_selected_trigger(const Trigger* const trigger)
+    void TriggersWindowManager::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _selected_trigger = trigger;
         for (auto& window : _windows)

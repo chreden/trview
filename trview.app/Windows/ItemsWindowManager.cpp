@@ -83,7 +83,7 @@ namespace trview
         }
     }
 
-    void ItemsWindowManager::set_triggers(const std::vector<Trigger*>& triggers)
+    void ItemsWindowManager::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _triggers = triggers;
         for (auto& window : _windows)

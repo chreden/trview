@@ -11,10 +11,10 @@ namespace trview
         public:
             MOCK_METHOD(void, render, (bool));
             MOCK_METHOD(void, set_items, (const std::vector<Item>&));
-            MOCK_METHOD(void, set_triggers, (const std::vector<Trigger*>&));
-            MOCK_METHOD(void, set_trigger_visible, (Trigger* trigger, bool));
+            MOCK_METHOD(void, set_triggers, (const std::vector<std::weak_ptr<ITrigger>>&));
+            MOCK_METHOD(void, set_trigger_visible, (const std::weak_ptr<ITrigger>& trigger, bool));
             MOCK_METHOD(void, set_room, (uint32_t));
-            MOCK_METHOD(void, set_selected_trigger, (const Trigger* const));
+            MOCK_METHOD(void, set_selected_trigger, (const std::weak_ptr<ITrigger>&));
             MOCK_METHOD(std::weak_ptr<ITriggersWindow>, create_window, ());
         };
     }

@@ -306,7 +306,7 @@ namespace trview
         _token_store += _view_menu.on_unhide_all += [&]()
         {
             for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
-            for (const auto& trigger : _level->triggers()) { if (!trigger->visible()) { set_trigger_visibility(trigger, true); } }
+            for (const auto& trigger : _level->triggers()) { set_trigger_visibility(trigger, true); }
         };
     }
 
@@ -365,7 +365,10 @@ namespace trview
         _token_store += _triggers_windows->on_trigger_visibility += [this](const auto& trigger, bool state) { set_trigger_visibility(trigger, state); };
         _token_store += _triggers_windows->on_add_to_route += [this](const auto& trigger)
         {
-            add_waypoint(trigger->position(), trigger->room(), Waypoint::Type::Trigger, trigger->number());
+            if (auto trigger_ptr = trigger.lock())
+            {
+                add_waypoint(trigger_ptr->position(), trigger_ptr->room(), Waypoint::Type::Trigger, trigger_ptr->number());
+            }
         };
     }
 
@@ -467,15 +470,16 @@ namespace trview
         _triggers_windows->set_room(room);
     }
 
-    void Application::select_trigger(const Trigger* const trigger)
+    void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         if (!_level)
         {
             return;
         }
 
-        select_room(trigger->room());
-        _level->set_selected_trigger(trigger->number());
+        auto trigger_ptr = trigger.lock();
+        select_room(trigger_ptr->room());
+        _level->set_selected_trigger(trigger_ptr->number());
         _viewer->select_trigger(trigger);
         _triggers_windows->set_selected_trigger(trigger);
         _rooms_windows->set_selected_trigger(trigger);
@@ -517,15 +521,21 @@ namespace trview
         _items_windows->set_item_visible(item, visible);
     }
 
-    void Application::set_trigger_visibility(Trigger* const trigger, bool visible)
+    void Application::set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible)
     {
         if (!_level)
         {
             return;
         }
 
-        _level->set_trigger_visibility(trigger->number(), visible);
-        _triggers_windows->set_trigger_visible(trigger, visible);
+        if (const auto trigger_ptr = trigger.lock())
+        {
+            if (trigger_ptr->visible() != visible)
+            {
+                _level->set_trigger_visibility(trigger_ptr->number(), visible);
+                _triggers_windows->set_trigger_visible(trigger, visible);
+            }
+        }
     }
 
     void Application::render()

@@ -10,7 +10,7 @@ namespace trview
         {
             virtual ~MockRoom() = default;
             MOCK_METHOD(void, add_entity, (IEntity*), (override));
-            MOCK_METHOD(void, add_trigger, (Trigger*), (override));
+            MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(int16_t, alternate_group, (), (const, override));
             MOCK_METHOD(AlternateMode, alternate_mode, (), (const, override));
             MOCK_METHOD(int16_t, alternate_room, (), (const, override));
@@ -31,7 +31,7 @@ namespace trview
             MOCK_METHOD(void, render_contained, (const ICamera&, const ILevelTextureStorage&, SelectionMode, bool, bool), (override));;
             MOCK_METHOD(const std::vector<std::shared_ptr<Sector>>, sectors, (), (const, override));
             MOCK_METHOD(void, set_is_alternate, (int16_t), (override));
-            MOCK_METHOD(Trigger*, trigger_at, (int32_t, int32_t), (const, override));
+            MOCK_METHOD(std::weak_ptr<ITrigger>, trigger_at, (int32_t, int32_t), (const, override));
             MOCK_METHOD(void, update_bounding_box, (), (override));
             MOCK_METHOD(bool, water, (), (const, override));
         };

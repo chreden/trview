@@ -28,7 +28,6 @@ namespace trview
     struct IRenderable;
     struct ICamera;
     struct ILevelTextureStorage;
-    class Trigger;
 
     /// Draws an outline around an object.
     class SelectionRenderer final : public ISelectionRenderer

@@ -22,7 +22,7 @@ namespace trview
         /// @param flags The flags for the entity.
         /// @param triggers The triggers that affect this entity.
         /// @param position The position of the entity.
-        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, int32_t ocb, uint16_t flags, const std::vector<Trigger*>& triggers, const DirectX::SimpleMath::Vector3& position);
+        explicit Item(uint32_t number, uint32_t room, const uint32_t type_id, const std::wstring& type, int32_t ocb, uint16_t flags, const std::vector<std::weak_ptr<ITrigger>>& triggers, const DirectX::SimpleMath::Vector3& position);
 
         /// Get the item number.
         /// @returns The item number.
@@ -58,7 +58,7 @@ namespace trview
 
         /// Get the triggers that affect this object.
         /// @returns The triggers.
-        const std::vector<Trigger*>& triggers() const;
+        std::vector<std::weak_ptr<ITrigger>> triggers() const;
 
         /// Get the position of the entity.
         DirectX::SimpleMath::Vector3 position() const;
@@ -71,7 +71,7 @@ namespace trview
         /// @param value Whether the item is visible.
         void set_visible(bool value);
     private:
-        std::vector<Trigger*> _triggers;
+        std::vector<std::weak_ptr<ITrigger>> _triggers;
         DirectX::SimpleMath::Vector3 _position;
         uint32_t _number{ 0u };
         uint32_t _room{ 0u };

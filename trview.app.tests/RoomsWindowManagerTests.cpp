@@ -3,6 +3,7 @@
 #include <trview.app/Mocks/Windows/IRoomsWindow.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -22,12 +23,12 @@ TEST(RoomsWindowManager, SetTriggersClearsSelectedTrigger)
     ASSERT_NE(created_window, nullptr);
     ASSERT_EQ(created_window, mock_window);
 
-    auto trigger1 = std::make_unique<Trigger>(100, 55, 100, 200, TriggerInfo{}, [](auto, auto) { return std::make_unique<MockMesh>(); });
-    manager.set_triggers({ trigger1.get() });
+    auto trigger = std::make_shared<MockTrigger>();
+    manager.set_triggers({ trigger });
 
-    ASSERT_EQ(manager.selected_trigger(), nullptr);
-    manager.set_selected_trigger(trigger1.get());
-    ASSERT_EQ(manager.selected_trigger(), trigger1.get());
+    ASSERT_EQ(manager.selected_trigger().lock(), nullptr);
+    manager.set_selected_trigger(trigger);
+    ASSERT_EQ(manager.selected_trigger().lock(), trigger);
     manager.set_triggers({});
-    ASSERT_EQ(manager.selected_trigger(), nullptr);
+    ASSERT_EQ(manager.selected_trigger().lock(), nullptr);
 }

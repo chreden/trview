@@ -23,7 +23,7 @@ namespace trview
             const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
         }
 
-        ui::Listbox::Item create_listbox_item(const Trigger& item)
+        ui::Listbox::Item create_listbox_item(const ITrigger& item)
         {
             return { {{ L"#", std::to_wstring(item.number()) },
                      { L"Room", std::to_wstring(item.room()) },
@@ -31,9 +31,13 @@ namespace trview
                      { L"Hide", std::to_wstring(!item.visible()) }}};
         }
 
-        ui::Listbox::Item create_listbox_item_pointer(const Trigger* const item)
+        ui::Listbox::Item create_listbox_item_pointer(const std::weak_ptr<ITrigger>& trigger)
         {
-            return create_listbox_item(*item);
+            if (const auto trigger_ptr = trigger.lock())
+            {
+                return create_listbox_item(*trigger_ptr);
+            }
+            return { {} };
         }
     }
 
@@ -126,7 +130,10 @@ namespace trview
         _token_store += _triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
-            load_trigger_details(*_all_triggers[index]);
+            if (auto trigger = _all_triggers[index].lock())
+            {
+                load_trigger_details(*trigger);
+            }
             if (_sync_trigger)
             {
                 on_trigger_selected(_all_triggers[index]);
@@ -178,9 +185,9 @@ namespace trview
         button->set_name(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
-            if (_selected_trigger.has_value())
+            if (const auto trigger_ptr = _selected_trigger.lock())
             {
-                on_add_to_route(_selected_trigger.value());
+                on_add_to_route(_selected_trigger);
             }
         };
 
@@ -205,18 +212,21 @@ namespace trview
         _token_store += _command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
-            auto command = _selected_trigger.value()->commands()[index];
-            if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
+            if (const auto trigger = _selected_trigger.lock())
             {
-                set_track_room(false);
-                on_item_selected(_all_items[command.index()]);
+                auto command = trigger->commands()[index];
+                if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
+                {
+                    set_track_room(false);
+                    on_item_selected(_all_items[command.index()]);
+                }
             }
         };
 
         return right_panel;
     }
 
-    void TriggersWindow::set_triggers(const std::vector<Trigger*>& triggers)
+    void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
@@ -229,7 +239,8 @@ namespace trview
         std::set<TriggerCommandType> command_set;
         for (const auto& trigger : triggers)
         {
-            for (const auto& command : trigger->commands())
+            const auto trigger_ptr = trigger.lock();
+            for (const auto& command : trigger_ptr->commands())
             {
                 command_set.insert(command.type());
             }
@@ -240,7 +251,7 @@ namespace trview
         _command_filter->set_selected_value(L"All");
     }
 
-    void TriggersWindow::update_triggers(const std::vector<Trigger*>& triggers)
+    void TriggersWindow::update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         _all_triggers = triggers;
         populate_triggers(triggers);
@@ -255,7 +266,7 @@ namespace trview
         _command_list->set_items({});
     }
 
-    void TriggersWindow::populate_triggers(const std::vector<Trigger*>& triggers)
+    void TriggersWindow::populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
     {
         using namespace ui;
         std::vector<Listbox::Item> list_items;
@@ -275,22 +286,28 @@ namespace trview
         _current_room = room;
     }
 
-    void TriggersWindow::set_selected_trigger(const Trigger* const trigger)
+    void TriggersWindow::set_selected_trigger(const std::weak_ptr<ITrigger>& trigger)
     {
         _selected_trigger = trigger;
         if (_sync_trigger)
         {
-            if (!_selected_commands.empty() && !trigger->has_any_command(_selected_commands))
+            const auto trigger_ptr = trigger.lock();
+            if (!trigger_ptr)
+            {
+                return;
+            }
+
+            if (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands))
             {
                 _selected_commands.clear();
                 _command_filter->set_selected_value(L"All");
                 apply_filters();
             }
 
-            const auto& list_item = create_listbox_item(*trigger);
+            const auto& list_item = create_listbox_item(*trigger_ptr);
             if (_triggers_list->set_selected_item(list_item))
             {
-                load_trigger_details(*trigger);
+                load_trigger_details(*trigger_ptr);
             }
             else
             {
@@ -310,10 +327,7 @@ namespace trview
         if (_sync_trigger != value)
         {
             _sync_trigger = value;
-            if (_selected_trigger.has_value())
-            {
-                set_selected_trigger(_selected_trigger.value());
-            }
+            set_selected_trigger(_selected_trigger);
         }
     }
 
@@ -339,7 +353,7 @@ namespace trview
         }
     }
 
-    void TriggersWindow::load_trigger_details(const Trigger& trigger)
+    void TriggersWindow::load_trigger_details(const ITrigger& trigger)
     {
         auto make_item = [](const auto& name, const auto& value)
         {
@@ -399,13 +413,14 @@ namespace trview
 
         auto command_filter = [&](const auto& trigger)
         {
-            return _selected_commands.empty() || trigger->has_any_command(_selected_commands);
+            return _selected_commands.empty() || has_any_command(*trigger, _selected_commands);
         };
 
-        std::vector<Trigger*> filtered_triggers;
+        std::vector<std::weak_ptr<ITrigger>> filtered_triggers;
         for (const auto& trigger : _all_triggers)
         {
-            if (room_filter(trigger) && command_filter(trigger))
+            const auto trigger_ptr = trigger.lock();
+            if (room_filter(trigger_ptr) && command_filter(trigger_ptr))
             {
                 filtered_triggers.push_back(trigger);
             }
@@ -413,7 +428,7 @@ namespace trview
         populate_triggers(filtered_triggers);
     }
 
-    std::optional<const Trigger*> TriggersWindow::selected_trigger() const
+    std::weak_ptr<ITrigger> TriggersWindow::selected_trigger() const
     {
         return _selected_trigger;
     }
