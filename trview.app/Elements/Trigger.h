@@ -36,7 +36,7 @@ namespace trview
     private:
         std::vector<uint16_t> _objects;
         std::vector<Command> _commands;
-        std::unique_ptr<IMesh> _mesh;
+        std::shared_ptr<IMesh> _mesh;
         DirectX::SimpleMath::Vector3 _position;
         IMesh::TransparentSource _mesh_source;
         TriggerType _type;

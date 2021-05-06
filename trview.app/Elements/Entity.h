@@ -52,7 +52,7 @@ namespace trview
 
         DirectX::SimpleMath::Matrix               _world;
         std::vector<std::shared_ptr<IMesh>>       _meshes;
-        std::unique_ptr<IMesh>                    _sprite_mesh;
+        std::shared_ptr<IMesh>                    _sprite_mesh;
         std::vector<DirectX::SimpleMath::Matrix>  _world_transforms;
         uint16_t                                  _room;
         uint32_t                                  _index;

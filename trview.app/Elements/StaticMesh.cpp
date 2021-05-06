@@ -19,8 +19,8 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh)
-        : _position(position), _sprite_mesh(std::move(mesh)), _rotation(0), _scale(scale)
+    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh)
+        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);

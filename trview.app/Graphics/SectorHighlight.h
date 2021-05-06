@@ -15,7 +15,7 @@ namespace trview
     private:
         DirectX::SimpleMath::Matrix _room_offset;
         std::shared_ptr<Sector> _sector;
-        std::unique_ptr<IMesh> _mesh;
+        std::shared_ptr<IMesh> _mesh;
         IMesh::Source _mesh_source;
     };
 }

@@ -17,7 +17,7 @@ namespace trview
                 {
                     return [&](auto&& vertices, auto&& indices, auto&& untextured_indices, auto&& transparent_triangles, auto&& collision_triangles)
                     {
-                        return std::make_unique<Mesh>(
+                        return std::make_shared<Mesh>(
                             injector.create<std::shared_ptr<IDevice>>(),
                             vertices,
                             indices,
@@ -31,7 +31,7 @@ namespace trview
                 {
                     return [&](auto&& transparent_triangles, auto&& collision_triangles)
                     {
-                        return std::make_unique<Mesh>(transparent_triangles, collision_triangles);
+                        return std::make_shared<Mesh>(transparent_triangles, collision_triangles);
                     };
                 }),
             di::bind<IPicking>.to<Picking>(),
