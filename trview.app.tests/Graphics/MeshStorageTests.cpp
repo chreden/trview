@@ -2,7 +2,17 @@
 
 using namespace trview;
 
-TEST(MeshStorage, Something)
+TEST(MeshStorage, MeshesLoadedFromLevel)
 {
+    FAIL();
+}
 
+TEST(MeshStorage, MeshCanBeRetrieved)
+{
+    FAIL();
+}
+
+TEST(MeshStorage, MissingMeshNotFound)
+{
+    FAIL();
 }
