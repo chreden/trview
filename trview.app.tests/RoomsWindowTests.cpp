@@ -29,10 +29,10 @@ namespace
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::render::IMapRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockMapRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&, auto&&) 
+            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
+            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
+            di::bind<ui::render::IMapRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockMapRenderer>(); }; }),
+            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&...) 
                 { 
                     auto input = std::make_unique<MockInput>();
                     EXPECT_CALL(*input, mouse).WillRepeatedly(ReturnRef(mouse));

@@ -23,9 +23,9 @@ using testing::Return;
 
 namespace
 {
-    auto default_entity_source(const trlevel::ILevel&, const trlevel::tr2_entity&, uint32_t, const IMeshStorage&) { return std::make_shared<MockEntity>(); }
-    auto default_ai_source(const trlevel::ILevel&, const trlevel::tr4_ai_object&, uint32_t, const IMeshStorage&) { return std::make_shared<MockEntity>(); }
-    auto default_room_source(const trlevel::ILevel&, const trlevel::tr3_room&, const ILevelTextureStorage&, const IMeshStorage&, uint32_t, const trview::ILevel&) { return std::make_shared<MockRoom>(); }
+    auto default_entity_source = [](auto&&...) { return std::make_shared<MockEntity>(); };
+    auto default_ai_source = [](auto&&...) { return std::make_shared<MockEntity>(); };
+    auto default_room_source = [](auto&&...) { return std::make_shared<MockRoom>(); };
 
     auto register_test_module(std::unique_ptr<trlevel::ILevel> level, std::shared_ptr<ITypeNameLookup> type_name_lookup = nullptr, IEntity::EntitySource entity_source = default_entity_source,
         IEntity::AiSource ai_source = default_ai_source, IRoom::Source room_source = default_room_source)
@@ -89,12 +89,12 @@ TEST(Level, LoadFromEntitySources)
     uint32_t ai_source_called = 0;
 
     auto level = register_test_module(std::move(mock_level_ptr), nullptr,
-        [&](auto&&, auto&&, auto&&, auto&&)
+        [&](auto&&...)
         {
             ++entity_source_called;
             return std::make_shared<MockEntity>();
         },
-        [&](auto&&, auto&&, auto&&, auto&)
+        [&](auto&&...)
         {
             ++ai_source_called;
             return std::make_shared<MockEntity>();
@@ -113,7 +113,7 @@ TEST(Level, LoadRooms)
     int room_called = 0;
 
     auto level = register_test_module(std::move(mock_level_ptr), nullptr, default_entity_source, default_ai_source, 
-        [&](auto&&, auto&&, auto&&, auto&&, auto&&, auto&&) 
+        [&](auto&&...) 
         { 
             ++room_called;
             return std::make_shared<MockRoom>(); 
