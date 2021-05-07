@@ -58,7 +58,7 @@ namespace
             di::bind<IMouse>.to([&](auto&&) { return std::move(mouse); }),
             di::bind<IShortcuts>.to(shortcuts),
             di::bind<IRoute>.to<MockRoute>(),
-            di::bind<ISprite::Source>.to([&](auto&&) { return [&](auto&&...) { return std::make_unique<MockSprite>(); }; }),
+            di::bind<ISprite::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockSprite>(); }; }),
             di::bind<ICompass>.to<MockCompass>(),
             di::bind<IMeasure>.to<MockMeasure>(),
             di::bind<IRenderTarget::SizeSource>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderTarget>(); }; }),
