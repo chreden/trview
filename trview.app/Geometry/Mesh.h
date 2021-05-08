@@ -53,7 +53,7 @@ namespace trview
         std::vector<Microsoft::WRL::ComPtr<ID3D11Buffer>> _index_buffers;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _matrix_buffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer>              _untextured_index_buffer;
-        uint32_t                                          _untextured_index_count;
+        uint32_t                                          _untextured_index_count{ 0u };
         std::vector<TransparentTriangle>                  _transparent_triangles;
         std::vector<Triangle>                             _collision_triangles;
         DirectX::BoundingBox                              _bounding_box;
