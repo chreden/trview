@@ -310,6 +310,9 @@
     <ClCompile Include="Elements\ITrigger.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\IStaticMesh.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -790,6 +793,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Elements\ITrigger.h">
       <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\IStaticMesh.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Elements\Entity.cpp" />
     <ClCompile Include="Elements\IEntity.cpp" />
     <ClCompile Include="Elements\IRoom.cpp" />
+    <ClCompile Include="Elements\IStaticMesh.cpp" />
     <ClCompile Include="Elements\Item.cpp" />
     <ClCompile Include="Elements\ITrigger.cpp" />
     <ClCompile Include="Elements\ITypeNameLookup.cpp" />
@@ -154,6 +155,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Elements\IEntity.h" />
     <ClInclude Include="Elements\ILevel.h" />
     <ClInclude Include="Elements\IRoom.h" />
+    <ClInclude Include="Elements\IStaticMesh.h" />
     <ClInclude Include="Elements\Item.h" />
     <ClInclude Include="Elements\ITrigger.h" />
     <ClInclude Include="Elements\ITypeNameLookup.h" />

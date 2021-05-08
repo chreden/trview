@@ -38,7 +38,9 @@ namespace trview
         const ILevelTextureStorage& texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
-        const ILevel& parent_level)
+        const ILevel& parent_level,
+        const IStaticMesh::MeshSource& static_mesh_mesh_source,
+        const IStaticMesh::PositionSource& static_mesh_position_source)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
@@ -57,7 +59,7 @@ namespace trview
         generate_sectors(level, room);
         generate_geometry(level.get_version(), mesh_source, room, texture_storage);
         generate_adjacency();
-        generate_static_meshes(mesh_source, level, room, mesh_storage);
+        generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
     }
 
     RoomInfo Room::info() const
@@ -200,15 +202,14 @@ namespace trview
         }
     }
 
-    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage)
+    void Room::generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
+        const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source)
     {
         for (uint32_t i = 0; i < room.static_meshes.size(); ++i)
         {
             auto room_mesh = room.static_meshes[i];
             auto level_static_mesh = level.get_static_mesh(room_mesh.mesh_id);
-            // TODO: Use DI?
-            auto static_mesh = std::make_unique<StaticMesh>(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh));
-            _static_meshes.push_back(std::move(static_mesh));
+            _static_meshes.push_back(static_mesh_mesh_source(room_mesh, level_static_mesh, mesh_storage.mesh(level_static_mesh.Mesh)));
         }
 
         // Also read the room sprites - they're similar enough for now.
@@ -221,8 +222,7 @@ namespace trview
             auto vertex = room.data.vertices[room_sprite.vertex].vertex;
             auto pos = Vector3(vertex.x / trlevel::Scale_X, vertex.y / trlevel::Scale_Y, vertex.z / trlevel::Scale_Z);
             pos = Vector3::Transform(pos, _room_offset) + offset;
-
-            _static_meshes.push_back(std::make_unique<StaticMesh>(pos, scale, std::move(sprite_mesh)));
+            _static_meshes.push_back(static_mesh_position_source(pos, scale, sprite_mesh));
         }
     }
 
