@@ -47,7 +47,7 @@ namespace trview
         std::shared_ptr<graphics::IDevice> _device;
         std::optional<DirectX::SimpleMath::Vector3> _start;
         std::optional<DirectX::SimpleMath::Vector3> _end;
-        std::unique_ptr<IMesh>                      _mesh;
-        bool                                        _visible{ true };
+        std::shared_ptr<IMesh> _mesh;
+        bool _visible{ true };
     };
 }

@@ -1,13 +1,12 @@
 #include "StaticMesh.h"
 #include <trview.app/Geometry/Matrix.h>
-#include <trview.app/Geometry/Mesh.h>
-#include <trview.app/Geometry/TransparencyBuffer.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
 
 namespace trview
 {
     using namespace DirectX::SimpleMath;
 
-    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, IMesh* mesh)
+    StaticMesh::StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh)
         : _mesh(mesh),
         _visibility_min(level_static_mesh.VisibilityBox.MinX, level_static_mesh.VisibilityBox.MinY, level_static_mesh.VisibilityBox.MinZ),
         _visibility_max(level_static_mesh.VisibilityBox.MaxX, level_static_mesh.VisibilityBox.MaxY, level_static_mesh.VisibilityBox.MaxZ),
@@ -20,8 +19,8 @@ namespace trview
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);
     }
 
-    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::unique_ptr<IMesh> mesh)
-        : _position(position), _sprite_mesh(std::move(mesh)), _rotation(0), _scale(scale)
+    StaticMesh::StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh)
+        : _position(position), _sprite_mesh(mesh), _rotation(0), _scale(scale)
     {
         using namespace DirectX::SimpleMath;
         _world = Matrix::CreateRotationY(_rotation) * Matrix::CreateTranslation(_position);

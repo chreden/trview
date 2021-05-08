@@ -104,7 +104,7 @@ namespace trview
         uint32_t next_index() const;
 
         std::vector<Waypoint> _waypoints;
-        std::unique_ptr<IMesh> _waypoint_mesh;
+        std::shared_ptr<IMesh> _waypoint_mesh;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t              _selected_index{ 0u };
         Colour                _colour{ Colour::Green };

@@ -37,7 +37,7 @@ namespace trview
     private:
         std::shared_ptr<graphics::IDevice> _device;
         std::unique_ptr<graphics::IRenderTarget> _render_target;
-        std::unique_ptr<IMesh> _mesh;
+        std::shared_ptr<IMesh> _mesh;
         std::unique_ptr<graphics::ISprite> _sprite;
         OrbitCamera _mesh_camera;
         bool _visible{ true };

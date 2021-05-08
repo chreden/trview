@@ -28,6 +28,7 @@
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
     <ClCompile Include="Graphics\LevelTextureStorageTests.cpp" />
+    <ClCompile Include="Graphics\MeshStorageTests.cpp" />
     <ClCompile Include="ItemsWindowManagerTests.cpp" />
     <ClCompile Include="ItemsWindowTests.cpp" />
     <ClCompile Include="Main.cpp" />

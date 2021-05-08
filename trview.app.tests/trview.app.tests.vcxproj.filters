@@ -68,6 +68,9 @@
     <ClCompile Include="Settings\StartupOptionsTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\MeshStorageTests.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

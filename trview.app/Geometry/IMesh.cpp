@@ -28,7 +28,7 @@ namespace trview
     {
     }
 
-    std::unique_ptr<IMesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision)
+    std::shared_ptr<IMesh> create_mesh(trlevel::LevelVersion level_version, const trlevel::tr_mesh& mesh, const IMesh::Source& source, const ILevelTextureStorage& texture_storage, bool transparent_collision)
     {
         std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
         std::vector<MeshVertex> vertices;
@@ -44,7 +44,7 @@ namespace trview
         return source(vertices, indices, untextured_indices, transparent_triangles, collision_triangles);
     }
 
-    std::unique_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
+    std::shared_ptr<IMesh> create_cube_mesh(const IMesh::Source& source)
     {
         const std::vector<MeshVertex> vertices
         {
@@ -98,7 +98,7 @@ namespace trview
         return source(vertices, std::vector<std::vector<uint32_t>>(), indices, std::vector<TransparentTriangle>(), std::vector<Triangle>());
     }
 
-    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)
+    std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Vector3& offset, SpriteOffsetMode offset_mode)
     {
         // Calculate UVs.
         float u = static_cast<float>(sprite.x) / 256.0f;
@@ -140,12 +140,12 @@ namespace trview
         return source(std::vector<MeshVertex>(), std::vector<std::vector<uint32_t>>(), std::vector<uint32_t>(), transparent_triangles, collision_triangles);
     }
 
-    std::unique_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)
+    std::shared_ptr<IMesh> create_sprite_mesh(const IMesh::Source& source, const trlevel::tr_sprite_texture& sprite, Matrix& scale, Matrix& offset, SpriteOffsetMode offset_mode)
     {
         Vector3 offset_vector;
         auto mesh = create_sprite_mesh(source, sprite, scale, offset_vector, offset_mode);
         offset = Matrix::CreateTranslation(offset_vector);
-        return std::move(mesh);
+        return mesh;
     }
 
     void process_textured_rectangles(
