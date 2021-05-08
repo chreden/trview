@@ -61,13 +61,13 @@ namespace
             di::bind<ILevelSwitcher>.to([&](auto&&) { return std::move(level_switcher); }),
             di::bind<IRecentFiles>.to([&](auto&&) { return std::move(recent_files); }),
             di::bind<IViewer>.to([&](auto&&) { return std::move(viewer); }),
-            di::bind<IRoute::Source>.to([&](const auto& injector)->IRoute::Source { return [&]() { return std::move(route); }; }),
+            di::bind<IRoute::Source>.to([&](auto&&) { return [&](auto&&...) { return std::move(route); }; }),
             di::bind<IShortcuts>.to(shortcuts),
             di::bind<IItemsWindowManager>.to([&](auto&&) { return std::move(items_window_manager); }),
             di::bind<ITriggersWindowManager>.to([&](auto&&) { return std::move(triggers_window_manager); }),
             di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
             di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
-            di::bind<ILevel::Source>.to([](const auto& injector)->ILevel::Source { return [](auto) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
+            di::bind<ILevel::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
             di::bind<IStartupOptions>.to(startup_options)
         ).create<std::unique_ptr<Application>>();
     }

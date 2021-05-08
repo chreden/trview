@@ -25,9 +25,9 @@ namespace
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([&](auto&&) { return [&](auto&&) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&, auto&&) { return std::make_unique<MockInput>(); }; }),
+            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
+            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
+            di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
             di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
             di::bind<IClipboard>.to<MockClipboard>(),
             di::bind<ItemsWindow>()
