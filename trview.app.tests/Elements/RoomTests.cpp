@@ -14,32 +14,55 @@ using namespace boost;
 
 namespace
 {
-    auto default_mesh_source = [](auto&&...) { return std::make_shared<MockMesh>(); };
-    auto default_static_mesh_source = [](auto&&...) { return std::make_shared<MockStaticMesh>(); };
-    auto default_static_mesh_position_source = [](auto&&...) { return std::make_shared<MockStaticMesh>(); };
-
-    auto register_test_module(IMesh::Source mesh_source = default_mesh_source, std::shared_ptr<trlevel::ILevel> tr_level = nullptr, trlevel::tr3_room room = {},
-        std::shared_ptr<ILevelTextureStorage> level_texture_storage = nullptr, std::shared_ptr<IMeshStorage> mesh_storage = nullptr, uint32_t index = 0,
-        std::shared_ptr<ILevel> level = nullptr, IStaticMesh::MeshSource static_mesh_source = default_static_mesh_source,
-        IStaticMesh::PositionSource static_mesh_position_source = default_static_mesh_position_source)
+    auto register_test_module()
     {
-        choose_mock<trlevel::mocks::MockLevel>(tr_level);
-        choose_mock<MockLevelTextureStorage>(level_texture_storage);
-        choose_mock<MockMeshStorage>(mesh_storage);
-        choose_mock<MockLevel>(level);
+        struct test_module
+        {
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<MockLevelTextureStorage>() };
+            std::shared_ptr<IMeshStorage> mesh_storage{ std::make_shared<MockMeshStorage>() };
+            IMesh::Source mesh_source{ [](auto&&...) { return std::make_shared<MockMesh>(); } };
+            std::shared_ptr<trlevel::ILevel> tr_level{ std::make_shared<trlevel::mocks::MockLevel>() };
+            trlevel::tr3_room room;
+            uint32_t index{ 0u };
+            std::shared_ptr<ILevel> level{ std::make_shared<MockLevel>() };
+            IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
+            IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
 
-        return di::make_injector
-        (
-            di::bind<IMesh::Source>.to(mesh_source),
-            di::bind<trlevel::ILevel>.to(*tr_level),
-            di::bind<trlevel::tr3_room>.to(room),
-            di::bind<ILevelTextureStorage>.to(*level_texture_storage),
-            di::bind<IMeshStorage>.to(*mesh_storage),
-            di::bind<uint32_t>.to(index),
-            di::bind<ILevel>.to(*level),
-            di::bind<IStaticMesh::MeshSource>.to(static_mesh_source),
-            di::bind<IStaticMesh::PositionSource>.to(static_mesh_position_source)
-        ).create<std::unique_ptr<Room>>();
+            std::unique_ptr<Room> build()
+            {
+                return di::make_injector
+                (
+                    di::bind<IMesh::Source>.to(mesh_source),
+                    di::bind<trlevel::ILevel>.to(*tr_level),
+                    di::bind<trlevel::tr3_room>.to(room),
+                    di::bind<ILevelTextureStorage>.to(*level_texture_storage),
+                    di::bind<IMeshStorage>.to(*mesh_storage),
+                    di::bind<uint32_t>.to(index),
+                    di::bind<ILevel>.to(*level),
+                    di::bind<IStaticMesh::MeshSource>.to(static_mesh_source),
+                    di::bind<IStaticMesh::PositionSource>.to(static_mesh_position_source)
+                ).create<std::unique_ptr<Room>>();
+            }
+
+            test_module& with_room(const trlevel::tr3_room& room)
+            {
+                this->room = room;
+                return *this;
+            }
+
+            test_module& with_static_mesh_source(const IStaticMesh::MeshSource& static_mesh_source)
+            {
+                this->static_mesh_source = static_mesh_source;
+                return *this;
+            }
+
+            test_module& with_static_mesh_position_source(const IStaticMesh::PositionSource& static_mesh_position_source)
+            {
+                this->static_mesh_position_source = static_mesh_position_source;
+                return *this;
+            }
+        };
+        return test_module{};
     }
 }
 
@@ -55,7 +78,7 @@ TEST(Room, StaticMeshesLoaded)
         return std::make_shared<MockStaticMesh>();
     };
 
-    auto room = register_test_module(default_mesh_source, nullptr, level_room, nullptr, nullptr, 0, nullptr, static_mesh_source, default_static_mesh_position_source);
+    register_test_module().with_room(level_room).with_static_mesh_source(static_mesh_source).build();
     ASSERT_EQ(times_called, 2);
 }
 
@@ -72,7 +95,7 @@ TEST(Room, SpritesLoaded)
         return std::make_shared<MockStaticMesh>();
     };
 
-    auto room = register_test_module(default_mesh_source, nullptr, level_room, nullptr, nullptr, 0, nullptr, default_static_mesh_source, static_mesh_position_source);
+    register_test_module().with_room(level_room).with_static_mesh_position_source(static_mesh_position_source).build();
     ASSERT_EQ(times_called, 2);
 }
 
