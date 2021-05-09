@@ -797,6 +797,9 @@
     <ClInclude Include="Elements\IStaticMesh.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\IStaticMesh.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
