@@ -1,66 +1,57 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 #include <utility>
 #include <map>
-#include <set>
-#include <array>
-
 #include "trlevel/trtypes.h"
 #include "trlevel/ILevel.h"
-#include "Types.h" 
+#include "ISector.h"
 
 namespace trview
 {
-    enum class TriangulationDirection
-    {
-        None,
-        NwSe,
-        NeSw
-    };
-
-    class Sector
+    class Sector final : public ISector
     {
     public:
         // Constructs sector object and parses floor data automatically 
         Sector(const trlevel::ILevel &level, const trlevel::tr3_room& room, const trlevel::tr_room_sector &sector, int sector_id, uint32_t room_number);
 
+        virtual ~Sector() = default;
+
         // Returns the id of the room that this floor data points to 
-        std::uint16_t portal() const; 
+        virtual std::uint16_t portal() const override;
 
         // Gets/sets id of the sector. Used by map renderer. 
-        inline int id() const { return _sector_id; }
+        virtual int id() const override { return _sector_id; }
 
         // Returns all neighbours for the current sector, maximum of 3 (up, down, portal). 
-        std::set<std::uint16_t> neighbours() const; 
+        virtual std::set<std::uint16_t> neighbours() const override;
 
         // Returns room below 
-        inline std::uint16_t room_below() const { return _room_below; }
+        virtual std::uint16_t room_below() const override { return _room_below; }
 
         // Returns room above 
-        inline std::uint16_t room_above() const { return _room_above; }
+        virtual std::uint16_t room_above() const override { return _room_above; }
 
         // Holds "Function" enum bitwise values 
         std::uint16_t flags = 0;
 
         /// Get trigger information for the sector.
-        const TriggerInfo& trigger() const;
+        virtual TriggerInfo trigger() const override;
 
-        uint16_t x() const;
+        virtual uint16_t x() const override;
 
-        uint16_t z() const;
+        virtual uint16_t z() const override;
 
-        std::array<float, 4> corners() const;
+        virtual std::array<float, 4> corners() const override;
 
-        uint32_t room() const;
+        virtual uint32_t room() const override;
 
-        TriangulationDirection triangulation_function() const;
+        virtual TriangulationDirection triangulation_function() const override;
 
-        std::vector<DirectX::SimpleMath::Vector3> triangles() const;
+        virtual std::vector<DirectX::SimpleMath::Vector3> triangles() const override;
 
         /// Determines whether this is a walkable floor.
-        bool is_floor() const;
+        virtual bool is_floor() const override;
     private:
         bool parse(const trlevel::ILevel& level);
         void parse_slope();

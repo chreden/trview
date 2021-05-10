@@ -189,7 +189,7 @@ namespace trview
         return true; 
     }
 
-    const TriggerInfo& Sector::trigger() const
+    TriggerInfo Sector::trigger() const
     {
         return _trigger;
     }
@@ -242,7 +242,7 @@ namespace trview
         return _room;
     }
 
-    TriangulationDirection Sector::triangulation_function() const
+    ISector::TriangulationDirection Sector::triangulation_function() const
     {
         return _triangulation_function;
     }
