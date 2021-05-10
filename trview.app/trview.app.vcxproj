@@ -214,6 +214,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Elements\IEntity.h" />
     <ClInclude Include="Mocks\Elements\ILevel.h" />
     <ClInclude Include="Mocks\Elements\IRoom.h" />
+    <ClInclude Include="Mocks\Elements\ISector.h" />
     <ClInclude Include="Mocks\Elements\IStaticMesh.h" />
     <ClInclude Include="Mocks\Elements\ITrigger.h" />
     <ClInclude Include="Mocks\Elements\ITypeNameLookup.h" />

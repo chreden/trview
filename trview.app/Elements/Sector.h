@@ -2,9 +2,6 @@
 
 #include <memory>
 #include <utility>
-#include <map>
-#include "trlevel/trtypes.h"
-#include "trlevel/ILevel.h"
 #include "ISector.h"
 
 namespace trview

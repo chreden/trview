@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trview.graphics/IDevice.h>
-#include <trview.app/Elements/Sector.h>
+#include <trview.app/Elements/ISector.h>
 #include <trview.app/Camera/ICamera.h>
 #include "ILevelTextureStorage.h"
 

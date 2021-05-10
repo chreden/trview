@@ -806,6 +806,9 @@
     <ClInclude Include="Elements\ISector.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Elements\ISector.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

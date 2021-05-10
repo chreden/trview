@@ -40,7 +40,8 @@ namespace trview
         uint32_t index,
         const ILevel& parent_level,
         const IStaticMesh::MeshSource& static_mesh_mesh_source,
-        const IStaticMesh::PositionSource& static_mesh_position_source)
+        const IStaticMesh::PositionSource& static_mesh_position_source,
+        const ISector::Source& sector_source)
         : _info { room.info.x, 0, room.info.z, room.info.yBottom, room.info.yTop }, 
         _alternate_room(room.alternate_room),
         _alternate_group(room.alternate_group),
@@ -56,7 +57,7 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
-        generate_sectors(level, room);
+        generate_sectors(level, room, sector_source);
         generate_geometry(level.get_version(), mesh_source, room, texture_storage);
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
@@ -299,12 +300,12 @@ namespace trview
     }
 
     void 
-    Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room)
+    Room::generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source)
     {
         for (auto i = 0u; i < room.sector_list.size(); ++i)
         {
             const trlevel::tr_room_sector &sector = room.sector_list[i];
-            _sectors.push_back(std::make_shared<Sector>(level, room, sector, i, _index));
+            _sectors.push_back(sector_source(level, room, sector, i, _index));
         }
     }
 

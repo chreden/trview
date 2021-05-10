@@ -12,7 +12,7 @@
 #include <trlevel/ILevel.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Elements/Sector.h>
+#include <trview.app/Elements/ISector.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.graphics/Texture.h>
 #include "IStaticMesh.h"
@@ -31,7 +31,8 @@ namespace trview
             uint32_t index,
             const ILevel& parent_level,
             const IStaticMesh::MeshSource& static_mesh_mesh_source,
-            const IStaticMesh::PositionSource& static_mesh_position_source);
+            const IStaticMesh::PositionSource& static_mesh_position_source,
+            const ISector::Source& sector_source);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -67,7 +68,7 @@ namespace trview
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source);
         void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
-        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
+        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);
         ISector* get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 

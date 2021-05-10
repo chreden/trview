@@ -5,6 +5,7 @@
 #include "TypeNameLookup.h"
 #include "Entity.h"
 #include "StaticMesh.h"
+#include "Sector.h"
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -44,7 +45,7 @@ namespace trview
                     return [&](auto&& level, auto&& room, auto&& texture_storage, auto&& mesh_storage, auto&& index, auto&& parent_level)
                     {
                         return std::make_shared<Room>(injector.create<IMesh::Source>(), level, room, texture_storage, mesh_storage, index, parent_level,
-                            injector.create<IStaticMesh::MeshSource>(), injector.create<IStaticMesh::PositionSource>());
+                            injector.create<IStaticMesh::MeshSource>(), injector.create<IStaticMesh::PositionSource>(), injector.create<ISector::Source>());
                     };
                 }),
             di::bind<ITrigger::Source>.to(
@@ -69,6 +70,14 @@ namespace trview
                     return [&](auto&& position, auto&& scale, auto&& mesh)
                     {
                         return std::make_shared<StaticMesh>(position, scale, mesh);
+                    };
+                }),
+            di::bind<ISector::Source>.to(
+                [](const auto&) -> ISector::Source
+                {
+                    return [&](auto&& level, auto&& room, auto&& room_sector, auto&& sector_id, auto&& room_number)
+                    {
+                        return std::make_shared<Sector>(level, room, room_sector, sector_id, room_number);
                     };
                 }),
             di::bind<ILevel::Source>.to(

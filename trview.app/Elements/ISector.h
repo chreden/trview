@@ -5,11 +5,16 @@
 #include <vector>
 #include <SimpleMath.h>
 #include "Types.h"
+#include "trlevel/ILevel.h"
+#include "trlevel/trtypes.h"
 
 namespace trview
 {
     struct ISector
     {
+        using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
+            const trlevel::tr_room_sector&, int, uint32_t)>;
+
         enum class TriangulationDirection
         {
             None,

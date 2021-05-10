@@ -2,7 +2,7 @@
 
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
-#include <trview.app/Elements/Sector.h>
+#include <trview.app/Elements/ISector.h>
 #include <trview.app/Elements/RoomInfo.h>
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ITrigger.h>

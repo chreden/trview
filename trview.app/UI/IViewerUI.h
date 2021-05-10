@@ -3,8 +3,8 @@
 #include <memory>
 
 #include <trview.app/Camera/CameraMode.h>
-#include <trview.app/Elements/Sector.h>
-#include <trview.app/Elements/Room.h>
+#include <trview.app/Elements/ISector.h>
+#include <trview.app/Elements/IRoom.h>
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Settings/UserSettings.h>
 
