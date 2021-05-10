@@ -56,7 +56,7 @@ namespace trview
                     };
                 }),
             di::bind<IStaticMesh::MeshSource>.to(
-                [](const auto& injector) -> IStaticMesh::MeshSource
+                [](const auto&) -> IStaticMesh::MeshSource
                 {
                     return [&](auto&& room_mesh, auto&& level_mesh, auto&& mesh)
                     {
@@ -64,7 +64,7 @@ namespace trview
                     };
                 }),
             di::bind<IStaticMesh::PositionSource>.to(
-                [](const auto& injector) -> IStaticMesh::PositionSource
+                [](const auto&) -> IStaticMesh::PositionSource
                 {
                     return [&](auto&& position, auto&& scale, auto&& mesh)
                     {
