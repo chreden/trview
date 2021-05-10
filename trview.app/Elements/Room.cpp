@@ -24,7 +24,7 @@ namespace trview
                 : (water ? NotSelectedWater_Colour : NotSelected_Colour);
         }
 
-        Color get_unmatched_colour(const RoomInfo info, const Sector& sector)
+        Color get_unmatched_colour(const RoomInfo info, const ISector& sector)
         {
             uint32_t x = (sector.x() + info.x / 1024) % 2;
             uint32_t z = info.z / 1024 + sector.z();
@@ -506,7 +506,7 @@ namespace trview
         return x * _num_z_sectors + z;
     }
 
-    Sector* Room::get_trigger_sector(int32_t x, int32_t z)
+    ISector* Room::get_trigger_sector(int32_t x, int32_t z)
     {
         auto sector_id = get_sector_id(x, z);
         auto trigger = _triggers.find(sector_id);
@@ -517,7 +517,7 @@ namespace trview
 
         // Check if this sector is a portal.
         auto sector = _sectors[sector_id];
-        if (!(sector->flags & SectorFlag::Portal))
+        if (!(sector->flags() & SectorFlag::Portal))
         {
             return nullptr;
         }
@@ -706,7 +706,7 @@ namespace trview
         return _level.version() == trlevel::LevelVersion::Tomb3 && (_flags & 0x80);
     }
 
-    const std::vector<std::shared_ptr<Sector>> Room::sectors() const
+    const std::vector<std::shared_ptr<ISector>> Room::sectors() const
     {
         return _sectors; 
     }

@@ -89,7 +89,7 @@ namespace trview
                     Color draw_color = Color(0.0f, 0.7f, 0.7f); // fallback 
                     Color text_color = Colour::White;
 
-                    if (!(tile.sector->flags & SectorFlag::Portal) && (tile.sector->flags & SectorFlag::Wall && tile.sector->flags & SectorFlag::FloorSlant)) // is it no-space?
+                    if (!(tile.sector->flags() & SectorFlag::Portal) && (tile.sector->flags() & SectorFlag::Wall && tile.sector->flags() & SectorFlag::FloorSlant)) // is it no-space?
                     {
                         draw_color = { 0.2f, 0.2f, 0.9f };
                     }
@@ -97,7 +97,7 @@ namespace trview
                     {
                         for (const auto& color : default_colours)
                         {
-                            if ((color.first & tile.sector->flags)
+                            if ((color.first & tile.sector->flags())
                                 && (color.first < minimum_flag_enabled || minimum_flag_enabled == -1)
                                 && (color.first < SectorFlag::ClimbableUp || color.first > SectorFlag::ClimbableLeft)) // climbable flag handled separately
                             {
@@ -125,29 +125,29 @@ namespace trview
                     // In the future I'd like to just draw a hollow square instead.
                     const float thickness = _DRAW_SCALE / 4;
 
-                    if (tile.sector->flags & SectorFlag::ClimbableUp)
+                    if (tile.sector->flags() & SectorFlag::ClimbableUp)
                         draw(tile.position, Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableUp]);
-                    if (tile.sector->flags & SectorFlag::ClimbableRight)
+                    if (tile.sector->flags() & SectorFlag::ClimbableRight)
                         draw(Point(tile.position.x + _DRAW_SCALE - thickness, tile.position.y), Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableRight]);
-                    if (tile.sector->flags & SectorFlag::ClimbableDown)
+                    if (tile.sector->flags() & SectorFlag::ClimbableDown)
                         draw(Point(tile.position.x, tile.position.y + _DRAW_SCALE - thickness), Size(tile.size.width, thickness), default_colours[SectorFlag::ClimbableDown]);
-                    if (tile.sector->flags & SectorFlag::ClimbableLeft)
+                    if (tile.sector->flags() & SectorFlag::ClimbableLeft)
                         draw(tile.position, Size(thickness, tile.size.height), default_colours[SectorFlag::ClimbableLeft]);
 
                     // If sector is a down portal, draw a transparent black square over it 
-                    if (tile.sector->flags & SectorFlag::RoomBelow)
+                    if (tile.sector->flags() & SectorFlag::RoomBelow)
                         draw(tile.position, tile.size, Color(0.0f, 0.0f, 0.0f, 0.6f));
 
                     // If sector is an up portal, draw a small corner square in the top left to signify this 
-                    if (tile.sector->flags & SectorFlag::RoomAbove)
+                    if (tile.sector->flags() & SectorFlag::RoomAbove)
                         draw(tile.position, Size(tile.size.width / 4, tile.size.height / 4), Color(0.0f, 0.0f, 0.0f));
 
-                    if (tile.sector->flags & SectorFlag::Death && tile.sector->flags & SectorFlag::Trigger)
+                    if (tile.sector->flags() & SectorFlag::Death && tile.sector->flags() & SectorFlag::Trigger)
                     {
                         draw(tile.position + Point(tile.size.width * 0.75f, 0), tile.size / 4.0f, default_colours[SectorFlag::Death]);
                     }
 
-                    if (tile.sector->flags & SectorFlag::Portal)
+                    if (tile.sector->flags() & SectorFlag::Portal)
                     {
                         _font->render(context, std::to_wstring(tile.sector->portal()), tile.position.x - 1, tile.position.y, tile.size.width, tile.size.height, text_color);
                     }
@@ -184,7 +184,7 @@ namespace trview
                 on_sector_hover(nullptr);
             }
 
-            Point MapRenderer::get_position(const Sector& sector)
+            Point MapRenderer::get_position(const ISector& sector)
             {
                 return Point {
                     /* X */ _DRAW_SCALE * sector.x(),
@@ -197,7 +197,7 @@ namespace trview
                 return Size { _DRAW_SCALE - 1, _DRAW_SCALE - 1 };
             }
 
-            std::shared_ptr<Sector> 
+            std::shared_ptr<ISector> 
             MapRenderer::sector_at(const Point& p) const
             {
                 auto iter = std::find_if(_tiles.begin(), _tiles.end(), [&] (const Tile& tile) {
@@ -210,10 +210,10 @@ namespace trview
                 if (iter == _tiles.end())
                     return nullptr;
                 else
-                    return std::shared_ptr<Sector>(iter->sector);
+                    return iter->sector;
             }
 
-            std::shared_ptr<Sector> 
+            std::shared_ptr<ISector> 
             MapRenderer::sector_at_cursor() const
             {
                 if (!_visible)

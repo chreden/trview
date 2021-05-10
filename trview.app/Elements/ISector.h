@@ -23,7 +23,7 @@ namespace trview
         virtual std::set<std::uint16_t> neighbours() const = 0;
         virtual inline std::uint16_t room_below() const = 0;
         virtual inline std::uint16_t room_above() const = 0;
-        // virtual std::uint16_t flags = 0;
+        virtual std::uint16_t flags() const = 0;
         virtual TriggerInfo trigger() const = 0;
         virtual uint16_t x() const = 0;
         virtual uint16_t z() const = 0;

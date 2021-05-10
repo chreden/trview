@@ -33,7 +33,7 @@ namespace trview
         virtual std::uint16_t room_above() const override { return _room_above; }
 
         // Holds "Function" enum bitwise values 
-        std::uint16_t flags = 0;
+        virtual uint16_t flags() const override;
 
         /// Get trigger information for the sector.
         virtual TriggerInfo trigger() const override;
@@ -56,6 +56,8 @@ namespace trview
         bool parse(const trlevel::ILevel& level);
         void parse_slope();
         void calculate_neighbours(const trlevel::ILevel& level);
+
+        uint16_t _flags{ 0u };
 
         // Holds the "wall portal" that this sector points to - this is the id of the room 
         std::uint8_t _portal, _room_above, _room_below;

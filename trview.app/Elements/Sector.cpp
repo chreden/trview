@@ -14,7 +14,7 @@ namespace trview
     std::uint16_t
     Sector::portal() const
     {
-        if (!(flags & SectorFlag::Portal))
+        if (!(_flags & SectorFlag::Portal))
             throw std::runtime_error("Sector does not have portal function");
 
         return _portal;
@@ -31,15 +31,15 @@ namespace trview
     {
         // Basic sector items 
         if (_sector.floor == -127 && _sector.ceiling == -127)
-            flags |= SectorFlag::Wall;
+            _flags |= SectorFlag::Wall;
         if (_room_above != 0xFF)
-            flags |= SectorFlag::RoomAbove;
+            _flags |= SectorFlag::RoomAbove;
         if (_room_below != 0xFF)
-            flags |= SectorFlag::RoomBelow; 
+            _flags |= SectorFlag::RoomBelow;
 
         // Start off the heights at the height of the floor (or in the case of a 
         // wall, at the bottom of the room).
-        _corners.fill(flags & SectorFlag::Wall ?
+        _corners.fill(_flags & SectorFlag::Wall ?
             level.get_room(_room).info.yBottom / trlevel::Scale_Y :
             _sector.floor * 0.25f);
 
@@ -58,19 +58,19 @@ namespace trview
             {
             case 0x1:
                 _portal = level.get_floor_data(++cur_index) & 0xFF;
-                flags |= SectorFlag::Portal;
+                _flags |= SectorFlag::Portal;
                 break; 
 
             case 0x2: 
             {
                 _floor_slant = level.get_floor_data(++cur_index);
-                flags |= SectorFlag::FloorSlant;
+                _flags |= SectorFlag::FloorSlant;
                 parse_slope();
                 break;
             }
             case 0x3:
                 _ceiling_slant = level.get_floor_data(++cur_index);
-                flags |= SectorFlag::CeilingSlant;
+                _flags |= SectorFlag::CeilingSlant;
                 break;
 
             case 0x4:
@@ -110,15 +110,15 @@ namespace trview
 
                 } while (cur_index < max_floordata && !(command & 0x8000));
 
-                flags |= SectorFlag::Trigger; 
+                _flags |= SectorFlag::Trigger;
                 break; 
             }
             case 0x5: 
-                flags |= SectorFlag::Death; 
+                _flags |= SectorFlag::Death;
                 break; 
 
             case 0x6: // climbable walls 
-                flags |= (subfunction << 6); 
+                _flags |= (subfunction << 6);
                 break; 
 
             case 0x7:
@@ -172,13 +172,13 @@ namespace trview
                 break;
             }
             case 0x13: 
-                flags |= SectorFlag::MonkeySwing;
+                _flags |= SectorFlag::MonkeySwing;
                 break; 
             case 0x14:
-                flags |= SectorFlag::MinecartLeft;
+                _flags |= SectorFlag::MinecartLeft;
                 break; 
             case 0x15:
-                flags |= SectorFlag::MinecartRight; 
+                _flags |= SectorFlag::MinecartRight;
                 break; 
             }
 
@@ -187,6 +187,11 @@ namespace trview
         }
 
         return true; 
+    }
+
+    uint16_t Sector::flags() const
+    {
+        return _flags;
     }
 
     TriggerInfo Sector::trigger() const
@@ -271,7 +276,7 @@ namespace trview
 
     bool Sector::is_floor() const
     {
-        return room_below() == 0xff && !(flags & SectorFlag::Wall) && !(flags & SectorFlag::Portal);
+        return room_below() == 0xff && !(_flags & SectorFlag::Wall) && !(_flags & SectorFlag::Portal);
     }
 
     void Sector::calculate_neighbours(const trlevel::ILevel& level)
@@ -287,17 +292,17 @@ namespace trview
             _neighbours.insert(room);
         };
 
-        if (flags & SectorFlag::Portal)
+        if (_flags & SectorFlag::Portal)
         {
             add_neighbour(_portal);
         }
 
-        if (flags & SectorFlag::RoomAbove)
+        if (_flags & SectorFlag::RoomAbove)
         {
             add_neighbour(_room_above);
         }
 
-        if (flags & SectorFlag::RoomBelow)
+        if (_flags & SectorFlag::RoomBelow)
         {
             add_neighbour(_room_below);
         }

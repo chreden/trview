@@ -16,7 +16,7 @@ namespace trview
                 virtual ~IMapRenderer() = 0;
 
                 /// Event raised when the user hovers over a map sector, or if the mouse leaves the map.
-                Event<std::shared_ptr<Sector>> on_sector_hover;
+                Event<std::shared_ptr<ISector>> on_sector_hover;
 
                 // Renders the map 
                 virtual void render(bool to_screen = true) = 0;
@@ -28,10 +28,10 @@ namespace trview
                 virtual std::uint16_t area() const = 0;
 
                 // Returns the sector under the specified position, or nullptr if none
-                virtual std::shared_ptr<Sector> sector_at(const Point& p) const = 0;
+                virtual std::shared_ptr<ISector> sector_at(const Point& p) const = 0;
 
                 // Returns the sector that the cursor is within, or nullptr if none
-                virtual std::shared_ptr<Sector> sector_at_cursor() const = 0;
+                virtual std::shared_ptr<ISector> sector_at_cursor() const = 0;
 
                 // Returns true if cursor is on the control
                 virtual bool cursor_is_over_control() const = 0;

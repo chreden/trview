@@ -32,10 +32,10 @@ namespace trview
                 struct Tile
                 {
                 public:
-                    Tile(const std::shared_ptr<Sector>& p_sector, Point p_position, Size p_size)
+                    Tile(const std::shared_ptr<ISector>& p_sector, Point p_position, Size p_size)
                         : sector(p_sector), position(p_position), size(p_size) {}
 
-                    std::shared_ptr<Sector> sector; 
+                    std::shared_ptr<ISector> sector; 
                     Point position; 
                     Size size; 
                 };
@@ -62,10 +62,10 @@ namespace trview
                 virtual inline std::uint16_t area() const override { return _columns * _rows; }
 
                 // Returns the sector under the specified position, or nullptr if none
-                virtual std::shared_ptr<Sector> sector_at(const Point& p) const override;
+                virtual std::shared_ptr<ISector> sector_at(const Point& p) const override;
 
                 // Returns the sector that the cursor is within, or nullptr if none
-                virtual std::shared_ptr<Sector> sector_at_cursor() const override;
+                virtual std::shared_ptr<ISector> sector_at_cursor() const override;
 
                 // Returns true if cursor is on the control
                 virtual bool cursor_is_over_control() const override;
@@ -91,7 +91,7 @@ namespace trview
                 virtual Point first() const override;
             private:
                 // Determines the position (on screen) to draw a sector 
-                Point get_position(const Sector& sector); 
+                Point get_position(const ISector& sector); 
 
                 // Determines the size of a sector 
                 Size get_size() const;
@@ -134,7 +134,7 @@ namespace trview
 
                 std::optional<std::pair<uint16_t, uint16_t>> _selected_sector;
                 std::unique_ptr<graphics::IFont> _font;
-                std::shared_ptr<Sector> _previous_sector;
+                std::shared_ptr<ISector> _previous_sector;
                 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> _depth_stencil_state;
             };
         }
