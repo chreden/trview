@@ -12,6 +12,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using namespace boost;
+using testing::Return;
 
 namespace
 {
@@ -47,6 +48,12 @@ namespace
                 ).create<std::unique_ptr<Room>>();
             }
 
+            test_module& with_level(const std::shared_ptr<ILevel>& level)
+            {
+                this->level = level;
+                return *this;
+            }
+
             test_module& with_room(const trlevel::tr3_room& room)
             {
                 this->room = room;
@@ -67,6 +74,44 @@ namespace
         };
         return test_module{};
     }
+}
+
+TEST(Room, AlternateModeLoaded)
+{
+    FAIL();
+}
+
+TEST(Room, NeighboursLoaded)
+{
+    FAIL();
+}
+
+TEST(Room, OutsideDetected)
+{
+    trlevel::tr3_room level_room;
+    level_room.flags |= 0x8;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->outside(), true);
+}
+
+TEST(Room, QuicksandDetectedAfterTR3)
+{
+    trlevel::tr3_room level_room;
+    level_room.flags |= 0x80;
+    auto level = std::make_shared<MockLevel>();
+    ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb3));
+    auto room = register_test_module().with_room(level_room).with_level(level).build();
+    ASSERT_EQ(room->quicksand(), true);
+}
+
+TEST(Room, QuicksandNotDetectedBeforeTR3)
+{
+    trlevel::tr3_room level_room;
+    level_room.flags |= 0x80;
+    auto level = std::make_shared<MockLevel>();
+    ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb1));
+    auto room = register_test_module().with_room(level_room).with_level(level).build();
+    ASSERT_EQ(room->quicksand(), false);
 }
 
 TEST(Room, StaticMeshesLoaded)
@@ -102,3 +147,10 @@ TEST(Room, SpritesLoaded)
     ASSERT_EQ(times_called, 2);
 }
 
+TEST(Room, WaterDetected)
+{
+    trlevel::tr3_room level_room;
+    level_room.flags |= 0x1;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->water(), true);
+}
