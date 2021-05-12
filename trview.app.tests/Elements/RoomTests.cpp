@@ -71,6 +71,12 @@ namespace
                 this->static_mesh_position_source = static_mesh_position_source;
                 return *this;
             }
+
+            test_module& with_sector_source(const ISector::Source& sector_source)
+            {
+                this->sector_source = sector_source;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -83,7 +89,29 @@ TEST(Room, AlternateModeLoaded)
 
 TEST(Room, NeighboursLoaded)
 {
-    FAIL();
+    trlevel::tr3_room level_room;
+    level_room.sector_list.resize(2);
+
+    std::set<uint16_t> expected{ 0, 10, 20, 30 };
+    auto sector1 = std::make_shared<MockSector>();
+    ON_CALL(*sector1, neighbours).WillByDefault(Return(std::set<uint16_t>{ 0, 20 }));
+    auto sector2 = std::make_shared<MockSector>();
+    ON_CALL(*sector2, neighbours).WillByDefault(Return(std::set<uint16_t>{ 0, 10, 30 }));
+    uint32_t times_called = 0;
+
+    auto source = [&](auto&&...)
+    {
+        if (times_called++)
+        {
+            return sector2;
+        }
+        return sector1;
+    };
+
+    auto room = register_test_module().with_room(level_room).with_sector_source(source).build();
+    auto actual = room->neighbours();
+    ASSERT_EQ(times_called, 2);
+    ASSERT_EQ(actual, expected);
 }
 
 TEST(Room, OutsideDetected)
