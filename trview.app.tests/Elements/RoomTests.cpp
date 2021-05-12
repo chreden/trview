@@ -82,9 +82,13 @@ namespace
     }
 }
 
-TEST(Room, AlternateModeLoaded)
+TEST(Room, AlternateModeDetected)
 {
-    FAIL();
+    trlevel::tr3_room level_room;
+    level_room.alternate_room = 100;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::HasAlternate);
+    ASSERT_EQ(room->alternate_room(), 100);
 }
 
 TEST(Room, NeighboursLoaded)
