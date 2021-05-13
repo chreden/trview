@@ -82,6 +82,20 @@ namespace
     }
 }
 
+/// <summary>
+/// Tests that alternate group information is loaded from the level room.
+/// </summary>
+TEST(Room, AlternateGroupLoaded)
+{
+    trlevel::tr3_room level_room;
+    level_room.alternate_group = 4;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->alternate_group(), 4);
+}
+
+/// <summary>
+/// Tests that the room detects alternate room and has the correct alternate mode.
+/// </summary>
 TEST(Room, AlternateModeDetected)
 {
     trlevel::tr3_room level_room;
@@ -91,6 +105,9 @@ TEST(Room, AlternateModeDetected)
     ASSERT_EQ(room->alternate_room(), 100);
 }
 
+/// <summary>
+/// Tests that setting an alternate room marks this room as an alternate and returns the correct alternate room.
+/// </summary>
 TEST(Room, IsAlternateSet)
 {
     auto room = register_test_module().build();
@@ -100,6 +117,9 @@ TEST(Room, IsAlternateSet)
     ASSERT_EQ(room->alternate_room(), 100);
 }
 
+/// <summary>
+/// Tests that neighbours are correctly extracted from the sectors in the room.
+/// </summary>
 TEST(Room, NeighboursLoaded)
 {
     trlevel::tr3_room level_room;
@@ -127,6 +147,9 @@ TEST(Room, NeighboursLoaded)
     ASSERT_EQ(actual, expected);
 }
 
+/// <summary>
+/// Tests that the 'outside' flag is correctly detected.
+/// </summary>
 TEST(Room, OutsideDetected)
 {
     trlevel::tr3_room level_room;
@@ -135,6 +158,9 @@ TEST(Room, OutsideDetected)
     ASSERT_EQ(room->outside(), true);
 }
 
+/// <summary>
+/// Tests that the 'quicksand' flag is correctly detected when the version is >= TR3.
+/// </summary>
 TEST(Room, QuicksandDetectedAfterTR3)
 {
     trlevel::tr3_room level_room;
@@ -145,6 +171,9 @@ TEST(Room, QuicksandDetectedAfterTR3)
     ASSERT_EQ(room->quicksand(), true);
 }
 
+/// <summary>
+/// Tests that the 'quicksand' flag is not detected before TR3.
+/// </summary>
 TEST(Room, QuicksandNotDetectedBeforeTR3)
 {
     trlevel::tr3_room level_room;
@@ -155,6 +184,9 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
     ASSERT_EQ(room->quicksand(), false);
 }
 
+/// <summary>
+/// Tests that the appropriate number of static meshes in the room are created.
+/// </summary>
 TEST(Room, StaticMeshesLoaded)
 {
     trlevel::tr3_room level_room;
@@ -171,6 +203,9 @@ TEST(Room, StaticMeshesLoaded)
     ASSERT_EQ(times_called, 2);
 }
 
+/// <summary>
+/// Tests that the appropriate number of sprites in the room are created.
+/// </summary>
 TEST(Room, SpritesLoaded)
 {
     trlevel::tr3_room level_room;
@@ -188,6 +223,9 @@ TEST(Room, SpritesLoaded)
     ASSERT_EQ(times_called, 2);
 }
 
+/// <summary>
+/// Tests that the 'water' flag is correctly detected.
+/// </summary>
 TEST(Room, WaterDetected)
 {
     trlevel::tr3_room level_room;
