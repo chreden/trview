@@ -54,6 +54,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_number(uint32_t number)
+            {
+                this->index = number;
+                return *this;
+            }
+
             test_module& with_room(const trlevel::tr3_room& room)
             {
                 this->room = room;
@@ -148,6 +154,15 @@ TEST(Room, NeighboursLoaded)
 }
 
 /// <summary>
+/// Tests that the room number is correctly returned.
+/// </summary>
+TEST(Room, NumberIsCorrect)
+{
+    auto room = register_test_module().with_number(100).build();
+    ASSERT_EQ(room->number(), 100);
+}
+
+/// <summary>
 /// Tests that the 'outside' flag is correctly detected.
 /// </summary>
 TEST(Room, OutsideDetected)
@@ -182,6 +197,37 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
     ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb1));
     auto room = register_test_module().with_room(level_room).with_level(level).build();
     ASSERT_EQ(room->quicksand(), false);
+}
+
+/// <summary>
+/// Tests that the number of X and Z sectors is correctly loaded.
+/// </summary>
+TEST(Room, SectorCountsLoaded)
+{
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 10;
+    level_room.num_z_sectors = 20;
+    auto room = register_test_module().with_room(level_room).build();
+    ASSERT_EQ(room->num_x_sectors(), 10);
+    ASSERT_EQ(room->num_z_sectors(), 20);
+}
+
+/// <summary>
+/// Tests that the room creates a sector for each sector in the room data and that they can be retrieved.
+/// </summary>
+TEST(Room, SectorsCreated)
+{
+    trlevel::tr3_room level_room;
+    level_room.sector_list.resize(4);
+    uint32_t times_called = 0;
+    auto source = [&](auto&&...)
+    {
+        ++times_called;
+        return std::make_shared<MockSector>();
+    };
+    auto room = register_test_module().with_room(level_room).with_sector_source(source).build();
+    ASSERT_EQ(times_called, 4);
+    ASSERT_EQ(room->sectors().size(), 4);
 }
 
 /// <summary>
