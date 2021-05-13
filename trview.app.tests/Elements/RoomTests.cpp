@@ -6,6 +6,7 @@
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 #include <external/boost/di.hpp>
 
 using namespace trview;
@@ -109,6 +110,27 @@ TEST(Room, AlternateModeDetected)
     auto room = register_test_module().with_room(level_room).build();
     ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::HasAlternate);
     ASSERT_EQ(room->alternate_room(), 100);
+}
+
+/// <summary>
+/// Tests that the info is loaded correctly from the room. Also checks that y is ignored and set to 0 as
+/// it seems to be better to use yBottom and yTop.
+/// </summary>
+TEST(Room, InfoLoaded)
+{
+    trlevel::tr3_room level_room;
+    level_room.info.x = 100;
+    level_room.info.y = 200;
+    level_room.info.z = 300;
+    level_room.info.yBottom = 400;
+    level_room.info.yTop = 500;
+    auto room = register_test_module().with_room(level_room).build();
+    auto info = room->info();
+    ASSERT_EQ(info.x, 100);
+    ASSERT_EQ(info.y, 0);
+    ASSERT_EQ(info.z, 300);
+    ASSERT_EQ(info.yBottom, 400);
+    ASSERT_EQ(info.yTop, 500);
 }
 
 /// <summary>
@@ -267,6 +289,23 @@ TEST(Room, SpritesLoaded)
 
     register_test_module().with_room(level_room).with_static_mesh_position_source(static_mesh_position_source).build();
     ASSERT_EQ(times_called, 2);
+}
+
+/// <summary>
+/// Tests that the triggers have their geometries generated when called.
+/// </summary>
+TEST(Room, TriggerGeometryGenerated)
+{
+    auto trigger = std::make_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, set_triangles).Times(1);
+    EXPECT_CALL(*trigger, set_position).Times(1);
+
+    trlevel::tr3_room level_room;
+    level_room.sector_list.resize(1);
+
+    auto room = register_test_module().with_room(level_room).build();
+    room->add_trigger(trigger);
+    room->generate_trigger_geometry();
 }
 
 /// <summary>

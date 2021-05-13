@@ -523,6 +523,11 @@ namespace trview
             return _sectors[sector_id].get();
         }
 
+        if (sector_id >= _sectors.size())
+        {
+            return nullptr;
+        }
+
         // Check if this sector is a portal.
         auto sector = _sectors[sector_id];
         if (!(sector->flags() & SectorFlag::Portal))
