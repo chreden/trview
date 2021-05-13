@@ -1,11 +1,18 @@
 #pragma once
 
+#include <cstdint>
+#include <functional>
+#include <set>
+#include <vector>
+#include <SimpleMath.h>
+#include <trview.app/Elements/IEntity.h>
+#include <trview.app/Elements/ISector.h>
+#include <trview.app/Elements/ITrigger.h>
+#include <trview.app/Elements/RoomInfo.h>
+#include <trview.app/Geometry/ITransparencyBuffer.h>
+#include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
-#include <trview.app/Elements/ISector.h>
-#include <trview.app/Elements/RoomInfo.h>
-#include <trview.app/Elements/IEntity.h>
-#include <trview.app/Elements/ITrigger.h>
 
 namespace trview
 {
