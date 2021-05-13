@@ -17,7 +17,7 @@ namespace trview
             MOCK_METHOD(DirectX::BoundingBox, bounding_box, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, centre, (), (const, override));
             MOCK_METHOD(void, generate_trigger_geometry, (), (override));
-            MOCK_METHOD(void, get_contained_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool, bool), (override));
+            MOCK_METHOD(void, get_contained_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool), (override));
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, SelectionMode, bool, bool), (override));
             MOCK_METHOD(RoomInfo, info, (), (const, override));
             MOCK_METHOD(std::set<uint16_t>, neighbours, (), (const, override));
@@ -28,7 +28,7 @@ namespace trview
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, bool, bool, bool, bool), (const, override));
             MOCK_METHOD(bool, quicksand, (), (const, override));
             MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&, SelectionMode, bool, bool), (override));
-            MOCK_METHOD(void, render_contained, (const ICamera&, const ILevelTextureStorage&, SelectionMode, bool, bool), (override));;
+            MOCK_METHOD(void, render_contained, (const ICamera&, const ILevelTextureStorage&, SelectionMode, bool), (override));;
             MOCK_METHOD(const std::vector<std::shared_ptr<ISector>>, sectors, (), (const, override));
             MOCK_METHOD(void, set_is_alternate, (int16_t), (override));
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger_at, (int32_t, int32_t), (const, override));

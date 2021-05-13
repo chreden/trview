@@ -190,9 +190,9 @@ namespace trview
         render_contained(camera, texture_storage, colour);
     }
 
-    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
+    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour((water() || force_water) && show_water, selected);
+        Color colour = room_colour(water() && show_water, selected);
         render_contained(camera, texture_storage, colour);
     }
 
@@ -347,9 +347,9 @@ namespace trview
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour((force_water || water()) && show_water, selected);
+        Color colour = room_colour(water() && show_water, selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 

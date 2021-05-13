@@ -107,8 +107,7 @@ namespace trview
         /// <param name="camera">The current viewpoint.</param>
         /// <param name="selected">The selection mode for the room.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        /// <param name="force_water">Whether to render water effects.</param>
-        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false) = 0;
+        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) = 0;
         /// <summary>
         /// Get the transparent triangles for the room geometry.
         /// </summary>
@@ -180,8 +179,7 @@ namespace trview
         /// <param name="texture_storage">The texture storage for the level.</param>
         /// <param name="selected">Whether the room is selected.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        /// <param name="force_water">Whether to render water effects.</param>
-        virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) = 0;
+        virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water) = 0;
         /// <summary>
         /// Gets all sectors in the room.
         /// </summary>
