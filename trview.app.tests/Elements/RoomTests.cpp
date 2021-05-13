@@ -91,6 +91,15 @@ TEST(Room, AlternateModeDetected)
     ASSERT_EQ(room->alternate_room(), 100);
 }
 
+TEST(Room, IsAlternateSet)
+{
+    auto room = register_test_module().build();
+    ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::None);
+    room->set_is_alternate(100);
+    ASSERT_EQ(room->alternate_mode(), IRoom::AlternateMode::IsAlternate);
+    ASSERT_EQ(room->alternate_room(), 100);
+}
+
 TEST(Room, NeighboursLoaded)
 {
     trlevel::tr3_room level_room;

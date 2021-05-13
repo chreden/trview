@@ -375,7 +375,7 @@ namespace trview
         {
             auto level_entity = level.get_entity(i);
             auto entity = entity_source(level, level_entity, i, mesh_storage);
-            _rooms[entity->room()]->add_entity(entity.get());
+            _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
 
             std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
@@ -396,7 +396,7 @@ namespace trview
         {
             auto ai_object = level.get_ai_object(i);
             auto entity = ai_source(level, ai_object, num_entities + i, mesh_storage);
-            _rooms[entity->room()]->add_entity(entity.get());
+            _rooms[entity->room()]->add_entity(entity);
             _entities.push_back(entity);
 
             _items.push_back(Item(num_entities + i, ai_object.room, ai_object.type_id, type_names.lookup_type_name(_version, ai_object.type_id), ai_object.ocb,

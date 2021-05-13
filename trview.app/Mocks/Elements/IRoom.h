@@ -9,7 +9,7 @@ namespace trview
         struct MockRoom final : public IRoom
         {
             virtual ~MockRoom() = default;
-            MOCK_METHOD(void, add_entity, (IEntity*), (override));
+            MOCK_METHOD(void, add_entity, (const std::weak_ptr<IEntity>&), (override));
             MOCK_METHOD(void, add_trigger, (const std::weak_ptr<ITrigger>&), (override));
             MOCK_METHOD(int16_t, alternate_group, (), (const, override));
             MOCK_METHOD(AlternateMode, alternate_mode, (), (const, override));

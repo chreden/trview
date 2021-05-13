@@ -41,7 +41,7 @@ namespace trview
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
         virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) override;
-        virtual void add_entity(IEntity* entity) override;
+        virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
@@ -102,7 +102,7 @@ namespace trview
 
         DirectX::BoundingBox  _bounding_box;
 
-        std::vector<IEntity*> _entities;
+        std::vector<std::weak_ptr<IEntity>> _entities;
 
         // Maps a sector to its sector ID 
         std::vector<std::shared_ptr<ISector>> _sectors; 

@@ -96,12 +96,13 @@ namespace trview
             // Pick against the entity geometry:
             for (const auto& entity : _entities)
             {
-                if (!entity->visible())
+                auto entity_ptr = entity.lock();
+                if (!entity_ptr || !entity_ptr->visible())
                 {
                     continue;
                 }
 
-                auto entity_result = entity->pick(position, direction);
+                auto entity_result = entity_ptr->pick(position, direction);
                 if (entity_result.hit)
                 {
                     pick_results.push_back(entity_result);
@@ -199,7 +200,10 @@ namespace trview
     {
         for (const auto& entity : _entities)
         {
-            entity->render(camera, texture_storage, colour);
+            if (auto entity_ptr = entity.lock())
+            {
+                entity_ptr->render(camera, texture_storage, colour);
+            }
         }
     }
 
@@ -284,7 +288,7 @@ namespace trview
         });
     }
 
-    void Room::add_entity(IEntity* entity)
+    void Room::add_entity(const std::weak_ptr<IEntity>& entity)
     {
         _entities.push_back(entity);
     }
@@ -353,7 +357,10 @@ namespace trview
     {
         for (const auto& entity : _entities)
         {
-            entity->get_transparent_triangles(transparency, camera, colour);
+            if (auto entity_ptr = entity.lock())
+            {
+                entity_ptr->get_transparent_triangles(transparency, camera, colour);
+            }
         }
     }
 
@@ -688,7 +695,10 @@ namespace trview
         // Merge all entity bounding boxes with the room bounding box.
         for (const auto& entity : _entities)
         {
-            BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
+            if (auto entity_ptr = entity.lock())
+            {
+                BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity_ptr->bounding_box());
+            }
         }
     }
 
