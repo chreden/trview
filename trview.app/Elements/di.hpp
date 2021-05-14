@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "TypeNameLookup.h"
 #include "Entity.h"
+#include "StaticMesh.h"
 
 #include "Resources/resource.h"
 #include "Resources/ResourceHelper.h"
@@ -42,7 +43,8 @@ namespace trview
                 {
                     return [&](auto&& level, auto&& room, auto&& texture_storage, auto&& mesh_storage, auto&& index, auto&& parent_level)
                     {
-                        return std::make_shared<Room>(injector.create<IMesh::Source>(), level, room, texture_storage, mesh_storage, index, parent_level);
+                        return std::make_shared<Room>(injector.create<IMesh::Source>(), level, room, texture_storage, mesh_storage, index, parent_level,
+                            injector.create<IStaticMesh::MeshSource>(), injector.create<IStaticMesh::PositionSource>());
                     };
                 }),
             di::bind<ITrigger::Source>.to(
@@ -51,6 +53,22 @@ namespace trview
                     return [&](auto&& number, auto&& room, auto&& x, auto&& z, auto&& trigger_info)
                     {
                         return std::make_shared<Trigger>(number, room, x, z, trigger_info, injector.create<IMesh::TransparentSource>());
+                    };
+                }),
+            di::bind<IStaticMesh::MeshSource>.to(
+                [](const auto&) -> IStaticMesh::MeshSource
+                {
+                    return [&](auto&& room_mesh, auto&& level_mesh, auto&& mesh)
+                    {
+                        return std::make_shared<StaticMesh>(room_mesh, level_mesh, mesh);
+                    };
+                }),
+            di::bind<IStaticMesh::PositionSource>.to(
+                [](const auto&) -> IStaticMesh::PositionSource
+                {
+                    return [&](auto&& position, auto&& scale, auto&& mesh)
+                    {
+                        return std::make_shared<StaticMesh>(position, scale, mesh);
                     };
                 }),
             di::bind<ILevel::Source>.to(

@@ -15,7 +15,7 @@
 #include <trview.app/Elements/Sector.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.graphics/Texture.h>
-#include "StaticMesh.h"
+#include "IStaticMesh.h"
 #include "IRoom.h"
 
 namespace trview
@@ -29,7 +29,9 @@ namespace trview
             const ILevelTextureStorage& texture_storage,
             const IMeshStorage& mesh_storage,
             uint32_t index,
-            const ILevel& parent_level);
+            const ILevel& parent_level,
+            const IStaticMesh::MeshSource& static_mesh_mesh_source,
+            const IStaticMesh::PositionSource& static_mesh_position_source);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -61,7 +63,8 @@ namespace trview
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
         void generate_adjacency();
-        void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage);
+        void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
+            const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source);
         void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
@@ -90,7 +93,7 @@ namespace trview
         std::set<uint16_t>                 _neighbours;
         uint32_t _index;
 
-        std::vector<std::unique_ptr<StaticMesh>> _static_meshes;
+        std::vector<std::shared_ptr<IStaticMesh>> _static_meshes;
 
         std::shared_ptr<IMesh> _mesh;
         std::shared_ptr<IMesh> _unmatched_mesh;

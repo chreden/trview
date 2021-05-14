@@ -71,6 +71,9 @@
     <ClCompile Include="Graphics\MeshStorageTests.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\RoomTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

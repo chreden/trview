@@ -24,6 +24,7 @@
     <ClCompile Include="Camera\CameraInputTests.cpp" />
     <ClCompile Include="ContextMenuTests.cpp" />
     <ClCompile Include="Elements\LevelTests.cpp" />
+    <ClCompile Include="Elements\RoomTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />

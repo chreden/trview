@@ -111,8 +111,8 @@ namespace trlevel
 
     struct tr_room_sprite
     {
-        int16_t vertex;
-        int16_t texture;
+        int16_t vertex{ 0u };
+        int16_t texture{ 0u };
     };
 
     struct tr_animation // 32 bytes
@@ -574,8 +574,8 @@ namespace trlevel
 
         std::vector<tr_room_portal> portals;
 
-        uint16_t num_z_sectors;
-        uint16_t num_x_sectors;
+        uint16_t num_z_sectors{ 0u };
+        uint16_t num_x_sectors{ 0u };
         std::vector<tr_room_sector> sector_list;
 
         uint32_t colour{ 0xffffffff };

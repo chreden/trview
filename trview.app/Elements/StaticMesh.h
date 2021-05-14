@@ -1,23 +1,17 @@
 #pragma once
 
-#include <cstdint>
-#include <SimpleMath.h>
-#include <trlevel/trtypes.h>
-#include <trview.app/Camera/ICamera.h>
-#include <trview.app/Geometry/IMesh.h>
+#include <trview.app/Elements/IStaticMesh.h>
 
 namespace trview
 {
-    struct ILevelTextureStorage;
-    struct ITransparencyBuffer;
-
-    class StaticMesh
+    class StaticMesh final : public IStaticMesh
     {
     public:
         StaticMesh(const trlevel::tr3_room_staticmesh& static_mesh, const trlevel::tr_staticmesh& level_static_mesh, const std::shared_ptr<IMesh>& mesh);
         StaticMesh(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Matrix& scale, std::shared_ptr<IMesh> mesh);
-        void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
-        void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
+        virtual ~StaticMesh() = default;
+        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
+        virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
     private:
         float                        _rotation;
         DirectX::SimpleMath::Vector3 _position;
