@@ -313,6 +313,9 @@
     <ClCompile Include="Elements\IStaticMesh.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\ISector.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -798,6 +801,12 @@
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Mocks\Elements\IStaticMesh.h">
+      <Filter>Mocks\Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ISector.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Elements\ISector.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
   </ItemGroup>

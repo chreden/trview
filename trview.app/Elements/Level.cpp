@@ -354,7 +354,7 @@ namespace trview
             const auto& room = _rooms[i];
             for (auto sector : room->sectors())
             {
-                if (sector->flags & SectorFlag::Trigger)
+                if (sector->flags() & SectorFlag::Trigger)
                 {
                     _triggers.push_back(trigger_source(_triggers.size(), i, sector->x(), sector->z(), sector->trigger()));
                     room->add_trigger(_triggers.back());

@@ -2,7 +2,7 @@
 
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Graphics/IMeshStorage.h>
-#include <trview.app/Elements/Sector.h>
+#include <trview.app/Elements/ISector.h>
 #include <trview.app/Elements/RoomInfo.h>
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ITrigger.h>
@@ -85,7 +85,7 @@ namespace trview
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) = 0;
         virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) = 0;
         /// Returns all sectors 
-        virtual const std::vector<std::shared_ptr<Sector>> sectors() const = 0;
+        virtual const std::vector<std::shared_ptr<ISector>> sectors() const = 0;
         /// Set this room to be the alternate room of the room specified.
         /// This will change the alternate_mode of this room to IsAlternate.
         /// @param number The room number.

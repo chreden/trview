@@ -14,7 +14,7 @@ namespace trview
     {
     }
 
-    void SectorHighlight::set_sector(const std::shared_ptr<Sector>& sector, const Matrix& room_offset)
+    void SectorHighlight::set_sector(const std::shared_ptr<ISector>& sector, const Matrix& room_offset)
     {
         _sector = sector;
         _room_offset = room_offset;

@@ -89,7 +89,7 @@ namespace trview
 
             if (button == IMouse::Button::Left)
             {
-                if (sector->flags & SectorFlag::Portal)
+                if (sector->flags() & SectorFlag::Portal)
                 {
                     load_room_details(_all_rooms[sector->portal()]);
                     on_room_selected(sector->portal());
@@ -142,7 +142,7 @@ namespace trview
             }
         };
 
-        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
+        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
             if (!sector)
             {
@@ -151,13 +151,13 @@ namespace trview
             }
 
             std::wstring text;
-            if (sector->flags & SectorFlag::RoomAbove)
+            if (sector->flags() & SectorFlag::RoomAbove)
             {
                 text += L"Above: " + std::to_wstring(sector->room_above());
             }
-            if (sector->flags & SectorFlag::RoomBelow)
+            if (sector->flags() & SectorFlag::RoomBelow)
             {
-                text += ((sector->flags & SectorFlag::RoomAbove) ? L", " : L"") +
+                text += ((sector->flags() & SectorFlag::RoomAbove) ? L", " : L"") +
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);

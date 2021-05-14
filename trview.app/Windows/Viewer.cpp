@@ -74,7 +74,7 @@ namespace trview
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
-        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<Sector>& sector)
+        _token_store += _ui->on_sector_hover += [&](const std::shared_ptr<ISector>& sector)
         {
             if (_level)
             {
@@ -350,7 +350,7 @@ namespace trview
                         }
                     }
                 }
-                else if (std::shared_ptr<Sector> sector = _ui->current_minimap_sector())
+                else if (std::shared_ptr<ISector> sector = _ui->current_minimap_sector())
                 {
                     // Select the trigger (if it is a trigger).
                     const auto triggers = _level->triggers();
@@ -363,15 +363,15 @@ namespace trview
 
                     if (trigger == triggers.end() || (GetAsyncKeyState(VK_CONTROL) & 0x8000))
                     {
-                        if (sector->flags & SectorFlag::Portal)
+                        if (sector->flags() & SectorFlag::Portal)
                         {
                             on_room_selected(sector->portal());
                         }
-                        else if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                        else if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
                         {
                             on_room_selected(sector->room_below());
                         }
-                        else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                        else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
                         {
                             on_room_selected(sector->room_above());
                         }
@@ -388,11 +388,11 @@ namespace trview
 
                 if (auto sector = _ui->current_minimap_sector())
                 {
-                    if (!_settings.invert_map_controls && (sector->flags & SectorFlag::RoomAbove))
+                    if (!_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomAbove))
                     {
                         on_room_selected(sector->room_above());
                     }
-                    else if (_settings.invert_map_controls && (sector->flags & SectorFlag::RoomBelow))
+                    else if (_settings.invert_map_controls && (sector->flags() & SectorFlag::RoomBelow))
                     {
                         on_room_selected(sector->room_below());
                     }

@@ -5,6 +5,7 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
+#include <trview.app/Mocks/Elements/ISector.h>
 #include <external/boost/di.hpp>
 
 using namespace trview;
@@ -27,6 +28,7 @@ namespace
             std::shared_ptr<ILevel> level{ std::make_shared<MockLevel>() };
             IStaticMesh::MeshSource static_mesh_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
             IStaticMesh::PositionSource static_mesh_position_source{ [](auto&&...) { return std::make_shared<MockStaticMesh>(); } };
+            ISector::Source sector_source{ [](auto&&...) { return std::make_shared<MockSector>(); } };
 
             std::unique_ptr<Room> build()
             {
@@ -40,7 +42,8 @@ namespace
                     di::bind<uint32_t>.to(index),
                     di::bind<ILevel>.to(*level),
                     di::bind<IStaticMesh::MeshSource>.to(static_mesh_source),
-                    di::bind<IStaticMesh::PositionSource>.to(static_mesh_position_source)
+                    di::bind<IStaticMesh::PositionSource>.to(static_mesh_position_source),
+                    di::bind<ISector::Source>.to(sector_source)
                 ).create<std::unique_ptr<Room>>();
             }
 

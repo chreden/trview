@@ -35,7 +35,7 @@ namespace trview
         virtual void clear_minimap_highlight() override;
 
         /// Get the currently hovered minimap sector, if any.
-        virtual std::shared_ptr<Sector> current_minimap_sector() const override;
+        virtual std::shared_ptr<ISector> current_minimap_sector() const override;
 
         /// Get whether there is any text input currently active.
         virtual bool is_input_active() const override;

@@ -12,7 +12,7 @@
 #include <trlevel/ILevel.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.app/Elements/Sector.h>
+#include <trview.app/Elements/ISector.h>
 #include <trview.app/Geometry/PickResult.h>
 #include <trview.graphics/Texture.h>
 #include "IStaticMesh.h"
@@ -31,7 +31,8 @@ namespace trview
             uint32_t index,
             const ILevel& parent_level,
             const IStaticMesh::MeshSource& static_mesh_mesh_source,
-            const IStaticMesh::PositionSource& static_mesh_position_source);
+            const IStaticMesh::PositionSource& static_mesh_position_source,
+            const ISector::Source& sector_source);
 
         Room(const Room&) = delete;
         Room& operator=(const Room&) = delete;
@@ -42,7 +43,7 @@ namespace trview
         virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) override;
         virtual void add_entity(IEntity* entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual const std::vector<std::shared_ptr<Sector>> sectors() const override;
+        virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
         virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false) override;
         virtual AlternateMode alternate_mode() const override;
@@ -67,8 +68,8 @@ namespace trview
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source);
         void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
-        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room);
-        Sector*  get_trigger_sector(int32_t x, int32_t z);
+        void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);
+        ISector* get_trigger_sector(int32_t x, int32_t z);
         uint32_t get_sector_id(int32_t x, int32_t z) const;
 
         /// Find any transparent triangles that match floor data geometry.
@@ -104,7 +105,7 @@ namespace trview
         std::vector<IEntity*> _entities;
 
         // Maps a sector to its sector ID 
-        std::vector<std::shared_ptr<Sector>> _sectors; 
+        std::vector<std::shared_ptr<ISector>> _sectors; 
 
         // Number of sectors for both X and Z (required by map renderer) 
         std::uint16_t       _num_x_sectors, _num_z_sectors; 

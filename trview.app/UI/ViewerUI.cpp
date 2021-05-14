@@ -175,7 +175,7 @@ namespace trview
         _ui_renderer->load(_control.get());
 
         _map_renderer = map_renderer_source(window.size());
-        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<Sector>& sector)
+        _token_store += _map_renderer->on_sector_hover += [this](const std::shared_ptr<ISector>& sector)
         {
             on_ui_changed();
             on_sector_hover(sector);
@@ -187,13 +187,13 @@ namespace trview
             }
 
             std::wstring text;
-            if (sector->flags & SectorFlag::RoomAbove)
+            if (sector->flags() & SectorFlag::RoomAbove)
             {
                 text += L"Above: " + std::to_wstring(sector->room_above());
             }
-            if (sector->flags & SectorFlag::RoomBelow)
+            if (sector->flags() & SectorFlag::RoomBelow)
             {
-                text += ((sector->flags & SectorFlag::RoomAbove) ? L", " : L"") +
+                text += ((sector->flags() & SectorFlag::RoomAbove) ? L", " : L"") +
                     std::wstring(L"Below: ") + std::to_wstring(sector->room_below());
             }
             _map_tooltip->set_text(text);
@@ -220,7 +220,7 @@ namespace trview
         _map_renderer->clear_highlight();
     }
 
-    std::shared_ptr<Sector> ViewerUI::current_minimap_sector() const
+    std::shared_ptr<ISector> ViewerUI::current_minimap_sector() const
     {
         return _map_renderer->sector_at_cursor();
     }
