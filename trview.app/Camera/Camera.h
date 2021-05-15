@@ -18,10 +18,10 @@ namespace trview
         explicit Camera(const Size& size);
         virtual ~Camera() = default;
         virtual DirectX::SimpleMath::Vector3 forward() const override;
-        virtual const DirectX::BoundingFrustum& frustum() const override;
+        virtual const DirectX::BoundingFrustum frustum() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual DirectX::SimpleMath::Vector3 rendering_position() const override;
-        virtual const DirectX::SimpleMath::Matrix& projection() const override;
+        virtual const DirectX::SimpleMath::Matrix projection() const override;
         virtual ProjectionMode projection_mode() const override;
         virtual float rotation_pitch() const override;
         virtual float rotation_yaw() const override;
@@ -34,9 +34,9 @@ namespace trview
         virtual void set_zoom(float zoom) override;
         virtual DirectX::SimpleMath::Vector3 up() const override;
         virtual void update(float elapsed) override;
-        virtual const DirectX::SimpleMath::Matrix& view() const override;
-        virtual const DirectX::SimpleMath::Matrix& view_projection() const override;
-        virtual const Size& view_size() const override;
+        virtual const DirectX::SimpleMath::Matrix view() const override;
+        virtual const DirectX::SimpleMath::Matrix view_projection() const override;
+        virtual const Size view_size() const override;
         virtual float zoom() const override;
 
         /// Event raised when the view of the camera has changed.

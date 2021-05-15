@@ -809,6 +809,9 @@
     <ClInclude Include="Mocks\Elements\ISector.h">
       <Filter>Mocks\Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Camera\ICamera.h">
+      <Filter>Mocks\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -882,6 +885,9 @@
     </Filter>
     <Filter Include="Mocks\Windows">
       <UniqueIdentifier>{bf510d34-b63f-4cfb-9448-1b62a72cdac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Camera">
+      <UniqueIdentifier>{77a62a69-05bf-4350-ba5d-849404977f4b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

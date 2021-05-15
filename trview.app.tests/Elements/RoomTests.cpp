@@ -1,10 +1,11 @@
 #include <trview.app/Elements/Room.h>
 #include <trlevel/Mocks/ILevel.h>
+#include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
-#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
@@ -237,8 +238,9 @@ TEST(Room, RendersContainedEntities)
 {
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
+    EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    FAIL();
+    room->render(MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>

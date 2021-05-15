@@ -20,7 +20,7 @@ namespace trview
 
         /// Get the bounding frustum for the camera. This is a left handed frustum and can be used for culling.
         /// @returns The bounding frustum.
-        virtual const DirectX::BoundingFrustum& frustum() const = 0;
+        virtual const DirectX::BoundingFrustum frustum() const = 0;
 
         /// Gets the current position of the camera in the world.
         /// @returns The position of the camera.
@@ -32,7 +32,7 @@ namespace trview
 
         /// Gets the current projection matrix for the camera.
         /// @returns The projection matrix.
-        virtual const DirectX::SimpleMath::Matrix& projection() const = 0;
+        virtual const DirectX::SimpleMath::Matrix projection() const = 0;
 
         /// Gets the current projection mode for the camera.
         /// @returns The projection mode.
@@ -84,15 +84,15 @@ namespace trview
 
         /// Gets the current view matrix for the camera.
         /// @returns The view matrix.
-        virtual const DirectX::SimpleMath::Matrix& view() const = 0;
+        virtual const DirectX::SimpleMath::Matrix view() const = 0;
 
         /// Gets the current view projection matrix for the camera.
         /// @returns The view projection matrix.
-        virtual const DirectX::SimpleMath::Matrix& view_projection() const = 0;
+        virtual const DirectX::SimpleMath::Matrix view_projection() const = 0;
 
         /// Gets the current size of the viewport for the camera.
         /// @returns The viewport size.
-        virtual const Size& view_size() const = 0;
+        virtual const Size view_size() const = 0;
 
         /// Gets the zoom level.
         /// @returns The zoom level.
