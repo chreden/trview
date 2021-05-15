@@ -4,6 +4,7 @@
 #include <trview.app/Mocks/Elements/ILevel.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trview.app/Mocks/Elements/IEntity.h>
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
@@ -113,6 +114,14 @@ TEST(Room, AlternateModeDetected)
 }
 
 /// <summary>
+/// Tests that the room gets transparent triangles from its contents when rendering.
+/// </summary>
+TEST(Room, GetTransparentTrianglesFromContents)
+{
+    FAIL();
+}
+
+/// <summary>
 /// Tests that the info is loaded correctly from the room. Also checks that y is ignored and set to 0 as
 /// it seems to be better to use yBottom and yTop.
 /// </summary>
@@ -219,6 +228,17 @@ TEST(Room, QuicksandNotDetectedBeforeTR3)
     ON_CALL(*level, version).WillByDefault(Return(trlevel::LevelVersion::Tomb1));
     auto room = register_test_module().with_room(level_room).with_level(level).build();
     ASSERT_EQ(room->quicksand(), false);
+}
+
+/// <summary>
+/// Tests that entities are rendered when the room is rendererd.
+/// </summary>
+TEST(Room, RendersContainedEntities)
+{
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    room->add_entity(entity);
+    FAIL();
 }
 
 /// <summary>
