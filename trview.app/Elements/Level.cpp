@@ -15,7 +15,7 @@ namespace trview
     Level::Level(const std::shared_ptr<graphics::IDevice>& device,
         const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
         std::unique_ptr<trlevel::ILevel> level,
-        std::unique_ptr<ILevelTextureStorage> level_texture_storage,
+        std::shared_ptr<ILevelTextureStorage> level_texture_storage,
         std::unique_ptr<IMeshStorage> mesh_storage,
         std::unique_ptr<ITransparencyBuffer> transparency_buffer,
         std::unique_ptr<ISelectionRenderer> selection_renderer,
@@ -24,7 +24,7 @@ namespace trview
         const IEntity::AiSource& ai_source,
         const IRoom::Source& room_source,
         const ITrigger::Source& trigger_source)
-        : _device(device), _version(level->get_version()), _texture_storage(std::move(level_texture_storage)),
+        : _device(device), _version(level->get_version()), _texture_storage(level_texture_storage),
         _transparency(std::move(transparency_buffer)), _selection_renderer(std::move(selection_renderer))
     {
         _vertex_shader = shader_storage->get("level_vertex_shader");
@@ -216,7 +216,7 @@ namespace trview
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, *_texture_storage.get(), room.selection_mode, _show_hidden_geometry, _show_water);
+            room.room.render(camera, room.selection_mode, _show_hidden_geometry, _show_water);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
@@ -226,7 +226,7 @@ namespace trview
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                original_room->render_contained(camera, *_texture_storage.get(), room.selection_mode, _show_water);
+                original_room->render_contained(camera, room.selection_mode, _show_water);
                 if (_regenerate_transparency)
                 {
                     original_room->get_contained_transparent_triangles(*_transparency, camera, room.selection_mode, _show_water);
@@ -324,7 +324,7 @@ namespace trview
         for (uint32_t i = 0u; i < num_rooms; ++i)
         {
             auto room = level.get_room(i);
-            _rooms.push_back(room_source(level, room, *_texture_storage, mesh_storage, i, *this));
+            _rooms.push_back(room_source(level, room, _texture_storage, mesh_storage, i, *this));
         }
 
         std::set<uint32_t> alternate_groups;

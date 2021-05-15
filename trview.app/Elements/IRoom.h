@@ -62,7 +62,7 @@ namespace trview
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>
         using Source = std::function<std::shared_ptr<IRoom>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const ILevelTextureStorage&, const IMeshStorage&, uint32_t, const ILevel&)>;
+            const std::shared_ptr<ILevelTextureStorage>&, const IMeshStorage&, uint32_t, const ILevel&)>;
         /// <summary>
         /// Destructor for <see cref="IRoom"/>.
         /// </summary>
@@ -174,19 +174,17 @@ namespace trview
         /// Render the room.
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
-        /// <param name="texture_storage">The texture storage for the level.</param>
         /// <param name="selected">Whether the room is selected.</param>
         /// <param name="show_hidden_geometry">Whether to render hidden geometry.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) = 0;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) = 0;
         /// <summary>
         /// Render the contents of the room.
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>
-        /// <param name="texture_storage">The texture storage for the level.</param>
         /// <param name="selected">Whether the room is selected.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water) = 0;
+        virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) = 0;
         /// <summary>
         /// Gets all sectors in the room.
         /// </summary>

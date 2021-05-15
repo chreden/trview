@@ -40,7 +40,7 @@ namespace
                     di::bind<IMesh::Source>.to(mesh_source),
                     di::bind<trlevel::ILevel>.to(*tr_level),
                     di::bind<trlevel::tr3_room>.to(room),
-                    di::bind<ILevelTextureStorage>.to(*level_texture_storage),
+                    di::bind<ILevelTextureStorage>.to(level_texture_storage),
                     di::bind<IMeshStorage>.to(*mesh_storage),
                     di::bind<uint32_t>.to(index),
                     di::bind<ILevel>.to(*level),
