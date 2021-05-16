@@ -28,7 +28,7 @@ jobs:
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m
     
     - name: Test Solution (x86)
-      run: foreach ($file in Get-ChildItem Release\*.tests.exe) { & $file }        
+      run: foreach ($file in Get-ChildItem Release\*.tests.exe) { . $file; return $LASTEXITCODE;  }        
       
     - name: Upload Artifact (x86)
       uses: actions/upload-artifact@v2
@@ -54,7 +54,7 @@ jobs:
       run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m
   
     - name: Test Solution (x64)
-      run: foreach ($file in Get-ChildItem x64\Release\*.tests.exe) { & $file }
+      run: foreach ($file in Get-ChildItem x64\Release\*.tests.exe) { . $file; return $LASTEXITCODE;  }
 
     - name: Upload Artifact (x64)
       uses: actions/upload-artifact@v2
