@@ -12,7 +12,7 @@ namespace trview
             {
                 virtual ~MockInput() = default;
                 MOCK_METHOD(Control*, focus_control, (), (const));
-                MOCK_METHOD(input::IMouse&, mouse, ());
+                MOCK_METHOD(std::shared_ptr<input::IMouse>, mouse, ());
             };
         }
     }

@@ -2,6 +2,7 @@
 #include <trlevel/Mocks/ILevel.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Mocks/Graphics/IMeshStorage.h>
 #include <trview.app/Mocks/Elements/IEntity.h>
@@ -119,7 +120,11 @@ TEST(Room, AlternateModeDetected)
 /// </summary>
 TEST(Room, GetTransparentTrianglesFromContents)
 {
-    FAIL();
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
+    room->add_entity(entity);
+    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 
 /// <summary>

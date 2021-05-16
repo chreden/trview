@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/Event.h>
+#include <trview.common/Window.h>
 
 namespace trview
 {
@@ -8,6 +9,8 @@ namespace trview
     {
         struct IMouse
         {
+            using Source = std::function<std::shared_ptr<IMouse>(const Window& window)>;
+
             /// The mouse button that was pressed.
             enum class Button
             {

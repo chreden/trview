@@ -19,7 +19,7 @@ namespace trview
             /// @returns The control, or nullptr if no control is focused.
             virtual Control* focus_control() const = 0;
 
-            virtual input::IMouse& mouse() = 0;
+            virtual std::shared_ptr<input::IMouse> mouse() = 0;
         };
     }
 }

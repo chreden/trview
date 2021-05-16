@@ -9,6 +9,8 @@ namespace trview
         /// Used to check for Windows information.
         struct IWindowTester
         {
+            using Source = std::function<std::unique_ptr<IWindowTester>(const Window&)>;
+
             virtual ~IWindowTester() = 0;
 
             /// Is the window currently under the cursor?

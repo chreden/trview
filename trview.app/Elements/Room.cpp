@@ -35,7 +35,7 @@ namespace trview
     Room::Room(const IMesh::Source& mesh_source,
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
-        const std::shared_ptr<ILevelTextureStorage>& texture_storage,
+        std::shared_ptr<ILevelTextureStorage> texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
         const ILevel& parent_level,
