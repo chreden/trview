@@ -116,9 +116,9 @@ TEST(Room, AlternateModeDetected)
 }
 
 /// <summary>
-/// Tests that the room gets transparent triangles from its contents when rendering.
+/// Tests that the room gets transparent triangles when rendering.
 /// </summary>
-TEST(Room, GetTransparentTrianglesFromContents)
+TEST(Room, GetTransparentTriangles)
 {
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
@@ -128,6 +128,36 @@ TEST(Room, GetTransparentTrianglesFromContents)
     room->add_entity(entity);
     room->add_trigger(trigger);
     room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
+}
+
+/// <summary>
+/// Tests that the room gets transparent triangles when rendering, excluding triggers.
+/// </summary>
+TEST(Room, GetTransparentTrianglesWithoutTriggers)
+{
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
+    auto trigger = std::make_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
+    room->add_entity(entity);
+    room->add_trigger(trigger);
+    room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, false, true);
+}
+
+/// <summary>
+/// Tests that the room gets transparent triangles from its contents when rendering.
+/// </summary>
+TEST(Room, GetTransparentTrianglesFromContents)
+{
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
+    auto trigger = std::make_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, get_transparent_triangles).Times(0);
+    room->add_entity(entity);
+    room->add_trigger(trigger);
+    room->get_contained_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true);
 }
 
 /// <summary>
@@ -319,6 +349,39 @@ TEST(Room, SpritesLoaded)
 
     register_test_module().with_room(level_room).with_static_mesh_position_source(static_mesh_position_source).build();
     ASSERT_EQ(times_called, 2);
+}
+
+/// <summary>
+/// Tests that a trigger can be retrieved by sector ID.
+/// </summary>
+TEST(Room, TriggerAtSectorId)
+{
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 2;
+    level_room.num_z_sectors = 3;
+    auto room = register_test_module().with_room(level_room).build();
+
+    auto trigger1 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger1, sector_id).WillByDefault(testing::Return(0));
+    auto trigger2 = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger2, sector_id).WillByDefault(testing::Return(4));
+
+    room->add_trigger(trigger1);
+    room->add_trigger(trigger2);
+
+    auto t1 = room->trigger_at(0, 0);
+    ASSERT_EQ(t1.lock(), trigger1);
+
+    auto t2 = room->trigger_at(1, 1);
+    ASSERT_EQ(t2.lock(), trigger2);
+}
+
+/// <summary>
+/// Tests that trigger_at will follow portals to other rooms in the level.
+/// </summary>
+TEST(Room, TriggerAtFollowsPortals)
+{
+    FAIL();
 }
 
 /// <summary>
