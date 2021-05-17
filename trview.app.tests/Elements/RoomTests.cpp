@@ -123,7 +123,10 @@ TEST(Room, GetTransparentTrianglesFromContents)
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
     EXPECT_CALL(*entity, get_transparent_triangles).Times(1);
+    auto trigger = std::make_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, get_transparent_triangles).Times(1);
     room->add_entity(entity);
+    room->add_trigger(trigger);
     room->get_transparent_triangles(MockTransparencyBuffer{}, MockCamera{}, IRoom::SelectionMode::NotSelected, true, true);
 }
 

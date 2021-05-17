@@ -332,15 +332,9 @@ namespace trview
         {
             for (const auto& trigger_pair : _triggers)
             {
-                auto trigger = trigger_pair.second.lock();
-                if (!trigger || !trigger->visible())
+                if (auto trigger = trigger_pair.second.lock())
                 {
-                    continue;
-                }
-
-                for (const auto& triangle : trigger->triangles())
-                {
-                    transparency.add(triangle);
+                    trigger->get_transparent_triangles(transparency, camera, Trigger_Colour);
                 }
             }
         }

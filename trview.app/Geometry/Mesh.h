@@ -39,7 +39,7 @@ namespace trview
             const DirectX::SimpleMath::Color& colour,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
 
-        virtual const std::vector<TransparentTriangle>& transparent_triangles() const override;
+        virtual std::vector<TransparentTriangle> transparent_triangles() const override;
 
         virtual const DirectX::BoundingBox& bounding_box() const override;
 

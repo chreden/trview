@@ -129,6 +129,11 @@ namespace trview
 
     void Trigger::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera&, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())
         {

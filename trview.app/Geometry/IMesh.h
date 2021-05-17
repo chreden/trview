@@ -23,7 +23,7 @@ namespace trview
             const DirectX::SimpleMath::Color& colour,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
 
-        virtual const std::vector<TransparentTriangle>& transparent_triangles() const = 0;
+        virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
 
         virtual const DirectX::BoundingBox& bounding_box() const = 0;
 
