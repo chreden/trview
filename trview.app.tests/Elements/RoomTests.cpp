@@ -116,6 +116,22 @@ TEST(Room, AlternateModeDetected)
 }
 
 /// <summary>
+/// Tests that the bounding box takes into accounts entities.
+/// </summary>
+TEST(Room, BoundingBoxIncorporatesContents)
+{
+    FAIL();
+}
+
+/// <summary>
+/// Tests that the centre is calculated correctly.
+/// </summary>
+TEST(Room, CentreCalculated)
+{
+    FAIL();
+}
+
+/// <summary>
 /// Tests that the room gets transparent triangles when rendering.
 /// </summary>
 TEST(Room, GetTransparentTriangles)
@@ -244,6 +260,38 @@ TEST(Room, OutsideDetected)
 }
 
 /// <summary>
+/// Tests that the pick function checks the bounding box before testing contents.
+/// </summary>
+TEST(Room, PickTestsBoundingBox)
+{
+    FAIL();
+}
+
+/// <summary>
+/// Tests that the pick function tests entities when commanded.
+/// </summary>
+TEST(Room, PickTestsEntities)
+{
+    FAIL();
+}
+
+/// <summary>
+/// Tests that the pick function tests triggers when commanded.
+/// </summary>
+TEST(Room, PickTestsTriggers)
+{
+    FAIL();
+}
+
+/// <summary>
+/// Tests that the pick function chooses the closest entry.
+/// </summary>
+TEST(Room, PickChoosesClosest)
+{
+    FAIL();
+}
+
+/// <summary>
 /// Tests that the 'quicksand' flag is correctly detected when the version is >= TR3.
 /// </summary>
 TEST(Room, QuicksandDetectedAfterTR3)
@@ -362,9 +410,9 @@ TEST(Room, TriggerAtSectorId)
     auto room = register_test_module().with_room(level_room).build();
 
     auto trigger1 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger1, sector_id).WillByDefault(testing::Return(0));
+    ON_CALL(*trigger1, sector_id).WillByDefault(Return(0));
     auto trigger2 = std::make_shared<MockTrigger>();
-    ON_CALL(*trigger2, sector_id).WillByDefault(testing::Return(4));
+    ON_CALL(*trigger2, sector_id).WillByDefault(Return(4));
 
     room->add_trigger(trigger1);
     room->add_trigger(trigger2);
@@ -377,11 +425,13 @@ TEST(Room, TriggerAtSectorId)
 }
 
 /// <summary>
-/// Tests that trigger_at will follow portals to other rooms in the level.
+/// Tests that a missing trigger return empty.
 /// </summary>
-TEST(Room, TriggerAtFollowsPortals)
+TEST(Room, TriggerAtNotFound)
 {
-    FAIL();
+    auto room = register_test_module().build();
+    auto trigger = room->trigger_at(1, 2);
+    ASSERT_EQ(trigger.lock(), nullptr);
 }
 
 /// <summary>
