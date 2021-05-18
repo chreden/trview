@@ -94,11 +94,6 @@ namespace trview
         return _sector_id;
     }
 
-    const std::vector<TransparentTriangle>& Trigger::triangles() const
-    {
-        return _mesh->transparent_triangles();
-    }
-
     void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
     {
         std::vector<Triangle> collision;

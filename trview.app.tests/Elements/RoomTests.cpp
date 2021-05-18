@@ -116,11 +116,46 @@ TEST(Room, AlternateModeDetected)
 }
 
 /// <summary>
+/// Tests that the bounding box is calculated.
+/// </summary>
+TEST(Room, BoundingBoxCalculated)
+{
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 1;
+    level_room.num_z_sectors = 1;
+    level_room.info.yBottom = 0;
+    level_room.info.yTop = -1024;
+    auto room = register_test_module().with_room(level_room).build();
+    auto box = room->bounding_box();
+    ASSERT_EQ(box.Center.x, 0.5);
+    ASSERT_EQ(box.Center.z, 0.5);
+    ASSERT_EQ(box.Center.y, -0.5);
+}
+
+/// <summary>
 /// Tests that the bounding box takes into accounts entities.
 /// </summary>
 TEST(Room, BoundingBoxIncorporatesContents)
 {
-    FAIL();
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 1;
+    level_room.num_z_sectors = 1;
+    level_room.info.yBottom = 0;
+    level_room.info.yTop = -1024;
+    auto room = register_test_module().with_room(level_room).build();
+
+    auto entity = std::make_shared<MockEntity>();
+    EXPECT_CALL(*entity, bounding_box).WillOnce(Return(BoundingBox(Vector3(1.0f, -1.0f, 1.0f), Vector3(0.5f, 0.5f, 0.5f))));
+    room->add_entity(entity);
+    room->update_bounding_box();
+
+    auto box = room->bounding_box();
+    ASSERT_EQ(box.Center.x, 0.75f);
+    ASSERT_EQ(box.Center.z, 0.75f);
+    ASSERT_EQ(box.Center.y, -0.75f);
 }
 
 /// <summary>

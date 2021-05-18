@@ -24,7 +24,6 @@ namespace trview
         virtual uint8_t timer() const override;
         virtual uint16_t sector_id() const override;
         virtual const std::vector<Command> commands() const override;
-        virtual const std::vector<TransparentTriangle>& triangles() const override;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) override;
