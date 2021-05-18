@@ -127,9 +127,9 @@ TEST(Room, BoundingBoxCalculated)
     level_room.info.yTop = -1024;
     auto room = register_test_module().with_room(level_room).build();
     auto box = room->bounding_box();
-    ASSERT_EQ(box.Center.x, 0.5);
-    ASSERT_EQ(box.Center.z, 0.5);
-    ASSERT_EQ(box.Center.y, -0.5);
+    ASSERT_EQ(box.Center.x, 0.5f);
+    ASSERT_EQ(box.Center.z, 0.5f);
+    ASSERT_EQ(box.Center.y, -0.5f);
 }
 
 /// <summary>
@@ -163,7 +163,16 @@ TEST(Room, BoundingBoxIncorporatesContents)
 /// </summary>
 TEST(Room, CentreCalculated)
 {
-    FAIL();
+    trlevel::tr3_room level_room;
+    level_room.num_x_sectors = 1;
+    level_room.num_z_sectors = 1;
+    level_room.info.yBottom = 0;
+    level_room.info.yTop = -1024;
+    auto room = register_test_module().with_room(level_room).build();
+    auto centre = room->centre();
+    ASSERT_EQ(centre.x, 0.5f);
+    ASSERT_EQ(centre.z, 0.5f);
+    ASSERT_EQ(centre.y, -0.5f);
 }
 
 /// <summary>
@@ -295,19 +304,23 @@ TEST(Room, OutsideDetected)
 }
 
 /// <summary>
-/// Tests that the pick function checks the bounding box before testing contents.
-/// </summary>
-TEST(Room, PickTestsBoundingBox)
-{
-    FAIL();
-}
-
-/// <summary>
 /// Tests that the pick function tests entities when commanded.
 /// </summary>
 TEST(Room, PickTestsEntities)
 {
-    FAIL();
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    ON_CALL(*entity, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Entity, 10 }));
+    room->add_entity(entity);
+
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    ASSERT_EQ(result.hit, true);
+    ASSERT_EQ(result.type, PickResult::Type::Entity);
+    ASSERT_EQ(result.index, 10);
 }
 
 /// <summary>
@@ -315,7 +328,19 @@ TEST(Room, PickTestsEntities)
 /// </summary>
 TEST(Room, PickTestsTriggers)
 {
-    FAIL();
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    auto room = register_test_module().build();
+    auto trigger = std::make_shared<MockTrigger>();
+    ON_CALL(*trigger, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Trigger, 10 }));
+    room->add_trigger(trigger);
+
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    ASSERT_EQ(result.hit, true);
+    ASSERT_EQ(result.type, PickResult::Type::Trigger);
+    ASSERT_EQ(result.index, 10);
 }
 
 /// <summary>
@@ -323,7 +348,50 @@ TEST(Room, PickTestsTriggers)
 /// </summary>
 TEST(Room, PickChoosesClosest)
 {
-    FAIL();
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    ON_CALL(*entity, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, PickResult::Type::Entity, 5 }));
+    room->add_entity(entity);
+
+    auto entity2 = std::make_shared<MockEntity>();
+    ON_CALL(*entity2, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, PickResult::Type::Entity, 10 }));
+    room->add_entity(entity2);
+
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    ASSERT_EQ(result.hit, true);
+    ASSERT_EQ(result.type, PickResult::Type::Entity);
+    ASSERT_EQ(result.index, 5);
+    ASSERT_EQ(result.distance, 0.5f);
+}
+
+/// <summary>
+/// Tests that the pick function chooses the closest entry.
+/// </summary>
+TEST(Room, PickChoosesEntityOverTrigger)
+{
+    using namespace DirectX;
+    using namespace DirectX::SimpleMath;
+
+    auto room = register_test_module().build();
+    auto entity = std::make_shared<MockEntity>();
+    ON_CALL(*entity, visible).WillByDefault(Return(true));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, PickResult::Type::Entity, 5 }));
+    room->add_entity(entity);
+
+    auto trigger = std::make_shared<MockTrigger>();
+    EXPECT_CALL(*trigger, pick).Times(0);
+    room->add_trigger(trigger);
+
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    ASSERT_EQ(result.hit, true);
+    ASSERT_EQ(result.type, PickResult::Type::Entity);
+    ASSERT_EQ(result.index, 5);
+    ASSERT_EQ(result.distance, 1.0f);
 }
 
 /// <summary>
