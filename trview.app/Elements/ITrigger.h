@@ -25,7 +25,6 @@ namespace trview
         virtual uint8_t timer() const = 0;
         virtual uint16_t sector_id() const = 0;
         virtual const std::vector<Command> commands() const = 0;
-        virtual const std::vector<TransparentTriangle>& triangles() const = 0;
         virtual void set_triangles(const std::vector<TransparentTriangle>& transparent_triangles) = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual void set_position(const DirectX::SimpleMath::Vector3& position) = 0;

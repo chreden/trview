@@ -19,35 +19,42 @@ using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 using namespace trview::input::mocks;
-using testing::ReturnRef;
+using namespace boost;
 
 namespace
 {
-    MockMouse mouse;
-
     auto register_test_module()
     {
-        using namespace boost;
-        return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::render::IMapRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockMapRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&...) 
-                { 
-                    auto input = std::make_unique<MockInput>();
-                    EXPECT_CALL(*input, mouse).WillRepeatedly(ReturnRef(mouse));
-                    return std::move(input);
-                };
-            }),
-            di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
-            di::bind<RoomsWindow>()
-        );
+        struct test_module
+        {
+            std::shared_ptr<MockMouse> mouse = std::make_shared<MockMouse>();
+
+            std::unique_ptr<RoomsWindow> build()
+            {
+                return di::make_injector
+                (
+                    di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
+                    di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
+                    di::bind<ui::render::IMapRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockMapRenderer>(); }; }),
+                    di::bind<ui::IInput::Source>.to([&](auto&&) { return [&](auto&&...)
+                        {
+                            auto input = std::make_unique<MockInput>();
+                            EXPECT_CALL(*input, mouse).WillRepeatedly(testing::Return(mouse));
+                            return std::move(input);
+                        };
+                        }),
+                    di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
+                    di::bind<RoomsWindow>()
+                ).create<std::unique_ptr<RoomsWindow>>();
+            }
+        };
+        return test_module{};
     }
 }
 
 TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 {
-    auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
+    auto window = register_test_module().build();
     auto room = std::make_shared<MockRoom>();
     auto trigger = std::make_shared<MockTrigger>();
 
@@ -84,7 +91,7 @@ TEST(RoomsWindow, ClearSelectedTriggerClearsSelection)
 
 TEST(RoomsWindow, SetTriggersClearsSelection)
 {
-    auto window = register_test_module().create<std::unique_ptr<RoomsWindow>>();
+    auto window = register_test_module().build();
     auto room = std::make_shared<MockRoom>();
     auto trigger = std::make_shared<MockTrigger>();
 

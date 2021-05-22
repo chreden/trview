@@ -26,7 +26,7 @@ namespace trview
         explicit Room(const IMesh::Source& mesh_source,
             const trlevel::ILevel& level, 
             const trlevel::tr3_room& room,
-            const ILevelTextureStorage& texture_storage,
+            std::shared_ptr<ILevelTextureStorage> texture_storage,
             const IMeshStorage& mesh_storage,
             uint32_t index,
             const ILevel& parent_level,
@@ -39,13 +39,13 @@ namespace trview
         virtual RoomInfo info() const override;
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const override;
-        virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
-        virtual void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water = false) override;
-        virtual void add_entity(IEntity* entity) override;
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
+        virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) override;
+        virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual const std::vector<std::shared_ptr<ISector>> sectors() const override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) override;
-        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water = false) override;
+        virtual void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water) override;
         virtual AlternateMode alternate_mode() const override;
         virtual int16_t alternate_room() const override;
         virtual int16_t alternate_group() const override;
@@ -62,11 +62,11 @@ namespace trview
         virtual bool quicksand() const override;
         virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const override;
     private:
-        void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage);
+        void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();
         void generate_static_meshes(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr3_room& room, const IMeshStorage& mesh_storage,
             const IStaticMesh::MeshSource& static_mesh_mesh_source, const IStaticMesh::PositionSource& static_mesh_position_source);
-        void render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour);
+        void render_contained(const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour);
         void generate_sectors(const trlevel::ILevel& level, const trlevel::tr3_room& room, const ISector::Source& sector_source);
         ISector* get_trigger_sector(int32_t x, int32_t z);
@@ -102,7 +102,7 @@ namespace trview
 
         DirectX::BoundingBox  _bounding_box;
 
-        std::vector<IEntity*> _entities;
+        std::vector<std::weak_ptr<IEntity>> _entities;
 
         // Maps a sector to its sector ID 
         std::vector<std::shared_ptr<ISector>> _sectors; 
@@ -117,5 +117,6 @@ namespace trview
         std::unordered_map<uint32_t, std::weak_ptr<ITrigger>> _triggers;
         uint16_t _flags{ 0 };
         const ILevel& _level;
+        std::shared_ptr<ILevelTextureStorage> _texture_storage;
     };
 }

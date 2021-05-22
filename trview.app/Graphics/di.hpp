@@ -19,7 +19,7 @@ namespace trview
                 {
                     return [&](auto&& level)
                     {
-                        return std::make_unique<LevelTextureStorage>(
+                        return std::make_shared<LevelTextureStorage>(
                             injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<std::unique_ptr<ITextureStorage>>(),
                             level);

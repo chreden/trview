@@ -32,7 +32,7 @@ namespace trview
         Level(const std::shared_ptr<graphics::IDevice>& device,
             const std::shared_ptr<graphics::IShaderStorage>& shader_storage,
             std::unique_ptr<trlevel::ILevel> level,
-            std::unique_ptr<ILevelTextureStorage> level_texture_storage,
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage,
             std::unique_ptr<IMeshStorage> mesh_storage,
             std::unique_ptr<ITransparencyBuffer> transparency_buffer,
             std::unique_ptr<ISelectionRenderer> selection_renderer,
@@ -140,7 +140,7 @@ namespace trview
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
-        std::unique_ptr<ILevelTextureStorage> _texture_storage;
+        std::shared_ptr<ILevelTextureStorage> _texture_storage;
         std::unique_ptr<ITransparencyBuffer> _transparency;
 
         bool _regenerate_transparency{ true };

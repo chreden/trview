@@ -79,7 +79,7 @@ namespace trview
         using namespace input;
         using namespace ui;
 
-        _token_store += _input->mouse().mouse_click += [&](IMouse::Button button)
+        _token_store += _input->mouse()->mouse_click += [&](IMouse::Button button)
         {
             auto sector = _map_renderer->sector_at_cursor();
             if (!sector)
@@ -126,7 +126,7 @@ namespace trview
             }
         };
 
-        _token_store += _input->mouse().mouse_move += [&](long, long)
+        _token_store += _input->mouse()->mouse_move += [&](long, long)
         {
             // Only do work if we have actually loaded a map.
             if (_map_renderer->loaded())

@@ -30,7 +30,7 @@ namespace trview
         return _forward;
     }
 
-    const DirectX::BoundingFrustum& Camera::frustum() const
+    const DirectX::BoundingFrustum Camera::frustum() const
     {
         return _bounding_frustum;
     }
@@ -47,7 +47,7 @@ namespace trview
             : _position;
     }
 
-    const Matrix& Camera::projection() const
+    const Matrix Camera::projection() const
     {
         return _projection;
     }
@@ -169,17 +169,17 @@ namespace trview
         }
     }
 
-    const Matrix& Camera::view() const
+    const Matrix Camera::view() const
     {
         return _view;
     }
 
-    const Matrix& Camera::view_projection() const
+    const Matrix Camera::view_projection() const
     {
         return _view_projection;
     }
 
-    const Size& Camera::view_size() const
+    const Size Camera::view_size() const
     {
         return _view_size;
     }

@@ -159,7 +159,7 @@ namespace trview
         }
     }
 
-    const std::vector<TransparentTriangle>& Mesh::transparent_triangles() const
+    std::vector<TransparentTriangle> Mesh::transparent_triangles() const
     {
         return _transparent_triangles;
     }

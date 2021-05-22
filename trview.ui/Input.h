@@ -19,10 +19,11 @@ namespace trview
         class Input final : public IInput
         {
         public:
-            explicit Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard);
+            explicit Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard,
+                const std::shared_ptr<input::IMouse>& mouse);
             virtual ~Input() = default;
             virtual Control* focus_control() const;
-            virtual input::IMouse& mouse() override;
+            virtual std::shared_ptr<input::IMouse> mouse() override;
         private:
             void     register_events();
             void     register_focus_controls(Control* control);
@@ -52,7 +53,7 @@ namespace trview
             void     set_focus_control(Control* control);
 
             TokenStore      _token_store;
-            input::Mouse    _mouse;
+            std::shared_ptr<input::IMouse> _mouse;
             input::Keyboard _keyboard;
             trview::Window  _window;
             Control&       _control;

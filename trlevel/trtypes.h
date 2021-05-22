@@ -44,11 +44,11 @@ namespace trlevel
 
     struct tr_room_info
     {
-        int32_t x;
-        int32_t y;
-        int32_t z;
-        int32_t yBottom;
-        int32_t yTop;
+        int32_t x{ 0 };
+        int32_t y{ 0 };
+        int32_t z{ 0 };
+        int32_t yBottom{ 0 };
+        int32_t yTop{ 0 };
     };
 
     struct tr1_4_room_info
@@ -587,7 +587,7 @@ namespace trlevel
 
         std::vector<tr3_room_staticmesh> static_meshes;
 
-        int16_t alternate_room;
+        int16_t alternate_room{ -1 };
         int16_t flags;
 
         uint16_t water_scheme;

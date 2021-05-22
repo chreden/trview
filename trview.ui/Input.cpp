@@ -16,8 +16,9 @@ namespace trview
             }
         }
 
-        Input::Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard)
-            : _mouse(window, std::make_unique<input::WindowTester>(window)), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts), _clipboard(clipboard)
+        Input::Input(const trview::Window& window, Control& control, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IClipboard>& clipboard,
+            const std::shared_ptr<input::IMouse>& mouse)
+            : _mouse(mouse), _keyboard(window), _window(window), _control(control), _shortcuts(shortcuts), _clipboard(clipboard)
         {
             register_events();
         }
@@ -27,7 +28,7 @@ namespace trview
             return _focus_control;
         }
 
-        input::IMouse& Input::mouse()
+        std::shared_ptr<input::IMouse> Input::mouse()
         {
             return _mouse;
         }
@@ -38,11 +39,11 @@ namespace trview
 
             register_focus_controls(&_control);
 
-            _token_store += _mouse.mouse_move += [&](auto, auto) { process_mouse_move(); };
-            _token_store += _mouse.mouse_down += [&](input::IMouse::Button) { process_mouse_down(); };
-            _token_store += _mouse.mouse_up += [&](auto) { process_mouse_up(); };
-            _token_store += _mouse.mouse_click += [&](auto) { process_mouse_click(); };
-            _token_store += _mouse.mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
+            _token_store += _mouse->mouse_move += [&](auto, auto) { process_mouse_move(); };
+            _token_store += _mouse->mouse_down += [&](input::IMouse::Button) { process_mouse_down(); };
+            _token_store += _mouse->mouse_up += [&](auto) { process_mouse_up(); };
+            _token_store += _mouse->mouse_click += [&](auto) { process_mouse_click(); };
+            _token_store += _mouse->mouse_wheel += [&](int16_t delta) { process_mouse_scroll(delta); };
             _token_store += _keyboard.on_key_down += [&](auto key, bool control, bool shift) { process_key_down(key, control, shift); };
             _token_store += _keyboard.on_char += [&](auto key) { process_char(key); };
             _token_store += _shortcuts->add_shortcut(true, 'V') += [&]() { process_paste(_clipboard->read(_window)); };

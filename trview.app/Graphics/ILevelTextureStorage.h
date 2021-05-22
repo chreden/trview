@@ -10,7 +10,7 @@ namespace trview
 {
     struct ILevelTextureStorage : public ITextureStorage
     {
-        using Source = std::function<std::unique_ptr<ILevelTextureStorage>(const trlevel::ILevel&)>;
+        using Source = std::function<std::shared_ptr<ILevelTextureStorage>(const trlevel::ILevel&)>;
 
         virtual ~ILevelTextureStorage() = 0;
 

@@ -94,11 +94,6 @@ namespace trview
         return _sector_id;
     }
 
-    const std::vector<TransparentTriangle>& Trigger::triangles() const
-    {
-        return _mesh->transparent_triangles();
-    }
-
     void Trigger::set_triangles(const std::vector<TransparentTriangle>& transparent_triangles)
     {
         std::vector<Triangle> collision;
@@ -129,6 +124,11 @@ namespace trview
 
     void Trigger::get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera&, const DirectX::SimpleMath::Color& colour)
     {
+        if (!_visible)
+        {
+            return;
+        }
+
         using namespace DirectX::SimpleMath;
         for (auto& triangle : _mesh->transparent_triangles())
         {

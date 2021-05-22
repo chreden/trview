@@ -35,7 +35,7 @@ namespace trview
     Room::Room(const IMesh::Source& mesh_source,
         const trlevel::ILevel& level, 
         const trlevel::tr3_room& room,
-        const ILevelTextureStorage& texture_storage,
+        std::shared_ptr<ILevelTextureStorage> texture_storage,
         const IMeshStorage& mesh_storage,
         uint32_t index,
         const ILevel& parent_level,
@@ -49,7 +49,8 @@ namespace trview
         _num_z_sectors(room.num_z_sectors),
         _index(index),
         _flags(room.flags),
-        _level(parent_level)
+        _level(parent_level),
+        _texture_storage(texture_storage)
     {
         // Can only determine HasAlternate or normal at this point. After all rooms have been loaded,
         // the level can fix up the rooms so that they know if they are alternates of another room
@@ -58,7 +59,7 @@ namespace trview
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
         generate_sectors(level, room, sector_source);
-        generate_geometry(level.get_version(), mesh_source, room, texture_storage);
+        generate_geometry(level.get_version(), mesh_source, room);
         generate_adjacency();
         generate_static_meshes(mesh_source, level, room, mesh_storage, static_mesh_mesh_source, static_mesh_position_source);
     }
@@ -96,12 +97,13 @@ namespace trview
             // Pick against the entity geometry:
             for (const auto& entity : _entities)
             {
-                if (!entity->visible())
+                auto entity_ptr = entity.lock();
+                if (!entity_ptr || !entity_ptr->visible())
                 {
                     continue;
                 }
 
-                auto entity_result = entity->pick(position, direction);
+                auto entity_result = entity_ptr->pick(position, direction);
                 if (entity_result.hit)
                 {
                     pick_results.push_back(entity_result);
@@ -171,35 +173,38 @@ namespace trview
     // texture_storage: The textures for the level.
     // selected: The selection mode to use to highlight geometry and objects.
     // render_mode: The type of geometry and object geometry to render.
-    void Room::render(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_hidden_geometry, bool show_water)
+    void Room::render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
 
-        _mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
+        _mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
         if (show_hidden_geometry)
         {
-            _unmatched_mesh->render(_room_offset * camera.view_projection(), texture_storage, colour);
+            _unmatched_mesh->render(_room_offset * camera.view_projection(), *_texture_storage, colour);
         }
 
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render(camera, texture_storage, colour);
+            mesh->render(camera, *_texture_storage, colour);
         }
 
-        render_contained(camera, texture_storage, colour);
+        render_contained(camera, colour);
     }
 
-    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, SelectionMode selected, bool show_water, bool force_water)
+    void Room::render_contained(const ICamera& camera, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour((water() || force_water) && show_water, selected);
-        render_contained(camera, texture_storage, colour);
+        Color colour = room_colour(water() && show_water, selected);
+        render_contained(camera, colour);
     }
 
-    void Room::render_contained(const ICamera& camera, const ILevelTextureStorage& texture_storage, const Color& colour)
+    void Room::render_contained(const ICamera& camera, const Color& colour)
     {
         for (const auto& entity : _entities)
         {
-            entity->render(camera, texture_storage, colour);
+            if (auto entity_ptr = entity.lock())
+            {
+                entity_ptr->render(camera, *_texture_storage, colour);
+            }
         }
     }
 
@@ -241,7 +246,7 @@ namespace trview
         }
     }
 
-    void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room, const ILevelTextureStorage& texture_storage)
+    void Room::generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room)
     {
         std::vector<trlevel::tr_vertex> room_vertices;
         std::transform(room.data.vertices.begin(), room.data.vertices.end(), std::back_inserter(room_vertices),
@@ -251,12 +256,12 @@ namespace trview
         std::vector<TransparentTriangle> transparent_triangles;
 
         // The indices are grouped by the number of textiles so that it can be drawn as the selected texture.
-        std::vector<std::vector<uint32_t>> indices(texture_storage.num_tiles());
+        std::vector<std::vector<uint32_t>> indices(_texture_storage->num_tiles());
         
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(level_version, room.data.triangles, room_vertices, texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
         process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
@@ -284,7 +289,7 @@ namespace trview
         });
     }
 
-    void Room::add_entity(IEntity* entity)
+    void Room::add_entity(const std::weak_ptr<IEntity>& entity)
     {
         _entities.push_back(entity);
     }
@@ -327,15 +332,9 @@ namespace trview
         {
             for (const auto& trigger_pair : _triggers)
             {
-                auto trigger = trigger_pair.second.lock();
-                if (!trigger || !trigger->visible())
+                if (auto trigger = trigger_pair.second.lock())
                 {
-                    continue;
-                }
-
-                for (const auto& triangle : trigger->triangles())
-                {
-                    transparency.add(triangle);
+                    trigger->get_transparent_triangles(transparency, camera, Trigger_Colour);
                 }
             }
         }
@@ -343,9 +342,9 @@ namespace trview
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
-    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water, bool force_water)
+    void Room::get_contained_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool show_water)
     {
-        Color colour = room_colour((force_water || water()) && show_water, selected);
+        Color colour = room_colour(water() && show_water, selected);
         get_contained_transparent_triangles(transparency, camera, colour);
     }
 
@@ -353,7 +352,10 @@ namespace trview
     {
         for (const auto& entity : _entities)
         {
-            entity->get_transparent_triangles(transparency, camera, colour);
+            if (auto entity_ptr = entity.lock())
+            {
+                entity_ptr->get_transparent_triangles(transparency, camera, colour);
+            }
         }
     }
 
@@ -514,6 +516,11 @@ namespace trview
         if (trigger != _triggers.end())
         {
             return _sectors[sector_id].get();
+        }
+
+        if (sector_id >= _sectors.size())
+        {
+            return nullptr;
         }
 
         // Check if this sector is a portal.
@@ -688,7 +695,10 @@ namespace trview
         // Merge all entity bounding boxes with the room bounding box.
         for (const auto& entity : _entities)
         {
-            BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity->bounding_box());
+            if (auto entity_ptr = entity.lock())
+            {
+                BoundingBox::CreateMerged(_bounding_box, _bounding_box, entity_ptr->bounding_box());
+            }
         }
     }
 

@@ -91,7 +91,7 @@ namespace trview
                             injector.create<std::shared_ptr<IDevice>>(),
                             injector.create<std::shared_ptr<IShaderStorage>>(),
                             std::move(level),
-                            std::move(texture_storage),
+                            texture_storage,
                             std::move(mesh_storage),
                             injector.create<std::unique_ptr<ITransparencyBuffer>>(),
                             injector.create<std::unique_ptr<ISelectionRenderer>>(),
