@@ -16,6 +16,62 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
+    namespace
+    {
+        /// <summary>
+        /// Determines whether the object type is a pickup based on object IDs from Tomb5. This should only
+        /// be called with Tomb4+ items.
+        /// </summary>
+        /// <param name="number">The object type id.</param>
+        /// <returns>Whether this is a pickup.</returns>
+        bool is_pickup(uint32_t number)
+        {
+            return (number >= 172 && number <= 241) || (number >= 334 && number <= 355);
+        }
+
+        /// <summary>
+        /// Determines whether the TR4 object type needs any adjustment to its position based on the ocb value and type id.
+        /// </summary>
+        /// <param name="type_id">The object type id.</param>
+        /// <param name="ocb">The ocb value.</param>
+        /// <returns>Whether the position needs adjustment.</returns>
+        bool needs_adjustment_tr4(uint32_t type_id, uint32_t ocb)
+        {
+            return is_pickup(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u);
+        }
+
+        /// <summary>
+        /// Determines whether the TR5 object type needs any adjustment to its position based on the ocb value and type id.
+        /// </summary>
+        /// <param name="type_id">The object type id.</param>
+        /// <param name="ocb">The ocb value.</param>
+        /// <returns>Whether the position needs adjustment.</returns>
+        bool needs_adjustment_tr5(uint32_t type_id, uint32_t ocb)
+        {
+            return is_pickup(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 7u, 8u, 11u);
+        }
+
+        /// <summary>
+        /// Determines whether the object needs position adjustment.
+        /// </summary>
+        /// <param name="version">The version of the level.</param>
+        /// <param name="type_id">The object type id.</param>
+        /// <param name="ocb">OCB value of the object.</param>
+        /// <returns>Whether the object position needs to be adjusted.</returns>
+        bool needs_adjustment(trlevel::LevelVersion version, uint32_t type_id, uint32_t ocb)
+        {
+            if (version == trlevel::LevelVersion::Tomb4)
+            {
+                return needs_adjustment_tr4(type_id, ocb);
+            }
+            else if (version == trlevel::LevelVersion::Tomb5)
+            {
+                return needs_adjustment_tr5(type_id, ocb);
+            }
+            return false;
+        }
+    }
+
     Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index)
         : Entity(mesh_source, mesh_storage, level, entity.Room, index, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2)
     {
@@ -52,11 +108,7 @@ namespace trview
         }
 
         generate_bounding_box();
-
-        if (level.get_version() >= trlevel::LevelVersion::Tomb4)
-        {
-            apply_ocb_adjustment(ocb);
-        }
+        apply_ocb_adjustment(level.get_version(), type_id, ocb);
     }
 
     void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -298,16 +350,9 @@ namespace trview
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
     }
 
-    void Entity::apply_ocb_adjustment(uint32_t ocb)
+    void Entity::apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t type_id, uint32_t ocb)
     {
-        // If this isn't a pickup, don't adjust the position.
-        if (!has_any(ocb, 64)) 
-        {
-            return;
-        }
-
-        const int flags = ocb & 0x3F;
-        if (!equals_any(flags, 0, 3, 7, 11))
+        if (!needs_adjustment(version, type_id, ocb))
         {
             return;
         }
