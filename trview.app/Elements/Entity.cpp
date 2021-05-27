@@ -19,12 +19,23 @@ namespace trview
     namespace
     {
         /// <summary>
-        /// Determines whether the object type is a pickup based on object IDs from Tomb5. This should only
-        /// be called with Tomb4+ items.
+        /// Determines whether the object type is a pickup based on object IDs from Tomb4. This should only
+        /// be called with Tomb4 items.
         /// </summary>
         /// <param name="number">The object type id.</param>
         /// <returns>Whether this is a pickup.</returns>
-        bool is_pickup(uint32_t number)
+        bool is_pickup_tr4(uint32_t number)
+        {
+            return (number >= 246 && number <= 248) || (number >= 334 && number <= 373);
+        }
+
+        /// <summary>
+        /// Determines whether the object type is a pickup based on object IDs from Tomb5. This should only
+        /// be called with Tomb5 items.
+        /// </summary>
+        /// <param name="number">The object type id.</param>
+        /// <returns>Whether this is a pickup.</returns>
+        bool is_pickup_tr5(uint32_t number)
         {
             return (number >= 172 && number <= 241) || (number >= 334 && number <= 355);
         }
@@ -37,7 +48,7 @@ namespace trview
         /// <returns>Whether the position needs adjustment.</returns>
         bool needs_adjustment_tr4(uint32_t type_id, uint32_t ocb)
         {
-            return is_pickup(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u);
+            return is_pickup_tr4(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u);
         }
 
         /// <summary>
@@ -48,7 +59,7 @@ namespace trview
         /// <returns>Whether the position needs adjustment.</returns>
         bool needs_adjustment_tr5(uint32_t type_id, uint32_t ocb)
         {
-            return is_pickup(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 7u, 8u, 11u);
+            return is_pickup_tr5(type_id) && equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 7u, 8u, 11u);
         }
 
         /// <summary>
