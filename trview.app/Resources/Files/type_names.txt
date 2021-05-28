@@ -3363,91 +3363,120 @@
 				"name": "Suitcase"
 			}, {
 				"id": 172,
-				"name": "Puzzle 1"
+				"name": "Puzzle 1",
+				"pickup": true
 			}, {
 				"id": 173,
-				"name": "Puzzle 2"
+				"name": "Puzzle 2",
+				"pickup": true
 			}, {
 				"id": 174,
-				"name": "Puzzle 3"
+				"name": "Puzzle 3",
+				"pickup": true
 			}, {
 				"id": 175,
-				"name": "Puzzle 4"
+				"name": "Puzzle 4",
+				"pickup": true
 			}, {
 				"id": 176,
-				"name": "Puzzle 5"
+				"name": "Puzzle 5",
+				"pickup": true
 			}, {
 				"id": 180,
-				"name": "Puzzle 1 Combo 1"
+				"name": "Puzzle 1 Combo 1",
+				"pickup": true
 			}, {
 				"id": 181,
-				"name": "Puzzle 1 Combo 2"
+				"name": "Puzzle 1 Combo 2",
+				"pickup": true
 			}, {
 				"id": 182,
-				"name": "Puzzle 2 Combo 1"
+				"name": "Puzzle 2 Combo 1",
+				"pickup": true
 			}, {
 				"id": 183,
-				"name": "Puzzle 2 Combo 2"
+				"name": "Puzzle 2 Combo 2",
+				"pickup": true
 			}, {
 				"id": 184,
-				"name": "Puzzle 3 Combo 1"
+				"name": "Puzzle 3 Combo 1",
+				"pickup": true
 			}, {
 				"id": 185,
-				"name": "Puzzle 3 Combo 2"
+				"name": "Puzzle 3 Combo 2",
+				"pickup": true
 			}, {
 				"id": 186,
-				"name": "Puzzle 4 Combo 1"
+				"name": "Puzzle 4 Combo 1",
+				"pickup": true
 			}, {
 				"id": 187,
-				"name": "Puzzle 4 Combo 2"
+				"name": "Puzzle 4 Combo 2",
+				"pickup": true
 			}, {
 				"id": 196,
-				"name": "Key 1"
+				"name": "Key 1",
+				"pickup": true
 			}, {
 				"id": 197,
-				"name": "Key 2"
+				"name": "Key 2",
+				"pickup": true
 			}, {
 				"id": 198,
-				"name": "Key 3"
+				"name": "Key 3",
+				"pickup": true
 			}, {
 				"id": 199,
-				"name": "Key 4"
+				"name": "Key 4",
+				"pickup": true
 			}, {
 				"id": 200,
-				"name": "Key 5"
+				"name": "Key 5",
+				"pickup": true
 			}, {
 				"id": 201,
-				"name": "Key 6"
+				"name": "Key 6",
+				"pickup": true
 			}, {
 				"id": 202,
-				"name": "Key 7"
+				"name": "Key 7",
+				"pickup": true
 			}, {
 				"id": 203,
-				"name": "Key 8"
+				"name": "Key 8",
+				"pickup": true
 			}, {
 				"id": 220,
-				"name": "Pickup 1"
+				"name": "Pickup 1",
+				"pickup": true
 			}, {
 				"id": 221,
-				"name": "Pickup 2"
+				"name": "Pickup 2",
+				"pickup": true
 			}, {
 				"id": 222,
-				"name": "Pickup 3"
+				"name": "Pickup 3",
+				"pickup": true
 			}, {
 				"id": 223,
-				"name": "Secret"
+				"name": "Secret",
+				"pickup": true
 			}, {
 				"id": 235,
-				"name": "Bottle"
+				"name": "Bottle",
+				"pickup": true
 			}, {
 				"id": 236,
-				"name": "Cloth"
+				"name": "Cloth",
+				"pickup": true
 			}, {
 				"id": 240,
-				"name": "Crowbar"
+				"name": "Crowbar",
+				"pickup": true
 			}, {
 				"id": 241,
-				"name": "Torch"
+				"name": "Torch",
+				"pickup": true
 			}, {
 				"id": 242,
 				"name": "Slot 1"
@@ -3630,58 +3659,76 @@
 				"name": "Steel Door"
 			}, {
 				"id": 334,
-				"name": "Pistols"
+				"name": "Pistols",
+				"pickup": true
 			}, {
 				"id": 335,
-				"name": "Pistol  Ammo"
+				"name": "Pistol  Ammo",
+				"pickup": true
 			}, {
 				"id": 336,
-				"name": "Uzis"
+				"name": "Uzis",
+				"pickup": true
 			}, {
 				"id": 337,
-				"name": "Uzi Ammo"
+				"name": "Uzi Ammo",
+				"pickup": true
 			}, {
 				"id": 338,
-				"name": "Shotgun"
+				"name": "Shotgun",
+				"pickup": true
 			}, {
 				"id": 339,
-				"name": "Shotgun ammo (red)"
+				"name": "Shotgun ammo (red)",
+				"pickup": true
 			}, {
 				"id": 340,
-				"name": "Shotgun ammo (blue)"
+				"name": "Shotgun ammo (blue)",
+				"pickup": true
 			}, {
 				"id": 341,
-				"name": "Grappling Gun"
+				"name": "Grappling Gun",
+				"pickup": true
 			}, {
 				"id": 342,
-				"name": "Grappling Ammo"
+				"name": "Grappling Ammo",
+				"pickup": true
 			}, {
 				"id": 345,
-				"name": "HK"
+				"name": "HK",
+				"pickup": true
 			}, {
 				"id": 346,
-				"name": "HK Ammo"
+				"name": "HK Ammo",
+				"pickup": true
 			}, {
 				"id": 347,
-				"name": "Revolver"
+				"name": "Revolver",
+				"pickup": true
 			}, {
 				"id": 348,
-				"name": "Revolver ammo"
+				"name": "Revolver ammo",
+				"pickup": true
 			},  {
 				"id": 349,
-				"name": "Large medipack"
+				"name": "Large medipack",
+				"pickup": true
 			}, {
 				"id": 350,
-				"name": "Small medipack"
+				"name": "Small medipack",
+				"pickup": true
 			}, {
 				"id": 351,
-				"name": "Lasersight"
+				"name": "Lasersight",
+				"pickup": true
 			}, {
 				"id": 354,
-				"name": "Flare"
+				"name": "Flare",
+				"pickup": true
 			}, {
 				"id": 355,
-				"name": "Flares"
+				"name": "Flares",
+				"pickup": true
 			}, {
 				"id": 356,
 				"name": "Compass"
