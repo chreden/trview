@@ -28,7 +28,7 @@ namespace trview
     class Entity final : public IEntity
     {
     public:
-        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index);
+        explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index, bool is_pickup);
         explicit Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index);
         virtual ~Entity() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
@@ -43,12 +43,12 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
     private:
-        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb);
+        Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, bool is_pickup);
 
         void load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage);
         void load_model(const trlevel::tr_model& model, const trlevel::ILevel& level);
         void generate_bounding_box();
-        void apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t type_id, uint32_t ocb);
+        void apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup);
 
         DirectX::SimpleMath::Matrix               _world;
         std::vector<std::shared_ptr<IMesh>>       _meshes;

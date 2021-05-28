@@ -28,7 +28,8 @@ namespace trview
                 {
                     return [&](auto&& level, auto&& entity, auto&& index, auto&& mesh_storage)
                     {
-                        return std::make_shared<Entity>(injector.create<IMesh::Source>(), level, entity, mesh_storage, index);
+                        const auto type_names = injector.create<std::shared_ptr<ITypeNameLookup>>();
+                        return std::make_shared<Entity>(injector.create<IMesh::Source>(), level, entity, mesh_storage, index, type_names->is_pickup(level.get_version(), entity.TypeID));
                     };
                 }),
             di::bind<IEntity::AiSource>.to(
