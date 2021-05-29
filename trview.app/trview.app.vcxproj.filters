@@ -175,6 +175,12 @@
     <ClCompile Include="Graphics\MeshStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\TypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\ITypeNameLookup.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
     <ClCompile Include="Menus\MenuDetector.cpp">
       <Filter>Menus</Filter>
     </ClCompile>
@@ -308,12 +314,6 @@
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\ISector.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\ITypeNameLookup.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
-    <ClCompile Include="Elements\TypeNameLookup.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
   </ItemGroup>
@@ -509,6 +509,12 @@
     </ClInclude>
     <ClInclude Include="Graphics\MeshStorage.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\TypeNameLookup.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\ITypeNameLookup.h">
+      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Menus\MenuDetector.h">
       <Filter>Menus</Filter>
@@ -805,12 +811,6 @@
     </ClInclude>
     <ClInclude Include="Mocks\Camera\ICamera.h">
       <Filter>Mocks\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\ITypeNameLookup.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\TypeNameLookup.h">
-      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
