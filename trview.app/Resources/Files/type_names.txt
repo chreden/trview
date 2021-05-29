@@ -2552,46 +2552,60 @@
 				"pickup": true
 			}, {
 				"id": 187,
-				"name": "Puzzle 1 Combo 1"
+				"name": "Puzzle 1 Combo 1",
+				"pickup": true
 			}, {
 				"id": 188,
-				"name": "Puzzle 1 Combo 2"
+				"name": "Puzzle 1 Combo 2",
+				"pickup": true
 			}, {
 				"id": 189,
-				"name": "Puzzle 2 Combo 1"
+				"name": "Puzzle 2 Combo 1",
+				"pickup": true
 			}, {
 				"id": 190,
-				"name": "Puzzle 2 Combo 2"
+				"name": "Puzzle 2 Combo 2",
+				"pickup": true
 			}, {
 				"id": 193,
-				"name": "Puzzle 4 Combo 1"
+				"name": "Puzzle 4 Combo 1",
+				"pickup": true
 			}, {
 				"id": 194,
-				"name": "Puzzle 4 Combo 2"
+				"name": "Puzzle 4 Combo 2",
+				"pickup": true
 			}, {
 				"id": 195,
-				"name": "Puzzle 5 Combo 1"
+				"name": "Puzzle 5 Combo 1",
+				"pickup": true
 			}, {
 				"id": 196,
-				"name": "Puzzle 5 Combo 2"
+				"name": "Puzzle 5 Combo 2",
+				"pickup": true
 			}, {
 				"id": 197,
-				"name": "Puzzle 6 Combo 1"
+				"name": "Puzzle 6 Combo 1",
+				"pickup": true
 			}, {
 				"id": 198,
-				"name": "Puzzle 6 Combo 2"
+				"name": "Puzzle 6 Combo 2",
+				"pickup": true
 			}, {
 				"id": 199,
-				"name": "Puzzle 7 Combo 1"
+				"name": "Puzzle 7 Combo 1",
+				"pickup": true
 			}, {
 				"id": 200,
-				"name": "Puzzle 7 Combo 2"
+				"name": "Puzzle 7 Combo 2",
+				"pickup": true
 			}, {
 				"id": 201,
-				"name": "Puzzle 8 Combo 1"
+				"name": "Puzzle 8 Combo 1",
+				"pickup": true
 			}, {
 				"id": 202,
-				"name": "Puzzle 8 Combo 2"
+				"name": "Puzzle 8 Combo 2",
+				"pickup": true
 			}, {
 				"id": 203,
 				"name": "Key 1",
@@ -2761,10 +2775,12 @@
 				"name": "Lock 12"
 			}, {
 				"id": 296,
-				"name": "Waterskin 1"
+				"name": "Waterskin 1",
+				"pickup": true
 			}, {
 				"id": 300,
-				"name": "Waterskin 2"
+				"name": "Waterskin 2",
+				"pickup": true
 			}, {
 				"id": 306,
 				"name": "Switch 1"

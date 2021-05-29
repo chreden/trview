@@ -35,7 +35,7 @@ namespace trview
         /// <returns>Whether the position needs adjustment.</returns>
         bool needs_adjustment_tr5(uint32_t ocb)
         {
-            return equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 7u, 8u, 11u);
+            return equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 6u, 7u, 8u, 11u);
         }
 
         /// <summary>
