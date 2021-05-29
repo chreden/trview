@@ -311,10 +311,10 @@
       <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\ITypeNameLookup.cpp">
-      <Filter>Elements\TypeLookup</Filter>
+      <Filter>Elements</Filter>
     </ClCompile>
     <ClCompile Include="Elements\TypeNameLookup.cpp">
-      <Filter>Elements\TypeLookup</Filter>
+      <Filter>Elements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -807,10 +807,10 @@
       <Filter>Mocks\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Elements\ITypeNameLookup.h">
-      <Filter>Elements\TypeLookup</Filter>
+      <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\TypeNameLookup.h">
-      <Filter>Elements\TypeLookup</Filter>
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -888,9 +888,6 @@
     </Filter>
     <Filter Include="Mocks\Camera">
       <UniqueIdentifier>{77a62a69-05bf-4350-ba5d-849404977f4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Elements\TypeLookup">
-      <UniqueIdentifier>{84e7cebe-d753-4454-9ddf-44b41fdac0a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
