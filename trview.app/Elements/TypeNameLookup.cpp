@@ -1,21 +1,10 @@
 #include "TypeNameLookup.h"
+#include <trview.common/Json.h>
 
 using namespace trlevel;
 
 namespace trview
 {
-    namespace
-    {
-        template <typename T>
-        void read_setting(const nlohmann::json& json, T& destination, const std::string& attribute_name)
-        {
-            if (json.count(attribute_name) != 0)
-            {
-                destination = json[attribute_name].get<T>();
-            }
-        }
-    }
-
     TypeNameLookup::TypeNameLookup(const std::string& type_name_json)
     {
         auto json = nlohmann::json::parse(type_name_json.begin(), type_name_json.end());
@@ -47,12 +36,10 @@ namespace trview
             for (const auto& element : json["games"][game_name])
             {
                 auto name = element.at("name").get<std::string>();
-                bool pickup = false;
-                read_setting(element, pickup, "pickup");
                 type_names.insert({ element.at("id").get<uint32_t>(), 
                     {
                         std::wstring(name.begin(), name.end()),
-                        pickup
+                        read_attribute<bool>(element, "pickup")
                     } });
             }
             _type_names.insert({ version, type_names });

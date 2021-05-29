@@ -1,4 +1,5 @@
 #include "SettingsLoader.h"
+#include <trview.common/Json.h>
 
 namespace trview
 {
@@ -15,15 +16,6 @@ namespace trview
                 }
             }
         };
-
-        template <typename T>
-        void read_setting(const nlohmann::json& json, T& destination, const std::string& attribute_name)
-        {
-            if (json.count(attribute_name) != 0)
-            {
-                destination = json[attribute_name].get<T>();
-            }
-        }
     }
 
     UserSettings SettingsLoader::load_user_settings() const
@@ -51,20 +43,20 @@ namespace trview
             nlohmann::json json;
             file >> json;
 
-            read_setting(json, settings.camera_sensitivity, "camera");
-            read_setting(json, settings.camera_movement_speed, "movement");
-            read_setting(json, settings.vsync, "vsync");
-            read_setting(json, settings.go_to_lara, "gotolara");
-            read_setting(json, settings.invert_map_controls, "invertmapcontrols");
-            read_setting(json, settings.items_startup, "itemsstartup");
-            read_setting(json, settings.triggers_startup, "triggersstartup");
-            read_setting(json, settings.auto_orbit, "autoorbit");
-            read_setting(json, settings.recent_files, "recent");
-            read_setting(json, settings.invert_vertical_pan, "invertverticalpan");
-            read_setting(json, settings.background_colour, "background");
-            read_setting(json, settings.rooms_startup, "roomsstartup");
-            read_setting(json, settings.camera_acceleration, "cameraacceleration");
-            read_setting(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
+            read_attribute(json, settings.camera_sensitivity, "camera");
+            read_attribute(json, settings.camera_movement_speed, "movement");
+            read_attribute(json, settings.vsync, "vsync");
+            read_attribute(json, settings.go_to_lara, "gotolara");
+            read_attribute(json, settings.invert_map_controls, "invertmapcontrols");
+            read_attribute(json, settings.items_startup, "itemsstartup");
+            read_attribute(json, settings.triggers_startup, "triggersstartup");
+            read_attribute(json, settings.auto_orbit, "autoorbit");
+            read_attribute(json, settings.recent_files, "recent");
+            read_attribute(json, settings.invert_vertical_pan, "invertverticalpan");
+            read_attribute(json, settings.background_colour, "background");
+            read_attribute(json, settings.rooms_startup, "roomsstartup");
+            read_attribute(json, settings.camera_acceleration, "cameraacceleration");
+            read_attribute(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
         }
         catch (...)
         {

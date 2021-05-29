@@ -38,6 +38,8 @@
     <ClInclude Include="Mocks\Windows\IClipboard.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Json.h" />
+    <ClInclude Include="Json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
