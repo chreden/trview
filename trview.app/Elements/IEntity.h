@@ -21,5 +21,7 @@ namespace trview
         virtual uint16_t room() const = 0;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
         virtual DirectX::BoundingBox bounding_box() const = 0;
+        virtual void set_position(float height) = 0;
+        virtual bool needs_ocb_adjustment() const = 0;
     };
 }

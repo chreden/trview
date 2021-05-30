@@ -59,6 +59,22 @@ namespace trview
         {
             room->update_bounding_box();
         }
+
+        for (auto& entity : _entities)
+        {
+            if (!entity->needs_ocb_adjustment())
+            {
+                continue;
+            }
+            
+            // Adjust for OCB.
+            const auto& room = _rooms[entity->room()];
+            auto entity_pos = entity->bounding_box().Center;
+            auto result = room->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), false, false);
+            auto new_height = result.position.y - entity->bounding_box().Extents.y;
+            entity->set_position(new_height - entity_pos.y);
+            continue;
+        }
     }
 
     std::vector<RoomInfo> Level::room_info() const

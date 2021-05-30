@@ -12,6 +12,8 @@ namespace trview
         virtual ~StaticMesh() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        virtual std::shared_ptr<IMesh> mesh() const override;
+        virtual DirectX::SimpleMath::Matrix world() const override;
     private:
         float                        _rotation;
         DirectX::SimpleMath::Vector3 _position;

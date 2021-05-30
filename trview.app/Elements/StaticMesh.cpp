@@ -57,4 +57,18 @@ namespace trview
             }
         }
     }
+
+    std::shared_ptr<IMesh> StaticMesh::mesh() const
+    {
+        if (_sprite_mesh) 
+        {
+            return _sprite_mesh;
+        }
+        return _mesh;
+    }
+
+    DirectX::SimpleMath::Matrix StaticMesh::world() const
+    {
+        return _world;
+    }
 }

@@ -352,6 +352,7 @@ namespace trview
             obb.Transform(obb, offset);
         }
         _bounding_box.Transform(_bounding_box, offset);
+        _needs_ocb_adjustment = true;
     }
 
     DirectX::BoundingBox Entity::bounding_box() const
@@ -367,5 +368,22 @@ namespace trview
     void Entity::set_visible(bool value)
     {
         _visible = value;
+    }
+
+    void Entity::set_position(float height)
+    {
+        auto offset = Matrix::CreateTranslation(0, height, 0);
+        _world *= offset;
+
+        for (auto& obb : _oriented_boxes)
+        {
+            obb.Transform(obb, offset);
+        }
+        _bounding_box.Transform(_bounding_box, offset);
+    }
+
+    bool Entity::needs_ocb_adjustment() const
+    {
+        return _needs_ocb_adjustment;
     }
 }

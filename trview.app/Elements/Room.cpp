@@ -143,6 +143,21 @@ namespace trview
                 pick_results.push_back(geometry_result);
             }
 
+            for (const auto& static_mesh : _static_meshes)
+            {
+                auto transform = (static_mesh->world()).Invert();
+                auto transformed_position = Vector3::Transform(position, transform);
+                PickResult static_mesh_result = static_mesh->mesh()->pick(transformed_position, direction);
+                if (static_mesh_result.hit)
+                {
+                    // Transform the position back in to world space. Also mark it as a room pick result.
+                    static_mesh_result.type = PickResult::Type::Room;
+                    static_mesh_result.index = _index;
+                    static_mesh_result.position = Vector3::Transform(static_mesh_result.position, static_mesh->world());
+                    pick_results.push_back(static_mesh_result);
+                }
+            }
+
             if (include_hidden_geometry)
             {
                 PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
