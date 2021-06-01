@@ -58,17 +58,15 @@ namespace trview
         }
     }
 
-    std::shared_ptr<IMesh> StaticMesh::mesh() const
+    PickResult StaticMesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
     {
-        if (_sprite_mesh) 
+        if (_sprite_mesh)
         {
-            return _sprite_mesh;
+            return {};
         }
-        return _mesh;
-    }
 
-    DirectX::SimpleMath::Matrix StaticMesh::world() const
-    {
-        return _world;
+        PickResult result = _mesh->pick(Vector3::Transform(position, _world.Invert()), direction);
+        result.position = Vector3::Transform(result.position, _world);
+        return result;
     }
 }
