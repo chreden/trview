@@ -42,7 +42,7 @@ namespace trview
 
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
-        virtual void set_position(float height) override;
+        virtual void adjust_y(float amount) override;
         virtual bool needs_ocb_adjustment() const override;
     private:
         Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id, const DirectX::SimpleMath::Vector3& position, int32_t angle, int32_t ocb, bool is_pickup);

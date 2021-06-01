@@ -370,9 +370,9 @@ namespace trview
         _visible = value;
     }
 
-    void Entity::set_position(float height)
+    void Entity::adjust_y(float amount)
     {
-        auto offset = Matrix::CreateTranslation(0, height, 0);
+        auto offset = Matrix::CreateTranslation(0, amount, 0);
         _world *= offset;
 
         for (auto& obb : _oriented_boxes)

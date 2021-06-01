@@ -119,6 +119,7 @@ namespace trview
         bool is_alternate_mismatch(const IRoom& room) const;
 
         bool is_alternate_group_set(uint16_t group) const;
+        void apply_ocb_adjustment();
 
         std::shared_ptr<graphics::IDevice> _device;
         std::vector<std::shared_ptr<IRoom>>   _rooms;
