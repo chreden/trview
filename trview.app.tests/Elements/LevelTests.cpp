@@ -9,7 +9,7 @@
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
 #include <trview.app/Mocks/Elements/IEntity.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
-#include <external/boost/di.hpp>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -17,7 +17,6 @@ using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trlevel;
 using namespace trlevel::mocks;
-using namespace boost;
 using namespace trview::tests;
 using testing::Return;
 
@@ -27,27 +26,23 @@ namespace
     {
         struct test_module
         {
+            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
+            std::shared_ptr<graphics::IShaderStorage> shader_storage{ std::make_shared<MockShaderStorage>() };
+            std::unique_ptr<trlevel::ILevel> level{ std::make_unique<trlevel::mocks::MockLevel>() };
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<MockLevelTextureStorage>() };
+            std::unique_ptr<IMeshStorage> mesh_storage { std::make_unique<MockMeshStorage>() };
+            std::unique_ptr<ITransparencyBuffer> transparency_buffer{ std::make_unique<MockTransparencyBuffer>() };
+            std::unique_ptr<ISelectionRenderer> selection_renderer{ std::make_unique<MockSelectionRenderer>() };
             std::shared_ptr<ITypeNameLookup> type_name_lookup{ std::make_shared<MockTypeNameLookup>() };
             IEntity::EntitySource entity_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
             IEntity::AiSource ai_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
             IRoom::Source room_source{ [](auto&&...) { return std::make_shared<MockRoom>(); } };
-            std::unique_ptr<trlevel::ILevel> level{ std::make_unique<trlevel::mocks::MockLevel>() };
+            ITrigger::Source trigger_source{ [](auto&&...) {return std::make_shared<MockTrigger>(); } };
 
             std::unique_ptr<Level> build()
             {
-                return di::make_injector(
-                    di::bind<IDevice>.to<MockDevice>(),
-                    di::bind<IShaderStorage>.to<MockShaderStorage>(),
-                    di::bind<ITransparencyBuffer>.to<MockTransparencyBuffer>(),
-                    di::bind<ISelectionRenderer>.to<MockSelectionRenderer>(),
-                    di::bind<ITypeNameLookup>.to(type_name_lookup),
-                    di::bind<ILevelTextureStorage>.to<MockLevelTextureStorage>(),
-                    di::bind<trlevel::ILevel>.to([&](auto&&) { return std::move(level); }),
-                    di::bind<IMeshStorage>.to<MockMeshStorage>(),
-                    di::bind<IEntity::EntitySource>.to(entity_source),
-                    di::bind<IEntity::AiSource>.to(ai_source),
-                    di::bind<IRoom::Source>.to(room_source),
-                    di::bind<Level>()).create<std::unique_ptr<Level>>();
+                return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
+                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source);
             }
 
             test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)
