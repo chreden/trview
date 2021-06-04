@@ -478,11 +478,14 @@ namespace trview
         auto rooms = get_rooms_to_render(camera);
         for (auto& room : rooms)
         {
-            choose(room.room.pick(position, direction, true, _show_triggers, _show_hidden_geometry));
+            choose(room.room.pick(position, direction,
+                PickFilter::Entities |
+                filter_flag(PickFilter::Triggers, _show_triggers) |
+                filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry)));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
             {
                 auto& original_room = _rooms[room.room.alternate_room()];
-                choose(original_room->pick(position, direction, true, false, false, false));
+                choose(original_room->pick(position, direction, PickFilter::Entities));
             }
         }
         return final_result;
@@ -691,7 +694,7 @@ namespace trview
             }
 
             const auto entity_pos = entity->bounding_box().Center;
-            const auto result = _rooms[entity->room()]->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), false, false);
+            const auto result = _rooms[entity->room()]->pick(Vector3(entity_pos.x, entity_pos.y, entity_pos.z), Vector3(0, 1, 0), PickFilter::Geometry | PickFilter::HiddenGeometry | PickFilter::StaticMeshes);
             if (result.hit)
             {
                 const auto new_height = result.position.y - entity->bounding_box().Extents.y;

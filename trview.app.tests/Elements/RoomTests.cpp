@@ -317,7 +317,7 @@ TEST(Room, PickTestsEntities)
     EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity);
 
-    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities);
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
     ASSERT_EQ(result.index, 10);
@@ -337,7 +337,7 @@ TEST(Room, PickTestsTriggers)
     EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Trigger, 10 }));
     room->add_trigger(trigger);
 
-    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Triggers);
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Trigger);
     ASSERT_EQ(result.index, 10);
@@ -362,7 +362,7 @@ TEST(Room, PickChoosesClosest)
     EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity2);
 
-    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities | PickFilter::Triggers);
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
     ASSERT_EQ(result.index, 5);
@@ -387,7 +387,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     EXPECT_CALL(*trigger, pick).Times(0);
     room->add_trigger(trigger);
 
-    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), true, true);
+    auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities | PickFilter::Triggers);
     ASSERT_EQ(result.hit, true);
     ASSERT_EQ(result.type, PickResult::Type::Entity);
     ASSERT_EQ(result.index, 5);

@@ -316,6 +316,9 @@
     <ClCompile Include="Elements\ISector.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\PickFilter.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -811,6 +814,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\Camera\ICamera.h">
       <Filter>Mocks\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\PickFilter.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

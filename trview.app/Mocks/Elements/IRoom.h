@@ -25,7 +25,7 @@ namespace trview
             MOCK_METHOD(uint16_t, num_z_sectors, (), (const, override));
             MOCK_METHOD(uint32_t, number, (), (const, override));
             MOCK_METHOD(bool, outside, (), (const, override));
-            MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, bool, bool, bool, bool), (const, override));
+            MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, PickFilter), (const, override));
             MOCK_METHOD(bool, quicksand, (), (const, override));
             MOCK_METHOD(void, render, (const ICamera&, SelectionMode, bool, bool), (override));
             MOCK_METHOD(void, render_contained, (const ICamera&, SelectionMode, bool), (override));;
