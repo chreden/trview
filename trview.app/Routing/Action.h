@@ -7,6 +7,7 @@ namespace trview
     /// </summary>
     enum class Action
     {
-
+        Pickup,
+        PushButton
     };
 }
