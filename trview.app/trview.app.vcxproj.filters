@@ -818,6 +818,9 @@
     <ClInclude Include="Elements\PickFilter.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Routing\Action.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

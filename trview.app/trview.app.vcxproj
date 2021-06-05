@@ -253,6 +253,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="Resources\ResourceHelper.h" />
     <ClInclude Include="Resources\targetver.h" />
+    <ClInclude Include="Routing\Action.h" />
     <ClInclude Include="Routing\di.h" />
     <ClInclude Include="Routing\di.hpp" />
     <ClInclude Include="Routing\IRoute.h" />
