@@ -15,7 +15,8 @@ namespace trview
             Mesh,
             Trigger,
             Waypoint,
-            Compass
+            Compass,
+            StaticMesh
         };
 
         bool                         hit{ false };

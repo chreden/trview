@@ -57,4 +57,16 @@ namespace trview
             }
         }
     }
+
+    PickResult StaticMesh::pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const
+    {
+        if (_sprite_mesh)
+        {
+            return {};
+        }
+
+        PickResult result = _mesh->pick(Vector3::Transform(position, _world.Invert()), direction);
+        result.position = Vector3::Transform(result.position, _world);
+        return result;
+    }
 }

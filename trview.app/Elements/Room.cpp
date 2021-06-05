@@ -74,12 +74,7 @@ namespace trview
         return _neighbours;
     }
 
-    // Determine whether the specified ray hits any of the triangles in the room geometry.
-    // position: The world space position of the source of the ray.
-    // direction: The direction of the ray.
-    // Returns: The result of the operation. If 'hit' is true, distance and position contain
-    // how far along the ray the hit was and the position in world space.
-    PickResult Room::pick(const Vector3& position, const Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry, bool include_room_geometry) const
+    PickResult Room::pick(const Vector3& position, const Vector3& direction, PickFilter filters) const
     {
         using namespace DirectX::TriangleTests;
 
@@ -92,7 +87,7 @@ namespace trview
 
         std::vector<PickResult> pick_results;
 
-        if (include_entities)
+        if (has_flag(filters, PickFilter::Entities))
         {
             // Pick against the entity geometry:
             for (const auto& entity : _entities)
@@ -111,7 +106,7 @@ namespace trview
             }
         }
 
-        if (include_triggers && pick_results.empty())
+        if (has_flag(filters, PickFilter::Triggers) && pick_results.empty())
         {
             for (const auto& trigger_pair : _triggers)
             {
@@ -129,7 +124,21 @@ namespace trview
             }
         }
 
-        if (include_room_geometry)
+        if (has_flag(filters, PickFilter::StaticMeshes))
+        {
+            for (const auto& static_mesh : _static_meshes)
+            {
+                PickResult static_mesh_result = static_mesh->pick(position, direction);
+                if (static_mesh_result.hit)
+                {
+                    static_mesh_result.type = PickResult::Type::Room;
+                    static_mesh_result.index = _index;
+                    pick_results.push_back(static_mesh_result);
+                }
+            }
+        }
+
+        if (has_flag(filters, PickFilter::Geometry))
         {
             // Pick against the room geometry:
             auto room_offset = Matrix::CreateTranslation(-_info.x / trlevel::Scale_X, 0, -_info.z / trlevel::Scale_Z);
@@ -143,7 +152,7 @@ namespace trview
                 pick_results.push_back(geometry_result);
             }
 
-            if (include_hidden_geometry)
+            if (has_flag(filters, PickFilter::HiddenGeometry))
             {
                 PickResult unmatched_result = _unmatched_mesh->pick(Vector3::Transform(position, room_offset), direction);
                 if (unmatched_result.hit)

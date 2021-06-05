@@ -9,6 +9,7 @@
 #include <trview.app/Elements/ISector.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/RoomInfo.h>
+#include <trview.app/Elements/PickFilter.h>
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Geometry/PickInfo.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
@@ -159,12 +160,9 @@ namespace trview
         /// </summary>
         /// <param name="position">The world space position of the source of the ray.</param>
         /// <param name="direction">The direction of the ray.</param>
-        /// <param name="include_entities">Whether to include contained entities in the pick operation.</param>
-        /// <param name="include_triggers">Whether to include contained triggers in the pick operation.</param>
-        /// <param name="include_hidden_geometry">Whether hidden geometry should be included in the pick operation. This requires include_room_geometry to be set as well.</param>
-        /// <param name="include_room_geometry">Whether regular room geometry should be included in the pick operation.</param>
+        /// <param name="filters">The types of objects to include the picking operation.</param>
         /// <returns>The <see cref="PickResult"/>.</returns>
-        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, bool include_entities, bool include_triggers, bool include_hidden_geometry = false, bool include_room_geometry = true) const = 0;
+        virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const = 0;
         /// <summary>
         /// Gets whether the room is a quicksand room based on the room flags. This can only be true if the game is TR3 or later.
         /// </summary>

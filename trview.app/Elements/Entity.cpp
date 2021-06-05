@@ -16,19 +16,61 @@ using namespace DirectX::SimpleMath;
 
 namespace trview
 {
-    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index)
-        : Entity(mesh_source, mesh_storage, level, entity.Room, index, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2)
+    namespace
+    {
+        /// <summary>
+        /// Determines whether the TR4 object type needs any adjustment to its position based on the ocb value.
+        /// </summary>
+        /// <param name="ocb">The ocb value.</param>
+        /// <returns>Whether the position needs adjustment.</returns>
+        bool needs_adjustment_tr4(uint32_t ocb)
+        {
+            return equals_any(ocb & 0x3f, 0u, 3u, 4u);
+        }
+
+        /// <summary>
+        /// Determines whether the TR5 object type needs any adjustment to its position based on the ocb value.
+        /// </summary>
+        /// <param name="ocb">The ocb value.</param>
+        /// <returns>Whether the position needs adjustment.</returns>
+        bool needs_adjustment_tr5(uint32_t ocb)
+        {
+            return equals_any(ocb & 0x3f, 0u, 3u, 4u, 5u, 6u, 7u, 8u, 11u);
+        }
+
+        /// <summary>
+        /// Determines whether the object needs position adjustment.
+        /// </summary>
+        /// <param name="version">The version of the level.</param>
+        /// <param name="ocb">OCB value of the object.</param>
+        /// <returns>Whether the object position needs to be adjusted.</returns>
+        bool needs_adjustment(trlevel::LevelVersion version, uint32_t ocb)
+        {
+            if (version == trlevel::LevelVersion::Tomb4)
+            {
+                return needs_adjustment_tr4(ocb);
+            }
+            else if (version == trlevel::LevelVersion::Tomb5)
+            {
+                return needs_adjustment_tr5(ocb);
+            }
+            return false;
+        }
+    }
+
+    Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr2_entity& entity, const IMeshStorage& mesh_storage, uint32_t index, bool is_pickup)
+        : Entity(mesh_source, mesh_storage, level, entity.Room, index, entity.TypeID, entity.position(), entity.Angle, entity.Intensity2, is_pickup)
     {
         
     }
 
     Entity::Entity(const IMesh::Source& mesh_source, const trlevel::ILevel& level, const trlevel::tr4_ai_object& entity, const IMeshStorage& mesh_storage, uint32_t index)
-        : Entity(mesh_source, mesh_storage, level, entity.room, index, entity.type_id, entity.position(), entity.angle, entity.ocb)
+        : Entity(mesh_source, mesh_storage, level, entity.room, index, entity.type_id, entity.position(), entity.angle, entity.ocb, false)
     {
     }
 
     Entity::Entity(const IMesh::Source& mesh_source, const IMeshStorage& mesh_storage, const trlevel::ILevel& level, uint32_t room, uint32_t index, uint32_t type_id,
-        const Vector3& position, int32_t angle, int32_t ocb)
+        const Vector3& position, int32_t angle, int32_t ocb, bool is_pickup)
         : _room(room), _index(index)
     {
         // Extract the meshes required from the model.
@@ -52,11 +94,7 @@ namespace trview
         }
 
         generate_bounding_box();
-
-        if (level.get_version() >= trlevel::LevelVersion::Tomb4)
-        {
-            apply_ocb_adjustment(ocb);
-        }
+        apply_ocb_adjustment(level.get_version(), ocb, is_pickup);
     }
 
     void Entity::load_meshes(const trlevel::ILevel& level, int16_t type_id, const IMeshStorage& mesh_storage)
@@ -298,24 +336,23 @@ namespace trview
         BoundingBox::CreateFromPoints(_bounding_box, corners.size(), &corners[0], sizeof(Vector3));
     }
 
-    void Entity::apply_ocb_adjustment(uint32_t ocb)
+    void Entity::apply_ocb_adjustment(trlevel::LevelVersion version, uint32_t ocb, bool is_pickup)
     {
-        using namespace DirectX::SimpleMath;
-        const int flags = ocb & 0x3F;
-        // This assumes that pickups only have one mesh, as a general rule (it seems to work most of the time).
-        // Applying OCB adjustment without this test when OCB is 0 makes Lara and other entities move up, which
-        // isn't right.
-        if (_meshes.size() == 1 && equals_any(flags, 0, 3, 7, 11))
+        if (!is_pickup || !needs_adjustment(version, ocb))
         {
-            Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
-            _world *= offset;
-
-            for (auto& obb : _oriented_boxes)
-            {
-                obb.Transform(obb, offset);
-            }
-            _bounding_box.Transform(_bounding_box, offset);
+            return;
         }
+
+        using namespace DirectX::SimpleMath;
+        Matrix offset = Matrix::CreateTranslation(0, -_bounding_box.Extents.y, 0);
+        _world *= offset;
+
+        for (auto& obb : _oriented_boxes)
+        {
+            obb.Transform(obb, offset);
+        }
+        _bounding_box.Transform(_bounding_box, offset);
+        _needs_ocb_adjustment = true;
     }
 
     DirectX::BoundingBox Entity::bounding_box() const
@@ -331,5 +368,22 @@ namespace trview
     void Entity::set_visible(bool value)
     {
         _visible = value;
+    }
+
+    void Entity::adjust_y(float amount)
+    {
+        auto offset = Matrix::CreateTranslation(0, amount, 0);
+        _world *= offset;
+
+        for (auto& obb : _oriented_boxes)
+        {
+            obb.Transform(obb, offset);
+        }
+        _bounding_box.Transform(_bounding_box, offset);
+    }
+
+    bool Entity::needs_ocb_adjustment() const
+    {
+        return _needs_ocb_adjustment;
     }
 }

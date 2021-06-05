@@ -9,7 +9,7 @@
 #include <trview.app/Mocks/Elements/ITypeNameLookup.h>
 #include <trview.app/Mocks/Elements/IEntity.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
-#include <external/boost/di.hpp>
+#include <trview.app/Mocks/Elements/ITrigger.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -17,37 +17,66 @@ using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trlevel;
 using namespace trlevel::mocks;
-using namespace boost;
 using namespace trview::tests;
 using testing::Return;
 
 namespace
 {
-    auto default_entity_source = [](auto&&...) { return std::make_shared<MockEntity>(); };
-    auto default_ai_source = [](auto&&...) { return std::make_shared<MockEntity>(); };
-    auto default_room_source = [](auto&&...) { return std::make_shared<MockRoom>(); };
-
-    auto register_test_module(std::unique_ptr<trlevel::ILevel> level, std::shared_ptr<ITypeNameLookup> type_name_lookup = nullptr, IEntity::EntitySource entity_source = default_entity_source,
-        IEntity::AiSource ai_source = default_ai_source, IRoom::Source room_source = default_room_source)
+    auto register_test_module()
     {
-        choose_mock<trlevel::mocks::MockLevel>(level);
-        choose_mock<MockTypeNameLookup>(type_name_lookup);
+        struct test_module
+        {
+            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
+            std::shared_ptr<graphics::IShaderStorage> shader_storage{ std::make_shared<MockShaderStorage>() };
+            std::unique_ptr<trlevel::ILevel> level{ std::make_unique<trlevel::mocks::MockLevel>() };
+            std::shared_ptr<ILevelTextureStorage> level_texture_storage{ std::make_shared<MockLevelTextureStorage>() };
+            std::unique_ptr<IMeshStorage> mesh_storage { std::make_unique<MockMeshStorage>() };
+            std::unique_ptr<ITransparencyBuffer> transparency_buffer{ std::make_unique<MockTransparencyBuffer>() };
+            std::unique_ptr<ISelectionRenderer> selection_renderer{ std::make_unique<MockSelectionRenderer>() };
+            std::shared_ptr<ITypeNameLookup> type_name_lookup{ std::make_shared<MockTypeNameLookup>() };
+            IEntity::EntitySource entity_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
+            IEntity::AiSource ai_source{ [](auto&&...) { return std::make_shared<MockEntity>(); } };
+            IRoom::Source room_source{ [](auto&&...) { return std::make_shared<MockRoom>(); } };
+            ITrigger::Source trigger_source{ [](auto&&...) {return std::make_shared<MockTrigger>(); } };
 
-        return di::make_injector
-        (
-            di::bind<IDevice>.to<MockDevice>(),
-            di::bind<IShaderStorage>.to<MockShaderStorage>(),
-            di::bind<ITransparencyBuffer>.to<MockTransparencyBuffer>(),
-            di::bind<ISelectionRenderer>.to<MockSelectionRenderer>(),
-            di::bind<ITypeNameLookup>.to(type_name_lookup),
-            di::bind<ILevelTextureStorage>.to<MockLevelTextureStorage>(),
-            di::bind<trlevel::ILevel>.to([&](auto&&) { return std::move(level); }),
-            di::bind<IMeshStorage>.to<MockMeshStorage>(),
-            di::bind<IEntity::EntitySource>.to(entity_source),
-            di::bind<IEntity::AiSource>.to(ai_source),
-            di::bind<IRoom::Source>.to(room_source),
-            di::bind<Level>()
-        ).create<std::unique_ptr<Level>>();
+            std::unique_ptr<Level> build()
+            {
+                return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
+                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source);
+            }
+
+            test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)
+            {
+                this->type_name_lookup = type_name_lookup;
+                return *this;
+            }
+
+            test_module& with_level(std::unique_ptr<trlevel::ILevel>&& level)
+            {
+                this->level = std::move(level);
+                return *this;
+            }
+
+            test_module& with_entity_source(const IEntity::EntitySource& entity_source)
+            {
+                this->entity_source = entity_source;
+                return *this;
+            }
+
+            test_module& with_ai_source(const IEntity::AiSource& ai_source)
+            {
+                this->ai_source = ai_source;
+                return *this;
+            }
+
+            test_module& with_room_source(const IRoom::Source& room_source)
+            {
+                this->room_source = room_source;
+                return *this;
+            }
+        };
+
+        return test_module{};
     }
 }
 
@@ -66,7 +95,7 @@ TEST(Level, LoadTypeNames)
 
     auto mock_type_name_lookup = std::make_shared<MockTypeNameLookup>();
     EXPECT_CALL(*mock_type_name_lookup, lookup_type_name(LevelVersion::Tomb2, 123));
-    auto level = register_test_module(std::move(mock_level_ptr), mock_type_name_lookup);
+    auto level = register_test_module().with_level(std::move(mock_level_ptr)).with_type_name_lookup(mock_type_name_lookup).build();
 }
 
 TEST(Level, LoadFromEntitySources)
@@ -88,17 +117,19 @@ TEST(Level, LoadFromEntitySources)
     uint32_t entity_source_called = 0;
     uint32_t ai_source_called = 0;
 
-    auto level = register_test_module(std::move(mock_level_ptr), nullptr,
-        [&](auto&&...)
-        {
-            ++entity_source_called;
-            return std::make_shared<MockEntity>();
-        },
-        [&](auto&&...)
-        {
-            ++ai_source_called;
-            return std::make_shared<MockEntity>();
-        });
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_entity_source(
+            [&](auto&&...)
+            {
+                ++entity_source_called;
+                return std::make_shared<MockEntity>();
+            })
+        .with_ai_source(
+            [&](auto&&...)
+            {
+                ++ai_source_called;
+                return std::make_shared<MockEntity>();
+            }).build();
 
     ASSERT_EQ(entity_source_called, 1);
     ASSERT_EQ(ai_source_called, 1);
@@ -112,12 +143,71 @@ TEST(Level, LoadRooms)
 
     int room_called = 0;
 
-    auto level = register_test_module(std::move(mock_level_ptr), nullptr, default_entity_source, default_ai_source, 
-        [&](auto&&...) 
-        { 
-            ++room_called;
-            return std::make_shared<MockRoom>(); 
-        });
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                ++room_called;
+                return std::make_shared<MockRoom>();
+            }).build();
 
     ASSERT_EQ(room_called, 3);
+}
+
+TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
+    int entity_source_called = 0;
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                auto room = std::make_shared<MockRoom>();
+                PickResult result{};
+                result.hit = true;
+                EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
+                return room;
+            })
+        .with_entity_source(
+            [&](auto&&...)
+            {
+                ++entity_source_called;
+                auto entity = std::make_shared<MockEntity>();
+                EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(true));
+                EXPECT_CALL(*entity, adjust_y).Times(1);
+                return entity;
+            }).build();
+
+    ASSERT_EQ(entity_source_called, 1);
+}
+
+TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
+    int entity_source_called = 0;
+    auto level = register_test_module().with_level(std::move(mock_level_ptr))
+        .with_room_source(
+            [&](auto&&...)
+            {
+                auto room = std::make_shared<MockRoom>();
+                PickResult result{};
+                result.hit = true;
+                EXPECT_CALL(*room, pick).WillRepeatedly(Return(result));
+                return room;
+            })
+        .with_entity_source(
+            [&](auto&&...)
+            {
+                ++entity_source_called;
+                auto entity = std::make_shared<MockEntity>();
+                EXPECT_CALL(*entity, needs_ocb_adjustment).WillRepeatedly(Return(false));
+                EXPECT_CALL(*entity, adjust_y).Times(0);
+                return entity;
+            }).build();
+
+    ASSERT_EQ(entity_source_called, 1);
 }
