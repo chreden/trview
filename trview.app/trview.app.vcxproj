@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -89,6 +89,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Resources\ResourceHelper.cpp" />
+    <ClCompile Include="Routing\Action.cpp" />
     <ClCompile Include="Routing\IRoute.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
@@ -331,6 +332,9 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Image Include="trview.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Resources\Files\actions.json">
+      <FileType>Document</FileType>
+    </Text>
     <None Include="Resources\Files\arial7.bin" />
     <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />

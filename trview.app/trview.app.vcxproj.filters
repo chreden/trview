@@ -319,6 +319,9 @@
     <ClCompile Include="Elements\PickFilter.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\Action.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -970,5 +973,6 @@
     <Text Include="Resources\Files\fontlist.txt">
       <Filter>Resources\Files</Filter>
     </Text>
+    <Text Include="Resources\Files\actions.json" />
   </ItemGroup>
 </Project>
