@@ -1,0 +1,28 @@
+{
+    "actions": 
+    [
+        {
+            "name": "pickup",
+            "display": "Pickup",
+            "times": 
+            {
+                "tr1": 1.0,
+                "tr2": 1.0,
+                "tr3": 1.0,
+                "tr4": 1.0,
+                "tr5": 1.0
+            }
+        },
+        {
+            "name": "push_button",
+            "display": "Push Button",
+            "times": 
+            {
+                "tr2": 1.0,
+                "tr3": 1.0,
+                "tr4": 1.0,
+                "tr5": 1.0
+            }
+        }
+    ]
+}

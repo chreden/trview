@@ -32,6 +32,7 @@
 #define IDR_FONT_LIST                   147
 #define IDF_ARIAL8                      148
 #define IDR_TYPE_NAMES                  149
+#define IDR_ACTIONS                     150
 #define ID_FILE_OPEN                    32771
 #define ID_FILE_OPENRECENT              ID_APP_FILE_OPENRECENT
 #define ID_EXIT                         32773
