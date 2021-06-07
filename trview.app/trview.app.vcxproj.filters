@@ -322,6 +322,12 @@
     <ClCompile Include="Routing\Action.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\Actions.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\IActions.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -822,6 +828,12 @@
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Routing\Action.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IActions.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\Actions.h">
       <Filter>Routing</Filter>
     </ClInclude>
   </ItemGroup>

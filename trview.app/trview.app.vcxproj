@@ -90,6 +90,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Resources\ResourceHelper.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
+    <ClCompile Include="Routing\Actions.cpp" />
+    <ClCompile Include="Routing\IActions.cpp" />
     <ClCompile Include="Routing\IRoute.cpp" />
     <ClCompile Include="Routing\Route.cpp" />
     <ClCompile Include="Routing\Waypoint.cpp" />
@@ -255,8 +257,10 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Resources\ResourceHelper.h" />
     <ClInclude Include="Resources\targetver.h" />
     <ClInclude Include="Routing\Action.h" />
+    <ClInclude Include="Routing\Actions.h" />
     <ClInclude Include="Routing\di.h" />
     <ClInclude Include="Routing\di.hpp" />
+    <ClInclude Include="Routing\IActions.h" />
     <ClInclude Include="Routing\IRoute.h" />
     <ClInclude Include="Routing\Route.h" />
     <ClInclude Include="Routing\Waypoint.h" />
