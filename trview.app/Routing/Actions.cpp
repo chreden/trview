@@ -10,13 +10,20 @@ namespace trview
         {
             auto name = read_attribute<std::string>(action, "name");
             auto display_name = read_attribute<std::string>(action, "display_name");
-            std::unordered_map<trlevel::LevelVersion, float> times;
 
-            const auto get_version_time = [&](trlevel::LevelVersion version, const std::string& name) 
+            if (!action.count("times"))
             {
-                if (json.count(name)) 
+                continue;
+            }
+            
+            std::unordered_map<trlevel::LevelVersion, float> times;
+            auto times_json = action["times"];
+
+            const auto get_version_time = [&](trlevel::LevelVersion version, const std::string& name)
+            {
+                if (times_json.count(name))
                 {
-                    times.insert({ version, json[name].get<float>() });
+                    times.insert({ version, times_json[name].get<float>() });
                 }
             };
 
@@ -25,6 +32,8 @@ namespace trview
             get_version_time(trlevel::LevelVersion::Tomb3, "tr3");
             get_version_time(trlevel::LevelVersion::Tomb4, "tr4");
             get_version_time(trlevel::LevelVersion::Tomb5, "tr5");
+
+            _actions.insert({ name, Action(name, display_name, times) });
         }
     }
 

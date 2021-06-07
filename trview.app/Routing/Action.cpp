@@ -2,6 +2,12 @@
 
 namespace trview
 {
+    Action::Action(const std::string& name, const std::string& display_name,
+        const std::unordered_map<trlevel::LevelVersion, float>& times)
+        : _name(name), _display_name(display_name), _times(times)
+    {
+    }
+
     std::string Action::name() const
     {
         return _name;

@@ -9,6 +9,8 @@ namespace trview
     class Action final
     {
     public:
+        Action(const std::string& name, const std::string& display_name,
+            const std::unordered_map<trlevel::LevelVersion, float>& times);
         std::string name() const;
         std::string display_name() const;
         bool is_available(trlevel::LevelVersion version) const;
