@@ -41,6 +41,7 @@
     <ClCompile Include="RoomsWindowTests.cpp" />
     <ClCompile Include="RouteWindowTests.cpp" />
     <ClCompile Include="Routing\ActionsTests.cpp" />
+    <ClCompile Include="Routing\ActionTests.cpp" />
     <ClCompile Include="SettingsWindowTests.cpp" />
     <ClCompile Include="Settings\StartupOptionsTests.cpp" />
     <ClCompile Include="stdafx.cpp">
