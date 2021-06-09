@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/IEntity.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Camera/ICamera.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -19,6 +20,8 @@ using namespace trlevel;
 using namespace trlevel::mocks;
 using namespace trview::tests;
 using testing::Return;
+using testing::A;
+using namespace DirectX::SimpleMath;
 
 namespace
 {
@@ -210,4 +213,59 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
             }).build();
 
     ASSERT_EQ(entity_source_called, 1);
+}
+
+TEST(Level, PickUsesCorrectDefaultFilters)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+
+    auto room = std::make_shared<MockRoom>();
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers)).Times(1);
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    MockCamera camera;
+    level->pick(camera, Vector3::Zero, Vector3::Forward);
+}
+
+TEST(Level, PickUsesCorrectOptionalFilters)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+
+    auto room = std::make_shared<MockRoom>();
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::HiddenGeometry)).Times(1);
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+    level->set_show_triggers(true);
+    level->set_show_hidden_geometry(true);
+
+    MockCamera camera;
+    level->pick(camera, Vector3::Zero, Vector3::Forward);
+}
+
+TEST(Level, PickUsesCorrectMinimalFilters)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+
+    auto room = std::make_shared<MockRoom>();
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes)).Times(1);
+
+    auto level = register_test_module()
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+    level->set_show_triggers(false);
+    level->set_show_hidden_geometry(false);
+
+    MockCamera camera;
+    level->pick(camera, Vector3::Zero, Vector3::Forward);
 }

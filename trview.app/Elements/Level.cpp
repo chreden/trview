@@ -479,7 +479,9 @@ namespace trview
         for (auto& room : rooms)
         {
             choose(room.room.pick(position, direction,
+                PickFilter::Geometry |
                 PickFilter::Entities |
+                PickFilter::StaticMeshes |
                 filter_flag(PickFilter::Triggers, _show_triggers) |
                 filter_flag(PickFilter::HiddenGeometry, _show_hidden_geometry)));
             if (!is_alternate_mismatch(room.room) && room.room.alternate_mode() == IRoom::AlternateMode::IsAlternate)
