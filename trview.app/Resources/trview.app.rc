@@ -263,6 +263,8 @@ IDR_FONT_LIST           TEXT                    "Files\\fontlist.txt"
 
 IDR_TYPE_NAMES          TEXT                    "Files\\type_names.txt"
 
+IDR_ACTIONS             TEXT                    "Files\\actions.json"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

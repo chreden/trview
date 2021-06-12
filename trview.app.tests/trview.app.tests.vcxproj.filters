@@ -77,6 +77,12 @@
     <ClCompile Include="Elements\EntityTests.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\ActionsTests.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\ActionTests.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
@@ -102,6 +108,9 @@
     </Filter>
     <Filter Include="Settings">
       <UniqueIdentifier>{42d0c262-c6f9-4419-b646-41d45f31fc72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Routing">
+      <UniqueIdentifier>{0bd554a8-2460-48fd-9867-d4a7397529c2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

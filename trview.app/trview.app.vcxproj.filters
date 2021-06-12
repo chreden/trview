@@ -319,6 +319,15 @@
     <ClCompile Include="Elements\PickFilter.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\Action.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\Actions.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
+    <ClCompile Include="Routing\IActions.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -818,6 +827,15 @@
     <ClInclude Include="Elements\PickFilter.h">
       <Filter>Elements</Filter>
     </ClInclude>
+    <ClInclude Include="Routing\Action.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IActions.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\Actions.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -967,5 +985,6 @@
     <Text Include="Resources\Files\fontlist.txt">
       <Filter>Resources\Files</Filter>
     </Text>
+    <Text Include="Resources\Files\actions.json" />
   </ItemGroup>
 </Project>
