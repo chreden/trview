@@ -103,6 +103,7 @@ TEST(Route, Insert)
     route->add(Vector3::Zero, 0);
     route->add(Vector3::Zero, 1);
     route->set_unsaved(false);
+    route->select_waypoint(1);
     auto index = route->insert(Vector3(0, 1, 0), 2);
     ASSERT_EQ(index, 2);
     ASSERT_TRUE(route->is_unsaved());
@@ -138,4 +139,28 @@ TEST(Route, SetColour)
     route->set_colour(Colour::Red);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->colour(), Colour::Red);
+}
+
+TEST(Route, SelectedWaypoint)
+{
+    auto route = register_test_module().build();
+    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, 0);
+    route->set_unsaved(false);
+    route->select_waypoint(1);
+    ASSERT_FALSE(route->is_unsaved());
+    ASSERT_EQ(route->selected_waypoint(), 1);
+}
+
+TEST(Route, SelectedWaypointAdjustedByRemove)
+{
+    auto route = register_test_module().build();
+    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, 0);
+    route->set_unsaved(false);
+    route->select_waypoint(1);
+    ASSERT_FALSE(route->is_unsaved());
+    ASSERT_EQ(route->selected_waypoint(), 1);
+    route->remove(1);
+    ASSERT_EQ(route->selected_waypoint(), 0);
 }

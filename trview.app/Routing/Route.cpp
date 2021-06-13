@@ -64,6 +64,7 @@ namespace trview
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+        set_unsaved(true);
     }
 
     Colour Route::colour() const
@@ -73,6 +74,10 @@ namespace trview
 
     void Route::clear()
     {
+        if (!_waypoints.empty())
+        {
+            set_unsaved(true);
+        }
         _waypoints.clear();
         _selected_index = 0u;
     }
@@ -84,6 +89,7 @@ namespace trview
             return add(position, room, Waypoint::Type::Position, 0u);
         }
         insert(position, room, index, Waypoint::Type::Position, 0u);
+        set_unsaved(true);
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room)
@@ -96,6 +102,7 @@ namespace trview
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
+        set_unsaved(true);
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
@@ -146,6 +153,7 @@ namespace trview
         {
             --_selected_index;
         }
+        set_unsaved(true);
     }
 
     void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
@@ -192,6 +200,7 @@ namespace trview
         {
             waypoint.set_route_colour(colour);
         }
+        set_unsaved(true);
     }
 
     void Route::set_unsaved(bool value)
