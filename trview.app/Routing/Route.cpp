@@ -105,6 +105,11 @@ namespace trview
         return index;
     }
 
+    bool Route::is_unsaved() const
+    {
+        return _is_unsaved;
+    }
+
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
     {
         PickResult result;
@@ -187,6 +192,11 @@ namespace trview
         {
             waypoint.set_route_colour(colour);
         }
+    }
+
+    void Route::set_unsaved(bool value)
+    {
+        _is_unsaved = value;
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const

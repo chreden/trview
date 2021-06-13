@@ -5,92 +5,127 @@
 
 namespace trview
 {
+    /// <summary>
+    /// A route is a series of waypoints with notes.
+    /// </summary>
     struct IRoute
     {
         using Source = std::function<std::unique_ptr<IRoute>()>;
-
         virtual ~IRoute() = 0;
-        
+        /// <summary>
         /// Add a new waypoint to the end of the route.
-        /// @param position The new waypoint.
-        /// @param room The room the waypoint is in.
+        /// </summary>
+        /// <param name="position">The new waypoint.</param>
+        /// <param name="room">The room the waypoint is in.</param>
         virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room) = 0;
-
+        /// <summary>
         /// Add a new waypoint to the end of the route.
-        /// @param position The position of the waypoint in the world.
-        /// @param room The room that waypoint is in.
-        /// @param type The type of the waypoint.
-        /// @param type_index The index of the referred to entity or trigger.
+        /// </summary>
+        /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="room">The room that waypoint is in.</param>
+        /// <param name="type">The type of the waypoint.</param>
+        /// <param name="type_index">The index of the referred to entity or trigger.</param>
         virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) = 0;
-
+        /// <summary>
         /// Remove all of the waypoints from the route.
+        /// </summary>
         virtual void clear() = 0;
-
+        /// <summary>
         /// Get the colour of the route.
+        /// </summary>
+        /// <returns>The colour of the route.</returns>
         virtual Colour colour() const = 0;
-
+        /// <summary>
         /// Insert the new waypoint into the route.
-        /// @param position The new waypoint.
-        /// @param room The room that the waypoint is in.
-        /// @param index The index in the route list to put the waypoint.
+        /// </summary>
+        /// <param name="position">The new waypoint.</param>
+        /// <param name="room">The room that the waypoint is in.</param>
+        /// <param name="index">The index in the route list to put the waypoint.</param>
         virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index) = 0;
-
+        /// <summary>
         /// Insert the new waypoint into the route based on the currently selected waypoint.
-        /// @param position The new waypoint.
-        /// @param room The room that the waypoint is in.
-        /// @return The index of the new waypoint.
+        /// </summary>
+        /// <param name="position">The new waypoint.</param>
+        /// <param name="room">The room that the waypoint is in.</param>
+        /// <returns>The index of the new waypoint.</returns>
         virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room) = 0;
-
+        /// <summary>
         /// Insert a new non-positional waypoint.
-        /// @param position The position of the waypoint in the world.
-        /// @param room The room that the waypoint is in.
-        /// @param type The type of waypoint.
-        /// @param index The index in the route list to put the waypoint.
-        /// @param type_index The index of the trigger or entity to reference.
+        /// </summary>
+        /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="room">The room that the waypoint is in.</param>
+        /// <param name="index">The index in the route list to put the waypoint.</param>
+        /// <param name="type">The type of waypoint.</param>
+        /// <param name="type_index">The index of the trigger or entity to reference.</param>
         virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index) = 0;
-
+        /// <summary>
         /// Insert a new non-positional waypoint based on the currently selected waypoint.
-        /// @param position The position of the waypoint in the world.
-        /// @param room The room that the waypoint is in.
-        /// @param type The type of waypoint.
-        /// @param type_index The index of the trigger or entity to reference.
-        /// @return The index of the new waypoint.
+        /// </summary>
+        /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="room">The room that the waypoint is in.</param>
+        /// <param name="type">The type of waypoint.</param>
+        /// <param name="type_index">The index of the trigger or entity to reference.</param>
+        /// <returns>The index of the new waypoint.</returns>
         virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) = 0;
-
+        /// <summary>
+        /// Determines whether the route has any unsaved changes.
+        /// </summary>
+        /// <returns>True if there are unsaved changes.</returns>
+        virtual bool is_unsaved() const = 0;
+        /// <summary>
         /// Pick against the waypoints in the route.
-        /// @param position The position of the camera.
-        /// @param direction The direction of the ray.
+        /// </summary>
+        /// <param name="position">The position of the camera.</param>
+        /// <param name="direction">The direction of the ray.</param>
+        /// <returns>The pcik result.</returns>
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const = 0;
-
+        /// <summary>
         /// Remove the waypoint at the specified index.
-        /// @param index The index of the waypoint to remove.
+        /// </summary>
+        /// <param name="index">The index of the waypoint to remove.</param>
         virtual void remove(uint32_t index) = 0;
-
+        /// <summary>
         /// Render the route.
-        /// @param camera The camera to use to render.
-        /// @param texture_storage Texture storage for the mesh.
+        /// </summary>
+        /// <param name="camera">The camera to use to render.</param>
+        /// <param name="texture_storage">Texture storage for the mesh.</param>
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) = 0;
-
+        /// <summary>
         /// Get the index of the currently selected waypoint.
+        /// </summary>
+        /// <returns>The index of the currently selected waypoint.</returns>
         virtual uint32_t selected_waypoint() const = 0;
-
+        /// <summary>
         /// Set the specified waypoint index to be the selected waypoint.
-        /// @param index The index to select.
+        /// </summary>
+        /// <param name="index">The index to select.</param>
         virtual void select_waypoint(uint32_t index) = 0;
-
+        /// <summary>
         /// Set the colour for the route.
-        /// @param colour The colour to use.
+        /// </summary>
+        /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
-
+        /// <summary>
+        /// Set whether the route has unsaved changes.
+        /// </summary>
+        /// <param name="value">Whether the route has unsaved changes.</param>
+        virtual void set_unsaved(bool value) = 0;
+        /// <summary>
         /// Get the waypoint at the specified index.
-        /// @param index The index to get.
+        /// </summary>
+        /// <param name="index">The index to get.</param>
+        /// <returns>The waypoint.</returns>
         virtual const Waypoint& waypoint(uint32_t index) const = 0;
-
+        /// <summary>
         /// Get the waypoint at the specified index.
-        /// @param index The index to get.
+        /// </summary>
+        /// <param name="index">The index to get.</param>
+        /// <returns>The waypoint.</returns>
         virtual Waypoint& waypoint(uint32_t index) = 0;
-
+        /// <summary>
         /// Get the number of waypoints in the route.
+        /// </summary>
+        /// <returns>The number of waypoints in the route.</returns>
         virtual uint32_t waypoints() const = 0;
     };
 }
