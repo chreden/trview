@@ -9,12 +9,13 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'R') += [&]() { create_window(); };
     }
 
-    void RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> RouteWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ROUTE)
         {
             create_window();
         }
+        return {};
     }
 
     void RouteWindowManager::create_window()

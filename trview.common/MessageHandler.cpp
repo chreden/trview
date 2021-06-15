@@ -10,7 +10,11 @@ namespace trview
             MessageHandler* handler = reinterpret_cast<MessageHandler*>(dwRefData);
             if (handler)
             {
-                handler->process_message(message, wParam, lParam);
+                const auto code = handler->process_message(message, wParam, lParam);
+                if (code.has_value())
+                {
+                    return code.value();
+                }
             }
             return DefSubclassProc(hWnd, message, wParam, lParam);
         }

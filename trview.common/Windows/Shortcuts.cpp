@@ -52,13 +52,13 @@ namespace trview
         _accelerators = CreateAcceleratorTable(&shortcuts[0], static_cast<int>(shortcuts.size()));
     }
 
-    void Shortcuts::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+    std::optional<int> Shortcuts::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
         if (!_accelerators)
         {
             if (_shortcuts.empty())
             {
-                return;
+                return {};
             }
             create_accelerators();
         }
@@ -66,7 +66,7 @@ namespace trview
         MSG msg{ window(), message, wParam, lParam, GetTickCount(), 0 };
         if (TranslateAccelerator(window(), _accelerators, &msg))
         {
-            return;
+            return {};
         }
 
         if (message == WM_COMMAND)
@@ -81,5 +81,6 @@ namespace trview
                 }
             }
         }
+        return {};
     }
 }

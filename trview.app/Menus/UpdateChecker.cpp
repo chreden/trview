@@ -107,11 +107,12 @@ namespace trview
         }, window(), _current_version);
     }
 
-    void UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> UpdateChecker::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == id_update_available)
         {
             ShellExecute(0, 0, L"https://github.com/chreden/trview/releases/latest", 0, 0, SW_SHOW);
         }
+        return {};
     }
 }

@@ -52,7 +52,7 @@ namespace trview
     {
     }
 
-    void LevelSwitcher::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> LevelSwitcher::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {
@@ -63,6 +63,7 @@ namespace trview
                 on_switch_level(f.path);
             }
         }
+        return {};
     }
 
     void LevelSwitcher::open_file(const std::string& filepath)

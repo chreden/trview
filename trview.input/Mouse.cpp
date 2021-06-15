@@ -99,7 +99,7 @@ namespace trview
             _absolute_y = y;
         }
 
-        void Mouse::process_message(UINT message, WPARAM wParam, LPARAM lParam)
+        std::optional<int> Mouse::process_message(UINT message, WPARAM wParam, LPARAM lParam)
         {
             switch (message)
             {
@@ -146,6 +146,7 @@ namespace trview
                     break;
                 }
             }
+            return {};
         }
     }
 }

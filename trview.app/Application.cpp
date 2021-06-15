@@ -155,6 +155,11 @@ namespace trview
 
     void Application::open(const std::string& filename)
     {
+        if (!should_discard_changes())
+        {
+            return;
+        }
+
         std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
@@ -195,7 +200,7 @@ namespace trview
         _viewer->set_route(_route);
     }
 
-    void Application::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         switch (message)
         {
@@ -246,10 +251,23 @@ namespace trview
                         break;
                     }
                     case IDM_EXIT:
-                        DestroyWindow(window());
+                    {
+                        if (should_discard_changes())
+                        {
+                            DestroyWindow(window());
+                        }
                         break;
+                    }
                 }
                 break;
+            }
+            case WM_CLOSE:
+            {
+                if (should_discard_changes())
+                {
+                    DestroyWindow(window());
+                }
+                return 0;
             }
             case WM_DESTROY:
             {
@@ -257,6 +275,7 @@ namespace trview
                 break;
             }
         }
+        return {};
     }
 
     int Application::run()
@@ -397,7 +416,11 @@ namespace trview
                 _viewer->set_route(_route);
             }
         };
-        _token_store += _route_window->on_route_export += [&](const std::string& path) { export_route(*_route, path); };
+        _token_store += _route_window->on_route_export += [&](const std::string& path)
+        {
+            export_route(*_route, path); 
+            _route->set_unsaved(false);
+        };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
@@ -550,6 +573,15 @@ namespace trview
         _triggers_windows->render(_settings.vsync);
         _rooms_windows->render(_settings.vsync);
         _route_window->render(_settings.vsync);
+    }
+
+    bool Application::should_discard_changes()
+    {
+        if (_route->is_unsaved())
+        {
+            return IDOK == MessageBox(0, L"Uh-oh", L"It won't be easy!", MB_OKCANCEL);
+        }
+        return true;
     }
 
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)

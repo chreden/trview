@@ -21,7 +21,7 @@ namespace trview
         /// @param triggers_window_source Function to call to create a triggers window.
         explicit TriggersWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ITriggersWindow::Source& triggers_window_source);
         virtual ~TriggersWindowManager() = default;
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render(bool vsync) override;
         const std::weak_ptr<ITrigger> selected_trigger() const;
         virtual void set_items(const std::vector<Item>& items) override;

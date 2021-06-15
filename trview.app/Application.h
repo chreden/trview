@@ -49,13 +49,10 @@ namespace trview
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options);
         virtual ~Application();
-
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         void open(const std::string& filename);
-
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
-
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
     private:
         // Window setup functions.
@@ -66,7 +63,6 @@ namespace trview
         void setup_rooms_windows();
         void setup_route_window();
         void setup_shortcuts();
-
         // Entity manipulation
         void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
@@ -78,12 +74,11 @@ namespace trview
         void select_previous_waypoint();
         void set_item_visibility(const Item& item, bool visible);
         void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
-
         // Rendering
         void render();
-
         // Lua
         void register_lua();
+        bool should_discard_changes();
 
         TokenStore _token_store;
 

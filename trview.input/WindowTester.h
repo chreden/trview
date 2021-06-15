@@ -15,7 +15,7 @@ namespace trview
             virtual bool is_window_under_cursor() const override;
             virtual int screen_width(bool rdp) const override;
             virtual int screen_height(bool rdp) const override;
-            virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+            virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         private:
             bool _mouse_in_window{ false };
         };

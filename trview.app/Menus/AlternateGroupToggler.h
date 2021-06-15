@@ -21,7 +21,7 @@ namespace trview
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when an alternate group is toggled by the user. The group
         /// is passed as a parameter.
