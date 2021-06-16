@@ -13,6 +13,7 @@
 #include <trview.app/Mocks/Windows/IRouteWindowManager.h>
 #include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
+#include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
 #include <external/boost/di.hpp>
@@ -33,7 +34,7 @@ namespace
         std::unique_ptr<trlevel::ILevelLoader> level_loader = nullptr, std::unique_ptr<ILevelSwitcher> level_switcher = nullptr, std::unique_ptr<IRecentFiles> recent_files = nullptr,
         std::unique_ptr<IViewer> viewer = nullptr, std::unique_ptr<IRoute> route = nullptr, std::unique_ptr<IItemsWindowManager> items_window_manager = nullptr, std::unique_ptr<ITriggersWindowManager> triggers_window_manager = nullptr,
         std::unique_ptr<IRouteWindowManager> route_window_manager = nullptr, std::unique_ptr<IRoomsWindowManager> rooms_window_manager = nullptr,
-        std::shared_ptr<IStartupOptions> startup_options = nullptr)
+        std::shared_ptr<IStartupOptions> startup_options = nullptr, std::unique_ptr<IDialogs> dialogs = nullptr)
     {
         choose_mock<MockUpdateChecker>(update_checker);
         choose_mock<MockSettingsLoader>(settings_loader);
@@ -48,6 +49,7 @@ namespace
         choose_mock<MockRouteWindowManager>(route_window_manager);
         choose_mock<MockRoomsWindowManager>(rooms_window_manager);
         choose_mock<MockStartupOptions>(startup_options);
+        choose_mock<MockDialogs>(dialogs);
 
         auto shortcuts = std::make_shared<MockShortcuts>();
         EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
@@ -68,7 +70,8 @@ namespace
             di::bind<IRouteWindowManager>.to([&](auto&&) { return std::move(route_window_manager); }),
             di::bind<IRoomsWindowManager>.to([&](auto&&) { return std::move(rooms_window_manager); }),
             di::bind<ILevel::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<trview::mocks::MockLevel>(); }; }),
-            di::bind<IStartupOptions>.to(startup_options)
+            di::bind<IStartupOptions>.to(startup_options),
+            di::bind<IDialogs>.to([&](auto&&) { return std::move(dialogs); })
         ).create<std::unique_ptr<Application>>();
     }
 }
@@ -164,6 +167,7 @@ TEST(Application, WindowContentsResetBeforeViewerLoaded)
     EXPECT_CALL(route_window_manager, set_rooms(A<const std::vector<std::weak_ptr<IRoom>>&>())).Times(1).WillOnce([&](auto) { events.push_back("route_rooms"); });
     EXPECT_CALL(route_window_manager, set_route(A<IRoute*>())).Times(1).WillOnce([&](auto) { events.push_back("route_route"); });
     EXPECT_CALL(route, clear()).Times(1).WillOnce([&] { events.push_back("route_clear"); });
+    EXPECT_CALL(route, set_unsaved(false)).Times(1);
     EXPECT_CALL(viewer, open(NotNull())).Times(1).WillOnce([&](auto) { events.push_back("viewer"); });
 
     auto application = register_test_module(nullptr, nullptr, nullptr, std::move(level_loader_ptr), nullptr, nullptr, std::move(viewer_ptr), std::move(route_ptr),

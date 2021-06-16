@@ -27,6 +27,7 @@
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
 #include <trview.common/windows/Clipboard.h>
+#include <trview.common/Windows/Dialogs.h>
 #include <trview.app/Settings/IStartupOptions.h>
 
 using namespace DirectX::SimpleMath;
@@ -120,12 +121,14 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
-        std::shared_ptr<IStartupOptions> startup_options)
+        std::shared_ptr<IStartupOptions> startup_options,
+        std::unique_ptr<IDialogs> dialogs)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
-        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source)
+        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
+        _dialogs(std::move(dialogs))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -194,6 +197,7 @@ namespace trview
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());
         _route->clear();
+        _route->set_unsaved(false);
         _route_window->set_route(_route.get());
 
         _viewer->open(_level.get());
@@ -579,7 +583,7 @@ namespace trview
     {
         if (_route->is_unsaved())
         {
-            return IDOK == MessageBox(0, L"Uh-oh", L"It won't be easy!", MB_OKCANCEL);
+            return _dialogs->message_box(window(), L"Uh-oh", L"It won't be easy", IDialogs::Buttons::OK_Cancel);
         }
         return true;
     }
@@ -608,6 +612,7 @@ namespace trview
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
+            di::bind<IDialogs>.to<Dialogs>(),
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 
