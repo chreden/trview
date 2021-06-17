@@ -170,10 +170,7 @@ namespace trview
         }
         catch (...)
         {
-            if (!is_message_only(window()))
-            {
-                MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
-            }
+            _dialogs->message_box(window(), L"Failed to load level", L"Error", IDialogs::Buttons::OK);
             return;
         }
 
@@ -583,7 +580,7 @@ namespace trview
     {
         if (_route->is_unsaved())
         {
-            return _dialogs->message_box(window(), L"Uh-oh", L"It won't be easy", IDialogs::Buttons::OK_Cancel);
+            return _dialogs->message_box(window(), L"It won't be easy", L"Uh-oh", IDialogs::Buttons::OK_Cancel);
         }
         return true;
     }

@@ -2,9 +2,23 @@
 
 namespace trview
 {
-    bool Dialogs::message_box(const Window& window, const std::wstring& title, const std::wstring& message, Buttons buttons)
+    namespace
     {
-        const auto mode = buttons == Buttons::OK_Cancel ? MB_OKCANCEL : MB_OK;
-        return IDOK == MessageBox(window, title.c_str(), message.c_str(), mode);
+        long convert_button(IDialogs::Buttons buttons)
+        {
+            switch (buttons)
+            {
+                case IDialogs::Buttons::OK_Cancel:
+                    return MB_OKCANCEL;
+                case IDialogs::Buttons::OK:
+                default:
+                    return MB_OK;
+            }
+        }
+    }
+
+    bool Dialogs::message_box(const Window& window, const std::wstring& message, const std::wstring& title, Buttons buttons)
+    {
+        return IDOK == MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons));
     }
 }
