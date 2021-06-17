@@ -288,3 +288,13 @@ TEST(Application, FileNotOpenedWhenNotSpecified)
     EXPECT_CALL(viewer, open).Times(0);
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_viewer(std::move(viewer_ptr)).build();
 }
+
+TEST(Application, DialogShownOnCloseWithUnsavedRoute)
+{
+    FAIL();
+}
+
+TEST(Application, DialogShownOnOpenWithUnsavedRoute)
+{
+    FAIL();
+}
