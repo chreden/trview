@@ -61,6 +61,12 @@ namespace
                     level_source, startup_options, std::move(dialogs));
             }
 
+            test_module& with_dialogs(std::unique_ptr<IDialogs> dialogs)
+            {
+                this->dialogs = std::move(dialogs);
+                return *this;
+            }
+
             test_module& with_file_dropper(std::unique_ptr<IFileDropper> file_dropper)
             {
                 this->file_dropper = std::move(file_dropper);
@@ -289,12 +295,75 @@ TEST(Application, FileNotOpenedWhenNotSpecified)
     auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_viewer(std::move(viewer_ptr)).build();
 }
 
-TEST(Application, DialogShownOnCloseWithUnsavedRoute)
+TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
 {
-    FAIL();
+    auto [route_ptr, route] = create_mock<MockRoute>();
+    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto route_ptr_actual = std::move(route_ptr);
+
+    EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
+    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(std::move(dialogs_ptr)).build();
+    bool closing_called = false;
+    auto token = application->on_closing += [&]() { closing_called = true; };
+    application->process_message(WM_CLOSE, 0, 0);
+    ASSERT_FALSE(closing_called);
 }
 
-TEST(Application, DialogShownOnOpenWithUnsavedRoute)
+TEST(Application, DialogShownOnCloseWithUnsavedRouteAllowsClose)
 {
-    FAIL();
+    auto [route_ptr, route] = create_mock<MockRoute>();
+    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto route_ptr_actual = std::move(route_ptr);
+
+    EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
+    EXPECT_CALL(dialogs, message_box).WillRepeatedly(Return(true));
+    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(std::move(dialogs_ptr)).build();
+    bool closing_called = false;
+    auto token = application->on_closing += [&]() { closing_called = true; };
+    application->process_message(WM_CLOSE, 0, 0);
+    ASSERT_TRUE(closing_called);
+}
+
+TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
+{
+    auto [route_ptr, route] = create_mock<MockRoute>();
+    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto route_ptr_actual = std::move(route_ptr);
+    auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
+
+    EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
+    EXPECT_CALL(level_loader, load_level).Times(0);
+    auto application = register_test_module()
+        .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
+        .with_dialogs(std::move(dialogs_ptr))
+        .with_level_loader(std::move(level_loader_ptr))
+        .build();
+    application->open("");
+}
+
+TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
+{
+    auto [route_ptr, route] = create_mock<MockRoute>();
+    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto route_ptr_actual = std::move(route_ptr);
+    auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
+
+    EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
+    EXPECT_CALL(dialogs, message_box).WillRepeatedly(Return(true));
+    EXPECT_CALL(level_loader, load_level).Times(1);
+    auto application = register_test_module()
+        .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
+        .with_dialogs(std::move(dialogs_ptr))
+        .with_level_loader(std::move(level_loader_ptr))
+        .build();
+    application->open("");
+}
+
+TEST(Application, ClosingEventCalled)
+{
+    auto application = register_test_module().build();
+    bool closing_called = false;
+    auto token = application->on_closing += [&]() { closing_called = true; };
+    application->process_message(WM_CLOSE, 0, 0);
+    ASSERT_TRUE(closing_called);
 }

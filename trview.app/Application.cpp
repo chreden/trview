@@ -255,6 +255,7 @@ namespace trview
                     {
                         if (should_discard_changes())
                         {
+                            on_closing();
                             DestroyWindow(window());
                         }
                         break;
@@ -266,6 +267,7 @@ namespace trview
             {
                 if (should_discard_changes())
                 {
+                    on_closing();
                     DestroyWindow(window());
                 }
                 return 0;
@@ -580,7 +582,7 @@ namespace trview
     {
         if (_route->is_unsaved())
         {
-            return _dialogs->message_box(window(), L"It won't be easy", L"Uh-oh", IDialogs::Buttons::OK_Cancel);
+            return _dialogs->message_box(window(), L"Route has unsaved changes. Do you want to continue and lose changes?", L"Unsaved Route Changes", IDialogs::Buttons::Yes_No);
         }
         return true;
     }

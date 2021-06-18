@@ -10,6 +10,8 @@ namespace trview
             {
                 case IDialogs::Buttons::OK_Cancel:
                     return MB_OKCANCEL;
+                case IDialogs::Buttons::Yes_No:
+                    return MB_YESNO;
                 case IDialogs::Buttons::OK:
                 default:
                     return MB_OK;

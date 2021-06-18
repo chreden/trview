@@ -27,6 +27,7 @@ namespace trview
     {
         virtual ~IApplication() = 0;
         virtual int run() = 0;
+        Event<> on_closing;
     };
 
     class Application final : public IApplication, public MessageHandler

@@ -10,7 +10,8 @@ namespace trview
         enum class Buttons
         {
             OK,
-            OK_Cancel
+            OK_Cancel,
+            Yes_No
         };
 
         virtual ~IDialogs() = 0;
