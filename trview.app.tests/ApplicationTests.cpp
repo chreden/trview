@@ -16,7 +16,6 @@
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
-#include <external/boost/di.hpp>
 
 using namespace trview;
 using namespace trview::tests;
@@ -24,7 +23,6 @@ using namespace testing;
 using namespace trview::mocks;
 using namespace trlevel::mocks;
 using testing::_;
-using namespace boost;
 
 namespace
 {
