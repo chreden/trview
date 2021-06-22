@@ -164,3 +164,24 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 
     notes_area->on_text_changed(L"Test");
 }
+
+TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
+{
+    const Vector3 waypoint_pos{ 130, 250, 325 };
+    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
+    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    waypoint.set_save_file({ 0, 1, 2 });
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
+    window->set_route(&route);
+
+    auto clear_save = window->root_control()->find<ui::Button>(RouteWindow::Names::clear_save);
+    ASSERT_NE(clear_save, nullptr);
+
+    clear_save->on_click();
+}
