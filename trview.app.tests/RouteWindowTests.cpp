@@ -144,3 +144,23 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
 }
+
+TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
+{
+    const Vector3 waypoint_pos{ 130, 250, 325 };
+    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
+    Waypoint waypoint(&mesh, waypoint_pos, 0);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(2);
+
+    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
+    window->set_route(&route);
+
+    auto notes_area = window->root_control()->find<ui::TextArea>(RouteWindow::Names::notes_area);
+    ASSERT_NE(notes_area, nullptr);
+
+    notes_area->on_text_changed(L"Test");
+}

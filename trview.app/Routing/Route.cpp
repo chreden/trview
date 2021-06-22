@@ -287,6 +287,7 @@ namespace trview
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
 
+            route->set_unsaved(false);
             return route;
         }
         catch (std::exception&)

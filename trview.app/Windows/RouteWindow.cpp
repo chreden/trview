@@ -26,6 +26,7 @@ namespace trview
     }
 
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
+    const std::string RouteWindow::Names::notes_area = "notes_area";
 
     namespace Colours
     {
@@ -327,21 +328,19 @@ namespace trview
         group_box->add_child(std::move(details_panel));
         right_panel->add_child(std::move(group_box));
 
-        // Notes area.
-        auto notes_box = std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes");
-
-        auto notes_area = std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f));
-        _notes_area = notes_box->add_child(std::move(notes_area));
-        _notes_area->set_scrollbar_visible(true);
-
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        right_panel->add_child(std::move(notes_box));
+        // Notes area.
+        auto notes_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
+        _notes_area = notes_box->add_child(std::move(std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f))));
+        _notes_area->set_name(Names::notes_area);
+        _notes_area->set_scrollbar_visible(true);
 
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route && _selected_index < _route->waypoints())
             {
                 _route->waypoint(_selected_index).set_notes(text);
+                _route->set_unsaved(true);
             }
         };
 

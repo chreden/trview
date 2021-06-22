@@ -17,10 +17,15 @@ namespace trview
                     return MB_OK;
             }
         }
+
+        bool convert_response(int response)
+        {
+            return response == IDOK || response == IDYES;
+        }
     }
 
     bool Dialogs::message_box(const Window& window, const std::wstring& message, const std::wstring& title, Buttons buttons)
     {
-        return IDOK == MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons));
+        return convert_response(MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons)));
     }
 }

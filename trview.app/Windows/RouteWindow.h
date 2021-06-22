@@ -22,6 +22,7 @@ namespace trview
         struct Names
         {
             static const std::string waypoint_stats;
+            static const std::string notes_area;
         };
 
         /// Create a route window as a child of the specified window.
