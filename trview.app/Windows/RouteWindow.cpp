@@ -339,8 +339,11 @@ namespace trview
         {
             if (_route && _selected_index < _route->waypoints())
             {
-                _route->waypoint(_selected_index).set_notes(text);
-                _route->set_unsaved(true);
+                if (_route->waypoint(_selected_index).notes() != text)
+                {
+                    _route->waypoint(_selected_index).set_notes(text);
+                    _route->set_unsaved(true);
+                }
             }
         };
 

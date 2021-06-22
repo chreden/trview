@@ -154,7 +154,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(2);
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
     window->set_route(&route);
