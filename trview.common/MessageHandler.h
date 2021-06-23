@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <optional>
 #include <cstdint>
 #include <Windows.h>
 #include "Window.h"
@@ -40,7 +41,7 @@ namespace trview
         /// @param message The message that was received.
         /// @param wParam The WPARAM for the message.
         /// @param lParam The LPARAM for the message.
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) = 0;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) = 0;
 
         /// Gets the window that the handler is listening to.
         /// @returns The window handle.

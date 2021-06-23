@@ -12,12 +12,13 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'M') += [&]() { create_window(); };
     }
 
-    void RoomsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> RoomsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ROOMS)
         {
             create_window();
         }
+        return {};
     }
 
     void RoomsWindowManager::render(bool vsync)

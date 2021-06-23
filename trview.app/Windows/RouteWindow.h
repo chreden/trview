@@ -21,6 +21,8 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string clear_save;
+            static const std::string notes_area;
             static const std::string waypoint_stats;
         };
 

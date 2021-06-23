@@ -9,12 +9,13 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'I') += [&]() { create_window(); };
     }
 
-    void ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> ItemsWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_ITEMS)
         {
             create_window();
         }
+        return {};
     }
 
     void ItemsWindowManager::render(bool vsync)

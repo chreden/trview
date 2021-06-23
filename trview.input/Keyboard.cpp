@@ -23,7 +23,7 @@ namespace trview
             return GetKeyState(VK_SHIFT) & 0x8000;
         }
 
-        void Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
+        std::optional<int> Keyboard::process_message(UINT message, WPARAM wParam, LPARAM)
         {
             bool control_pressed = control();
             bool shift_pressed = shift();
@@ -45,6 +45,7 @@ namespace trview
                     break;
                 }
             }
+            return {};
         }
     }
 }

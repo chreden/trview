@@ -10,12 +10,13 @@ namespace trview
         _token_store += shortcuts->add_shortcut(true, 'T') += [&]() { create_window(); };
     }
 
-    void TriggersWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> TriggersWindowManager::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND && LOWORD(wParam) == ID_APP_WINDOWS_TRIGGERS)
         {
             create_window();
         }
+        return {};
     }
 
     void TriggersWindowManager::render(bool vsync)

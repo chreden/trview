@@ -7,7 +7,7 @@ namespace trview
     {
     }
 
-    void MenuDetector::process_message(UINT message, WPARAM, LPARAM) 
+    std::optional<int> MenuDetector::process_message(UINT message, WPARAM, LPARAM)
     {
         if (message == WM_ENTERMENULOOP)
         {
@@ -17,5 +17,6 @@ namespace trview
         {
             on_menu_toggled(false);
         }
+        return {};
     }
 }

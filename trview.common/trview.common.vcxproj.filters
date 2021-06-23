@@ -40,6 +40,15 @@
     </ClInclude>
     <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />
+    <ClInclude Include="Windows\IDialogs.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Dialogs.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IDialogs.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -69,6 +78,12 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="Windows\IClipboard.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IDialogs.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\Dialogs.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
   </ItemGroup>

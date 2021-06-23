@@ -11,7 +11,7 @@ namespace trview
     public:
         explicit Shortcuts(const Window& window);
         virtual ~Shortcuts() = default;
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         virtual Event<>& add_shortcut(bool control, uint16_t key) override;
 

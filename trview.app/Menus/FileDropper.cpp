@@ -10,7 +10,7 @@ namespace trview
         DragAcceptFiles(window, TRUE);
     }
 
-    void FileDropper::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> FileDropper::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if(message == WM_DROPFILES)
         {
@@ -19,5 +19,6 @@ namespace trview
             DragQueryFile((HDROP)wParam, 0, filename, MAX_PATH);
             on_file_dropped(to_utf8(filename));
         }
+        return {};
     }
 }

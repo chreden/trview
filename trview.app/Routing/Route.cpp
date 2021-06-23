@@ -64,6 +64,7 @@ namespace trview
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+        set_unsaved(true);
     }
 
     Colour Route::colour() const
@@ -73,6 +74,10 @@ namespace trview
 
     void Route::clear()
     {
+        if (!_waypoints.empty())
+        {
+            set_unsaved(true);
+        }
         _waypoints.clear();
         _selected_index = 0u;
     }
@@ -84,6 +89,7 @@ namespace trview
             return add(position, room, Waypoint::Type::Position, 0u);
         }
         insert(position, room, index, Waypoint::Type::Position, 0u);
+        set_unsaved(true);
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room)
@@ -96,6 +102,7 @@ namespace trview
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
         _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
+        set_unsaved(true);
     }
 
     uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
@@ -103,6 +110,11 @@ namespace trview
         uint32_t index = next_index();
         insert(position, room, index, type, type_index);
         return index;
+    }
+
+    bool Route::is_unsaved() const
+    {
+        return _is_unsaved;
     }
 
     PickResult Route::pick(const Vector3& position, const Vector3& direction) const
@@ -141,6 +153,7 @@ namespace trview
         {
             --_selected_index;
         }
+        set_unsaved(true);
     }
 
     void Route::render(const ICamera& camera, const ILevelTextureStorage& texture_storage)
@@ -187,6 +200,12 @@ namespace trview
         {
             waypoint.set_route_colour(colour);
         }
+        set_unsaved(true);
+    }
+
+    void Route::set_unsaved(bool value)
+    {
+        _is_unsaved = value;
     }
 
     const Waypoint& Route::waypoint(uint32_t index) const
@@ -268,6 +287,7 @@ namespace trview
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             }
 
+            route->set_unsaved(false);
             return route;
         }
         catch (std::exception&)

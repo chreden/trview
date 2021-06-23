@@ -56,11 +56,11 @@ namespace trview
         set_checked(menu, ID_APP_VIEW_TOOLS, true);
     }
 
-    void ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> ViewMenu::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message != WM_COMMAND)
         {
-            return;
+            return {};
         }
 
         HMENU menu = GetMenu(window());
@@ -155,19 +155,20 @@ namespace trview
                     on_colour_change(Colour(GetRValue(rgb) / 255.0f, GetGValue(rgb) / 255.0f, GetBValue(rgb) / 255.0f));
                 }
 
-                return; // Do not set checked
+                return {}; // Do not set checked
             }
             case ID_APP_VIEW_UNHIDE_ALL:
             {
                 on_unhide_all();
-                return;
+                return {};
             }
             default:
             {
-                return;
+                return {};
             }
         }
 
         set_checked(menu, id, enable);
+        return {};
     }
 }

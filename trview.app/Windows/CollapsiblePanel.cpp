@@ -103,7 +103,7 @@ namespace trview
         }
     }
 
-    void CollapsiblePanel::process_message(UINT message, WPARAM, LPARAM lParam)
+    std::optional<int> CollapsiblePanel::process_message(UINT message, WPARAM, LPARAM lParam)
     {
         if (message == WM_CLOSE)
         {
@@ -124,6 +124,7 @@ namespace trview
                 info->ptMaxTrackSize.y = rect.bottom - rect.top;
             }
         }
+        return {};
     }
 
     void CollapsiblePanel::render(bool vsync)

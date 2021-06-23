@@ -27,6 +27,7 @@
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
 #include <trview.common/windows/Clipboard.h>
+#include <trview.common/Windows/Dialogs.h>
 #include <trview.app/Settings/IStartupOptions.h>
 
 using namespace DirectX::SimpleMath;
@@ -120,12 +121,14 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> route_window_manager,
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
-        std::shared_ptr<IStartupOptions> startup_options)
+        std::shared_ptr<IStartupOptions> startup_options,
+        std::unique_ptr<IDialogs> dialogs)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
-        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source)
+        _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
+        _dialogs(std::move(dialogs))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -155,6 +158,11 @@ namespace trview
 
     void Application::open(const std::string& filename)
     {
+        if (!should_discard_changes())
+        {
+            return;
+        }
+
         std::unique_ptr<trlevel::ILevel> new_level;
         try
         {
@@ -162,10 +170,7 @@ namespace trview
         }
         catch (...)
         {
-            if (!is_message_only(window()))
-            {
-                MessageBox(window(), L"Failed to load level", L"Error", MB_OK);
-            }
+            _dialogs->message_box(window(), L"Failed to load level", L"Error", IDialogs::Buttons::OK);
             return;
         }
 
@@ -189,13 +194,14 @@ namespace trview
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());
         _route->clear();
+        _route->set_unsaved(false);
         _route_window->set_route(_route.get());
 
         _viewer->open(_level.get());
         _viewer->set_route(_route);
     }
 
-    void Application::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> Application::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         switch (message)
         {
@@ -246,10 +252,25 @@ namespace trview
                         break;
                     }
                     case IDM_EXIT:
-                        DestroyWindow(window());
+                    {
+                        if (should_discard_changes())
+                        {
+                            on_closing();
+                            DestroyWindow(window());
+                        }
                         break;
+                    }
                 }
                 break;
+            }
+            case WM_CLOSE:
+            {
+                if (should_discard_changes())
+                {
+                    on_closing();
+                    DestroyWindow(window());
+                }
+                return 0;
             }
             case WM_DESTROY:
             {
@@ -257,6 +278,7 @@ namespace trview
                 break;
             }
         }
+        return {};
     }
 
     int Application::run()
@@ -397,7 +419,11 @@ namespace trview
                 _viewer->set_route(_route);
             }
         };
-        _token_store += _route_window->on_route_export += [&](const std::string& path) { export_route(*_route, path); };
+        _token_store += _route_window->on_route_export += [&](const std::string& path)
+        {
+            export_route(*_route, path); 
+            _route->set_unsaved(false);
+        };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
         _token_store += _route_window->on_colour_changed += [&](const Colour& colour)
         {
@@ -552,6 +578,15 @@ namespace trview
         _route_window->render(_settings.vsync);
     }
 
+    bool Application::should_discard_changes()
+    {
+        if (_route->is_unsaved())
+        {
+            return _dialogs->message_box(window(), L"Route has unsaved changes. Do you want to continue and lose changes?", L"Unsaved Route Changes", IDialogs::Buttons::Yes_No);
+        }
+        return true;
+    }
+
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show)
     {
         using namespace boost;
@@ -576,6 +611,7 @@ namespace trview
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
+            di::bind<IDialogs>.to<Dialogs>(),
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 

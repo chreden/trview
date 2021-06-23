@@ -24,7 +24,7 @@ namespace trview
             return GetSystemMetrics(rdp ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
         }
 
-        void WindowTester::process_message(UINT message, WPARAM, LPARAM)
+        std::optional<int> WindowTester::process_message(UINT message, WPARAM, LPARAM)
         {
             if (message == WM_MOUSEMOVE && !_mouse_in_window)
             {
@@ -38,6 +38,7 @@ namespace trview
             {
                 _mouse_in_window = false;
             }
+            return {};
         }
     }
 }

@@ -7,7 +7,7 @@ namespace trview
     {
     }
 
-    void AlternateGroupToggler::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> AlternateGroupToggler::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_CHAR)
         {
@@ -17,5 +17,6 @@ namespace trview
                 on_alternate_group(value - L'0');
             }
         }
+        return {};
     }
 }

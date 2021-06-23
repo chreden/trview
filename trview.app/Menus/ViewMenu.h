@@ -11,7 +11,7 @@ namespace trview
     public:
         explicit ViewMenu(const Window& window);
         virtual ~ViewMenu() = default;
-        virtual void process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
+        virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
 
         /// Event raised when the show minimap option is toggled.
         Event<bool> on_show_minimap;

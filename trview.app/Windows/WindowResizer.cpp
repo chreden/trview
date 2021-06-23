@@ -10,7 +10,7 @@ namespace trview
     {
     }
 
-    void WindowResizer::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> WindowResizer::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         switch (message)
         {
@@ -47,6 +47,7 @@ namespace trview
                 break;
             }
         }
+        return {};
     }
 
     bool WindowResizer::has_size_changed()

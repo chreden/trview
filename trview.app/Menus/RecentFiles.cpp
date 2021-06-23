@@ -34,7 +34,7 @@ namespace trview
     {
     }
 
-    void RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM)
+    std::optional<int> RecentFiles::process_message(UINT message, WPARAM wParam, LPARAM)
     {
         if (message == WM_COMMAND)
         {
@@ -48,6 +48,7 @@ namespace trview
                 }
             }
         }
+        return {};
     }
 
     void RecentFiles::set_recent_files(const std::list<std::string>& files)
