@@ -29,6 +29,7 @@
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.app/Settings/IStartupOptions.h>
+#include <trview.common/Files.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -596,6 +597,7 @@ namespace trview
             di::bind<IShortcuts>.to<Shortcuts>(),
             di::bind<IApplication>.to<Application>(),
             di::bind<IDialogs>.to<Dialogs>(),
+            di::bind<IFiles>.to<Files>(),
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 

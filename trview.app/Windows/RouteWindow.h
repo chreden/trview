@@ -11,6 +11,7 @@
 #include <trview.app/Elements/Room.h>
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.common/Windows/IDialogs.h>
+#include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
 
 namespace trview
@@ -33,7 +34,7 @@ namespace trview
         /// @param parent The parent window.
         explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-            const std::shared_ptr<IDialogs>& dialogs);
+            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_route(IRoute* route) override;
@@ -63,5 +64,6 @@ namespace trview
         uint32_t       _selected_index{ 0u };
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IFiles> _files;
     };
 }

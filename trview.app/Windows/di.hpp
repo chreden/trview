@@ -59,7 +59,8 @@ namespace trview
                             injector.create<ui::IInput::Source>(),
                             window,
                             injector.create<std::shared_ptr<IClipboard>>(),
-                            injector.create<std::shared_ptr<IDialogs>>());
+                            injector.create<std::shared_ptr<IDialogs>>(),
+                            injector.create<std::shared_ptr<IFiles>>());
                     };
                 }
             ),

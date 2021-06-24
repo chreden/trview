@@ -44,8 +44,8 @@ namespace trview
 
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-        const std::shared_ptr<IDialogs>& dialogs)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs)
+        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -240,11 +240,7 @@ namespace trview
                 {
                     try
                     {
-                        std::ofstream outfile;
-                        outfile.open(filename.value(), std::ios::out | std::ios::binary);
-
-                        auto bytes = _route->waypoint(_selected_index).save_file();
-                        outfile.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
+                        _files->save_file(filename.value(), _route->waypoint(_selected_index).save_file());
                     }
                     catch (...)
                     {
