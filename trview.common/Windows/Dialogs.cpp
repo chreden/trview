@@ -69,4 +69,28 @@ namespace trview
         }
         return {};
     }
+
+    std::optional<std::string> Dialogs::save_file(const std::wstring& title, const std::wstring& filter, const std::vector<std::wstring>& file_types) const
+    {
+        OPENFILENAME ofn;
+        memset(&ofn, 0, sizeof(ofn));
+
+        wchar_t path[MAX_PATH];
+        memset(&path, 0, sizeof(path));
+
+        const auto final_filters = combine_filters(filter, file_types);
+
+        ofn.lStructSize = sizeof(ofn);
+        ofn.lpstrFilter = final_filters.c_str();
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = title.c_str();
+        ofn.lpstrFile = path;
+        ofn.lpstrDefExt = L"0";
+
+        if (GetSaveFileName(&ofn))
+        {
+            return trview::to_utf8(ofn.lpstrFile);
+        }
+        return {};
+    }
 }

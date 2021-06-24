@@ -118,21 +118,10 @@ namespace trview
         auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
         _token_store += export_button->on_click += [&]()
         {
-            OPENFILENAME ofn;
-            memset(&ofn, 0, sizeof(ofn));
-
-            wchar_t path[MAX_PATH];
-            memset(&path, 0, sizeof(path));
-
-            ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"trview route\0*.tvr\0";
-            ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrTitle = L"Export route";
-            ofn.lpstrFile = path;
-            ofn.lpstrDefExt = L"tvr";
-            if (GetSaveFileName(&ofn))
+            const auto filename = _dialogs->save_file(L"Export route", L"trview route", { L"*.tvr" });
+            if (filename.has_value())
             {
-                on_route_export(trview::to_utf8(ofn.lpstrFile));
+                on_route_export(filename.value());
             }
         };
         auto _buttons = left_panel->add_child(std::move(buttons));
@@ -246,25 +235,13 @@ namespace trview
             }
             else
             {
-                OPENFILENAME ofn;
-                memset(&ofn, 0, sizeof(ofn));
-
-                wchar_t path[MAX_PATH];
-                memset(&path, 0, sizeof(path));
-
-                ofn.lStructSize = sizeof(ofn);
-                ofn.lpstrFilter = L"Savegame File\0*.*\0";
-                ofn.nMaxFile = MAX_PATH;
-                ofn.lpstrTitle = L"Export Save";
-                ofn.lpstrFile = path;
-                ofn.lpstrDefExt = L"0";
-                if (GetSaveFileName(&ofn))
+                const auto filename = _dialogs->save_file(L"Export Save", L"Savegame File", { L"*.*" });
+                if (filename.has_value())
                 {
-                    auto filename = trview::to_utf8(ofn.lpstrFile);
                     try
                     {
                         std::ofstream outfile;
-                        outfile.open(filename, std::ios::out | std::ios::binary);
+                        outfile.open(filename.value(), std::ios::out | std::ios::binary);
 
                         auto bytes = _route->waypoint(_selected_index).save_file();
                         outfile.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
