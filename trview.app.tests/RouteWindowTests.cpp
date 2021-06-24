@@ -10,6 +10,7 @@
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
 #include <trview.common/Mocks/Windows/IDialogs.h>
+#include <trview.common/Mocks/IFiles.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -33,7 +34,8 @@ namespace
             di::bind<Window>.to(create_test_window(L"RouteWindowTests")),
             di::bind<RouteWindow>(),
             di::bind<IClipboard>.to(clipboard ? clipboard : std::make_shared<MockClipboard>()),
-            di::bind<IDialogs>.to(std::make_shared<MockDialogs>())
+            di::bind<IDialogs>.to(std::make_shared<MockDialogs>()),
+            di::bind<IFiles>.to(std::make_shared<MockFiles>())
         );
     }
 }
@@ -186,4 +188,24 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     ASSERT_NE(clear_save, nullptr);
 
     clear_save->on_click();
+}
+
+TEST(RouteWindow, ExportRouteButtonRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, ImportRouteButtonRaisesEvent)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, ExportSaveButtonSavesFile)
+{
+    FAIL();
+}
+
+TEST(RouteWindow, AttachSaveButtonLoadsSave)
+{
+    FAIL();
 }

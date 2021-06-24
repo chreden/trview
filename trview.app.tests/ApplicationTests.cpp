@@ -365,3 +365,8 @@ TEST(Application, ClosingEventCalled)
     application->process_message(WM_CLOSE, 0, 0);
     ASSERT_TRUE(closing_called);
 }
+
+TEST(Application, FileOpenOpensFile)
+{
+    FAIL();
+}
