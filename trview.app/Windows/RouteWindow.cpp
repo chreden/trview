@@ -212,18 +212,11 @@ namespace trview
                     // Load bytes from file.
                     try
                     {
-                        std::ifstream infile;
-                        infile.open(filename.value(), std::ios::in | std::ios::binary | std::ios::ate);
-                        auto length = infile.tellg();
-                        infile.seekg(0, std::ios::beg);
-
-                        if (length)
+                        const auto bytes = _files->load_file(filename.value());
+                        if (!bytes.empty())
                         {
-                            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
-                            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
                             _route->waypoint(_selected_index).set_save_file(bytes);
                             _route->set_unsaved(true);
-
                             _select_save->set_text(L"SAVEGAME.0");
                         }
                     }
