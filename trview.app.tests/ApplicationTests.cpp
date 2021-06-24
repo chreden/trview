@@ -48,7 +48,7 @@ namespace
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager{ std::make_unique<MockRoomsWindowManager>() };
             ILevel::Source level_source{ [](auto&&...) { return std::make_unique<trview::mocks::MockLevel>(); } };
             std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
-            std::unique_ptr<IDialogs> dialogs{ std::make_unique<MockDialogs>() };
+            std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
 
             std::unique_ptr<Application> build()
             {
@@ -59,9 +59,9 @@ namespace
                     level_source, startup_options, std::move(dialogs));
             }
 
-            test_module& with_dialogs(std::unique_ptr<IDialogs> dialogs)
+            test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)
             {
-                this->dialogs = std::move(dialogs);
+                this->dialogs = dialogs;
                 return *this;
             }
 
@@ -296,11 +296,11 @@ TEST(Application, FileNotOpenedWhenNotSpecified)
 TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto dialogs = std::make_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
-    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(std::move(dialogs_ptr)).build();
+    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(dialogs).build();
     bool closing_called = false;
     auto token = application->on_closing += [&]() { closing_called = true; };
     application->process_message(WM_CLOSE, 0, 0);
@@ -310,12 +310,12 @@ TEST(Application, DialogShownOnCloseWithUnsavedRouteBlocksClose)
 TEST(Application, DialogShownOnCloseWithUnsavedRouteAllowsClose)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto dialogs = std::make_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
-    EXPECT_CALL(dialogs, message_box).WillRepeatedly(Return(true));
-    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(std::move(dialogs_ptr)).build();
+    EXPECT_CALL(*dialogs, message_box).WillRepeatedly(Return(true));
+    auto application = register_test_module().with_route_source([&](auto&&...) {return std::move(route_ptr_actual); }).with_dialogs(dialogs).build();
     bool closing_called = false;
     auto token = application->on_closing += [&]() { closing_called = true; };
     application->process_message(WM_CLOSE, 0, 0);
@@ -325,7 +325,7 @@ TEST(Application, DialogShownOnCloseWithUnsavedRouteAllowsClose)
 TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto dialogs = std::make_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
     auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
 
@@ -333,7 +333,7 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
     EXPECT_CALL(level_loader, load_level).Times(0);
     auto application = register_test_module()
         .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
-        .with_dialogs(std::move(dialogs_ptr))
+        .with_dialogs(dialogs)
         .with_level_loader(std::move(level_loader_ptr))
         .build();
     application->open("");
@@ -342,16 +342,16 @@ TEST(Application, DialogShownOnOpenWithUnsavedRouteBlocksOpen)
 TEST(Application, DialogShownOnOpenWithUnsavedRouteAllowsOpen)
 {
     auto [route_ptr, route] = create_mock<MockRoute>();
-    auto [dialogs_ptr, dialogs] = create_mock<MockDialogs>();
+    auto dialogs = std::make_shared<MockDialogs>();
     auto route_ptr_actual = std::move(route_ptr);
     auto [level_loader_ptr, level_loader] = create_mock<trlevel::mocks::MockLevelLoader>();
 
     EXPECT_CALL(route, is_unsaved).WillRepeatedly(Return(true));
-    EXPECT_CALL(dialogs, message_box).WillRepeatedly(Return(true));
+    EXPECT_CALL(*dialogs, message_box).WillRepeatedly(Return(true));
     EXPECT_CALL(level_loader, load_level).Times(1);
     auto application = register_test_module()
         .with_route_source([&](auto&&...) {return std::move(route_ptr_actual); })
-        .with_dialogs(std::move(dialogs_ptr))
+        .with_dialogs(dialogs)
         .with_level_loader(std::move(level_loader_ptr))
         .build();
     application->open("");

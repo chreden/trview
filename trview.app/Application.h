@@ -50,7 +50,7 @@ namespace trview
             std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options,
-            std::unique_ptr<IDialogs> dialogs);
+            std::shared_ptr<IDialogs> dialogs);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -95,7 +95,7 @@ namespace trview
         std::unique_ptr<IUpdateChecker> _update_checker;
         ViewMenu _view_menu;
         std::shared_ptr<IShortcuts> _shortcuts;
-        std::unique_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IDialogs> _dialogs;
         HINSTANCE _instance{ nullptr };
 
         // Level data components

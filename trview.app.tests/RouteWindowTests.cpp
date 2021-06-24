@@ -9,6 +9,7 @@
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
+#include <trview.common/Mocks/Windows/IDialogs.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -31,7 +32,8 @@ namespace
             di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
             di::bind<Window>.to(create_test_window(L"RouteWindowTests")),
             di::bind<RouteWindow>(),
-            di::bind<IClipboard>.to(clipboard ? clipboard : std::make_shared<MockClipboard>())
+            di::bind<IClipboard>.to(clipboard ? clipboard : std::make_shared<MockClipboard>()),
+            di::bind<IDialogs>.to(std::make_shared<MockDialogs>())
         );
     }
 }

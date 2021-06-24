@@ -122,13 +122,13 @@ namespace trview
         std::unique_ptr<IRoomsWindowManager> rooms_window_manager,
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
-        std::unique_ptr<IDialogs> dialogs)
+        std::shared_ptr<IDialogs> dialogs)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(std::move(dialogs))
+        _dialogs(dialogs)
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -218,26 +218,10 @@ namespace trview
                     case ID_FILE_OPEN:
                     case ID_ACCEL_FILE_OPEN:
                     {
-                        wchar_t cd[MAX_PATH];
-                        GetCurrentDirectoryW(MAX_PATH, cd);
-
-                        OPENFILENAME ofn;
-                        memset(&ofn, 0, sizeof(ofn));
-
-                        wchar_t path[MAX_PATH];
-                        memset(&path, 0, sizeof(path));
-
-                        ofn.lStructSize = sizeof(ofn);
-                        ofn.lpstrFile = path;
-                        ofn.nMaxFile = MAX_PATH;
-                        ofn.lpstrTitle = L"Open level";
-                        ofn.lpstrFilter = L"All Tomb Raider Files\0*.tr*;*.phd\0";
-                        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-                        if (GetOpenFileName(&ofn))
+                        const auto filename = _dialogs->open_file(L"Open level", L"All Tomb Raider Files", { L"*.tr*", L"*.phd" }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                        if (filename.has_value())
                         {
-                            SetCurrentDirectory(cd);
-                            open(trview::to_utf8(ofn.lpstrFile));
+                            open(filename.value());
                         }
                         break;
                     }
