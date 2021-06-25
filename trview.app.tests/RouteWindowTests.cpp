@@ -8,7 +8,6 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
-#include <external/boost/di.hpp>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
 
@@ -24,19 +23,31 @@ using namespace trview::ui::render::mocks;
 
 namespace
 {
-    auto register_test_module(const std::shared_ptr<IClipboard> clipboard = nullptr)
+    auto register_test_module()
     {
-        using namespace boost;
-        return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
-            di::bind<Window>.to(create_test_window(L"RouteWindowTests")),
-            di::bind<RouteWindow>(),
-            di::bind<IClipboard>.to(clipboard ? clipboard : std::make_shared<MockClipboard>()),
-            di::bind<IDialogs>.to(std::make_shared<MockDialogs>()),
-            di::bind<IFiles>.to(std::make_shared<MockFiles>())
-        );
+        struct test_module
+        {
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
+            ui::render::IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
+            ui::IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
+            Window parent{ create_test_window(L"RouteWindowTests") };
+            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
+            std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+
+            test_module with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
+            {
+                this->clipboard = clipboard;
+                return *this;
+            }
+
+            std::unique_ptr<RouteWindow> build()
+            {
+                return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
+                    parent, clipboard, dialogs, files);
+            }
+        };
+        return test_module{};
     }
 }
 
@@ -46,7 +57,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     const Vector3 waypoint_pos{ 130, 250, 325 };
     const Vector3 expected{ 30720, 51200, 25600 };
 
-    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
+    auto window = register_test_module().build();
 
     RoomInfo info {};
     info.x = room_pos.x;
@@ -96,7 +107,7 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     auto clipboard = std::make_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
-    auto window = register_test_module(clipboard).create<std::unique_ptr<RouteWindow>>();
+    auto window = register_test_module().with_clipboard(clipboard).build();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
@@ -125,7 +136,7 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     auto clipboard = std::make_shared<MockClipboard>();
     EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
-    auto window = register_test_module(clipboard).create<std::unique_ptr<RouteWindow>>();
+    auto window = register_test_module().with_clipboard(clipboard).build();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
     auto [mesh_ptr, mesh] = create_mock<MockMesh>();
@@ -160,7 +171,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
-    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
+    auto window = register_test_module().build();
     window->set_route(&route);
 
     auto notes_area = window->root_control()->find<ui::TextArea>(RouteWindow::Names::notes_area);
@@ -181,7 +192,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
-    auto window = register_test_module().create<std::unique_ptr<RouteWindow>>();
+    auto window = register_test_module().build();
     window->set_route(&route);
 
     auto clear_save = window->root_control()->find<ui::Button>(RouteWindow::Names::clear_save);
