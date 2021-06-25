@@ -16,6 +16,7 @@
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trlevel/Mocks/ILevelLoader.h>
 #include <trlevel/Mocks/ILevel.h>
+#include <trview.app/Resources/resource.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -368,5 +369,30 @@ TEST(Application, ClosingEventCalled)
 
 TEST(Application, FileOpenOpensFile)
 {
-    FAIL();
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    EXPECT_CALL(level_loader, load_level).Times(1);
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+
+    auto application = register_test_module()
+        .with_level_loader(std::move(level_loader_ptr))
+        .with_dialogs(dialogs)
+        .build();
+
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
+}
+
+TEST(Application, FileOpenAcceleratorOpensFile)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    EXPECT_CALL(level_loader, load_level).Times(1);
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+
+    auto application = register_test_module()
+        .with_level_loader(std::move(level_loader_ptr))
+        .with_dialogs(dialogs)
+        .build();
+
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
 }
