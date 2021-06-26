@@ -25,10 +25,11 @@ namespace trview
         };
     }
 
+    const std::string RouteWindow::Names::export_button = "export_button";
+    const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
-    
 
     namespace Colours
     {
@@ -107,6 +108,7 @@ namespace trview
         };
 
         auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
+        import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
             const auto filename = _dialogs->open_file(L"Import route", L"trview route", { L"*.tvr" }, OFN_FILEMUSTEXIST);
@@ -116,6 +118,7 @@ namespace trview
             }
         };
         auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
+        export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
             const auto filename = _dialogs->save_file(L"Export route", L"trview route", { L"*.tvr" });

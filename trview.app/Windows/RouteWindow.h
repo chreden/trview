@@ -23,6 +23,8 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string export_button;
+            static const std::string import_button;
             static const std::string clear_save;
             static const std::string notes_area;
             static const std::string waypoint_stats;

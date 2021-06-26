@@ -41,6 +41,12 @@ namespace
                 return *this;
             }
 
+            test_module with_dialogs(const std::shared_ptr<IDialogs>& dialogs)
+            {
+                this->dialogs = dialogs;
+                return *this;
+            }
+
             std::unique_ptr<RouteWindow> build()
             {
                 return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
@@ -203,12 +209,80 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
-    FAIL();
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+
+    std::optional<std::string> file_raised;
+    auto window = register_test_module().with_dialogs(dialogs).build();
+    auto token = window->on_route_export += [&](const auto& filename)
+    {
+        file_raised = filename;
+    };
+
+    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
+    ASSERT_NE(export_button, nullptr);
+
+    export_button->on_click();
+
+    ASSERT_TRUE(file_raised.has_value());
+    ASSERT_EQ(file_raised, "filename");
+}
+
+TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
+{
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1);
+
+    bool file_raised = false;
+    auto window = register_test_module().with_dialogs(dialogs).build();
+    auto token = window->on_route_export += [&](const auto& filename)
+    {
+        file_raised = true;
+    };
+    auto export_button = window->root_control()->find<ui::Button>(RouteWindow::Names::export_button);
+    ASSERT_NE(export_button, nullptr);
+
+    export_button->on_click();
+    ASSERT_FALSE(file_raised);
 }
 
 TEST(RouteWindow, ImportRouteButtonRaisesEvent)
 {
-    FAIL();
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+
+    std::optional<std::string> file_raised;
+    auto window = register_test_module().with_dialogs(dialogs).build();
+    auto token = window->on_route_import += [&](const auto& filename)
+    {
+        file_raised = filename;
+    };
+
+    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
+    ASSERT_NE(import_button, nullptr);
+
+    import_button->on_click();
+
+    ASSERT_TRUE(file_raised.has_value());
+    ASSERT_EQ(file_raised, "filename");
+}
+
+TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
+{
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1);
+
+    bool file_raised = false;
+    auto window = register_test_module().with_dialogs(dialogs).build();
+    auto token = window->on_route_import += [&](const auto& filename)
+    {
+        file_raised = true;
+    };
+    auto import_button = window->root_control()->find<ui::Button>(RouteWindow::Names::import_button);
+    ASSERT_NE(import_button, nullptr);
+
+    import_button->on_click();
+    ASSERT_FALSE(file_raised);
 }
 
 TEST(RouteWindow, ExportSaveButtonSavesFile)
