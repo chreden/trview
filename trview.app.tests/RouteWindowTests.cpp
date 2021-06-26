@@ -341,11 +341,54 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
 
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
-    FAIL();
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(attach_save_button, nullptr);
+
+    attach_save_button->on_click();
+
+    const std::vector<uint8_t> expected { 0x1, 0x2 };
+    ASSERT_TRUE(waypoint.has_save());
+    ASSERT_EQ(waypoint.save_file(), expected);
 }
 
 TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
 {
-    FAIL();
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1);
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, load_file).Times(0);
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved).Times(0);
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(attach_save_button, nullptr);
+
+    attach_save_button->on_click();
+    ASSERT_FALSE(waypoint.has_save());
 }
 

@@ -374,11 +374,18 @@ TEST(Application, FileOpenOpensFile)
     auto dialogs = std::make_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
 
-    auto application = register_test_module()
-        .with_level_loader(std::move(level_loader_ptr))
-        .with_dialogs(dialogs)
-        .build();
+    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
+}
 
+TEST(Application, FileOpenDoesNotOpenFileWhenCancelled)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    EXPECT_CALL(level_loader, load_level).Times(0);
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1);
+
+    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_FILE_OPEN, 0), 0);
 }
 
@@ -389,10 +396,18 @@ TEST(Application, FileOpenAcceleratorOpensFile)
     auto dialogs = std::make_shared<MockDialogs>();
     EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
 
-    auto application = register_test_module()
-        .with_level_loader(std::move(level_loader_ptr))
-        .with_dialogs(dialogs)
-        .build();
-
+    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
     application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
 }
+
+TEST(Application, FileOpenAcceleratorDoesNotOpenFileWhenCancelled)
+{
+    auto [level_loader_ptr, level_loader] = create_mock<MockLevelLoader>();
+    EXPECT_CALL(level_loader, load_level).Times(0);
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1);
+
+    auto application = register_test_module().with_level_loader(std::move(level_loader_ptr)).with_dialogs(dialogs).build();
+    application->process_message(WM_COMMAND, MAKEWPARAM(ID_ACCEL_FILE_OPEN, 0), 0);
+}
+
