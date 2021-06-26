@@ -29,6 +29,7 @@ namespace trview
     const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
     const std::string RouteWindow::Names::notes_area = "notes_area";
+    const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
 
     namespace Colours
@@ -200,6 +201,7 @@ namespace trview
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
         _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
+        _select_save->set_name(Names::select_save_button);
         _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))

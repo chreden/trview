@@ -35,15 +35,21 @@ namespace
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
 
-            test_module with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
+            test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
                 this->clipboard = clipboard;
                 return *this;
             }
 
-            test_module with_dialogs(const std::shared_ptr<IDialogs>& dialogs)
+            test_module& with_dialogs(const std::shared_ptr<IDialogs>& dialogs)
             {
                 this->dialogs = dialogs;
+                return *this;
+            }
+
+            test_module& with_files(const std::shared_ptr<IFiles>& files)
+            {
+                this->files = files;
                 return *this;
             }
 
@@ -287,10 +293,59 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 
 TEST(RouteWindow, ExportSaveButtonSavesFile)
 {
-    FAIL();
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, save_file).Times(1);
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    waypoint.set_save_file({ 0x1 });
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(export_save_button, nullptr);
+
+    export_save_button->on_click();
+}
+
+TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
+{
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1);
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, save_file).Times(0);
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    waypoint.set_save_file({ 0x1 });
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(export_save_button, nullptr);
+
+    export_save_button->on_click();
 }
 
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
     FAIL();
 }
+
+TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
+{
+    FAIL();
+}
+

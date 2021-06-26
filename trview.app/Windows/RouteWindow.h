@@ -27,6 +27,7 @@ namespace trview
             static const std::string import_button;
             static const std::string clear_save;
             static const std::string notes_area;
+            static const std::string select_save_button;
             static const std::string waypoint_stats;
         };
 
