@@ -1,8 +1,5 @@
 #include "Application.h"
 
-#include <shellapi.h>
-#include <commdlg.h>
-
 #include <trview.common/Strings.h>
 
 #include "Resources/resource.h"
