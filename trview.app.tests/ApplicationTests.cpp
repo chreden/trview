@@ -441,14 +441,15 @@ TEST(Application, ImportRouteLoadsFile)
     auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
     EXPECT_CALL(route_window_manager, set_route).Times(1);
     auto files = std::make_shared<MockFiles>();
-    EXPECT_CALL(*files, load_file).Times(1);
+    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return<std::vector<uint8_t>>({ 0x7b, 0x7d }));;
     auto route = std::make_shared<MockRoute>();
     EXPECT_CALL(*route, set_unsaved(false)).Times(1);
 
     auto application = register_test_module()
         .with_route_window_manager(std::move(route_window_manager_ptr))
         .with_route_source([&](auto&&...) {return route; })
+        .with_viewer(std::move(viewer_ptr))
         .with_files(files).build();
 
-    // route_window_manager.on_route_import("filename");
+    route_window_manager.on_route_import("filename");
 }

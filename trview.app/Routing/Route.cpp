@@ -2,6 +2,10 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/Strings.h>
 
+#include <fstream>
+#include <external/nlohmann/json.hpp>
+#include <sstream>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -240,19 +244,16 @@ namespace trview
     {
         try
         {
-            std::ifstream file(to_utf16(filename));
-            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-            if (!file.is_open())
+            auto data = files->load_file(filename);
+            // if (!data.has_value())
+            if (false)
             {
                 return nullptr;
             }
 
+            auto json = nlohmann::json::parse(data.begin(), data.end());
+
             auto route = route_source();
-
-            nlohmann::json json;
-            
-            file >> json;
-
             if (json["colour"].is_string())
             {
                 route->set_colour(named_colour(to_utf16(json["colour"].get<std::string>())));
