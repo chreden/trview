@@ -2,10 +2,6 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/Strings.h>
 
-#include <fstream>
-#include <external/nlohmann/json.hpp>
-#include <sstream>
-
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
