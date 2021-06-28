@@ -245,13 +245,12 @@ namespace trview
         try
         {
             auto data = files->load_file(filename);
-            // if (!data.has_value())
-            if (false)
+            if (!data.has_value())
             {
                 return nullptr;
             }
 
-            auto json = nlohmann::json::parse(data.begin(), data.end());
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
 
             auto route = route_source();
             if (json["colour"].is_string())

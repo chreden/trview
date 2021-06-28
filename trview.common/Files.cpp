@@ -3,15 +3,20 @@
 
 namespace trview
 {
-    std::vector<uint8_t> Files::load_file(const std::string& filename) const
+    std::optional<std::vector<uint8_t>> Files::load_file(const std::string& filename) const
     {
         std::ifstream infile;
         infile.open(to_utf16(filename), std::ios::in | std::ios::binary | std::ios::ate);
 
+        if (!infile.is_open())
+        {
+            return {};
+        }
+
         const auto length = infile.tellg();
         if (!length)
         {
-            return {};
+            return {{}};
         }
 
         infile.seekg(0, std::ios::beg);

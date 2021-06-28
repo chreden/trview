@@ -218,9 +218,9 @@ namespace trview
                     try
                     {
                         const auto bytes = _files->load_file(filename.value());
-                        if (!bytes.empty())
+                        if (bytes.has_value() && !bytes.value().empty())
                         {
-                            _route->waypoint(_selected_index).set_save_file(bytes);
+                            _route->waypoint(_selected_index).set_save_file(bytes.value());
                             _route->set_unsaved(true);
                             _select_save->set_text(L"SAVEGAME.0");
                         }
