@@ -1,11 +1,12 @@
 #include "Files.h"
+#include "Strings.h"
 
 namespace trview
 {
     std::vector<uint8_t> Files::load_file(const std::string& filename) const
     {
         std::ifstream infile;
-        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
+        infile.open(to_utf16(filename), std::ios::in | std::ios::binary | std::ios::ate);
 
         const auto length = infile.tellg();
         if (!length)
@@ -22,7 +23,14 @@ namespace trview
     void Files::save_file(const std::string& filename, const std::vector<uint8_t>& bytes) const
     {
         std::ofstream outfile;
-        outfile.open(filename, std::ios::out | std::ios::binary);
+        outfile.open(to_utf16(filename), std::ios::out | std::ios::binary);
         outfile.write(reinterpret_cast<const char*>(&bytes[0]), bytes.size());
+    }
+
+    void Files::save_file(const std::string& filename, const std::string& text) const
+    {
+        std::ofstream outfile;
+        outfile.open(to_utf16(filename), std::ios::out);
+        outfile << text;
     }
 }

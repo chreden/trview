@@ -297,7 +297,7 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
 
     auto files = std::make_shared<MockFiles>();
-    EXPECT_CALL(*files, save_file).Times(1);
+    EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
 
     auto mesh = std::make_shared<MockMesh>();
     Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
@@ -321,7 +321,7 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     EXPECT_CALL(*dialogs, save_file).Times(1);
 
     auto files = std::make_shared<MockFiles>();
-    EXPECT_CALL(*files, save_file).Times(0);
+    EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(0);
 
     auto mesh = std::make_shared<MockMesh>();
     Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };

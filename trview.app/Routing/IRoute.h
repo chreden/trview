@@ -10,7 +10,7 @@ namespace trview
     /// </summary>
     struct IRoute
     {
-        using Source = std::function<std::unique_ptr<IRoute>()>;
+        using Source = std::function<std::shared_ptr<IRoute>()>;
         virtual ~IRoute() = 0;
         /// <summary>
         /// Add a new waypoint to the end of the route.

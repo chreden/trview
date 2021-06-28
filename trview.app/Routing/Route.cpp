@@ -236,7 +236,7 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::unique_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::string& filename)
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& filename)
     {
         try
         {
@@ -250,6 +250,7 @@ namespace trview
             auto route = route_source();
 
             nlohmann::json json;
+            
             file >> json;
 
             if (json["colour"].is_string())
@@ -296,7 +297,7 @@ namespace trview
         }
     }
 
-    void export_route(const IRoute& route, const std::string& filename)
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& filename)
     {
         try
         {
@@ -330,8 +331,7 @@ namespace trview
 
             json["waypoints"] = waypoints;
 
-            std::ofstream file(to_utf16(filename));
-            file << json;
+            files->save_file(filename, json.dump());
         }
         catch (...)
         {

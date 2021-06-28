@@ -5,6 +5,7 @@
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
+#include <trview.common/IFiles.h>
 
 namespace trview
 {
@@ -45,6 +46,6 @@ namespace trview
         bool _is_unsaved{ false };
     };
 
-    std::unique_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::string& filename);
-    void export_route(const IRoute& route, const std::string& filename);
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& filename);
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& filename);
 }
