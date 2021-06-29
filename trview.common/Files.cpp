@@ -7,6 +7,7 @@ namespace trview
     {
         std::ifstream infile;
         infile.open(to_utf16(filename), std::ios::in | std::ios::binary | std::ios::ate);
+        infile.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
 
         if (!infile.is_open())
         {
