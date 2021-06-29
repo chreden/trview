@@ -1,7 +1,5 @@
 #include "Application.h"
 
-#include <trview.common/Strings.h>
-
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
 #include "Resources/DefaultFonts.h"
@@ -23,10 +21,10 @@
 #include <trview.app/Tools/di.h>
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
+#include <trview.common/Files.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.app/Settings/IStartupOptions.h>
-#include <trview.common/Files.h>
 
 using namespace DirectX::SimpleMath;
 
