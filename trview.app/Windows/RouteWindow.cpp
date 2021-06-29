@@ -227,7 +227,7 @@ namespace trview
                     }
                     catch (...)
                     {
-                        MessageBox(window(), L"Failed to attach save", L"Error", MB_OK);
+                        _dialogs->message_box(window(), L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                     }
                 }
             }
@@ -242,7 +242,7 @@ namespace trview
                     }
                     catch (...)
                     {
-                        MessageBox(window(), L"Failed to export save", L"Error", MB_OK);
+                        _dialogs->message_box(window(), L"Failed to export save", L"Error", IDialogs::Buttons::OK);
                     }
                 }
             }

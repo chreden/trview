@@ -51,7 +51,7 @@ namespace trview
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
 
-        wchar_t path[MAX_PATH + 1];
+        wchar_t path[MAX_PATH];
         memset(&path, 0, sizeof(path));
 
         const auto final_filters = combine_filters(filter, file_types);

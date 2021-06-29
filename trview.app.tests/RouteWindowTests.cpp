@@ -315,6 +315,31 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     export_save_button->on_click();
 }
 
+TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
+{
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, message_box).Times(1);
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1).WillRepeatedly(Throw(std::exception()));
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    waypoint.set_save_file({ 0x1 });
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto export_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(export_save_button, nullptr);
+
+    export_save_button->on_click();
+}
+
 TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
 {
     auto dialogs = std::make_shared<MockDialogs>();
@@ -365,6 +390,33 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     const std::vector<uint8_t> expected { 0x1, 0x2 };
     ASSERT_TRUE(waypoint.has_save());
     ASSERT_EQ(waypoint.save_file(), expected);
+}
+
+TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
+{
+    auto dialogs = std::make_shared<MockDialogs>();
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, message_box).Times(1);
+
+    auto files = std::make_shared<MockFiles>();
+    EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Throw(std::exception()));
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(0);
+
+    auto window = register_test_module().with_dialogs(dialogs).with_files(files).build();
+    window->set_route(&route);
+
+    auto attach_save_button = window->root_control()->find<ui::Button>(RouteWindow::Names::select_save_button);
+    ASSERT_NE(attach_save_button, nullptr);
+
+    attach_save_button->on_click();
+
+    ASSERT_FALSE(waypoint.has_save());
 }
 
 TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
