@@ -59,6 +59,7 @@ namespace trview
         /// Set the current camera position.
         /// @param position The camera position.
         virtual void set_camera_position(const DirectX::SimpleMath::Vector3& position) override;
+        virtual void set_camera_rotation(float yaw, float pitch) override;
 
         /// Set the camera mode.
         /// @param mode The current camera mode.

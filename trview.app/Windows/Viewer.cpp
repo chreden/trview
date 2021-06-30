@@ -512,6 +512,7 @@ namespace trview
 
             _scene_sprite->render(_scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
             _ui->set_camera_position(current_camera().position());
+            _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
 
             _ui->render();
             _ui_changed = false;

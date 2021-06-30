@@ -23,6 +23,13 @@ namespace trview
         /// @param position The camera position.
         void set_position(const DirectX::SimpleMath::Vector3& position);
 
+        /// <summary>
+        /// Set the camera rotation.
+        /// </summary>
+        /// <param name="yaw">Yaw in radians.</param>
+        /// <param name="pitch">Pitch in radians.</param>
+        void set_rotation(float yaw, float pitch);
+
         /// Event raised when the user changes the camera position.
         Event<DirectX::SimpleMath::Vector3> on_position_changed;
     private:
@@ -31,13 +38,18 @@ namespace trview
         void update_coordinate(float& coordinate, const std::wstring& text);
 
         /// Create a coordinate entry text field.
-        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name);
+        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name, int label_width = 10);
 
         TokenStore _token_store;
-        ui::StackPanel* _display;
+        ui::StackPanel* _position_display;
         ui::TextArea* _x;
         ui::TextArea* _y;
         ui::TextArea* _z;
+        ui::StackPanel* _rotation_display;
+        ui::TextArea* _yaw;
+        ui::TextArea* _pitch;
         DirectX::SimpleMath::Vector3 _position;
+        float _rotation_yaw{ 0 };
+        float _rotation_pitch{ 0 };
     };
 }

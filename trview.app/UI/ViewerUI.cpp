@@ -289,6 +289,11 @@ namespace trview
         _camera_position->set_position(position);
     }
 
+    void ViewerUI::set_camera_rotation(float yaw, float pitch)
+    {
+        _camera_position->set_rotation(yaw, pitch);
+    }
+
     void ViewerUI::set_camera_mode(CameraMode mode)
     {
         _camera_controls->set_mode(mode);

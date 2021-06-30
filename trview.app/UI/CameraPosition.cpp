@@ -19,17 +19,22 @@ namespace trview
 
     CameraPosition::CameraPosition(Control& parent)
     {
-        auto display = std::make_unique<StackPanel>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        display->set_margin(Size(5, 5));
+        _position_display = parent.add_child(std::make_unique<StackPanel>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _position_display->set_margin(Size(5, 5));
 
-        _x = create_coordinate_entry(*display, _position.x, L"X");
-        _y = create_coordinate_entry(*display, _position.y, L"Y");
-        _z = create_coordinate_entry(*display, _position.z, L"Z");
-        _display = parent.add_child(std::move(display));
+        _x = create_coordinate_entry(*_position_display, _position.x, L"X");
+        _y = create_coordinate_entry(*_position_display, _position.y, L"Y");
+        _z = create_coordinate_entry(*_position_display, _position.z, L"Z");
+
+        _rotation_display = parent.add_child(std::make_unique<StackPanel>(Point(10, parent.size().height - 90 - 5 - 60), Size(200, 60), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        _rotation_display->set_margin(Size(5, 5));
+        _yaw = create_coordinate_entry(*_rotation_display, _rotation_yaw, L"Yaw", 30);
+        _pitch = create_coordinate_entry(*_rotation_display, _rotation_pitch, L"Pitch", 30);
 
         auto update_position = [&](Size size)
         {
-            _display->set_position(Point(_display->position().x, size.height - 10 - _display->size().height));
+            _position_display->set_position(Point(_position_display->position().x, size.height - 10 - _position_display->size().height));
+            _rotation_display->set_position(Point(_position_display->position().x, size.height - 10 - _position_display->size().height - 5 - _rotation_display->size().height));
         };
 
         _token_store += parent.on_size_changed += update_position;
@@ -68,14 +73,28 @@ namespace trview
         }
     }
 
-    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name)
+    void CameraPosition::set_rotation(float yaw, float pitch)
     {
-        auto line = std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal);
-        auto line_area = std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent);
+        _rotation_yaw = yaw;
+        _rotation_pitch = pitch;
+
+        if (!_yaw->focused())
+        {
+            _yaw->set_text(convert_number(yaw));
+        }
+        if (!_pitch->focused())
+        {
+            _pitch->set_text(convert_number(pitch));
+        }
+    }
+
+    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name, int label_width)
+    {
+        auto line = parent.add_child(std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal));
+        auto line_area = line->add_child(std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent));
         line_area->add_child(std::make_unique<ui::Window>(Size(10, 1), Colour::Transparent));
-        line_area->add_child(std::make_unique<Label>(Size(10, 20), Colour::Transparent, name + L": ", 8));
-        line->add_child(std::move(line_area));
-        auto entry = line->add_child(std::make_unique<TextArea>(Size(90, 20), Colour::Transparent, Colour::White));
+        line_area->add_child(std::make_unique<Label>(Size(label_width, 20), Colour::Transparent, name + L": ", 8));
+        auto entry = line->add_child(std::make_unique<TextArea>(Size(90 - (line_area->size().width - 10), 20), Colour::Transparent, Colour::White));
         entry->set_mode(TextArea::Mode::SingleLine);
         entry->set_text(convert_number(0));
         entry->set_name(to_utf8(name));
@@ -90,7 +109,6 @@ namespace trview
             update_coordinate(coordinate, text);
             entry->on_focus_clear_requested();
         };
-        parent.add_child(std::move(line));
         return entry;
     }
 
