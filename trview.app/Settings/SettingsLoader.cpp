@@ -57,6 +57,7 @@ namespace trview
             read_attribute(json, settings.rooms_startup, "roomsstartup");
             read_attribute(json, settings.camera_acceleration, "cameraacceleration");
             read_attribute(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
+            read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
         }
         catch (...)
         {
@@ -100,6 +101,7 @@ namespace trview
             json["roomsstartup"] = settings.rooms_startup;
             json["cameraacceleration"] = settings.camera_acceleration;
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
+            json["cameradisplaydegrees"] = settings.camera_display_degrees;
 
             std::ofstream file(file_path);
             file << json;
