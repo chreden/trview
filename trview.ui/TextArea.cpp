@@ -139,6 +139,8 @@ namespace trview
             {
                 ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
             }
+
+            on_click();
             return true;
         }
 
@@ -189,6 +191,22 @@ namespace trview
         void TextArea::set_scrollbar_visible(bool value)
         {
             _scrollbar->set_visible(value);
+        }
+
+        void TextArea::highlight_all()
+        {
+            if (_text.empty() || _line_structure.empty())
+            {
+                highlight({ 0, 0 }, { 0, 0 });
+            }
+            else
+            {
+                const auto end = LogicalPosition{ static_cast<int32_t>(_text.size()) - 1, static_cast<int32_t>(_text.back().size()) };
+                highlight(end, { 0, 0 });
+                move_visual_cursor_position({ 0, 0 });
+            }
+            update_structure();
+            scroll_cursor_into_view(true);
         }
 
         void TextArea::update_structure()
@@ -354,16 +372,7 @@ namespace trview
                 // Select All,
                 case 0x1:
                 {
-                    if (_text.empty() || _line_structure.empty())
-                    {
-                        highlight({ 0, 0 }, { 0, 0 });
-                    }
-                    else
-                    {
-                        const auto end = LogicalPosition{ static_cast<int32_t>(_text.size()) - 1, static_cast<int32_t>(_text.back().size()) };
-                        highlight(end, { 0, 0 });
-                        move_visual_cursor_position({ 0, 0 });
-                    }
+                    highlight_all();
                     break;
                 }
                 // Copy, Ctrl + E, Undo, Redo, Cut, Paste
@@ -991,7 +1000,7 @@ namespace trview
 
         TextArea::VisualPosition TextArea::position_to_visual(const Point& position) const
         {
-            const Point clamped(std::clamp(0.0f, position.x, size().width), 
+            const Point clamped(std::clamp(0.0f, std::min(position.x, size().width), std::max(position.x, size().width)), 
                 std::max(position.y, _lines[0]->position().y));
 
             int32_t matched_line = 0;

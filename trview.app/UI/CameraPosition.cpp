@@ -105,7 +105,9 @@ namespace trview
         entry->set_mode(TextArea::Mode::SingleLine);
         entry->set_text(convert_number(0));
         entry->set_name(to_utf8(name));
-        _token_store += entry->on_focused += [=]() { entry->set_text(L""); };
+        _token_store += entry->on_focused += [=]() { entry->highlight_all(); };
+        _token_store += entry->on_click += [=]() { entry->highlight_all(); };
+        _token_store += entry->on_focus_lost += [=]() { entry->clear_highlight(); };
         _token_store += entry->on_escape += [=]()
         {
             entry->on_focus_clear_requested();
