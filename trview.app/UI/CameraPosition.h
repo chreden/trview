@@ -33,6 +33,8 @@ namespace trview
         /// Event raised when the user changes the camera position.
         Event<DirectX::SimpleMath::Vector3> on_position_changed;
 
+        void set_display_degrees(bool value);
+
         Event<float, float> on_rotation_changed;
     private:
         /// Attempt to update the specified coordinate by converting the text to a float.
@@ -57,5 +59,6 @@ namespace trview
         DirectX::SimpleMath::Vector3 _position;
         float _rotation_yaw{ 0 };
         float _rotation_pitch{ 0 };
+        bool _display_degrees{ true };
     };
 }

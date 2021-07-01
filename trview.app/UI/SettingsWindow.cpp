@@ -64,6 +64,10 @@ namespace trview
         _invert_vertical_pan->set_name("InvertVerticalPan");
         _invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
 
+        _camera_display_degrees = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Use degrees for camera angle display"));
+        _camera_display_degrees->set_name("CameraDisplayDegrees");
+        _camera_display_degrees->on_state_changed += on_camera_display_degrees;
+
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
         auto camera_panel = camera_group->add_child(std::make_unique<Grid>(Size(360, 50), Colour::Transparent, 2, 2));
 
@@ -171,5 +175,10 @@ namespace trview
     void SettingsWindow::set_invert_vertical_pan(bool value)
     {
         _invert_vertical_pan->set_state(value);
+    }
+
+    void SettingsWindow::set_camera_display_degrees(bool value)
+    {
+        _camera_display_degrees->set_state(value);
     }
 }

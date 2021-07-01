@@ -63,6 +63,8 @@ namespace trview
         /// Event raised when the 'camera acceleration rate' setting has been changed. The new setting is passed as the parameter.
         Event<float> on_camera_acceleration_rate;
 
+        Event<bool> on_camera_display_degrees;
+
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// @param value The new vsync setting.
         void set_vsync(bool value);
@@ -114,6 +116,8 @@ namespace trview
         /// @remarks This will not raise the on_invert_vertical_pan event.
         void set_invert_vertical_pan(bool value);
 
+        void set_camera_display_degrees(bool value);
+
         /// Toggle the visibility of the settings window.
         void toggle_visibility();
     private:
@@ -130,6 +134,7 @@ namespace trview
         ui::Checkbox* _invert_vertical_pan{ nullptr };
         ui::Checkbox* _acceleration{ nullptr };
         ui::Slider* _acceleration_rate{ nullptr };
+        ui::Checkbox* _camera_display_degrees{ nullptr };
         TokenStore _token_store;
     };
 }

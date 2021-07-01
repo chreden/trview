@@ -86,11 +86,11 @@ namespace trview
 
         if (!_yaw->focused())
         {
-            _yaw->set_text(convert_number(yaw));
+            _yaw->set_text(convert_number(_display_degrees ? DirectX::XMConvertToDegrees(yaw) : yaw));
         }
         if (!_pitch->focused())
         {
-            _pitch->set_text(convert_number(pitch));
+            _pitch->set_text(convert_number(_display_degrees ? DirectX::XMConvertToDegrees(pitch) : pitch));
         }
     }
 
@@ -145,12 +145,19 @@ namespace trview
     {
         try
         {
-            coordinate = std::stof(text);
+            float value = std::stof(text);
+            coordinate = _display_degrees ? DirectX::XMConvertToRadians(value) : value;
             on_rotation_changed(_rotation_yaw, _rotation_pitch);
         }
         catch (...)
         {
             // Conversion failed.
         }
+    }
+
+    void CameraPosition::set_display_degrees(bool value)
+    {
+        _display_degrees = value;
+        set_rotation(_rotation_yaw, _rotation_pitch);
     }
 }
