@@ -104,6 +104,8 @@ namespace trview
         /// Event raised when user edits camera position.
         Event<DirectX::SimpleMath::Vector3> on_camera_position;
 
+        Event<float, float> on_camera_rotation;
+
         /// Event raised when user enters a command.
         Event<std::wstring> on_command;
 

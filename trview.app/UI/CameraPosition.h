@@ -32,13 +32,19 @@ namespace trview
 
         /// Event raised when the user changes the camera position.
         Event<DirectX::SimpleMath::Vector3> on_position_changed;
+
+        Event<float, float> on_rotation_changed;
     private:
         /// Attempt to update the specified coordinate by converting the text to a float.
         /// If successful this will also raise the on_position_changed event.
-        void update_coordinate(float& coordinate, const std::wstring& text);
+        void update_position_coordinate(float& coordinate, const std::wstring& text);
+
+        /// Attempt to update the specified coordinate by converting the text to a float.
+        /// If successful this will also raise the on_rotation_changed event.
+        void update_rotation_coordinate(float& coordinate, const std::wstring& text);
 
         /// Create a coordinate entry text field.
-        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name, int label_width = 10);
+        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name, bool is_rotation = false);
 
         TokenStore _token_store;
         ui::StackPanel* _position_display;

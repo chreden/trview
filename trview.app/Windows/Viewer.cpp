@@ -127,6 +127,11 @@ namespace trview
             }
             _free_camera.set_position(position);
         };
+        _token_store += _ui->on_camera_rotation += [&](auto yaw, auto pitch)
+        {
+            current_camera().set_rotation_yaw(yaw);
+            current_camera().set_rotation_pitch(pitch);
+        };
 
         _token_store += _ui->on_command += [&](const auto& command)
         {

@@ -28,8 +28,8 @@ namespace trview
 
         _rotation_display = parent.add_child(std::make_unique<StackPanel>(Point(10, parent.size().height - 90 - 5 - 60), Size(200, 60), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
         _rotation_display->set_margin(Size(5, 5));
-        _yaw = create_coordinate_entry(*_rotation_display, _rotation_yaw, L"Yaw", 30);
-        _pitch = create_coordinate_entry(*_rotation_display, _rotation_pitch, L"Pitch", 30);
+        _yaw = create_coordinate_entry(*_rotation_display, _rotation_yaw, L"Yaw", true);
+        _pitch = create_coordinate_entry(*_rotation_display, _rotation_pitch, L"Pitch", true);
 
         auto update_position = [&](Size size)
         {
@@ -43,15 +43,21 @@ namespace trview
         // Bind manual camera position entry controls.
         _token_store += _x->on_tab += [&](const std::wstring& text) 
         { 
-            update_coordinate(_position.x, text);
+            update_position_coordinate(_position.x, text);
             _x->on_focus_clear_requested();
             _y->on_focus_requested(); 
         };
         _token_store += _y->on_tab += [&](const std::wstring& text)
         {
-            update_coordinate(_position.y, text);
+            update_position_coordinate(_position.y, text);
             _y->on_focus_clear_requested();
             _z->on_focus_requested();
+        };
+        _token_store += _yaw->on_tab += [&](const std::wstring& text)
+        {
+            update_rotation_coordinate(_rotation_yaw, text);
+            _yaw->on_focus_clear_requested();
+            _pitch->on_focus_requested();
         };
     }
 
@@ -88,8 +94,9 @@ namespace trview
         }
     }
 
-    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name, int label_width)
+    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name, bool is_rotation)
     {
+        const auto label_width = is_rotation ? 30 : 10;
         auto line = parent.add_child(std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal));
         auto line_area = line->add_child(std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent));
         line_area->add_child(std::make_unique<ui::Window>(Size(10, 1), Colour::Transparent));
@@ -104,20 +111,40 @@ namespace trview
             entry->on_focus_clear_requested();
             entry->set_text(convert_number(coordinate)); 
         };
-        _token_store += entry->on_enter += [this, &coordinate, entry](const std::wstring& text)
+        _token_store += entry->on_enter += [this, &coordinate, entry, is_rotation](const std::wstring& text)
         {
-            update_coordinate(coordinate, text);
+            if (is_rotation)
+            {
+                update_rotation_coordinate(coordinate, text);
+            }
+            else
+            {
+                update_position_coordinate(coordinate, text);
+            }
             entry->on_focus_clear_requested();
         };
         return entry;
     }
 
-    void CameraPosition::update_coordinate(float& coordinate, const std::wstring& text)
+    void CameraPosition::update_position_coordinate(float& coordinate, const std::wstring& text)
     {
         try
         {
             coordinate = std::stof(text) / trlevel::Scale_X;
             on_position_changed(_position);
+        }
+        catch (...)
+        {
+            // Conversion failed.
+        }
+    }
+
+    void CameraPosition::update_rotation_coordinate(float& coordinate, const std::wstring& text)
+    {
+        try
+        {
+            coordinate = std::stof(text);
+            on_rotation_changed(_rotation_yaw, _rotation_pitch);
         }
         catch (...)
         {
