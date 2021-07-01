@@ -353,7 +353,7 @@ namespace trview
                         return false;
                     }
 
-                    if (any_text_selected())
+                    if (any_text_selected() && _mode == Mode::MultiLine)
                     {
                         delete_selection();
                     }

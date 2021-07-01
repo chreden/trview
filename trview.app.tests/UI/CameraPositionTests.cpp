@@ -58,3 +58,23 @@ TEST(CameraPosition, CoordinatesUpdated)
     EXPECT_THAT(area_y->text(), HasSubstr(L"2048.000000"));
     EXPECT_THAT(area_z->text(), HasSubstr(L"3072.000000"));
 }
+
+TEST(CameraPosition, RotationEventRaised)
+{
+    FAIL();
+}
+
+TEST(CameraPosition, RotationUpdated)
+{
+    FAIL();
+}
+
+TEST(CameraPosition, RotationShowDegrees)
+{
+    FAIL();
+}
+
+TEST(CameraPosition, DegreesEntryCorrectlyConverted)
+{
+    FAIL();
+}
