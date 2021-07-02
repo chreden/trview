@@ -49,6 +49,11 @@
     <ClInclude Include="Mocks\Windows\IDialogs.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="IFiles.h" />
+    <ClInclude Include="Files.h" />
+    <ClInclude Include="Mocks\IFiles.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
@@ -86,6 +91,8 @@
     <ClCompile Include="Windows\Dialogs.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Files.cpp" />
+    <ClCompile Include="IFiles.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

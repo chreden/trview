@@ -985,6 +985,8 @@
     <Text Include="Resources\Files\fontlist.txt">
       <Filter>Resources\Files</Filter>
     </Text>
-    <Text Include="Resources\Files\actions.json" />
+    <Text Include="Resources\Files\actions.json">
+      <Filter>Resources\Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

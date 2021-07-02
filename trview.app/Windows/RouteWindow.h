@@ -10,6 +10,8 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Windows/IDialogs.h>
+#include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
 
 namespace trview
@@ -21,8 +23,11 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string export_button;
+            static const std::string import_button;
             static const std::string clear_save;
             static const std::string notes_area;
+            static const std::string select_save_button;
             static const std::string waypoint_stats;
         };
 
@@ -31,7 +36,8 @@ namespace trview
         /// @param renderer_source The function to call to get a renderer.
         /// @param parent The parent window.
         explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard);
+            const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
+            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
         virtual ~RouteWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_route(IRoute* route) override;
@@ -60,5 +66,7 @@ namespace trview
         Waypoint::Type _selected_type{ Waypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
         std::shared_ptr<IClipboard> _clipboard;
+        std::shared_ptr<IDialogs> _dialogs;
+        std::shared_ptr<IFiles> _files;
     };
 }

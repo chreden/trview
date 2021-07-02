@@ -25,10 +25,12 @@ namespace trview
         };
     }
 
+    const std::string RouteWindow::Names::export_button = "export_button";
+    const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
     const std::string RouteWindow::Names::notes_area = "notes_area";
+    const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
-    
 
     namespace Colours
     {
@@ -43,8 +45,9 @@ namespace trview
     using namespace graphics;
 
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-        const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard)
+        const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
+        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -106,43 +109,23 @@ namespace trview
         };
 
         auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
+        import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
-            OPENFILENAME ofn;
-            memset(&ofn, 0, sizeof(ofn));
-
-            wchar_t path[MAX_PATH];
-            memset(&path, 0, sizeof(path));
-
-            ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"trview route\0*.tvr\0";
-            ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrTitle = L"Import route";
-            ofn.Flags = OFN_FILEMUSTEXIST;
-            ofn.lpstrFile = path;
-            if (GetOpenFileName(&ofn))
+            const auto filename = _dialogs->open_file(L"Import route", L"trview route", { L"*.tvr" }, OFN_FILEMUSTEXIST);
+            if (filename.has_value())
             {
-                on_route_import(trview::to_utf8(ofn.lpstrFile));
+                on_route_import(filename.value());
             }
         };
         auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
+        export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            OPENFILENAME ofn;
-            memset(&ofn, 0, sizeof(ofn));
-
-            wchar_t path[MAX_PATH];
-            memset(&path, 0, sizeof(path));
-
-            ofn.lStructSize = sizeof(ofn);
-            ofn.lpstrFilter = L"trview route\0*.tvr\0";
-            ofn.nMaxFile = MAX_PATH;
-            ofn.lpstrTitle = L"Export route";
-            ofn.lpstrFile = path;
-            ofn.lpstrDefExt = L"tvr";
-            if (GetSaveFileName(&ofn))
+            const auto filename = _dialogs->save_file(L"Export route", L"trview route", { L"*.tvr" });
+            if (filename.has_value())
             {
-                on_route_export(trview::to_utf8(ofn.lpstrFile));
+                on_route_export(filename.value());
             }
         };
         auto _buttons = left_panel->add_child(std::move(buttons));
@@ -218,6 +201,7 @@ namespace trview
         auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
 
         _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
+        _select_save->set_name(Names::select_save_button);
         _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -227,73 +211,38 @@ namespace trview
 
             if (!_route->waypoint(_selected_index).has_save())
             {
-                OPENFILENAME ofn;
-                memset(&ofn, 0, sizeof(ofn));
-
-                wchar_t path[MAX_PATH];
-                memset(&path, 0, sizeof(path));
-
-                ofn.lStructSize = sizeof(ofn);
-                ofn.lpstrFilter = L"Savegame File\0*.*\0";
-                ofn.nMaxFile = MAX_PATH;
-                ofn.lpstrTitle = L"Select Save";
-                ofn.Flags = OFN_FILEMUSTEXIST;
-                ofn.lpstrFile = path;
-                if (GetOpenFileName(&ofn))
+                const auto filename = _dialogs->open_file(L"Select Save", L"Savegame File", { L"*.*" }, OFN_FILEMUSTEXIST);
+                if (filename.has_value())
                 {
                     // Load bytes from file.
-                    auto filename = trview::to_utf8(ofn.lpstrFile);
                     try
                     {
-                        std::ifstream infile;
-                        infile.open(filename, std::ios::in | std::ios::binary | std::ios::ate);
-                        auto length = infile.tellg();
-                        infile.seekg(0, std::ios::beg);
-
-                        if (length)
+                        const auto bytes = _files->load_file(filename.value());
+                        if (bytes.has_value() && !bytes.value().empty())
                         {
-                            std::vector<uint8_t> bytes(static_cast<uint32_t>(length));
-                            infile.read(reinterpret_cast<char*>(&bytes[0]), length);
-                            _route->waypoint(_selected_index).set_save_file(bytes);
+                            _route->waypoint(_selected_index).set_save_file(bytes.value());
                             _route->set_unsaved(true);
-
                             _select_save->set_text(L"SAVEGAME.0");
                         }
                     }
                     catch (...)
                     {
-                        MessageBox(window(), L"Failed to attach save", L"Error", MB_OK);
+                        _dialogs->message_box(window(), L"Failed to attach save", L"Error", IDialogs::Buttons::OK);
                     }
                 }
             }
             else
             {
-                OPENFILENAME ofn;
-                memset(&ofn, 0, sizeof(ofn));
-
-                wchar_t path[MAX_PATH];
-                memset(&path, 0, sizeof(path));
-
-                ofn.lStructSize = sizeof(ofn);
-                ofn.lpstrFilter = L"Savegame File\0*.*\0";
-                ofn.nMaxFile = MAX_PATH;
-                ofn.lpstrTitle = L"Export Save";
-                ofn.lpstrFile = path;
-                ofn.lpstrDefExt = L"0";
-                if (GetSaveFileName(&ofn))
+                const auto filename = _dialogs->save_file(L"Export Save", L"Savegame File", { L"*.*" });
+                if (filename.has_value())
                 {
-                    auto filename = trview::to_utf8(ofn.lpstrFile);
                     try
                     {
-                        std::ofstream outfile;
-                        outfile.open(filename, std::ios::out | std::ios::binary);
-
-                        auto bytes = _route->waypoint(_selected_index).save_file();
-                        outfile.write(reinterpret_cast<char*>(&bytes[0]), bytes.size());
+                        _files->save_file(filename.value(), _route->waypoint(_selected_index).save_file());
                     }
                     catch (...)
                     {
-                        MessageBox(window(), L"Failed to export save", L"Error", MB_OK);
+                        _dialogs->message_box(window(), L"Failed to export save", L"Error", IDialogs::Buttons::OK);
                     }
                 }
             }
