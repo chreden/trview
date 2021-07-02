@@ -13,7 +13,10 @@ namespace trview
     {
         std::wstring convert_number(float value)
         {
-            return (value >= 0 ? L" " : L"") + std::to_wstring(value);
+            std::wstringstream stream;
+            stream.precision(4);
+            stream << std::fixed << (value >= 0 ? L" " : L"") << value;
+            return stream.str();
         }
     }
 

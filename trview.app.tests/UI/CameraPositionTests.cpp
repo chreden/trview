@@ -54,27 +54,71 @@ TEST(CameraPosition, CoordinatesUpdated)
 
     subject.set_position(Vector3(1, 2, 3));
 
-    EXPECT_THAT(area_x->text(), HasSubstr(L"1024.000000"));
-    EXPECT_THAT(area_y->text(), HasSubstr(L"2048.000000"));
-    EXPECT_THAT(area_z->text(), HasSubstr(L"3072.000000"));
+    EXPECT_THAT(area_x->text(), HasSubstr(L"1024.0000"));
+    EXPECT_THAT(area_y->text(), HasSubstr(L"2048.0000"));
+    EXPECT_THAT(area_z->text(), HasSubstr(L"3072.0000"));
 }
 
 TEST(CameraPosition, RotationEventRaised)
 {
-    FAIL();
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+
+    int times_called = 0;
+    float new_yaw = 0;
+    float new_pitch = 0;
+
+    auto subject = CameraPosition(window);
+    auto token = subject.on_rotation_changed += [&times_called, &new_yaw, &new_pitch](float yaw, float pitch)
+    {
+        ++times_called;
+        new_yaw = yaw;
+        new_pitch = pitch;
+    };
+
+    auto area_yaw = window.find<TextArea>("Yaw");
+    area_yaw->gained_focus();
+    area_yaw->set_text(L"90");
+    area_yaw->key_char(0xD);
+
+    auto area_pitch = window.find<TextArea>("Pitch");
+    area_pitch->gained_focus();
+    area_pitch->set_text(L"180");
+    area_pitch->key_char(0xD);
+
+    ASSERT_EQ(times_called, 2);
+    ASSERT_FLOAT_EQ(new_yaw, 1.5707964);
+    ASSERT_FLOAT_EQ(new_pitch, 3.1415927);
 }
 
 TEST(CameraPosition, RotationUpdated)
 {
-    FAIL();
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+
+    const auto pi = 3.1415926535897932384626433832795f;
+
+    auto area_yaw = window.find<TextArea>("Yaw");
+    auto area_pitch = window.find<TextArea>("Pitch");
+
+    subject.set_rotation(pi, pi * 0.5f);
+
+    EXPECT_THAT(area_yaw->text(), HasSubstr(L"180"));
+    EXPECT_THAT(area_pitch->text(), HasSubstr(L"90"));
 }
 
-TEST(CameraPosition, RotationShowDegrees)
+TEST(CameraPosition, RotationShowRadians)
 {
-    FAIL();
-}
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+    subject.set_display_degrees(false);
 
-TEST(CameraPosition, DegreesEntryCorrectlyConverted)
-{
-    FAIL();
+    const auto pi = 3.1415926535897932384626433832795f;
+
+    auto area_yaw = window.find<TextArea>("Yaw");
+    auto area_pitch = window.find<TextArea>("Pitch");
+
+    subject.set_rotation(pi, pi * 0.5f);
+
+    EXPECT_THAT(area_yaw->text(), HasSubstr(L"3.1416"));
+    EXPECT_THAT(area_pitch->text(), HasSubstr(L"1.5708"));
 }
