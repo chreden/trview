@@ -2,6 +2,7 @@
 
 #include <external/boost/di.hpp>
 #include "ViewerUI.h"
+#include "SettingsWindow.h"
 
 namespace trview
 {
@@ -9,6 +10,14 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
+            di::bind<ISettingsWindow::Source>.to(
+                [](const auto& injector) -> ISettingsWindow::Source
+                {
+                    return [&](ui::Control& parent)
+                    {
+                        return std::make_unique<SettingsWindow>(parent);
+                    };
+                }),
             di::bind<IViewerUI>.to<ViewerUI>()
         );
     }

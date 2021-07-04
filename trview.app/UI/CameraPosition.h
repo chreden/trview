@@ -33,6 +33,10 @@ namespace trview
         /// Event raised when the user changes the camera position.
         Event<DirectX::SimpleMath::Vector3> on_position_changed;
 
+        /// <summary>
+        /// Set whether to use degrees for the camera angle display.
+        /// </summary>
+        /// <param name="value">True to use degrees - radians if false.</param>
         void set_display_degrees(bool value);
 
         Event<float, float> on_rotation_changed;

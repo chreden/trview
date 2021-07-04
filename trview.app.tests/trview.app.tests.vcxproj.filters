@@ -86,6 +86,9 @@
     <ClCompile Include="Routing\RouteTests.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ViewerUITests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

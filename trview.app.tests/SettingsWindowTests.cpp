@@ -524,3 +524,43 @@ TEST(SettingsWindow, WindowIsCentred)
     auto calculated_size = host_size / 2 - size / 2;
     ASSERT_EQ(position, Point(calculated_size.width, calculated_size.height));
 }
+
+TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
+{
+    StackPanel host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    std::optional<bool> received_value;
+    auto token = window.on_camera_display_degrees += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    auto checkbox = host.find<Checkbox>("CameraDisplayDegrees");
+    ASSERT_NE(checkbox, nullptr);
+    ASSERT_FALSE(checkbox->state());
+
+    checkbox->clicked(Point());
+    ASSERT_TRUE(received_value.has_value());
+    ASSERT_TRUE(received_value.value());
+}
+
+TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
+{
+    StackPanel host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    auto checkbox = host.find<Checkbox>("CameraDisplayDegrees");
+    ASSERT_NE(checkbox, nullptr);
+    ASSERT_FALSE(checkbox->state());
+
+    std::optional<bool> received_value;
+    auto token = window.on_camera_display_degrees += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    window.set_camera_display_degrees(true);
+    ASSERT_TRUE(checkbox->state());
+    ASSERT_FALSE(received_value.has_value());
+}

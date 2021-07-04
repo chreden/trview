@@ -15,7 +15,8 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts,
         const ui::IInput::Source& input_source,
         const ui::render::IRenderer::Source& ui_renderer_source,
-        const ui::render::IMapRenderer::Source& map_renderer_source)
+        const ui::render::IMapRenderer::Source& map_renderer_source,
+        const ISettingsWindow::Source& settings_window_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -102,7 +103,7 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        _settings_window = std::make_unique<SettingsWindow>(*_control.get());
+        _settings_window = settings_window_source(*_control.get());
         _token_store += _settings_window->on_vsync += [&](bool value)
         {
             _settings.vsync = value;

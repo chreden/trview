@@ -9,7 +9,7 @@
 #include <trview.app/UI/IViewerUI.h>
 #include <trview.app/UI/LevelInfo.h>
 #include <trview.app/UI/RoomNavigator.h>
-#include <trview.app/UI/SettingsWindow.h>
+#include <trview.app/UI/ISettingsWindow.h>
 #include <trview.app/UI/Tooltip.h>
 #include <trview.app/UI/ViewOptions.h>
 #include <trview.input/Mouse.h>
@@ -27,7 +27,8 @@ namespace trview
             const std::shared_ptr<IShortcuts>& shortcuts,
             const ui::IInput::Source& input_source,
             const ui::render::IRenderer::Source& ui_renderer_source,
-            const ui::render::IMapRenderer::Source& map_renderer_source);
+            const ui::render::IMapRenderer::Source& map_renderer_source,
+            const ISettingsWindow::Source& settings_window_source);
 
         virtual ~ViewerUI() = default;
 
@@ -219,7 +220,7 @@ namespace trview
         std::unique_ptr<ViewOptions> _view_options;
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
-        std::unique_ptr<SettingsWindow> _settings_window;
+        std::unique_ptr<ISettingsWindow> _settings_window;
         std::unique_ptr<CameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
