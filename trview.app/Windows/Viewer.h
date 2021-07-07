@@ -84,14 +84,14 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
+        const ICamera& current_camera() const;
+        ICamera& current_camera();
     private:
         void initialise_input();
         void toggle_highlight();
         void update_camera();
         void render_scene();
         bool should_pick() const;
-        const ICamera& current_camera() const;
-        ICamera& current_camera();
         void set_camera_projection_mode(ProjectionMode projection_mode);
         void set_alternate_mode(bool enabled);
         void toggle_alternate_mode();
