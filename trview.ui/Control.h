@@ -248,6 +248,8 @@ namespace trview
             void set_input(IInput* input);
 
             bool focused() const;
+
+            void set_layout(std::unique_ptr<ILayout> layout);
             /// <summary>
             /// Update the control.
             /// </summary>
