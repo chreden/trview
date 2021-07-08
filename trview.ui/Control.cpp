@@ -1,4 +1,5 @@
 #include "Control.h"
+#include "Layouts/FreeLayout.h"
 
 namespace trview
 {
@@ -13,7 +14,7 @@ namespace trview
         }
 
         Control::Control(Point position, Size size)
-            : _position(position), _size(size), _visible(true)
+            : _position(position), _size(size), _visible(true), _layout(std::make_unique<FreeLayout>())
         {
         }
 
