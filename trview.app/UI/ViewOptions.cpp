@@ -5,8 +5,8 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Grid.h>
 #include <trview.app/Graphics/ITextureStorage.h>
+#include <trview.ui/Layouts/GridLayout.h>
 
 namespace trview
 {
@@ -29,7 +29,8 @@ namespace trview
 
         auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 155), Colour::Transparent, Colour::Grey, L"View Options"));
         auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 155), Colour::Transparent));
-        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 95), Colour::Transparent, 2, 4));
+        auto rooms_grid = rooms_area->add_child(std::make_unique<ui::Window>(Size(150, 95), Colour::Transparent));
+        rooms_grid->set_layout(std::make_unique<GridLayout>(2, 4));
 
         _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
         _highlight->set_name(Names::highlight);
