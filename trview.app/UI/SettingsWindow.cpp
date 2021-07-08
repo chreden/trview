@@ -7,7 +7,7 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Slider.h>
-#include <trview.ui/Grid.h>
+#include <trview.ui/Layouts/GridLayout.h>
 
 using namespace trview::ui;
 
@@ -65,7 +65,8 @@ namespace trview
         _invert_vertical_pan->on_state_changed += on_invert_vertical_pan;
 
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
-        auto camera_panel = camera_group->add_child(std::make_unique<Grid>(Size(360, 50), Colour::Transparent, 2, 2));
+        auto camera_panel = camera_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
+        camera_panel->set_layout(std::make_unique<GridLayout>(2, 2));
 
         auto add_labelled_slider = [&](const std::wstring& text)
         {
