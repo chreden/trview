@@ -14,8 +14,9 @@ namespace trview
         }
 
         Control::Control(Point position, Size size)
-            : _position(position), _size(size), _visible(true), _layout(std::make_unique<FreeLayout>())
+            : _position(position), _size(size), _visible(true)
         {
+            set_layout(std::make_unique<FreeLayout>());
         }
 
         Control::~Control()
@@ -284,6 +285,12 @@ namespace trview
         bool Control::focused() const
         {
             return _focused;
+        }
+
+        void Control::set_layout(std::unique_ptr<ILayout> layout)
+        {
+            _layout = std::move(layout);
+            _layout->bind(*this);
         }
     }
 }
