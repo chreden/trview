@@ -10,6 +10,7 @@ namespace trview
         {
         public:
             virtual ~GridLayout() = default;
+            virtual void bind(Control& control) override;
         };
     }
 }

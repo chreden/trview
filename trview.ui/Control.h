@@ -11,6 +11,7 @@
 #include <trview.common/TokenStore.h>
 #include "Align.h"
 #include "IInput.h"
+#include "Layouts/ILayout.h"
 
 namespace trview
 {
@@ -256,6 +257,7 @@ namespace trview
             std::string _name;
             int      _z{ 0 };
             bool     _focused{ false };
+            std::unique_ptr<ILayout> _layout;
         };
     }
 }
