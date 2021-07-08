@@ -70,6 +70,18 @@
     <ClInclude Include="Mocks\Input\IInput.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="Layouts\GridLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\FreeLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\StackLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\ILayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -136,6 +148,18 @@
     <ClCompile Include="IInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Layouts\ILayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\FreeLayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\GridLayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\StackLayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -167,6 +191,9 @@
     </Filter>
     <Filter Include="Mocks">
       <UniqueIdentifier>{d34f0bba-8f6c-4c35-b327-fdef824630ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layouts">
+      <UniqueIdentifier>{9e921414-a611-4d34-a685-719c8c9781d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
