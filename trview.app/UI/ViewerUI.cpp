@@ -15,7 +15,8 @@ namespace trview
         const std::shared_ptr<IShortcuts>& shortcuts,
         const ui::IInput::Source& input_source,
         const ui::render::IRenderer::Source& ui_renderer_source,
-        const ui::render::IMapRenderer::Source& map_renderer_source)
+        const ui::render::IMapRenderer::Source& map_renderer_source,
+        const ISettingsWindow::Source& settings_window_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -102,7 +103,7 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        _settings_window = std::make_unique<SettingsWindow>(*_control.get());
+        _settings_window = settings_window_source(*_control.get());
         _token_store += _settings_window->on_vsync += [&](bool value)
         {
             _settings.vsync = value;
@@ -163,9 +164,15 @@ namespace trview
             _settings.camera_acceleration_rate = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_camera_display_degrees += [&](bool value)
+        {
+            _settings.camera_display_degrees = value;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
+        _camera_position->on_rotation_changed += on_camera_rotation;
 
         _console = std::make_unique<Console>(*_control);
         _console->on_command += on_command;
@@ -289,6 +296,11 @@ namespace trview
         _camera_position->set_position(position);
     }
 
+    void ViewerUI::set_camera_rotation(float yaw, float pitch)
+    {
+        _camera_position->set_rotation(yaw, pitch);
+    }
+
     void ViewerUI::set_camera_mode(CameraMode mode)
     {
         _camera_controls->set_mode(mode);
@@ -400,6 +412,8 @@ namespace trview
         _settings_window->set_sensitivity(settings.camera_sensitivity);
         _settings_window->set_camera_acceleration(settings.camera_acceleration);
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
+        _settings_window->set_camera_display_degrees(settings.camera_display_degrees);
+        _camera_position->set_display_degrees(settings.camera_display_degrees);
     }
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)

@@ -58,6 +58,11 @@ namespace trview
             /// Event raised when the user has pressed the tab button in single line mode.
             Event<std::wstring> on_tab;
 
+            /// <summary>
+            /// Event raised when the text area is clicked.
+            /// </summary>
+            Event<> on_click;
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
             virtual bool key_char(wchar_t character) override;
@@ -73,6 +78,8 @@ namespace trview
             bool read_only() const;
             void set_read_only(bool value);
             void set_scrollbar_visible(bool value);
+            void highlight_all();
+            void clear_highlight();
         private:
             struct LineEntry
             {
@@ -147,7 +154,6 @@ namespace trview
             void move_visual_cursor_position(VisualPosition position);
             int32_t find_nearest_index(int32_t line, float x) const;
             void new_line();
-            void clear_highlight();
             void highlight(LogicalPosition start, LogicalPosition end);
             void move_to_earliest_highlight();
             void move_to_latest_highlight();

@@ -16,7 +16,6 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
-#include <external/boost/di.hpp>
 #include <trlevel/Mocks/ILevel.h>
 
 using testing::Return;
@@ -28,7 +27,6 @@ using namespace trview::input;
 using namespace trview::input::mocks;
 using namespace trview::tests;
 using namespace DirectX::SimpleMath;
-using namespace boost;
 
 namespace
 {
@@ -45,27 +43,50 @@ namespace
 
     Event<> shortcut_handler;
 
-    auto register_test_module(std::unique_ptr<IViewerUI> ui = std::make_unique<MockViewerUI>(), std::unique_ptr<IPicking> picking = std::make_unique<MockPicking>(), std::unique_ptr<IMouse> mouse = std::make_unique<MockMouse>())
+    auto register_test_module()
     {
-        auto shortcuts = std::make_shared<MockShortcuts>();
-        EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+        struct test_module
+        {
+            trview::Window window{ create_test_window(L"ViewerTests") };
+            std::shared_ptr<IDevice> device{ std::make_shared<MockDevice>() };
+            std::unique_ptr<IViewerUI> ui{ std::make_unique<MockViewerUI>() };
+            std::unique_ptr<IPicking> picking{ std::make_unique<MockPicking>() };
+            std::unique_ptr<IMouse> mouse{ std::make_unique<MockMouse>() };
+            std::shared_ptr<MockShortcuts> shortcuts{ std::make_shared<MockShortcuts>() };
+            std::shared_ptr<IRoute> route{ std::make_shared<MockRoute>() };
+            ISprite::Source sprite_source{ [](auto&&...) { return std::make_unique<MockSprite>(); }};
+            std::unique_ptr<ICompass> compass{ std::make_unique<MockCompass>() };
+            std::unique_ptr<IMeasure> measure{ std::make_unique<MockMeasure>() };
+            IRenderTarget::SizeSource render_target_source{ [](auto&&...) { return std::make_unique<MockRenderTarget>(); } };
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
+            std::unique_ptr<ISectorHighlight> sector_highlight{ std::make_unique<MockSectorHighlight>() };
 
-        return di::make_injector(
-            di::bind<Window>.to(create_test_window(L"ViewerTests")),
-            di::bind<IDevice>.to<MockDevice>(),
-            di::bind<IViewerUI>.to([&](auto&&) { return std::move(ui); }),
-            di::bind<IPicking>.to([&](auto&&) { return std::move(picking); }),
-            di::bind<IMouse>.to([&](auto&&) { return std::move(mouse); }),
-            di::bind<IShortcuts>.to(shortcuts),
-            di::bind<IRoute>.to<MockRoute>(),
-            di::bind<ISprite::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockSprite>(); }; }),
-            di::bind<ICompass>.to<MockCompass>(),
-            di::bind<IMeasure>.to<MockMeasure>(),
-            di::bind<IRenderTarget::SizeSource>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderTarget>(); }; }),
-            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ISectorHighlight>.to<MockSectorHighlight>(),
-            di::bind<Viewer>()
-        ).create<std::unique_ptr<Viewer>>();
+            std::unique_ptr<Viewer> build()
+            {
+                EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
+                return std::make_unique<Viewer>(window, device, std::move(ui), std::move(picking), std::move(mouse), shortcuts, route, sprite_source,
+                    std::move(compass), std::move(measure), render_target_source, device_window_source, std::move(sector_highlight));
+            }
+
+            test_module& with_ui(std::unique_ptr<IViewerUI> ui)
+            {
+                this->ui = std::move(ui);
+                return *this;
+            }
+
+            test_module& with_picking(std::unique_ptr<IPicking> picking)
+            {
+                this->picking = std::move(picking);
+                return *this;
+            }
+
+            test_module& with_mouse(std::unique_ptr<IMouse> mouse)
+            {
+                this->mouse = std::move(mouse);
+                return *this;
+            }
+        };
+        return test_module{};
     }
 }
 
@@ -80,7 +101,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
     std::vector<Item> items_list{ item };
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->open(&level);
 
     std::optional<Item> raised_item;
@@ -96,7 +117,7 @@ TEST(Viewer, SelectItemRaisedForValidItem)
 TEST(Viewer, SelectItemNotRaisedForInvalidItem)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     std::optional<Item> raised_item;
     auto token = viewer->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -118,7 +139,8 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
     viewer->open(&level);
 
     std::optional<std::tuple<Item, bool>> raised_item;
@@ -137,7 +159,7 @@ TEST(Viewer, ItemVisibilityRaisedForValidItem)
 TEST(Viewer, SettingsRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     std::optional<UserSettings> raised_settings;
     auto token = viewer->on_settings += [&raised_settings](const auto& settings) { raised_settings = settings; };
@@ -155,7 +177,7 @@ TEST(Viewer, SettingsRaised)
 TEST(Viewer, SelectRoomRaised)
 {
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     std::optional<uint32_t> raised_room;
     auto token = viewer->on_room_selected += [&raised_room](const auto& room) { raised_room = room; };
@@ -180,7 +202,7 @@ TEST(Viewer, SelectTriggerRaised)
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
     std::optional<std::weak_ptr<ITrigger>> selected_trigger;
@@ -207,7 +229,7 @@ TEST(Viewer, TriggerVisibilityRaised)
 
     EXPECT_CALL(level, triggers).WillRepeatedly([&]() { return triggers_list; });
 
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
@@ -228,7 +250,7 @@ TEST(Viewer, SelectWaypointRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
     std::optional<uint32_t> selected_waypoint;
     auto token = viewer->on_waypoint_selected += [&selected_waypoint](const auto& waypoint) { selected_waypoint = waypoint; };
@@ -246,7 +268,7 @@ TEST(Viewer, RemoveWaypointRaised)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
     std::optional<uint32_t> removed_waypoint;
     auto token = viewer->on_waypoint_removed += [&removed_waypoint](const auto& waypoint) { removed_waypoint = waypoint; };
@@ -272,7 +294,7 @@ TEST(Viewer, AddWaypointRaised)
     items_list[50] = item;
     EXPECT_CALL(level, items).WillRepeatedly([&]() { return items_list; });
 
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
     std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
@@ -297,7 +319,7 @@ TEST(Viewer, RightClickActivatesContextMenu)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     auto [picking_ptr, picking] = create_mock<MockPicking>();
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    auto viewer = register_test_module(std::move(ui_ptr), std::move(picking_ptr), std::move(mouse_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
 
     EXPECT_CALL(ui, set_show_context_menu(false));
     EXPECT_CALL(ui, set_show_context_menu(true)).Times(1);
@@ -311,7 +333,7 @@ TEST(Viewer, OrbitEnabledWhenItemSelectedAndAutoOrbitEnabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -330,7 +352,7 @@ TEST(Viewer, OrbitNotEnabledWhenItemSelectedAndAutoOrbitDisabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -349,7 +371,7 @@ TEST(Viewer, OrbitEnabledWhenTriggerSelectedAndAutoOrbitEnabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -369,7 +391,7 @@ TEST(Viewer, OrbitNotEnabledWhenTriggerSelectedAndAutoOrbitDisabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -389,7 +411,7 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -410,7 +432,7 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -432,7 +454,7 @@ TEST(Viewer, OrbitEnabledWhenRoomSelectedAndAutoOrbitEnabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(2);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = true;
@@ -459,7 +481,7 @@ TEST(Viewer, OrbitNotEnabledWhenRoomSelectedAndAutoOrbitDisabled)
     EXPECT_CALL(ui, set_camera_mode);
     EXPECT_CALL(ui, set_camera_mode(CameraMode::Orbit)).Times(1);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     UserSettings settings;
     settings.auto_orbit = false;
@@ -485,6 +507,22 @@ TEST(Viewer, SetSettingsUpdatesUI)
     auto [ui_ptr, ui] = create_mock<MockViewerUI>();
     EXPECT_CALL(ui, set_settings).Times(2);
 
-    auto viewer = register_test_module(std::move(ui_ptr));
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
     viewer->set_settings({});
+}
+
+TEST(Viewer, CameraRotationUpdated)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    auto& camera = viewer->current_camera();
+    camera.set_rotation_yaw(0);
+    camera.set_rotation_pitch(0.5f);
+    ASSERT_FLOAT_EQ(0, camera.rotation_yaw());
+    ASSERT_FLOAT_EQ(0.5f, camera.rotation_pitch());
+
+    ui.on_camera_rotation(2.0f, 1.0f);
+    ASSERT_FLOAT_EQ(2.0f, camera.rotation_yaw());
+    ASSERT_FLOAT_EQ(1.0f, camera.rotation_pitch());
 }

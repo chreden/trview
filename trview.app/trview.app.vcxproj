@@ -116,6 +116,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
+    <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
     <ClCompile Include="UI\RoomNavigator.cpp" />
@@ -241,6 +242,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
+    <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
@@ -286,6 +288,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\GoTo.h" />
+    <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\LevelInfo.h" />
     <ClInclude Include="UI\RoomNavigator.h" />

@@ -140,6 +140,7 @@ namespace trview
         void Control::lost_focus(Control*)
         {
             _focused = false;
+            on_focus_lost();
         }
 
         bool Control::move(Point)

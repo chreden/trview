@@ -328,6 +328,9 @@
     <ClCompile Include="Routing\IActions.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ISettingsWindow.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -835,6 +838,12 @@
     </ClInclude>
     <ClInclude Include="Routing\Actions.h">
       <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ISettingsWindow.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\ISettingsWindow.h">
+      <Filter>Mocks\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -171,6 +171,11 @@ namespace trview
             /// Event raised when the control wants to clear the focus.
             Event<> on_focus_clear_requested;
 
+            /// <summary>
+            /// Event raised when the control is no longer the focus.
+            /// </summary>
+            Event<> on_focus_lost;
+
             /// Event raised when the control is being deleted.
             Event<> on_deleting;
 

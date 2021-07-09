@@ -104,6 +104,11 @@ namespace trview
         /// Event raised when user edits camera position.
         Event<DirectX::SimpleMath::Vector3> on_camera_position;
 
+        /// <summary>
+        /// Event raised when the camera rotation is changed.
+        /// </summary>
+        Event<float, float> on_camera_rotation;
+
         /// Event raised when user enters a command.
         Event<std::wstring> on_command;
 
@@ -122,6 +127,13 @@ namespace trview
         /// Set the current camera position.
         /// @param position The camera position.
         virtual void set_camera_position(const DirectX::SimpleMath::Vector3& position) = 0;
+
+        /// <summary>
+        /// Set the camera rotation for the rotation display.
+        /// </summary>
+        /// <param name="yaw">The yaw in radians.</param>
+        /// <param name="pitch">The pitch in radians.</param>
+        virtual void set_camera_rotation(float yaw, float pitch) = 0;
 
         /// Set the camera mode.
         /// @param mode The current camera mode.
