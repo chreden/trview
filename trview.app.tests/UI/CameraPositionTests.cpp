@@ -122,3 +122,26 @@ TEST(CameraPosition, RotationShowRadians)
     EXPECT_THAT(area_yaw->text(), HasSubstr(L"3.1416"));
     EXPECT_THAT(area_pitch->text(), HasSubstr(L"1.5708"));
 }
+
+TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
+{
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+
+    auto area_yaw = window.find<TextArea>("Yaw");
+    auto area_pitch = window.find<TextArea>("Pitch");
+
+    FAIL();
+}
+
+TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
+{
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+
+    auto area_x = window.find<TextArea>("X");
+    auto area_y = window.find<TextArea>("Y");
+    auto area_z = window.find<TextArea>("Z");
+
+    FAIL();
+}
