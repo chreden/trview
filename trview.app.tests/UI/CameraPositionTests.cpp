@@ -129,9 +129,22 @@ TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
     auto subject = CameraPosition(window);
 
     auto area_yaw = window.find<TextArea>("Yaw");
-    auto area_pitch = window.find<TextArea>("Pitch");
+    area_yaw->gained_focus();
+    area_yaw->set_text(L"inf");
+    area_yaw->key_char(0xD);
 
-    FAIL();
+    auto area_pitch = window.find<TextArea>("Pitch");
+    area_pitch->gained_focus();
+    area_pitch->set_text(L"nan");
+    area_pitch->key_char(0xD);
+
+    bool raised = false;
+    auto token = subject.on_rotation_changed += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ASSERT_FALSE(raised);
 }
 
 TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
@@ -140,8 +153,25 @@ TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
     auto subject = CameraPosition(window);
 
     auto area_x = window.find<TextArea>("X");
-    auto area_y = window.find<TextArea>("Y");
-    auto area_z = window.find<TextArea>("Z");
+    area_x->gained_focus();
+    area_x->set_text(L"inf");
+    area_x->key_char(0xD);
 
-    FAIL();
+    auto area_y = window.find<TextArea>("Y");
+    area_y->gained_focus();
+    area_y->set_text(L"nan");
+    area_y->key_char(0xD);
+
+    auto area_z = window.find<TextArea>("Z");
+    area_z->gained_focus();
+    area_z->set_text(L"nan");
+    area_z->key_char(0xD);
+
+    bool raised = false;
+    auto token = subject.on_rotation_changed += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ASSERT_FALSE(raised);
 }

@@ -136,7 +136,7 @@ namespace trview
         try
         {
             const auto value = std::stof(text);
-            if (isnan(value) || isinf(value))
+            if (!std::isfinite(value))
             {
                 return;
             }
@@ -154,7 +154,7 @@ namespace trview
         try
         {
             const auto value = std::stof(text);
-            if (isnan(value) || isinf(value))
+            if (!std::isfinite(value))
             {
                 return;
             }
