@@ -286,15 +286,13 @@ namespace trview
             return _focused;
         }
 
-        Colour Control::colour() const
+        void Control::update(float delta)
         {
-            return _colour;
-        }
-
-        void Control::set_colour(const Colour& colour)
-        {
-            _colour = colour;
-            on_invalidate();
+            on_update(delta);
+            for (const auto& child : _child_elements)
+            {
+                child->update(delta);
+            }
         }
     }
 }

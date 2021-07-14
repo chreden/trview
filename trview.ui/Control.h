@@ -245,6 +245,8 @@ namespace trview
             void set_input(IInput* input);
 
             bool focused() const;
+
+            void update(float delta);
         protected:
             /// To be called after a child element has been added to the control.
             /// @param child_element The element that was added.
