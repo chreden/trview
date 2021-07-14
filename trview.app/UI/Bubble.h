@@ -9,7 +9,7 @@ namespace trview
     {
     public:
         explicit Bubble(ui::Control& control);
-        void show();
+        void show(const Point& position);
     private:
         TokenStore _token_store;
         ui::Label* _label{ nullptr };

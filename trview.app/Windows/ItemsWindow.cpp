@@ -203,7 +203,7 @@ namespace trview
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
-            _bubble->show();
+            _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
         auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
