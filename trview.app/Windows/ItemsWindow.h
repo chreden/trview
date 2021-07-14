@@ -8,6 +8,7 @@
 #include "CollapsiblePanel.h"
 #include "IItemsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.app/UI/Bubble.h>
 
 namespace trview
 {
@@ -75,5 +76,6 @@ namespace trview
         bool _sync_item{ true };
         std::optional<Item> _selected_item;
         std::shared_ptr<IClipboard> _clipboard;
+        std::unique_ptr<Bubble> _bubble;
     };
 }

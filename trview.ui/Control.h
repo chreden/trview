@@ -9,6 +9,7 @@
 #include <trview.common/Size.h>
 #include <trview.common/Point.h>
 #include <trview.common/TokenStore.h>
+#include <trview.common/Colour.h>
 #include "Align.h"
 #include "IInput.h"
 
@@ -145,8 +146,10 @@ namespace trview
             /// @returns The z order.
             int z() const;
 
-            /// Set the z order of the control.
-            /// @param value The new z order.
+            /// <summary>
+            /// Set the Z order of the control. Lower is on top.
+            /// </summary>
+            /// <param name="value">The new Z order</param>
             void set_z(int value);
 
             /// Remove the specified child element.
@@ -181,6 +184,8 @@ namespace trview
 
             /// Event raised when user has selected the control for text tinput.
             Event<> on_focused;
+
+            Event<float> on_update;
 
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.

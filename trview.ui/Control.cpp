@@ -285,5 +285,16 @@ namespace trview
         {
             return _focused;
         }
+
+        Colour Control::colour() const
+        {
+            return _colour;
+        }
+
+        void Control::set_colour(const Colour& colour)
+        {
+            _colour = colour;
+            on_invalidate();
+        }
     }
 }

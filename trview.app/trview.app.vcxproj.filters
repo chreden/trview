@@ -331,6 +331,9 @@
     <ClCompile Include="UI\ISettingsWindow.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Bubble.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -844,6 +847,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Bubble.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
