@@ -49,6 +49,7 @@ namespace trview
         virtual void set_current_room(uint32_t room) override;
         virtual void set_selected_item(const Item& item) override;
         virtual std::optional<Item> selected_item() const override;
+        virtual void update(float delta) override;
     protected:
         /// After the window has been resized, adjust the sizes of the child elements.
         virtual void update_layout() override;

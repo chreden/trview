@@ -355,4 +355,9 @@ namespace trview
     {
         CollapsiblePanel::render(vsync);
     }
+
+    void ItemsWindow::update(float delta)
+    {
+        _ui->update(delta);
+    }
 }

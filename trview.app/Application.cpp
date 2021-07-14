@@ -125,7 +125,7 @@ namespace trview
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files)
+        _dialogs(dialogs), _files(files), _timer(default_time_source())
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -551,6 +551,9 @@ namespace trview
             Sleep(1);
             return;
         }
+
+        _timer.update();
+        _items_windows->update(_timer.elapsed());
 
         _viewer->render();
         _items_windows->render(_settings.vsync);

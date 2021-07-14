@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trview.common/Window.h>
+#include <trview.common/Timer.h>
 
 #include <trlevel/ILevelLoader.h>
 
@@ -115,6 +116,8 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
+
+        Timer _timer;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
