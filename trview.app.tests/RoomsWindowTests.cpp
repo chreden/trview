@@ -10,6 +10,7 @@
 #include <trview.input/Mocks/IMouse.h>
 #include <external/boost/di.hpp>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.common/Mocks/Windows/IClipboard.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -44,6 +45,7 @@ namespace
                         };
                         }),
                     di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
+                    di::bind<IClipboard>.to<MockClipboard>(),
                     di::bind<RoomsWindow>()
                 ).create<std::unique_ptr<RoomsWindow>>();
             }

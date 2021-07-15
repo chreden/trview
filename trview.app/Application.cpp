@@ -556,6 +556,7 @@ namespace trview
         const auto elapsed = _timer.elapsed();
         _items_windows->update(elapsed);
         _triggers_windows->update(elapsed);
+        _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
 
         _viewer->render();
