@@ -120,4 +120,12 @@ namespace trview
             window->set_selected_trigger(trigger);
         }
     }
+
+    void TriggersWindowManager::update(float delta)
+    {
+        for (const auto& window : _windows)
+        {
+            window->update(delta);
+        }
+    }
 }

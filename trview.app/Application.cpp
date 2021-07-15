@@ -554,6 +554,7 @@ namespace trview
 
         _timer.update();
         _items_windows->update(_timer.elapsed());
+        _triggers_windows->update(_timer.elapsed());
 
         _viewer->render();
         _items_windows->render(_settings.vsync);
