@@ -13,6 +13,7 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
+#include <trview.app/UI/Bubble.h>
 
 namespace trview
 {
@@ -46,6 +47,7 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void focus() override;
+        virtual void update(float delta) override;
     private:
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
@@ -68,5 +70,6 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
+        std::unique_ptr<Bubble> _bubble;
     };
 }

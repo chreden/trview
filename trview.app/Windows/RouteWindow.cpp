@@ -47,7 +47,8 @@ namespace trview
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
         const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
+        _bubble(std::make_unique<Bubble>(*_ui))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());
@@ -177,6 +178,7 @@ namespace trview
                 item.value(L"Name") == L"Position")
             {
                 _clipboard->write(window(), item.value(L"Value"));
+                _bubble->show(client_cursor_position(window()) - Point(0, 20));
                 return;
             }
 
@@ -455,5 +457,10 @@ namespace trview
     void RouteWindow::focus()
     {
         SetForegroundWindow(window());
+    }
+
+    void RouteWindow::update(float delta)
+    {
+        _ui->update(delta);
     }
 }

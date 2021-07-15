@@ -553,8 +553,10 @@ namespace trview
         }
 
         _timer.update();
-        _items_windows->update(_timer.elapsed());
-        _triggers_windows->update(_timer.elapsed());
+        const auto elapsed = _timer.elapsed();
+        _items_windows->update(elapsed);
+        _triggers_windows->update(elapsed);
+        _route_window->update(elapsed);
 
         _viewer->render();
         _items_windows->render(_settings.vsync);
