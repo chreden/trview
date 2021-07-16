@@ -122,3 +122,56 @@ TEST(CameraPosition, RotationShowRadians)
     EXPECT_THAT(area_yaw->text(), HasSubstr(L"3.1416"));
     EXPECT_THAT(area_pitch->text(), HasSubstr(L"1.5708"));
 }
+
+TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
+{
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+
+    auto area_yaw = window.find<TextArea>("Yaw");
+    area_yaw->gained_focus();
+    area_yaw->set_text(L"inf");
+    area_yaw->key_char(0xD);
+
+    auto area_pitch = window.find<TextArea>("Pitch");
+    area_pitch->gained_focus();
+    area_pitch->set_text(L"nan");
+    area_pitch->key_char(0xD);
+
+    bool raised = false;
+    auto token = subject.on_rotation_changed += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ASSERT_FALSE(raised);
+}
+
+TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
+{
+    ui::Window window(Point(), Size(100, 100), Colour::Transparent);
+    auto subject = CameraPosition(window);
+
+    auto area_x = window.find<TextArea>("X");
+    area_x->gained_focus();
+    area_x->set_text(L"inf");
+    area_x->key_char(0xD);
+
+    auto area_y = window.find<TextArea>("Y");
+    area_y->gained_focus();
+    area_y->set_text(L"nan");
+    area_y->key_char(0xD);
+
+    auto area_z = window.find<TextArea>("Z");
+    area_z->gained_focus();
+    area_z->set_text(L"nan");
+    area_z->key_char(0xD);
+
+    bool raised = false;
+    auto token = subject.on_rotation_changed += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ASSERT_FALSE(raised);
+}

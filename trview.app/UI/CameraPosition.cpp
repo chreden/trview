@@ -135,7 +135,12 @@ namespace trview
     {
         try
         {
-            coordinate = std::stof(text) / trlevel::Scale_X;
+            const auto value = std::stof(text);
+            if (!std::isfinite(value))
+            {
+                return;
+            }
+            coordinate = value / trlevel::Scale_X;
             on_position_changed(_position);
         }
         catch (...)
@@ -148,7 +153,11 @@ namespace trview
     {
         try
         {
-            float value = std::stof(text);
+            const auto value = std::stof(text);
+            if (!std::isfinite(value))
+            {
+                return;
+            }
             coordinate = _display_degrees ? DirectX::XMConvertToRadians(value) : value;
             on_rotation_changed(_rotation_yaw, _rotation_pitch);
         }
