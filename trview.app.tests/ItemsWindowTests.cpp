@@ -10,6 +10,7 @@
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <external/boost/di.hpp>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/UI/IBubble.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -30,6 +31,10 @@ namespace
             di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
             di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
             di::bind<IClipboard>.to<MockClipboard>(),
+            di::bind<IBubble::Source>.to([&](auto&&)
+                {
+                    return [&](auto&&...) { return std::make_unique<MockBubble>(); };
+                }),
             di::bind<ItemsWindow>()
         );
     }

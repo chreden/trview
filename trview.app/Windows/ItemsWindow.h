@@ -8,7 +8,7 @@
 #include "CollapsiblePanel.h"
 #include "IItemsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/Bubble.h>
+#include <trview.app/UI/IBubble.h>
 
 namespace trview
 {
@@ -39,7 +39,8 @@ namespace trview
             const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source,
             const Window& parent,
-            const std::shared_ptr<IClipboard>& clipboard);
+            const std::shared_ptr<IClipboard>& clipboard,
+            const IBubble::Source& bubble_source);
         virtual ~ItemsWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -77,6 +78,6 @@ namespace trview
         bool _sync_item{ true };
         std::optional<Item> _selected_item;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<Bubble> _bubble;
+        std::unique_ptr<IBubble> _bubble;
     };
 }

@@ -52,9 +52,9 @@ namespace trview
     using namespace graphics;
 
     TriggersWindow::TriggersWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-        const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard)
+        const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", input_source, Size(520, 400)), _clipboard(clipboard),
-        _bubble(std::make_unique<Bubble>(*_ui))
+        _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;
         set_panels(create_left_panel(), create_right_panel());

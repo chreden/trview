@@ -13,7 +13,7 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/IFiles.h>
 #include "IRouteWindow.h"
-#include <trview.app/UI/Bubble.h>
+#include <trview.app/UI/IBubble.h>
 
 namespace trview
 {
@@ -38,7 +38,7 @@ namespace trview
         /// @param parent The parent window.
         explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files);
+            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source);
         virtual ~RouteWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_route(IRoute* route) override;
@@ -70,6 +70,6 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
-        std::unique_ptr<Bubble> _bubble;
+        std::unique_ptr<IBubble> _bubble;
     };
 }

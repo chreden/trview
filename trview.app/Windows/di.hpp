@@ -30,7 +30,8 @@ namespace trview
                         injector.create<ui::render::IRenderer::Source>(),
                         injector.create<ui::IInput::Source>(),
                         window,
-                        injector.create<std::shared_ptr<IClipboard>>());
+                        injector.create<std::shared_ptr<IClipboard>>(),
+                        injector.create<IBubble::Source>());
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
@@ -44,7 +45,8 @@ namespace trview
                             injector.create<ui::render::IRenderer::Source>(),
                             injector.create<ui::IInput::Source>(),
                             window,
-                            injector.create<std::shared_ptr<IClipboard>>());
+                            injector.create<std::shared_ptr<IClipboard>>(),
+                            injector.create<IBubble::Source>());
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
@@ -60,7 +62,8 @@ namespace trview
                             window,
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<std::shared_ptr<IDialogs>>(),
-                            injector.create<std::shared_ptr<IFiles>>());
+                            injector.create<std::shared_ptr<IFiles>>(),
+                            injector.create<IBubble::Source>());
                     };
                 }
             ),
@@ -76,6 +79,7 @@ namespace trview
                             injector.create<ui::render::IMapRenderer::Source>(),
                             injector.create<ui::IInput::Source>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
+                            injector.create<IBubble::Source>(),
                             window);
                     };
                 }),

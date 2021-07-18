@@ -69,9 +69,10 @@ namespace trview
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ui::IInput::Source& input_source,
         const std::shared_ptr<IClipboard>& clipboard,
+        const IBubble::Source& bubble_source,
         const Window& parent)
         : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
-        _bubble(std::make_unique<Bubble>(*_ui)), _clipboard(clipboard)
+        _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 

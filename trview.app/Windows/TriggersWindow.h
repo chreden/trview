@@ -9,7 +9,7 @@
 #include "ITriggersWindow.h"
 #include "CollapsiblePanel.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/Bubble.h>
+#include <trview.app/UI/IBubble.h>
 
 namespace trview
 {
@@ -34,7 +34,7 @@ namespace trview
         };
 
         explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard);
+            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source);
         virtual ~TriggersWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -76,6 +76,6 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<Bubble> _bubble;
+        std::unique_ptr<IBubble> _bubble;
     };
 }

@@ -857,6 +857,9 @@
     <ClInclude Include="UI\IBubble.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\UI\IBubble.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

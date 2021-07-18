@@ -9,7 +9,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.ui.render/MapRenderer.h>
 #include "IRoomsWindow.h"
-#include <trview.app/UI/Bubble.h>
+#include <trview.app/UI/IBubble.h>
 #include <trview.common/Windows/IClipboard.h>
 
 namespace trview
@@ -32,6 +32,7 @@ namespace trview
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ui::IInput::Source& input_source,
             const std::shared_ptr<IClipboard>& clipboard,
+            const IBubble::Source& bubble_source,
             const Window& parent);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
@@ -79,7 +80,7 @@ namespace trview
 
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
-        std::unique_ptr<Bubble> _bubble;
+        std::unique_ptr<IBubble> _bubble;
         std::shared_ptr<IClipboard> _clipboard;
     };
 }
