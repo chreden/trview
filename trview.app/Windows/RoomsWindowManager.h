@@ -37,6 +37,7 @@ namespace trview
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual std::weak_ptr<IRoomsWindow> create_window() override;
+        virtual void update(float delta) override;
     private:
         std::vector<std::shared_ptr<IRoomsWindow>> _windows;
         std::vector<std::weak_ptr<IRoomsWindow>> _closing_windows;

@@ -52,5 +52,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
 
         virtual void select_waypoint(uint32_t index) = 0;
+
+        virtual void update(float delta) = 0;
     };
 }

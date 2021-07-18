@@ -48,5 +48,7 @@ namespace trview
 
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;
+
+        virtual void update(float delta) = 0;
     };
 }

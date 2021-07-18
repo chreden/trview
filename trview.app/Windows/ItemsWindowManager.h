@@ -32,6 +32,7 @@ namespace trview
         virtual void set_room(uint32_t room) override;
         virtual void set_selected_item(const Item& item) override;
         virtual std::weak_ptr<IItemsWindow> create_window() override;
+        virtual void update(float delta) override;
     private:
         std::vector<std::shared_ptr<IItemsWindow>> _windows;
         std::vector<std::weak_ptr<IItemsWindow>> _closing_windows;

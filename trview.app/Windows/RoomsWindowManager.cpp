@@ -120,4 +120,12 @@ namespace trview
         _windows.push_back(rooms_window);
         return rooms_window;
     }
+
+    void RoomsWindowManager::update(float delta)
+    {
+        for (auto& window : _windows)
+        {
+            window->update(delta);
+        }
+    }
 }

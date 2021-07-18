@@ -46,5 +46,7 @@ namespace trview
 
         /// Create a new triggers window.
         virtual std::weak_ptr<ITriggersWindow> create_window() = 0;
+
+        virtual void update(float delta) = 0;
     };
 }

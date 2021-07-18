@@ -21,6 +21,7 @@ namespace trview
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void select_waypoint(uint32_t index) override;
+        virtual void update(float delta) override;
     private:
         TokenStore _token_store;
         std::shared_ptr<IRouteWindow> _route_window;

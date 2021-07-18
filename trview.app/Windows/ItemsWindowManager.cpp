@@ -110,4 +110,12 @@ namespace trview
             window->set_selected_item(item);
         }
     }
+
+    void ItemsWindowManager::update(float delta)
+    {
+        for (const auto& window : _windows)
+        {
+            window->update(delta);
+        }
+    }
 }

@@ -285,5 +285,14 @@ namespace trview
         {
             return _focused;
         }
+
+        void Control::update(float delta)
+        {
+            on_update(delta);
+            for (const auto& child : _child_elements)
+            {
+                child->update(delta);
+            }
+        }
     }
 }

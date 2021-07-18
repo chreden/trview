@@ -56,6 +56,8 @@ namespace trview
 
         /// Update the trigers - this doesn't reset the filters.
         virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
+
+        virtual void update(float delta) = 0;
     };
 }
 

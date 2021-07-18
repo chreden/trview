@@ -68,8 +68,11 @@ namespace trview
         const ui::render::IRenderer::Source& renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ui::IInput::Source& input_source,
+        const std::shared_ptr<IClipboard>& clipboard,
+        const IBubble::Source& bubble_source,
         const Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
+        _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 
@@ -494,6 +497,11 @@ namespace trview
             {
                 on_room_selected(std::stoi(item.value(L"Value")));
             }
+            else
+            {
+                _clipboard->write(window(), item.value(L"Value"));
+                _bubble->show(client_cursor_position(window()) - Point(0, 20));
+            }
         };
         lower_left->add_child(std::move(room_stats));
         create_neighbours_list(*lower_left);
@@ -563,5 +571,10 @@ namespace trview
     {
         _selected_trigger.reset();
         _triggers_list->clear_selection();
+    }
+
+    void RoomsWindow::update(float delta)
+    {
+        _ui->update(delta);
     }
 }

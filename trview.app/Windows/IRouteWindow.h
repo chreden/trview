@@ -61,6 +61,7 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& trigger) = 0;
 
         virtual void focus() = 0;
+        virtual void update(float delta) = 0;
     };
 }
 

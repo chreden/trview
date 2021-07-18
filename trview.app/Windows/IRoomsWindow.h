@@ -56,5 +56,7 @@ namespace trview
         /// Set the triggers in the level.
         /// @param triggers The triggers in the level.
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
+
+        virtual void update(float delta) = 0;
     };
 }
