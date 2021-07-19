@@ -116,7 +116,6 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
-
         Timer _timer;
     };
 
