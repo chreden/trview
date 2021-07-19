@@ -8,7 +8,6 @@
 #include <trview.ui.render/Mocks/IRenderer.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
-#include <external/boost/di.hpp>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/UI/IBubble.h>
 
@@ -16,7 +15,9 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
+using namespace trview::ui;
 using namespace trview::ui::mocks;
+using namespace trview::ui::render;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 
@@ -24,25 +25,34 @@ namespace
 {
     auto register_test_module()
     {
-        using namespace boost;
-        return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
-            di::bind<Window>.to(create_test_window(L"ItemsWindowTests")),
-            di::bind<IClipboard>.to<MockClipboard>(),
-            di::bind<IBubble::Source>.to([&](auto&&)
-                {
-                    return [&](auto&&...) { return std::make_unique<MockBubble>(); };
-                }),
-            di::bind<ItemsWindow>()
-        );
+        struct test_module
+        {
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
+            IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
+            IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
+            trview::Window window{ create_test_window(L"ItemsWindowTests") };
+            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
+
+            test_module& with_bubble_source(const IBubble::Source& source)
+            {
+                this->bubble_source = source;
+                return *this;
+            }
+
+            std::unique_ptr<ItemsWindow> build()
+            {
+                return std::make_unique<ItemsWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source);
+            }
+        };
+
+        return test_module {};
     }
 }
 
 TEST(ItemsWindow, AddToRouteEventRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_add_to_route += [&raised_item](const auto& item) { raised_item = item; };
@@ -65,7 +75,7 @@ TEST(ItemsWindow, AddToRouteEventRaised)
 
 TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -115,7 +125,7 @@ TEST(ItemsWindow, ClearSelectedItemClearsSelection)
 
 TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -146,7 +156,7 @@ TEST(ItemsWindow, ItemSelectedNotRaisedWhenSyncItemDisabled)
 
 TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -174,7 +184,7 @@ TEST(ItemsWindow, ItemSelectedRaisedWhenSyncItemEnabled)
 
 TEST(ItemsWindow, ItemVisibilityRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::tuple<Item, bool>> raised_item;
     auto token = window->on_item_visibility += [&raised_item](const auto& item, bool state) { raised_item = { item, state }; };
@@ -203,7 +213,7 @@ TEST(ItemsWindow, ItemVisibilityRaised)
 
 TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -232,7 +242,7 @@ TEST(ItemsWindow, ItemsListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
 TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -265,7 +275,7 @@ TEST(ItemsWindow, ItemsListFilteredWhenRoomSetAndTrackRoomEnabled)
 
 TEST(ItemsWindow, ItemsListPopulatedOnSet)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::vector<Item> items
     {
@@ -299,7 +309,7 @@ TEST(ItemsWindow, ItemsListPopulatedOnSet)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::vector<Item> items
     {
@@ -332,7 +342,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenFiltered)
 
 TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::vector<Item> items
     {
@@ -360,7 +370,7 @@ TEST(ItemsWindow, ItemsListUpdatedWhenNotFiltered)
 
 TEST(ItemsWindow, SelectionSurvivesFiltering)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::vector<Item> items
     {
@@ -391,7 +401,7 @@ TEST(ItemsWindow, SelectionSurvivesFiltering)
 
 TEST(ItemsWindow, TriggersLoadedForItem)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     auto trigger1 = std::make_shared<MockTrigger>()->with_number(0);
     auto trigger2 = std::make_shared<MockTrigger>()->with_number(1);
@@ -424,7 +434,7 @@ TEST(ItemsWindow, TriggersLoadedForItem)
 
 TEST(ItemsWindow, TriggerSelectedEventRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<ItemsWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -460,4 +470,29 @@ TEST(ItemsWindow, TriggerSelectedEventRaised)
 
     ASSERT_TRUE(raised_trigger.has_value());
     ASSERT_EQ(raised_trigger.value().lock(), trigger);
+}
+
+TEST(ItemsWindow, ClickStatShowsBubble)
+{
+    auto bubble = std::make_unique<MockBubble>();
+    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
+
+    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+
+    std::vector<Item> items
+    {
+        Item(0, 0, 0, L"Test Type", 0, 0, {}, DirectX::SimpleMath::Vector3::Zero)
+    };
+    window->set_items(items);
+    window->set_selected_item(items[0]);
+
+    auto stats = window->root_control()->find<Listbox>(ItemsWindow::Names::stats_listbox);
+    ASSERT_NE(stats, nullptr);
+
+    auto first_stat = stats->find<ui::Control>(Listbox::Names::row_name_format + "0");
+    ASSERT_NE(first_stat, nullptr);
+
+    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
+    ASSERT_NE(value, nullptr);
+    value->clicked(Point());
 }

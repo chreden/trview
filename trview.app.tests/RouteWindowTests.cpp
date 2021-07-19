@@ -446,3 +446,7 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     ASSERT_FALSE(waypoint.has_save());
 }
 
+TEST(RouteWindow, ClickStatShowsBubble)
+{
+    FAIL();
+}

@@ -16,7 +16,9 @@ using namespace trview;
 using namespace trview::tests;
 using namespace trview::graphics;
 using namespace trview::graphics::mocks;
+using namespace trview::ui;
 using namespace trview::ui::mocks;
+using namespace trview::ui::render;
 using namespace trview::ui::render::mocks;
 using namespace trview::mocks;
 using testing::Return;
@@ -25,25 +27,28 @@ namespace
 {
     auto register_test_module()
     {
-        using namespace boost;
-        return di::make_injector(
-            di::bind<IDeviceWindow::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockDeviceWindow>(); }; }),
-            di::bind<ui::render::IRenderer::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockRenderer>(); }; }),
-            di::bind<ui::IInput::Source>.to([](auto&&) { return [](auto&&...) { return std::make_unique<MockInput>(); }; }),
-            di::bind<Window>.to(create_test_window(L"TriggersWindowTests")),
-            di::bind<IClipboard>.to<MockClipboard>(),
-            di::bind<IBubble::Source>.to([&](auto&&)
-                {
-                    return [&](auto&&...) { return std::make_unique<MockBubble>(); };
-                }),
-            di::bind<TriggersWindow>()
-        );
+        struct test_module
+        {
+            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
+            IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
+            IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
+            trview::Window window{ create_test_window(L"TriggersWindowTests") };
+            std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
+            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
+
+            std::unique_ptr<TriggersWindow> build()
+            {
+                return std::make_unique<TriggersWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source);
+            }
+        };
+
+        return test_module {};
     }
 }
 
 TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -68,7 +73,7 @@ TEST(TriggersWindow, TriggerSelectedRaisedWhenSyncTriggerEnabled)
 
 TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -96,7 +101,7 @@ TEST(TriggersWindow, TriggerSelectedNotRaisedWhenSyncTriggerDisabled)
 
 TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -122,7 +127,7 @@ TEST(TriggersWindow, TriggersListNotFilteredWhenRoomSetAndTrackRoomDisabled)
 
 TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -152,7 +157,7 @@ TEST(TriggersWindow, TriggersListFilteredWhenRoomSetAndTrackRoomEnabled)
 
 TEST(TriggersWindow, TriggersListFilteredByCommand)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
     auto trigger1 = std::make_shared<MockTrigger>()->with_commands({ Command(0, TriggerCommandType::Object, 1) });
     auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::Camera, 1) });
     std::vector<std::weak_ptr<ITrigger>> triggers{ trigger1, trigger2 };
@@ -187,7 +192,7 @@ TEST(TriggersWindow, TriggersListFilteredByCommand)
 
 TEST(TriggersWindow, AddToRouteEventRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_add_to_route += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -208,7 +213,7 @@ TEST(TriggersWindow, AddToRouteEventRaised)
 
 TEST(TriggersWindow, TriggerVisibilityRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::tuple<std::weak_ptr<ITrigger>, bool>> raised_trigger;
     auto token = window->on_trigger_visibility += [&raised_trigger](const auto& trigger, bool state) { raised_trigger = { trigger, state }; };
@@ -234,7 +239,7 @@ TEST(TriggersWindow, TriggerVisibilityRaised)
 
 TEST(TriggersWindow, ItemSelectedRaised)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<Item> raised_item;
     auto token = window->on_item_selected += [&raised_item](const auto& item) { raised_item = item; };
@@ -270,7 +275,7 @@ TEST(TriggersWindow, ItemSelectedRaised)
 
 TEST(TriggersWindow, SetTriggersLoadsTriggers)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     auto trigger1 = std::make_shared<MockTrigger>();
     auto trigger2 = std::make_shared<MockTrigger>();
@@ -283,7 +288,7 @@ TEST(TriggersWindow, SetTriggersLoadsTriggers)
 
 TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     auto list = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::triggers_listbox);
     ASSERT_NE(list, nullptr);
@@ -302,7 +307,7 @@ TEST(TriggersWindow, SetTriggerVisiblityUpdatesTrigger)
 
 TEST(TriggersWindow, SetItemsLoadsItems)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::vector<Item> items
     {
@@ -324,7 +329,7 @@ TEST(TriggersWindow, SetItemsLoadsItems)
 
 TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -371,7 +376,7 @@ TEST(TriggersWindow, ClearSelectedTriggerClearsSelection)
 
 TEST(TriggersWindow, SetTriggersClearsSelection)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     std::optional<std::weak_ptr<ITrigger>> raised_trigger;
     auto token = window->on_trigger_selected += [&raised_trigger](const auto& trigger) { raised_trigger = trigger; };
@@ -418,7 +423,7 @@ TEST(TriggersWindow, SetTriggersClearsSelection)
 
 TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
 
     auto trigger = std::make_shared<MockTrigger>();
     window->set_triggers({ trigger });
@@ -433,7 +438,7 @@ TEST(TriggersWindow, TriggerDetailsLoadedForTrigger)
 
 TEST(TriggersWindow, SelectionSurvivesFiltering)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
     auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_room(55);
     auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_room(78);
     window->set_triggers({ trigger1, trigger2 });
@@ -460,7 +465,7 @@ TEST(TriggersWindow, SelectionSurvivesFiltering)
 
 TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
 {
-    auto window = register_test_module().create<std::unique_ptr<TriggersWindow>>();
+    auto window = register_test_module().build();
     auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
     auto trigger2 = std::make_shared<MockTrigger>()->with_number(1)->with_commands({ Command(0, TriggerCommandType::FlipOn, 0) });
     auto trigger3 = std::make_shared<MockTrigger>()->with_number(2)->with_commands({ Command(0, TriggerCommandType::FlipMap, 0) });
@@ -498,4 +503,10 @@ TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
     cell->clicked(Point());
 
     ASSERT_THAT(get_numbers(), ElementsAre(0, 1, 2));
+}
+
+
+TEST(TriggersWindow, ClickStatShowsBubble)
+{
+    FAIL();
 }
