@@ -477,9 +477,3 @@ TEST(RouteWindow, ClickStatShowsBubble)
     ASSERT_NE(value, nullptr);
     value->clicked(Point());
 }
-
-TEST(RouteWindowManager, WindowsUpdated)
-{
-    FAIL();
-}
-

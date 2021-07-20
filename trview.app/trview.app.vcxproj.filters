@@ -860,6 +860,9 @@
     <ClInclude Include="Mocks\UI\IBubble.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRouteWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
