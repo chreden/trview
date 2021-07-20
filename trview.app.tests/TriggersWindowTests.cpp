@@ -36,6 +36,12 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
 
+            test_module& with_bubble_source(const IBubble::Source& source)
+            {
+                this->bubble_source = source;
+                return *this;
+            }
+
             std::unique_ptr<TriggersWindow> build()
             {
                 return std::make_unique<TriggersWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source);
@@ -505,8 +511,24 @@ TEST(TriggersWindow, FlipmapsFiltersAllFlipTriggers)
     ASSERT_THAT(get_numbers(), ElementsAre(0, 1, 2));
 }
 
-
 TEST(TriggersWindow, ClickStatShowsBubble)
 {
-    FAIL();
+    auto bubble = std::make_unique<MockBubble>();
+    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
+
+    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+
+    auto trigger1 = std::make_shared<MockTrigger>()->with_number(0)->with_commands({ Command(0, TriggerCommandType::FlipOff, 0) });
+    window->set_triggers({ trigger1 });
+    window->set_selected_trigger(trigger1);
+
+    auto stats = window->root_control()->find<ui::Listbox>(TriggersWindow::Names::stats_listbox);
+    ASSERT_NE(stats, nullptr);
+
+    auto first_stat = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "0");
+    ASSERT_NE(first_stat, nullptr);
+
+    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
+    ASSERT_NE(value, nullptr);
+    value->clicked(Point());
 }

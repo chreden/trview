@@ -63,6 +63,7 @@ namespace trview
 
     const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
     const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string RoomsWindow::Names::stats_listbox{ "Stats" };
 
     RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source,
         const ui::render::IRenderer::Source& renderer_source,
@@ -483,6 +484,7 @@ namespace trview
         auto lower_left = std::make_unique<StackPanel>(Size(190, 300), Colours::ItemDetails, Size(0, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
         _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150 - 21), Colours::LeftPanel));
+        _stats_box->set_name(Names::stats_listbox);
         _stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },

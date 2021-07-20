@@ -55,6 +55,12 @@ namespace
                 return *this;
             }
 
+            test_module& with_bubble_source(const IBubble::Source& source)
+            {
+                this->bubble_source = source;
+                return *this;
+            }
+
             std::unique_ptr<RouteWindow> build()
             {
                 return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
@@ -448,5 +454,32 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
 
 TEST(RouteWindow, ClickStatShowsBubble)
 {
+    auto bubble = std::make_unique<MockBubble>();
+    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
+
+    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto stats = window->root_control()->find<ui::Listbox>(RouteWindow::Names::waypoint_stats);
+    ASSERT_NE(stats, nullptr);
+
+    auto first_stat = stats->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(first_stat, nullptr);
+
+    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
+    ASSERT_NE(value, nullptr);
+    value->clicked(Point());
+}
+
+TEST(RouteWindowManager, WindowsUpdated)
+{
     FAIL();
 }
+

@@ -221,3 +221,8 @@ TEST(ItemsWindowManager, CreateItemsWindowKeyboardShortcut)
     auto mock_window = std::make_shared<MockItemsWindow>();
     ItemsWindowManager manager(create_test_window(L"ItemsWindowManagerTests"), shortcuts, [&mock_window](...) { return mock_window; });
 }
+
+TEST(ItemsWindowManager, WindowsUpdated)
+{
+    FAIL();
+}

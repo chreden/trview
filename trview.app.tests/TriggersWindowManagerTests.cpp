@@ -252,3 +252,9 @@ TEST(TriggersWindowManager, SetSelectedTriggerSetsSelectedTriggerOnWindows)
     manager.set_triggers({ trigger1, trigger2 });
     manager.set_selected_trigger(trigger2);
 }
+
+TEST(TriggersWindowManager, WindowsUpdated)
+{
+    FAIL();
+}
+

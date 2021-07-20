@@ -32,3 +32,8 @@ TEST(RoomsWindowManager, SetTriggersClearsSelectedTrigger)
     manager.set_triggers({});
     ASSERT_EQ(manager.selected_trigger().lock(), nullptr);
 }
+
+TEST(RoomsWindowManager, WindowsUpdated)
+{
+    FAIL();
+}

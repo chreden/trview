@@ -42,6 +42,12 @@ namespace
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
 
+            test_module& with_bubble_source(const IBubble::Source& source)
+            {
+                this->bubble_source = source;
+                return *this;
+            }
+
             std::unique_ptr<RoomsWindow> build()
             {
                 return std::make_unique<RoomsWindow>(device_window_source, renderer_source, map_renderer_source, input_source, clipboard, bubble_source, window);
@@ -128,5 +134,22 @@ TEST(RoomsWindow, SetTriggersClearsSelection)
 
 TEST(RoomsWindow, ClickStatShowsBubble)
 {
-    FAIL();
+    auto bubble = std::make_unique<MockBubble>();
+    EXPECT_CALL(*bubble, show(testing::A<const Point&>())).Times(1);
+
+    auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
+
+    auto room = std::make_shared<MockRoom>();
+    window->set_rooms({ room });
+    window->set_current_room(0);
+
+    auto stats = window->root_control()->find<Listbox>(RoomsWindow::Names::stats_listbox);
+    ASSERT_NE(stats, nullptr);
+
+    auto first_stat = stats->find<ui::Control>(Listbox::Names::row_name_format + "0");
+    ASSERT_NE(first_stat, nullptr);
+
+    auto value = first_stat->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Value");
+    ASSERT_NE(value, nullptr);
+    value->clicked(Point());
 }

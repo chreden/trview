@@ -21,6 +21,7 @@ namespace trview
         {
             static const std::string rooms_listbox;
             static const std::string triggers_listbox;
+            static const std::string stats_listbox;
         };
 
         /// Create a rooms window as a child of the specified window.
