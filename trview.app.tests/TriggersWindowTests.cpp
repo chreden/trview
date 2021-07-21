@@ -8,7 +8,6 @@
 #include <trview.graphics/mocks/IDeviceWindow.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.ui/Mocks/Input/IInput.h>
-#include <external/boost/di.hpp>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/UI/IBubble.h>
 
