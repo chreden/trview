@@ -53,6 +53,7 @@
     </ClCompile>
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
+    <ClCompile Include="UI\BubbleTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />

@@ -10,9 +10,13 @@ namespace trview
         const Colour Background{ Colour::Grey };
     }
 
+    const float Bubble::FadeTime{ 0.66666666666666666666666666666667f };
+    const std::string Bubble::Names::Bubble{ "Bubble" };
+
     Bubble::Bubble(Control& control)
     {
         _label = control.add_child(std::make_unique<Label>(Size(40, 20), Background, L"Copied", 8, TextAlignment::Centre, ParagraphAlignment::Centre));
+        _label->set_name(Names::Bubble);
         _label->set_visible(false);
         _label->set_z(-1);
 
@@ -20,7 +24,7 @@ namespace trview
         {
             if (_label->visible())
             {
-                const float speed = 1.5f;
+                const float speed = 1.0f / FadeTime;
 
                 auto bg = _label->background_colour();
                 bg.a = std::max(bg.a - delta * speed, 0.0f);

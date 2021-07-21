@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IBubble.h"
-#include <trview.ui/Control.h>
 #include <trview.ui/Label.h>
 
 namespace trview
@@ -9,9 +8,16 @@ namespace trview
     class Bubble final : public IBubble
     {
     public:
+        static const float FadeTime;
+
+        struct Names
+        {
+            static const std::string Bubble;
+        };
+
         explicit Bubble(ui::Control& control);
         virtual ~Bubble() = default;
-        void show(const Point& position);
+        virtual void show(const Point& position) override;
     private:
         TokenStore _token_store;
         ui::Label* _label{ nullptr };
