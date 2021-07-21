@@ -59,6 +59,7 @@ namespace trview
         void open(const std::string& filename);
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual int run() override;
+        void render();
     private:
         // Window setup functions.
         void setup_view_menu();
@@ -79,8 +80,6 @@ namespace trview
         void select_previous_waypoint();
         void set_item_visibility(const Item& item, bool visible);
         void set_trigger_visibility(const std::weak_ptr<ITrigger>& trigger, bool visible);
-        // Rendering
-        void render();
         // Lua
         void register_lua();
         bool should_discard_changes();

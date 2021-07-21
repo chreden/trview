@@ -453,3 +453,46 @@ TEST(Application, ImportRouteLoadsFile)
 
     route_window_manager.on_route_import("filename");
 }
+
+TEST(Application, WindowManagersUpdated)
+{
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, update).Times(1);
+    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
+    EXPECT_CALL(items_window_manager, update).Times(1);
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms_window_manager, update).Times(1);
+    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    EXPECT_CALL(triggers_window_manager, update).Times(1);
+
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_items_window_manager(std::move(items_window_manager_ptr))
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .build();
+    application->render();
+}
+
+TEST(Application, WindowManagersAndViewerRendered)
+{
+    auto [route_window_manager_ptr, route_window_manager] = create_mock<MockRouteWindowManager>();
+    EXPECT_CALL(route_window_manager, render).Times(1);
+    auto [items_window_manager_ptr, items_window_manager] = create_mock<MockItemsWindowManager>();
+    EXPECT_CALL(items_window_manager, render).Times(1);
+    auto [rooms_window_manager_ptr, rooms_window_manager] = create_mock<MockRoomsWindowManager>();
+    EXPECT_CALL(rooms_window_manager, render).Times(1);
+    auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
+    EXPECT_CALL(triggers_window_manager, render).Times(1);
+    auto [viewer_ptr, viewer] = create_mock<MockViewer>();
+    EXPECT_CALL(viewer, render).Times(1);
+
+    auto application = register_test_module()
+        .with_route_window_manager(std::move(route_window_manager_ptr))
+        .with_items_window_manager(std::move(items_window_manager_ptr))
+        .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
+        .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_viewer(std::move(viewer_ptr))
+        .build();
+    application->render();
+}
