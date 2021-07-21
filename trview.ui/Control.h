@@ -184,7 +184,9 @@ namespace trview
 
             /// Event raised when user has selected the control for text tinput.
             Event<> on_focused;
-
+            /// <summary>
+            /// Event raised when the control has been updated. The elapsed time is passed as the parameter.
+            /// </summary>
             Event<float> on_update;
 
             /// To be called when the mouse has been pressed down over the element.
@@ -245,7 +247,10 @@ namespace trview
             void set_input(IInput* input);
 
             bool focused() const;
-
+            /// <summary>
+            /// Update the control.
+            /// </summary>
+            /// <param name="delta">The elapsed time since the previous update.</param>
             void update(float delta);
         protected:
             /// To be called after a child element has been added to the control.

@@ -56,7 +56,10 @@ namespace trview
 
         /// Update the trigers - this doesn't reset the filters.
         virtual void update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) = 0;
-
+        /// <summary>
+        /// Update the window.
+        /// </summary>
+        /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
     };
 }
