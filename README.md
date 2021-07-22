@@ -200,6 +200,10 @@ A path will appear between the two points with a distance label. This is the dis
 
 At the bottom right of the screen is the 3D compass. This shows the current direction of each axis, relative to the current camera view. Each of the nodes at the end of the axis lines can be clicked on to align the camera to that direction.
 
+### Angles
+
+At the bottom left of the screen are the current camera angles. You can click on yaw or pitch and enter new camera angles. Tab will cycle from X to Y to Z and enter will confirm the change. The format of the angles can be chosen in the settings window. By default the display is in degrees but radians can be selected.
+
 ### Coordinates
 
 At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
