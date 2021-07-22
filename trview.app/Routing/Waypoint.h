@@ -1,27 +1,14 @@
 #pragma once
 
-#include <SimpleMath.h>
-#include <trview.app/Geometry/IRenderable.h>
 #include <trview.app/Geometry/IMesh.h>
-#include <trview.common/Colour.h>
+#include "IWaypoint.h"
 
 namespace trview
 {
     /// A waypoint is an entry in a route.
-    class Waypoint final : public IRenderable
+    class Waypoint final : public IWaypoint
     {
     public:
-        /// Defines the type of waypoint.
-        enum class Type
-        {
-            /// The waypoint is to a position in the world.
-            Position,
-            /// The waypoint is to an entity in the world.
-            Entity,
-            /// The waypoint is to a trigger in the world.
-            Trigger
-        };
-
         /// Create a new waypoint of position type.
         /// @param mesh The waypoint mesh.
         /// @param position The position of the waypoint in the world.
@@ -51,38 +38,16 @@ namespace trview
         /// @param camera The current camera being used for rendering.
         /// @param colour The colour to render the triangles.
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
-
-        /// Get the position of the waypoint in the 3D view.
-        DirectX::SimpleMath::Vector3 position() const;
-
-        /// Get the type of the waypoint.
-        Type type() const;
-
-        /// Get whether the waypoint has an attached save file.
-        bool has_save() const;
-
-        /// Gets the index of the entity or trigger that the waypoint refers to.
-        uint32_t index() const;
-
-        /// Gets the room that the waypoint is in.
-        uint32_t room() const;
-
-        /// Get any notes associated with the waypoint.
-        std::wstring notes() const;
-
-        /// Get the contents of the attached save file.
-        std::vector<uint8_t> save_file() const;
-
-        /// Set the notes associated with the waypoint.
-        /// @param notes The notes to save.
-        void set_notes(const std::wstring& notes);
-
-        /// Set the route colour for the waypoint blob.
-        /// @param colour The colour of the route.
-        void set_route_colour(const Colour& colour);
-
-        /// Set the contents of the attached save file.
-        void set_save_file(const std::vector<uint8_t>& data);
+        virtual DirectX::SimpleMath::Vector3 position() const override;
+        virtual Type type() const override;
+        virtual bool has_save() const override;
+        virtual uint32_t index() const override;
+        virtual uint32_t room() const override;
+        virtual std::wstring notes() const override;
+        virtual std::vector<uint8_t> save_file() const override;
+        virtual void set_notes(const std::wstring& notes) override;
+        virtual void set_route_colour(const Colour& colour) override;
+        virtual void set_save_file(const std::vector<uint8_t>& data) override;
 
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
@@ -96,8 +61,5 @@ namespace trview
         uint32_t                     _room;
         Colour                       _route_colour;
         bool                         _visible{ true };
-    };
-
-    Waypoint::Type waypoint_type_from_string(const std::string& value);
-    std::wstring waypoint_type_to_string(Waypoint::Type type);
+    };    
 }

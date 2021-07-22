@@ -99,34 +99,5 @@ namespace trview
     {
         _visible = value;
     }
-
-    Waypoint::Type waypoint_type_from_string(const std::string& value)
-    {
-        if (value == "Trigger")
-        {
-            return Waypoint::Type::Trigger;
-        }
-
-        if (value == "Entity")
-        {
-            return Waypoint::Type::Entity;
-        }
-
-        return Waypoint::Type::Position;
-    }
-
-    std::wstring waypoint_type_to_string(Waypoint::Type type)
-    {
-        switch (type)
-        {
-        case Waypoint::Type::Entity:
-            return L"Entity";
-        case Waypoint::Type::Position:
-            return L"Position";
-        case Waypoint::Type::Trigger:
-            return L"Trigger";
-        }
-        return L"Unknown";
-    }
 }
 
