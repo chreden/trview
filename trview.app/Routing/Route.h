@@ -13,7 +13,7 @@ namespace trview
     class Route final : public IRoute
     {
     public:
-        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source);
+        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source, const IWaypoint::Source& waypoint_source);
         virtual ~Route() = default;
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room) override;
@@ -38,6 +38,7 @@ namespace trview
     private:
         uint32_t next_index() const;
 
+        IWaypoint::Source _waypoint_source;
         std::vector<Waypoint> _waypoints;
         std::shared_ptr<IMesh> _waypoint_mesh;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;

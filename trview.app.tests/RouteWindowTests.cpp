@@ -87,8 +87,8 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
     auto room = std::make_shared<MockRoom>();
     EXPECT_CALL(*room, info).WillRepeatedly(Return(info));
 
-    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
-    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, waypoint_pos, 0);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -130,8 +130,8 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
     auto window = register_test_module().with_clipboard(clipboard).build();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
-    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, waypoint_pos, 0);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -159,8 +159,8 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
     auto window = register_test_module().with_clipboard(clipboard).build();
 
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
-    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, waypoint_pos, 0);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -183,8 +183,8 @@ TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 {
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
-    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, waypoint_pos, 0);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -203,8 +203,8 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
 TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 {
     const Vector3 waypoint_pos{ 130, 250, 325 };
-    auto [mesh_ptr, mesh] = create_mock<MockMesh>();
-    Waypoint waypoint(&mesh, waypoint_pos, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, waypoint_pos, 0);
     waypoint.set_save_file({ 0, 1, 2 });
 
     MockRoute route;
@@ -308,7 +308,7 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     waypoint.set_save_file({ 0x1 });
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -333,7 +333,7 @@ TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1).WillRepeatedly(Throw(std::exception()));
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     waypoint.set_save_file({ 0x1 });
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -357,7 +357,7 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(0);
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     waypoint.set_save_file({ 0x1 });
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -381,7 +381,7 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
@@ -410,7 +410,7 @@ TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Throw(std::exception()));
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
@@ -436,7 +436,7 @@ TEST(RouteWindow, AttachSaveButtonDoesNotLoadFileWhenCancelled)
     EXPECT_CALL(*files, load_file).Times(0);
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
@@ -460,7 +460,7 @@ TEST(RouteWindow, ClickStatShowsBubble)
     auto window = register_test_module().with_bubble_source([&](auto&&...) { return std::move(bubble); }).build();
 
     auto mesh = std::make_shared<MockMesh>();
-    Waypoint waypoint{ mesh.get(), Vector3::Zero, 0 };
+    Waypoint waypoint{ mesh, Vector3::Zero, 0 };
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));

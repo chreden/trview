@@ -19,8 +19,7 @@ namespace trview
             Trigger
         };
 
-        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, uint32_t)>;
-        using IndexSource = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;
+        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;
 
         virtual ~IWaypoint() = 0;
 

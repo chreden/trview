@@ -10,12 +10,12 @@ namespace trview
         const float PoleThickness = 0.05f;
     }
 
-    Waypoint::Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
         : _mesh(mesh), _position(position), _type(Type::Position), _index(0u), _room(room)
     {
     }
 
-    Waypoint::Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
         : _mesh(mesh), _position(position), _type(type), _index(index), _room(room), _route_colour(route_colour)
     {
     }

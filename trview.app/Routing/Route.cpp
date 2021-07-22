@@ -43,8 +43,8 @@ namespace trview
         }
     }
 
-    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source)
-        : _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer))
+    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source, const IWaypoint::Source& waypoint_source)
+        : _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source)
     {
     }
 
@@ -63,7 +63,7 @@ namespace trview
 
     void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+        _waypoints.emplace_back(_waypoint_mesh, position, room, type, type_index, _colour);
         set_unsaved(true);
     }
 
@@ -101,7 +101,7 @@ namespace trview
 
     void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh, position, room, type, type_index, _colour));
         set_unsaved(true);
     }
 

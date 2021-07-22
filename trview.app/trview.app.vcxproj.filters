@@ -869,6 +869,9 @@
     <ClInclude Include="Routing\IWaypoint.h">
       <Filter>Routing</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Routing\IWaypoint.h">
+      <Filter>Mocks\Routing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

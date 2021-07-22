@@ -1,6 +1,7 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Routing/IWaypoint.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -14,10 +15,11 @@ namespace
         {
             std::unique_ptr<ISelectionRenderer> selection_renderer = std::make_unique<MockSelectionRenderer>();
             IMesh::Source mesh_source = [](auto&&...) { return std::make_shared<MockMesh>(); };
+            IWaypoint::Source waypoint_source = [](auto&&...) { return std::make_unique<MockWaypoint>(); };
 
             std::unique_ptr<Route> build()
             {
-                return std::make_unique<Route>(std::move(selection_renderer), mesh_source);
+                return std::make_unique<Route>(std::move(selection_renderer), mesh_source, waypoint_source);
             }
         };
         return test_module{};

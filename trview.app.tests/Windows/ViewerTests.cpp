@@ -420,8 +420,8 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    MockMesh mesh;
-    Waypoint waypoint(&mesh, Vector3::Zero, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, Vector3::Zero, 0);
     viewer->select_waypoint(waypoint);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
@@ -441,8 +441,8 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    MockMesh mesh;
-    Waypoint waypoint(&mesh, Vector3::Zero, 0);
+    auto mesh = std::make_shared<MockMesh>();
+    Waypoint waypoint(mesh, Vector3::Zero, 0);
     viewer->select_waypoint(waypoint);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }

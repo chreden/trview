@@ -13,7 +13,7 @@ namespace trview
         /// @param mesh The waypoint mesh.
         /// @param position The position of the waypoint in the world.
         /// @param room The room that the waypoint is in.
-        explicit Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room);
+        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room);
 
         /// Create a new waypoint.
         /// @param mesh The waypoint mesh.
@@ -22,7 +22,7 @@ namespace trview
         /// @param type The type of waypoint.
         /// @param index The index of the entity or trigger being referenced if this is a non-position type.
         /// @param route_colour The colour of the route.
-        explicit Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
+        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
 
         /// Destructor for waypoint.
         virtual ~Waypoint() = default;
@@ -55,7 +55,7 @@ namespace trview
         std::wstring                 _notes;
         std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
-        IMesh*                       _mesh;
+        std::shared_ptr<IMesh>       _mesh;
         Type                         _type;
         uint32_t                     _index;
         uint32_t                     _room;
