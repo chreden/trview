@@ -9,6 +9,8 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.ui.render/MapRenderer.h>
 #include "IRoomsWindow.h"
+#include <trview.app/UI/IBubble.h>
+#include <trview.common/Windows/IClipboard.h>
 
 namespace trview
 {
@@ -19,6 +21,7 @@ namespace trview
         {
             static const std::string rooms_listbox;
             static const std::string triggers_listbox;
+            static const std::string stats_listbox;
         };
 
         /// Create a rooms window as a child of the specified window.
@@ -29,6 +32,8 @@ namespace trview
             const ui::render::IRenderer::Source& renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ui::IInput::Source& input_source,
+            const std::shared_ptr<IClipboard>& clipboard,
+            const IBubble::Source& bubble_source,
             const Window& parent);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
@@ -39,6 +44,7 @@ namespace trview
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
+        virtual void update(float delta) override;
     private:
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
         std::unique_ptr<ui::Control> create_left_panel();
@@ -75,5 +81,7 @@ namespace trview
 
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;
+        std::unique_ptr<IBubble> _bubble;
+        std::shared_ptr<IClipboard> _clipboard;
     };
 }

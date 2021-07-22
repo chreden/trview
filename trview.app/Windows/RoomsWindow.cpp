@@ -63,13 +63,17 @@ namespace trview
 
     const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
     const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string RoomsWindow::Names::stats_listbox{ "Stats" };
 
     RoomsWindow::RoomsWindow(const graphics::IDeviceWindow::Source& device_window_source,
         const ui::render::IRenderer::Source& renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ui::IInput::Source& input_source,
+        const std::shared_ptr<IClipboard>& clipboard,
+        const IBubble::Source& bubble_source,
         const Window& parent)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341)))
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
+        _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 
@@ -480,6 +484,7 @@ namespace trview
         auto lower_left = std::make_unique<StackPanel>(Size(190, 300), Colours::ItemDetails, Size(0, 2), StackPanel::Direction::Vertical, SizeMode::Manual);
         auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
         _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150 - 21), Colours::LeftPanel));
+        _stats_box->set_name(Names::stats_listbox);
         _stats_box->set_columns(
             {
                 { Listbox::Column::Type::String, L"Name", 100 },
@@ -493,6 +498,11 @@ namespace trview
             if (item.value(L"Name") == L"Alternate")
             {
                 on_room_selected(std::stoi(item.value(L"Value")));
+            }
+            else
+            {
+                _clipboard->write(window(), item.value(L"Value"));
+                _bubble->show(client_cursor_position(window()) - Point(0, 20));
             }
         };
         lower_left->add_child(std::move(room_stats));
@@ -563,5 +573,10 @@ namespace trview
     {
         _selected_trigger.reset();
         _triggers_list->clear_selection();
+    }
+
+    void RoomsWindow::update(float delta)
+    {
+        _ui->update(delta);
     }
 }

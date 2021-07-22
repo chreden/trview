@@ -46,5 +46,10 @@ namespace trview
 
         /// Create a new triggers window.
         virtual std::weak_ptr<ITriggersWindow> create_window() = 0;
+        /// <summary>
+        /// Update the windows.
+        /// </summary>
+        /// <param name="delta">Elapsed time since previous update.</param>
+        virtual void update(float delta) = 0;
     };
 }

@@ -89,6 +89,12 @@
     <ClCompile Include="UI\ViewerUITests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\RouteWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\BubbleTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

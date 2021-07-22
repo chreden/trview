@@ -331,6 +331,12 @@
     <ClCompile Include="UI\ISettingsWindow.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Bubble.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\IBubble.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -844,6 +850,18 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\ISettingsWindow.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Bubble.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\IBubble.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\IBubble.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IRouteWindow.h">
+      <Filter>Mocks\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

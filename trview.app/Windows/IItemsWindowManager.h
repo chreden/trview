@@ -48,5 +48,10 @@ namespace trview
 
         /// Create a new items window.
         virtual std::weak_ptr<IItemsWindow> create_window() = 0;
+        /// <summary>
+        /// Update the windows.
+        /// </summary>
+        /// <param name="delta">Elapsed time since previous update.</param>
+        virtual void update(float delta) = 0;
     };
 }

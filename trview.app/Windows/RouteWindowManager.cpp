@@ -108,4 +108,12 @@ namespace trview
             _route_window->select_waypoint(index);
         }
     }
+
+    void RouteWindowManager::update(float delta)
+    {
+        if (_route_window)
+        {
+            _route_window->update(delta);
+        }
+    }
 }

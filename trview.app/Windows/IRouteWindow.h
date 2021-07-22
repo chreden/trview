@@ -61,6 +61,11 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& trigger) = 0;
 
         virtual void focus() = 0;
+        /// <summary>
+        /// Update the window.
+        /// </summary>
+        /// <param name="delta">Elapsed time since previous update.</param>
+        virtual void update(float delta) = 0;
     };
 }
 

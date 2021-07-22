@@ -111,11 +111,13 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Tools\IMeasure.cpp" />
     <ClCompile Include="Tools\Measure.cpp" />
     <ClCompile Include="Tools\Toolbar.cpp" />
+    <ClCompile Include="UI\Bubble.cpp" />
     <ClCompile Include="UI\CameraControls.cpp" />
     <ClCompile Include="UI\CameraPosition.cpp" />
     <ClCompile Include="UI\Console.cpp" />
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
+    <ClCompile Include="UI\IBubble.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
     <ClCompile Include="UI\LevelInfo.cpp" />
@@ -242,12 +244,14 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Settings\IStartupOptions.h" />
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
+    <ClInclude Include="Mocks\UI\IBubble.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindowManager.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
@@ -281,6 +285,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Tools\IMeasure.h" />
     <ClInclude Include="Tools\Measure.h" />
     <ClInclude Include="Tools\Toolbar.h" />
+    <ClInclude Include="UI\Bubble.h" />
     <ClInclude Include="UI\CameraControls.h" />
     <ClInclude Include="UI\CameraPosition.h" />
     <ClInclude Include="UI\Console.h" />
@@ -288,6 +293,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\di.h" />
     <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\GoTo.h" />
+    <ClInclude Include="UI\IBubble.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
     <ClInclude Include="UI\LevelInfo.h" />

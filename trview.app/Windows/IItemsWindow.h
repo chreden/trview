@@ -58,6 +58,11 @@ namespace trview
         /// Get the selected item.
         /// @returns The selected item, if present.
         virtual std::optional<Item> selected_item() const = 0;
+        /// <summary>
+        /// Update the window.
+        /// </summary>
+        /// <param name="delta">Elapsed time since previous update.</param>
+        virtual void update(float delta) = 0;
     };
 }
 
