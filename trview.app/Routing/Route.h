@@ -32,14 +32,14 @@ namespace trview
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
-        virtual const Waypoint& waypoint(uint32_t index) const override;
-        virtual Waypoint& waypoint(uint32_t index) override;
+        virtual const IWaypoint& waypoint(uint32_t index) const override;
+        virtual IWaypoint& waypoint(uint32_t index) override;
         virtual uint32_t waypoints() const override;
     private:
         uint32_t next_index() const;
 
         IWaypoint::Source _waypoint_source;
-        std::vector<Waypoint> _waypoints;
+        std::vector<std::shared_ptr<IWaypoint>> _waypoints;
         std::shared_ptr<IMesh> _waypoint_mesh;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t _selected_index{ 0u };

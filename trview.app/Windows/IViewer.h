@@ -75,7 +75,7 @@ namespace trview
         /// Select the specified waypoint
         /// @param index The waypoint to select.
         /// @remarks This will not raise the on_waypoint_selected event.
-        virtual void select_waypoint(const Waypoint& waypoint) = 0;
+        virtual void select_waypoint(const IWaypoint& waypoint) = 0;
 
         virtual void set_camera_mode(CameraMode camera_mode) = 0;
 

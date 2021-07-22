@@ -306,7 +306,7 @@ namespace trview
         return right_panel;
     }
 
-    Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const Waypoint& waypoint)
+    Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const IWaypoint& waypoint)
     {
         std::wstring type = waypoint_type_to_string(waypoint.type());
         if (waypoint.type() == Waypoint::Type::Entity)

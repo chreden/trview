@@ -73,7 +73,7 @@ namespace trview
         virtual void select_item(const Item& item) override;
         virtual void select_room(uint32_t room_number) override;
         virtual void select_trigger(const std::weak_ptr<ITrigger>& trigger) override;
-        virtual void select_waypoint(const Waypoint& waypoint) override;
+        virtual void select_waypoint(const IWaypoint& waypoint) override;
         virtual void set_camera_mode(CameraMode camera_mode) override;
         virtual void set_route(const std::shared_ptr<IRoute>& route) override;
         virtual void set_show_compass(bool value) override;

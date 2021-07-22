@@ -115,13 +115,13 @@ namespace trview
         /// </summary>
         /// <param name="index">The index to get.</param>
         /// <returns>The waypoint.</returns>
-        virtual const Waypoint& waypoint(uint32_t index) const = 0;
+        virtual const IWaypoint& waypoint(uint32_t index) const = 0;
         /// <summary>
         /// Get the waypoint at the specified index.
         /// </summary>
         /// <param name="index">The index to get.</param>
         /// <returns>The waypoint.</returns>
-        virtual Waypoint& waypoint(uint32_t index) = 0;
+        virtual IWaypoint& waypoint(uint32_t index) = 0;
         /// <summary>
         /// Get the number of waypoints in the route.
         /// </summary>

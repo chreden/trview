@@ -32,7 +32,7 @@ TEST(Route, Add)
     route->add(Vector3(0, 1, 0), 10);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 1);
-    auto waypoint = route->waypoint(0);
+    auto& waypoint = route->waypoint(0);
     ASSERT_EQ(waypoint.position(), Vector3(0, 1, 0));
     ASSERT_EQ(waypoint.room(), 10);
     ASSERT_EQ(waypoint.type(), Waypoint::Type::Position);
@@ -44,7 +44,7 @@ TEST(Route, AddSpecificType)
     route->add(Vector3(0, 1, 0), 10, Waypoint::Type::Trigger, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 1);
-    auto waypoint = route->waypoint(0);
+    auto& waypoint = route->waypoint(0);
     ASSERT_EQ(waypoint.position(), Vector3(0, 1, 0));
     ASSERT_EQ(waypoint.room(), 10);
     ASSERT_EQ(waypoint.type(), Waypoint::Type::Trigger);
@@ -77,7 +77,7 @@ TEST(Route, InsertAtPosition)
     route->insert(Vector3(0, 1, 0), 2, 1);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
-    auto waypoint = route->waypoint(1);
+    auto& waypoint = route->waypoint(1);
     ASSERT_EQ(waypoint.position(), Vector3(0, 1, 0));
     ASSERT_EQ(waypoint.room(), 2);
     ASSERT_EQ(waypoint.type(), Waypoint::Type::Position);
@@ -92,7 +92,7 @@ TEST(Route, InsertSpecificTypeAtPosition)
     route->insert(Vector3(0, 1, 0), 2, 1, Waypoint::Type::Entity, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
-    auto waypoint = route->waypoint(1);
+    auto& waypoint = route->waypoint(1);
     ASSERT_EQ(waypoint.position(), Vector3(0, 1, 0));
     ASSERT_EQ(waypoint.room(), 2);
     ASSERT_EQ(waypoint.type(), Waypoint::Type::Entity);
@@ -110,7 +110,7 @@ TEST(Route, Insert)
     ASSERT_EQ(index, 2);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
-    auto waypoint = route->waypoint(2);
+    auto& waypoint = route->waypoint(2);
     ASSERT_EQ(waypoint.position(), Vector3(0, 1, 0));
     ASSERT_EQ(waypoint.room(), 2);
     ASSERT_EQ(waypoint.type(), Waypoint::Type::Position);

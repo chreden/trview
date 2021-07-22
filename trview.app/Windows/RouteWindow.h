@@ -52,7 +52,7 @@ namespace trview
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
-        ui::Listbox::Item create_listbox_item(uint32_t index, const Waypoint& waypoint);
+        ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
