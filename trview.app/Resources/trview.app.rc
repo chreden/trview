@@ -105,7 +105,7 @@ CAPTION "About trview"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDI_TRVIEW,IDC_STATIC,14,14,21,20
-    LTEXT           "trview, Version 1.5.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "trview, Version 1.6.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2021 trview team",IDC_STATIC,42,26,127,17
     LTEXT           "Licensed under the MIT license\r\n\
 Uses DirectXTK (MIT)\r\n\
@@ -196,8 +196,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,5,1,0
- PRODUCTVERSION 1,5,1,0
+ FILEVERSION 1,6,0,0
+ PRODUCTVERSION 1,6,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -213,12 +213,12 @@ BEGIN
         BLOCK "080904b0"
         BEGIN
             VALUE "FileDescription", "TRView"
-            VALUE "FileVersion", "1.5.1.0"
+            VALUE "FileVersion", "1.6.0.0"
             VALUE "InternalName", "trview.exe"
             VALUE "LegalCopyright", "Copyright (C) chreden 2021"
             VALUE "OriginalFilename", "trview.exe"
             VALUE "ProductName", "TRView"
-            VALUE "ProductVersion", "1.5.1.0"
+            VALUE "ProductVersion", "1.6.0.0"
         END
     END
     BLOCK "VarFileInfo"
