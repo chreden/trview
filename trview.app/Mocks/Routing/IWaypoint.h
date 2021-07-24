@@ -23,6 +23,10 @@ namespace trview
             MOCK_METHOD(void, get_transparent_triangles, (ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_visible, (bool), (override));
+            /// <summary>
+            /// Index used in a test.
+            /// </summary>
+            uint32_t test_index;
         };
     }
 }
