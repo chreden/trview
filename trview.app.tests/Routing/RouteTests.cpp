@@ -45,7 +45,7 @@ namespace
     /// </summary>
     /// <param name="test_index">Initial number, should be 0 and live as long or longer than the source.</param>
     /// <returns>Waypoint source.</returns>
-    IWaypoint::Source indexed_source(uint32_t test_index)
+    IWaypoint::Source indexed_source(uint32_t& test_index)
     {
         return [&](auto&& position, auto&& room, auto&& type, auto&& index, auto&& colour)
         {
