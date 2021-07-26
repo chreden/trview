@@ -9,9 +9,6 @@ namespace trview
 {
     namespace
     {
-        const float PoleThickness = 0.05f;
-        const float RopeThickness = 0.015f;
-
         std::vector<uint8_t> from_base64(const std::string& text)
         {
             const auto b64 = to_utf16(text);
@@ -43,8 +40,8 @@ namespace trview
         }
     }
 
-    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source, const IWaypoint::Source& waypoint_source)
-        : _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source)
+    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source)
+        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source)
     {
     }
 
@@ -124,10 +121,8 @@ namespace trview
 
         for (uint32_t i = 0; i < _waypoints.size(); ++i)
         {
-            const auto& waypoint = _waypoints[i];
-
-            auto box = BoundingBox(waypoint->position() - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
-
+            const auto box = _waypoints[i]->bounding_box();
+            
             float distance = 0;
             if (box.Intersects(position, direction, distance) && (!result.hit || distance < result.distance))
             {
@@ -163,16 +158,9 @@ namespace trview
             auto& waypoint = _waypoints[i];
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
-            // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
-                const auto current = waypoint->position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
-                const auto next_waypoint = _waypoints[i + 1]->position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
-                const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
-                const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
-                const auto length = (next_waypoint - current).Length();
-                const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(to_wvp, texture_storage, _colour);
+                waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
         }
 

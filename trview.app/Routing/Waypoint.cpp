@@ -8,6 +8,7 @@ namespace trview
     namespace
     {
         const float PoleThickness = 0.05f;
+        const float RopeThickness = 0.015f;
     }
 
     Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
@@ -36,8 +37,24 @@ namespace trview
         _mesh->render(blob_wvp, texture_storage, _route_colour);
     }
 
+    void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
+        const auto current = position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto next_waypoint_pos = next_waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto mid = Vector3::Lerp(current, next_waypoint_pos, 0.5f);
+        const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint_pos, Vector3::Up)).Invert();
+        const auto length = (next_waypoint_pos - current).Length();
+        const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
+        _mesh->render(to_wvp, texture_storage, colour);
+    }
+
     void Waypoint::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
     {
+    }
+
+    DirectX::BoundingBox Waypoint::bounding_box() const
+    {
+        return DirectX::BoundingBox(position() - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
     }
 
     DirectX::SimpleMath::Vector3 Waypoint::position() const

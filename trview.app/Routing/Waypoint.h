@@ -26,18 +26,10 @@ namespace trview
 
         /// Destructor for waypoint.
         virtual ~Waypoint() = default;
-
-        /// Render the waypoint in the 3D view.
-        /// @param camera The current camera being used for rendering.
-        /// @param texture_storage The current texture storage instance.
-        /// @param colour The colour to render this object.
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
-
-        /// Get the transparent triangles that are contained in this object.
-        /// @param transparency The transparency buffer to add triangles to.
-        /// @param camera The current camera being used for rendering.
-        /// @param colour The colour to render the triangles.
+        virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
+        virtual DirectX::BoundingBox bounding_box() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual Type type() const override;
         virtual bool has_save() const override;
@@ -48,7 +40,6 @@ namespace trview
         virtual void set_notes(const std::wstring& notes) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
-
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
     private:

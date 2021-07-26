@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Routing/IRoute.h>
@@ -13,7 +12,7 @@ namespace trview
     class Route final : public IRoute
     {
     public:
-        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source, const IWaypoint::Source& waypoint_source);
+        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source);
         virtual ~Route() = default;
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room) override;
@@ -40,7 +39,6 @@ namespace trview
 
         IWaypoint::Source _waypoint_source;
         std::vector<std::shared_ptr<IWaypoint>> _waypoints;
-        std::shared_ptr<IMesh> _waypoint_mesh;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t _selected_index{ 0u };
         Colour _colour{ Colour::Green };
