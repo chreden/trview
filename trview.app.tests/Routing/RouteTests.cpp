@@ -61,7 +61,7 @@ namespace
     std::vector<uint32_t> get_order(Route& route)
     {
         std::vector<uint32_t> waypoints;
-        for (auto i = 0; i < route.waypoints(); ++i)
+        for (auto i = 0u; i < route.waypoints(); ++i)
         {
             waypoints.push_back(static_cast<const MockWaypoint&>(route.waypoint(i)).test_index);
         }
