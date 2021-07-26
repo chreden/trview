@@ -7,8 +7,7 @@
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/ILevel.h>
-#include <trview.app/Routing/Route.h>
-#include <trview.app/Routing/Waypoint.h>
+#include <trview.app/Routing/IRoute.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Camera/CameraMode.h>
 
@@ -44,7 +43,7 @@ namespace trview
         Event<uint32_t> on_waypoint_removed;
 
         /// Event raised when the viewer wants to add a waypoint.
-        Event<DirectX::SimpleMath::Vector3, uint32_t, Waypoint::Type, uint32_t> on_waypoint_added;
+        Event<DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
 
         virtual CameraMode camera_mode() const = 0;
 

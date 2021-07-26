@@ -86,7 +86,7 @@ namespace trview
         };
         _token_store += _ui->on_add_waypoint += [&]()
         {
-            auto type = _context_pick.type == PickResult::Type::Entity ? Waypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? Waypoint::Type::Trigger : Waypoint::Type::Position;
+            auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
             on_waypoint_added(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };

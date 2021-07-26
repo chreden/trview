@@ -9,12 +9,6 @@ namespace trview
     class Waypoint final : public IWaypoint
     {
     public:
-        /// Create a new waypoint of position type.
-        /// @param mesh The waypoint mesh.
-        /// @param position The position of the waypoint in the world.
-        /// @param room The room that the waypoint is in.
-        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room);
-
         /// Create a new waypoint.
         /// @param mesh The waypoint mesh.
         /// @param position The position of the waypoint in the world.

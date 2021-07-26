@@ -185,13 +185,13 @@ namespace trview
             const auto index = _route->waypoint(_selected_index).index();
             switch (_selected_type)
             {
-            case Waypoint::Type::Entity:
+            case IWaypoint::Type::Entity:
                 if (index < _all_items.size())
                 {
                     on_item_selected(_all_items[index]);
                 }
                 break;
-            case Waypoint::Type::Trigger:
+            case IWaypoint::Type::Trigger:
                 if (index < _all_triggers.size())
                 {
                     on_trigger_selected(_all_triggers[index]);
@@ -309,7 +309,7 @@ namespace trview
     Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const IWaypoint& waypoint)
     {
         std::wstring type = waypoint_type_to_string(waypoint.type());
-        if (waypoint.type() == Waypoint::Type::Entity)
+        if (waypoint.type() == IWaypoint::Type::Entity)
         {
             if (waypoint.index() < _all_items.size())
             {
@@ -320,7 +320,7 @@ namespace trview
                 type = L"Invalid entity";
             }
         }
-        else if (waypoint.type() == Waypoint::Type::Trigger)
+        else if (waypoint.type() == IWaypoint::Type::Trigger)
         {
             if (waypoint.index() < _all_triggers.size())
             {
@@ -381,10 +381,10 @@ namespace trview
         _selected_type = waypoint.type();
         _selected_index = index;
 
-        if (waypoint.type() != Waypoint::Type::Position)
+        if (waypoint.type() != IWaypoint::Type::Position)
         {
             stats.push_back(make_item(L"Target Index", std::to_wstring(waypoint.index())));
-            if (waypoint.type() == Waypoint::Type::Entity)
+            if (waypoint.type() == IWaypoint::Type::Entity)
             {
                 std::wstring type = L"Invalid entity";
                 if (waypoint.index() < _all_items.size())
@@ -393,7 +393,7 @@ namespace trview
                 }
                 stats.push_back(make_item(L"Entity", type));
             }
-            else if (waypoint.type() == Waypoint::Type::Trigger)
+            else if (waypoint.type() == IWaypoint::Type::Trigger)
             {
                 std::wstring type = L"Invalid trigger";
                 if (waypoint.index() < _all_triggers.size())

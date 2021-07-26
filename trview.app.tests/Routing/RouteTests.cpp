@@ -98,7 +98,7 @@ TEST(Route, AddSpecificType)
         return std::make_unique<MockWaypoint>();
     };
     auto route = register_test_module().with_waypoint_source(source).build();
-    route->add(Vector3(0, 1, 0), 10, Waypoint::Type::Trigger, 100);
+    route->add(Vector3(0, 1, 0), 10, IWaypoint::Type::Trigger, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 1);
     ASSERT_EQ(waypoint_values.value().position, Vector3(0, 1, 0));
@@ -147,7 +147,7 @@ TEST(Route, InsertSpecificTypeAtPosition)
     route->add(Vector3::Zero, 0);
     route->add(Vector3::Zero, 1);
     route->set_unsaved(false);
-    route->insert(Vector3(0, 1, 0), 2, 1, Waypoint::Type::Entity, 100);
+    route->insert(Vector3(0, 1, 0), 2, 1, IWaypoint::Type::Entity, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
     auto& waypoint = route->waypoint(1);

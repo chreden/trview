@@ -55,10 +55,10 @@ namespace trview
 
     void Route::add(const Vector3& position, uint32_t room)
     {
-        add(position, room, Waypoint::Type::Position, 0u);
+        add(position, room, IWaypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
         _waypoints.push_back(_waypoint_source(position, room, type, type_index, _colour));
         set_unsaved(true);
@@ -83,9 +83,9 @@ namespace trview
     {
         if (index >= _waypoints.size())
         {
-            return add(position, room, Waypoint::Type::Position, 0u);
+            return add(position, room, IWaypoint::Type::Position, 0u);
         }
-        insert(position, room, index, Waypoint::Type::Position, 0u);
+        insert(position, room, index, IWaypoint::Type::Position, 0u);
         set_unsaved(true);
     }
 
@@ -96,13 +96,13 @@ namespace trview
         return index;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
         _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, room, type, type_index, _colour));
         set_unsaved(true);
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
         uint32_t index = next_index();
         insert(position, room, index, type, type_index);
@@ -245,7 +245,7 @@ namespace trview
             for (const auto& waypoint : json["waypoints"])
             {
                 auto type_string = waypoint["type"].get<std::string>();
-                Waypoint::Type type = waypoint_type_from_string(type_string);
+                IWaypoint::Type type = waypoint_type_from_string(type_string);
  
                 auto position_string = waypoint["position"].get<std::string>();
 

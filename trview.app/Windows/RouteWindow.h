@@ -6,7 +6,7 @@
 #include <trview.ui/Dropdown.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
-#include <trview.app/Routing/Waypoint.h>
+#include <trview.app/Routing/IWaypoint.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/Room.h>
 #include <trview.common/Windows/IClipboard.h>
@@ -65,7 +65,7 @@ namespace trview
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
-        Waypoint::Type _selected_type{ Waypoint::Type::Position };
+        IWaypoint::Type _selected_type{ IWaypoint::Type::Position };
         uint32_t       _selected_index{ 0u };
         std::shared_ptr<IClipboard> _clipboard;
         std::shared_ptr<IDialogs> _dialogs;

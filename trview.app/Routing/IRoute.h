@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <trview.app/Routing/Waypoint.h>
+#include <trview.app/Routing/IWaypoint.h>
 
 namespace trview
 {
@@ -25,7 +25,7 @@ namespace trview
         /// <param name="room">The room that waypoint is in.</param>
         /// <param name="type">The type of the waypoint.</param>
         /// <param name="type_index">The index of the referred to entity or trigger.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) = 0;
+        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Remove all of the waypoints from the route.
         /// </summary>
@@ -57,7 +57,7 @@ namespace trview
         /// <param name="index">The index in the route list to put the waypoint.</param>
         /// <param name="type">The type of waypoint.</param>
         /// <param name="type_index">The index of the trigger or entity to reference.</param>
-        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index) = 0;
+        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Insert a new non-positional waypoint based on the currently selected waypoint.
         /// </summary>
@@ -66,7 +66,7 @@ namespace trview
         /// <param name="type">The type of waypoint.</param>
         /// <param name="type_index">The index of the trigger or entity to reference.</param>
         /// <returns>The index of the new waypoint.</returns>
-        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) = 0;
+        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Determines whether the route has any unsaved changes.
         /// </summary>

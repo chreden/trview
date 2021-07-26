@@ -11,13 +11,13 @@ namespace trview
         public:
             virtual ~MockRoute() = default;
             MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, uint32_t), (override));
-            MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, uint32_t, Waypoint::Type, uint32_t), (override));
+            MOCK_METHOD(void, add, (const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
             MOCK_METHOD(void, clear, (), (override));
             MOCK_METHOD(Colour, colour, (), (const, override));
             MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t), (override));
             MOCK_METHOD(uint32_t, insert, (const DirectX::SimpleMath::Vector3&, uint32_t), (override));
-            MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t, Waypoint::Type, uint32_t), (override));
-            MOCK_METHOD(uint32_t, insert, (const DirectX::SimpleMath::Vector3&, uint32_t, Waypoint::Type, uint32_t), (override));
+            MOCK_METHOD(void, insert, (const DirectX::SimpleMath::Vector3&, uint32_t, uint32_t, IWaypoint::Type, uint32_t), (override));
+            MOCK_METHOD(uint32_t, insert, (const DirectX::SimpleMath::Vector3&, uint32_t, IWaypoint::Type, uint32_t), (override));
             MOCK_METHOD(bool, is_unsaved, (), (const, override));
             MOCK_METHOD(PickResult, pick, (const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&), (const, override));
             MOCK_METHOD(void, remove, (uint32_t), (override));

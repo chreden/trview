@@ -11,11 +11,6 @@ namespace trview
         const float RopeThickness = 0.015f;
     }
 
-    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
-        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u), _room(room)
-    {
-    }
-
     Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
         : _mesh(mesh), _position(position), _type(type), _index(index), _room(room), _route_colour(route_colour)
     {
@@ -62,7 +57,7 @@ namespace trview
         return _position;
     }
 
-    Waypoint::Type Waypoint::type() const
+    IWaypoint::Type Waypoint::type() const
     {
         return _type;
     }
