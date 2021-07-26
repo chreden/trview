@@ -20,9 +20,9 @@ namespace trview
                 [](const auto& injector) -> IWaypoint::Source
                 {
                     const auto mesh = create_cube_mesh(injector.create<IMesh::Source>());
-                    return [=](auto&& pos, auto&& room, auto&& type, auto&& index, auto&& route_colour)
+                    return [=](auto&&... args)
                     {
-                        return std::make_unique<Waypoint>(mesh, pos, room, type, index, route_colour);
+                        return std::make_unique<Waypoint>(mesh, args...);
                     };
                 }),
             di::bind<IRoute>.to<Route>(),
