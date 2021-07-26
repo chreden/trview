@@ -56,10 +56,10 @@ namespace
     }
 
     /// <summary>
-    /// 
+    /// Get the test index values of the waypoints in the order they are in the list.
     /// </summary>
-    /// <param name="route"></param>
-    /// <returns></returns>
+    /// <param name="route">The route to test.</param>
+    /// <returns>The ordered index values.</returns>
     std::vector<uint32_t> get_order(Route& route)
     {
         std::vector<uint32_t> waypoints;
