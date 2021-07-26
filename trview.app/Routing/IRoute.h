@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <trview.app/Routing/IWaypoint.h>
+#include <trview.app/Geometry/PickResult.h>
 
 namespace trview
 {

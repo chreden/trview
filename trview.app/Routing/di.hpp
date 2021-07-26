@@ -2,6 +2,7 @@
 
 #include <external/boost/di.hpp>
 #include "Route.h"
+#include "Waypoint.h"
 #include "Actions.h"
 
 namespace trview
