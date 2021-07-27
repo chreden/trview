@@ -5,20 +5,22 @@
 
 namespace trview
 {
+    /// <summary>
     /// A waypoint is an entry in a route.
+    /// </summary>
     class Waypoint final : public IWaypoint
     {
-    public:
+    public:       
+        /// <summary>
         /// Create a new waypoint.
-        /// @param mesh The waypoint mesh.
-        /// @param position The position of the waypoint in the world.
-        /// @param room The room that waypoint is in.
-        /// @param type The type of waypoint.
-        /// @param index The index of the entity or trigger being referenced if this is a non-position type.
-        /// @param route_colour The colour of the route.
+        /// </summary>
+        /// <param name="mesh">The waypoint mesh.</param>
+        /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="room">The room that waypoint is in.</param>
+        /// <param name="type">The type of waypoint.</param>
+        /// <param name="index">The index of the entity or trigger being referenced if this is a non-position type.</param>
+        /// <param name="route_colour">The colour of the route.</param>
         explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
-
-        /// Destructor for waypoint.
         virtual ~Waypoint() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;

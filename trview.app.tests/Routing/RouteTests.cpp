@@ -45,7 +45,7 @@ namespace
     /// <returns>Waypoint source.</returns>
     IWaypoint::Source indexed_source(uint32_t& test_index)
     {
-        return [&](auto&& position, auto&& room, auto&& type, auto&& index, auto&& colour)
+        return [&](auto&&...)
         {
             auto waypoint = std::make_unique<MockWaypoint>();
             waypoint->test_index = test_index++;

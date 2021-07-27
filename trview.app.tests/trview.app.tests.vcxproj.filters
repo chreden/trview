@@ -95,6 +95,9 @@
     <ClCompile Include="UI\BubbleTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\WaypointTests.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
