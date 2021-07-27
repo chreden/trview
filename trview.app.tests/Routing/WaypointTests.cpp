@@ -26,7 +26,7 @@ TEST(Waypoint, Notes)
 {
     Waypoint waypoint(std::make_shared<MockMesh>(), Vector3(1, 2, 3), 12, IWaypoint::Type::Trigger, 23, Colour::Red);
     waypoint.set_notes(L"Test notes\nNew line");
-    ASSERT_EQ(waypoint.notes(), L"Test notes\nNew Line");
+    ASSERT_EQ(waypoint.notes(), L"Test notes\nNew line");
 }
 
 TEST(Waypoint, SaveFile)
