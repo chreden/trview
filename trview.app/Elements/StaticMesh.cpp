@@ -37,6 +37,13 @@ namespace trview
         else
         {
             _mesh->render(_world * camera.view_projection(), texture_storage, colour);
+        }
+    }
+
+    void StaticMesh::render_bounding_box(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
+        if (!_sprite_mesh)
+        {
             _bounding_mesh->render(_world * camera.view_projection(), texture_storage, Colour::Magenta);
         }
     }

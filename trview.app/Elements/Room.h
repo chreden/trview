@@ -40,6 +40,7 @@ namespace trview
         virtual std::set<uint16_t> neighbours() const override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction, PickFilter filters = PickFilter::Default) const override;
         virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) override;
+        virtual void render_bounding_boxes(const ICamera& camera) override;
         virtual void render_contained(const ICamera& camera, SelectionMode selected, bool show_water) override;
         virtual void add_entity(const std::weak_ptr<IEntity>& entity) override;
         virtual void add_trigger(const std::weak_ptr<ITrigger>& trigger) override;

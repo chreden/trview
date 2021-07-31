@@ -236,6 +236,21 @@ namespace trview
             }
         }
 
+        {
+            const auto context = _device->context();
+            graphics::RasterizerStateStore rasterizer_store(context);
+            if (!_show_wireframe)
+            {
+                context->RSSetState(_wireframe_rasterizer.Get());
+            }
+
+            // Render any bounding boxes
+            for (const auto& room : rooms)
+            {
+                room.room.render_bounding_boxes(camera);
+            }
+        }
+
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.

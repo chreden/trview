@@ -177,6 +177,11 @@ namespace trview
         /// <param name="show_water">Whether to render water effects.</param>
         virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) = 0;
         /// <summary>
+        /// Render the bounding boxes in the room.
+        /// </summary>
+        /// <param name="camera">The current viewpoint.</param>
+        virtual void render_bounding_boxes(const ICamera& camera) = 0;
+        /// <summary>
         /// Render the contents of the room.
         /// </summary>
         /// <param name="camera">The current viewpoint.</param>

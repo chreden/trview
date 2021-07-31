@@ -200,6 +200,15 @@ namespace trview
         render_contained(camera, colour);
     }
 
+    void Room::render_bounding_boxes(const ICamera& camera)
+    {
+        Color colour = room_colour(false, SelectionMode::Selected);
+        for (const auto& mesh : _static_meshes)
+        {
+            mesh->render_bounding_box(camera, *_texture_storage, colour);
+        }
+    }
+
     void Room::render_contained(const ICamera& camera, SelectionMode selected, bool show_water)
     {
         Color colour = room_colour(water() && show_water, selected);
