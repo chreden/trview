@@ -58,11 +58,12 @@ namespace trview
                     };
                 }),
             di::bind<IStaticMesh::MeshSource>.to(
-                [](const auto&) -> IStaticMesh::MeshSource
+                [](const auto& injector) -> IStaticMesh::MeshSource
                 {
-                    return [&](auto&& room_mesh, auto&& level_mesh, auto&& mesh)
+                    auto bounding_mesh = create_cube_mesh(injector.create<IMesh::Source>());
+                    return [=](auto&& room_mesh, auto&& level_mesh, auto&& mesh)
                     {
-                        return std::make_shared<StaticMesh>(room_mesh, level_mesh, mesh);
+                        return std::make_shared<StaticMesh>(room_mesh, level_mesh, mesh, bounding_mesh);
                     };
                 }),
             di::bind<IStaticMesh::PositionSource>.to(
