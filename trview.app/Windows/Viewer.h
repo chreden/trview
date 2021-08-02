@@ -107,6 +107,7 @@ namespace trview
         void toggle_show_hidden_geometry();
         void set_show_water(bool show);
         void set_show_wireframe(bool show);
+        void set_show_bounding_boxes(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();

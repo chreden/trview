@@ -66,6 +66,12 @@ namespace trview
         /// @remarks This event is not raised by the set_wireframe function.
         Event<bool> on_show_wireframe;
 
+        /// <summary>
+        /// Event raised when the user toggles bounding boxes. The boolean passed as a parameter when this event is raised.
+        /// </summary>
+        /// <remarks>This event is not raised by the set_show_bounding_boxes function.</remarks>
+        Event<bool> on_show_bounding_boxes;
+
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// @param value The group to change.
         /// @param enabled Whether the group is enabled.
@@ -115,6 +121,12 @@ namespace trview
         /// @param value Whether to use alternate groups or a single toggle.
         void set_use_alternate_groups(bool value);
 
+        /// <summary>
+        /// Set whether to show bounding boxes.
+        /// </summary>
+        /// <param name="value">Whether to show bouding boxes.</param>
+        void set_show_bounding_boxes(bool value);
+
         /// Get the current value of the show hidden geometry checkbox.
         /// @returns The current value of the checkbox.
         bool show_hidden_geometry() const;
@@ -130,6 +142,12 @@ namespace trview
         /// Get the current value of the wireframe checkbox.
         /// @returns The current value of the checkbox.
         bool show_wireframe() const;
+
+        /// <summary>
+        /// Get the current value of the bounding boxes checkbox.
+        /// </summary>
+        /// <returns>The current value of the checkbox.</returns>
+        bool show_bounding_boxes() const;
     private:
         TokenStore _token_store;
         ui::Checkbox* _highlight;
@@ -139,6 +157,7 @@ namespace trview
         ui::Checkbox* _water;
         ui::Checkbox* _enabled;
         ui::Checkbox* _wireframe;
+        ui::Checkbox* _bounding_boxes;
         ui::NumericUpDown* _depth;
         ui::Window* _tr1_3_panel;
         ui::Window* _tr4_5_panel;

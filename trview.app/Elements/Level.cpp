@@ -236,6 +236,7 @@ namespace trview
             }
         }
 
+        if (_show_bounding_boxes)
         {
             const auto context = _device->context();
             graphics::RasterizerStateStore rasterizer_store(context);
@@ -641,6 +642,13 @@ namespace trview
     void Level::set_show_wireframe(bool show)
     {
         _show_wireframe = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_bounding_boxes(bool show)
+    {
+        _show_bounding_boxes = show;
         _regenerate_transparency = true;
         on_level_changed();
     }

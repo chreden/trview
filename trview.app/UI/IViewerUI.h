@@ -95,6 +95,11 @@ namespace trview
         /// Event raised when the show wireframe setting is changed.
         Event<bool> on_show_wireframe;
 
+        /// <summary>
+        /// Event raised when the show bouding boxes setting is changed.
+        /// </summary>
+        Event<bool> on_show_bounding_boxes;
+
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
 
@@ -241,6 +246,12 @@ namespace trview
         /// @param value Whether wireframe is visible.
         virtual void set_show_wireframe(bool value) = 0;
 
+        /// <summary>
+        /// Set whether to show bounding boxes.
+        /// </summary>
+        /// <param name="value">Whether bounding boxes are visible.</param>
+        virtual void set_show_bounding_boxes(bool value) = 0;
+
         /// Set whether the level uses alternate groups.
         /// @param value Whether alternate groups are used.
         virtual void set_use_alternate_groups(bool value) = 0;
@@ -260,6 +271,11 @@ namespace trview
 
         /// Get whether wireframe is visible.
         virtual bool show_wireframe() const = 0;
+
+        /// <summary>
+        /// Get whether bounding boxes are visible.
+        /// </summary>
+        virtual bool show_bounding_boxes() const = 0;
 
         /// Get whether the context menu is visible.
         virtual bool show_context_menu() const = 0;

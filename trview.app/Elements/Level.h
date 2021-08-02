@@ -72,6 +72,7 @@ namespace trview
         virtual bool show_hidden_geometry() const override;
         virtual void set_show_water(bool show) override;
         virtual void set_show_wireframe(bool show) override;
+        virtual void set_show_bounding_boxes(bool show) override;
         virtual bool show_triggers() const override;
         virtual void set_selected_trigger(uint32_t number) override;
         virtual const ILevelTextureStorage& texture_storage() const override;
@@ -150,6 +151,7 @@ namespace trview
         bool _show_hidden_geometry{ false };
         bool _show_water{ true };
         bool _show_wireframe{ false };
+        bool _show_bounding_boxes{ false };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;
