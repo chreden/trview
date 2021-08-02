@@ -525,3 +525,8 @@ TEST(Viewer, CameraRotationUpdated)
     ASSERT_FLOAT_EQ(2.0f, camera.rotation_yaw());
     ASSERT_FLOAT_EQ(1.0f, camera.rotation_pitch());
 }
+
+TEST(Viewer, SetShowBoundingBox)
+{
+    FAIL();
+}

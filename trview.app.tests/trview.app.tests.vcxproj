@@ -26,6 +26,7 @@
     <ClCompile Include="Elements\EntityTests.cpp" />
     <ClCompile Include="Elements\LevelTests.cpp" />
     <ClCompile Include="Elements\RoomTests.cpp" />
+    <ClCompile Include="Elements\StaticMeshTests.cpp" />
     <ClCompile Include="Elements\TypeNameLookupTests.cpp" />
     <ClCompile Include="FileDropperTests.cpp" />
     <ClCompile Include="FreeCameraTests.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="UI\BubbleTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
+    <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
     <ClCompile Include="WindowResizerTests.cpp" />
     <ClCompile Include="Windows\RouteWindowManagerTests.cpp" />

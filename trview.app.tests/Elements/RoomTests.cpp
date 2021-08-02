@@ -564,3 +564,8 @@ TEST(Room, WaterDetected)
     auto room = register_test_module().with_room(level_room).build();
     ASSERT_EQ(room->water(), true);
 }
+
+TEST(Room, BoundingBoxesRendered)
+{
+    FAIL();
+}

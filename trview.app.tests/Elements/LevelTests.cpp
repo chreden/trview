@@ -269,3 +269,9 @@ TEST(Level, PickUsesCorrectMinimalFilters)
     MockCamera camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);
 }
+
+TEST(Level, BoundingBoxesRendered)
+{
+    FAIL();
+}
+

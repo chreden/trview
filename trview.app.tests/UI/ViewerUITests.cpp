@@ -69,3 +69,8 @@ TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
     ASSERT_TRUE(settings.has_value());
     ASSERT_FALSE(settings.value().camera_display_degrees);
 }
+
+TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
+{
+    FAIL();
+}
