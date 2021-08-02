@@ -202,10 +202,9 @@ namespace trview
 
     void Room::render_bounding_boxes(const ICamera& camera)
     {
-        Color colour = room_colour(false, SelectionMode::Selected);
         for (const auto& mesh : _static_meshes)
         {
-            mesh->render_bounding_box(camera, *_texture_storage, colour);
+            mesh->render_bounding_box(camera, *_texture_storage, Colour::White);
         }
     }
 

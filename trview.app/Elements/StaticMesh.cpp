@@ -46,11 +46,8 @@ namespace trview
         {
             const auto size = (_collision_max - _collision_min);
             const auto adjust = _collision_min + size * 0.5f;
-            const auto wvp = Matrix::CreateScale(size) *
-                Matrix::CreateTranslation(adjust) *
-                _world *
-                camera.view_projection();
-            _bounding_mesh->render(wvp, texture_storage, Colour::Magenta);
+            const auto wvp = Matrix::CreateScale(size) * Matrix::CreateTranslation(adjust) * _world * camera.view_projection();
+            _bounding_mesh->render(wvp, texture_storage, colour);
         }
     }
 

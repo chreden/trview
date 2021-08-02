@@ -244,7 +244,6 @@ namespace trview
                 context->RSSetState(_wireframe_rasterizer.Get());
             }
 
-            // Render any bounding boxes
             for (const auto& room : rooms)
             {
                 room.room.render_bounding_boxes(camera);
