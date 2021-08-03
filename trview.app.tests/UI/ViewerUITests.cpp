@@ -45,6 +45,12 @@ namespace
                 settings_window_source = source;
                 return *this;
             }
+
+            test_module& with_view_options_source(const IViewOptions::Source& source)
+            {
+                view_options_source = source;
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -74,11 +80,28 @@ TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
 
 TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
 {
-    FAIL();
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    auto view_options_ptr_actual = std::move(view_options_ptr);
+    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
+
+    EXPECT_CALL(view_options, set_show_bounding_boxes(true)).Times(1);
+
+    ui->set_show_bounding_boxes(true);
 }
 
 TEST(ViewerUI, ShowBoundingBoxesEventRaised)
 {
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    auto view_options_ptr_actual = std::move(view_options_ptr);
+    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
 
-    FAIL();
+    std::optional<bool> show;
+    auto token = ui->on_show_bounding_boxes += [&](const auto& value)
+    {
+        show = value;
+    };
+
+    view_options.on_show_bounding_boxes(true);
+    ASSERT_TRUE(show.has_value());
+    ASSERT_TRUE(show.value());
 }

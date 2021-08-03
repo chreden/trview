@@ -11,7 +11,7 @@
 #include <trview.app/UI/RoomNavigator.h>
 #include <trview.app/UI/ISettingsWindow.h>
 #include <trview.app/UI/Tooltip.h>
-#include <trview.app/UI/ViewOptions.h>
+#include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
 #include <trview.ui/Input.h>
 #include <trview.ui.render/Renderer.h>
