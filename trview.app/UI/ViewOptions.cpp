@@ -10,6 +10,8 @@
 
 namespace trview
 {
+    const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
+
     namespace Colours
     {
         const Colour FlipOff{ 0.2f, 0.2f, 0.2f };
@@ -49,6 +51,7 @@ namespace trview
         _wireframe->on_state_changed += on_show_wireframe;
 
         _bounding_boxes = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Bounds"));
+        _bounding_boxes->set_name(Names::show_bounding_boxes);
         _bounding_boxes->on_state_changed += on_show_bounding_boxes;
 
         const auto panel_size = Size(140, 20);

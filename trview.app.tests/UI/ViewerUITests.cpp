@@ -6,6 +6,7 @@
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/UI/ISettingsWindow.h>
+#include <trview.app/Mocks/UI/IViewOptions.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -30,12 +31,13 @@ namespace
             IRenderer::Source ui_renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); }};
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             ISettingsWindow::Source settings_window_source{ [](auto&&...) { return std::make_unique<MockSettingsWindow>(); }};
+            IViewOptions::Source view_options_source{ [](auto&&...) { return std::make_unique<MockViewOptions>(); } };
 
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source);
+                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source);
             }
 
             test_module& with_settings_window_source(const ISettingsWindow::Source& source)
@@ -72,5 +74,11 @@ TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
 
 TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
 {
+    FAIL();
+}
+
+TEST(ViewerUI, ShowBoundingBoxesEventRaised)
+{
+
     FAIL();
 }

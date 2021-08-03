@@ -28,7 +28,8 @@ namespace trview
             const ui::IInput::Source& input_source,
             const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
-            const ISettingsWindow::Source& settings_window_source);
+            const ISettingsWindow::Source& settings_window_source,
+            const IViewOptions::Source& view_options_source);
 
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
@@ -81,7 +82,7 @@ namespace trview
         virtual void print_console(const std::wstring& text) override;
         virtual void initialise_input() override;
     private:
-        void generate_tool_window(const ITextureStorage& texture_storage);
+        void generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);
         void register_change_detection(ui::Control* control);
 
@@ -96,7 +97,7 @@ namespace trview
         std::unique_ptr<ContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
-        std::unique_ptr<ViewOptions> _view_options;
+        std::unique_ptr<IViewOptions> _view_options;
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ISettingsWindow> _settings_window;

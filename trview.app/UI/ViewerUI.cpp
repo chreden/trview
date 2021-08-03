@@ -16,7 +16,8 @@ namespace trview
         const ui::IInput::Source& input_source,
         const ui::render::IRenderer::Source& ui_renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
-        const ISettingsWindow::Source& settings_window_source)
+        const ISettingsWindow::Source& settings_window_source,
+        const IViewOptions::Source& view_options_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -60,7 +61,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(*texture_storage);
+        generate_tool_window(view_options_source, *texture_storage);
 
         _go_to = std::make_unique<GoTo>(*_control.get());
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -244,13 +245,13 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const ITextureStorage& texture_storage)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage)
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(std::make_unique<StackPanel>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5)));
         tool_window->set_margin(Size(5, 5));
 
-        _view_options = std::make_unique<ViewOptions>(*tool_window, texture_storage);
+        _view_options = view_options_source(*tool_window, texture_storage);
         _view_options->on_highlight += on_highlight;
         _view_options->on_show_triggers += on_show_triggers;
         _view_options->on_show_hidden_geometry += on_show_hidden_geometry;

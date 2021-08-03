@@ -340,6 +340,9 @@
     <ClCompile Include="Routing\IWaypoint.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="UI\IViewOptions.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -872,6 +875,12 @@
     <ClInclude Include="Mocks\Routing\IWaypoint.h">
       <Filter>Mocks\Routing</Filter>
     </ClInclude>
+    <ClInclude Include="UI\IViewOptions.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\IViewOptions.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -931,9 +940,6 @@
     <Filter Include="Mocks\Menus">
       <UniqueIdentifier>{46297bfe-0f61-4ad3-9380-7bb4c429fe95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mocks\Settings">
-      <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mocks\Graphics">
       <UniqueIdentifier>{fc010d02-678c-4f36-977f-06c6b9379694}</UniqueIdentifier>
     </Filter>
@@ -948,6 +954,9 @@
     </Filter>
     <Filter Include="Mocks\Camera">
       <UniqueIdentifier>{77a62a69-05bf-4350-ba5d-849404977f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\Settings">
+      <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
