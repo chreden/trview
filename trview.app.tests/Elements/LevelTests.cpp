@@ -11,6 +11,8 @@
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
+#include <trview.graphics/mocks/IShader.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -75,6 +77,18 @@ namespace
             test_module& with_room_source(const IRoom::Source& room_source)
             {
                 this->room_source = room_source;
+                return *this;
+            }
+
+            test_module& with_device(const std::shared_ptr<IDevice>& device)
+            {
+                this->device = device;
+                return *this;
+            }
+
+            test_module& with_shader_storage(const std::shared_ptr<IShaderStorage>& shader_storage)
+            {
+                this->shader_storage = shader_storage;
                 return *this;
             }
         };
@@ -270,8 +284,62 @@ TEST(Level, PickUsesCorrectMinimalFilters)
     level->pick(camera, Vector3::Zero, Vector3::Forward);
 }
 
-TEST(Level, BoundingBoxesRendered)
+TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
 {
-    FAIL();
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = std::make_shared<MockRoom>();
+
+    auto device = std::make_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    MockShader shader;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render).Times(1);
+    EXPECT_CALL(*room, render_bounding_boxes).Times(0);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    MockCamera camera;
+    level->render(camera, false);
 }
+
+TEST(Level, BoundingBoxesRenderedWhenEnabled)
+{
+    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
+    auto room = std::make_shared<MockRoom>();
+
+    auto device = std::make_shared<MockDevice>();
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> context{ new MockD3D11DeviceContext() };
+    EXPECT_CALL(*device, context).WillRepeatedly(Return(context));
+
+    MockShader shader;
+    auto shader_storage = std::make_shared<MockShaderStorage>();
+    EXPECT_CALL(*shader_storage, get).WillRepeatedly(Return(&shader));
+
+    EXPECT_CALL(*room, render).Times(1);
+    EXPECT_CALL(*room, render_bounding_boxes).Times(1);
+
+    auto level = register_test_module()
+        .with_device(device)
+        .with_shader_storage(shader_storage)
+        .with_level(std::move(mock_level_ptr))
+        .with_room_source([&](auto&&...) { return room; })
+        .build();
+
+    level->set_show_bounding_boxes(true);
+
+    MockCamera camera;
+    level->render(camera, false);
+}
+
 
