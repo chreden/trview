@@ -567,5 +567,13 @@ TEST(Room, WaterDetected)
 
 TEST(Room, BoundingBoxesRendered)
 {
-    FAIL();
+    auto mesh = std::make_shared<MockStaticMesh>();
+    EXPECT_CALL(*mesh, render_bounding_box).Times(1);
+    trlevel::tr3_room level_room;
+    level_room.static_meshes.push_back({});
+    auto room = register_test_module()
+        .with_room(level_room)
+        .with_static_mesh_source([&](auto&&...) { return mesh; })
+        .build();
+    room->render_bounding_boxes(MockCamera{});
 }
