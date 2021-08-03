@@ -1,6 +1,5 @@
 #pragma once
 
-#include <trview.app/Geometry/IMesh.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
 #include <trview.app/Routing/IRoute.h>
@@ -13,18 +12,18 @@ namespace trview
     class Route final : public IRoute
     {
     public:
-        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source);
+        explicit Route(const std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source);
         virtual ~Route() = default;
         Route& operator=(const Route& other);
         virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room) override;
-        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) override;
+        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) override;
         virtual void clear() override;
         virtual Colour colour() const override;
         virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index) override;
         virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room) override;
-        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index) override;
+        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) override;
         virtual bool is_unsaved() const override;
-        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index) override;
+        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) override;
         virtual PickResult pick(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& direction) const override;
         virtual void remove(uint32_t index) override;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage) override;
@@ -32,14 +31,14 @@ namespace trview
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;
         virtual void set_unsaved(bool value) override;
-        virtual const Waypoint& waypoint(uint32_t index) const override;
-        virtual Waypoint& waypoint(uint32_t index) override;
+        virtual const IWaypoint& waypoint(uint32_t index) const override;
+        virtual IWaypoint& waypoint(uint32_t index) override;
         virtual uint32_t waypoints() const override;
     private:
         uint32_t next_index() const;
 
-        std::vector<Waypoint> _waypoints;
-        std::shared_ptr<IMesh> _waypoint_mesh;
+        IWaypoint::Source _waypoint_source;
+        std::vector<std::shared_ptr<IWaypoint>> _waypoints;
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         uint32_t _selected_index{ 0u };
         Colour _colour{ Colour::Green };

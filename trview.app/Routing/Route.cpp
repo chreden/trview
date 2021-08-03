@@ -9,9 +9,6 @@ namespace trview
 {
     namespace
     {
-        const float PoleThickness = 0.05f;
-        const float RopeThickness = 0.015f;
-
         std::vector<uint8_t> from_base64(const std::string& text)
         {
             const auto b64 = to_utf16(text);
@@ -43,8 +40,8 @@ namespace trview
         }
     }
 
-    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IMesh::Source& mesh_source)
-        : _waypoint_mesh(create_cube_mesh(mesh_source)), _selection_renderer(std::move(selection_renderer))
+    Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source)
+        : _selection_renderer(std::move(selection_renderer)), _waypoint_source(waypoint_source)
     {
     }
 
@@ -58,12 +55,12 @@ namespace trview
 
     void Route::add(const Vector3& position, uint32_t room)
     {
-        add(position, room, Waypoint::Type::Position, 0u);
+        add(position, room, IWaypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.emplace_back(_waypoint_mesh.get(), position, room, type, type_index, _colour);
+        _waypoints.push_back(_waypoint_source(position, room, type, type_index, _colour));
         set_unsaved(true);
     }
 
@@ -86,9 +83,9 @@ namespace trview
     {
         if (index >= _waypoints.size())
         {
-            return add(position, room, Waypoint::Type::Position, 0u);
+            return add(position, room, IWaypoint::Type::Position, 0u);
         }
-        insert(position, room, index, Waypoint::Type::Position, 0u);
+        insert(position, room, index, IWaypoint::Type::Position, 0u);
         set_unsaved(true);
     }
 
@@ -99,13 +96,13 @@ namespace trview
         return index;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, Waypoint::Type type, uint32_t type_index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, Waypoint(_waypoint_mesh.get(), position, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, room, type, type_index, _colour));
         set_unsaved(true);
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t type_index)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
         uint32_t index = next_index();
         insert(position, room, index, type, type_index);
@@ -124,10 +121,8 @@ namespace trview
 
         for (uint32_t i = 0; i < _waypoints.size(); ++i)
         {
-            const auto& waypoint = _waypoints[i];
-
-            auto box = BoundingBox(waypoint.position() - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
-
+            const auto box = _waypoints[i]->bounding_box();
+            
             float distance = 0;
             if (box.Intersects(position, direction, distance) && (!result.hit || distance < result.distance))
             {
@@ -161,25 +156,18 @@ namespace trview
         for (std::size_t i = 0; i < _waypoints.size(); ++i)
         {
             auto& waypoint = _waypoints[i];
-            waypoint.render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
+            waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
-            // Should render the in-between line somehow - if there is another point in the list.
             if (i < _waypoints.size() - 1)
             {
-                const auto current = waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
-                const auto next_waypoint = _waypoints[i + 1].position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
-                const auto mid = Vector3::Lerp(current, next_waypoint, 0.5f);
-                const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint, Vector3::Up)).Invert();
-                const auto length = (next_waypoint - current).Length();
-                const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
-                _waypoint_mesh->render(to_wvp, texture_storage, _colour);
+                waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
         }
 
         // Render selected waypoint...
         if (_selected_index < _waypoints.size())
         {
-            _selection_renderer->render(camera, texture_storage, _waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
+            _selection_renderer->render(camera, texture_storage, *_waypoints[_selected_index], Color(1.0f, 1.0f, 1.0f));
         }
     }
 
@@ -198,7 +186,7 @@ namespace trview
         _colour = colour;
         for (auto& waypoint : _waypoints)
         {
-            waypoint.set_route_colour(colour);
+            waypoint->set_route_colour(colour);
         }
         set_unsaved(true);
     }
@@ -208,20 +196,20 @@ namespace trview
         _is_unsaved = value;
     }
 
-    const Waypoint& Route::waypoint(uint32_t index) const
+    const IWaypoint& Route::waypoint(uint32_t index) const
     {
         if (index < _waypoints.size())
         {
-            return _waypoints[index];
+            return *_waypoints[index];
         }
         throw std::range_error("Waypoint index out of range");
     }
 
-    Waypoint& Route::waypoint(uint32_t index)
+    IWaypoint& Route::waypoint(uint32_t index)
     {
         if (index < _waypoints.size())
         {
-            return _waypoints[index];
+            return *_waypoints[index];
         }
         throw std::range_error("Waypoint index out of range");
     }
@@ -257,7 +245,7 @@ namespace trview
             for (const auto& waypoint : json["waypoints"])
             {
                 auto type_string = waypoint["type"].get<std::string>();
-                Waypoint::Type type = waypoint_type_from_string(type_string);
+                IWaypoint::Type type = waypoint_type_from_string(type_string);
  
                 auto position_string = waypoint["position"].get<std::string>();
 
@@ -305,7 +293,7 @@ namespace trview
 
             for (uint32_t i = 0; i < route.waypoints(); ++i)
             {
-                const Waypoint& waypoint = route.waypoint(i);
+                const IWaypoint& waypoint = route.waypoint(i);
                 nlohmann::json waypoint_json;
                 waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
 

@@ -17,6 +17,7 @@
 #include <trview.app/Mocks/Geometry/IMesh.h>
 #include <trview.app/Mocks/Graphics/ISectorHighlight.h>
 #include <trlevel/Mocks/ILevel.h>
+#include <trview.app/Mocks/Routing/IWaypoint.h>
 
 using testing::Return;
 using namespace trview;
@@ -297,8 +298,8 @@ TEST(Viewer, AddWaypointRaised)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
-    std::optional<std::tuple<Vector3, uint32_t, Waypoint::Type, uint32_t>> added_waypoint;
-    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, Waypoint::Type type, uint32_t index)
+    std::optional<std::tuple<Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         added_waypoint = { position, room, type, index };
     };
@@ -309,7 +310,7 @@ TEST(Viewer, AddWaypointRaised)
 
     ASSERT_TRUE(added_waypoint.has_value());
     ASSERT_EQ(std::get<1>(added_waypoint.value()), 10u);
-    ASSERT_EQ(std::get<2>(added_waypoint.value()), Waypoint::Type::Entity);
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), IWaypoint::Type::Entity);
     ASSERT_EQ(std::get<3>(added_waypoint.value()), 50u);
 }
 
@@ -420,9 +421,8 @@ TEST(Viewer, OrbitEnabledWhenWaypointSelectedAndAutoOrbitEnabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    MockMesh mesh;
-    Waypoint waypoint(&mesh, Vector3::Zero, 0);
-    viewer->select_waypoint(waypoint);
+    auto mesh = std::make_shared<MockMesh>();
+    viewer->select_waypoint(MockWaypoint{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Orbit);
 }
 
@@ -441,9 +441,8 @@ TEST(Viewer, OrbitNotEnabledWhenWaypointSelectedAndAutoOrbitDisabled)
     viewer->set_camera_mode(CameraMode::Free);
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 
-    MockMesh mesh;
-    Waypoint waypoint(&mesh, Vector3::Zero, 0);
-    viewer->select_waypoint(waypoint);
+    auto mesh = std::make_shared<MockMesh>();
+    viewer->select_waypoint(MockWaypoint{});
     ASSERT_EQ(viewer->camera_mode(), CameraMode::Free);
 }
 

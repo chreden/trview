@@ -70,7 +70,7 @@ namespace trview
         void setup_route_window();
         void setup_shortcuts();
         // Entity manipulation
-        void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index);
+        void add_waypoint(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t index);
         void remove_waypoint(uint32_t index);
         void select_item(const Item& item);
         void select_room(uint32_t room);

@@ -337,6 +337,9 @@
     <ClCompile Include="UI\IBubble.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Routing\IWaypoint.cpp">
+      <Filter>Routing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -862,6 +865,12 @@
     </ClInclude>
     <ClInclude Include="Mocks\Windows\IRouteWindow.h">
       <Filter>Mocks\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Routing\IWaypoint.h">
+      <Filter>Routing</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Routing\IWaypoint.h">
+      <Filter>Mocks\Routing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

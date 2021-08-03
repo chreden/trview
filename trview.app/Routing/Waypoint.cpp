@@ -8,14 +8,10 @@ namespace trview
     namespace
     {
         const float PoleThickness = 0.05f;
+        const float RopeThickness = 0.015f;
     }
 
-    Waypoint::Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room)
-        : _mesh(mesh), _position(position), _type(Type::Position), _index(0u), _room(room)
-    {
-    }
-
-    Waypoint::Waypoint(IMesh* mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
+    Waypoint::Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour)
         : _mesh(mesh), _position(position), _type(type), _index(index), _room(room), _route_colour(route_colour)
     {
     }
@@ -36,8 +32,24 @@ namespace trview
         _mesh->render(blob_wvp, texture_storage, _route_colour);
     }
 
+    void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
+    {
+        const auto current = position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto next_waypoint_pos = next_waypoint.position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto mid = Vector3::Lerp(current, next_waypoint_pos, 0.5f);
+        const auto matrix = Matrix(DirectX::XMMatrixLookAtRH(mid, next_waypoint_pos, Vector3::Up)).Invert();
+        const auto length = (next_waypoint_pos - current).Length();
+        const auto to_wvp = Matrix::CreateScale(RopeThickness, RopeThickness, length) * matrix * camera.view_projection();
+        _mesh->render(to_wvp, texture_storage, colour);
+    }
+
     void Waypoint::get_transparent_triangles(ITransparencyBuffer&, const ICamera&, const DirectX::SimpleMath::Color&)
     {
+    }
+
+    DirectX::BoundingBox Waypoint::bounding_box() const
+    {
+        return DirectX::BoundingBox(position() - Vector3(0, 0.25f, 0), Vector3(PoleThickness, 0.5f, PoleThickness) * 0.5f);
     }
 
     DirectX::SimpleMath::Vector3 Waypoint::position() const
@@ -45,7 +57,7 @@ namespace trview
         return _position;
     }
 
-    Waypoint::Type Waypoint::type() const
+    IWaypoint::Type Waypoint::type() const
     {
         return _type;
     }
@@ -98,35 +110,6 @@ namespace trview
     void Waypoint::set_visible(bool value)
     {
         _visible = value;
-    }
-
-    Waypoint::Type waypoint_type_from_string(const std::string& value)
-    {
-        if (value == "Trigger")
-        {
-            return Waypoint::Type::Trigger;
-        }
-
-        if (value == "Entity")
-        {
-            return Waypoint::Type::Entity;
-        }
-
-        return Waypoint::Type::Position;
-    }
-
-    std::wstring waypoint_type_to_string(Waypoint::Type type)
-    {
-        switch (type)
-        {
-        case Waypoint::Type::Entity:
-            return L"Entity";
-        case Waypoint::Type::Position:
-            return L"Position";
-        case Waypoint::Type::Trigger:
-            return L"Trigger";
-        }
-        return L"Unknown";
     }
 }
 

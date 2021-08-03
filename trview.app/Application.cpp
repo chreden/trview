@@ -349,7 +349,7 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            uint32_t new_index = _route->insert(item.position(), item.room(), Waypoint::Type::Entity, item.number());
+            uint32_t new_index = _route->insert(item.position(), item.room(), IWaypoint::Type::Entity, item.number());
             _route_window->set_route(_route.get());
             select_waypoint(new_index);
         };
@@ -368,7 +368,7 @@ namespace trview
         {
             if (auto trigger_ptr = trigger.lock())
             {
-                add_waypoint(trigger_ptr->position(), trigger_ptr->room(), Waypoint::Type::Trigger, trigger_ptr->number());
+                add_waypoint(trigger_ptr->position(), trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
             }
         };
     }
@@ -428,7 +428,7 @@ namespace trview
         add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
     }
 
-    void Application::add_waypoint(const Vector3& position, uint32_t room, Waypoint::Type type, uint32_t index)
+    void Application::add_waypoint(const Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
         uint32_t new_index = _route->insert(position, room, type, index);
         _route_window->set_route(_route.get());
