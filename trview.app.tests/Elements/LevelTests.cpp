@@ -342,4 +342,13 @@ TEST(Level, BoundingBoxesRenderedWhenEnabled)
     level->render(camera, false);
 }
 
+TEST(Level, SetShowBoundingBoxesRaisesLevelChangedEvent)
+{
+    auto level = register_test_module().build();
 
+    uint32_t times_called = 0;
+    auto token = level->on_level_changed += [&](auto&&...) { ++times_called; };
+
+    level->set_show_bounding_boxes(true);
+    ASSERT_EQ(times_called, 1u);
+}
