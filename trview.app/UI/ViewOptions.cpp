@@ -17,6 +17,7 @@ namespace trview
     const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
     const std::string ViewOptions::Names::water{ "water" };
     const std::string ViewOptions::Names::wireframe{ "wireframe" };
+    const std::string ViewOptions::Names::flip{ "flip" };
 
     namespace Colours
     {
@@ -70,6 +71,7 @@ namespace trview
         auto flip_panel = rooms_area->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
         _tr1_3_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
         _flip = _tr1_3_panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Flip"));
+        _flip->set_name(Names::flip);
         _flip->on_state_changed += on_flip;
 
         _tr4_5_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));

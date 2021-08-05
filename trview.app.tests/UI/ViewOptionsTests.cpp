@@ -219,12 +219,32 @@ TEST(ViewOptions, BoundsCheckboxUpdated)
 
 TEST(ViewOptions, FlipCheckboxToggle)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    std::optional<bool> clicked;
+    auto token = view_options.on_flip += [&](bool value)
+    {
+        clicked = value;
+    };
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    ASSERT_FALSE(checkbox->state());
+    checkbox->clicked({});
+    ASSERT_TRUE(clicked.has_value());
+    ASSERT_TRUE(clicked.value());
 }
 
 TEST(ViewOptions, FlipCheckboxUpdated)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    ASSERT_FALSE(checkbox->state());
+
+    view_options.set_flip(true);
+    ASSERT_TRUE(checkbox->state());
 }
 
 TEST(ViewOptions, FlipCheckboxEnabled)

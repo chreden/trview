@@ -26,6 +26,7 @@ namespace trview
         struct Names
         {
             static const std::string depth_enabled;
+            static const std::string flip;
             static const std::string hidden_geometry;
             static const std::string highlight;
             static const std::string triggers;
