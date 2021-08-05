@@ -18,12 +18,10 @@ namespace trview
     const std::string ViewOptions::Names::water{ "water" };
     const std::string ViewOptions::Names::wireframe{ "wireframe" };
     const std::string ViewOptions::Names::flip{ "flip" };
+    const std::string ViewOptions::Names::group{ "group" };
 
-    namespace Colours
-    {
-        const Colour FlipOff{ 0.2f, 0.2f, 0.2f };
-        const Colour FlipOn{ 0.6f, 0.6f, 0.6f };
-    }
+    const Colour ViewOptions::Colours::FlipOff{ 0.2f, 0.2f, 0.2f };
+    const Colour ViewOptions::Colours::FlipOn{ 0.6f, 0.6f, 0.6f };
 
     ViewOptions::ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage)
     {
@@ -102,6 +100,7 @@ namespace trview
             _alternate_group_values.insert({ group, false });
 
             auto button = std::make_unique<ui::Button>(Size(16, 16), std::to_wstring(group));
+            button->set_name(Names::group + std::to_string(group));
             button->set_text_background_colour(Colours::FlipOff);
             auto group_button = _alternate_groups->add_child(std::move(button));
 

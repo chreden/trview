@@ -2,6 +2,7 @@
 #include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/Button.h>
 
 using namespace trview;
 using namespace trview::mocks;
@@ -249,15 +250,65 @@ TEST(ViewOptions, FlipCheckboxUpdated)
 
 TEST(ViewOptions, FlipCheckboxEnabled)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    ASSERT_TRUE(checkbox->enabled());
+
+    view_options.set_flip_enabled(false);
+    ASSERT_FALSE(checkbox->enabled());
 }
 
 TEST(ViewOptions, FlipFlagsToggle)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    std::unordered_map<uint32_t, bool> raised;
+    auto token = view_options.on_alternate_group += [&](uint32_t group, bool state)
+    {
+        raised[group] = state;
+    };
+
+    view_options.set_use_alternate_groups(true);
+    view_options.set_alternate_groups({ 1, 3, 5 });
+
+    auto group3 = window.find<ui::Button>(ViewOptions::Names::group + "3");
+    ASSERT_NE(group3, nullptr);
+    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOff);
+
+    group3->clicked({});
+
+    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOn);
+    ASSERT_EQ(raised.size(), 1);
+    ASSERT_EQ(raised[3], true);
 }
 
 TEST(ViewOptions, FlipFlagsUpdated)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    view_options.set_use_alternate_groups(true);
+    view_options.set_alternate_groups({ 1, 3, 5 });
+
+    auto group3 = window.find<ui::Button>(ViewOptions::Names::group + "3");
+    ASSERT_NE(group3, nullptr);
+    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOff);
+
+    view_options.set_alternate_group(3, true);
+    ASSERT_EQ(group3->text_background_colour(), ViewOptions::Colours::FlipOn);
+}
+
+TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
+{
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    ASSERT_TRUE(checkbox->visible());
+
+    view_options.set_use_alternate_groups(true);
+    ASSERT_FALSE(checkbox->visible(true));
 }

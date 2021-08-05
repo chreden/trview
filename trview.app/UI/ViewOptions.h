@@ -33,6 +33,13 @@ namespace trview
             static const std::string show_bounding_boxes;
             static const std::string water;
             static const std::string wireframe;
+            static const std::string group;
+        };
+
+        struct Colours
+        {
+            static const Colour FlipOff;
+            static const Colour FlipOn;
         };
 
         explicit ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage);

@@ -45,6 +45,11 @@ namespace trview
             /// The new state of the checkbox is passed as a paramter to the listener.
             Event<bool> on_state_changed;
 
+            /// <summary>
+            /// Gets whether this checkbox is enabled.
+            /// </summary>
+            bool enabled() const;
+
             /// Gets whether the checkbox is currently checked.
             /// @returns Whether the checkbox is currently checked.
             bool state() const;
