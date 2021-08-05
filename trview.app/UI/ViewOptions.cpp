@@ -16,6 +16,7 @@ namespace trview
     const std::string ViewOptions::Names::triggers{ "triggers" };
     const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
     const std::string ViewOptions::Names::water{ "water" };
+    const std::string ViewOptions::Names::wireframe{ "wireframe" };
 
     namespace Colours
     {
@@ -58,6 +59,7 @@ namespace trview
         _depth->on_value_changed += on_depth_changed;
 
         _wireframe = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Wireframe"));
+        _wireframe->set_name(Names::wireframe);
         _wireframe->on_state_changed += on_show_wireframe;
 
         _bounding_boxes = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Bounds"));

@@ -31,6 +31,7 @@ namespace trview
             static const std::string triggers;
             static const std::string show_bounding_boxes;
             static const std::string water;
+            static const std::string wireframe;
         };
 
         explicit ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage);

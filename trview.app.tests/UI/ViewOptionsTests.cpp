@@ -159,12 +159,32 @@ TEST(ViewOptions, DepthCheckboxUpdated)
 
 TEST(ViewOptions, WireframeCheckboxToggle)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    std::optional<bool> clicked;
+    auto token = view_options.on_show_wireframe += [&](bool value)
+    {
+        clicked = value;
+    };
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::wireframe);
+    ASSERT_FALSE(checkbox->state());
+    checkbox->clicked({});
+    ASSERT_TRUE(clicked.has_value());
+    ASSERT_TRUE(clicked.value());
 }
 
 TEST(ViewOptions, WireframeCheckboxUpdated)
 {
-    FAIL();
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::wireframe);
+    ASSERT_FALSE(checkbox->state());
+
+    view_options.set_show_wireframe(true);
+    ASSERT_TRUE(checkbox->state());
 }
 
 TEST(ViewOptions, BoundsCheckboxToggle)
