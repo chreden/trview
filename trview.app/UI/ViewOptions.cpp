@@ -10,7 +10,12 @@
 
 namespace trview
 {
+    const std::string ViewOptions::Names::hidden_geometry{ "hidden_geometry" };
+    const std::string ViewOptions::Names::highlight{ "highlight" };
+    const std::string ViewOptions::Names::depth_enabled{ "depth_enabled" };
+    const std::string ViewOptions::Names::triggers{ "triggers" };
     const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
+    const std::string ViewOptions::Names::water{ "water" };
 
     namespace Colours
     {
@@ -27,21 +32,26 @@ namespace trview
         auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 95), Colour::Transparent, 2, 4));
 
         _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
+        _highlight->set_name(Names::highlight);
         _highlight->on_state_changed += on_highlight;
 
         _triggers = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Triggers"));
+        _triggers->set_name(Names::triggers);
         _triggers->set_state(true);
         _triggers->on_state_changed += on_show_triggers;
 
         _hidden_geometry = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Geometry"));
+        _hidden_geometry->set_name(Names::hidden_geometry);
         _hidden_geometry->on_state_changed += on_show_hidden_geometry;
 
         _water = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Water"));
+        _water->set_name(Names::water);
         _water->set_state(true);
         _water->on_state_changed += on_show_water;
 
-        _enabled = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Depth"));
-        _enabled->on_state_changed += on_depth_enabled;
+        _depth_enabled = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Depth"));
+        _depth_enabled->set_name(Names::depth_enabled);
+        _depth_enabled->on_state_changed += on_depth_enabled;
 
         _depth = rooms_grid->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20));
         _depth->set_value(1);
@@ -110,7 +120,7 @@ namespace trview
     
     void ViewOptions::set_depth_enabled(bool value)
     {
-        _enabled->set_state(value);
+        _depth_enabled->set_state(value);
     }
 
     void ViewOptions::set_flip(bool flip)

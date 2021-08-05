@@ -25,7 +25,12 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string depth_enabled;
+            static const std::string hidden_geometry;
+            static const std::string highlight;
+            static const std::string triggers;
             static const std::string show_bounding_boxes;
+            static const std::string water;
         };
 
         explicit ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage);
@@ -55,7 +60,7 @@ namespace trview
         ui::Checkbox* _triggers;
         ui::Checkbox* _hidden_geometry;
         ui::Checkbox* _water;
-        ui::Checkbox* _enabled;
+        ui::Checkbox* _depth_enabled;
         ui::Checkbox* _wireframe;
         ui::Checkbox* _bounding_boxes;
         ui::NumericUpDown* _depth;
