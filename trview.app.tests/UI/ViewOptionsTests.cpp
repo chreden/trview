@@ -7,7 +7,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::ui;
 
-TEST(ViewOptions, BoundingBoxToggle)
+TEST(ViewOptions, BoundsCheckboxToggle)
 {
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, MockLevelTextureStorage{});
@@ -25,7 +25,7 @@ TEST(ViewOptions, BoundingBoxToggle)
     ASSERT_TRUE(clicked.value());
 }
 
-TEST(ViewOptions, CheckboxUpdated)
+TEST(ViewOptions, BoundsCheckboxUpdated)
 {
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, MockLevelTextureStorage{});
