@@ -236,6 +236,21 @@ namespace trview
             }
         }
 
+        if (_show_bounding_boxes)
+        {
+            const auto context = _device->context();
+            graphics::RasterizerStateStore rasterizer_store(context);
+            if (!_show_wireframe)
+            {
+                context->RSSetState(_wireframe_rasterizer.Get());
+            }
+
+            for (const auto& room : rooms)
+            {
+                room.room.render_bounding_boxes(camera);
+            }
+        }
+
         if (_regenerate_transparency)
         {
             // Sort the accumulated transparent triangles farthest to nearest.
@@ -627,6 +642,13 @@ namespace trview
     void Level::set_show_wireframe(bool show)
     {
         _show_wireframe = show;
+        _regenerate_transparency = true;
+        on_level_changed();
+    }
+
+    void Level::set_show_bounding_boxes(bool show)
+    {
+        _show_bounding_boxes = show;
         _regenerate_transparency = true;
         on_level_changed();
     }

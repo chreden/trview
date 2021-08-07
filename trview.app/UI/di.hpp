@@ -3,6 +3,7 @@
 #include <external/boost/di.hpp>
 #include "ViewerUI.h"
 #include "SettingsWindow.h"
+#include "ViewOptions.h"
 #include "Bubble.h"
 
 namespace trview
@@ -17,6 +18,14 @@ namespace trview
                     return [&](ui::Control& parent)
                     {
                         return std::make_unique<SettingsWindow>(parent);
+                    };
+                }),
+            di::bind<IViewOptions::Source>.to(
+                [](const auto&) -> IViewOptions::Source
+                {
+                    return [&](auto&& parent, auto&& texture_storage)
+                    {
+                        return std::make_unique<ViewOptions>(parent, texture_storage);
                     };
                 }),
             di::bind<IBubble::Source>.to(

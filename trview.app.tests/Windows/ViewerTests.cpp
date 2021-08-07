@@ -525,3 +525,18 @@ TEST(Viewer, CameraRotationUpdated)
     ASSERT_FLOAT_EQ(2.0f, camera.rotation_yaw());
     ASSERT_FLOAT_EQ(1.0f, camera.rotation_pitch());
 }
+
+TEST(Viewer, SetShowBoundingBox)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    EXPECT_CALL(level, set_show_bounding_boxes(false)).Times(1);
+    EXPECT_CALL(ui, set_show_bounding_boxes(true)).Times(1);
+    EXPECT_CALL(level, set_show_bounding_boxes(true)).Times(1);
+
+    viewer->open(&level);
+    ui.on_show_bounding_boxes(true);
+}
+

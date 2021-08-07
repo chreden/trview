@@ -45,12 +45,14 @@ namespace trview
             MOCK_METHOD(void, set_show_triggers, (bool), (override));
             MOCK_METHOD(void, set_show_water, (bool), (override));
             MOCK_METHOD(void, set_show_wireframe, (bool), (override));
+            MOCK_METHOD(void, set_show_bounding_boxes, (bool), (override));
             MOCK_METHOD(void, set_use_alternate_groups, (bool), (override));
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(bool, show_hidden_geometry, (), (const, override));
             MOCK_METHOD(bool, show_triggers, (), (const, override));
             MOCK_METHOD(bool, show_water, (), (const, override));
             MOCK_METHOD(bool, show_wireframe, (), (const, override));
+            MOCK_METHOD(bool, show_bounding_boxes, (), (const, override));
             MOCK_METHOD(bool, show_context_menu, (), (const, override));
             MOCK_METHOD(void, toggle_settings_visibility, (), (override));
             MOCK_METHOD(void, print_console, (const std::wstring&), (override));

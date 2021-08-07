@@ -98,6 +98,12 @@
     <ClCompile Include="Routing\WaypointTests.cpp">
       <Filter>Routing</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\StaticMeshTests.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ViewOptionsTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

@@ -10,6 +10,8 @@
 
 namespace trview
 {
+    const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
+
     namespace Colours
     {
         const Colour FlipOff{ 0.2f, 0.2f, 0.2f };
@@ -47,7 +49,11 @@ namespace trview
 
         _wireframe = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Wireframe"));
         _wireframe->on_state_changed += on_show_wireframe;
-        
+
+        _bounding_boxes = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Bounds"));
+        _bounding_boxes->set_name(Names::show_bounding_boxes);
+        _bounding_boxes->on_state_changed += on_show_bounding_boxes;
+
         const auto panel_size = Size(140, 20);
         auto flip_panel = rooms_area->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
         _tr1_3_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
@@ -148,6 +154,11 @@ namespace trview
         _tr4_5_panel->set_visible(value);
     }
 
+    void ViewOptions::set_show_bounding_boxes(bool value)
+    {
+        _bounding_boxes->set_state(value);
+    }
+
     bool ViewOptions::show_hidden_geometry() const
     {
         return _hidden_geometry->state();
@@ -161,10 +172,15 @@ namespace trview
     bool ViewOptions::show_water() const
     {
         return _water->state();
-    }    
+    }
 
     bool ViewOptions::show_wireframe() const
     {
         return _wireframe->state();
+    }
+
+    bool ViewOptions::show_bounding_boxes() const
+    {
+        return _bounding_boxes->state();
     }
 }

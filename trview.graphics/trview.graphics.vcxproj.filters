@@ -106,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="di.h" />
     <ClInclude Include="di.hpp" />
+    <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h">
+      <Filter>Mocks\D3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\IShader.h">
+      <Filter>Mocks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -212,6 +218,9 @@
     </Filter>
     <Filter Include="Rasterizer">
       <UniqueIdentifier>{4bfba0e9-fb4c-4f56-b8a2-64a51daa20ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mocks\D3D">
+      <UniqueIdentifier>{5a5fdaf9-9583-4d9a-8809-e38269df4bfd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
