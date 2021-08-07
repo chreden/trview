@@ -17,6 +17,7 @@ namespace trview
     const std::string ContextMenu::Names::hide_button{ "Hide" };
     const std::string ContextMenu::Names::orbit_button{ "Orbit" };
     const std::string ContextMenu::Names::add_waypoint_button{ "AddWaypoint" };
+    const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
 
     ContextMenu::ContextMenu(Control& parent)
@@ -30,6 +31,15 @@ namespace trview
         _token_store += button->on_click += [&]()
         {
             on_add_waypoint();
+            set_visible(false);
+        };
+
+        auto mid_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Mid Waypoint"));
+        mid_button->set_name(Names::add_mid_waypoint_button);
+        mid_button->set_text_background_colour(Colours::Button);
+        _token_store += mid_button->on_click += [&]()
+        {
+            on_add_mid_waypoint();
             set_visible(false);
         };
 

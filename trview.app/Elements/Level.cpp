@@ -182,7 +182,6 @@ namespace trview
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
-
             context->PSSetSamplers(0, 1, &_sampler_state);
             if (_show_wireframe)
             {
@@ -485,8 +484,10 @@ namespace trview
                 final_result.hit = true;
                 final_result.distance = result.distance;
                 final_result.position = result.position;
+                final_result.centroid = result.centroid;
                 final_result.index = result.index;
                 final_result.type = result.type;
+                final_result.triangle = result.triangle;
             }
         };
 

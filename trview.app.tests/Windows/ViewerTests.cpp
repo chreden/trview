@@ -298,10 +298,10 @@ TEST(Viewer, AddWaypointRaised)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
     viewer->open(&level);
 
-    std::optional<std::tuple<Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
-    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, uint32_t room, IWaypoint::Type type, uint32_t index)
+    std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
-        added_waypoint = { position, room, type, index };
+        added_waypoint = { position, normal, room, type, index };
     };
 
     activate_context_menu(picking, mouse, PickResult::Type::Entity, 50);
@@ -309,9 +309,9 @@ TEST(Viewer, AddWaypointRaised)
     ui.on_add_waypoint();
 
     ASSERT_TRUE(added_waypoint.has_value());
-    ASSERT_EQ(std::get<1>(added_waypoint.value()), 10u);
-    ASSERT_EQ(std::get<2>(added_waypoint.value()), IWaypoint::Type::Entity);
-    ASSERT_EQ(std::get<3>(added_waypoint.value()), 50u);
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), 10u);
+    ASSERT_EQ(std::get<3>(added_waypoint.value()), IWaypoint::Type::Entity);
+    ASSERT_EQ(std::get<4>(added_waypoint.value()), 50u);
 }
 
 /// Tests that right clicking activates the context menu.

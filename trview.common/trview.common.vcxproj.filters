@@ -24,6 +24,7 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Maths.h" />
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Mocks\Windows\IShortcuts.h">

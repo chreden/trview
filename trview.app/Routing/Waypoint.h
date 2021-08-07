@@ -16,11 +16,12 @@ namespace trview
         /// </summary>
         /// <param name="mesh">The waypoint mesh.</param>
         /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="normal">The normal to which the waypoint is aligned.</param>
         /// <param name="room">The room that waypoint is in.</param>
         /// <param name="type">The type of waypoint.</param>
         /// <param name="index">The index of the entity or trigger being referenced if this is a non-position type.</param>
         /// <param name="route_colour">The colour of the route.</param>
-        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
+        explicit Waypoint(std::shared_ptr<IMesh> mesh, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, Type type, uint32_t index, const Colour& route_colour);
         virtual ~Waypoint() = default;
         virtual void render(const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
@@ -36,12 +37,18 @@ namespace trview
         virtual void set_notes(const std::wstring& notes) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
+        virtual DirectX::SimpleMath::Vector3 blob_position() const override;
+
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
+        DirectX::SimpleMath::Vector3 normal() const;
     private:
+        DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
+
         std::wstring                 _notes;
         std::vector<uint8_t>         _save_data;
         DirectX::SimpleMath::Vector3 _position;
+        DirectX::SimpleMath::Vector3 _normal;
         std::shared_ptr<IMesh>       _mesh;
         Type                         _type;
         uint32_t                     _index;

@@ -25,6 +25,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Files.h" />
+    <ClInclude Include="Maths.h" />
     <ClInclude Include="IFiles.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="Json.hpp" />

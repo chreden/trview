@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <trview.common/Maths.h>
 
 namespace trview
 {
@@ -14,9 +15,6 @@ namespace trview
             return atan2(sin(target - current), cos(target - current));
         }
     }
-
-    const float Pi = 3.1415926535897932384626433832796f;
-    const float Pi2 = 3.1415926535897932384626433832796f * 2.0f;
 
     Camera::Camera(const Size& size)
         : _view_size(size), _forward(Vector3::Forward), _up(Vector3::Down), _position(Vector3::Zero)
@@ -103,7 +101,7 @@ namespace trview
 
     void Camera::set_rotation_yaw(float rotation)
     {
-        _rotation_yaw = rotation - static_cast<int>(rotation / Pi2) * Pi2;
+        _rotation_yaw = rotation - static_cast<int>(rotation / maths::Pi2) * maths::Pi2;
         _target_rotation_pitch.reset();
         _target_rotation_yaw.reset();
         update_vectors();

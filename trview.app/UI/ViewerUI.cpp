@@ -95,6 +95,7 @@ namespace trview
 
         _context_menu = std::make_unique<ContextMenu>(*_control);
         _context_menu->on_add_waypoint += on_add_waypoint;
+        _context_menu->on_add_mid_waypoint += on_add_mid_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
         _context_menu->on_orbit_here += on_orbit;
         _context_menu->on_hide += on_hide;

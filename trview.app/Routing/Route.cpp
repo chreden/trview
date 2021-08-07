@@ -1,6 +1,7 @@
 #include "Route.h"
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/Strings.h>
+#include <trview.common/Maths.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -53,14 +54,15 @@ namespace trview
         return *this;
     }
 
-    void Route::add(const Vector3& position, uint32_t room)
+    void Route::add(const Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
-        add(position, room, IWaypoint::Type::Position, 0u);
+        add(position, normal, room, IWaypoint::Type::Position, 0u);
     }
 
-    void Route::add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+
+    void Route::add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.push_back(_waypoint_source(position, room, type, type_index, _colour));
+        _waypoints.push_back(_waypoint_source(position, normal, room, type, type_index, _colour));
         set_unsaved(true);
     }
 
@@ -79,33 +81,33 @@ namespace trview
         _selected_index = 0u;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index)
     {
         if (index >= _waypoints.size())
         {
-            return add(position, room, IWaypoint::Type::Position, 0u);
+            return add(position, normal, room, IWaypoint::Type::Position, 0u);
         }
-        insert(position, room, index, IWaypoint::Type::Position, 0u);
+        insert(position, normal, room, index, IWaypoint::Type::Position, 0u);
         set_unsaved(true);
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room)
     {
         uint32_t index = next_index();
-        insert(position, room, index);
+        insert(position, normal, room, index);
         return index;
     }
 
-    void Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
+    void Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index)
     {
-        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, room, type, type_index, _colour));
+        _waypoints.insert(_waypoints.begin() + index, _waypoint_source(position, normal, room, type, type_index, _colour));
         set_unsaved(true);
     }
 
-    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index)
+    uint32_t Route::insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index)
     {
         uint32_t index = next_index();
-        insert(position, room, index, type, type_index);
+        insert(position, normal, room, index, type, type_index);
         return index;
     }
 
@@ -265,7 +267,7 @@ namespace trview
                 auto index = waypoint["index"].get<int>();
                 auto notes = waypoint["notes"].get<std::string>();
 
-                route->add(position, room, type, index);
+                route->add(position, Vector3(0, -1, 0), room, type, index);
 
                 auto& new_waypoint = route->waypoint(route->waypoints() - 1);
                 new_waypoint.set_notes(to_utf16(notes));

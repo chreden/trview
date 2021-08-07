@@ -12,6 +12,7 @@ namespace trview
         struct Names
         {
             static const std::string add_waypoint_button;
+            static const std::string add_mid_waypoint_button;
             static const std::string hide_button;
             static const std::string orbit_button;
             static const std::string remove_waypoint_button;
@@ -48,6 +49,10 @@ namespace trview
         /// Event raised when the user has clicked the button to create a new
         /// waypoint for the current route.
         Event<> on_add_waypoint;
+
+        /// Event raised when the user has clicked the button to create a new
+        /// mid waypoint for the current route.
+        Event<> on_add_mid_waypoint;
 
         /// Event raised when the user has clicked the remove waypoint button.
         Event<> on_remove_waypoint;

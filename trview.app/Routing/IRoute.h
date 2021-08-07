@@ -17,16 +17,18 @@ namespace trview
         /// Add a new waypoint to the end of the route.
         /// </summary>
         /// <param name="position">The new waypoint.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room the waypoint is in.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room) = 0;
+        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
         /// <summary>
         /// Add a new waypoint to the end of the route.
         /// </summary>
         /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room that waypoint is in.</param>
         /// <param name="type">The type of the waypoint.</param>
         /// <param name="type_index">The index of the referred to entity or trigger.</param>
-        virtual void add(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+        virtual void add(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Remove all of the waypoints from the route.
         /// </summary>
@@ -40,34 +42,38 @@ namespace trview
         /// Insert the new waypoint into the route.
         /// </summary>
         /// <param name="position">The new waypoint.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room that the waypoint is in.</param>
         /// <param name="index">The index in the route list to put the waypoint.</param>
-        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index) = 0;
+        virtual void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index) = 0;
         /// <summary>
         /// Insert the new waypoint into the route based on the currently selected waypoint.
         /// </summary>
         /// <param name="position">The new waypoint.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room that the waypoint is in.</param>
         /// <returns>The index of the new waypoint.</returns>
-        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room) = 0;
+        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room) = 0;
         /// <summary>
         /// Insert a new non-positional waypoint.
         /// </summary>
         /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room that the waypoint is in.</param>
         /// <param name="index">The index in the route list to put the waypoint.</param>
         /// <param name="type">The type of waypoint.</param>
         /// <param name="type_index">The index of the trigger or entity to reference.</param>
-        virtual void insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) = 0;
+        virtual void insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, uint32_t index, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Insert a new non-positional waypoint based on the currently selected waypoint.
         /// </summary>
         /// <param name="position">The position of the waypoint in the world.</param>
+        /// <param name="normal">The normal to align the waypoint to.</param>
         /// <param name="room">The room that the waypoint is in.</param>
         /// <param name="type">The type of waypoint.</param>
         /// <param name="type_index">The index of the trigger or entity to reference.</param>
         /// <returns>The index of the new waypoint.</returns>
-        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
+        virtual uint32_t insert(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t type_index) = 0;
         /// <summary>
         /// Determines whether the route has any unsaved changes.
         /// </summary>

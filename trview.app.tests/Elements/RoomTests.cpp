@@ -314,7 +314,7 @@ TEST(Room, PickTestsEntities)
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Entity, 10 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity);
 
     auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities);
@@ -334,7 +334,7 @@ TEST(Room, PickTestsTriggers)
     auto room = register_test_module().build();
     auto trigger = std::make_shared<MockTrigger>();
     ON_CALL(*trigger, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, PickResult::Type::Trigger, 10 }));
+    EXPECT_CALL(*trigger, pick).Times(1).WillOnce(Return(PickResult{ true, 0, {}, {}, PickResult::Type::Trigger, 10 }));
     room->add_trigger(trigger);
 
     auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Triggers);
@@ -354,12 +354,12 @@ TEST(Room, PickChoosesClosest)
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, PickResult::Type::Entity, 5 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 0.5f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
 
     auto entity2 = std::make_shared<MockEntity>();
     ON_CALL(*entity2, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, PickResult::Type::Entity, 10 }));
+    EXPECT_CALL(*entity2, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 10 }));
     room->add_entity(entity2);
 
     auto result = room->pick(Vector3(0, 0, -2), Vector3(0, 0, 1), PickFilter::Entities | PickFilter::Triggers);
@@ -380,7 +380,7 @@ TEST(Room, PickChoosesEntityOverTrigger)
     auto room = register_test_module().build();
     auto entity = std::make_shared<MockEntity>();
     ON_CALL(*entity, visible).WillByDefault(Return(true));
-    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, PickResult::Type::Entity, 5 }));
+    EXPECT_CALL(*entity, pick).Times(1).WillOnce(Return(PickResult{ true, 1.0f, {}, {}, PickResult::Type::Entity, 5 }));
     room->add_entity(entity);
 
     auto trigger = std::make_shared<MockTrigger>();

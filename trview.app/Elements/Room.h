@@ -91,6 +91,8 @@ namespace trview
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);
 
+        void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
+
         RoomInfo                           _info;
         std::set<uint16_t>                 _neighbours;
         uint32_t _index;
@@ -100,6 +102,7 @@ namespace trview
         std::shared_ptr<IMesh> _mesh;
         std::shared_ptr<IMesh> _unmatched_mesh;
         DirectX::SimpleMath::Matrix _room_offset;
+        DirectX::SimpleMath::Matrix _inverted_room_offset;
 
         DirectX::BoundingBox  _bounding_box;
 

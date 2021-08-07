@@ -19,7 +19,7 @@ namespace trview
             Trigger
         };
 
-        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;
+        using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;
 
         virtual ~IWaypoint() = 0;
         /// <summary>
@@ -57,6 +57,7 @@ namespace trview
         virtual void set_route_colour(const Colour& colour) = 0;
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
+        virtual DirectX::SimpleMath::Vector3 blob_position() const = 0;
     };
 
     IWaypoint::Type waypoint_type_from_string(const std::string& value);

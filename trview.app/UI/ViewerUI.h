@@ -30,7 +30,6 @@ namespace trview
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ISettingsWindow::Source& settings_window_source,
             const IViewOptions::Source& view_options_source);
-
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;

@@ -43,7 +43,7 @@ namespace trview
         Event<uint32_t> on_waypoint_removed;
 
         /// Event raised when the viewer wants to add a waypoint.
-        Event<DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
+        Event<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, uint32_t, IWaypoint::Type, uint32_t> on_waypoint_added;
 
         virtual CameraMode camera_mode() const = 0;
 
