@@ -46,6 +46,12 @@ namespace trview
         /// @returns Whether the menu is visible.
         bool visible() const;
 
+        /// <summary>
+        /// Set whether the mid waypoint button is enabled.
+        /// </summary>
+        /// <param name="value">Whether the button is enabled.</param>
+        void set_mid_waypoint_enabled(bool value);
+
         /// Event raised when the user has clicked the button to create a new
         /// waypoint for the current route.
         Event<> on_add_waypoint;
@@ -66,8 +72,10 @@ namespace trview
         ui::StackPanel* _menu;
         ui::Button*     _remove_button;
         ui::Button*     _hide_button;
+        ui::Button*     _mid_button;
         bool            _remove_enabled{ false };
         bool            _hide_enabled{ false };
+        bool            _mid_enabled{ false };
         TokenStore      _token_store;
     };
 }

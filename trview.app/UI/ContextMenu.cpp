@@ -34,13 +34,16 @@ namespace trview
             set_visible(false);
         };
 
-        auto mid_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Mid Waypoint"));
-        mid_button->set_name(Names::add_mid_waypoint_button);
-        mid_button->set_text_background_colour(Colours::Button);
-        _token_store += mid_button->on_click += [&]()
+        _mid_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Mid Waypoint"));
+        _mid_button->set_name(Names::add_mid_waypoint_button);
+        _mid_button->set_text_background_colour(Colours::Button);
+        _token_store += _mid_button->on_click += [&]()
         {
-            on_add_mid_waypoint();
-            set_visible(false);
+            if (_mid_enabled)
+            {
+                on_add_mid_waypoint();
+                set_visible(false);
+            }
         };
 
         // Add the similar remove waypoint button 
@@ -113,5 +116,11 @@ namespace trview
     bool ContextMenu::visible() const
     {
         return _menu->visible();
+    }
+
+    void ContextMenu::set_mid_waypoint_enabled(bool value)
+    {
+        _mid_enabled = value;
+        _mid_button->set_text_colour(value ? Colours::Enabled : Colours::Disabled);
     }
 }

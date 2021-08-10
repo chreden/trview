@@ -293,5 +293,10 @@ namespace trview
         virtual void print_console(const std::wstring& text) = 0;
 
         virtual void initialise_input() = 0;
+        /// <summary>
+        /// Set whether the mid waypoint button is enabled.
+        /// </summary>
+        /// <param name="value">Whether the button is enabled.</param>
+        virtual void set_mid_waypoint_enabled(bool value) = 0;
     };
 }

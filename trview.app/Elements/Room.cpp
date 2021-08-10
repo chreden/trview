@@ -768,30 +768,20 @@ namespace trview
         geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
 
         const auto& tri = geometry_result.triangle;
-        Vector3 centroid;
-        Vector3 ray_direction{ 0, 1, 0 };
+        if (tri.normal.y < 0)
+        {
+            Vector3 centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
+            Vector3 ray_direction = { 0, -tri.normal.y, 0 };
 
-        if (tri.normal.y)
-        {
-            centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
-            ray_direction = { 0, -tri.normal.y, 0 };
-        }
-        else if (tri.normal.x)
-        {
-            centroid = { geometry_result.position.x, std::floor(geometry_result.position.y) + 0.5f, std::floor(geometry_result.position.z) + 0.5f };
-            ray_direction = { -tri.normal.x, 0, 0 };
+            centroid = Vector3::Transform(centroid, _inverted_room_offset);
+            ray_direction.Normalize();
+            PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.5f, ray_direction);
+            geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
+            geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
         }
         else
         {
-            centroid = { std::floor(geometry_result.position.x) + 0.5f, std::floor(geometry_result.position.y) + 0.5f, geometry_result.position.z };
-            ray_direction = { 0, 0, -tri.normal.z };
+            geometry_result.centroid = geometry_result.position;
         }
-
-        centroid = Vector3::Transform(centroid, _inverted_room_offset);
-        ray_direction.Normalize();
-        PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.5f, ray_direction);
-        geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
-        geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
-
     }
 }

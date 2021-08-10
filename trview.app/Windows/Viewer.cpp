@@ -448,6 +448,7 @@ namespace trview
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
+                _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
             }
         };
     }

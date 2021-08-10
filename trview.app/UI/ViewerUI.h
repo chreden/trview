@@ -80,6 +80,7 @@ namespace trview
         virtual void toggle_settings_visibility() override;
         virtual void print_console(const std::wstring& text) override;
         virtual void initialise_input() override;
+        virtual void set_mid_waypoint_enabled(bool value) override;
     private:
         void generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage);
         void initialise_camera_controls(ui::Control& parent);

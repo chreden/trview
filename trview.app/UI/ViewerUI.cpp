@@ -531,4 +531,9 @@ namespace trview
     {
         _ui_input = _input_source(_window, *_control);
     }
+
+    void ViewerUI::set_mid_waypoint_enabled(bool value)
+    {
+        _context_menu->set_mid_waypoint_enabled(value);
+    }
 }
