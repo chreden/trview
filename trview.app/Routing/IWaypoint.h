@@ -58,6 +58,7 @@ namespace trview
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
         virtual DirectX::SimpleMath::Vector3 blob_position() const = 0;
+        virtual DirectX::SimpleMath::Vector3 normal() const = 0;
     };
 
     IWaypoint::Type waypoint_type_from_string(const std::string& value);

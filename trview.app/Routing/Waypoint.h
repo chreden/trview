@@ -38,10 +38,9 @@ namespace trview
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
-
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
-        DirectX::SimpleMath::Vector3 normal() const;
+        virtual DirectX::SimpleMath::Vector3 normal() const override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
 

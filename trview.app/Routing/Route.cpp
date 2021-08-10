@@ -39,6 +39,25 @@ namespace trview
 
             return to_utf8(std::wstring(&output_string[0]));
         }
+
+        Vector3 load_vector3(const nlohmann::json& json, const std::string& name, Vector3 default_value)
+        {
+            if (!json.count(name))
+            {
+                return default_value;
+            }
+
+            auto vector_string = json[name].get<std::string>();
+            std::stringstream stringstream(vector_string);
+            std::vector<float> result;
+            for (int i = 0; i < 3; ++i)
+            {
+                std::string substr;
+                std::getline(stringstream, substr, ',');
+                result.push_back(std::stof(substr));
+            }
+            return Vector3(result[0], result[1], result[2]);
+        }
     }
 
     Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source)
@@ -248,26 +267,14 @@ namespace trview
             {
                 auto type_string = waypoint["type"].get<std::string>();
                 IWaypoint::Type type = waypoint_type_from_string(type_string);
- 
-                auto position_string = waypoint["position"].get<std::string>();
-
-                std::stringstream stringstream(position_string);
-
-                std::vector<float> result;
-                for (int i = 0; i < 3; ++i)
-                {
-                    std::string substr;
-                    std::getline(stringstream, substr, ',');
-                    result.push_back(std::stof(substr));
-                }
-
-                Vector3 position = Vector3(result[0], result[1], result[2]);
+                Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
+                Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
 
                 auto room = waypoint["room"].get<int>();
                 auto index = waypoint["index"].get<int>();
                 auto notes = waypoint["notes"].get<std::string>();
 
-                route->add(position, Vector3(0, -1, 0), room, type, index);
+                route->add(position, normal, room, type, index);
 
                 auto& new_waypoint = route->waypoint(route->waypoints() - 1);
                 new_waypoint.set_notes(to_utf16(notes));
@@ -303,6 +310,10 @@ namespace trview
                 auto pos = waypoint.position();
                 pos_string << pos.x << "," << pos.y << "," << pos.z;
                 waypoint_json["position"] = pos_string.str();
+                std::stringstream normal_string;
+                auto normal = waypoint.normal();
+                normal_string << normal.x << "," << normal.y << "," << normal.z;
+                waypoint_json["normal"] = normal_string.str();
                 waypoint_json["room"] = waypoint.room();
                 waypoint_json["index"] = waypoint.index();
                 waypoint_json["notes"] = to_utf8(waypoint.notes());
