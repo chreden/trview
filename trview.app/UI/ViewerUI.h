@@ -4,7 +4,7 @@
 #include <trview.app/UI/CameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
 #include <trview.app/UI/Console.h>
-#include <trview.app/UI/ContextMenu.h>
+#include <trview.app/UI/IContextMenu.h>
 #include <trview.app/UI/GoTo.h>
 #include <trview.app/UI/IViewerUI.h>
 #include <trview.app/UI/LevelInfo.h>
@@ -29,7 +29,8 @@ namespace trview
             const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ISettingsWindow::Source& settings_window_source,
-            const IViewOptions::Source& view_options_source);
+            const IViewOptions::Source& view_options_source,
+            const IContextMenu::Source& context_menu_source);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -94,7 +95,7 @@ namespace trview
         std::unique_ptr<ui::Control> _control;
         std::unique_ptr<ui::render::IRenderer> _ui_renderer;
         std::unique_ptr<ui::IInput> _ui_input;
-        std::unique_ptr<ContextMenu> _context_menu;
+        std::unique_ptr<IContextMenu> _context_menu;
         std::unique_ptr<GoTo> _go_to;
         std::unique_ptr<RoomNavigator> _room_navigator;
         std::unique_ptr<IViewOptions> _view_options;

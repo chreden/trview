@@ -5,6 +5,7 @@
 #include "SettingsWindow.h"
 #include "ViewOptions.h"
 #include "Bubble.h"
+#include "ContextMenu.h"
 
 namespace trview
 {
@@ -34,6 +35,14 @@ namespace trview
                     return [&](ui::Control& parent)
                     {
                         return std::make_unique<Bubble>(parent);
+                    };
+                }),
+            di::bind<IContextMenu::Source>.to(
+                [](const auto&) -> IContextMenu::Source
+                {
+                    return [&](ui::Control& parent)
+                    {
+                        return std::make_unique<ContextMenu>(parent);
                     };
                 }),
             di::bind<IViewerUI>.to<ViewerUI>()

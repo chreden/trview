@@ -1,11 +1,12 @@
 #pragma once
 
+#include "IContextMenu.h"
 #include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 
 namespace trview
 {
-    class ContextMenu final
+    class ContextMenu final : public IContextMenu
     {
     public:
         /// Control names used for automation
@@ -21,53 +22,16 @@ namespace trview
         /// Create a new ContentMenu window.
         /// @param parent The control to add the window to.
         explicit ContextMenu(ui::Control& parent);
-
+        virtual ~ContextMenu() = default;
         /// Get the root control.
         /// @returns The root control.
         const ui::Control* control() const;
-
-        /// Set the position of the context menu.
-        /// @param position The new position of the menu.
-        void set_position(const Point& position);
-
-        /// Set the context menu to visible.
-        /// @param value The new visibility status.
-        void set_visible(bool value);
-
-        /// Set whether the remove waypoint button is enabled or not.
-        /// @param value Whether the remove waypoint button is enabled or not.
-        void set_remove_enabled(bool value);
-
-        /// Set whether the hide button is enabled or not.
-        /// @param value Whether the hide button is enabled or not.
-        void set_hide_enabled(bool value);
-
-        /// Get whether the context menu is visible.
-        /// @returns Whether the menu is visible.
-        bool visible() const;
-
-        /// <summary>
-        /// Set whether the mid waypoint button is enabled.
-        /// </summary>
-        /// <param name="value">Whether the button is enabled.</param>
-        void set_mid_waypoint_enabled(bool value);
-
-        /// Event raised when the user has clicked the button to create a new
-        /// waypoint for the current route.
-        Event<> on_add_waypoint;
-
-        /// Event raised when the user has clicked the button to create a new
-        /// mid waypoint for the current route.
-        Event<> on_add_mid_waypoint;
-
-        /// Event raised when the user has clicked the remove waypoint button.
-        Event<> on_remove_waypoint;
-
-        /// Event raised when the user has clicked the orbit here button.
-        Event<> on_orbit_here;
-
-        /// Event raised when the user has clicked the hide button.
-        Event<> on_hide;
+        virtual void set_position(const Point& position) override;
+        virtual void set_visible(bool value) override;
+        virtual void set_remove_enabled(bool value) override;
+        virtual void set_hide_enabled(bool value) override;
+        virtual bool visible() const override;
+        virtual void set_mid_waypoint_enabled(bool value) override;
     private:
         ui::StackPanel* _menu;
         ui::Button*     _remove_button;

@@ -17,7 +17,8 @@ namespace trview
         const ui::render::IRenderer::Source& ui_renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ISettingsWindow::Source& settings_window_source,
-        const IViewOptions::Source& view_options_source)
+        const IViewOptions::Source& view_options_source,
+        const IContextMenu::Source& context_menu_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -93,7 +94,7 @@ namespace trview
         measure->set_visible(false);
         _measure = _control->add_child(std::move(measure));
 
-        _context_menu = std::make_unique<ContextMenu>(*_control);
+        _context_menu = context_menu_source(*_control);
         _context_menu->on_add_waypoint += on_add_waypoint;
         _context_menu->on_add_mid_waypoint += on_add_mid_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
