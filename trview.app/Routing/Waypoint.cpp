@@ -37,7 +37,7 @@ namespace trview
 
     void Waypoint::render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour)
     {
-        const auto current = position() - Vector3(0, 0.5f + PoleThickness * 0.5f, 0);
+        const auto current = blob_position();
         const auto next_waypoint_pos = next_waypoint.blob_position();
         const auto mid = Vector3::Lerp(current, next_waypoint_pos, 0.5f);
         const auto to = next_waypoint_pos - current;

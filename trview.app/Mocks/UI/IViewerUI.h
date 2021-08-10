@@ -57,6 +57,7 @@ namespace trview
             MOCK_METHOD(void, toggle_settings_visibility, (), (override));
             MOCK_METHOD(void, print_console, (const std::wstring&), (override));
             MOCK_METHOD(void, initialise_input, (), (override));
+            MOCK_METHOD(void, set_mid_waypoint_enabled, (bool), (override));
         };
     }
 }
