@@ -145,3 +145,51 @@ TEST(ContextMenu, ShowContextMenu)
     ASSERT_TRUE(menu.visible());
     ASSERT_TRUE(control->visible());
 }
+
+TEST(ContextMenu, AddMidWaypointRaised)
+{
+    ui::Window parent(Size(800, 600), Colour::Transparent);
+    ContextMenu menu(parent);
+    menu.set_mid_waypoint_enabled(true);
+
+    bool raised = false;
+    auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
+
+    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
+    ASSERT_NE(button, nullptr);
+
+    button->clicked(Point());
+    ASSERT_TRUE(raised);
+}
+
+TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
+{
+    ui::Window parent(Size(800, 600), Colour::Transparent);
+    ContextMenu menu(parent);
+
+    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
+    ASSERT_NE(button, nullptr);
+    auto current_colour = button->text_colour();
+    ASSERT_TRUE(current_colour.has_value());
+
+    menu.set_mid_waypoint_enabled(true);
+    auto new_colour = button->text_colour();
+    ASSERT_TRUE(new_colour.has_value());
+
+    ASSERT_NE(current_colour.value(), new_colour.value());
+}
+
+TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
+{
+    ui::Window parent(Size(800, 600), Colour::Transparent);
+    ContextMenu menu(parent);
+
+    bool raised = false;
+    auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
+
+    auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
+    ASSERT_NE(button, nullptr);
+
+    button->clicked(Point());
+    ASSERT_FALSE(raised);
+}

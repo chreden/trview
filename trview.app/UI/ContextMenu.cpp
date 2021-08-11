@@ -82,6 +82,7 @@ namespace trview
 
         set_remove_enabled(_remove_enabled);
         set_hide_enabled(_hide_enabled);
+        set_mid_waypoint_enabled(_mid_enabled);
 
         _menu->set_visible(false);
     }
