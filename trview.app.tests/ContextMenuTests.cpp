@@ -8,6 +8,7 @@ TEST(ContextMenu, AddWaypointRaised)
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
     menu.set_hide_enabled(true);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_add_waypoint += [&raised]() { raised = true; };
@@ -17,12 +18,14 @@ TEST(ContextMenu, AddWaypointRaised)
 
     button->clicked(Point());
     ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, HideButtonTextColourChangesWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
 
     auto button = parent.find<ui::Button>(ContextMenu::Names::hide_button);
     ASSERT_NE(button, nullptr);
@@ -40,6 +43,7 @@ TEST(ContextMenu, HideNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_hide += [&raised]() { raised = true; };
@@ -49,6 +53,7 @@ TEST(ContextMenu, HideNotRaisedWhenDisabled)
 
     button->clicked(Point());
     ASSERT_FALSE(raised);
+    ASSERT_TRUE(menu.visible());
 }
 
 TEST(ContextMenu, HideRaised)
@@ -56,6 +61,7 @@ TEST(ContextMenu, HideRaised)
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
     menu.set_hide_enabled(true);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_hide += [&raised]() { raised = true; };
@@ -65,6 +71,7 @@ TEST(ContextMenu, HideRaised)
 
     button->clicked(Point());
     ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, OrbitHereRaised)
@@ -72,6 +79,7 @@ TEST(ContextMenu, OrbitHereRaised)
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
     menu.set_hide_enabled(true);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_orbit_here += [&raised]() { raised = true; };
@@ -81,6 +89,7 @@ TEST(ContextMenu, OrbitHereRaised)
 
     button->clicked(Point());
     ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, RemoveWaypointButtonTextColourChangesWhenDisabled)
@@ -104,6 +113,7 @@ TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_remove_waypoint += [&raised]() { raised = true; };
@@ -113,6 +123,7 @@ TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
 
     button->clicked(Point());
     ASSERT_FALSE(raised);
+    ASSERT_TRUE(menu.visible());
 }
 
 TEST(ContextMenu, RemoveWaypointRaised)
@@ -129,6 +140,7 @@ TEST(ContextMenu, RemoveWaypointRaised)
 
     button->clicked(Point());
     ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, ShowContextMenu)
@@ -150,6 +162,7 @@ TEST(ContextMenu, AddMidWaypointRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
     menu.set_mid_waypoint_enabled(true);
 
     bool raised = false;
@@ -160,12 +173,14 @@ TEST(ContextMenu, AddMidWaypointRaised)
 
     button->clicked(Point());
     ASSERT_TRUE(raised);
+    ASSERT_FALSE(menu.visible());
 }
 
 TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
 
     auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
     ASSERT_NE(button, nullptr);
@@ -177,12 +192,14 @@ TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
     ASSERT_TRUE(new_colour.has_value());
 
     ASSERT_NE(current_colour.value(), new_colour.value());
+    ASSERT_TRUE(menu.visible());
 }
 
 TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
     ContextMenu menu(parent);
+    menu.set_visible(true);
 
     bool raised = false;
     auto token = menu.on_add_mid_waypoint += [&raised]() { raised = true; };
@@ -192,4 +209,5 @@ TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
 
     button->clicked(Point());
     ASSERT_FALSE(raised);
+    ASSERT_TRUE(menu.visible());
 }
