@@ -32,12 +32,14 @@ using namespace DirectX::SimpleMath;
 namespace
 {
     /// Simulates a context menu activation - 
-    void activate_context_menu(MockPicking& picking, MockMouse& mouse, PickResult::Type type, uint32_t index)
+    void activate_context_menu(MockPicking& picking, MockMouse& mouse, PickResult::Type type, uint32_t index, Vector3 position = Vector3::Zero, Vector3 centroid = Vector3::Zero)
     {
         PickResult pick_result{};
         pick_result.hit = true;
         pick_result.type = type;
         pick_result.index = index;
+        pick_result.position = position;
+        pick_result.centroid = centroid;
         picking.on_pick({}, pick_result);
         mouse.mouse_click(IMouse::Button::Right);
     }
@@ -540,3 +542,72 @@ TEST(Viewer, SetShowBoundingBox)
     ui.on_show_bounding_boxes(true);
 }
 
+TEST(Viewer, OnAddWaypointRaisedForWaypoint)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    bool raised = false;
+    auto token = viewer->on_waypoint_added += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ui.on_add_waypoint();
+    ASSERT_TRUE(raised);
+}
+
+TEST(Viewer, OnAddWaypointRaisedForMidWaypoint)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    bool raised = false;
+    auto token = viewer->on_waypoint_added += [&](auto&&...)
+    {
+        raised = true;
+    };
+
+    ui.on_add_mid_waypoint();
+    ASSERT_TRUE(raised);
+}
+
+TEST(Viewer, WaypointUsesPosition)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
+    std::optional<Vector3> raised_position;
+    auto token = viewer->on_waypoint_added += [&](auto&& position, auto&&...)
+    {
+        raised_position = position;
+    };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 0, Vector3(1, 2, 3), Vector3(3, 4, 5));
+
+    ui.on_add_waypoint();
+    ASSERT_TRUE(raised_position.has_value());
+    ASSERT_EQ(raised_position.value(), Vector3(1, 2, 3));
+}
+
+TEST(Viewer, MidWaypointUsesCentroid)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+
+    std::optional<Vector3> raised_position;
+    auto token = viewer->on_waypoint_added += [&](auto&& position, auto&&...)
+    {
+        raised_position = position;
+    };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 0, Vector3(1, 2, 3), Vector3(3, 4, 5));
+
+    ui.on_add_mid_waypoint();
+    ASSERT_TRUE(raised_position.has_value());
+    ASSERT_EQ(raised_position.value(), Vector3(3, 4, 5));
+}
