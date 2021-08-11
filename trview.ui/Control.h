@@ -4,11 +4,11 @@
 #pragma once
 
 import trview.common.size;
+import trview.common.point;
 
 #include <vector>
 #include <memory>
 #include <trview.common/Event.h>
-#include <trview.common/Point.h>
 #include <trview.common/TokenStore.h>
 #include <trview.common/Colour.h>
 #include "Align.h"

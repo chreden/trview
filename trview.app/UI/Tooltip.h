@@ -1,7 +1,8 @@
 #pragma once
 
+import trview.common.point;
+
 #include <string>
-#include <trview.common/Point.h>
 #include <trview.common/Colour.h>
 
 namespace trview

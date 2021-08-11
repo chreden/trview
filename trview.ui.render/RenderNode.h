@@ -1,5 +1,8 @@
 #pragma once
 
+import trview.common.point;
+import trview.common.size;
+
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <cstdint>
@@ -8,14 +11,11 @@
 #include <vector>
 
 #include <trview.common/TokenStore.h>
-#include <trview.common/Point.h>
 #include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/IDevice.h>
 
 namespace trview
 {
-    struct Size;
-
     namespace graphics
     {
         struct ISprite;

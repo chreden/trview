@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.common/Point.h>
+import trview.common.point;
 #include <trview.ui/Control.h>
 
 namespace trview

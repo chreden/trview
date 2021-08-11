@@ -2,7 +2,6 @@
 
 #include "Control.h"
 #include <trview.common/Colour.h>
-#include <trview.common/Point.h>
 
 namespace trview
 {

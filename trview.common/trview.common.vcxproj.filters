@@ -4,7 +4,6 @@
     <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="Point.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="MessageHandler.h">
       <Filter>Windows</Filter>
@@ -58,7 +57,6 @@
     <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="MessageHandler.cpp">
       <Filter>Windows</Filter>
@@ -93,6 +91,7 @@
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="trview.common.ixx" />
     <ClCompile Include="trview.common.size.ixx" />
+    <ClCompile Include="trview.common.point.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
