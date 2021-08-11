@@ -1,5 +1,6 @@
 #pragma once
 
+import trview.common.size;
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Room.h>
 

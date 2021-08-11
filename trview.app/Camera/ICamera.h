@@ -2,8 +2,9 @@
 
 #pragma once
 
+import trview.common.size;
+
 #include <SimpleMath.h>
-#include <trview.common/Size.h>
 #include "ProjectionMode.h"
 
 namespace trview

@@ -1,9 +1,10 @@
 #pragma once
 
+import trview.common.size;
+
 #include <Windows.h>
 #include <cstdint>
 #include <string>
-#include "Size.h"
 #include "Point.h"
 
 namespace trview

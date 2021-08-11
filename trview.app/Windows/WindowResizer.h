@@ -4,9 +4,10 @@
 
 #pragma once
 
+import trview.common.size;
+
 #include <trview.common/MessageHandler.h>
 #include <trview.common/Event.h>
-#include <trview.common/Size.h>
 
 namespace trview
 {

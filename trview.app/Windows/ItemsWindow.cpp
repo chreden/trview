@@ -5,6 +5,7 @@
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
+#include <sstream>
 
 using namespace trview::graphics;
 
@@ -249,7 +250,7 @@ namespace trview
     {
         auto make_item = [](const auto& name, const auto& value)
         {
-            return Listbox::Item { { { L"Name", name }, { L"Value", value } } };
+            return Listbox::Item({ { L"Name", name }, { L"Value", value } });
         };
 
         auto position_text = [&item]()
@@ -262,7 +263,7 @@ namespace trview
             return stream.str();
         };
 
-        using namespace ui;
+        using namespace trview::ui;
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", item.type()));
         stats.push_back(make_item(L"#", std::to_wstring(item.number())));

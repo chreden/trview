@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="FileLoader.h" />
-    <ClInclude Include="Size.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Point.h" />
@@ -57,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FileLoader.cpp" />
-    <ClCompile Include="Size.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Point.cpp" />
@@ -93,6 +91,8 @@
     </ClCompile>
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
+    <ClCompile Include="trview.common.ixx" />
+    <ClCompile Include="trview.common.size.ixx" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -6,6 +6,8 @@
 
 #pragma once
 
+import trview.common.size;
+
 #include <string>
 #include <wrl/client.h>
 #include <memory>
@@ -18,7 +20,6 @@
 
 namespace trview
 {
-    struct Size;
     struct Colour;
 
     namespace graphics

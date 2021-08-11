@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.common/Size.h>
+import trview.common.size;
 #include "Texture.h"
 
 namespace trview

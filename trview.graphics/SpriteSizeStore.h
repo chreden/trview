@@ -1,7 +1,8 @@
 #pragma once
 
+import trview.common.size;
+
 #include <cstdint>
-#include <trview.common/Size.h>
 
 namespace trview
 {

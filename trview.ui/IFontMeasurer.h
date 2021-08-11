@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <trview.common/Size.h>
+import trview.common.size;
 #include <string>
 
 namespace trview

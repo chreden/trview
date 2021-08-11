@@ -17,5 +17,4 @@
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/Font.h>
 #include <trview.common/Colour.h>
-#include <trview.common/Size.h>
 #include <trview.common/TokenStore.h>

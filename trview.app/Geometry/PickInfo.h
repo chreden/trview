@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trview.common/Size.h>
+import trview.common.size;
 #include <trview.common/Point.h>
 #include <SimpleMath.h>
 

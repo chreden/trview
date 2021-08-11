@@ -1,9 +1,10 @@
 #pragma once
 
+import trview.common.size;
+
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <cstdint>
-#include <trview.common/Size.h>
 #include <trview.graphics/Device.h>
 #include "ISprite.h"
 
