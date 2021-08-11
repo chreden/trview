@@ -25,7 +25,7 @@ jobs:
       run: nuget restore trview.sln
     
     - name: Build Solution (x86)
-      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m /std:c++20
+      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x86 /m /property:std=c++20
     
     - name: Test Solution (x86)
       run: |
@@ -64,7 +64,7 @@ jobs:
       run: nuget restore trview.sln
     
     - name: Build Solution (x64)
-      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m /std:c++20
+      run: msbuild trview.sln /property:Configuration=Release /property:Platform=x64 /m /property:std=c++20
   
     - name: Test Solution (x64)
       run: |
