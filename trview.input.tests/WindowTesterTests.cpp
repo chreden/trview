@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.input/WindowTester.h>
 #include <trview.tests.common/Window.h>
 
