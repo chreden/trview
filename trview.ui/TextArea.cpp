@@ -17,7 +17,7 @@ namespace trview
             _area->set_margin(Size(1, 1));
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
-            _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour::Grey));
+            _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour(0.3f, 0.3f, 0.3f)));
             _scrollbar->set_visible(false);
             set_handles_input(true);
 
@@ -146,7 +146,14 @@ namespace trview
 
         bool TextArea::scroll(int delta)
         {
-            _scroll_offset = std::max(0, _scroll_offset + (delta > 0 ? -1 : 1));
+            // Stop the user scrolling down when all of the contents can fit in the area.
+            const int32_t change = delta > 0 ? -1 : 1;
+            if (change > 0 && _lines.size() > _line_structure.size())
+            {
+                return true;
+            }
+
+            _scroll_offset = std::max(0, _scroll_offset + change);
             update_structure();
             highlight(_selection_start, _selection_end);
             return true;
@@ -190,7 +197,8 @@ namespace trview
 
         void TextArea::set_scrollbar_visible(bool value)
         {
-            _scrollbar->set_visible(value);
+            _scroll_visible = value;
+            _scrollbar->set_visible(_scroll_visible && _line_structure.size() > _lines.size() || _scroll_offset > 0);
         }
 
         void TextArea::highlight_all()
@@ -277,6 +285,7 @@ namespace trview
                 static_cast<float>(_scroll_offset), 
                 static_cast<float>(std::min<int32_t>(_scroll_offset + static_cast<int32_t>(_lines.size()), static_cast<int32_t>(_line_structure.size()))), 
                 static_cast<float>(_line_structure.size()));
+            set_scrollbar_visible(_scroll_visible);
         }
 
         bool TextArea::key_char(wchar_t character)

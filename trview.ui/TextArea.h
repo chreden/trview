@@ -185,6 +185,7 @@ namespace trview
             bool _dragging{ false };
             bool _read_only{ false };
             int32_t _scroll_offset{ 0 };
+            bool _scroll_visible{ false };
         };
     }
 }

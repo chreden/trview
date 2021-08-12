@@ -12,7 +12,7 @@ namespace trview
         Scrollbar::Scrollbar(const Point& position, const Size& size, const Colour& background_colour)
             : Window(position, size, background_colour)
         {
-            _blob = add_child(std::make_unique<Window>(Size(size.width, 10), Colour(1.0f, 0.15f, 0.15f, 0.15f)));
+            _blob = add_child(std::make_unique<Window>(Point(1, 1), Size(size.width - 2, 10), Colour(0.2f, 0.2f, 0.2f)));
         }
 
         void Scrollbar::set_range(float range_start, float range_end, float maximum)
@@ -28,10 +28,9 @@ namespace trview
             const float range = range_end_percentage - range_start_percentage;
             const auto current_size = size();
 
-            _blob->set_size(Size(current_size.width, range * current_size.height));
-
             const auto blob_height = range * current_size.height;
-            _blob->set_position(Point(0, range_start_percentage * current_size.height));
+            _blob->set_size(Size(current_size.width - 2, std::max(1.0f, blob_height - 2)));
+            _blob->set_position(Point(1, range_start_percentage * current_size.height + 1));
             _blob->set_visible(blob_height != current_size.height);
         }
 
