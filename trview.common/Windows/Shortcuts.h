@@ -21,6 +21,6 @@ namespace trview
 
         HACCEL _accelerators;
         std::vector<std::pair<Shortcut, Event<>>> _shortcuts;
-        uint16_t _command_index;
+        static uint16_t _command_index;
     };
 }

@@ -2,8 +2,10 @@
 
 namespace trview
 {
+    uint16_t Shortcuts::_command_index{ 41000 };
+
     Shortcuts::Shortcuts(const Window& window)
-        : MessageHandler(window), _command_index(41000), _accelerators(nullptr)
+        : MessageHandler(window), _accelerators(nullptr)
     {
     }
 

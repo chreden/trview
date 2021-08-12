@@ -598,6 +598,15 @@ namespace trview
             di::bind<Window>.to(create_window(instance, command_show)),
             di::bind<IClipboard>.to<Clipboard>(),
             di::bind<IShortcuts>.to<Shortcuts>(),
+            di::bind<IShortcuts::Source>.to(
+                [](const auto& injector) -> IShortcuts::Source
+                {
+                    return [](auto&& window)
+                    {
+                        return std::make_shared<Shortcuts>(window);
+                    };
+                }
+            ),
             di::bind<IApplication>.to<Application>(),
             di::bind<IDialogs>.to<Dialogs>(),
             di::bind<IFiles>.to<Files>(),

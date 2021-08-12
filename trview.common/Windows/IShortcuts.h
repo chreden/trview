@@ -7,6 +7,8 @@ namespace trview
 {
     struct IShortcuts
     {
+        using Source = std::function<std::shared_ptr<IShortcuts>(const Window&)>;
+
         struct Shortcut
         {
             uint8_t flags;
