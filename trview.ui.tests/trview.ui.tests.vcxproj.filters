@@ -9,7 +9,4 @@
     <ClCompile Include="ListboxTests.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
 </Project>
