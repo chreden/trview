@@ -8,7 +8,4 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="AlgorithmsTests.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
 </Project>
