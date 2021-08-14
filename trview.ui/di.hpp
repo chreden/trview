@@ -16,13 +16,12 @@ namespace trview
                     {
                         return [&](auto&& window, auto&& control)
                         {
-                            auto mouse = injector.create<input::IMouse::Source>()(window);
                             return std::make_unique<Input>(
                                 window,
                                 control,
-                                injector.create<std::shared_ptr<IShortcuts>>(),
+                                injector.create<IShortcuts::Source>()(window),
                                 injector.create<std::shared_ptr<IClipboard>>(),
-                                mouse);
+                                injector.create<input::IMouse::Source>()(window));
                         };
                     })
             );
