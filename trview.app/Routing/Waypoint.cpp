@@ -21,14 +21,15 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        auto light_direction = _position - camera.position();
-        light_direction.Normalize();
-
         Matrix rotation = calculate_waypoint_rotation();
 
         // The pole
-        auto pole_wvp = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(0, -0.25f, 0) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();
-        _mesh->render(pole_wvp, texture_storage, colour, light_direction);
+        const auto pole_world = Matrix::CreateScale(PoleThickness, 0.5f, PoleThickness) * Matrix::CreateTranslation(0, -0.25f, 0) * rotation * Matrix::CreateTranslation(_position);
+        auto light_direction = Vector3::TransformNormal(_position - camera.position(), pole_world.Invert());
+        light_direction.Normalize();
+
+        auto pole_wvp = pole_world * camera.view_projection();
+        _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();

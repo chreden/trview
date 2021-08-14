@@ -37,6 +37,7 @@ namespace trview
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
+            float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) override;
 
         virtual std::vector<TransparentTriangle> transparent_triangles() const override;

@@ -21,6 +21,7 @@ namespace trview
         virtual void render(const DirectX::SimpleMath::Matrix& world_view_projection,
             const ILevelTextureStorage& texture_storage,
             const DirectX::SimpleMath::Color& colour,
+            float light_intensity = 1.0f,
             DirectX::SimpleMath::Vector3 light_direction = DirectX::SimpleMath::Vector3::Zero) = 0;
 
         virtual std::vector<TransparentTriangle> transparent_triangles() const = 0;
@@ -154,6 +155,7 @@ namespace trview
         DirectX::SimpleMath::Matrix matrix;
         DirectX::SimpleMath::Color colour;
         DirectX::SimpleMath::Vector4 light_dir;
+        float light_intensity{ 1.0f };
         int light_enabled{ 0 };
     };
 #pragma warning(pop)

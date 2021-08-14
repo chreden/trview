@@ -3,6 +3,7 @@ cbuffer cb : register (b0)
     matrix scale;
     float4 colour;
     float4 light_dir;
+    float light_intensity;
     int light_enable;
 }
 
@@ -30,7 +31,7 @@ VertexOutput main( VertexInput input )
 
     if (light_enable != 0)
     {
-        output.colour *= max(0.2f, dot(light_dir, normalize(float4(input.normal, 1))));
+        output.colour *= max(0.2f, dot(light_dir, normalize(float4(input.normal, 1)))) * light_intensity;
         output.colour.a = 1.0f;
     }
 
