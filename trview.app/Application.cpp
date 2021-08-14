@@ -320,7 +320,7 @@ namespace trview
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
-        _token_store += _viewer->on_waypoint_added += [this](const auto& position, auto room, auto type, auto index) { add_waypoint(position, room, type, index); };
+        _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
         _token_store += _viewer->on_settings += [this](auto&& settings)
@@ -349,9 +349,7 @@ namespace trview
         _token_store += _items_windows->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _items_windows->on_add_to_route += [this](const auto& item)
         {
-            uint32_t new_index = _route->insert(item.position(), item.room(), IWaypoint::Type::Entity, item.number());
-            _route_window->set_route(_route.get());
-            select_waypoint(new_index);
+            add_waypoint(item.position(), Vector3::Down, item.room(), IWaypoint::Type::Entity, item.number());
         };
     }
 
@@ -368,7 +366,7 @@ namespace trview
         {
             if (auto trigger_ptr = trigger.lock())
             {
-                add_waypoint(trigger_ptr->position(), trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
+                add_waypoint(trigger_ptr->position(), Vector3::Down, trigger_ptr->room(), IWaypoint::Type::Trigger, trigger_ptr->number());
             }
         };
     }
@@ -428,9 +426,9 @@ namespace trview
         add_shortcut(false, VK_DELETE, [&]() { remove_waypoint(_route->selected_waypoint()); });
     }
 
-    void Application::add_waypoint(const Vector3& position, uint32_t room, IWaypoint::Type type, uint32_t index)
+    void Application::add_waypoint(const Vector3& position, const Vector3& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
     {
-        uint32_t new_index = _route->insert(position, room, type, index);
+        uint32_t new_index = _route->insert(position, normal, room, type, index);
         _route_window->set_route(_route.get());
         select_waypoint(new_index);
     }

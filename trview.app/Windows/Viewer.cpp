@@ -88,7 +88,40 @@ namespace trview
         _token_store += _ui->on_add_waypoint += [&]()
         {
             auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
-            on_waypoint_added(_context_pick.position, room_from_pick(_context_pick), type, _context_pick.index);
+            if (_context_pick.triangle.normal.y != 0)
+            {
+                _context_pick.triangle.normal.x = 0;
+                _context_pick.triangle.normal.z = 0;
+                _context_pick.triangle.normal.Normalize();
+            }
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
+        };
+        _token_store += _ui->on_add_mid_waypoint += [&]()
+        {
+            auto type = _context_pick.type == PickResult::Type::Entity ? IWaypoint::Type::Entity : _context_pick.type == PickResult::Type::Trigger ? IWaypoint::Type::Trigger : IWaypoint::Type::Position;
+
+            if (_context_pick.type == PickResult::Type::Room)
+            {
+                _context_pick.position = _context_pick.centroid;
+            }
+            else if (_context_pick.type == PickResult::Type::Entity)
+            {
+                _context_pick.position = _level->items()[_context_pick.index].position();
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                _context_pick.position = _level->triggers()[_context_pick.index].lock()->position();
+            }
+
+            // Filter out non-wall normals - ceiling and floor normals should be vertical.
+            if (_context_pick.triangle.normal.y != 0)
+            {
+                _context_pick.triangle.normal.x = 0;
+                _context_pick.triangle.normal.z = 0;
+                _context_pick.triangle.normal.Normalize();
+            }
+
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
         };
         _token_store += _ui->on_remove_waypoint += [&]() { on_waypoint_removed(_context_pick.index); };
         _token_store += _ui->on_hide += [&]()
@@ -415,6 +448,7 @@ namespace trview
                 _camera_input.reset(true);
                 _ui->set_remove_waypoint_enabled(_current_pick.type == PickResult::Type::Waypoint);
                 _ui->set_hide_enabled(_current_pick.type == PickResult::Type::Entity || _current_pick.type == PickResult::Type::Trigger);
+                _ui->set_mid_waypoint_enabled(_current_pick.type == PickResult::Type::Room && _current_pick.triangle.normal.y < 0);
             }
         };
     }

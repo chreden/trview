@@ -38,6 +38,9 @@ namespace trview
         /// Event raised when the add waypoint button is pressed.
         Event<> on_add_waypoint;
 
+        /// Event raised when the add mid waypoint button is pressed.
+        Event<> on_add_mid_waypoint;
+
         /// Event raised when the remove waypoint button is pressed.
         Event<> on_remove_waypoint;
 
@@ -290,5 +293,10 @@ namespace trview
         virtual void print_console(const std::wstring& text) = 0;
 
         virtual void initialise_input() = 0;
+        /// <summary>
+        /// Set whether the mid waypoint button is enabled.
+        /// </summary>
+        /// <param name="value">Whether the button is enabled.</param>
+        virtual void set_mid_waypoint_enabled(bool value) = 0;
     };
 }

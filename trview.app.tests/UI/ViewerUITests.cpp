@@ -7,6 +7,7 @@
 #include <trview.tests.common/Window.h>
 #include <trview.app/Mocks/UI/ISettingsWindow.h>
 #include <trview.app/Mocks/UI/IViewOptions.h>
+#include <trview.app/Mocks/UI/IContextMenu.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -32,12 +33,13 @@ namespace
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             ISettingsWindow::Source settings_window_source{ [](auto&&...) { return std::make_unique<MockSettingsWindow>(); }};
             IViewOptions::Source view_options_source{ [](auto&&...) { return std::make_unique<MockViewOptions>(); } };
+            trview::IContextMenu::Source context_menu_source{ [](auto&&...) { return std::make_unique<MockContextMenu>(); } };
 
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source);
+                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source);
             }
 
             test_module& with_settings_window_source(const ISettingsWindow::Source& source)
@@ -49,6 +51,12 @@ namespace
             test_module& with_view_options_source(const IViewOptions::Source& source)
             {
                 view_options_source = source;
+                return *this;
+            }
+
+            test_module& with_context_menu_source(const trview::IContextMenu::Source& source)
+            {
+                context_menu_source = source;
                 return *this;
             }
         };
@@ -104,4 +112,30 @@ TEST(ViewerUI, ShowBoundingBoxesEventRaised)
     view_options.on_show_bounding_boxes(true);
     ASSERT_TRUE(show.has_value());
     ASSERT_TRUE(show.value());
+}
+
+TEST(ViewerUI, SetMidWaypointEnabled)
+{
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    auto context_menu_ptr_actual = std::move(context_menu_ptr);
+    EXPECT_CALL(context_menu, set_mid_waypoint_enabled).Times(1);
+    auto ui = register_test_module().with_context_menu_source([&](auto&&...) { return std::move(context_menu_ptr_actual); }).build();
+
+    ui->set_mid_waypoint_enabled(true);
+}
+
+TEST(ViewerUI, OnAddMidWaypoint)
+{
+    auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
+    auto context_menu_ptr_actual = std::move(context_menu_ptr);
+    auto ui = register_test_module().with_context_menu_source([&](auto&&...) { return std::move(context_menu_ptr_actual); }).build();
+
+    bool raised = false;
+    auto token = ui->on_add_mid_waypoint += [&]()
+    {
+        raised = true;
+    };
+
+    context_menu.on_add_mid_waypoint();
+    ASSERT_TRUE(raised);
 }

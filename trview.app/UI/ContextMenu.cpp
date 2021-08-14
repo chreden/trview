@@ -17,6 +17,7 @@ namespace trview
     const std::string ContextMenu::Names::hide_button{ "Hide" };
     const std::string ContextMenu::Names::orbit_button{ "Orbit" };
     const std::string ContextMenu::Names::add_waypoint_button{ "AddWaypoint" };
+    const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
 
     ContextMenu::ContextMenu(Control& parent)
@@ -31,6 +32,18 @@ namespace trview
         {
             on_add_waypoint();
             set_visible(false);
+        };
+
+        _mid_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Mid Waypoint"));
+        _mid_button->set_name(Names::add_mid_waypoint_button);
+        _mid_button->set_text_background_colour(Colours::Button);
+        _token_store += _mid_button->on_click += [&]()
+        {
+            if (_mid_enabled)
+            {
+                on_add_mid_waypoint();
+                set_visible(false);
+            }
         };
 
         // Add the similar remove waypoint button 
@@ -69,6 +82,7 @@ namespace trview
 
         set_remove_enabled(_remove_enabled);
         set_hide_enabled(_hide_enabled);
+        set_mid_waypoint_enabled(_mid_enabled);
 
         _menu->set_visible(false);
     }
@@ -103,5 +117,11 @@ namespace trview
     bool ContextMenu::visible() const
     {
         return _menu->visible();
+    }
+
+    void ContextMenu::set_mid_waypoint_enabled(bool value)
+    {
+        _mid_enabled = value;
+        _mid_button->set_text_colour(value ? Colours::Enabled : Colours::Disabled);
     }
 }

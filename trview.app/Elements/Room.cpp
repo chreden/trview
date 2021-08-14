@@ -58,6 +58,8 @@ namespace trview
         _alternate_mode = room.alternate_room != -1 ? AlternateMode::HasAlternate : AlternateMode::None;
 
         _room_offset = Matrix::CreateTranslation(room.info.x / trlevel::Scale_X, 0, room.info.z / trlevel::Scale_Z);
+        _inverted_room_offset = _room_offset.Invert();
+
         generate_sectors(level, room, sector_source);
         generate_geometry(level.get_version(), mesh_source, room);
         generate_adjacency();
@@ -145,10 +147,7 @@ namespace trview
             PickResult geometry_result = _mesh->pick(Vector3::Transform(position, room_offset), direction);
             if (geometry_result.hit)
             {
-                // Transform the position back in to world space. Also mark it as a room pick result.
-                geometry_result.type = PickResult::Type::Room;
-                geometry_result.index = _index;
-                geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+                add_centroid_to_pick(*_mesh, geometry_result);
                 pick_results.push_back(geometry_result);
             }
 
@@ -159,7 +158,7 @@ namespace trview
                 {
                     unmatched_result.type = PickResult::Type::Room;
                     unmatched_result.index = _index;
-                    unmatched_result.position = Vector3::Transform(unmatched_result.position, _room_offset);
+                    add_centroid_to_pick(*_unmatched_mesh, unmatched_result);
                     pick_results.push_back(unmatched_result);
                 }
             }
@@ -759,5 +758,30 @@ namespace trview
     uint16_t Room::num_z_sectors() const 
     {
         return _num_z_sectors; 
+    }
+
+    void Room::add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const
+    {
+        // Transform the position back in to world space. Also mark it as a room pick result.
+        geometry_result.type = PickResult::Type::Room;
+        geometry_result.index = _index;
+        geometry_result.position = Vector3::Transform(geometry_result.position, _room_offset);
+
+        const auto& tri = geometry_result.triangle;
+        if (tri.normal.y < 0)
+        {
+            Vector3 centroid = { std::floor(geometry_result.position.x) + 0.5f, geometry_result.position.y, std::floor(geometry_result.position.z) + 0.5f };
+            Vector3 ray_direction = { 0, -tri.normal.y, 0 };
+
+            centroid = Vector3::Transform(centroid, _inverted_room_offset);
+            ray_direction.Normalize();
+            PickResult centroid_hit = mesh.pick(centroid - ray_direction * 0.5f, ray_direction);
+            geometry_result.centroid = centroid_hit.hit ? Vector3::Transform(centroid_hit.position, _room_offset) : geometry_result.position;
+            geometry_result.triangle = centroid_hit.hit ? centroid_hit.triangle : geometry_result.triangle;
+        }
+        else
+        {
+            geometry_result.centroid = geometry_result.position;
+        }
     }
 }

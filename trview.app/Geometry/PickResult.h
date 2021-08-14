@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SimpleMath.h>
+#include <trview.app/Geometry/Triangle.h>
 
 namespace trview
 {
@@ -22,11 +23,13 @@ namespace trview
         bool                         hit{ false };
         float                        distance{ FLT_MAX };
         DirectX::SimpleMath::Vector3 position;
+        DirectX::SimpleMath::Vector3 centroid;
         Type                         type{ Type::Room };
         uint32_t                     index{ 0u };
         bool                         stop{ false };
         std::wstring                 text;
         bool                         override_centre{ false };
+        Triangle                     triangle;
     };
 
     /// Convert the pick result to a display string.

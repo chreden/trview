@@ -115,7 +115,7 @@ namespace trview
         _bounding_box.Center = minimum + half_size;
     }
 
-    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, Vector3 light_direction)
+    void Mesh::render(const Matrix& world_view_projection, const ILevelTextureStorage& texture_storage, const Color& colour, float light_intensity, Vector3 light_direction)
     {
         // There are no vertices.
         if (!_vertex_buffer)
@@ -128,7 +128,7 @@ namespace trview
         D3D11_MAPPED_SUBRESOURCE mapped_resource;
         memset(&mapped_resource, 0, sizeof(mapped_resource));
 
-        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_direction != Vector3::Zero };
+        MeshData data{ world_view_projection, colour, Vector4(light_direction.x, light_direction.y, light_direction.z, 1), light_intensity, light_direction != Vector3::Zero };
         context->Map(_matrix_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource); 
         memcpy(mapped_resource.pData, &data, sizeof(data));
         context->Unmap(_matrix_buffer.Get(), 0);
@@ -179,10 +179,12 @@ namespace trview
         {
             float distance = 0;
             if (direction.Dot(tri.normal) < 0 &&
-                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance))
+                Intersects(position, direction, tri.v0, tri.v1, tri.v2, distance) &&
+                distance < result.distance)
             {
                 result.hit = true;
                 result.distance = std::min(distance, result.distance);
+                result.triangle = tri;
             }
         }
 

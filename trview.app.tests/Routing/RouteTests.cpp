@@ -32,6 +32,7 @@ namespace
     struct WaypointDetails
     {
         Vector3 position;
+        Vector3 normal;
         uint32_t room;
         IWaypoint::Type type;
         uint32_t index;
@@ -72,14 +73,14 @@ namespace
 TEST(Route, Add)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
     {
-        waypoint_values = { position, room, type, index, colour };
+        waypoint_values = { position, normal, room, type, index, colour };
         return std::make_unique<MockWaypoint>();
     };
 
     auto route = register_test_module().with_waypoint_source(source).build();
-    route->add(Vector3(0, 1, 0), 10);
+    route->add(Vector3(0, 1, 0), Vector3::Down, 10);
 
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 1);
@@ -92,13 +93,13 @@ TEST(Route, Add)
 TEST(Route, AddSpecificType)
 {
     std::optional<WaypointDetails> waypoint_values;
-    auto source = [&](auto&& position, auto&& room, auto&& type, auto&& index, auto&& colour)
+    auto source = [&](auto&& position, auto&& normal, auto&& room, auto&& type, auto&& index, auto&& colour)
     {
-        waypoint_values = { position, room, type, index, colour };
+        waypoint_values = { position, normal, room, type, index, colour };
         return std::make_unique<MockWaypoint>();
     };
     auto route = register_test_module().with_waypoint_source(source).build();
-    route->add(Vector3(0, 1, 0), 10, IWaypoint::Type::Trigger, 100);
+    route->add(Vector3(0, 1, 0), Vector3::Down, 10, IWaypoint::Type::Trigger, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 1);
     ASSERT_EQ(waypoint_values.value().position, Vector3(0, 1, 0));
@@ -110,7 +111,7 @@ TEST(Route, AddSpecificType)
 TEST(Route, Clear)
 {
     auto route = register_test_module().build();
-    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
     ASSERT_TRUE(route->is_unsaved());
     route->set_unsaved(false);
     route->clear();
@@ -128,10 +129,10 @@ TEST(Route, InsertAtPosition)
 {
     uint32_t test_index = 0;
     auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
-    route->add(Vector3::Zero, 0);
-    route->add(Vector3::Zero, 1);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
     route->set_unsaved(false);
-    route->insert(Vector3(0, 1, 0), 2, 1);
+    route->insert(Vector3(0, 1, 0), Vector3::Down, 2, 1);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
 
@@ -144,10 +145,10 @@ TEST(Route, InsertSpecificTypeAtPosition)
 {
     uint32_t test_index = 0;
     auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
-    route->add(Vector3::Zero, 0);
-    route->add(Vector3::Zero, 1);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
     route->set_unsaved(false);
-    route->insert(Vector3(0, 1, 0), 2, 1, IWaypoint::Type::Entity, 100);
+    route->insert(Vector3(0, 1, 0), Vector3::Down, 2, 1, IWaypoint::Type::Entity, 100);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
     auto& waypoint = route->waypoint(1);
@@ -161,11 +162,11 @@ TEST(Route, Insert)
 {
     uint32_t test_index = 0;
     auto route = register_test_module().with_waypoint_source(indexed_source(test_index)).build();
-    route->add(Vector3::Zero, 0);
-    route->add(Vector3::Zero, 1);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 1);
     route->set_unsaved(false);
     route->select_waypoint(1);
-    auto index = route->insert(Vector3(0, 1, 0), 2);
+    auto index = route->insert(Vector3(0, 1, 0), Vector3::Down, 2);
     ASSERT_EQ(index, 2);
     ASSERT_TRUE(route->is_unsaved());
     ASSERT_EQ(route->waypoints(), 3);
@@ -186,7 +187,7 @@ TEST(Route, IsUnsaved)
 TEST(Route, Remove)
 {
     auto route = register_test_module().build();
-    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
     ASSERT_EQ(route->waypoints(), 1);
     route->set_unsaved(false);
     route->remove(0);
@@ -205,8 +206,8 @@ TEST(Route, SetColour)
 TEST(Route, SelectedWaypoint)
 {
     auto route = register_test_module().build();
-    route->add(Vector3::Zero, 0);
-    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
     route->set_unsaved(false);
     route->select_waypoint(1);
     ASSERT_FALSE(route->is_unsaved());
@@ -216,8 +217,8 @@ TEST(Route, SelectedWaypoint)
 TEST(Route, SelectedWaypointAdjustedByRemove)
 {
     auto route = register_test_module().build();
-    route->add(Vector3::Zero, 0);
-    route->add(Vector3::Zero, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
     route->set_unsaved(false);
     route->select_waypoint(1);
     ASSERT_FALSE(route->is_unsaved());
