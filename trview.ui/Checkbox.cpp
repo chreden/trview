@@ -66,10 +66,21 @@ namespace trview
 
         bool Checkbox::clicked(Point)
         {
+            if (!_enabled)
+            {
+                on_focus_clear_requested();
+                return true;
+            }
+
             set_state(!_state);
             on_state_changed(_state);
             on_focus_clear_requested();
             return true;
+        }
+
+        bool Checkbox::enabled() const
+        {
+            return _enabled;
         }
 
         // Gets whether the checkbox is currently checked.

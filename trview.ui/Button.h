@@ -90,6 +90,11 @@ namespace trview
             /// @returns The text colour.
             std::optional<Colour> text_colour() const;
 
+            /// <summary>
+            /// Get the text background colour, if set.
+            /// </summary>
+            std::optional<Colour> text_background_colour() const;
+
             virtual bool mouse_down(const Point& position) override;
             virtual bool mouse_up(const Point& position) override;
             virtual void mouse_enter() override;
