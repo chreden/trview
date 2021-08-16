@@ -370,7 +370,7 @@ namespace trview
     {
         auto make_item = [](const auto& name, const auto& value)
         {
-            return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
+            return Listbox::Item( { { L"Name", name }, { L"Value", value } } );
         };
 
         auto get_command_display = [this](const Command& command)
