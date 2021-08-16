@@ -13,12 +13,9 @@ namespace trview
     {
         UserSettings settings;
 
-        auto appdata = _files->appdata_directory();
-        auto file_path = appdata + "\\trview\\settings.txt";
-
         try
         {
-            auto data = _files->load_file(file_path);
+            auto data = _files->load_file(_files->appdata_directory() + "\\trview\\settings.txt");
             if (!data.has_value())
             {
                 return settings;
@@ -51,10 +48,9 @@ namespace trview
 
     void SettingsLoader::save_user_settings(const UserSettings& settings)
     {
-        auto appdata = _files->appdata_directory();
-        auto directory = appdata + "\\trview";
+        const auto directory = _files->appdata_directory() + "\\trview";
         _files->create_directory(directory);
-        auto file_path = directory + "\\settings.txt";
+        const auto file_path = directory + "\\settings.txt";
 
         try
         {
