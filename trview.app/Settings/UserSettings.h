@@ -24,6 +24,8 @@ namespace trview
         bool camera_acceleration{ true };
         float camera_acceleration_rate{ 0.5f };
         bool camera_display_degrees{ true };
+
+        bool operator==(const UserSettings& other) const;
     };
 }
 
