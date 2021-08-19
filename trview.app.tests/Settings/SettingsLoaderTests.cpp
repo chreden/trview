@@ -4,6 +4,8 @@
 using namespace trview;
 using testing::Return;
 using testing::A;
+using testing::SaveArg;
+using testing::HasSubstr;
 
 namespace
 {
@@ -41,6 +43,14 @@ namespace
         EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1).WillRepeatedly(Return(contents));
         return register_test_module().with_files(files).build();
     }
+
+    std::unique_ptr<SettingsLoader> setup_save_setting(std::string& setting)
+    {
+        auto files = std::make_shared<MockFiles>();
+        EXPECT_CALL(*files, appdata_directory).Times(testing::AtLeast(1)).WillRepeatedly(Return("appdata"));
+        EXPECT_CALL(*files, save_file(A<const std::string&>(), A<const std::string&>())).WillRepeatedly(SaveArg<1>(&setting));
+        return register_test_module().with_files(files).build();
+    }
 }
 
 TEST(SettingsLoader, FileNotFound)
@@ -76,7 +86,12 @@ TEST(SettingsLoader, RecentFilesLoaded)
 
 TEST(SettingsLoader, RecentFilesSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.recent_files = { "a", "b", "c" };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"recent\":[\"a\",\"b\",\"c\"]"));
 }
 
 TEST(SettingsLoader, CameraSensitivityLoaded)
@@ -88,7 +103,12 @@ TEST(SettingsLoader, CameraSensitivityLoaded)
 
 TEST(SettingsLoader, CameraSensitivitySaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_sensitivity = 0.5f;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"camera\":0.5"));
 }
 
 TEST(SettingsLoader, CameraMovementSpeedLoaded)
@@ -100,7 +120,12 @@ TEST(SettingsLoader, CameraMovementSpeedLoaded)
 
 TEST(SettingsLoader, CameraMovementSpeedSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_movement_speed = 1.2f;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"movement\":1.2"));
 }
 
 TEST(SettingsLoader, VsyncLoaded)
@@ -116,7 +141,16 @@ TEST(SettingsLoader, VsyncLoaded)
 
 TEST(SettingsLoader, VsyncSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.vsync = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"vsync\":false"));
+
+    settings.vsync = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"vsync\":true"));
 }
 
 TEST(SettingsLoader, GoToLaraLoaded)
@@ -132,7 +166,16 @@ TEST(SettingsLoader, GoToLaraLoaded)
 
 TEST(SettingsLoader, GoToLaraSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.go_to_lara = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"gotolara\":false"));
+
+    settings.go_to_lara = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"gotolara\":true"));
 }
 
 TEST(SettingsLoader, InvertMapControlsLoaded)
@@ -148,7 +191,16 @@ TEST(SettingsLoader, InvertMapControlsLoaded)
 
 TEST(SettingsLoader, InvertMapControlsSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.invert_map_controls = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"invertmapcontrols\":false"));
+
+    settings.invert_map_controls = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"invertmapcontrols\":true"));
 }
 
 TEST(SettingsLoader, ItemsStartupLoaded)
@@ -164,7 +216,16 @@ TEST(SettingsLoader, ItemsStartupLoaded)
 
 TEST(SettingsLoader, ItemsStartupSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.items_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"itemsstartup\":false"));
+
+    settings.items_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"itemsstartup\":true"));
 }
 
 TEST(SettingsLoader, TriggersStartupLoaded)
@@ -180,7 +241,16 @@ TEST(SettingsLoader, TriggersStartupLoaded)
 
 TEST(SettingsLoader, TriggersStartupSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.triggers_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"triggersstartup\":false"));
+
+    settings.triggers_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"triggersstartup\":true"));
 }
 
 TEST(SettingsLoader, AutoOrbitLoaded)
@@ -196,7 +266,16 @@ TEST(SettingsLoader, AutoOrbitLoaded)
 
 TEST(SettingsLoader, AutoOrbitSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.auto_orbit = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"autoorbit\":false"));
+
+    settings.auto_orbit = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"autoorbit\":true"));
 }
 
 TEST(SettingsLoader, InvertVerticalPanLoaded)
@@ -212,7 +291,16 @@ TEST(SettingsLoader, InvertVerticalPanLoaded)
 
 TEST(SettingsLoader, InvertVerticalPanSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.invert_vertical_pan = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"invertverticalpan\":false"));
+
+    settings.invert_vertical_pan = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"invertverticalpan\":true"));
 }
 
 TEST(SettingsLoader, BackgroundColourLoaded)
@@ -224,7 +312,12 @@ TEST(SettingsLoader, BackgroundColourLoaded)
 
 TEST(SettingsLoader, BackgroundColourSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.background_colour = 12345;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"background\":12345"));
 }
 
 TEST(SettingsLoader, RoomsStartupLoaded)
@@ -240,7 +333,16 @@ TEST(SettingsLoader, RoomsStartupLoaded)
 
 TEST(SettingsLoader, RoomsStartupSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.rooms_startup = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"roomsstartup\":false"));
+
+    settings.rooms_startup = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"roomsstartup\":true"));
 }
 
 TEST(SettingsLoader, CameraAccelerationLoaded)
@@ -256,7 +358,16 @@ TEST(SettingsLoader, CameraAccelerationLoaded)
 
 TEST(SettingsLoader, CameraAccelerationSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_acceleration = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"cameraacceleration\":false"));
+
+    settings.camera_acceleration = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"cameraacceleration\":true"));
 }
 
 TEST(SettingsLoader, CameraAccelerationRateLoaded)
@@ -268,7 +379,12 @@ TEST(SettingsLoader, CameraAccelerationRateLoaded)
 
 TEST(SettingsLoader, CameraAccelerationRateSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_acceleration_rate = 1.2f;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"cameraaccelerationrate\":1.2"));
 }
 
 TEST(SettingsLoader, CameraDisplayDegreesLoaded)
@@ -284,5 +400,14 @@ TEST(SettingsLoader, CameraDisplayDegreesLoaded)
 
 TEST(SettingsLoader, CameraDisplayDegreesSaved)
 {
-    FAIL();
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.camera_display_degrees = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"cameradisplaydegrees\":false"));
+
+    settings.camera_display_degrees = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"cameradisplaydegrees\":true"));
 }
