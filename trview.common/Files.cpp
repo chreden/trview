@@ -31,11 +31,7 @@ namespace trview
 
     bool Files::create_directory(const std::string& directory) const
     {
-        if (!CreateDirectory(to_utf16(directory).c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS)
-        {
-            return false;
-        }
-        return true;
+        return CreateDirectory(to_utf16(directory).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;
     }
 
     std::optional<std::vector<uint8_t>> Files::load_file(const std::string& filename) const
