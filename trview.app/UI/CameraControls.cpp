@@ -6,6 +6,7 @@
 #include <trview.ui/Slider.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Layouts/GridLayout.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 namespace trview
 {
@@ -20,7 +21,8 @@ namespace trview
         // Make a button with a label next to it, until this kind of control exists.
         auto create_labelled_button = [](Event<>& on_click, const std::wstring& text)
         {
-            auto panel = std::make_unique<StackPanel>(Size(56, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual);
+            auto panel = std::make_unique<ui::Window>(Size(56, 16), Colour::Transparent);
+            panel->set_layout(std::make_unique<StackLayout>(Size(3, 0), StackLayout::Direction::Horizontal, SizeMode::Manual));
             auto button = panel->add_child(std::make_unique<Button>(Size(16, 16)));
             button->on_click += on_click;
             panel->add_child(std::make_unique<Label>(Size(40, 16), Colour::Transparent, text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre));

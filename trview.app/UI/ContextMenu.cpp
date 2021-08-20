@@ -1,6 +1,7 @@
 #include "ContextMenu.h"
 #include <trview.ui/Button.h>
 #include <trview.ui/Label.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::ui;
 
@@ -22,7 +23,8 @@ namespace trview
 
     ContextMenu::ContextMenu(Control& parent)
     {
-        _menu = parent.add_child(std::make_unique<StackPanel>(Point(300, 300), Size(200, 100), Colours::Background, Size()));
+        _menu = parent.add_child(std::make_unique<ui::Window>(Point(300, 300), Size(200, 100), Colours::Background));
+        _menu->set_layout(std::make_unique<StackLayout>(Size()));
 
         // Add waypoint button.
         auto button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Waypoint"));

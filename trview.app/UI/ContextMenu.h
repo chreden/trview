@@ -33,13 +33,13 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        ui::StackPanel* _menu;
-        ui::Button*     _remove_button;
-        ui::Button*     _hide_button;
-        ui::Button*     _mid_button;
-        bool            _remove_enabled{ false };
-        bool            _hide_enabled{ false };
-        bool            _mid_enabled{ false };
-        TokenStore      _token_store;
+        ui::Window* _menu;
+        ui::Button* _remove_button;
+        ui::Button* _hide_button;
+        ui::Button* _mid_button;
+        bool _remove_enabled{ false };
+        bool _hide_enabled{ false };
+        bool _mid_enabled{ false };
+        TokenStore _token_store;
     };
 }
