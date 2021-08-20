@@ -17,7 +17,6 @@ namespace trview
         class NumericUpDown;
         class Button;
         class Window;
-        class StackPanel;
     }
 
     class ViewOptions final : public IViewOptions
@@ -75,7 +74,7 @@ namespace trview
         ui::NumericUpDown* _depth;
         ui::Window* _tr1_3_panel;
         ui::Window* _tr4_5_panel;
-        ui::StackPanel* _alternate_groups;
+        ui::Window* _alternate_groups;
         std::unordered_map<uint32_t, bool> _alternate_group_values;
         std::unordered_map<uint32_t, ui::Button*> _alternate_group_buttons;
     };

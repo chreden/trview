@@ -6,6 +6,7 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::ui;
 
@@ -250,8 +251,10 @@ namespace trview
     void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage)
     {
         // This is the main tool window on the side of the screen.
-        auto tool_window = _control->add_child(std::make_unique<StackPanel>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5)));
-        tool_window->set_margin(Size(5, 5));
+        auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        auto layout = std::make_unique<StackLayout>(Size(5, 5));
+        layout->set_margin(Size(5, 5));
+        tool_window->set_layout(std::move(layout));
 
         _view_options = view_options_source(*tool_window, texture_storage);
         _view_options->on_highlight += on_highlight;

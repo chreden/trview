@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IContextMenu.h"
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 
 namespace trview
