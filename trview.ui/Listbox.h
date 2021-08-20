@@ -7,8 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <optional>
-
-#include "StackPanel.h"
+#include "Window.h"
 
 namespace trview
 {
@@ -17,7 +16,7 @@ namespace trview
         class Scrollbar;
 
         /// Displays a number of rows in a grid with column headers.
-        class Listbox : public StackPanel
+        class Listbox : public Window
         {
         public:
             struct Names
@@ -116,7 +115,7 @@ namespace trview
             };
 
             /// A row in the list box.
-            class Row final : public StackPanel
+            class Row final : public Window
             {
             public:
                 struct Names
@@ -246,9 +245,9 @@ namespace trview
 
             std::vector<Column> _columns;
             std::vector<Item> _items;
-            StackPanel* _headers_element;
-            StackPanel* _rows_container;
-            StackPanel* _rows_element;
+            Control* _headers_element;
+            Control* _rows_container;
+            Control* _rows_element;
             Scrollbar* _rows_scrollbar;
             uint32_t _current_top{ 0u };
             Column _current_sort;

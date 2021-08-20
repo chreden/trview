@@ -1,5 +1,6 @@
 #include "Checkbox.h"
 #include "Label.h"
+#include "Layouts/StackLayout.h"
 
 namespace trview
 {
@@ -19,8 +20,9 @@ namespace trview
         }
 
         Checkbox::Checkbox(const Point& position)
-            : StackPanel(position, default_size, Colour::Transparent, Size(), Direction::Horizontal)
+            : Window(position, default_size, Colour::Transparent)
         {
+            set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
             create_image(default_size);
         }
 
@@ -30,8 +32,9 @@ namespace trview
         }
 
         Checkbox::Checkbox(const Point& position, const Colour& background_colour, const std::wstring& label_text)
-            : StackPanel(position, default_size, Colour::Transparent, Size(), Direction::Horizontal)
+            : Window(position, default_size, Colour::Transparent)
         {
+            set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
             create_image(default_size);
 
             add_child(std::make_unique<Window>(Size(3, default_size.height), background_colour));

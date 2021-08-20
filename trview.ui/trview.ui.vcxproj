@@ -42,7 +42,6 @@
     <ClInclude Include="SizeDimension.h" />
     <ClInclude Include="SizeMode.h" />
     <ClInclude Include="Slider.h" />
-    <ClInclude Include="StackPanel.h" />
     <ClInclude Include="Checkbox.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TextArea.h" />
@@ -69,7 +68,6 @@
     <ClCompile Include="NumericUpDown.cpp" />
     <ClCompile Include="Scrollbar.cpp" />
     <ClCompile Include="Slider.cpp" />
-    <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

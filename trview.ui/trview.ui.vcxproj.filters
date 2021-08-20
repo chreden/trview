@@ -22,9 +22,6 @@
     <ClInclude Include="NumericUpDown.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="StackPanel.h">
-      <Filter>Controls</Filter>
-    </ClInclude>
     <ClInclude Include="SizeMode.h">
       <Filter>Controls</Filter>
     </ClInclude>
@@ -100,9 +97,6 @@
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="NumericUpDown.cpp">
-      <Filter>Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="StackPanel.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="Checkbox.cpp">
