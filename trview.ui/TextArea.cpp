@@ -1,5 +1,6 @@
 #include "TextArea.h"
 #include "Label.h"
+#include "Layouts/StackLayout.h"
 
 namespace trview
 {
@@ -13,8 +14,10 @@ namespace trview
         TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
             : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
-            _area = add_child(std::make_unique<StackPanel>(Size(size.width - 10, size.height), background_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
-            _area->set_margin(Size(1, 1));
+            _area = add_child(std::make_unique<ui::Window>(Size(size.width - 10, size.height), background_colour));
+            auto layout = std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual);
+            layout->set_margin(Size(1, 1));
+            _area->set_layout(std::move(layout));
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
             _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour(0.3f, 0.3f, 0.3f)));

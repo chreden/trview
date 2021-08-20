@@ -56,7 +56,7 @@ namespace trview
         void load_trigger_details(const ITrigger& trigger);
         void apply_filters();
 
-        ui::StackPanel* _controls;
+        ui::Control* _controls;
         ui::Checkbox* _track_room_checkbox;
         ui::Listbox*  _triggers_list;
         ui::Listbox*  _stats_list;

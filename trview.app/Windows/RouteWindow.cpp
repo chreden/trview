@@ -4,6 +4,7 @@
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 namespace trview
 {
@@ -80,9 +81,11 @@ namespace trview
 
     std::unique_ptr<Control> RouteWindow::create_left_panel()
     {
-        auto left_panel = std::make_unique<StackPanel>(Size(200, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto left_panel = std::make_unique<ui::Window>(Size(200, window().size().height), Colours::LeftPanel);
+        left_panel->set_layout(std::make_unique<StackLayout>(Size(0, 3), StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        auto buttons = std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(0, 0), StackPanel::Direction::Horizontal);
+        auto buttons = std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel);
+        buttons->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
 
         _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
         _colour->set_text_colour(Colour::Green);
@@ -156,11 +159,14 @@ namespace trview
     std::unique_ptr<Control> RouteWindow::create_right_panel()
     {
         const float panel_width = 270;
-        auto right_panel = std::make_unique<StackPanel>(Size(panel_width, window().size().height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
-        right_panel->set_margin(Size(0, 8));
+        auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
+        auto right_panel_layout = std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual);
+        right_panel_layout->set_margin(Size(0, 8));
+        right_panel->set_layout(std::move(right_panel_layout));
 
         auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
-        auto details_panel = std::make_unique<StackPanel>(Size(panel_width - 20, 140), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto details_panel = std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails);
+        details_panel->set_layout(std::make_unique<StackLayout>(Size(0, 8), StackLayout::Direction::Vertical, SizeMode::Manual));
 
         _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
         _stats->set_name(Names::waypoint_stats);
@@ -200,7 +206,8 @@ namespace trview
             }
         };
 
-        auto save_area = details_panel->add_child(std::make_unique<StackPanel>(Size(panel_width - 20, 20), Colours::ItemDetails, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
+        auto save_area = details_panel->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 20), Colours::ItemDetails));
+        save_area->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual));
 
         _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
         _select_save->set_name(Names::select_save_button);
