@@ -24,7 +24,7 @@ namespace trview
     ContextMenu::ContextMenu(Control& parent)
     {
         _menu = parent.add_child(std::make_unique<ui::Window>(Point(300, 300), Size(200, 100), Colours::Background));
-        _menu->set_layout(std::make_unique<StackLayout>(Size()));
+        _menu->set_layout(std::make_unique<StackLayout>());
 
         // Add waypoint button.
         auto button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Waypoint"));

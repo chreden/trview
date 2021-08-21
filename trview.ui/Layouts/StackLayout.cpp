@@ -12,9 +12,7 @@ namespace trview
 
         void StackLayout::bind(Control& control)
         {
-            // TODO: Convert to a weak_ptr?
             _control = &control;
-
             _token_store += control.on_add_child += [&](auto&& child)
             {
                 child->set_position(get_next_position());
@@ -25,6 +23,11 @@ namespace trview
 
         Point StackLayout::get_next_position() const
         {
+            if (!_control)
+            {
+                return Point();
+            }
+
             auto current_child_elements = _control->child_elements();
             if (!current_child_elements.empty())
             {
