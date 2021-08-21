@@ -32,7 +32,7 @@ namespace trview
                 Horizontal
             };
 
-            StackLayout(Size padding = Size(), Direction direction = Direction::Vertical, SizeMode size_mode = SizeMode::Auto);
+            StackLayout(float padding = 0.0f, Direction direction = Direction::Vertical, SizeMode size_mode = SizeMode::Auto);
             virtual ~StackLayout() = default;
             virtual void bind(Control& control) override;
             /// <summary>
@@ -52,7 +52,7 @@ namespace trview
             Point get_padding() const;
 
             TokenStore _token_store;
-            const Size _padding;
+            const float _padding;
             Size _margin;
             const Direction _direction;
             SizeMode _size_mode;

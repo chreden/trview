@@ -76,7 +76,7 @@ namespace trview
 
         _tr4_5_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
         _alternate_groups = _tr4_5_panel->add_child(std::make_unique<ui::Window>(Size(140, 16), Colour::Transparent));
-        _alternate_groups->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal, SizeMode::Manual));
+        _alternate_groups->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual));
         _tr4_5_panel->set_visible(false);
     }
 

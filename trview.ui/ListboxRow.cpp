@@ -12,7 +12,7 @@ namespace trview
         Listbox::Row::Row(const Colour& colour, const std::vector<Listbox::Column>& columns)
             : Window(Point(), Size(), colour), _columns(columns)
         {
-            set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
+            set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
             set_handles_hover(true);
 
             for (const auto& column : columns)

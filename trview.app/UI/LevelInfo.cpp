@@ -33,7 +33,7 @@ namespace trview
 
         using namespace ui;
         auto panel = std::make_unique<ui::Window>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        auto panel_layout = std::make_unique<StackLayout>(Size(5, 5), StackLayout::Direction::Horizontal);
+        auto panel_layout = std::make_unique<StackLayout>(5.0f, StackLayout::Direction::Horizontal);
         panel_layout->set_margin(Size(5, 5));
         panel->set_layout(std::move(panel_layout));
         auto version = std::make_unique<Image>(Size(16, 16));

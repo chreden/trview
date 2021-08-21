@@ -5,7 +5,7 @@ namespace trview
 {
     namespace ui
     {
-        StackLayout::StackLayout(Size padding, Direction direction, SizeMode size_mode)
+        StackLayout::StackLayout(float padding, Direction direction, SizeMode size_mode)
             : _padding(padding), _direction(direction), _size_mode(size_mode)
         {
         }
@@ -129,7 +129,7 @@ namespace trview
 
         Point StackLayout::get_padding() const
         {
-            return _direction == Direction::Vertical ? Point(0, _padding.height) : Point(_padding.width, 0);
+            return _direction == Direction::Vertical ? Point(0, _padding) : Point(_padding, 0);
         }
 
         void StackLayout::set_auto_size_dimension(SizeDimension dimension)

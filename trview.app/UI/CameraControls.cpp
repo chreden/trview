@@ -22,7 +22,7 @@ namespace trview
         auto create_labelled_button = [](Event<>& on_click, const std::wstring& text)
         {
             auto panel = std::make_unique<ui::Window>(Size(56, 16), Colour::Transparent);
-            panel->set_layout(std::make_unique<StackLayout>(Size(3, 0), StackLayout::Direction::Horizontal, SizeMode::Manual));
+            panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Horizontal, SizeMode::Manual));
             auto button = panel->add_child(std::make_unique<Button>(Size(16, 16)));
             button->on_click += on_click;
             panel->add_child(std::make_unique<Label>(Size(40, 16), Colour::Transparent, text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre));

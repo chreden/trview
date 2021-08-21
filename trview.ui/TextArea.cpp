@@ -15,7 +15,7 @@ namespace trview
             : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
         {
             _area = add_child(std::make_unique<ui::Window>(Size(size.width - 10, size.height), background_colour));
-            auto layout = std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual);
+            auto layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
             layout->set_margin(Size(1, 1));
             _area->set_layout(std::move(layout));
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));

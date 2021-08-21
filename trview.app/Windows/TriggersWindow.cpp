@@ -66,17 +66,17 @@ namespace trview
         using namespace ui;
 
         auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        auto left_panel_layout = std::make_unique<StackLayout>(Size(0, 3), StackLayout::Direction::Vertical, SizeMode::Manual);
+        auto left_panel_layout = std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
         left_panel_layout->set_margin(Size(0, 3));
         left_panel->set_layout(std::move(left_panel_layout));
 
         // Control modes:.
         auto controls_box = left_panel->add_child(std::make_unique<ui::Window>(Size(250, 50), Colours::LeftPanel));
-        auto controls_box_layout = std::make_unique<StackLayout>(Size(2, 2), StackLayout::Direction::Vertical, SizeMode::Manual);
+        auto controls_box_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
         controls_box_layout->set_margin(Size(2, 2));
         controls_box->set_layout(std::move(controls_box_layout));
         _controls = controls_box->add_child(std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel));
-        auto controls_layout = std::make_unique<StackLayout>(Size(2, 2), StackLayout::Direction::Horizontal, SizeMode::Manual);
+        auto controls_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
         controls_layout->set_margin(Size(2, 2));
         _controls->set_layout(std::move(controls_layout));
         _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
@@ -99,7 +99,7 @@ namespace trview
 
         // Command filter:
         auto controls_row2 = controls_box->add_child(std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel));
-        auto controls_row2_layout = std::make_unique<StackLayout>(Size(2, 0), StackLayout::Direction::Horizontal, SizeMode::Manual);
+        auto controls_row2_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
         controls_row2_layout->set_margin(Size(2, 0));
         controls_row2->set_layout(std::move(controls_row2_layout));
 
@@ -169,11 +169,11 @@ namespace trview
         using namespace ui;
         const float panel_width = 270;
         auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
-        right_panel->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual));
+        right_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 8), Colours::ItemDetails));
         auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details"));
         auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 160), Colours::ItemDetails));
-        details_panel->set_layout(std::make_unique<StackLayout>(Size(0, 16), StackLayout::Direction::Vertical, SizeMode::Manual));
+        details_panel->set_layout(std::make_unique<StackLayout>(16.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         // Add some information about the selected item.
         _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails));

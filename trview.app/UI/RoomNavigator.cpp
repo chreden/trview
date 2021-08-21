@@ -19,7 +19,7 @@ namespace trview
         auto rooms_groups = std::make_unique<GroupBox>(Size(150, 100), Colour::Transparent, Colour::Grey, L"Room");
 
         auto room_controls = std::make_unique<ui::Window>(Size(130, 30), Colour::Transparent);
-        room_controls->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
+        room_controls->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
         _current = room_controls->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0));
         _current->on_value_changed += on_room_selected;
 

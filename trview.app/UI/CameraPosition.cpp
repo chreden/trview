@@ -106,7 +106,7 @@ namespace trview
     {
         const auto label_width = is_rotation ? 30 : 10;
         auto line = parent.add_child(std::make_unique<ui::Window>(Size(100, 20), Colour::Transparent));
-        line->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
+        line->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
         auto line_area = line->add_child(std::make_unique<ui::Window>(Size(10, 20), Colour::Transparent));
         line_area->set_layout(std::make_unique<StackLayout>());
         line_area->add_child(std::make_unique<ui::Window>(Size(10, 1), Colour::Transparent));

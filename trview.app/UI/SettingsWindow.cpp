@@ -25,13 +25,13 @@ namespace trview
 
         // Create the title bar.
         auto title_bar = _window->add_child(std::make_unique<ui::Window>(Size(400, 20), title_colour));
-        title_bar->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual));
+        title_bar->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         auto title = title_bar->add_child(std::make_unique<Label>(Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
         title->set_horizontal_alignment(Align::Centre);
 
         // Create the rest of the window contents.
         auto panel = _window->add_child(std::make_unique<ui::Window>(Size(400, 250), Colour::Transparent));
-        auto layout = std::make_unique<StackLayout>(Size(5, 5));
+        auto layout = std::make_unique<StackLayout>(5.0f);
         layout->set_auto_size_dimension(SizeDimension::Height);
         layout->set_margin(Size(5, 5));
         panel->set_layout(std::move(layout));
@@ -79,7 +79,7 @@ namespace trview
         auto add_labelled_slider = [&](const std::wstring& text)
         {
             auto slider_panel = camera_panel->add_child(std::make_unique<ui::Window>(Size(160, 50), Colour::Transparent));
-            slider_panel->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal));
+            slider_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
             slider_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
             return slider_panel->add_child(std::make_unique<Slider>(Size(100, 16)));
         };

@@ -174,10 +174,10 @@ namespace trview
     {
         using namespace ui;
         auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        left_panel->set_layout(std::make_unique<StackLayout>(Size(0, 3), StackLayout::Direction::Vertical, SizeMode::Manual));
+        left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         auto controls = std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel);
-        auto layout = std::make_unique<StackLayout>(Size(6, 2), StackLayout::Direction::Horizontal, SizeMode::Manual);
+        auto layout = std::make_unique<StackLayout>(6.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
         layout->set_margin(Size(2, 2));
         controls->set_layout(std::move(layout));
 
@@ -467,10 +467,10 @@ namespace trview
         const float panel_width = 380;
         const float upper_height = 380;
         auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
-        right_panel->set_layout(std::make_unique<StackLayout>(Size(), StackLayout::Direction::Vertical, SizeMode::Manual));
+        right_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         auto upper_panel = std::make_unique<ui::Window>(Size(panel_width, upper_height), Colours::ItemDetails);
-        auto upper_panel_layout = std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal, SizeMode::Manual);
+        auto upper_panel_layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
         upper_panel_layout->set_margin(Size(5, 5));
         upper_panel->set_layout(std::move(upper_panel_layout));
 
@@ -485,12 +485,12 @@ namespace trview
         right_panel->add_child(std::move(divider));
 
         auto lower_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height - upper_height - 2), Colours::ItemDetails);
-        auto lower_panel_layout = std::make_unique<StackLayout>(Size(), StackLayout::Direction::Horizontal, SizeMode::Manual);
+        auto lower_panel_layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
         lower_panel_layout->set_margin(Size(0, 2));
         lower_panel->set_layout(std::move(lower_panel_layout));
 
         auto lower_left = std::make_unique<ui::Window>(Size(190, 300), Colours::ItemDetails);
-        lower_left->set_layout(std::make_unique<StackLayout>(Size(0, 2), StackLayout::Direction::Vertical, SizeMode::Manual));
+        lower_left->set_layout(std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         auto room_stats = std::make_unique<GroupBox>(Size(190, 150), Colours::ItemDetails, Colours::DetailsBorder, L"Room Details");
         _stats_box = room_stats->add_child(std::make_unique<Listbox>(Size(180, 150 - 21), Colours::LeftPanel));
         _stats_box->set_name(Names::stats_listbox);
@@ -520,7 +520,7 @@ namespace trview
         lower_panel->add_child(std::move(lower_left));
 
         auto lower_right = std::make_unique<ui::Window>(Size(190, 300), Colours::ItemDetails);
-        lower_right->set_layout(std::make_unique<StackLayout>(Size(0, 2), StackLayout::Direction::Vertical, SizeMode::Manual));
+        lower_right->set_layout(std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         create_items_list(*lower_right);
         create_triggers_list(*lower_right);
         lower_panel->add_child(std::move(lower_right));

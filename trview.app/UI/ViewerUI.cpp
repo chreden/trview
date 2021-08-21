@@ -252,7 +252,7 @@ namespace trview
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        auto layout = std::make_unique<StackLayout>(Size(5, 5));
+        auto layout = std::make_unique<StackLayout>(5.0f);
         layout->set_margin(Size(5, 5));
         tool_window->set_layout(std::move(layout));
 
