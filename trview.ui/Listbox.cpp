@@ -1,6 +1,7 @@
 #include "Listbox.h"
 #include "Button.h"
 #include "Scrollbar.h"
+#include "Layouts/StackLayout.h"
 
 namespace trview
 {
@@ -16,8 +17,9 @@ namespace trview
         }
 
         Listbox::Listbox(const Point& position, const Size& size, const Colour& background_colour)
-            : StackPanel(position, size, background_colour, Size(), Direction::Vertical, SizeMode::Manual)
+            : Window(position, size, background_colour)
         {
+            set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
             _token_store += on_size_changed += [=](auto)
             {
                 generate_rows();
@@ -104,8 +106,10 @@ namespace trview
             }
             else
             {
-                _rows_container = add_child(std::make_unique<StackPanel>(Size(size().width, remaining_height), background_colour(), Size(), Direction::Horizontal, SizeMode::Manual));
-                _rows_element = _rows_container->add_child(std::make_unique<StackPanel>(Size(size().width - scrollbar_width, remaining_height), background_colour(), Size(), Direction::Vertical, SizeMode::Manual));
+                _rows_container = add_child(std::make_unique<Window>(Size(size().width, remaining_height), background_colour()));
+                _rows_container->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual));
+                _rows_element = _rows_container->add_child(std::make_unique<Window>(Size(size().width - scrollbar_width, remaining_height), background_colour()));
+                _rows_element->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
                 if (_show_scrollbar)
                 {
@@ -295,7 +299,8 @@ namespace trview
                 return;
             }
 
-            _headers_element = add_child(std::make_unique<StackPanel>(size(), background_colour(), Size(), Direction::Horizontal));
+            _headers_element = add_child(std::make_unique<Window>(size(), background_colour()));
+            _headers_element->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
             _headers_element->set_name(Names::header_container);
             for (const auto column : _columns)
             {

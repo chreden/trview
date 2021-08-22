@@ -3,10 +3,10 @@
 #include <trview.ui/Control.h>
 #include <trview.ui/Image.h>
 #include <trview.ui/Label.h>
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.common/Strings.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 namespace trview
 {
@@ -32,8 +32,10 @@ namespace trview
         }
 
         using namespace ui;
-        auto panel = std::make_unique<StackPanel>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(0.5f, 0.0f, 0.0f, 0.0f), Size(5, 5), StackPanel::Direction::Horizontal, SizeMode::Auto);
-        panel->set_margin(Size(5, 5));
+        auto panel = std::make_unique<ui::Window>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(0.5f, 0.0f, 0.0f, 0.0f));
+        auto panel_layout = std::make_unique<StackLayout>(5.0f, StackLayout::Direction::Horizontal);
+        panel_layout->set_margin(Size(5, 5));
+        panel->set_layout(std::move(panel_layout));
         auto version = std::make_unique<Image>(Size(16, 16));
         version->set_background_colour(Colour(0, 0, 0, 0));
         version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));

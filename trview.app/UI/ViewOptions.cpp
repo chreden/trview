@@ -3,10 +3,10 @@
 #include <trview.ui/Button.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Grid.h>
 #include <trview.app/Graphics/ITextureStorage.h>
+#include <trview.ui/Layouts/GridLayout.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 namespace trview
 {
@@ -28,8 +28,10 @@ namespace trview
         using namespace ui;
 
         auto rooms_group = parent.add_child(std::make_unique<GroupBox>(Size(150, 155), Colour::Transparent, Colour::Grey, L"View Options"));
-        auto rooms_area = rooms_group->add_child(std::make_unique<StackPanel>(Size(150, 155), Colour::Transparent));
-        auto rooms_grid = rooms_area->add_child(std::make_unique<Grid>(Size(150, 95), Colour::Transparent, 2, 4));
+        auto rooms_area = rooms_group->add_child(std::make_unique<ui::Window>(Size(150, 155), Colour::Transparent));
+        rooms_area->set_layout(std::make_unique<StackLayout>());
+        auto rooms_grid = rooms_area->add_child(std::make_unique<ui::Window>(Size(150, 95), Colour::Transparent));
+        rooms_grid->set_layout(std::make_unique<GridLayout>(2, 4));
 
         _highlight = rooms_grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Highlight"));
         _highlight->set_name(Names::highlight);
@@ -73,7 +75,8 @@ namespace trview
         _flip->on_state_changed += on_flip;
 
         _tr4_5_panel = flip_panel->add_child(std::make_unique<ui::Window>(panel_size, Colour::Transparent));
-        _alternate_groups = _tr4_5_panel->add_child(std::make_unique<StackPanel>(Size(140, 16), Colour::Transparent, Size(), StackPanel::Direction::Horizontal, SizeMode::Manual));
+        _alternate_groups = _tr4_5_panel->add_child(std::make_unique<ui::Window>(Size(140, 16), Colour::Transparent));
+        _alternate_groups->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual));
         _tr4_5_panel->set_visible(false);
     }
 

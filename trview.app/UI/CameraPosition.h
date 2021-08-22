@@ -5,7 +5,6 @@
 
 #include <SimpleMath.h>
 #include <trview.ui/Control.h>
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/TextArea.h>
 #include <trview.common/TokenStore.h>
 
@@ -53,11 +52,11 @@ namespace trview
         ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name, bool is_rotation = false);
 
         TokenStore _token_store;
-        ui::StackPanel* _position_display;
+        ui::Control* _position_display;
         ui::TextArea* _x;
         ui::TextArea* _y;
         ui::TextArea* _z;
-        ui::StackPanel* _rotation_display;
+        ui::Control* _rotation_display;
         ui::TextArea* _yaw;
         ui::TextArea* _pitch;
         DirectX::SimpleMath::Vector3 _position;

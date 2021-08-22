@@ -1,8 +1,8 @@
 #include "CollapsiblePanel.h"
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 #include <trview.app/Resources/resource.h>
 #include <trview.ui.render/Renderer.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::graphics;
 using namespace trview::ui;
@@ -148,11 +148,11 @@ namespace trview
 
     void CollapsiblePanel::set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel)
     {
-        auto panel = std::make_unique<StackPanel>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f), Size(0, 0), StackPanel::Direction::Horizontal, SizeMode::Manual);
-        _left_panel = panel->add_child(std::move(left_panel));
-        _divider = panel->add_child(create_divider());
-        _right_panel = panel->add_child(std::move(right_panel));
-        _panels = _ui->add_child(std::move(panel));
+        _panels = _ui->add_child(std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f)));
+        _panels->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal, SizeMode::Manual));
+        _left_panel = _panels->add_child(std::move(left_panel));
+        _divider = _panels->add_child(create_divider());
+        _right_panel = _panels->add_child(std::move(right_panel));
         _ui_renderer->load(_ui.get());
     }
 

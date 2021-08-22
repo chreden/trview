@@ -8,7 +8,6 @@ namespace trview
 {
     namespace ui
     {
-        class StackPanel;
         class Label;
         class Control;
     }
@@ -40,7 +39,7 @@ namespace trview
         /// Gets whether the tooltip is visible.
         bool visible() const;
     private:
-        ui::StackPanel* _container;
+        ui::Control* _container;
         ui::Label* _label;
     };
 }

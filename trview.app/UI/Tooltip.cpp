@@ -1,5 +1,5 @@
 #include "Tooltip.h"
-#include <trview.ui/StackPanel.h>
+#include <trview.ui/Layouts/StackLayout.h>
 #include <trview.ui/Label.h>
 
 using namespace trview::ui;
@@ -8,8 +8,10 @@ namespace trview
 {
     Tooltip::Tooltip(ui::Control& control)
     {
-        auto container = std::make_unique<StackPanel>(Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        container->set_margin(Size(5, 5));
+        auto container = std::make_unique<ui::Window>(Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
+        auto layout = std::make_unique<StackLayout>();
+        layout->set_margin(Size(5, 5));
+        container->set_layout(std::move(layout));
         container->set_visible(false);
         container->set_handles_input(false);
 

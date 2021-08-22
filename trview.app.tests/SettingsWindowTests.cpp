@@ -1,5 +1,4 @@
 #include <trview.app/UI/SettingsWindow.h>
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Slider.h>
@@ -9,7 +8,7 @@ using namespace trview::ui;
 
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("VSync");
@@ -29,7 +28,7 @@ TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingVSyncRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -49,7 +48,7 @@ TEST(SettingsWindow, ClickingVSyncRaisesEvent)
 
 TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("GoToLara");
@@ -69,7 +68,7 @@ TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -89,7 +88,7 @@ TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
 
 TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("InvertMapControls");
@@ -109,7 +108,7 @@ TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -129,7 +128,7 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
 
 TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("ItemsStartup");
@@ -149,7 +148,7 @@ TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -169,7 +168,7 @@ TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("TriggersStartup");
@@ -189,7 +188,7 @@ TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -209,7 +208,7 @@ TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("RoomsStartup");
@@ -229,7 +228,7 @@ TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -249,7 +248,7 @@ TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
 
 TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("AutoOrbit");
@@ -269,7 +268,7 @@ TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingOrbitRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -289,7 +288,7 @@ TEST(SettingsWindow, ClickingOrbitRaisesEvent)
 
 TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("InvertVerticalPan");
@@ -309,7 +308,7 @@ TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -329,7 +328,7 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
 
 TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("MovementSpeed");
@@ -350,7 +349,7 @@ TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
 
 TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("MovementSpeed");
@@ -370,7 +369,7 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
 
 TEST(SettingsWindow, SetSensitivitySlider)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("Sensitivity");
@@ -391,7 +390,7 @@ TEST(SettingsWindow, SetSensitivitySlider)
 
 TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("Sensitivity");
@@ -411,7 +410,7 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
 
 TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("Acceleration");
@@ -431,7 +430,7 @@ TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
 
 TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -451,7 +450,7 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
 
 TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("AccelerationRate");
@@ -472,7 +471,7 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
 
 TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto slider = host.find<Slider>("AccelerationRate");
@@ -492,7 +491,7 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
 
 TEST(SettingsWindow, CloseClosesWindow)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto control = host.find<Control>("SettingsWindow");
@@ -527,7 +526,7 @@ TEST(SettingsWindow, WindowIsCentred)
 
 TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     std::optional<bool> received_value;
@@ -547,7 +546,7 @@ TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
 
 TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
 {
-    StackPanel host(Size(), Colour::Transparent);
+    ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
     auto checkbox = host.find<Checkbox>("CameraDisplayDegrees");

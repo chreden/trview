@@ -1,6 +1,7 @@
 #include "Listbox.h"
 #include "Button.h"
 #include "Checkbox.h"
+#include "Layouts/StackLayout.h"
 
 namespace trview
 {
@@ -9,8 +10,9 @@ namespace trview
         const std::string Listbox::Row::Names::cell_name_format{ "cell-" };
 
         Listbox::Row::Row(const Colour& colour, const std::vector<Listbox::Column>& columns)
-            : StackPanel(Point(), Size(), colour, Size(), Direction::Horizontal), _columns(columns)
+            : Window(Point(), Size(), colour), _columns(columns)
         {
+            set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
             set_handles_hover(true);
 
             for (const auto& column : columns)

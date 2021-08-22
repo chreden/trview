@@ -22,9 +22,6 @@
     <ClInclude Include="NumericUpDown.h">
       <Filter>Controls</Filter>
     </ClInclude>
-    <ClInclude Include="StackPanel.h">
-      <Filter>Controls</Filter>
-    </ClInclude>
     <ClInclude Include="SizeMode.h">
       <Filter>Controls</Filter>
     </ClInclude>
@@ -59,9 +56,6 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Grid.h">
-      <Filter>Controls\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="IInput.h">
       <Filter>Input</Filter>
     </ClInclude>
@@ -69,6 +63,18 @@
     <ClInclude Include="di.hpp" />
     <ClInclude Include="Mocks\Input\IInput.h">
       <Filter>Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\GridLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\FreeLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\StackLayout.h">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\ILayout.h">
+      <Filter>Layouts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,9 +97,6 @@
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="NumericUpDown.cpp">
-      <Filter>Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="StackPanel.cpp">
       <Filter>Controls</Filter>
     </ClCompile>
     <ClCompile Include="Checkbox.cpp">
@@ -130,11 +133,20 @@
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Grid.cpp">
-      <Filter>Controls\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="IInput.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\ILayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\FreeLayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\GridLayout.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\StackLayout.cpp">
+      <Filter>Layouts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,11 +174,11 @@
     <Filter Include="Input">
       <UniqueIdentifier>{4ae4639a-c45d-428e-9104-b6604caaa0cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Controls\Grid">
-      <UniqueIdentifier>{1106c79a-72c2-4484-9448-0c9d678a06dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mocks">
       <UniqueIdentifier>{d34f0bba-8f6c-4c35-b327-fdef824630ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layouts">
+      <UniqueIdentifier>{9e921414-a611-4d34-a685-719c8c9781d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

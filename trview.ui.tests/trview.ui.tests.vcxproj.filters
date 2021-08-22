@@ -3,8 +3,9 @@
   <ItemGroup>
     <ClCompile Include="ButtonTests.cpp" />
     <ClCompile Include="CheckboxTests.cpp" />
-    <ClCompile Include="GridTests.cpp" />
+    <ClCompile Include="GridLayoutTests.cpp" />
     <ClCompile Include="ListboxTests.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="StackLayoutTests.cpp" />
   </ItemGroup>
 </Project>

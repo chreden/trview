@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "StackPanel.h"
+#include "Window.h"
 
 namespace trview
 {
@@ -12,7 +12,7 @@ namespace trview
         class Label;
 
         /// UI element that provides a toggleable checkbox and an optional label.
-        class Checkbox : public StackPanel
+        class Checkbox : public Window
         {
         public:
             /// Creates a checkbox.

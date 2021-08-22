@@ -2,6 +2,7 @@
 #include <trlevel/ILevel.h>
 #include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::ui;
 using namespace trview::graphics;
@@ -22,15 +23,19 @@ namespace trview
 
     CameraPosition::CameraPosition(Control& parent)
     {
-        _position_display = parent.add_child(std::make_unique<StackPanel>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        _position_display->set_margin(Size(5, 5));
+        _position_display = parent.add_child(std::make_unique<ui::Window>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        auto position_layout = std::make_unique<StackLayout>();
+        position_layout->set_margin(Size(5, 5));
+        _position_display->set_layout(std::move(position_layout));
 
         _x = create_coordinate_entry(*_position_display, _position.x, L"X");
         _y = create_coordinate_entry(*_position_display, _position.y, L"Y");
         _z = create_coordinate_entry(*_position_display, _position.z, L"Z");
 
-        _rotation_display = parent.add_child(std::make_unique<StackPanel>(Point(10, parent.size().height - 90 - 5 - 60), Size(200, 60), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        _rotation_display->set_margin(Size(5, 5));
+        _rotation_display = parent.add_child(std::make_unique<ui::Window>(Point(10, parent.size().height - 90 - 5 - 60), Size(200, 60), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
+        auto rotation_layout = std::make_unique<StackLayout>();
+        rotation_layout->set_margin(Size(5, 5));
+        _rotation_display->set_layout(std::move(rotation_layout));
         _yaw = create_coordinate_entry(*_rotation_display, _rotation_yaw, L"Yaw", true);
         _pitch = create_coordinate_entry(*_rotation_display, _rotation_pitch, L"Pitch", true);
 
@@ -100,8 +105,10 @@ namespace trview
     TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name, bool is_rotation)
     {
         const auto label_width = is_rotation ? 30 : 10;
-        auto line = parent.add_child(std::make_unique<StackPanel>(Size(100, 20), Colour::Transparent, Size(), StackPanel::Direction::Horizontal));
-        auto line_area = line->add_child(std::make_unique<StackPanel>(Size(10, 20), Colour::Transparent));
+        auto line = parent.add_child(std::make_unique<ui::Window>(Size(100, 20), Colour::Transparent));
+        line->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
+        auto line_area = line->add_child(std::make_unique<ui::Window>(Size(10, 20), Colour::Transparent));
+        line_area->set_layout(std::make_unique<StackLayout>());
         line_area->add_child(std::make_unique<ui::Window>(Size(10, 1), Colour::Transparent));
         line_area->add_child(std::make_unique<Label>(Size(label_width, 20), Colour::Transparent, name + L": ", 8));
         auto entry = line->add_child(std::make_unique<TextArea>(Size(90 - (line_area->size().width - 10), 20), Colour::Transparent, Colour::White));

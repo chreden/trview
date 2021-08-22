@@ -19,7 +19,6 @@ namespace trview
     {
         class Control;
         class Button;
-        class StackPanel;
     }
 
     /// A window with two panels where the right panel can be collapsed.
@@ -85,7 +84,7 @@ namespace trview
 
         Window _parent;
         std::unique_ptr<ui::render::IRenderer>   _ui_renderer;
-        ui::StackPanel* _panels;
+        ui::Control* _panels;
         WindowResizer   _window_resizer;
         ui::Control* _divider;
         ui::Button* _expander;

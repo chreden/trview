@@ -1,6 +1,5 @@
 #pragma once
 
-#include "StackPanel.h"
 #include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
 
@@ -166,7 +165,7 @@ namespace trview
             std::wstring word_at_cursor(LogicalPosition point) const;
             void scroll_cursor_into_view(bool down);
 
-            StackPanel*         _area;
+            Control* _area;
             std::vector<Label*> _lines;
             Colour              _text_colour;
             Window*             _cursor;

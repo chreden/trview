@@ -5,7 +5,6 @@
 
 #include <string>
 #include <trview.ui/Control.h>
-#include <trview.ui/StackPanel.h>
 
 namespace trview
 {
@@ -26,7 +25,7 @@ namespace trview
         /// @remarks The name of the tool is passed as a parameter.
         Event<const std::wstring&> on_tool_clicked;
     private:
-        ui::StackPanel* _toolbar;
-        TokenStore      _token_store;
+        ui::Control* _toolbar;
+        TokenStore _token_store;
     };
 }

@@ -12,6 +12,7 @@
 #include <trview.common/Colour.h>
 #include "Align.h"
 #include "IInput.h"
+#include "Layouts/ILayout.h"
 
 namespace trview
 {
@@ -247,6 +248,8 @@ namespace trview
             void set_input(IInput* input);
 
             bool focused() const;
+
+            void set_layout(std::unique_ptr<ILayout> layout);
             /// <summary>
             /// Update the control.
             /// </summary>
@@ -273,6 +276,7 @@ namespace trview
             std::string _name;
             int      _z{ 0 };
             bool     _focused{ false };
+            std::unique_ptr<ILayout> _layout;
         };
     }
 }

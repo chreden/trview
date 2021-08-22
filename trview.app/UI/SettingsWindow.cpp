@@ -1,13 +1,13 @@
 #include "SettingsWindow.h"
 
 #include <trview.ui/Control.h>
-#include <trview.ui/StackPanel.h>
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Slider.h>
-#include <trview.ui/Grid.h>
+#include <trview.ui/Layouts/GridLayout.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::ui;
 
@@ -18,19 +18,23 @@ namespace trview
         const auto background_colour = Colour(0.5f, 0.0f, 0.0f, 0.0f);
         const auto title_colour = Colour::Black;
 
-        _window = parent.add_child(std::make_unique<StackPanel>(Point(400, 200), Size(400, 300), background_colour, Size()));
+        _window = parent.add_child(std::make_unique<ui::Window>(Point(400, 200), Size(400, 300), background_colour));
+        _window->set_layout(std::make_unique<StackLayout>());
         _window->set_visible(false);
         _window->set_name("SettingsWindow");
 
         // Create the title bar.
-        auto title_bar = _window->add_child(std::make_unique<StackPanel>(Size(400, 20), title_colour, Size(), StackPanel::Direction::Vertical, SizeMode::Manual));
+        auto title_bar = _window->add_child(std::make_unique<ui::Window>(Size(400, 20), title_colour));
+        title_bar->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         auto title = title_bar->add_child(std::make_unique<Label>(Size(400, 20), title_colour, L"Settings", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
         title->set_horizontal_alignment(Align::Centre);
 
         // Create the rest of the window contents.
-        auto panel = _window->add_child(std::make_unique<StackPanel>(Size(400, 250), Colour::Transparent , Size(5, 5)));
-        panel->set_auto_size_dimension(SizeDimension::Height);
-        panel->set_margin(Size(5, 5));
+        auto panel = _window->add_child(std::make_unique<ui::Window>(Size(400, 250), Colour::Transparent));
+        auto layout = std::make_unique<StackLayout>(5.0f);
+        layout->set_auto_size_dimension(SizeDimension::Height);
+        layout->set_margin(Size(5, 5));
+        panel->set_layout(std::move(layout));
 
         _vsync = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vsync"));
         _vsync->set_name("VSync");
@@ -69,11 +73,13 @@ namespace trview
         _camera_display_degrees->on_state_changed += on_camera_display_degrees;
 
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
-        auto camera_panel = camera_group->add_child(std::make_unique<Grid>(Size(360, 50), Colour::Transparent, 2, 2));
+        auto camera_panel = camera_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
+        camera_panel->set_layout(std::make_unique<GridLayout>(2, 2));
 
         auto add_labelled_slider = [&](const std::wstring& text)
         {
-            auto slider_panel = camera_panel->add_child(std::make_unique<StackPanel>(Size(160, 50), Colour::Transparent, Size(), StackPanel::Direction::Horizontal));
+            auto slider_panel = camera_panel->add_child(std::make_unique<ui::Window>(Size(160, 50), Colour::Transparent));
+            slider_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
             slider_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, text, 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Near, SizeMode::Auto));
             return slider_panel->add_child(std::make_unique<Slider>(Size(100, 16)));
         };

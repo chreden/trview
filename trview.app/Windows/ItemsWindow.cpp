@@ -5,6 +5,7 @@
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
+#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::graphics;
 
@@ -115,12 +116,16 @@ namespace trview
     std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
     {
         using namespace ui;
-        auto left_panel = std::make_unique<StackPanel>(Size(250, window().size().height), Colours::LeftPanel, Size(0, 3), StackPanel::Direction::Vertical, SizeMode::Manual);
-        left_panel->set_margin(Size(0, 3));
+        auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
+        auto left_panel_layout = std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
+        left_panel_layout->set_margin(Size(0, 3));
+        left_panel->set_layout(std::move(left_panel_layout));
 
         // Control modes:.
-        _controls = left_panel->add_child(std::make_unique<StackPanel>(Size(200, 20), Colours::LeftPanel, Size(2, 2), StackPanel::Direction::Horizontal, SizeMode::Manual));
-        _controls->set_margin(Size(2, 2));
+        _controls = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
+        auto layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
+        layout->set_margin(Size(2, 2));
+        _controls->set_layout(std::move(layout));
         _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
         _track_room_checkbox->set_name(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
@@ -181,11 +186,13 @@ namespace trview
     {
         using namespace ui;
 
-        auto right_panel = std::make_unique<StackPanel>(Size(200, Height), Colours::ItemDetails, Size(), StackPanel::Direction::Vertical, SizeMode::Manual);
+        auto right_panel = std::make_unique<ui::Window>(Size(200, Height), Colours::ItemDetails);
+        right_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
         right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
 
         auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details"));
-        auto details_panel = group_box->add_child(std::make_unique<StackPanel>(Size(180, 230), Colours::ItemDetails, Size(0, 8), StackPanel::Direction::Vertical, SizeMode::Manual));
+        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(180, 230), Colours::ItemDetails));
+        details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         // Add some information about the selected item.
         _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails));
