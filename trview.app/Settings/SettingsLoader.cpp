@@ -1,48 +1,27 @@
 #include "SettingsLoader.h"
 #include <trview.common/Json.h>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
-    namespace
+    SettingsLoader::SettingsLoader(const std::shared_ptr<IFiles>& files)
+        : _files(files)
     {
-        struct SafePath
-        {
-            wchar_t* path;
-            ~SafePath()
-            {
-                if (path)
-                {
-                    CoTaskMemFree(path);
-                }
-            }
-        };
     }
 
     UserSettings SettingsLoader::load_user_settings() const
     {
         UserSettings settings;
 
-        SafePath path;
-        if (S_OK != SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path.path))
-        {
-            return settings;
-        }
-
-        std::wstring file_path(path.path);
-        file_path += L"\\trview\\settings.txt";
-
         try
         {
-            std::ifstream file(file_path);
-            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
-            if (!file.is_open())
+            auto data = _files->load_file(_files->appdata_directory() + "\\trview\\settings.txt");
+            if (!data.has_value())
             {
                 return settings;
             }
 
-            nlohmann::json json;
-            file >> json;
-
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
             read_attribute(json, settings.camera_sensitivity, "camera");
             read_attribute(json, settings.camera_movement_speed, "movement");
             read_attribute(json, settings.vsync, "vsync");
@@ -69,20 +48,9 @@ namespace trview
 
     void SettingsLoader::save_user_settings(const UserSettings& settings)
     {
-        SafePath path;
-        if (S_OK != SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path.path))
-        {
-            return;
-        }
-
-        std::wstring file_path(path.path);
-        file_path += L"\\trview";
-        if (!CreateDirectory(file_path.c_str(), nullptr) && GetLastError() != ERROR_ALREADY_EXISTS)
-        {
-            return;
-        }
-
-        file_path += L"\\settings.txt";
+        const auto directory = _files->appdata_directory() + "\\trview";
+        _files->create_directory(directory);
+        const auto file_path = directory + "\\settings.txt";
 
         try
         {
@@ -102,9 +70,7 @@ namespace trview
             json["cameraacceleration"] = settings.camera_acceleration;
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
             json["cameradisplaydegrees"] = settings.camera_display_degrees;
-
-            std::ofstream file(file_path);
-            file << json;
+            _files->save_file(file_path, json.dump());
         }
         catch (...)
         {

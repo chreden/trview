@@ -28,4 +28,3 @@
 #include <windows.h>
 #include <WinHttp.h>
 #include <shellapi.h>
-#include <ShlObj.h>

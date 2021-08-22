@@ -1,8 +1,39 @@
 #include "Files.h"
 #include "Strings.h"
+#include <shlobj.h>
 
 namespace trview
 {
+    namespace
+    {
+        struct SafePath
+        {
+            wchar_t* path;
+            ~SafePath()
+            {
+                if (path)
+                {
+                    CoTaskMemFree(path);
+                }
+            }
+        };
+    }
+
+    std::string Files::appdata_directory() const
+    {
+        SafePath path;
+        if (S_OK != SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path.path))
+        {
+            return std::string();
+        }
+        return to_utf8(path.path);
+    }
+
+    bool Files::create_directory(const std::string& directory) const
+    {
+        return CreateDirectory(to_utf16(directory).c_str(), nullptr) || GetLastError() == ERROR_ALREADY_EXISTS;
+    }
+
     std::optional<std::vector<uint8_t>> Files::load_file(const std::string& filename) const
     {
         std::ifstream infile;
