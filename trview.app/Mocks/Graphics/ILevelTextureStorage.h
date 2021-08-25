@@ -19,6 +19,7 @@ namespace trview
             MOCK_METHOD(uint32_t, num_tiles, (), (const, override));
             MOCK_METHOD(uint16_t, attribute, (uint32_t), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Color, palette_from_texture, (uint32_t), (const, override));
+            MOCK_METHOD(graphics::Texture, trle_texture, (), (const, override));
         };
     }
 }

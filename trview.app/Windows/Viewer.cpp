@@ -521,6 +521,7 @@ namespace trview
         _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
         _level->set_show_lights(_ui->toggle(Options::lights));
+        _level->set_use_trle_colours(_ui->toggle(Options::trle_colours));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -1050,6 +1051,15 @@ namespace trview
         {
             _level->set_show_lights(show);
             _ui->set_toggle(Options::lights, show);
+        }
+    }
+
+    void Viewer::set_use_trle_colours(bool show)
+    {
+        if (_level)
+        {
+            _level->set_use_trle_colours(show);
+            _ui->set_use_trle_colours(show);
         }
     }
 

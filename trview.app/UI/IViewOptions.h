@@ -22,6 +22,11 @@ namespace trview
         Event<std::string, bool> on_toggle_changed;
         virtual void render() = 0;
         /// <summary>
+        /// Event raised when the user toggles TRLE colours.
+        /// </summary>
+        /// <remarks>This event is not raised by the set_use_trle_colours function.</remarks>
+        Event<bool> on_use_trle_colours;
+        /// <summary>
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// </summary>
         /// <param name="value">The group to change.</param>

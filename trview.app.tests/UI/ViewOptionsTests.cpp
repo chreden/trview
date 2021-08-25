@@ -308,3 +308,34 @@ TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
     imgui.render();
     ASSERT_FALSE(imgui.element_present(imgui.id("View Options").push(ViewOptions::Names::flags).id(IViewer::Options::flip)));
 }
+
+
+TEST(ViewOptions, TRLECheckboxToggle)
+{
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    std::optional<bool> clicked;
+    auto token = view_options.on_use_trle_colours += [&](bool value)
+    {
+        clicked = value;
+    };
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::trle_colours);
+    ASSERT_FALSE(checkbox->state());
+    checkbox->clicked({});
+    ASSERT_TRUE(clicked.has_value());
+    ASSERT_TRUE(clicked.value());
+}
+
+TEST(ViewOptions, TRLECheckboxUpdated)
+{
+    ui::Window window(Size(1, 1), Colour::White);
+    auto view_options = ViewOptions(window, MockLevelTextureStorage{});
+
+    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::trle_colours);
+    ASSERT_FALSE(checkbox->state());
+
+    view_options.set_use_trle_colours(true);
+    ASSERT_TRUE(checkbox->state());
+}

@@ -193,6 +193,9 @@ namespace trview
             }
 
             std::wstring text;
+
+            text += L"X: " + std::to_wstring(sector->x()) + L", Z:" + std::to_wstring(sector->z()) + L" ";
+
             if (sector->flags() & SectorFlag::RoomAbove)
             {
                 text += L"Above: " + std::to_wstring(sector->room_above());
@@ -466,5 +469,15 @@ namespace trview
     bool ViewerUI::toggle(const std::string& name) const
     {
         return _view_options->toggle(name);
+    }
+
+    bool ViewerUI::use_trle_colours() const
+    {
+        return _view_options->use_trle_colours();
+    }
+
+    void ViewerUI::set_use_trle_colours(bool value)
+    {
+        _view_options->set_use_trle_colours(value);
     }
 }

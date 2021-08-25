@@ -28,6 +28,20 @@ namespace trview
             }
         }
 
+        // Generate the TRLE texture.
+        std::vector<uint32_t> pixels(256 * 256, 0xffffffff);
+        for (int x = 0; x < 256; ++x)
+        {
+            pixels[x] = 0xff000000;
+            pixels[x + 255 * 256] = 0xff000000;
+        }
+        for (int y = 0; y < 256; ++y)
+        {
+            pixels[y * 256] = 0xff000000;
+            pixels[y * 256 + 255] = 0xff000000;
+        }
+        _trle_texture = graphics::Texture(*device, 256, 256, pixels);
+
         determine_texture_mode();
     }
 
@@ -112,5 +126,10 @@ namespace trview
 
     void LevelTextureStorage::store(const std::string&, const graphics::Texture&)
     {
+    }
+
+    graphics::Texture LevelTextureStorage::trle_texture() const
+    {
+        return _trle_texture;
     }
 }

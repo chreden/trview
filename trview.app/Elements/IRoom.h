@@ -4,6 +4,7 @@
 #include <functional>
 #include <set>
 #include <vector>
+#include <unordered_set>
 #include <SimpleMath.h>
 #include <trview.app/Elements/IEntity.h>
 #include <trview.app/Elements/ISector.h>
@@ -132,6 +133,10 @@ namespace trview
         /// <returns>The centre point of the room.</returns>
         virtual DirectX::SimpleMath::Vector3 centre() const = 0;
         /// <summary>
+        /// Calculate the sector triangles. Adjacent rooms will be ready for querying at this point.
+        /// </summary>
+        virtual void generate_sector_triangles() = 0;
+        /// <summary>
         /// Generate the trigger geometry based on the triggers in the room. This should be called when all adjacent rooms have been
         /// created so that continguous trigger areas can have redundant sides removed.
         /// </summary>
@@ -209,7 +214,9 @@ namespace trview
         /// <param name="selected">Whether the room is selected.</param>
         /// <param name="show_hidden_geometry">Whether to render hidden geometry.</param>
         /// <param name="show_water">Whether to render water effects.</param>
-        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water) = 0;
+        /// <param name="use_trle_colours">Whether to use trle colours.</param>
+        /// <param name="visible_rooms">The rooms that are currently being rendered.</param>
+        virtual void render(const ICamera& camera, SelectionMode selected, bool show_hidden_geometry, bool show_water, bool use_trle_colours, const std::unordered_set<uint32_t>& visible_rooms) = 0;
         /// <summary>
         /// Render the bounding boxes in the room.
         /// </summary>
@@ -253,6 +260,34 @@ namespace trview
         /// </summary>
         /// <returns>Whether the room is a water room.</returns>
         virtual bool water() const = 0;
+        /// <summary>
+        /// Gets the y bottom value of the room.
+        /// </summary>
+        /// <returns></returns>
+        virtual float y_bottom() const = 0;
+        /// <summary>
+        /// Gets the y top value of the room.
+        /// </summary>
+        /// <returns></returns>
+        virtual float y_top() const = 0;
+        /// <summary>
+        /// Get sector portal information from one sector to another.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        virtual ISector::Portal sector_portal(int x1, int z1, int x2, int z2) const = 0;
+        /// <summary>
+        /// Set the rooms for the sector triangles. This should be a collection matching the
+        /// sector triangles in the room.
+        /// </summary>
+        /// <param name="triangles">The sector triangle rooms.</param>
+        virtual void set_sector_triangle_rooms(const std::vector<uint32_t>& triangles) = 0;
+        /// <summary>
+        /// Get the X/Z position of the room. Y is not included.
+        /// </summary>
+        /// <returns>The X/Z scaled position of the room.</returns>
+        virtual DirectX::SimpleMath::Vector3 position() const = 0;
     };
 }
 

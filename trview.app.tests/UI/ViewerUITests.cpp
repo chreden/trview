@@ -252,3 +252,31 @@ TEST(ViewerUI, OnMinimapColoursEventRaised)
     settings_window.on_minimap_colours({});
     ASSERT_TRUE(raised);
 }
+
+TEST(ViewerUI, TRLEColoursEventRaised)
+{
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    auto view_options_ptr_actual = std::move(view_options_ptr);
+    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
+
+    std::optional<bool> show;
+    auto token = ui->on_use_trle_colours += [&](const auto& value)
+    {
+        show = value;
+    };
+
+    view_options.on_use_trle_colours(true);
+    ASSERT_TRUE(show.has_value());
+    ASSERT_TRUE(show.value());
+}
+
+TEST(ViewerUI, TRLEColoursUpdatesViewOptions)
+{
+    auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
+    auto view_options_ptr_actual = std::move(view_options_ptr);
+    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
+
+    EXPECT_CALL(view_options, set_use_trle_colours(true)).Times(1);
+
+    ui->set_use_trle_colours(true);
+}

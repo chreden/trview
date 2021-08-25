@@ -83,6 +83,7 @@ namespace trview
         virtual void set_show_bounding_boxes(bool show) = 0;
         virtual void set_show_lights(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
+        virtual void set_use_trle_colours(bool value) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(uint16_t index) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
@@ -94,6 +95,7 @@ namespace trview
         /// Get the triggers in this level.
         /// @returns All triggers in the level.
         virtual std::vector<std::weak_ptr<ITrigger>> triggers() const = 0;
+        virtual bool use_trle_colours() const = 0;
         virtual trlevel::LevelVersion version() const = 0;
         // Event raised when the level needs to change the selected room.
         Event<uint16_t> on_room_selected;

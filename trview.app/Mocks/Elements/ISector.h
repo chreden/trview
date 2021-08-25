@@ -19,10 +19,19 @@ namespace trview
             MOCK_METHOD(uint16_t, x, (), (const, override));
             MOCK_METHOD(uint16_t, z, (), (const, override));
             MOCK_METHOD((std::array<float, 4>), corners, (), (const, override));
+            MOCK_METHOD((std::array<float, 4>), ceiling_corners, (), (const, override));
+            MOCK_METHOD((DirectX::SimpleMath::Vector3), corner, (Corner), (const, override));
+            MOCK_METHOD((DirectX::SimpleMath::Vector3), ceiling, (Corner), (const, override));
             MOCK_METHOD(uint32_t, room, (), (const, override));
             MOCK_METHOD(TriangulationDirection, triangulation_function, (), (const, override));
-            MOCK_METHOD(std::vector<DirectX::SimpleMath::Vector3>, triangles, (), (const, override));
+            MOCK_METHOD(std::vector<Triangle>, triangles, (), (const, override));
             MOCK_METHOD(bool, is_floor, (), (const, override));
+            MOCK_METHOD(bool, is_wall, (), (const, override));
+            MOCK_METHOD(bool, is_portal, (), (const, override));
+            MOCK_METHOD(bool, is_ceiling, (), (const, override));
+
+            MOCK_METHOD(void, generate_triangles, (), (override));
+            MOCK_METHOD(void, add_triangle, (const ISector::Portal&, const Triangle&), (override));
         };
     }
 }

@@ -36,12 +36,21 @@ namespace trview
         D3D11_SAMPLER_DESC sampler_desc;
         memset(&sampler_desc, 0, sizeof(sampler_desc));
         sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.MaxAnisotropy = 1;
         sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
+
+        D3D11_RASTERIZER_DESC default_rasterizer_desc;
+        memset(&default_rasterizer_desc, 0, sizeof(default_rasterizer_desc));
+        default_rasterizer_desc.FillMode = D3D11_FILL_SOLID;
+        default_rasterizer_desc.CullMode = D3D11_CULL_BACK;
+        default_rasterizer_desc.DepthClipEnable = true;
+        default_rasterizer_desc.MultisampleEnable = true;
+        default_rasterizer_desc.AntialiasedLineEnable = true;
+        _default_rasterizer = device->create_rasterizer_state(default_rasterizer_desc);
 
         D3D11_RASTERIZER_DESC rasterizer_desc;
         memset(&rasterizer_desc, 0, sizeof(rasterizer_desc));
@@ -190,6 +199,11 @@ namespace trview
             {
                 context->RSSetState(_wireframe_rasterizer.Get());
             }
+            else
+            {
+                context->RSSetState(_default_rasterizer.Get());
+            }
+
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
             _vertex_shader->apply(context);
             _pixel_shader->apply(context);
@@ -216,11 +230,17 @@ namespace trview
             _transparency->reset();
         }
 
+        std::unordered_set<uint32_t> visible_set;
+        for (const auto& room : rooms)
+        {
+            visible_set.insert(room.number);
+        }
+
         // Render the opaque portions of the rooms and also collect the transparent triangles
         // that need to be rendered in the second pass.
         for (const auto& room : rooms)
         {
-            room.room.render(camera, room.selection_mode, _show_hidden_geometry, _show_water);
+            room.room.render(camera, room.selection_mode, _show_hidden_geometry, _show_water, _use_trle_colours, visible_set);
             if (_regenerate_transparency)
             {
                 room.room.get_transparent_triangles(*_transparency, camera, room.selection_mode, _show_triggers, _show_water);
@@ -407,7 +427,10 @@ namespace trview
         for (auto& room : _rooms)
         {
             room->generate_trigger_geometry();
+            room->generate_sector_triangles();
         }
+
+        deduplicate_triangles();
     }
 
     void Level::generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage)
@@ -710,6 +733,17 @@ namespace trview
         on_level_changed();
     }
 
+    void Level::set_use_trle_colours(bool value)
+    {
+        _use_trle_colours = value;
+        on_level_changed();
+    }
+
+    bool Level::use_trle_colours() const
+    {
+        return _use_trle_colours;
+    }
+
     const ILevelTextureStorage& Level::texture_storage() const
     {
         return *_texture_storage;
@@ -799,6 +833,61 @@ namespace trview
         _lights[index]->set_visible(state);
         _regenerate_transparency = true;
         on_level_changed();
+    }
+
+    void Level::deduplicate_triangles()
+    {
+        struct TriangleData
+        {
+            std::vector<ISector::Triangle> room_triangles;
+            std::vector<uint32_t> triangle_rooms;
+            std::vector<uint32_t> sector_tri_counts;
+        };
+
+        std::vector<TriangleData> all_data;
+        for (const auto& room : _rooms)
+        {
+            TriangleData data;
+            const auto info = room->info();
+            const auto offset = Vector3(info.x / trlevel::Scale_X, 0, info.z / trlevel::Scale_Z);
+
+            for (const auto& sector : room->sectors())
+            {
+                const auto tris = sector->triangles();
+                std::transform(tris.begin(), tris.end(), std::back_inserter(data.room_triangles), [&](const auto& t) 
+                    {
+                        auto t2 = t + offset;
+                        t2.room = room->number();
+                        return t2; 
+                    });
+                data.sector_tri_counts.push_back(tris.size());
+            }
+            data.triangle_rooms.resize(data.room_triangles.size(), room->number());
+            all_data.push_back(data);
+        }
+
+        for (auto r = 0; r < _rooms.size(); ++r)
+        {
+            for (const auto& neighbour : _rooms[r]->neighbours())
+            {
+                for (auto t = 0; t < all_data[r].room_triangles.size(); ++t)
+                {
+                    for (auto t2 = 0; t2 < all_data[neighbour].room_triangles.size(); ++t2)
+                    {
+                        if (all_data[r].room_triangles[t] == all_data[neighbour].room_triangles[t2])
+                        {
+                            all_data[r].triangle_rooms[t] = neighbour;
+                            all_data[neighbour].triangle_rooms[t2] = r;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (uint32_t i = 0; i < _rooms.size(); ++i)
+        {
+            _rooms[i]->set_sector_triangle_rooms(all_data[i].triangle_rooms);
+        }
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

@@ -14,6 +14,7 @@ namespace trview
         _toggles[IViewer::Options::show_bounding_boxes] = false;
         _toggles[IViewer::Options::lights] = false;
         _toggles[IViewer::Options::flip] = false;
+        _toggles[IViewer::Options::trle_colours] = false;
     }
 
     void ViewOptions::render()
@@ -132,5 +133,10 @@ namespace trview
     void ViewOptions::set_flip_enabled(bool enabled)
     {
         _flip_enabled = enabled;
+    }
+
+    bool ViewOptions::use_trle_colours() const
+    {
+        return _trle_colours->state();
     }
 }

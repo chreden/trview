@@ -10,16 +10,97 @@
 
 namespace trview
 {
+    struct IRoom;
+
     struct ISector
     {
         using Source = std::function<std::shared_ptr<ISector>(const trlevel::ILevel&, const trlevel::tr3_room&,
-            const trlevel::tr_room_sector&, int, uint32_t)>;
+            const trlevel::tr_room_sector&, int, uint32_t, const IRoom&)>;
 
         enum class TriangulationDirection
         {
             None,
             NwSe,
             NeSw
+        };
+
+        enum class Corner
+        {
+            SW,
+            NW,
+            SE,
+            NE
+        };
+
+        struct Triangle
+        {
+            enum class Type
+            {
+                Floor,
+                Wall
+            };
+
+            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2,
+                const DirectX::SimpleMath::Vector2& uv0, const DirectX::SimpleMath::Vector2& uv1, const DirectX::SimpleMath::Vector2& uv2,
+                Type type, uint32_t room);
+
+            Triangle(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, Type type, uint32_t room);
+
+            DirectX::SimpleMath::Vector3 v0;
+            DirectX::SimpleMath::Vector3 v1;
+            DirectX::SimpleMath::Vector3 v2;
+            DirectX::SimpleMath::Vector2 uv0;
+            DirectX::SimpleMath::Vector2 uv1;
+            DirectX::SimpleMath::Vector2 uv2;
+            Type type;
+            uint32_t room;
+
+            Triangle operator+(const DirectX::SimpleMath::Vector3& offset) const;
+            bool operator==(const Triangle& other) const;
+        };
+
+        struct Quad
+        {
+            Quad(const DirectX::SimpleMath::Vector3& v0, const DirectX::SimpleMath::Vector3& v1, const DirectX::SimpleMath::Vector3& v2, const DirectX::SimpleMath::Vector3& v3, Triangle::Type type, uint32_t room);
+
+            std::array<DirectX::SimpleMath::Vector3, 4> v;
+            std::array<DirectX::SimpleMath::Vector2, 4> uv;
+            Triangle::Type type;
+            uint32_t room;
+
+            float min;
+            float max;
+            float height;
+
+            std::vector<Triangle> triangles();
+        };
+
+        struct Portal
+        {
+            /// <summary>
+            /// The direct sector - not following any portals.
+            /// </summary>
+            std::shared_ptr<ISector> direct;
+            std::shared_ptr<IRoom> direct_room;
+            /// <summary>
+            /// The sector that the portal leads to.
+            /// </summary>
+            std::shared_ptr<ISector> target;
+            /// <summary>
+            /// The offset to add to values to put it into the space of the original sector.
+            /// </summary>
+            DirectX::SimpleMath::Vector3 offset;
+            DirectX::SimpleMath::Vector3 above_offset;
+
+            std::shared_ptr<ISector> sector_above;
+            std::shared_ptr<IRoom> room_above;
+
+            std::uint16_t flags() const;
+            DirectX::SimpleMath::Vector3 corner(Corner corner) const;
+            DirectX::SimpleMath::Vector3 ceiling(Corner corner) const;
+            operator bool() const;
+            bool is_wall() const;
+            bool is_portal() const;
         };
 
         virtual ~ISector() = 0;
@@ -33,9 +114,19 @@ namespace trview
         virtual uint16_t x() const = 0;
         virtual uint16_t z() const = 0;
         virtual std::array<float, 4> corners() const = 0;
+        virtual std::array<float, 4> ceiling_corners() const = 0;
+        virtual DirectX::SimpleMath::Vector3 corner(Corner corner) const = 0;
+        virtual DirectX::SimpleMath::Vector3 ceiling(Corner corner) const = 0;
         virtual uint32_t room() const = 0;
         virtual TriangulationDirection triangulation_function() const = 0;
-        virtual std::vector<DirectX::SimpleMath::Vector3> triangles() const = 0;
+        virtual std::vector<Triangle> triangles() const = 0;
         virtual bool is_floor() const = 0;
+        virtual bool is_wall() const = 0;
+        virtual bool is_portal() const = 0;
+        virtual bool is_ceiling() const = 0;
+
+        // New triangle generation to include TRLE mode.
+        virtual void generate_triangles() = 0;
+        virtual void add_triangle(const ISector::Portal& portal, const Triangle& triangle) = 0;
     };
 }

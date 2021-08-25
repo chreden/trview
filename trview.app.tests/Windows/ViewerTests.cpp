@@ -654,3 +654,17 @@ TEST(Viewer, DepthViewOptionUpdatesLevel)
     viewer->open(&level);
     ui.on_scalar_changed(IViewer::Options::depth, 6);
 }
+
+TEST(Viewer, SetUseTRLEColours)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [level_ptr, level] = create_mock<MockLevel>();
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+
+    EXPECT_CALL(level, set_use_trle_colours(false)).Times(1);
+    EXPECT_CALL(ui, set_use_trle_colours(true)).Times(1);
+    EXPECT_CALL(level, set_use_trle_colours(true)).Times(1);
+
+    viewer->open(&level);
+    ui.on_use_trle_colours(true);
+}

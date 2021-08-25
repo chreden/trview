@@ -423,7 +423,7 @@ TEST(Room, RendersContainedEntities)
     auto entity = mock_shared<MockEntity>();
     EXPECT_CALL(*entity, render).Times(1);
     room->add_entity(entity);
-    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true);
+    room->render(NiceMock<MockCamera>{}, IRoom::SelectionMode::NotSelected, true, true, false, {});
 }
 
 /// <summary>
