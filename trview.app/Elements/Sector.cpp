@@ -87,28 +87,33 @@ namespace trview
                 // Type of the trigger, e.g. Pad, Switch, etc.
                 _trigger.type = (TriggerType) subfunction;
 
+                bool continue_processing = true;
                 if (_trigger.type == TriggerType::Key || _trigger.type == TriggerType::Switch)
                 {
                     // The next element is the lock or switch - ignore.
-                    ++cur_index;
+                    auto reference = level.get_floor_data(++cur_index);
+                    continue_processing = (reference & 0x8000) == 0;
                 }
 
                 // Parse actions 
-                do
+                if (continue_processing)
                 {
-                    if (++cur_index < max_floordata)
+                    do
                     {
-                        command = level.get_floor_data(cur_index);
-                        auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
-                        _trigger.commands.emplace_back(action, static_cast<uint16_t>(command & 0x3FF));
-                        if (action == TriggerCommandType::Camera)
+                        if (++cur_index < max_floordata)
                         {
-                            // Camera has another uint16_t - skip for now.
-                            command = level.get_floor_data(++cur_index);
+                            command = level.get_floor_data(cur_index);
+                            auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
+                            _trigger.commands.emplace_back(action, static_cast<uint16_t>(command & 0x3FF));
+                            if (action == TriggerCommandType::Camera)
+                            {
+                                // Camera has another uint16_t - skip for now.
+                                command = level.get_floor_data(++cur_index);
+                            }
                         }
-                    }
 
-                } while (cur_index < max_floordata && !(command & 0x8000));
+                    } while (cur_index < max_floordata && !(command & 0x8000));
+                }
 
                 _flags |= SectorFlag::Trigger;
                 break; 
