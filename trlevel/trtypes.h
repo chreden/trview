@@ -329,6 +329,12 @@ namespace trlevel
         uint16_t Flags;
     };
 
+    struct tr_saturn_entity
+    {
+        tr_entity entity;
+        uint16_t extra;
+    };
+
     struct tr2_entity // 24 bytes
     {
         int16_t TypeID;
@@ -696,6 +702,9 @@ namespace trlevel
     // Convert a set of Tomb Raider I entities into a format compatible
     // with Tomb Raider III (what the viewer is currently using).
     std::vector<tr2_entity> convert_entities(std::vector<tr_entity> entities);
+    
+    
+    std::vector<tr2_entity> convert_entities(std::vector<tr_saturn_entity> entities);
 
     // Convert the tr_colour to a tr_colour4 value.
     tr_colour4 convert_to_colour4(const tr_colour& colour);

@@ -21,10 +21,37 @@ namespace trlevel
             return value;
         }
 
+        template <typename T>
+        T read_big(std::istream& file)
+        {
+            T value = read<T>(file);
+            T converted;
+
+            for (int i = 0; i < sizeof(T); ++i)
+            {
+                *(reinterpret_cast<char*>(&converted) + sizeof(T) - 1 - i)
+                    = *(reinterpret_cast<char*>(&value) + i);
+            }
+
+            return converted;
+        }
+
         template < typename T >
         void read(std::istream& file, T& value)
         {
             file.read(reinterpret_cast<char*>(&value), sizeof(value));
+        }
+
+        template < typename T >
+        void read_big(std::istream& file, T& value)
+        {
+            T output;
+            file.read(reinterpret_cast<char*>(&output), sizeof(T));
+            for (int i = 0; i < sizeof(T); ++i)
+            {
+                *(reinterpret_cast<char*>(&value) + sizeof(T) - 1 - i)
+                    = *(reinterpret_cast<char*>(&output) + i);
+            }
         }
 
         template < typename DataType, typename SizeType >
@@ -267,6 +294,14 @@ namespace trlevel
             file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             file.open(converted.c_str(), std::ios::binary);
 
+            // Saturn:
+            if (filename.find(".SAT") != filename.npos)
+            {
+                _version = LevelVersion::Tomb1;
+                load_saturn(file);
+                return;
+            }
+
             _version = convert_level_version(read<uint32_t>(file));
             if (is_tr5(_version, converted))
             {
@@ -366,6 +401,10 @@ namespace trlevel
 
     tr_colour Level::get_palette_entry8(uint32_t index) const
     {
+        if (_palette.empty())
+        {
+            return tr_colour{ 0xff, 0xff, 0xff };
+        }
         return _palette[index];
     }
 
@@ -951,5 +990,31 @@ namespace trlevel
             return LaraSkinPostTR3;
         }
         return LaraSkinTR3;
+    }
+
+    void Level::load_saturn(std::ifstream& file)
+    {
+        // Assume this is the room data file.
+
+        // Skip all the way until we find ITEMDATA
+        while (!file.eof())
+        {
+            auto value = read<uint32_t>(file);
+            file.seekg(-4, std::ios::cur);
+            if (value == 1296389193)
+            {
+                break;
+            }
+            file.seekg(1, std::ios::cur);
+        }
+
+        // Read the items.
+        auto itemdata = read_big<uint32_t>(file);
+        // Skip whatever values these are.
+        skip(file, 8);
+
+        auto num_entities = read_big<uint32_t>(file);
+        auto entities = read_vector<tr_saturn_entity>(file, num_entities);
+        _entities = convert_entities(entities);
     }
 }

@@ -215,7 +215,7 @@ namespace trview
                     case ID_FILE_OPEN:
                     case ID_ACCEL_FILE_OPEN:
                     {
-                        const auto filename = _dialogs->open_file(L"Open level", L"All Tomb Raider Files", { L"*.tr*", L"*.phd" }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                        const auto filename = _dialogs->open_file(L"Open level", L"All Tomb Raider Files", { L"*.tr*", L"*.phd", L"*.sat" }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
                         if (filename.has_value())
                         {
                             open(filename.value());

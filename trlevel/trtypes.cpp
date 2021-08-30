@@ -115,6 +115,45 @@ namespace trlevel
         return new_entities;
     }
 
+    namespace
+    {
+        template <typename T>
+        T flip(const T& value)
+        {
+            T converted;
+            for (int i = 0; i < sizeof(T); ++i)
+            {
+                *(reinterpret_cast<char*>(&converted) + sizeof(T) - 1 - i)
+                    = *(reinterpret_cast<const char*>(&value) + i);
+            }
+            return converted;
+        }
+    }
+
+    // Convert a set of Tomb Raider I entities into a format compatible
+    // with Tomb Raider III (what the viewer is currently using).
+    std::vector<tr2_entity> convert_entities(std::vector<tr_saturn_entity> entities)
+    {
+        std::vector<tr2_entity> new_entities;
+        new_entities.reserve(entities.size());
+        std::transform(entities.begin(), entities.end(),
+            std::back_inserter(new_entities), [](const auto& entity)
+            {
+                tr2_entity new_entity{ 
+                    flip(entity.entity.TypeID), 
+                    flip(entity.entity.Room), 
+                    flip(entity.entity.x),
+                    flip(entity.entity.y),
+                    flip(entity.entity.z),
+                    flip(entity.entity.Angle),
+                    flip(entity.entity.Intensity1),
+                    flip(entity.entity.Intensity1),
+                    flip(entity.entity.Flags) };
+                return new_entity;
+            });
+        return new_entities;
+    }
+
     // Convert the tr_colour to a tr_colour4 value.
     tr_colour4 convert_to_colour4(const tr_colour& colour)
     {

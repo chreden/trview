@@ -391,7 +391,10 @@ namespace trview
         {
             auto level_entity = level.get_entity(i);
             auto entity = entity_source(level, level_entity, i, mesh_storage);
-            _rooms[entity->room()]->add_entity(entity);
+            if (entity->room() < _rooms.size())
+            {
+                _rooms[entity->room()]->add_entity(entity);
+            }
             _entities.push_back(entity);
 
             std::vector<std::weak_ptr<ITrigger>> relevant_triggers;
