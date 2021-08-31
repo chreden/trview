@@ -105,7 +105,7 @@ namespace trview
                             command = level.get_floor_data(cur_index);
                             auto action = static_cast<TriggerCommandType>((command & 0x7C00) >> 10);
                             _trigger.commands.emplace_back(action, static_cast<uint16_t>(command & 0x3FF));
-                            if (action == TriggerCommandType::Camera)
+                            if (action == TriggerCommandType::Camera || action == TriggerCommandType::Flyby)
                             {
                                 // Camera has another uint16_t - skip for now.
                                 command = level.get_floor_data(++cur_index);
