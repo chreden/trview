@@ -276,16 +276,20 @@ namespace trview
         
         std::vector<Triangle> collision_triangles;
 
-        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        process_collision_transparency(transparent_triangles, collision_triangles);
+        std::vector<uint32_t> untextured_indices;
+
+        // process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        // process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        // process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
         // Make the unmatched mesh.
         collision_triangles.clear();
         vertices.clear();
-        std::vector<uint32_t> untextured_indices;
+        
+        process_textured_saturn(room.data, room_vertices, vertices, untextured_indices, collision_triangles);
+
         process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
         _unmatched_mesh = mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
 
@@ -694,6 +698,40 @@ namespace trview
                     add_triangle({ tris.begin() + 3, tris.end() }, output_vertices, output_indices, collision_triangles, get_unmatched_colour(_info, *sector));
                 }
             }
+        }
+    }
+
+    void Room::process_textured_saturn(
+        const trlevel::tr3_room_data& data,
+        const std::vector<trlevel::tr_vertex>& room_vertices,
+        std::vector<MeshVertex>& output_vertices,
+        std::vector<uint32_t>& output_indices,
+        std::vector<Triangle>& collision_triangles)
+    {
+        std::vector<Vector3> transformed_room_vertices;
+        std::transform(room_vertices.begin(), room_vertices.end(), std::back_inserter(transformed_room_vertices), convert_vertex);
+
+        for (const auto rect : data.rectangles)
+        {
+            add_triangle({ transformed_room_vertices[rect.vertices[0]], transformed_room_vertices[rect.vertices[1]], transformed_room_vertices[rect.vertices[2]] },
+                output_vertices,
+                output_indices,
+                collision_triangles,
+                Colour::White);
+            add_triangle({ transformed_room_vertices[rect.vertices[2]], transformed_room_vertices[rect.vertices[3]], transformed_room_vertices[rect.vertices[0]] },
+                output_vertices,
+                output_indices,
+                collision_triangles,
+            Colour::White);
+        }
+
+        for (const auto tri : data.triangles)
+        {
+            add_triangle({ transformed_room_vertices[tri.vertices[0]], transformed_room_vertices[tri.vertices[1]], transformed_room_vertices[tri.vertices[2]] },
+                output_vertices,
+                output_indices,
+                collision_triangles,
+                Colour::White);
         }
     }
 

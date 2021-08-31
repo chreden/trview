@@ -72,6 +72,24 @@ namespace trlevel
             return read_vector<DataType, SizeType>(file, size);
         }
 
+        template < typename DataType, typename SizeType >
+        std::vector<DataType> read_vector_big(std::istream& file, SizeType size)
+        {
+            std::vector<DataType> data(size);
+            for (SizeType i = 0; i < size; ++i)
+            {
+                read_big<DataType>(file, data[i]);
+            }
+            return data;
+        }
+
+        template < typename SizeType, typename DataType >
+        std::vector<DataType> read_vector_big(std::istream& file)
+        {
+            auto size = read_big<SizeType>(file);
+            return read_vector_big<DataType, SizeType>(file, size);
+        }
+
         std::vector<uint8_t> read_compressed(std::istream& file)
         {
             auto uncompressed_size = read<uint32_t>(file);
@@ -992,26 +1010,210 @@ namespace trlevel
         return LaraSkinTR3;
     }
 
-    void Level::load_saturn(std::ifstream& file)
+    namespace
     {
-        // Assume this is the room data file.
-
-        // Skip all the way until we find ITEMDATA
-        while (!file.eof())
+        bool find_label(std::ifstream& file, uint64_t label)
         {
-            auto value = read<uint32_t>(file);
-            file.seekg(-4, std::ios::cur);
-            if (value == 1296389193)
+            file.seekg(0, std::ios::beg);
+            while (!file.eof())
             {
-                break;
+                auto value = read_big<uint64_t>(file);
+                file.seekg(-8, std::ios::cur);
+                if (value == label)
+                {
+                    return true;
+                }
+                file.seekg(1, std::ios::cur);
             }
-            file.seekg(1, std::ios::cur);
+            return false;
         }
 
+        template <typename T>
+        T flip(const T& value)
+        {
+            T converted;
+            for (int i = 0; i < sizeof(T); ++i)
+            {
+                *(reinterpret_cast<char*>(&converted) + sizeof(T) - 1 - i)
+                    = *(reinterpret_cast<const char*>(&value) + i);
+            }
+            return converted;
+        }
+    }
+
+    namespace
+    {
+        uint16_t from_me(uint16_t v)
+        {
+            return ((v & 0xF000) >> 4) | ((v & 0x000F) << 12) | ((v & 0x0FF0) >> 4);
+        }
+    }
+
+    void Level::load_saturn(std::ifstream& file)
+    {
+        // Read the room data.
+        find_label(file, 5931046427546440769ull);
+
+        auto roomdata = read_big<uint64_t>(file);
+        skip(file, 4);
+        uint32_t num_rooms = read_big<uint32_t>(file);
+        for (uint32_t i = 0; i < num_rooms; ++i)
+        {
+            tr3_room room;
+
+            uint64_t roomnumb_label = read_big<uint64_t>(file);
+            uint64_t room_number = read_big<uint64_t>(file);
+
+            // Mesh
+            uint64_t meshpos_label = read_big<uint64_t>(file);
+            room.info.x = read_big<uint32_t>(file);
+            room.info.z = read_big<uint32_t>(file);
+            room.info.yBottom = read_big<uint32_t>(file);
+            room.info.yTop = read_big<uint32_t>(file);
+
+            uint64_t meshsize_label = read_big<uint64_t>(file);
+            uint32_t unknown_2 = read_big<uint32_t>(file);
+            uint32_t mesh_data_size = read_big<uint32_t>(file);
+            uint32_t mesh_start = file.tellg();
+            int16_t num_vertices = read_big<uint16_t>(file);
+            auto vertices = read_vector_big<tr_saturn_room_vertex>(file, num_vertices);
+            std::transform(vertices.begin(), vertices.end(), std::back_inserter(room.data.vertices),
+                [](const auto& vert) -> tr3_room_vertex
+                {
+                    tr3_room_vertex new_vertex;
+                    new_vertex.vertex.x = vert.vertex.x;
+                    new_vertex.vertex.y = vert.vertex.y;
+                    new_vertex.vertex.z = vert.vertex.z;
+                    new_vertex.lighting = vert.lighting;
+                    new_vertex.attributes = 0;
+                    new_vertex.colour = 0xffff;
+                    return new_vertex;
+                });
+            uint16_t num_faces = read_big<uint16_t>(file);
+            uint16_t unknown_8 = read_big<uint16_t>(file);
+            uint16_t unknown_9 = read_big<uint16_t>(file);
+            int16_t num_rectangles = read_big<uint16_t>(file);
+            for (int i = 0; i < num_rectangles; ++i)
+            {
+                uint16_t v0 = from_me(read_big<uint16_t>(file));
+                uint16_t v1 = from_me(read_big<uint16_t>(file));
+                uint16_t v2 = from_me(read_big<uint16_t>(file));
+                uint16_t v3 = from_me(read_big<uint16_t>(file));
+                uint16_t texture = from_me(read_big<uint16_t>(file));
+                
+                tr4_mesh_face4 new_rect{};
+                new_rect.vertices[0] = v0;
+                new_rect.vertices[1] = v1;
+                new_rect.vertices[2] = v2;
+                new_rect.vertices[3] = v3;
+                room.data.rectangles.push_back(new_rect);
+            }
+
+            if (num_rectangles != num_faces)
+            {
+                uint16_t unknown_10 = read_big<uint16_t>(file);
+                int16_t num_triangles = read_big<uint16_t>(file);
+                for (int i = 0; i < num_triangles; ++i)
+                {
+                    uint16_t v0 = from_me(read_big<uint16_t>(file));
+                    uint16_t v1 = from_me(read_big<uint16_t>(file));
+                    uint16_t v2 = from_me(read_big<uint16_t>(file));
+                    uint16_t texture = from_me(read_big<uint16_t>(file));
+
+                    if (v0 >= room.data.vertices.size() || v1 >= room.data.vertices.size() || v2 >= room.data.vertices.size())
+                    {
+                        continue;
+                    }
+
+                    tr4_mesh_face3 new_tri{};
+                    new_tri.vertices[0] = v0;
+                    new_tri.vertices[1] = v1;
+                    new_tri.vertices[2] = v2;
+                    room.data.triangles.push_back(new_tri);
+                }
+            }
+
+            file.seekg(mesh_start + mesh_data_size * 2, std::ios::beg);
+
+            // int16_t num_sprites = read_big<uint16_t>(file);
+            // auto sprites = read_vector_big<tr_room_sprite>(file, num_sprites);
+            // TODO: Where are sprites?
+
+            // room.data.vertices = convert_vertices(read_vector<int16_t, tr_room_vertex>(file));
+            // room.data.rectangles = convert_rectangles(read_vector<int16_t, tr_face4>(file));
+            // room.data.triangles = convert_triangles(read_vector<int16_t, tr_face3>(file));
+            // room.data.sprites = read_vector<int16_t, tr_room_sprite>(file);
+
+            // TODO: Parse vertices
+
+            // Portals
+            uint64_t doordata_label = read_big<uint64_t>(file);
+            uint32_t unknown_3 = read_big<uint32_t>(file);
+            auto num_portals = read_big<uint32_t>(file);
+            auto portals = read_vector<tr_room_portal>(file, num_portals);
+            std::transform(portals.begin(), portals.end(), std::back_inserter(room.portals),
+                [&](const auto& portal)
+                {
+                    tr_room_portal new_portal;
+                    new_portal.adjoining_room = flip(portal.adjoining_room);
+                    // TODO: Flip portal normal and vertices 
+                    new_portal.normal = portal.normal;
+                    memcpy(new_portal.vertices, portal.vertices, sizeof(portal.vertices));
+                    return new_portal;
+                });
+
+            // Floordata
+            uint64_t floordat_label = read_big<uint64_t>(file);
+            uint32_t num_z_sectors = read_big<uint32_t>(file);
+            uint32_t num_x_sectors = read_big<uint32_t>(file);
+            uint64_t floorsiz_label = read_big<uint64_t>(file);
+            uint32_t unknown_4 = read_big<uint32_t>(file);
+            uint32_t num_floordata = read_big<uint32_t>(file);
+            auto sector_list = read_vector<tr_room_sector>(file, num_z_sectors * num_x_sectors);
+            // TODO: Parse sector list
+
+            // Lights
+            uint64_t lightamb_label = read_big<uint64_t>(file);
+            uint32_t unknown_5 = read_big<uint32_t>(file);
+            uint32_t num_lights = read_big<uint32_t>(file);
+            if (num_lights)
+            {
+                uint64_t lightsiz_label = read_big<uint64_t>(file);
+                uint32_t light_size = read_big<uint32_t>(file);
+                uint32_t num_lights_2 = read_big<uint32_t>(file);
+                auto lights = read_vector<tr_saturn_room_light>(file, num_lights_2);
+            }
+            // TODO: Parse lights
+
+            // Mesh again??
+            uint64_t meshsize_label_2 = read_big<uint64_t>(file);
+            uint32_t mesh_size = read_big<uint32_t>(file);
+            uint32_t num_mesh = read_big<uint32_t>(file);
+            auto mesh_data = read_vector<uint8_t>(file, num_mesh * mesh_size);
+            // TODO: Figure out what this is
+
+            // Flip
+            uint64_t rm_flip_label = read_big<uint64_t>(file);
+            uint32_t flip_size = read_big<uint32_t>(file);
+            uint16_t unknown_7 = read_big<uint16_t>(file);
+            room.alternate_room = read_big<uint16_t>(file);
+
+            // Flags
+            uint64_t rm_flags_label = read_big<uint64_t>(file);
+            uint32_t flags_size = read_big<uint32_t>(file);
+            uint16_t unknown_6 = read_big<uint16_t>(file);
+            room.flags = read_big<uint16_t>(file);
+
+            _rooms.push_back(room);
+        }
+
+        // Skip all the way until we find ITEMDATA
+        find_label(file, 5283924460972364865ull);
+
         // Read the items.
-        auto itemdata = read_big<uint32_t>(file);
+        auto itemdata = read_big<uint64_t>(file);
         // Skip whatever values these are.
-        skip(file, 8);
+        skip(file, 4);
 
         auto num_entities = read_big<uint32_t>(file);
         auto entities = read_vector<tr_saturn_entity>(file, num_entities);

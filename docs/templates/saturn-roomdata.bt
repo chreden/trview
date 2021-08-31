@@ -1,0 +1,143 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Vertex
+{
+    uint16 z;
+    uint16 y;
+    uint16 x;
+    int16 lighting;
+};
+
+struct Rectangle
+{
+    uint16 v0;
+    uint16 v1;
+    uint16 v2;
+    uint16 v3;
+    uint16 texture;
+};
+
+struct Triangle
+{
+    uint16 v0;
+    uint16 v1;
+    uint16 v2;
+    uint16 texture;
+};
+
+struct RoomMesh
+{
+    uint64 meshpos_label;
+    uint32 x;
+    uint32 z;
+    uint32 y;
+    uint32 unknown;
+    uint64 meshsize_label;
+    uint32 unknown;
+    uint32 num_x;
+    local uint32 pos = FTell();
+    uint16 num_vertices;
+    Vertex vertices[num_vertices];
+    uint16 num_faces;  
+    uint16 unknown;
+    uint16 unknown;
+    uint16 num_rectangles;
+    Rectangle rects[num_rectangles];
+    uint16 unknown;
+    uint16 num_triangles;
+    Triangle tris[num_triangles];
+    FSeek(pos +num_x * 2);
+};
+
+struct Portal
+{
+    uint16 room;
+    uint32 unknown;
+    uint32 unknown;
+    uint32 unknown;
+    uint32 unknown;
+    uint32 unknown;
+    uint32 unknown;
+    uint32 unknown;
+    uint16 unknown;
+};
+
+struct Portals
+{
+    uint64 doordata_label;
+    uint32 unknown;
+    uint32 num_portals;
+    Portal portals[num_portals];
+};
+
+struct FloorData
+{
+    uint64 floordat_label;
+    uint32 z_sectors;
+    uint32 x_sectors;
+    uint64 floorsiz_label;
+    uint32 unknown;
+    uint32 num_floordata;
+    byte floordata[num_floordata * unknown];
+};
+
+struct Lights
+{
+    uint64 lightamb_label;
+    uint32 unknown;
+    uint32 num_lights;
+    if (num_lights)
+    {
+        uint64 lightsiz_label;    
+        uint32 light_size;
+        uint32 num_lights;
+        byte light_data[num_lights * light_size];
+    }
+};
+
+
+struct Room
+{
+    uint64 roomnumb_label;
+    uint64 room_number;
+    RoomMesh mesh;
+    Portals portals;
+    FloorData floordata;
+    Lights lights;
+
+    uint64 meshsize_label;
+    uint32 mesh_size;
+    uint32 num_mesh;
+    byte mesh_data[num_mesh * mesh_size];
+    
+    uint64 rm_flip_label;
+    uint32 flip_length;
+    ushort flip_data[flip_length];
+
+    uint64 rm_flags_label;
+    uint32 flags_length;
+    ushort flags_data[flags_length];
+
+};
+
+
+struct RoomData
+{
+    uint64 roomdata_label;
+    uint32 unknown;
+    uint32 num_rooms;
+    Room rooms[num_rooms] <optimize=false>;
+};
+
+RoomData roomdata;

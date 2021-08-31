@@ -66,6 +66,13 @@ namespace trlevel
         int16_t z;
     };
 
+    struct tr_saturn_vertex
+    {
+        int16_t z;
+        int16_t y;
+        int16_t x;
+    };
+
     struct tr5_vertex
     {
         float x;
@@ -415,6 +422,12 @@ namespace trlevel
         int16_t   lighting;
     };
 
+    struct tr_saturn_room_vertex
+    {
+        int16_t lighting;
+        tr_saturn_vertex vertex;
+    };
+
     struct tr3_room_vertex
     {
         tr_vertex   vertex;
@@ -467,6 +480,12 @@ namespace trlevel
         int32_t  z;
         uint16_t intensity;
         uint32_t fade;
+    };
+
+    struct tr_saturn_room_light
+    {
+        tr_room_light light;
+        uint16_t unknown;
     };
 
     struct tr3_room_light   // 24 bytes
@@ -594,7 +613,7 @@ namespace trlevel
         std::vector<tr3_room_staticmesh> static_meshes;
 
         int16_t alternate_room{ -1 };
-        int16_t flags;
+        int16_t flags{ 0 };
 
         uint16_t water_scheme;
         uint8_t reverb_info;

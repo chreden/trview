@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Item
+{
+    int16 type_id;
+    int16 room;
+    int32 x;
+    int32 y;
+    int32 z;
+    int16 angle;
+    int16 intensity1;
+    uint16 flags;
+    int16 unknown;
+};
+
+
+struct ItemData
+{
+    uint64 itemdata_label;
+    uint32 unknown;
+    uint32 item_count;
+    Item items[item_count];
+};
+
+ItemData itemdata;

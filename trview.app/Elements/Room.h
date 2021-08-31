@@ -91,6 +91,12 @@ namespace trview
             std::vector<uint32_t>& output_indices,
             std::vector<Triangle>& collision_triangles);
 
+        void process_textured_saturn(const trlevel::tr3_room_data& data,
+            const std::vector<trlevel::tr_vertex>& room_vertices,
+            std::vector<MeshVertex>& output_vertices,
+            std::vector<uint32_t>& output_indices,
+            std::vector<Triangle>& collision_triangles);
+
         void add_centroid_to_pick(const IMesh& mesh, PickResult& geometry_result) const;
 
         RoomInfo                           _info;

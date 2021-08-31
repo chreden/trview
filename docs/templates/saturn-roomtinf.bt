@@ -1,0 +1,30 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+struct Tinf
+{
+    uint32 unknown1;
+    uint32 unknown2;
+    uint32 unknown3;
+    uint32 unknown4;
+};
+
+struct RoomTinf
+{
+    uint64 roomtinf_label;
+    uint32 unknown;
+    uint32 tinf_count;
+    Tinf tinfs[tinf_count];
+};
+
+RoomTinf roomtinf;
