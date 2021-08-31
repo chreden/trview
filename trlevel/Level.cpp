@@ -1164,13 +1164,22 @@ namespace trlevel
 
             // Floordata
             uint64_t floordat_label = read_big<uint64_t>(file);
-            uint32_t num_z_sectors = read_big<uint32_t>(file);
-            uint32_t num_x_sectors = read_big<uint32_t>(file);
+            room.num_z_sectors = read_big<uint32_t>(file);
+            room.num_x_sectors = read_big<uint32_t>(file);
             uint64_t floorsiz_label = read_big<uint64_t>(file);
             uint32_t unknown_4 = read_big<uint32_t>(file);
             uint32_t num_floordata = read_big<uint32_t>(file);
-            auto sector_list = read_vector<tr_room_sector>(file, num_z_sectors * num_x_sectors);
-            // TODO: Parse sector list
+            for (int i = 0; i < num_floordata; ++i)
+            {
+                tr_room_sector sector;
+                sector.floordata_index = read_big<uint16_t>(file);
+                sector.box_index = read_big<uint16_t>(file);
+                sector.room_below = read<uint8_t>(file);
+                sector.floor = read<int8_t>(file);
+                sector.room_above = read<uint8_t>(file);
+                sector.floor = read<int8_t>(file);
+                room.sector_list.push_back(sector);
+            }
 
             // Lights
             uint64_t lightamb_label = read_big<uint64_t>(file);
@@ -1218,5 +1227,11 @@ namespace trlevel
         auto num_entities = read_big<uint32_t>(file);
         auto entities = read_vector<tr_saturn_entity>(file, num_entities);
         _entities = convert_entities(entities);
+
+        // Floor data:
+        find_label(file, 5065510895636010049ull);
+        auto flordata = read_big<uint64_t>(file);
+        uint32_t unknown = read_big<uint32_t>(file);
+        _floor_data = read_vector_big<uint32_t, uint16_t>(file);
     }
 }
