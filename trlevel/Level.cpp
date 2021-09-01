@@ -313,10 +313,19 @@ namespace trlevel
             file.open(converted.c_str(), std::ios::binary);
 
             // Saturn:
-            if (filename.find(".SAT") != filename.npos)
+            if (converted.find(L".SAT") != converted.npos)
             {
                 _version = LevelVersion::Tomb1;
-                load_saturn(file);
+                load_saturn_roomfile(file);
+                
+                auto ext = converted.find(L".SAT");
+                auto obj_filename = converted;
+                obj_filename.replace(ext, 4, L".SAD");
+                std::ifstream obj_file;
+                obj_file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+                obj_file.open(obj_filename.c_str(), std::ios::binary);
+                load_saturn_objfile(obj_file);
+
                 return;
             }
 
@@ -1049,9 +1058,34 @@ namespace trlevel
         }
     }
 
-    void Level::load_saturn(std::ifstream& file)
+    void Level::load_saturn_roomfile(std::ifstream& file)
     {
-        // Read the room data.
+        // Palette
+        find_label(file, 5931046427815854412ull);
+        auto roomtpal = read_big<uint64_t>(file);
+        uint32_t unknown2 = read_big<uint32_t>(file);
+        uint32_t pixels = read_big<uint32_t>(file);
+        _palette = read_vector_big<tr_colour>(file, pixels);
+
+        find_label(file, 5931046427815398982);
+        uint64_t roomtinf_label = read_big<uint64_t>(file);
+        uint32_t unknown = read_big<uint32_t>(file);
+        uint32_t num_object_textures = read_big<uint32_t>(file);
+        for (int i = 0; i < num_object_textures; ++i)
+        {
+            tr_object_texture texture{};
+
+            texture.Attribute = 0;
+            texture.TileAndFlag = read_big<uint16_t>(file);
+            uint16_t clut = read_big<uint16_t>(file);
+            uint8_t width = read_big<uint8_t>(file);
+            uint8_t height = read_big<uint8_t>(file);
+            // auto verts = read_vector<tr_object_texture_vert>(file, 4);
+            // std::copy(verts.begin(), verts.end(), texture.Vertices);
+            // _object_textures.push_back(texture);
+        }
+
+        // Room data
         find_label(file, 5931046427546440769ull);
 
         auto roomdata = read_big<uint64_t>(file);
@@ -1233,5 +1267,27 @@ namespace trlevel
         auto flordata = read_big<uint64_t>(file);
         uint32_t unknown = read_big<uint32_t>(file);
         _floor_data = read_vector_big<uint32_t, uint16_t>(file);
+    }
+
+    void Level::load_saturn_objfile(std::ifstream& file)
+    {
+        find_label(file, 5716270072713530950ull);
+        uint64_t otextinf_label = read_big<uint64_t>(file);
+        uint32_t unknown = read_big<uint32_t>(file);
+        uint32_t num_object_textures = read_big<uint32_t>(file);
+        for (int i = 0; i < num_object_textures; ++i)
+        {
+            tr_object_texture texture{};
+            auto verts = read_vector<tr_object_texture_vert>(file, 4);
+            std::copy(verts.begin(), verts.end(), texture.Vertices);
+            _object_textures.push_back(texture);
+        }
+
+        find_label(file, 5716270072713199956ull);
+        uint64_t otextdat_label = read_big<uint64_t>(file);
+        uint32_t unknown2 = read_big<uint64_t>(file);
+        uint32_t data_size = read_big<uint32_t>(file);
+        _num_textiles = 1;
+        _textile8.push_back(read_big<tr_textile8>(file));
     }
 }

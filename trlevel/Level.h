@@ -172,7 +172,8 @@ namespace trlevel
         // Load a Tomb Raider IV level.
         void load_tr4(std::ifstream& file);
         void load_level_data(std::istream& file);
-        void load_saturn(std::ifstream& file);
+        void load_saturn_roomfile(std::ifstream& file);
+        void load_saturn_objfile(std::ifstream& file);
 
         LevelVersion _version;
 

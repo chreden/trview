@@ -276,11 +276,9 @@ namespace trview
         
         std::vector<Triangle> collision_triangles;
 
-        std::vector<uint32_t> untextured_indices;
-
-        // process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        // process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
-        // process_collision_transparency(transparent_triangles, collision_triangles);
+        process_textured_rectangles(level_version, room.data.rectangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_textured_triangles(level_version, room.data.triangles, room_vertices, *_texture_storage, vertices, indices, transparent_triangles, collision_triangles, false);
+        process_collision_transparency(transparent_triangles, collision_triangles);
 
         _mesh = mesh_source(vertices, indices, std::vector<uint32_t>{}, transparent_triangles, collision_triangles);
 
@@ -288,8 +286,9 @@ namespace trview
         collision_triangles.clear();
         vertices.clear();
         
-        process_textured_saturn(room.data, room_vertices, vertices, untextured_indices, collision_triangles);
+        // process_textured_saturn(room.data, room_vertices, vertices, untextured_indices, collision_triangles);
 
+        std::vector<uint32_t> untextured_indices;
         process_unmatched_geometry(room.data, room_vertices, transparent_triangles, vertices, untextured_indices, collision_triangles);
         _unmatched_mesh = mesh_source(vertices, std::vector<std::vector<uint32_t>>{}, untextured_indices, std::vector<TransparentTriangle>{}, collision_triangles);
 
