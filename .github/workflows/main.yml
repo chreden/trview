@@ -17,6 +17,8 @@ jobs:
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
+      with:
+            vs-prerelease: true
     
     - name: Setup NuGet.exe
       uses: NuGet/setup-nuget@v1.0.5
@@ -56,6 +58,8 @@ jobs:
 
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v1
+      with:
+            vs-prerelease: true
     
     - name: Setup NuGet.exe
       uses: NuGet/setup-nuget@v1.0.5
