@@ -11,7 +11,7 @@ on:
 jobs:
   buildx86:
     name: Build x86
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
 
@@ -50,7 +50,7 @@ jobs:
         path: Release\trview.exe
   buildx64:
     name: Build x64
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v2
 
