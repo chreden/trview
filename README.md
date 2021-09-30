@@ -105,6 +105,7 @@ Water               | Toggle water in water rooms
 Depth               | Toggle depth mode. This will show the currently selected depth of neighbours of the current room.
 Depth Selector      | Choose the depth of neighbours to show
 Wireframe           | Enable wireframe rendering mode
+Bounds              | Show static mesh bounding boxes
 Flip                | Toggle the level flipmap (if present in the level). In TR4+ this will be a flipmap group selector.
 
 ### Room
@@ -208,6 +209,23 @@ At the bottom left of the screen are the current camera angles. You can click on
 
 At the bottom left of the screen are the current camera coordinates. You can click on X, Y, or Z and enter camera coordinates to go that location. Tab will cycle from X to Y to Z and enter will confirm the change.
 
+## Context Menu
+The context menu is opened by right clicking in the 3D view.
+
+### Add Waypoint
+Add a new route waypoint at this position. This is only available when a surface was clicked.
+
+### Add Mid-Waypoint
+Add a new route waypoint at the centre of the square that was clicked. This is only available when a floor was clicked.
+
+### Remove Waypoint
+Remove the clicked waypoint from the route. This is only available when a waypoint was clicked.
+
+### Orbit Here
+Switch the camera to orbit mode and orbit around the position that was right clicked when the context menu was opened. This is only available when a surface was clicked on.
+
+### Hide
+Hide the clicked entity or trigger. This can be unhidden from the view menu or the items or triggers window. This is only available if an item or trigger was clicked.
 
 ## Menus
 
