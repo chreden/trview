@@ -16,7 +16,11 @@ namespace trview
             /// The waypoint is to an entity in the world.
             Entity,
             /// The waypoint is to a trigger in the world.
-            Trigger
+            Trigger,
+            /// <summary>
+            /// The waypoint is a Randomizer secret entry.
+            /// </summary>
+            RandoSecret
         };
 
         using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;

@@ -563,3 +563,44 @@ TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
     ASSERT_TRUE(checkbox->state());
     ASSERT_FALSE(received_value.has_value());
 }
+
+
+TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
+{
+    ui::Window host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    std::optional<bool> received_value;
+    auto token = window.on_randomizer_tools += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    auto checkbox = host.find<Checkbox>("RandomizerTools");
+    ASSERT_NE(checkbox, nullptr);
+    ASSERT_FALSE(checkbox->state());
+
+    checkbox->clicked(Point());
+    ASSERT_TRUE(received_value.has_value());
+    ASSERT_TRUE(received_value.value());
+}
+
+TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
+{
+    ui::Window host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    auto checkbox = host.find<Checkbox>("RandomizerTools");
+    ASSERT_NE(checkbox, nullptr);
+    ASSERT_FALSE(checkbox->state());
+
+    std::optional<bool> received_value;
+    auto token = window.on_randomizer_tools += [&](bool value)
+    {
+        received_value = value;
+    };
+
+    window.set_randomizer_tools(true);
+    ASSERT_TRUE(checkbox->state());
+    ASSERT_FALSE(received_value.has_value());
+}

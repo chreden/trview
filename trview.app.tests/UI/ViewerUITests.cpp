@@ -139,3 +139,25 @@ TEST(ViewerUI, OnAddMidWaypoint)
     context_menu.on_add_mid_waypoint();
     ASSERT_TRUE(raised);
 }
+
+TEST(ViewerUI, OnRandomizerToolsEventRaised)
+{
+    auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
+    auto settings_window_ptr_actual = std::move(settings_window_ptr);
+    auto ui = register_test_module().with_settings_window_source([&](auto&&...) { return std::move(settings_window_ptr_actual); }).build();
+
+    std::optional<UserSettings> settings;
+    auto token = ui->on_settings += [&](const auto& value)
+    {
+        settings = value;
+    };
+
+    settings_window.on_randomizer_tools(true);
+    ASSERT_TRUE(settings.has_value());
+    ASSERT_TRUE(settings.value().randomizer_tools);
+    settings.reset();
+
+    settings_window.on_randomizer_tools(false);
+    ASSERT_TRUE(settings.has_value());
+    ASSERT_FALSE(settings.value().randomizer_tools);
+}
