@@ -31,6 +31,8 @@ namespace trview
                 return L"Position";
             case IWaypoint::Type::Trigger:
                 return L"Trigger";
+            case IWaypoint::Type::RandoSecret:
+                return L"Rando Secret";
         }
         return L"Unknown";
     }

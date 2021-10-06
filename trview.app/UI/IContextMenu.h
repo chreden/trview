@@ -30,6 +30,10 @@ namespace trview
         /// </summary>
         Event<> on_hide;
         /// <summary>
+        /// Event raised when the user has clicked the rando secret button.
+        /// </summary>
+        Event<> on_rando_secret;
+        /// <summary>
         /// Set the position of the context menu.
         /// </summary>
         /// <param name="position">The new position of the menu.</param>
@@ -59,5 +63,10 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether the button is enabled.</param>
         virtual void set_mid_waypoint_enabled(bool value) = 0;
+        /// <summary>
+        /// Set whether the randomizer tools are enabled.
+        /// </summary>
+        /// <param name="value">Whether the randomizer buttons are enabled.</param>
+        virtual void set_randomizer_tools(bool value) = 0;
     };
 }

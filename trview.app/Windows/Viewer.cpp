@@ -151,6 +151,16 @@ namespace trview
             stored_pick.type = PickResult::Type::Room;
             add_recent_orbit(stored_pick);
         };
+        _token_store += _ui->on_rando_secret += [&]()
+        {
+            if (_context_pick.triangle.normal.y != 0)
+            {
+                _context_pick.triangle.normal.x = 0;
+                _context_pick.triangle.normal.z = 0;
+                _context_pick.triangle.normal.Normalize();
+            }
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), IWaypoint::Type::RandoSecret, _context_pick.index);
+        };
         _ui->on_settings += on_settings;
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
