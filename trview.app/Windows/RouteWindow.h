@@ -4,6 +4,8 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/TextArea.h>
 #include <trview.ui/Dropdown.h>
+#include <trview.ui/Checkbox.h>
+#include <trview.ui/GroupBox.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Routing/IWaypoint.h>
@@ -57,6 +59,7 @@ namespace trview
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
+        ui::GroupBox* _lower_box;
         ui::TextArea* _notes_area;
         ui::Button* _select_save;
         ui::Button* _delete_waypoint;
@@ -71,5 +74,11 @@ namespace trview
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
         std::unique_ptr<IBubble> _bubble;
+
+        // Randomizer settings:
+        ui::Window* _rando_area;
+        ui::Checkbox* _requires_glitch;
+        ui::Checkbox* _is_in_room_space;
+        ui::Checkbox* _vehicle_required;
     };
 }

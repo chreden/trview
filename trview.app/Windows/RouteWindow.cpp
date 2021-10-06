@@ -5,6 +5,7 @@
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include <trview.ui/Label.h>
 
 namespace trview
 {
@@ -293,8 +294,8 @@ namespace trview
 
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
         // Notes area.
-        auto notes_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = notes_box->add_child(std::move(std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f))));
+        _lower_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
+        _notes_area = _lower_box->add_child(std::make_unique<TextArea>(Size(panel_width - 20, _lower_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
         _notes_area->set_name(Names::notes_area);
         _notes_area->set_scrollbar_visible(true);
 
@@ -309,6 +310,18 @@ namespace trview
                 }
             }
         };
+
+        _rando_area = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
+        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
+        _rando_area->set_visible(false);
+
+        // Secrets options:
+        _requires_glitch = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
+        _is_in_room_space = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
+        _vehicle_required = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
+        auto dropdown = _rando_area->add_child(std::make_unique<Dropdown>(Size(150, 24)));
+        dropdown->set_values({ L"", L"Easy", L"Medium", L"Hard" });
+        dropdown->set_dropdown_scope(_ui.get());
 
         return right_panel;
     }
@@ -362,7 +375,7 @@ namespace trview
         _delete_waypoint->set_visible(true);
 
         const auto& waypoint = _route->waypoint(index);
-
+        
         auto get_room_pos = [&waypoint, this]()
         {
             if (waypoint.room() < _all_rooms.size())
@@ -379,6 +392,7 @@ namespace trview
             return waypoint.position();
         };
 
+        
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
         stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
@@ -416,15 +430,31 @@ namespace trview
 
         _stats->set_items(stats);
 
-        _notes_area->set_text(waypoint.notes());
-
-        if (waypoint.has_save())
+        // Handling for randomizer features:
+        if (waypoint.type() == IWaypoint::Type::RandoSecret)
         {
-            _select_save->set_text(L"SAVEGAME.0");
+            // TODO: Show the rando controls panel, hide the normal panel
+            _rando_area->set_visible(true);
+            _notes_area->set_visible(false);
+            _lower_box->set_title(L"Randomizer");
         }
         else
         {
-            _select_save->set_text(L"Attach Save");
+            _rando_area->set_visible(false);
+            _notes_area->set_visible(true);
+            _lower_box->set_title(L"Notes");
+
+            // TODO: Show the normal panel, hide the rando panel.
+            _notes_area->set_text(waypoint.notes());
+
+            if (waypoint.has_save())
+            {
+                _select_save->set_text(L"SAVEGAME.0");
+            }
+            else
+            {
+                _select_save->set_text(L"Attach Save");
+            }
         }
     }
 
