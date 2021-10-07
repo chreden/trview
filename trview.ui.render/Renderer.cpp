@@ -80,10 +80,13 @@ namespace trview
                 }
 
                 auto* node_ptr = node.get();
-                node_ptr->_token_store += control->on_hierarchy_changed += [this, control, node_ptr]()
+                node_ptr->_token_store += control->on_hierarchy_changed += [this]()
+                {
+                    _hierarchy_changed = true;
+                };
+                node_ptr->_token_store += control->on_hierarchy_changed += [node_ptr]()
                 {
                     node_ptr->set_hierarchy_changed(true);
-                    _hierarchy_changed = true;
                 };
 
                 return node;
