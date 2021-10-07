@@ -27,17 +27,25 @@ namespace trview
         virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) override;
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, const DirectX::SimpleMath::Color& colour) override;
         virtual DirectX::BoundingBox bounding_box() const override;
+        virtual std::string difficulty() const override;
         virtual DirectX::SimpleMath::Vector3 position() const override;
         virtual Type type() const override;
         virtual bool has_save() const override;
         virtual uint32_t index() const override;
-        virtual uint32_t room() const override;
+        virtual bool is_in_room_space() const override;
         virtual std::wstring notes() const override;
+        virtual uint32_t room() const override;
+        virtual bool requires_glitch() const override;
         virtual std::vector<uint8_t> save_file() const override;
+        virtual void set_difficulty(const std::string& value) override;
+        virtual void set_is_in_room_space(bool value) override;
         virtual void set_notes(const std::wstring& notes) override;
+        virtual void set_requires_glitch(bool value) override;
         virtual void set_route_colour(const Colour& colour) override;
         virtual void set_save_file(const std::vector<uint8_t>& data) override;
+        virtual void set_vehicle_required(bool value) override;
         virtual DirectX::SimpleMath::Vector3 blob_position() const override;
+        virtual bool vehicle_required() const override;
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
         virtual DirectX::SimpleMath::Vector3 normal() const override;
@@ -54,5 +62,9 @@ namespace trview
         uint32_t                     _room;
         Colour                       _route_colour;
         bool                         _visible{ true };
+        bool                         _requires_glitch{ false };
+        bool                         _vehicle_required{ false };
+        bool                         _is_in_room_space{ false };
+        std::string                  _difficulty;
     };    
 }

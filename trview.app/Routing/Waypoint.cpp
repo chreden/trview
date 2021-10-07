@@ -146,5 +146,45 @@ namespace trview
     {
         return _normal;
     }
+
+    std::string Waypoint::difficulty() const 
+    {
+        return _difficulty;
+    }
+
+    bool Waypoint::is_in_room_space() const
+    {
+        return _is_in_room_space;
+    }
+
+    bool Waypoint::requires_glitch() const
+    {
+        return _requires_glitch;
+    }
+
+    bool Waypoint::vehicle_required() const
+    {
+        return _vehicle_required;
+    }
+
+    void Waypoint::set_difficulty(const std::string& value)
+    {
+        _difficulty = value;
+    }
+
+    void Waypoint::set_is_in_room_space(bool value)
+    {
+        _is_in_room_space = value;
+    }
+
+    void Waypoint::set_requires_glitch(bool value)
+    {
+        _requires_glitch = value;
+    }
+
+    void Waypoint::set_vehicle_required(bool value)
+    {
+        _vehicle_required = value;
+    }
 }
 

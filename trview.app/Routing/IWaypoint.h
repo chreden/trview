@@ -31,6 +31,7 @@ namespace trview
         /// </summary>
         /// <returns>The bounding box.</returns>
         virtual DirectX::BoundingBox bounding_box() const = 0;
+        virtual std::string difficulty() const = 0;
         /// Get the position of the waypoint in the 3D view.
         virtual DirectX::SimpleMath::Vector3 position() const = 0;
         /// Get the type of the waypoint.
@@ -39,10 +40,12 @@ namespace trview
         virtual bool has_save() const = 0;
         /// Gets the index of the entity or trigger that the waypoint refers to.
         virtual uint32_t index() const = 0;
-        /// Gets the room that the waypoint is in.
-        virtual uint32_t room() const = 0;
+        virtual bool is_in_room_space() const = 0;
         /// Get any notes associated with the waypoint.
         virtual std::wstring notes() const = 0;
+        virtual bool requires_glitch() const = 0;
+        /// Gets the room that the waypoint is in.
+        virtual uint32_t room() const = 0;
         /// <summary>
         /// Render the join between this waypoint and another.
         /// </summary>
@@ -53,14 +56,19 @@ namespace trview
         virtual void render_join(const IWaypoint& next_waypoint, const ICamera& camera, const ILevelTextureStorage& texture_storage, const DirectX::SimpleMath::Color& colour) = 0;
         /// Get the contents of the attached save file.
         virtual std::vector<uint8_t> save_file() const = 0;
+        virtual void set_difficulty(const std::string& value) = 0;
+        virtual void set_is_in_room_space(bool value) = 0;
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         virtual void set_notes(const std::wstring& notes) = 0;
+        virtual void set_requires_glitch(bool value) = 0;
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         virtual void set_route_colour(const Colour& colour) = 0;
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
+        virtual void set_vehicle_required(bool value) = 0;
+        virtual bool vehicle_required() const = 0;
         virtual DirectX::SimpleMath::Vector3 blob_position() const = 0;
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
     };
