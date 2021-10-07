@@ -132,26 +132,26 @@ namespace trview
     {
         if (value)
         {
-            if (_rando_secret_button_store)
+            if (_rando_location_button_store)
             {
-                _rando_secret_button = _menu->add_child<Button>(std::move(_rando_secret_button_store));
+                _rando_location_button = _menu->add_child<Button>(std::move(_rando_location_button_store));
             }
-            else if (!_rando_secret_button)
+            else if (!_rando_location_button)
             {
-                _rando_secret_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Rando Secret"));
-                _rando_secret_button->set_name(Names::rando_secret_button);
-                _rando_secret_button->set_text_background_colour(Colours::Button);
-                _token_store += _rando_secret_button->on_click += [&]()
+                _rando_location_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Rando Location"));
+                _rando_location_button->set_name(Names::rando_secret_button);
+                _rando_location_button->set_text_background_colour(Colours::Button);
+                _token_store += _rando_location_button->on_click += [&]()
                 {
-                    on_rando_secret();
+                    on_rando_location();
                     set_visible(false);
                 };
             }
         }
-        else if (_rando_secret_button)
+        else if (_rando_location_button)
         {
-            _rando_secret_button_store = std::unique_ptr<Button>(static_cast<Button*>(_menu->remove_child(_rando_secret_button).release()));
-            _rando_secret_button = nullptr;
+            _rando_location_button_store = std::unique_ptr<Button>(static_cast<Button*>(_menu->remove_child(_rando_location_button).release()));
+            _rando_location_button = nullptr;
         }
     }
 }

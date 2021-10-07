@@ -20,7 +20,7 @@ namespace trview
             /// <summary>
             /// The waypoint is a Randomizer secret entry.
             /// </summary>
-            RandoSecret
+            RandoLocation
         };
 
         using Source = std::function<std::unique_ptr<IWaypoint>(const DirectX::SimpleMath::Vector3&, const DirectX::SimpleMath::Vector3&, uint32_t, Type, uint32_t, const Colour&)>;

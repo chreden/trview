@@ -431,7 +431,7 @@ namespace trview
         _stats->set_items(stats);
 
         // Handling for randomizer features:
-        if (waypoint.type() == IWaypoint::Type::RandoSecret)
+        if (waypoint.type() == IWaypoint::Type::RandoLocation)
         {
             // TODO: Show the rando controls panel, hide the normal panel
             _rando_area->set_visible(true);

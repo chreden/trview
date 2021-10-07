@@ -30,9 +30,9 @@ namespace trview
         /// </summary>
         Event<> on_hide;
         /// <summary>
-        /// Event raised when the user has clicked the rando secret button.
+        /// Event raised when the user has clicked the rando location button.
         /// </summary>
-        Event<> on_rando_secret;
+        Event<> on_rando_location;
         /// <summary>
         /// Set the position of the context menu.
         /// </summary>

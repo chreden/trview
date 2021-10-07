@@ -38,8 +38,8 @@ namespace trview
         ui::Button* _remove_button;
         ui::Button* _hide_button;
         ui::Button* _mid_button;
-        ui::Button* _rando_secret_button{ nullptr };
-        std::unique_ptr<ui::Button> _rando_secret_button_store;
+        ui::Button* _rando_location_button{ nullptr };
+        std::unique_ptr<ui::Button> _rando_location_button_store;
         bool _remove_enabled{ false };
         bool _hide_enabled{ false };
         bool _mid_enabled{ false };
