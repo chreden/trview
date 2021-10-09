@@ -157,6 +157,11 @@ namespace trview
         return _is_in_room_space;
     }
 
+    bool Waypoint::is_item() const
+    {
+        return _is_item;
+    }
+
     bool Waypoint::requires_glitch() const
     {
         return _requires_glitch;
@@ -175,6 +180,11 @@ namespace trview
     void Waypoint::set_is_in_room_space(bool value)
     {
         _is_in_room_space = value;
+    }
+
+    void Waypoint::set_is_item(bool value)
+    {
+        _is_item = value;
     }
 
     void Waypoint::set_requires_glitch(bool value)

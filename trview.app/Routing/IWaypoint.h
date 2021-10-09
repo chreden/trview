@@ -41,6 +41,7 @@ namespace trview
         /// Gets the index of the entity or trigger that the waypoint refers to.
         virtual uint32_t index() const = 0;
         virtual bool is_in_room_space() const = 0;
+        virtual bool is_item() const = 0;
         /// Get any notes associated with the waypoint.
         virtual std::wstring notes() const = 0;
         virtual bool requires_glitch() const = 0;
@@ -58,6 +59,7 @@ namespace trview
         virtual std::vector<uint8_t> save_file() const = 0;
         virtual void set_difficulty(const std::string& value) = 0;
         virtual void set_is_in_room_space(bool value) = 0;
+        virtual void set_is_item(bool value) = 0;
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         virtual void set_notes(const std::wstring& notes) = 0;

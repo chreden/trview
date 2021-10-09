@@ -16,12 +16,14 @@ namespace trview
             MOCK_METHOD(bool, has_save, (), (const, override));
             MOCK_METHOD(uint32_t, index, (), (const, override));
             MOCK_METHOD(bool, is_in_room_space, (), (const, override));
+            MOCK_METHOD(bool, is_item, (), (const, override));
             MOCK_METHOD(std::wstring, notes, (), (const, override));
             MOCK_METHOD(bool, requires_glitch, (), (const, override));
             MOCK_METHOD(uint32_t, room, (), (const, override));
             MOCK_METHOD(std::vector<uint8_t>, save_file, (), (const, override));
             MOCK_METHOD(void, set_difficulty, (const std::string&), (override));
             MOCK_METHOD(void, set_is_in_room_space, (bool), (override));
+            MOCK_METHOD(void, set_is_item, (bool), (override));
             MOCK_METHOD(void, set_notes, (const std::wstring&), (override));
             MOCK_METHOD(void, set_requires_glitch, (bool), (override));
             MOCK_METHOD(void, set_route_colour, (const Colour&), (override));

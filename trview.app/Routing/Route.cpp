@@ -324,10 +324,26 @@ namespace trview
                         waypoint_json["Y"] = std::to_string((int)(pos.y * 1024));
                         waypoint_json["Z"] = std::to_string((int)(pos.z * 1024));
                         waypoint_json["Room"] = waypoint.room();
-                        waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
-                        waypoint_json["Difficulty"] = waypoint.difficulty();
-                        waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                        waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                        if (!waypoint.is_in_room_space())
+                        {
+                            waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
+                        }
+                        if (waypoint.difficulty() != "Easy")
+                        {
+                            waypoint_json["Difficulty"] = waypoint.difficulty();
+                        }
+                        if (waypoint.requires_glitch())
+                        {
+                            waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+                        }
+                        if (waypoint.vehicle_required())
+                        {
+                            waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                        }
+                        if (waypoint.is_item())
+                        {
+                            waypoint_json["IsItem"] = waypoint.is_item();
+                        }
                         waypoints.push_back(waypoint_json);
                     }
                 }

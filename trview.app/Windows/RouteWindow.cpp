@@ -6,6 +6,7 @@
 #include <trview.common/Windows/Clipboard.h>
 #include <trview.ui/Layouts/StackLayout.h>
 #include <trview.ui/Label.h>
+#include <trview.ui/Layouts/GridLayout.h>
 
 namespace trview
 {
@@ -315,13 +316,56 @@ namespace trview
         _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
         _rando_area->set_visible(false);
 
-        // Secrets options:
-        _requires_glitch = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
-        _is_in_room_space = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
-        _vehicle_required = _rando_area->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
-        auto dropdown = _rando_area->add_child(std::make_unique<Dropdown>(Size(150, 24)));
-        dropdown->set_values({ L"", L"Easy", L"Medium", L"Hard" });
-        dropdown->set_dropdown_scope(_ui.get());
+        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
+        grid->set_layout(std::make_unique<GridLayout>(2, 2));
+
+        _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
+        _token_store += _requires_glitch->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_requires_glitch(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _is_in_room_space = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
+        _token_store += _is_in_room_space->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_is_in_room_space(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
+        _token_store += _vehicle_required->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_requires_glitch(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
+        _token_store += _is_item->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_is_item(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 16)));
+        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
+        _difficulty->set_dropdown_scope(_ui.get());
+        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
+                _route->set_unsaved(true);
+            }
+        };
 
         return right_panel;
     }
@@ -433,10 +477,15 @@ namespace trview
         // Handling for randomizer features:
         if (waypoint.type() == IWaypoint::Type::RandoLocation)
         {
-            // TODO: Show the rando controls panel, hide the normal panel
             _rando_area->set_visible(true);
             _notes_area->set_visible(false);
             _lower_box->set_title(L"Randomizer");
+
+            _requires_glitch->set_state(waypoint.requires_glitch());
+            _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
+            _is_in_room_space->set_state(waypoint.is_in_room_space());
+            _vehicle_required->set_state(waypoint.vehicle_required());
+            _is_item->set_state(waypoint.is_item());
         }
         else
         {

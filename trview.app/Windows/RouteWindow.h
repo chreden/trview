@@ -80,5 +80,7 @@ namespace trview
         ui::Checkbox* _requires_glitch;
         ui::Checkbox* _is_in_room_space;
         ui::Checkbox* _vehicle_required;
+        ui::Checkbox* _is_item;
+        ui::Dropdown* _difficulty;
     };
 }
