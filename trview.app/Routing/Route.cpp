@@ -306,16 +306,15 @@ namespace trview
     {
         try
         {
-            nlohmann::json json;
-
             // Find if there are any rando location - if so, we only export those.
             if (is_randomizer_route(route))
             {
-                std::vector<nlohmann::json> waypoints;
+                nlohmann::ordered_json json;
+                std::vector<nlohmann::ordered_json> waypoints;
                 for (uint32_t i = 0; i < route.waypoints(); ++i)
                 {
                     const IWaypoint& waypoint = route.waypoint(i);
-                    nlohmann::json waypoint_json;
+                    nlohmann::ordered_json waypoint_json;
 
                     if (waypoint.type() == IWaypoint::Type::RandoLocation)
                     {
@@ -324,35 +323,38 @@ namespace trview
                         waypoint_json["Y"] = std::to_string((int)(pos.y * 1024));
                         waypoint_json["Z"] = std::to_string((int)(pos.z * 1024));
                         waypoint_json["Room"] = waypoint.room();
-                        if (!waypoint.is_in_room_space())
+                        if (waypoint.requires_glitch())
                         {
-                            waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
+                            waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
                         }
                         if (waypoint.difficulty() != "Easy")
                         {
                             waypoint_json["Difficulty"] = waypoint.difficulty();
                         }
-                        if (waypoint.requires_glitch())
+                        if (!waypoint.is_in_room_space())
                         {
-                            waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                        }
-                        if (waypoint.vehicle_required())
-                        {
-                            waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                            waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
                         }
                         if (waypoint.is_item())
                         {
                             waypoint_json["IsItem"] = waypoint.is_item();
                         }
+                        if (waypoint.vehicle_required())
+                        {
+                            waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                        }
+                        
                         waypoints.push_back(waypoint_json);
                     }
                 }
 
                 auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
                 json[trimmed] = waypoints;
+                files->save_file(route_filename, json.dump(1, '\t'));
             }
             else
             {
+                nlohmann::json json;
                 json["colour"] = to_utf8(route.colour().name());
 
                 std::vector<nlohmann::json> waypoints;
@@ -384,9 +386,8 @@ namespace trview
                 }
 
                 json["waypoints"] = waypoints;
+                files->save_file(route_filename, json.dump());
             }
-
-            files->save_file(route_filename, json.dump());
         }
         catch (...)
         {
