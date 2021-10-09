@@ -355,7 +355,7 @@ namespace trview
                 _route->set_unsaved(true);
             }
         };
-        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 16)));
+        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
         _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
         _difficulty->set_dropdown_scope(_ui.get());
         _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
