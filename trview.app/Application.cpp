@@ -400,7 +400,7 @@ namespace trview
         };
         _token_store += _route_window->on_route_export += [&](const std::string& path)
         {
-            export_route(*_route, _files, path, _level->filename()); 
+            export_route(*_route, _files, path, _level ? _level->filename() : ""); 
             _route->set_unsaved(false);
         };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
