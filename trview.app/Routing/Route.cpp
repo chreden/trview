@@ -290,45 +290,87 @@ namespace trview
         }
     }
 
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& filename)
+    bool is_randomizer_route(const IRoute& route) 
+    {
+        for (uint32_t i = 0; i < route.waypoints(); ++i)
+        {
+            if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
     {
         try
         {
             nlohmann::json json;
 
-            json["colour"] = to_utf8(route.colour().name());
-
-            std::vector<nlohmann::json> waypoints;
-
-            for (uint32_t i = 0; i < route.waypoints(); ++i)
+            // Find if there are any rando location - if so, we only export those.
+            if (is_randomizer_route(route))
             {
-                const IWaypoint& waypoint = route.waypoint(i);
-                nlohmann::json waypoint_json;
-                waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
-
-                std::stringstream pos_string;
-                auto pos = waypoint.position();
-                pos_string << pos.x << "," << pos.y << "," << pos.z;
-                waypoint_json["position"] = pos_string.str();
-                std::stringstream normal_string;
-                auto normal = waypoint.normal();
-                normal_string << normal.x << "," << normal.y << "," << normal.z;
-                waypoint_json["normal"] = normal_string.str();
-                waypoint_json["room"] = waypoint.room();
-                waypoint_json["index"] = waypoint.index();
-                waypoint_json["notes"] = to_utf8(waypoint.notes());
-
-                if (waypoint.has_save())
+                std::vector<nlohmann::json> waypoints;
+                for (uint32_t i = 0; i < route.waypoints(); ++i)
                 {
-                    waypoint_json["save"] = to_base64(waypoint.save_file());
+                    const IWaypoint& waypoint = route.waypoint(i);
+                    nlohmann::json waypoint_json;
+
+                    if (waypoint.type() == IWaypoint::Type::RandoLocation)
+                    {
+                        auto pos = waypoint.position();
+                        waypoint_json["X"] = std::to_string((int)(pos.x * 1024));
+                        waypoint_json["Y"] = std::to_string((int)(pos.y * 1024));
+                        waypoint_json["Z"] = std::to_string((int)(pos.z * 1024));
+                        waypoint_json["Room"] = waypoint.room();
+                        waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
+                        waypoint_json["Difficulty"] = waypoint.difficulty();
+                        waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+                        waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                        waypoints.push_back(waypoint_json);
+                    }
                 }
 
-                waypoints.push_back(waypoint_json);
+                auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
+                json[trimmed] = waypoints;
+            }
+            else
+            {
+                json["colour"] = to_utf8(route.colour().name());
+
+                std::vector<nlohmann::json> waypoints;
+
+                for (uint32_t i = 0; i < route.waypoints(); ++i)
+                {
+                    const IWaypoint& waypoint = route.waypoint(i);
+                    nlohmann::json waypoint_json;
+                    waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
+
+                    std::stringstream pos_string;
+                    auto pos = waypoint.position();
+                    pos_string << pos.x << "," << pos.y << "," << pos.z;
+                    waypoint_json["position"] = pos_string.str();
+                    std::stringstream normal_string;
+                    auto normal = waypoint.normal();
+                    normal_string << normal.x << "," << normal.y << "," << normal.z;
+                    waypoint_json["normal"] = normal_string.str();
+                    waypoint_json["room"] = waypoint.room();
+                    waypoint_json["index"] = waypoint.index();
+                    waypoint_json["notes"] = to_utf8(waypoint.notes());
+
+                    if (waypoint.has_save())
+                    {
+                        waypoint_json["save"] = to_base64(waypoint.save_file());
+                    }
+
+                    waypoints.push_back(waypoint_json);
+                }
+
+                json["waypoints"] = waypoints;
             }
 
-            json["waypoints"] = waypoints;
-
-            files->save_file(filename, json.dump());
+            files->save_file(route_filename, json.dump());
         }
         catch (...)
         {
