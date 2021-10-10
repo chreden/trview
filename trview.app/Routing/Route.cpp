@@ -327,9 +327,9 @@ namespace trview
                     if (waypoint.type() == IWaypoint::Type::RandoLocation)
                     {
                         auto pos = waypoint.position();
-                        waypoint_json["X"] = std::to_string((int)(pos.x * 1024));
-                        waypoint_json["Y"] = std::to_string((int)(pos.y * 1024));
-                        waypoint_json["Z"] = std::to_string((int)(pos.z * 1024));
+                        waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+                        waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+                        waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
                         waypoint_json["Room"] = waypoint.room();
                         if (waypoint.requires_glitch())
                         {
