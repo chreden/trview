@@ -272,6 +272,7 @@ namespace trview
                     child = std::move(element);
                     _child_elements.erase(_child_elements.begin() + i);
                     on_hierarchy_changed();
+                    on_remove_child(child.get());
                     break;
                 }
             }
