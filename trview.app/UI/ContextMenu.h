@@ -16,7 +16,7 @@ namespace trview
             static const std::string hide_button;
             static const std::string orbit_button;
             static const std::string remove_waypoint_button;
-            static const std::string rando_secret_button;
+            static const std::string rando_location_button;
         };
 
         /// Create a new ContentMenu window.

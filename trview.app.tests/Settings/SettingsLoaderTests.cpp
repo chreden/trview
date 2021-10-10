@@ -411,3 +411,29 @@ TEST(SettingsLoader, CameraDisplayDegreesSaved)
     loader->save_user_settings(settings);
     EXPECT_THAT(output, HasSubstr("\"cameradisplaydegrees\":true"));
 }
+
+TEST(SettingsLoader, RandomizerToolsLoaded)
+{
+    auto loader = setup_setting("{\"randomizertools\":false}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.randomizer_tools, false);
+
+    auto loader_true = setup_setting("{\"randomizertools\":true}");
+    auto settings_true = loader_true->load_user_settings();
+    ASSERT_EQ(settings_true.randomizer_tools, true);
+}
+
+TEST(SettingsLoader, RandomizerToolsSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.randomizer_tools = false;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"randomizertools\":false"));
+
+    settings.randomizer_tools = true;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"randomizertools\":true"));
+}
+

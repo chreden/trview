@@ -184,6 +184,7 @@ TEST(RouteWindow, AddingWaypointNotesMarksRouteUnsaved)
     const Vector3 waypoint_pos{ 130, 250, 325 };
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, position).WillRepeatedly(Return(waypoint_pos));
+    EXPECT_CALL(waypoint, set_notes(std::wstring(L"Test"))).Times(1);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -203,6 +204,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 {
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, has_save).Times(AtLeast(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(waypoint, set_save_file(std::vector<uint8_t>())).Times(1);
 
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
@@ -469,3 +471,127 @@ TEST(RouteWindow, ClickStatShowsBubble)
     ASSERT_NE(value, nullptr);
     value->clicked(Point());
 }
+
+TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
+{
+    MockWaypoint waypoint;
+    EXPECT_CALL(waypoint, requires_glitch).Times(AtLeast(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, set_requires_glitch(false)).Times(1);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().build();
+    window->set_route(&route);
+
+    auto requires_glitch = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::requires_glitch);
+    ASSERT_NE(requires_glitch, nullptr);
+    ASSERT_TRUE(requires_glitch->visible(true));
+
+    requires_glitch->clicked(Point());
+}
+
+TEST(RouteWindow, IsInRoomSpaceSetsRouteUnsaved)
+{
+    MockWaypoint waypoint;
+    EXPECT_CALL(waypoint, is_in_room_space).Times(AtLeast(1)).WillRepeatedly(Return(false));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, set_is_in_room_space(true)).Times(1);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().build();
+    window->set_route(&route);
+
+    auto is_in_room_space = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_in_room_space);
+    ASSERT_NE(is_in_room_space, nullptr);
+    ASSERT_TRUE(is_in_room_space->visible(true));
+
+    is_in_room_space->clicked(Point());
+}
+
+TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
+{
+    MockWaypoint waypoint;
+    EXPECT_CALL(waypoint, vehicle_required).Times(AtLeast(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, set_vehicle_required(false)).Times(1);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().build();
+    window->set_route(&route);
+
+    auto vehicle_required = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::vehicle_required);
+    ASSERT_NE(vehicle_required, nullptr);
+    ASSERT_TRUE(vehicle_required->visible(true));
+
+    vehicle_required->clicked(Point());
+}
+
+TEST(RouteWindow, IsItemSetsRouteUnsaved)
+{
+    MockWaypoint waypoint;
+    EXPECT_CALL(waypoint, is_item).Times(AtLeast(1)).WillRepeatedly(Return(true));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, set_is_item(false)).Times(1);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().build();
+    window->set_route(&route);
+
+    auto is_item = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_item);
+    ASSERT_NE(is_item, nullptr);
+    ASSERT_TRUE(is_item->visible(true));
+
+    is_item->clicked(Point());
+}
+
+TEST(RouteWindow, DifficultySetsRouteUnsaved)
+{
+    MockWaypoint waypoint;
+    EXPECT_CALL(waypoint, difficulty).Times(AtLeast(1)).WillRepeatedly(Return("Medium"));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, set_difficulty("Hard")).Times(1);
+
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(route, set_unsaved(true)).Times(1);
+
+    auto window = register_test_module().build();
+    window->set_route(&route);
+
+    auto difficulty = window->root_control()->find<ui::Dropdown>(RouteWindow::Names::difficulty);
+    ASSERT_NE(difficulty, nullptr);
+    ASSERT_TRUE(difficulty->visible(true));
+    
+    auto dropdown_button = difficulty->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
+    ASSERT_NE(dropdown_button, nullptr);
+    dropdown_button->clicked(Point());
+
+    auto dropdown_list = difficulty->dropdown_listbox();
+    ASSERT_NE(dropdown_list, nullptr);
+
+    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "2");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+}
+
+

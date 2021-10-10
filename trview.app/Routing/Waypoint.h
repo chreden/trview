@@ -54,20 +54,20 @@ namespace trview
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
 
-        std::wstring                 _notes;
-        std::vector<uint8_t>         _save_data;
+        std::wstring _notes;
+        std::vector<uint8_t> _save_data;
         DirectX::SimpleMath::Vector3 _position;
         DirectX::SimpleMath::Vector3 _normal;
-        std::shared_ptr<IMesh>       _mesh;
-        Type                         _type;
-        uint32_t                     _index;
-        uint32_t                     _room;
-        Colour                       _route_colour;
-        bool                         _visible{ true };
-        bool                         _requires_glitch{ false };
-        bool                         _vehicle_required{ false };
-        bool                         _is_in_room_space{ true };
-        bool                         _is_item{ false };
-        std::string                  _difficulty{ "Easy" };
+        std::shared_ptr<IMesh> _mesh;
+        Type _type;
+        uint32_t _index;
+        uint32_t _room;
+        Colour _route_colour;
+        bool _visible{ true };
+        bool _requires_glitch{ false };
+        bool _vehicle_required{ false };
+        bool _is_in_room_space{ true };
+        bool _is_item{ false };
+        std::string _difficulty{ "Easy" };
     };    
 }

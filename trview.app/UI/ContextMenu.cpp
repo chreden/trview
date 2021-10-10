@@ -20,7 +20,7 @@ namespace trview
     const std::string ContextMenu::Names::add_waypoint_button{ "AddWaypoint" };
     const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
-    const std::string ContextMenu::Names::rando_secret_button { "RandoSecret" };
+    const std::string ContextMenu::Names::rando_location_button { "RandoLocation" };
 
     ContextMenu::ContextMenu(Control& parent)
     {
@@ -139,7 +139,7 @@ namespace trview
             else if (!_rando_location_button)
             {
                 _rando_location_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Rando Location"));
-                _rando_location_button->set_name(Names::rando_secret_button);
+                _rando_location_button->set_name(Names::rando_location_button);
                 _rando_location_button->set_text_background_colour(Colours::Button);
                 _token_store += _rando_location_button->on_click += [&]()
                 {

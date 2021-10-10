@@ -34,6 +34,11 @@ namespace trview
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
+    const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
+    const std::string RouteWindow::Names::is_in_room_space = "is_in_room_space";
+    const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
+    const std::string RouteWindow::Names::is_item = "is_item";
+    const std::string RouteWindow::Names::difficulty = "difficulty";
 
     namespace Colours
     {
@@ -320,6 +325,7 @@ namespace trview
         grid->set_layout(std::make_unique<GridLayout>(2, 2));
 
         _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
+        _requires_glitch->set_name(Names::requires_glitch);
         _token_store += _requires_glitch->on_state_changed += [&](bool state)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -329,6 +335,7 @@ namespace trview
             }
         };
         _is_in_room_space = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
+        _is_in_room_space->set_name(Names::is_in_room_space);
         _token_store += _is_in_room_space->on_state_changed += [&](bool state)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -338,15 +345,17 @@ namespace trview
             }
         };
         _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
+        _vehicle_required->set_name(Names::vehicle_required);
         _token_store += _vehicle_required->on_state_changed += [&](bool state)
         {
             if (_route && _selected_index < _route->waypoints())
             {
-                _route->waypoint(_selected_index).set_requires_glitch(state);
+                _route->waypoint(_selected_index).set_vehicle_required(state);
                 _route->set_unsaved(true);
             }
         };
         _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
+        _is_item->set_name(Names::is_item);
         _token_store += _is_item->on_state_changed += [&](bool state)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -356,6 +365,7 @@ namespace trview
             }
         };
         _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
+        _difficulty->set_name(Names::difficulty);
         _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
         _difficulty->set_dropdown_scope(_ui.get());
         _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
@@ -419,7 +429,7 @@ namespace trview
         _delete_waypoint->set_visible(true);
 
         const auto& waypoint = _route->waypoint(index);
-        
+
         auto get_room_pos = [&waypoint, this]()
         {
             if (waypoint.room() < _all_rooms.size())
