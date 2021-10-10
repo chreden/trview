@@ -23,7 +23,6 @@
     <ClInclude Include="Algorithms.hpp" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Event.h" />
-    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="Files.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="IFiles.h" />
@@ -51,7 +50,6 @@
   <ItemGroup>
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="EventToken.cpp" />
-    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="MessageHandler.cpp" />

@@ -1,5 +1,4 @@
 #include "Sprite.h"
-#include <trview.common/FileLoader.h>
 #include "IShaderStorage.h"
 #include "IShader.h"
 #include "Texture.h"
