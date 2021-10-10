@@ -30,7 +30,7 @@ namespace trview
         Event<std::string> on_route_import;
 
         /// Event raised when a route is exported.
-        Event<std::string> on_route_export;
+        Event<std::string, bool> on_route_export;
 
         /// Event raised when a waypoint is deleted.
         Event<uint32_t> on_waypoint_deleted;

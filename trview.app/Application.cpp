@@ -215,7 +215,7 @@ namespace trview
                     case ID_FILE_OPEN:
                     case ID_ACCEL_FILE_OPEN:
                     {
-                        const auto filename = _dialogs->open_file(L"Open level", L"All Tomb Raider Files", { L"*.tr*", L"*.phd" }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+                        const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr*", L"*.phd" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
                         if (filename.has_value())
                         {
                             open(filename.value());
@@ -398,9 +398,9 @@ namespace trview
                 _viewer->set_route(_route);
             }
         };
-        _token_store += _route_window->on_route_export += [&](const std::string& path)
+        _token_store += _route_window->on_route_export += [&](const std::string& path, bool is_rando)
         {
-            export_route(*_route, _files, path, _level ? _level->filename() : ""); 
+            export_route(*_route, _files, path, _level ? _level->filename() : "", is_rando); 
             _route->set_unsaved(false);
         };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };

@@ -39,6 +39,26 @@ namespace trview
             final_filter += L'\0';
             return final_filter;
         }
+
+        std::wstring combine_filters(const std::vector<IDialogs::FileFilter>& filters)
+        {
+            std::wstring final_filter;
+            for (const auto& filter : filters)
+            {
+                final_filter += filter.name + L'\0';
+                for (auto i = 0; i < filter.file_types.size(); ++i)
+                {
+                    final_filter += filter.file_types[i];
+                    if (i < filter.file_types.size() - 1)
+                    {
+                        final_filter += L';';
+                    }
+                }
+                final_filter += L'\0';
+            }
+            final_filter += L'\0';
+            return final_filter;
+        }
     }
 
     bool Dialogs::message_box(const Window& window, const std::wstring& message, const std::wstring& title, Buttons buttons) const
@@ -46,7 +66,7 @@ namespace trview
         return convert_response(MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons)));
     }
 
-    std::optional<std::string> Dialogs::open_file(const std::wstring& title, const std::wstring& filter, const std::vector<std::wstring>& file_types, uint32_t flags) const
+    std::optional<std::string> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -54,7 +74,7 @@ namespace trview
         wchar_t path[MAX_PATH];
         memset(&path, 0, sizeof(path));
 
-        const auto final_filters = combine_filters(filter, file_types);
+        const auto final_filters = combine_filters(filters);
 
         ofn.lStructSize = sizeof(ofn);
         ofn.lpstrFile = path;
@@ -70,7 +90,7 @@ namespace trview
         return {};
     }
 
-    std::optional<std::string> Dialogs::save_file(const std::wstring& title, const std::wstring& filter, const std::vector<std::wstring>& file_types) const
+    std::optional<IDialogs::SaveFileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -78,7 +98,7 @@ namespace trview
         wchar_t path[MAX_PATH];
         memset(&path, 0, sizeof(path));
 
-        const auto final_filters = combine_filters(filter, file_types);
+        const auto final_filters = combine_filters(filters);
 
         ofn.lStructSize = sizeof(ofn);
         ofn.lpstrFilter = final_filters.c_str();
@@ -89,7 +109,7 @@ namespace trview
 
         if (GetSaveFileName(&ofn))
         {
-            return trview::to_utf8(ofn.lpstrFile);
+            return IDialogs::SaveFileResult { trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
         }
         return {};
     }

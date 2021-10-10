@@ -18,6 +18,11 @@ namespace trview
             return IWaypoint::Type::Entity;
         }
 
+        if (value == "Rando Location")
+        {
+            return IWaypoint::Type::RandoLocation;
+        }
+
         return IWaypoint::Type::Position;
     }
 

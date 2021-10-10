@@ -123,7 +123,7 @@ namespace trview
         import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
-            const auto filename = _dialogs->open_file(L"Import route", L"trview route", { L"*.tvr" }, OFN_FILEMUSTEXIST);
+            const auto filename = _dialogs->open_file(L"Import route", { { L"trview route", { L"*.tvr" } } }, OFN_FILEMUSTEXIST);
             if (filename.has_value())
             {
                 on_route_import(filename.value());
@@ -133,10 +133,19 @@ namespace trview
         export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            const auto filename = _dialogs->save_file(L"Export route", L"trview route", { L"*.tvr" });
+            std::vector<IDialogs::FileFilter> filters
+            {
+                { L"trview route", { L"*.tvr" } }
+            };
+            if (has_randomizer_elements())
+            {
+                filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+            }
+
+            const auto filename = _dialogs->save_file(L"Export route", filters);
             if (filename.has_value())
             {
-                on_route_export(filename.value());
+                on_route_export(filename.value().filename, filename.value().filter_index == 2);
             }
         };
         auto _buttons = left_panel->add_child(std::move(buttons));
@@ -227,7 +236,7 @@ namespace trview
 
             if (!_route->waypoint(_selected_index).has_save())
             {
-                const auto filename = _dialogs->open_file(L"Select Save", L"Savegame File", { L"*.*" }, OFN_FILEMUSTEXIST);
+                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
                 if (filename.has_value())
                 {
                     // Load bytes from file.
@@ -249,12 +258,12 @@ namespace trview
             }
             else
             {
-                const auto filename = _dialogs->save_file(L"Export Save", L"Savegame File", { L"*.*" });
+                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } });
                 if (filename.has_value())
                 {
                     try
                     {
-                        _files->save_file(filename.value(), _route->waypoint(_selected_index).save_file());
+                        _files->save_file(filename.value().filename, _route->waypoint(_selected_index).save_file());
                     }
                     catch (...)
                     {
@@ -558,5 +567,22 @@ namespace trview
     void RouteWindow::update(float delta)
     {
         _ui->update(delta);
+    }
+
+    bool RouteWindow::has_randomizer_elements() const
+    {
+        if (!_route)
+        {
+            return false;
+        }
+
+        for (auto i = 0u; i < _route->waypoints(); ++i)
+        {
+            if (_route->waypoint(i).type() == IWaypoint::Type::RandoLocation)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

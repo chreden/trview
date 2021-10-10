@@ -223,11 +223,11 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
 
     std::optional<std::string> file_raised;
     auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_export += [&](const auto& filename)
+    auto token = window->on_route_export += [&](const auto& filename, const auto& is_rando)
     {
         file_raised = filename;
     };
@@ -248,7 +248,7 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 
     bool file_raised = false;
     auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_export += [&](const auto& filename)
+    auto token = window->on_route_export += [&](auto&&...)
     {
         file_raised = true;
     };
@@ -301,7 +301,7 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 TEST(RouteWindow, ExportSaveButtonSavesFile)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
 
     auto files = std::make_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
@@ -326,7 +326,7 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
 TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
     auto files = std::make_shared<MockFiles>();

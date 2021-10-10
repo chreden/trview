@@ -279,6 +279,15 @@ namespace trview
                 auto& new_waypoint = route->waypoint(route->waypoints() - 1);
                 new_waypoint.set_notes(to_utf16(notes));
                 new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
+
+                if (type == IWaypoint::Type::RandoLocation)
+                {
+                    new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
+                    new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
+                    new_waypoint.set_is_in_room_space(waypoint["IsInRoomSpace"].get<bool>());
+                    new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
+                    new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
+                }
             }
 
             route->set_unsaved(false);
@@ -302,12 +311,11 @@ namespace trview
         return false;
     }
 
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export)
     {
         try
         {
-            // Find if there are any rando location - if so, we only export those.
-            if (is_randomizer_route(route))
+            if (rando_export)
             {
                 nlohmann::ordered_json json;
                 std::vector<nlohmann::ordered_json> waypoints;
@@ -343,7 +351,7 @@ namespace trview
                         {
                             waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
                         }
-                        
+
                         waypoints.push_back(waypoint_json);
                     }
                 }
@@ -380,6 +388,15 @@ namespace trview
                     if (waypoint.has_save())
                     {
                         waypoint_json["save"] = to_base64(waypoint.save_file());
+                    }
+
+                    if (waypoint.type() == IWaypoint::Type::RandoLocation)
+                    {
+                        waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+                        waypoint_json["Difficulty"] = waypoint.difficulty();
+                        waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
+                        waypoint_json["IsItem"] = waypoint.is_item();
+                        waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
                     }
 
                     waypoints.push_back(waypoint_json);
