@@ -512,7 +512,6 @@ namespace trview
             _notes_area->set_visible(true);
             _lower_box->set_title(L"Notes");
 
-            // TODO: Show the normal panel, hide the rando panel.
             _notes_area->set_text(waypoint.notes());
 
             if (waypoint.has_save())
