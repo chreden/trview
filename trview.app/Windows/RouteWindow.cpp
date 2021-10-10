@@ -456,7 +456,7 @@ namespace trview
         _selected_type = waypoint.type();
         _selected_index = index;
 
-        if (waypoint.type() != IWaypoint::Type::Position)
+        if (waypoint.type() == IWaypoint::Type::Entity || waypoint.type() == IWaypoint::Type::Trigger)
         {
             stats.push_back(make_item(L"Target Index", std::to_wstring(waypoint.index())));
             if (waypoint.type() == IWaypoint::Type::Entity)
