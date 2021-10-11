@@ -70,10 +70,6 @@ namespace trview
         /// </summary>
         virtual uint32_t index() const = 0;
         /// <summary>
-        /// Whether the Randomizer 'is in room space' flag is set.
-        /// </summary>
-        virtual bool is_in_room_space() const = 0;
-        /// <summary>
         /// Whether the Randomizer 'is item' flag is set.
         /// </summary>
         virtual bool is_item() const = 0;
@@ -106,11 +102,6 @@ namespace trview
         /// </summary>
         /// <param name="value">The new difficulty value.</param>
         virtual void set_difficulty(const std::string& value) = 0;
-        /// <summary>
-        /// Set the Randomizer 'is in room space' flag.
-        /// </summary>
-        /// <param name="value">The new flag value.</param>
-        virtual void set_is_in_room_space(bool value) = 0;
         /// <summary>
         /// Set the Randomizer 'is item' flag.
         /// </summary>

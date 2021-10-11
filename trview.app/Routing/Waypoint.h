@@ -32,14 +32,12 @@ namespace trview
         virtual Type type() const override;
         virtual bool has_save() const override;
         virtual uint32_t index() const override;
-        virtual bool is_in_room_space() const override;
         virtual bool is_item() const override;
         virtual std::wstring notes() const override;
         virtual uint32_t room() const override;
         virtual bool requires_glitch() const override;
         virtual std::vector<uint8_t> save_file() const override;
         virtual void set_difficulty(const std::string& value) override;
-        virtual void set_is_in_room_space(bool value) override;
         virtual void set_is_item(bool value) override;
         virtual void set_notes(const std::wstring& notes) override;
         virtual void set_requires_glitch(bool value) override;
@@ -66,7 +64,6 @@ namespace trview
         bool _visible{ true };
         bool _requires_glitch{ false };
         bool _vehicle_required{ false };
-        bool _is_in_room_space{ true };
         bool _is_item{ false };
         std::string _difficulty{ "Easy" };
     };    

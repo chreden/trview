@@ -35,7 +35,6 @@ namespace trview
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
-    const std::string RouteWindow::Names::is_in_room_space = "is_in_room_space";
     const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
     const std::string RouteWindow::Names::is_item = "is_item";
     const std::string RouteWindow::Names::difficulty = "difficulty";
@@ -343,16 +342,6 @@ namespace trview
                 _route->set_unsaved(true);
             }
         };
-        _is_in_room_space = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
-        _is_in_room_space->set_name(Names::is_in_room_space);
-        _token_store += _is_in_room_space->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_is_in_room_space(state);
-                _route->set_unsaved(true);
-            }
-        };
         _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
         _vehicle_required->set_name(Names::vehicle_required);
         _token_store += _vehicle_required->on_state_changed += [&](bool state)
@@ -502,7 +491,6 @@ namespace trview
 
             _requires_glitch->set_state(waypoint.requires_glitch());
             _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
-            _is_in_room_space->set_state(waypoint.is_in_room_space());
             _vehicle_required->set_state(waypoint.vehicle_required());
             _is_item->set_state(waypoint.is_item());
         }

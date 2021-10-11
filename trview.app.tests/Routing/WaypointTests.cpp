@@ -31,14 +31,6 @@ TEST(Waypoint, EmptySave)
     ASSERT_FALSE(waypoint.has_save());
 }
 
-TEST(Waypoint, IsInRoomSpace)
-{
-    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);
-    ASSERT_TRUE(waypoint.is_in_room_space());
-    waypoint.set_is_in_room_space(false);
-    ASSERT_FALSE(waypoint.is_in_room_space());
-}
-
 TEST(Waypoint, IsItem)
 {
     Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);

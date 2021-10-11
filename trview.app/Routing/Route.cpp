@@ -284,7 +284,6 @@ namespace trview
                 {
                     new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
                     new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
-                    new_waypoint.set_is_in_room_space(waypoint["IsInRoomSpace"].get<bool>());
                     new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
                     new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
                 }
@@ -339,10 +338,6 @@ namespace trview
                         {
                             waypoint_json["Difficulty"] = waypoint.difficulty();
                         }
-                        if (!waypoint.is_in_room_space())
-                        {
-                            waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
-                        }
                         if (waypoint.is_item())
                         {
                             waypoint_json["IsItem"] = waypoint.is_item();
@@ -394,7 +389,6 @@ namespace trview
                     {
                         waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
                         waypoint_json["Difficulty"] = waypoint.difficulty();
-                        waypoint_json["IsInRoomSpace"] = waypoint.is_in_room_space();
                         waypoint_json["IsItem"] = waypoint.is_item();
                         waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
                     }

@@ -152,11 +152,6 @@ namespace trview
         return _difficulty;
     }
 
-    bool Waypoint::is_in_room_space() const
-    {
-        return _is_in_room_space;
-    }
-
     bool Waypoint::is_item() const
     {
         return _is_item;
@@ -175,11 +170,6 @@ namespace trview
     void Waypoint::set_difficulty(const std::string& value)
     {
         _difficulty = value;
-    }
-
-    void Waypoint::set_is_in_room_space(bool value)
-    {
-        _is_in_room_space = value;
     }
 
     void Waypoint::set_is_item(bool value)

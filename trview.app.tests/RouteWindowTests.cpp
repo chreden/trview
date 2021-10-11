@@ -494,28 +494,6 @@ TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
     requires_glitch->clicked(Point());
 }
 
-TEST(RouteWindow, IsInRoomSpaceSetsRouteUnsaved)
-{
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, is_in_room_space).Times(AtLeast(1)).WillRepeatedly(Return(false));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_is_in_room_space(true)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_route(&route);
-
-    auto is_in_room_space = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_in_room_space);
-    ASSERT_NE(is_in_room_space, nullptr);
-    ASSERT_TRUE(is_in_room_space->visible(true));
-
-    is_in_room_space->clicked(Point());
-}
-
 TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
 {
     MockWaypoint waypoint;
