@@ -285,7 +285,20 @@ namespace trview
             route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::RandoLocation, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
-            new_waypoint.set_difficulty(read_attribute<std::string>(location, "Difficulty", "Easy"));
+            
+            if (location.count("Difficulty") > 0)
+            {
+                if (location["Difficulty"].is_number())
+                {
+                    int difficulty = read_attribute<int>(location, "Difficulty");
+                    new_waypoint.set_difficulty(difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
+                }
+                else
+                {
+                    new_waypoint.set_difficulty(read_attribute<std::string>(location, "Difficulty", "Easy"));
+                }
+            }
+
             new_waypoint.set_is_item(read_attribute<bool>(location, "IsItem", false));
             new_waypoint.set_vehicle_required(read_attribute<bool>(location, "VehicleRequired", false));
         }
@@ -351,8 +364,9 @@ namespace trview
             
             return import_trview_route(route_source, data.value());
         }
-        catch (std::exception&)
+        catch (std::exception& e)
         {
+            MessageBoxA(0, e.what(), "Error", MB_OK);
             return nullptr;
         }
     }
