@@ -357,9 +357,31 @@ namespace trview
         }
     }
 
+    nlohmann::ordered_json try_load_route(std::shared_ptr<IFiles>& files, const std::string& route_filename)
+    {
+        try
+        {
+            auto data = files->load_file(route_filename);
+            if (!data.has_value())
+            {
+                return nlohmann::ordered_json();
+            }
+
+            const auto data_bytes = data.value();
+            return nlohmann::ordered_json::parse(data_bytes.begin(), data_bytes.end());
+        }
+        catch(...)
+        {
+        }
+        
+        return nlohmann::ordered_json();
+    }
+
     void export_randomizer_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
     {
-        nlohmann::ordered_json json;
+        // Try to load the existing route
+        nlohmann::ordered_json json = try_load_route(files, route_filename);
+
         std::vector<nlohmann::ordered_json> waypoints;
         for (uint32_t i = 0; i < route.waypoints(); ++i)
         {
