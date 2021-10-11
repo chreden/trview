@@ -310,94 +310,104 @@ namespace trview
         return false;
     }
 
+    void export_randomizer_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
+    {
+        nlohmann::ordered_json json;
+        std::vector<nlohmann::ordered_json> waypoints;
+        for (uint32_t i = 0; i < route.waypoints(); ++i)
+        {
+            const IWaypoint& waypoint = route.waypoint(i);
+            nlohmann::ordered_json waypoint_json;
+
+            if (waypoint.type() == IWaypoint::Type::RandoLocation)
+            {
+                auto pos = waypoint.position();
+                waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+                waypoint_json["Room"] = waypoint.room();
+                if (waypoint.requires_glitch())
+                {
+                    waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+                }
+                if (waypoint.difficulty() != "Easy")
+                {
+                    waypoint_json["Difficulty"] = waypoint.difficulty();
+                }
+                if (waypoint.is_item())
+                {
+                    waypoint_json["IsItem"] = waypoint.is_item();
+                }
+                if (waypoint.vehicle_required())
+                {
+                    waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+                }
+
+                waypoints.push_back(waypoint_json);
+            }
+        }
+
+        auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
+        json[trimmed] = waypoints;
+        files->save_file(route_filename, json.dump(1, '\t'));
+    }
+
+    void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename)
+    {
+        nlohmann::json json;
+        json["colour"] = to_utf8(route.colour().name());
+
+        std::vector<nlohmann::json> waypoints;
+
+        for (uint32_t i = 0; i < route.waypoints(); ++i)
+        {
+            const IWaypoint& waypoint = route.waypoint(i);
+            nlohmann::json waypoint_json;
+            waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
+
+            std::stringstream pos_string;
+            auto pos = waypoint.position();
+            pos_string << pos.x << "," << pos.y << "," << pos.z;
+            waypoint_json["position"] = pos_string.str();
+            std::stringstream normal_string;
+            auto normal = waypoint.normal();
+            normal_string << normal.x << "," << normal.y << "," << normal.z;
+            waypoint_json["normal"] = normal_string.str();
+            waypoint_json["room"] = waypoint.room();
+            waypoint_json["index"] = waypoint.index();
+            waypoint_json["notes"] = to_utf8(waypoint.notes());
+
+            if (waypoint.has_save())
+            {
+                waypoint_json["save"] = to_base64(waypoint.save_file());
+            }
+
+            if (waypoint.type() == IWaypoint::Type::RandoLocation)
+            {
+                waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+                waypoint_json["Difficulty"] = waypoint.difficulty();
+                waypoint_json["IsItem"] = waypoint.is_item();
+                waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+            }
+
+            waypoints.push_back(waypoint_json);
+        }
+
+        json["waypoints"] = waypoints;
+        files->save_file(route_filename, json.dump());
+    }
+
     void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export)
     {
         try
         {
             if (rando_export)
             {
-                nlohmann::ordered_json json;
-                std::vector<nlohmann::ordered_json> waypoints;
-                for (uint32_t i = 0; i < route.waypoints(); ++i)
-                {
-                    const IWaypoint& waypoint = route.waypoint(i);
-                    nlohmann::ordered_json waypoint_json;
-
-                    if (waypoint.type() == IWaypoint::Type::RandoLocation)
-                    {
-                        auto pos = waypoint.position();
-                        waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-                        waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
-                        waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
-                        waypoint_json["Room"] = waypoint.room();
-                        if (waypoint.requires_glitch())
-                        {
-                            waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                        }
-                        if (waypoint.difficulty() != "Easy")
-                        {
-                            waypoint_json["Difficulty"] = waypoint.difficulty();
-                        }
-                        if (waypoint.is_item())
-                        {
-                            waypoint_json["IsItem"] = waypoint.is_item();
-                        }
-                        if (waypoint.vehicle_required())
-                        {
-                            waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-                        }
-
-                        waypoints.push_back(waypoint_json);
-                    }
-                }
-
-                auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
-                json[trimmed] = waypoints;
-                files->save_file(route_filename, json.dump(1, '\t'));
+                export_randomizer_route(route, files, route_filename, level_filename);
             }
             else
             {
-                nlohmann::json json;
-                json["colour"] = to_utf8(route.colour().name());
-
-                std::vector<nlohmann::json> waypoints;
-
-                for (uint32_t i = 0; i < route.waypoints(); ++i)
-                {
-                    const IWaypoint& waypoint = route.waypoint(i);
-                    nlohmann::json waypoint_json;
-                    waypoint_json["type"] = to_utf8(waypoint_type_to_string(waypoint.type()));
-
-                    std::stringstream pos_string;
-                    auto pos = waypoint.position();
-                    pos_string << pos.x << "," << pos.y << "," << pos.z;
-                    waypoint_json["position"] = pos_string.str();
-                    std::stringstream normal_string;
-                    auto normal = waypoint.normal();
-                    normal_string << normal.x << "," << normal.y << "," << normal.z;
-                    waypoint_json["normal"] = normal_string.str();
-                    waypoint_json["room"] = waypoint.room();
-                    waypoint_json["index"] = waypoint.index();
-                    waypoint_json["notes"] = to_utf8(waypoint.notes());
-
-                    if (waypoint.has_save())
-                    {
-                        waypoint_json["save"] = to_base64(waypoint.save_file());
-                    }
-
-                    if (waypoint.type() == IWaypoint::Type::RandoLocation)
-                    {
-                        waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                        waypoint_json["Difficulty"] = waypoint.difficulty();
-                        waypoint_json["IsItem"] = waypoint.is_item();
-                        waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-                    }
-
-                    waypoints.push_back(waypoint_json);
-                }
-
-                json["waypoints"] = waypoints;
-                files->save_file(route_filename, json.dump());
+                export_trview_route(route, files, route_filename);
             }
         }
         catch (...)
