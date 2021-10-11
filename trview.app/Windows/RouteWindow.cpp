@@ -5,6 +5,8 @@
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include <trview.ui/Label.h>
+#include <trview.ui/Layouts/GridLayout.h>
 
 namespace trview
 {
@@ -32,6 +34,11 @@ namespace trview
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
+    const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
+    const std::string RouteWindow::Names::is_in_room_space = "is_in_room_space";
+    const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
+    const std::string RouteWindow::Names::is_item = "is_item";
+    const std::string RouteWindow::Names::difficulty = "difficulty";
 
     namespace Colours
     {
@@ -116,7 +123,7 @@ namespace trview
         import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
-            const auto filename = _dialogs->open_file(L"Import route", L"trview route", { L"*.tvr" }, OFN_FILEMUSTEXIST);
+            const auto filename = _dialogs->open_file(L"Import route", { { L"trview route", { L"*.tvr" } } }, OFN_FILEMUSTEXIST);
             if (filename.has_value())
             {
                 on_route_import(filename.value());
@@ -126,10 +133,19 @@ namespace trview
         export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            const auto filename = _dialogs->save_file(L"Export route", L"trview route", { L"*.tvr" });
+            std::vector<IDialogs::FileFilter> filters
+            {
+                { L"trview route", { L"*.tvr" } }
+            };
+            if (has_randomizer_elements())
+            {
+                filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+            }
+
+            const auto filename = _dialogs->save_file(L"Export route", filters);
             if (filename.has_value())
             {
-                on_route_export(filename.value());
+                on_route_export(filename.value().filename, filename.value().filter_index == 2);
             }
         };
         auto _buttons = left_panel->add_child(std::move(buttons));
@@ -220,7 +236,7 @@ namespace trview
 
             if (!_route->waypoint(_selected_index).has_save())
             {
-                const auto filename = _dialogs->open_file(L"Select Save", L"Savegame File", { L"*.*" }, OFN_FILEMUSTEXIST);
+                const auto filename = _dialogs->open_file(L"Select Save", { { L"Savegame File", { L"*.*" } } }, OFN_FILEMUSTEXIST);
                 if (filename.has_value())
                 {
                     // Load bytes from file.
@@ -242,12 +258,12 @@ namespace trview
             }
             else
             {
-                const auto filename = _dialogs->save_file(L"Export Save", L"Savegame File", { L"*.*" });
+                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } });
                 if (filename.has_value())
                 {
                     try
                     {
-                        _files->save_file(filename.value(), _route->waypoint(_selected_index).save_file());
+                        _files->save_file(filename.value().filename, _route->waypoint(_selected_index).save_file());
                     }
                     catch (...)
                     {
@@ -293,8 +309,8 @@ namespace trview
 
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
         // Notes area.
-        auto notes_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = notes_box->add_child(std::move(std::make_unique<TextArea>(Size(panel_width - 20, notes_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f))));
+        _lower_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
+        _notes_area = _lower_box->add_child(std::make_unique<TextArea>(Size(panel_width - 20, _lower_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
         _notes_area->set_name(Names::notes_area);
         _notes_area->set_scrollbar_visible(true);
 
@@ -307,6 +323,66 @@ namespace trview
                     _route->waypoint(_selected_index).set_notes(text);
                     _route->set_unsaved(true);
                 }
+            }
+        };
+
+        _rando_area = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
+        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
+        _rando_area->set_visible(false);
+
+        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
+        grid->set_layout(std::make_unique<GridLayout>(2, 2));
+
+        _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
+        _requires_glitch->set_name(Names::requires_glitch);
+        _token_store += _requires_glitch->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_requires_glitch(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _is_in_room_space = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
+        _is_in_room_space->set_name(Names::is_in_room_space);
+        _token_store += _is_in_room_space->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_is_in_room_space(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
+        _vehicle_required->set_name(Names::vehicle_required);
+        _token_store += _vehicle_required->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_vehicle_required(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
+        _is_item->set_name(Names::is_item);
+        _token_store += _is_item->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_is_item(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
+        _difficulty->set_name(Names::difficulty);
+        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
+        _difficulty->set_dropdown_scope(_ui.get());
+        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
+                _route->set_unsaved(true);
             }
         };
 
@@ -379,6 +455,7 @@ namespace trview
             return waypoint.position();
         };
 
+        
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"Type", waypoint_type_to_string(waypoint.type())));
         stats.push_back(make_item(L"Position", pos_to_string(waypoint.position())));
@@ -388,7 +465,7 @@ namespace trview
         _selected_type = waypoint.type();
         _selected_index = index;
 
-        if (waypoint.type() != IWaypoint::Type::Position)
+        if (waypoint.type() == IWaypoint::Type::Entity || waypoint.type() == IWaypoint::Type::Trigger)
         {
             stats.push_back(make_item(L"Target Index", std::to_wstring(waypoint.index())));
             if (waypoint.type() == IWaypoint::Type::Entity)
@@ -416,15 +493,35 @@ namespace trview
 
         _stats->set_items(stats);
 
-        _notes_area->set_text(waypoint.notes());
-
-        if (waypoint.has_save())
+        // Handling for randomizer features:
+        if (waypoint.type() == IWaypoint::Type::RandoLocation)
         {
-            _select_save->set_text(L"SAVEGAME.0");
+            _rando_area->set_visible(true);
+            _notes_area->set_visible(false);
+            _lower_box->set_title(L"Randomizer");
+
+            _requires_glitch->set_state(waypoint.requires_glitch());
+            _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
+            _is_in_room_space->set_state(waypoint.is_in_room_space());
+            _vehicle_required->set_state(waypoint.vehicle_required());
+            _is_item->set_state(waypoint.is_item());
         }
         else
         {
-            _select_save->set_text(L"Attach Save");
+            _rando_area->set_visible(false);
+            _notes_area->set_visible(true);
+            _lower_box->set_title(L"Notes");
+
+            _notes_area->set_text(waypoint.notes());
+
+            if (waypoint.has_save())
+            {
+                _select_save->set_text(L"SAVEGAME.0");
+            }
+            else
+            {
+                _select_save->set_text(L"Attach Save");
+            }
         }
     }
 
@@ -469,5 +566,22 @@ namespace trview
     void RouteWindow::update(float delta)
     {
         _ui->update(delta);
+    }
+
+    bool RouteWindow::has_randomizer_elements() const
+    {
+        if (!_route)
+        {
+            return false;
+        }
+
+        for (auto i = 0u; i < _route->waypoints(); ++i)
+        {
+            if (_route->waypoint(i).type() == IWaypoint::Type::RandoLocation)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

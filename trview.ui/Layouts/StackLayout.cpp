@@ -19,6 +19,7 @@ namespace trview
                 _token_store += child->on_size_changed += [&](auto) { recalculate_layout(); };
                 recalculate_layout();
             };
+            _token_store += control.on_remove_child += [&](auto&&...) { recalculate_layout(); };
         }
 
         Point StackLayout::get_next_position() const

@@ -39,6 +39,7 @@ namespace trview
             rooms_startup == other.rooms_startup &&
             camera_acceleration == other.camera_acceleration &&
             camera_display_degrees == other.camera_display_degrees &&
+            randomizer_tools == other.randomizer_tools &&
             recent_files == other.recent_files;
     }
 }

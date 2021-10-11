@@ -101,6 +101,7 @@ namespace trview
         _context_menu->on_remove_waypoint += on_remove_waypoint;
         _context_menu->on_orbit_here += on_orbit;
         _context_menu->on_hide += on_hide;
+        _context_menu->on_rando_location += on_rando_location;
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
@@ -171,6 +172,11 @@ namespace trview
         _token_store += _settings_window->on_camera_display_degrees += [&](bool value)
         {
             _settings.camera_display_degrees = value;
+            on_settings(_settings);
+        };
+        _token_store += _settings_window->on_randomizer_tools += [&](bool value)
+        {
+            _settings.randomizer_tools = value;
             on_settings(_settings);
         };
 
@@ -420,7 +426,9 @@ namespace trview
         _settings_window->set_camera_acceleration(settings.camera_acceleration);
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
         _settings_window->set_camera_display_degrees(settings.camera_display_degrees);
+        _settings_window->set_randomizer_tools(settings.randomizer_tools);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
+        _context_menu->set_randomizer_tools(settings.randomizer_tools);
     }
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)

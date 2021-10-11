@@ -38,6 +38,7 @@ namespace trview
         virtual void set_sensitivity(float value) override;
         virtual void set_invert_vertical_pan(bool value) override;
         virtual void set_camera_display_degrees(bool value) override;
+        virtual void set_randomizer_tools(bool value) override;
         virtual void toggle_visibility() override;
     private:
         ui::Checkbox* _vsync{ nullptr };
@@ -54,6 +55,7 @@ namespace trview
         ui::Checkbox* _acceleration{ nullptr };
         ui::Slider* _acceleration_rate{ nullptr };
         ui::Checkbox* _camera_display_degrees{ nullptr };
+        ui::Checkbox* _randomizer_tools{ nullptr };
         TokenStore _token_store;
     };
 }

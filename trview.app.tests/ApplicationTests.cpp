@@ -431,7 +431,7 @@ TEST(Application, ExportRouteSavesFile)
         .with_route_source([&](auto&&...) {return route; })
         .with_files(files).build();
 
-    route_window_manager.on_route_export("filename");
+    route_window_manager.on_route_export("filename", false);
 }
 
 TEST(Application, ImportRouteLoadsFile)

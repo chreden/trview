@@ -64,6 +64,10 @@ namespace trview
         /// </summary>
         Event<bool> on_camera_display_degrees;
         /// <summary>
+        /// Event raised when the 'randomizer tools' setting has been changed. The new setting is passed as the parameter.
+        /// </summary>
+        Event<bool> on_randomizer_tools;
+        /// <summary>
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// </summary>
         /// <param name="value">The new vsync setting.</param>
@@ -132,6 +136,12 @@ namespace trview
         /// <remarks>This will not raise the on_camera_display_degrees event.</remarks>
         /// <param name="value">The new setting value.</param>
         virtual void set_camera_display_degrees(bool value) = 0;
+        /// <summary>
+        /// Set the value of randomizer tools.
+        /// </summary>
+        /// <remarks>This will not raise the on_randomimzer_tools event.</remarks>
+        /// <param name="value">The new setting value.</param>
+        virtual void set_randomizer_tools(bool value) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

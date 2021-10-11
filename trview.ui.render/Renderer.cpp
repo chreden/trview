@@ -80,10 +80,15 @@ namespace trview
                 }
 
                 auto* node_ptr = node.get();
-                node_ptr->_token_store += control->on_hierarchy_changed += [this, control, node_ptr]()
+                // Note: There is a strange bug where if these two statements are inside the same callback then
+                // the callback isn't raised at all.
+                node_ptr->_token_store += control->on_hierarchy_changed += [this]()
+                {
+                    _hierarchy_changed = true;
+                };
+                node_ptr->_token_store += control->on_hierarchy_changed += [node_ptr]()
                 {
                     node_ptr->set_hierarchy_changed(true);
-                    _hierarchy_changed = true;
                 };
 
                 return node;

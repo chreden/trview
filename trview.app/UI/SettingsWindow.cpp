@@ -72,6 +72,10 @@ namespace trview
         _camera_display_degrees->set_name("CameraDisplayDegrees");
         _camera_display_degrees->on_state_changed += on_camera_display_degrees;
 
+        _randomizer_tools = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Enable Randomizer Tools"));
+        _randomizer_tools->set_name("RandomizerTools");
+        _randomizer_tools->on_state_changed += on_randomizer_tools;
+
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
         auto camera_panel = camera_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
         camera_panel->set_layout(std::make_unique<GridLayout>(2, 2));
@@ -186,5 +190,10 @@ namespace trview
     void SettingsWindow::set_camera_display_degrees(bool value)
     {
         _camera_display_degrees->set_state(value);
+    }
+
+    void SettingsWindow::set_randomizer_tools(bool value)
+    {
+        _randomizer_tools->set_state(value);
     }
 }

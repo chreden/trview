@@ -16,6 +16,18 @@ namespace trview
             Yes_No
         };
 
+        struct SaveFileResult
+        {
+            std::string filename;
+            int filter_index;
+        };
+
+        struct FileFilter
+        {
+            std::wstring name;
+            std::vector<std::wstring> file_types;
+        };
+
         virtual ~IDialogs() = 0;
         /// <summary>
         /// Show a modal message box.
@@ -30,18 +42,16 @@ namespace trview
         /// Prompt the user to select a file to open.
         /// </summary>
         /// <param name="title">The title of the dialog box.</param>
-        /// <param name="filter">The display text for the file filters.</param>
-        /// <param name="file_types">The file types to allow.</param>
+        /// <param name="filters">The filters to use.</param>
         /// <param name="flags">The flags for the dialog.</param>
         /// <returns>The filename if one was selected or an empty optional.</returns>
-        virtual std::optional<std::string> open_file(const std::wstring& title, const std::wstring& filter, const std::vector<std::wstring>& file_types, uint32_t flags) const = 0;
+        virtual std::optional<std::string> open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const = 0;
         /// <summary>
         /// Prompt the user to select a file to save.
         /// </summary>
         /// <param name="title">The title of the dialog box.</param>
-        /// <param name="filter">The display text for the file filters.</param>
-        /// <param name="file_types">The file types to allow.</param>
-        /// <returns>The filename if one was selected or an empty optional.</returns>
-        virtual std::optional<std::string> save_file(const std::wstring& title, const std::wstring& filter, const std::vector<std::wstring>& file_types) const = 0;
+        /// <param name="filters">The file filters to apply.</param>
+        /// <returns>The save file result if one was selected or an empty optional.</returns>
+        virtual std::optional<SaveFileResult> save_file(const std::wstring& title, const std::vector<FileFilter>& filters) const = 0;
     };
 }

@@ -4,6 +4,8 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/TextArea.h>
 #include <trview.ui/Dropdown.h>
+#include <trview.ui/Checkbox.h>
+#include <trview.ui/GroupBox.h>
 #include "CollapsiblePanel.h"
 #include <trview.common/Event.h>
 #include <trview.app/Routing/IWaypoint.h>
@@ -30,6 +32,11 @@ namespace trview
             static const std::string notes_area;
             static const std::string select_save_button;
             static const std::string waypoint_stats;
+            static const std::string requires_glitch;
+            static const std::string is_in_room_space;
+            static const std::string vehicle_required;
+            static const std::string is_item;
+            static const std::string difficulty;
         };
 
         /// Create a route window as a child of the specified window.
@@ -53,10 +60,12 @@ namespace trview
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
+        bool has_randomizer_elements() const;
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
+        ui::GroupBox* _lower_box;
         ui::TextArea* _notes_area;
         ui::Button* _select_save;
         ui::Button* _delete_waypoint;
@@ -71,5 +80,13 @@ namespace trview
         std::shared_ptr<IDialogs> _dialogs;
         std::shared_ptr<IFiles> _files;
         std::unique_ptr<IBubble> _bubble;
+
+        // Randomizer settings:
+        ui::Window* _rando_area;
+        ui::Checkbox* _requires_glitch;
+        ui::Checkbox* _is_in_room_space;
+        ui::Checkbox* _vehicle_required;
+        ui::Checkbox* _is_item;
+        ui::Dropdown* _difficulty;
     };
 }
