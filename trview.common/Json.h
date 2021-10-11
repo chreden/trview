@@ -11,6 +11,9 @@ namespace trview
     T read_attribute(const nlohmann::json& json, const std::string& attribute_name);
 
     template <typename T>
+    T read_attribute(const nlohmann::json& json, const std::string& attribute_name, const T& default_value);
+
+    template <typename T>
     void read_attribute(const nlohmann::json& json, T& destination, const std::string& attribute_name);
 }
 

@@ -27,7 +27,7 @@ namespace trview
         Event<Colour> on_colour_changed;
 
         /// Event raised when a route file is opened.
-        Event<std::string> on_route_import;
+        Event<std::string, bool> on_route_import;
 
         /// Event raised when a route is exported.
         Event<std::string, bool> on_route_export;
@@ -66,6 +66,11 @@ namespace trview
         /// </summary>
         /// <param name="delta">Elapsed time since previous update.</param>
         virtual void update(float delta) = 0;
+        /// <summary>
+        /// Set whether randomizer integration is enabled.
+        /// </summary>
+        /// <param name="value">Whether randomizer integration is enabled.</param>
+        virtual void set_randomizer_enabled(bool value) = 0;
     };
 }
 

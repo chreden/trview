@@ -2,6 +2,8 @@
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Maths.h>
+#include <trview.common/Json.h>
+#include <trview.app/Elements/ILevel.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -245,69 +247,114 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& filename)
+    std::shared_ptr<IRoute> import_rando_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const ILevel* const level)
+    {
+        if (!level)
+        {
+            return nullptr;
+        }
+
+        auto json = nlohmann::ordered_json::parse(data.begin(), data.end());
+        auto route = route_source();
+
+        const auto level_filename = level->filename();
+        auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
+        for (const auto& location : json[trimmed])
+        {
+            int x = location["X"];
+            int y = location["Y"];
+            int z = location["Z"];
+            int room_number = location["Room"];
+
+            // If the room space attribute is missing or it is true then the coordinate must be transformed.
+            if (location.count("IsInRoomSpace") == 0 || read_attribute<bool>(location, "IsInRoomSpace"))
+            {
+                if (room_number >= level->number_of_rooms())
+                {
+                    // Abandon adding this waypoint.
+                    continue;
+                }
+
+                // Adjust coordinates by room position.
+                auto room = level->room(room_number).lock();
+                x += room->info().x;
+                z += room->info().z;
+                y = room->info().yBottom - y;
+            }
+
+            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::RandoLocation, 0);
+            auto& new_waypoint = route->waypoint(route->waypoints() - 1);
+            new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
+            new_waypoint.set_difficulty(read_attribute<std::string>(location, "Difficulty", "Easy"));
+            new_waypoint.set_is_item(read_attribute<bool>(location, "IsItem", false));
+            new_waypoint.set_vehicle_required(read_attribute<bool>(location, "VehicleRequired", false));
+        }
+
+        route->set_unsaved(false);
+        return route;
+    }
+
+    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
+    {
+        auto json = nlohmann::json::parse(data.begin(), data.end());
+
+        auto route = route_source();
+        if (json["colour"].is_string())
+        {
+            route->set_colour(named_colour(to_utf16(json["colour"].get<std::string>())));
+        }
+
+        for (const auto& waypoint : json["waypoints"])
+        {
+            auto type_string = waypoint["type"].get<std::string>();
+            IWaypoint::Type type = waypoint_type_from_string(type_string);
+            Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
+            Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
+
+            auto room = waypoint["room"].get<int>();
+            auto index = waypoint["index"].get<int>();
+            auto notes = waypoint["notes"].get<std::string>();
+
+            route->add(position, normal, room, type, index);
+
+            auto& new_waypoint = route->waypoint(route->waypoints() - 1);
+            new_waypoint.set_notes(to_utf16(notes));
+            new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
+
+            if (type == IWaypoint::Type::RandoLocation)
+            {
+                new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
+                new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
+                new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
+                new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
+            }
+        }
+
+        route->set_unsaved(false);
+        return route;
+    }
+
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, bool rando_import)
     {
         try
         {
-            auto data = files->load_file(filename);
+            auto data = files->load_file(route_filename);
             if (!data.has_value())
             {
                 return nullptr;
             }
 
-            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
-
-            auto route = route_source();
-            if (json["colour"].is_string())
+            if (rando_import)
             {
-                route->set_colour(named_colour(to_utf16(json["colour"].get<std::string>())));
+                return import_rando_route(route_source, data.value(), level);
             }
-
-            for (const auto& waypoint : json["waypoints"])
-            {
-                auto type_string = waypoint["type"].get<std::string>();
-                IWaypoint::Type type = waypoint_type_from_string(type_string);
-                Vector3 position = load_vector3(waypoint, "position", Vector3::Zero);
-                Vector3 normal = load_vector3(waypoint, "normal", Vector3::Down);
-
-                auto room = waypoint["room"].get<int>();
-                auto index = waypoint["index"].get<int>();
-                auto notes = waypoint["notes"].get<std::string>();
-
-                route->add(position, normal, room, type, index);
-
-                auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-                new_waypoint.set_notes(to_utf16(notes));
-                new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
-
-                if (type == IWaypoint::Type::RandoLocation)
-                {
-                    new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
-                    new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
-                    new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
-                    new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
-                }
-            }
-
-            route->set_unsaved(false);
-            return route;
+            
+            return import_trview_route(route_source, data.value());
         }
         catch (std::exception&)
         {
             return nullptr;
         }
-    }
-
-    bool is_randomizer_route(const IRoute& route) 
-    {
-        for (uint32_t i = 0; i < route.waypoints(); ++i)
-        {
-            if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     void export_randomizer_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
@@ -342,6 +389,7 @@ namespace trview
                 {
                     waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
                 }
+                waypoint_json["IsInRoomSpace"] = false;
 
                 waypoints.push_back(waypoint_json);
             }

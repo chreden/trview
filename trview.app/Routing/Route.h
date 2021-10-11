@@ -8,6 +8,8 @@
 
 namespace trview
 {
+    struct ILevel;
+
     /// A series of waypoints.
     class Route final : public IRoute
     {
@@ -45,6 +47,6 @@ namespace trview
         bool _is_unsaved{ false };
     };
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& filename);
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, bool rando_import);
     void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export);
 }

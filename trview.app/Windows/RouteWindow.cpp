@@ -122,21 +122,24 @@ namespace trview
         import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
-            const auto filename = _dialogs->open_file(L"Import route", { { L"trview route", { L"*.tvr" } } }, OFN_FILEMUSTEXIST);
+            std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+            if (_randomizer_enabled)
+            {
+                filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+            }
+
+            const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
             if (filename.has_value())
             {
-                on_route_import(filename.value());
+                on_route_import(filename.value().filename, filename.value().filter_index == 2);
             }
         };
         auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
         export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            std::vector<IDialogs::FileFilter> filters
-            {
-                { L"trview route", { L"*.tvr" } }
-            };
-            if (has_randomizer_elements())
+            std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
+            if (_randomizer_enabled)
             {
                 filters.push_back({ L"Randomizer Locations", { L"*.json" } });
             }
@@ -241,7 +244,7 @@ namespace trview
                     // Load bytes from file.
                     try
                     {
-                        const auto bytes = _files->load_file(filename.value());
+                        const auto bytes = _files->load_file(filename.value().filename);
                         if (bytes.has_value() && !bytes.value().empty())
                         {
                             _route->waypoint(_selected_index).set_save_file(bytes.value());
@@ -556,20 +559,8 @@ namespace trview
         _ui->update(delta);
     }
 
-    bool RouteWindow::has_randomizer_elements() const
+    void RouteWindow::set_randomizer_enabled(bool value)
     {
-        if (!_route)
-        {
-            return false;
-        }
-
-        for (auto i = 0u; i < _route->waypoints(); ++i)
-        {
-            if (_route->waypoint(i).type() == IWaypoint::Type::RandoLocation)
-            {
-                return true;
-            }
-        }
-        return false;
+        _randomizer_enabled = value;
     }
 }

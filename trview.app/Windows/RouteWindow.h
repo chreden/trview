@@ -54,12 +54,12 @@ namespace trview
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
         virtual void focus() override;
         virtual void update(float delta) override;
+        virtual void set_randomizer_enabled(bool value) override;
     private:
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
-        bool has_randomizer_elements() const;
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
@@ -86,5 +86,6 @@ namespace trview
         ui::Checkbox* _vehicle_required;
         ui::Checkbox* _is_item;
         ui::Dropdown* _difficulty;
+        bool _randomizer_enabled{ false };
     };
 }
