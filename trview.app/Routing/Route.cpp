@@ -266,8 +266,8 @@ namespace trview
             int z = location["Z"];
             int room_number = location["Room"];
 
-            // If the room space attribute is missing or it is true then the coordinate must be transformed.
-            if (location.count("IsInRoomSpace") == 0 || read_attribute<bool>(location, "IsInRoomSpace"))
+            // If the room space attribute is true then the coordinate must be transformed.
+            if (read_attribute<bool>(location, "IsInRoomSpace", false))
             {
                 if (room_number >= level->number_of_rooms())
                 {
@@ -406,8 +406,8 @@ namespace trview
             {
                 auto pos = waypoint.position();
                 waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
                 waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
                 waypoint_json["Room"] = waypoint.room();
                 if (waypoint.requires_glitch())
                 {
@@ -425,7 +425,6 @@ namespace trview
                 {
                     waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
                 }
-                waypoint_json["IsInRoomSpace"] = false;
 
                 waypoints.push_back(waypoint_json);
             }
