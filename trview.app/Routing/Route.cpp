@@ -285,7 +285,7 @@ namespace trview
             route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::RandoLocation, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
-            
+
             if (location.count("Difficulty") > 0)
             {
                 if (location["Difficulty"].is_number())
