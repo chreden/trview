@@ -1,10 +1,15 @@
 #include <trview.app/Routing/Route.h>
 #include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
+#include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
+#include <trview.tests.common/Mocks.h>
 
 using namespace trview;
 using namespace trview::mocks;
+using namespace trview::tests;
 using namespace DirectX::SimpleMath;
+using testing::Return;
 
 namespace
 {
@@ -14,6 +19,12 @@ namespace
         {
             std::unique_ptr<ISelectionRenderer> selection_renderer = std::make_unique<MockSelectionRenderer>();
             IWaypoint::Source waypoint_source = [](auto&&...) { return std::make_unique<MockWaypoint>(); };
+
+            test_module& with_selection_renderer(std::unique_ptr<ISelectionRenderer> selection_renderer)
+            {
+                this->selection_renderer = std::move(selection_renderer);
+                return *this;
+            }
 
             test_module& with_waypoint_source(IWaypoint::Source waypoint_source)
             {
@@ -225,4 +236,68 @@ TEST(Route, SelectedWaypointAdjustedByRemove)
     ASSERT_EQ(route->selected_waypoint(), 1);
     route->remove(1);
     ASSERT_EQ(route->selected_waypoint(), 0);
+}
+
+TEST(Route, Render)
+{
+    auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
+    EXPECT_CALL(selection_renderer, render).Times(1);
+
+    auto [w1_ptr, w1] = create_mock<MockWaypoint>();
+    auto [w2_ptr, w2] = create_mock<MockWaypoint>();
+    EXPECT_CALL(w1, render).Times(1);
+    EXPECT_CALL(w1, render_join).Times(1);
+    EXPECT_CALL(w2, render).Times(1);
+    EXPECT_CALL(w2, render_join).Times(0);
+
+    auto w1_ptr_actual = std::move(w1_ptr);
+    auto w2_ptr_actual = std::move(w2_ptr);
+    auto source = [&](auto&&...)
+    {
+        return w1_ptr_actual ? std::move(w1_ptr_actual) : w2_ptr_actual ? std::move(w2_ptr_actual) : nullptr;
+    };
+
+    auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).with_waypoint_source(source).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+ 
+    MockCamera camera;
+    MockLevelTextureStorage texture_storage;
+    route->render(camera, texture_storage);
+}
+
+TEST(Route, RenderDoesNotJoinRandoLocations)
+{
+    auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
+    EXPECT_CALL(selection_renderer, render).Times(1);
+
+    auto [w1_ptr, w1] = create_mock<MockWaypoint>();
+    auto [w2_ptr, w2] = create_mock<MockWaypoint>();
+    auto [w3_ptr, w3] = create_mock<MockWaypoint>();
+    EXPECT_CALL(w1, render).Times(1);
+    EXPECT_CALL(w1, render_join).Times(0);
+    EXPECT_CALL(w2, render).Times(1);
+    EXPECT_CALL(w2, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(w2, render_join).Times(0);
+    EXPECT_CALL(w3, render).Times(1);
+
+    auto w1_ptr_actual = std::move(w1_ptr);
+    auto w2_ptr_actual = std::move(w2_ptr);
+    auto w3_ptr_actual = std::move(w3_ptr);
+    auto source = [&](auto&&...) -> std::unique_ptr<IWaypoint>
+    {
+        if (w1_ptr_actual) { return std::move(w1_ptr_actual); }
+        else if (w2_ptr_actual) { return std::move(w2_ptr_actual); }
+        else if (w3_ptr_actual) { return std::move(w3_ptr_actual); }
+        return nullptr;
+    };
+
+    auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).with_waypoint_source(source).build();
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+    route->add(Vector3::Zero, Vector3::Down, 0);
+
+    MockCamera camera;
+    MockLevelTextureStorage texture_storage;
+    route->render(camera, texture_storage);
 }

@@ -181,7 +181,9 @@ namespace trview
             auto& waypoint = _waypoints[i];
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
 
-            if (i < _waypoints.size() - 1)
+            if (waypoint->type() != IWaypoint::Type::RandoLocation &&
+                i < _waypoints.size() - 1 &&
+                _waypoints[i + 1]->type() != IWaypoint::Type::RandoLocation)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
