@@ -26,6 +26,18 @@ namespace trview
         {
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
+
+        bool has_randomizer_elements(const IRoute& route)
+        {
+            for (uint32_t i = 0u; i < route.waypoints(); ++i)
+            {
+                if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     const std::string RouteWindow::Names::export_button = "export_button";
@@ -139,12 +151,17 @@ namespace trview
         _token_store += export_button->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
+            uint32_t filter_index = 1;
             if (_randomizer_enabled)
             {
                 filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                if (has_randomizer_elements(*_route))
+                {
+                    filter_index = 2;
+                }
             }
 
-            const auto filename = _dialogs->save_file(L"Export route", filters);
+            const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
             if (filename.has_value())
             {
                 on_route_export(filename.value().filename, filename.value().filter_index == 2);
@@ -260,7 +277,7 @@ namespace trview
             }
             else
             {
-                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } });
+                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
                 if (filename.has_value())
                 {
                     try

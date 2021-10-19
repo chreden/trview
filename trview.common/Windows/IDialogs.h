@@ -51,7 +51,8 @@ namespace trview
         /// </summary>
         /// <param name="title">The title of the dialog box.</param>
         /// <param name="filters">The file filters to apply.</param>
+        /// <param name="filter_index">The file filter to select by default.</param>
         /// <returns>The save file result if one was selected or an empty optional.</returns>
-        virtual std::optional<FileResult> save_file(const std::wstring& title, const std::vector<FileFilter>& filters) const = 0;
+        virtual std::optional<FileResult> save_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t filter_index) const = 0;
     };
 }

@@ -408,8 +408,8 @@ namespace trview
             {
                 auto pos = waypoint.position();
                 waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
                 waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
                 waypoint_json["Room"] = waypoint.room();
                 if (waypoint.requires_glitch())
                 {
@@ -434,7 +434,7 @@ namespace trview
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
         json[trimmed] = waypoints;
-        files->save_file(route_filename, json.dump(1, '\t'));
+        files->save_file(route_filename, json.dump(2, ' '));
     }
 
     void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename)

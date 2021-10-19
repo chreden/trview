@@ -90,7 +90,7 @@ namespace trview
         return {};
     }
 
-    std::optional<IDialogs::FileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters) const
+    std::optional<IDialogs::FileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t filter_index) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -106,6 +106,7 @@ namespace trview
         ofn.lpstrTitle = title.c_str();
         ofn.lpstrFile = path;
         ofn.lpstrDefExt = L"0";
+        ofn.nFilterIndex = filter_index;
 
         if (GetSaveFileName(&ofn))
         {
