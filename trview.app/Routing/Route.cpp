@@ -60,6 +60,21 @@ namespace trview
             }
             return Vector3(result[0], result[1], result[2]);
         }
+
+        nlohmann::ordered_json& find_element_case_insensitive(nlohmann::ordered_json& json, const std::string& target_key)
+        {
+            for (auto it = json.begin(); it != json.end(); ++it)
+            {
+                const auto& key = it.key();
+                if (key.size() == target_key.size() &&
+                    std::equal(key.begin(), key.end(), target_key.begin(),
+                        [](const auto& l, const auto& r) { return std::toupper(l) == std::toupper(r); }))
+                {
+                    return *it;
+                }
+            }
+            throw std::exception();
+        }
     }
 
     Route::Route(std::unique_ptr<ISelectionRenderer> selection_renderer, const IWaypoint::Source& waypoint_source)
@@ -261,7 +276,7 @@ namespace trview
 
         const auto level_filename = level->filename();
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
-        for (const auto& location : json[trimmed])
+        for (const auto& location : find_element_case_insensitive(json, trimmed))
         {
             int x = location["X"];
             int y = location["Y"];
@@ -433,6 +448,7 @@ namespace trview
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
+        std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(), ::toupper);
         json[trimmed] = waypoints;
         files->save_file(route_filename, json.dump(2, ' '));
     }
