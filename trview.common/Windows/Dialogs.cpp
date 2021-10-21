@@ -66,7 +66,7 @@ namespace trview
         return convert_response(MessageBox(window, message.c_str(), title.c_str(), convert_button(buttons)));
     }
 
-    std::optional<std::string> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const
+    std::optional<IDialogs::FileResult> Dialogs::open_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t flags) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -85,12 +85,12 @@ namespace trview
 
         if (GetOpenFileName(&ofn))
         {
-            return to_utf8(ofn.lpstrFile);
+            return IDialogs::FileResult{ trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
         }
         return {};
     }
 
-    std::optional<IDialogs::SaveFileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters) const
+    std::optional<IDialogs::FileResult> Dialogs::save_file(const std::wstring& title, const std::vector<FileFilter>& filters, uint32_t filter_index) const
     {
         OPENFILENAME ofn;
         memset(&ofn, 0, sizeof(ofn));
@@ -106,10 +106,11 @@ namespace trview
         ofn.lpstrTitle = title.c_str();
         ofn.lpstrFile = path;
         ofn.lpstrDefExt = L"0";
+        ofn.nFilterIndex = filter_index;
 
         if (GetSaveFileName(&ofn))
         {
-            return IDialogs::SaveFileResult { trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
+            return IDialogs::FileResult{ trview::to_utf8(ofn.lpstrFile), static_cast<int>(ofn.nFilterIndex) };
         }
         return {};
     }

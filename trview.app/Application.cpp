@@ -218,7 +218,7 @@ namespace trview
                         const auto filename = _dialogs->open_file(L"Open level", { { L"All Tomb Raider Files", { L"*.tr*", L"*.phd" } } }, OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
                         if (filename.has_value())
                         {
-                            open(filename.value());
+                            open(filename.value().filename);
                         }
                         break;
                     }
@@ -327,6 +327,7 @@ namespace trview
         {
             _settings = settings;
             _viewer->set_settings(_settings);
+            _route_window->set_randomizer_enabled(settings.randomizer_tools);
         };
         _viewer->set_settings(_settings);
 
@@ -388,9 +389,9 @@ namespace trview
         _token_store += _route_window->on_waypoint_selected += [&](auto index) { select_waypoint(index); };
         _token_store += _route_window->on_item_selected += [&](const auto& item) { select_item(item); };
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
-        _token_store += _route_window->on_route_import += [&](const std::string& path)
+        _token_store += _route_window->on_route_import += [&](const std::string& path, bool is_rando)
         {
-            auto route = import_route(_route_source, _files, path);
+            auto route = import_route(_route_source, _files, path, _level.get(), is_rando);
             if (route)
             {
                 _route = route;
@@ -409,6 +410,7 @@ namespace trview
             _route->set_colour(colour);
             _viewer->set_route(_route);
         };
+        _route_window->set_randomizer_enabled(_settings.randomizer_tools);
     }
 
     void Application::setup_shortcuts()

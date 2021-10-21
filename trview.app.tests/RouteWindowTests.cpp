@@ -223,7 +223,7 @@ TEST(RouteWindow, ClearSaveMarksRouteUnsaved)
 TEST(RouteWindow, ExportRouteButtonRaisesEvent)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
 
     std::optional<std::string> file_raised;
     auto window = register_test_module().with_dialogs(dialogs).build();
@@ -262,11 +262,11 @@ TEST(RouteWindow, ExportRouteButtonDoesNotRaiseEventWhenCancelled)
 TEST(RouteWindow, ImportRouteButtonRaisesEvent)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     std::optional<std::string> file_raised;
     auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_import += [&](const auto& filename)
+    auto token = window->on_route_import += [&](const auto& filename, bool is_rando)
     {
         file_raised = filename;
     };
@@ -287,7 +287,7 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 
     bool file_raised = false;
     auto window = register_test_module().with_dialogs(dialogs).build();
-    auto token = window->on_route_import += [&](const auto& filename)
+    auto token = window->on_route_import += [&](const auto& filename, bool is_rando)
     {
         file_raised = true;
     };
@@ -301,7 +301,7 @@ TEST(RouteWindow, ImportRouteButtonDoesNotRaiseEventWhenCancelled)
 TEST(RouteWindow, ExportSaveButtonSavesFile)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
 
     auto files = std::make_shared<MockFiles>();
     EXPECT_CALL(*files, save_file(An<const std::string&>(), An<const std::vector<uint8_t>&>())).Times(1);
@@ -326,7 +326,7 @@ TEST(RouteWindow, ExportSaveButtonSavesFile)
 TEST(RouteWindow, ExportSaveButtonShowsErrorOnFailure)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::SaveFileResult{ "filename", 0 }));
+    EXPECT_CALL(*dialogs, save_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename", 0 }));
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
     auto files = std::make_shared<MockFiles>();
@@ -375,7 +375,7 @@ TEST(RouteWindow, ExportSaveButtonDoesNotSaveFileWhenCancelled)
 TEST(RouteWindow, AttachSaveButtonLoadsSave)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
 
     auto files = std::make_shared<MockFiles>();
     EXPECT_CALL(*files, load_file).Times(1).WillRepeatedly(Return(std::vector<uint8_t>{ 0x1, 0x2 }));
@@ -400,7 +400,7 @@ TEST(RouteWindow, AttachSaveButtonLoadsSave)
 TEST(RouteWindow, AttachSaveButtonShowsMessageOnError)
 {
     auto dialogs = std::make_shared<MockDialogs>();
-    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return("filename"));
+    EXPECT_CALL(*dialogs, open_file).Times(1).WillRepeatedly(Return(IDialogs::FileResult{ "filename" }));
     EXPECT_CALL(*dialogs, message_box).Times(1);
 
     auto files = std::make_shared<MockFiles>();
@@ -492,28 +492,6 @@ TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
     ASSERT_TRUE(requires_glitch->visible(true));
 
     requires_glitch->clicked(Point());
-}
-
-TEST(RouteWindow, IsInRoomSpaceSetsRouteUnsaved)
-{
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, is_in_room_space).Times(AtLeast(1)).WillRepeatedly(Return(false));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_is_in_room_space(true)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_route(&route);
-
-    auto is_in_room_space = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_in_room_space);
-    ASSERT_NE(is_in_room_space, nullptr);
-    ASSERT_TRUE(is_in_room_space->visible(true));
-
-    is_in_room_space->clicked(Point());
 }
 
 TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)

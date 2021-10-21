@@ -26,6 +26,18 @@ namespace trview
         {
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
+
+        bool has_randomizer_elements(const IRoute& route)
+        {
+            for (uint32_t i = 0u; i < route.waypoints(); ++i)
+            {
+                if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     const std::string RouteWindow::Names::export_button = "export_button";
@@ -35,7 +47,6 @@ namespace trview
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
-    const std::string RouteWindow::Names::is_in_room_space = "is_in_room_space";
     const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
     const std::string RouteWindow::Names::is_item = "is_item";
     const std::string RouteWindow::Names::difficulty = "difficulty";
@@ -123,26 +134,34 @@ namespace trview
         import->set_name(Names::import_button);
         _token_store += import->on_click += [&]()
         {
-            const auto filename = _dialogs->open_file(L"Import route", { { L"trview route", { L"*.tvr" } } }, OFN_FILEMUSTEXIST);
+            std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
+            if (_randomizer_enabled)
+            {
+                filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+            }
+
+            const auto filename = _dialogs->open_file(L"Import route", filters, OFN_FILEMUSTEXIST);
             if (filename.has_value())
             {
-                on_route_import(filename.value());
+                on_route_import(filename.value().filename, filename.value().filter_index == 2);
             }
         };
         auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
         export_button->set_name(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            std::vector<IDialogs::FileFilter> filters
-            {
-                { L"trview route", { L"*.tvr" } }
-            };
-            if (has_randomizer_elements())
+            std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
+            uint32_t filter_index = 1;
+            if (_randomizer_enabled)
             {
                 filters.push_back({ L"Randomizer Locations", { L"*.json" } });
+                if (has_randomizer_elements(*_route))
+                {
+                    filter_index = 2;
+                }
             }
 
-            const auto filename = _dialogs->save_file(L"Export route", filters);
+            const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
             if (filename.has_value())
             {
                 on_route_export(filename.value().filename, filename.value().filter_index == 2);
@@ -242,7 +261,7 @@ namespace trview
                     // Load bytes from file.
                     try
                     {
-                        const auto bytes = _files->load_file(filename.value());
+                        const auto bytes = _files->load_file(filename.value().filename);
                         if (bytes.has_value() && !bytes.value().empty())
                         {
                             _route->waypoint(_selected_index).set_save_file(bytes.value());
@@ -258,7 +277,7 @@ namespace trview
             }
             else
             {
-                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } });
+                const auto filename = _dialogs->save_file(L"Export Save", { { L"Savegame File", { L"*.*" } } }, 1);
                 if (filename.has_value())
                 {
                     try
@@ -340,16 +359,6 @@ namespace trview
             if (_route && _selected_index < _route->waypoints())
             {
                 _route->waypoint(_selected_index).set_requires_glitch(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _is_in_room_space = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is In Room Space"));
-        _is_in_room_space->set_name(Names::is_in_room_space);
-        _token_store += _is_in_room_space->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_is_in_room_space(state);
                 _route->set_unsaved(true);
             }
         };
@@ -502,7 +511,6 @@ namespace trview
 
             _requires_glitch->set_state(waypoint.requires_glitch());
             _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
-            _is_in_room_space->set_state(waypoint.is_in_room_space());
             _vehicle_required->set_state(waypoint.vehicle_required());
             _is_item->set_state(waypoint.is_item());
         }
@@ -568,20 +576,8 @@ namespace trview
         _ui->update(delta);
     }
 
-    bool RouteWindow::has_randomizer_elements() const
+    void RouteWindow::set_randomizer_enabled(bool value)
     {
-        if (!_route)
-        {
-            return false;
-        }
-
-        for (auto i = 0u; i < _route->waypoints(); ++i)
-        {
-            if (_route->waypoint(i).type() == IWaypoint::Type::RandoLocation)
-            {
-                return true;
-            }
-        }
-        return false;
+        _randomizer_enabled = value;
     }
 }

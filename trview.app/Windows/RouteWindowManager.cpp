@@ -46,6 +46,7 @@ namespace trview
             _route_window->set_route(_route);
         }
         _route_window->select_waypoint(_selected_waypoint);
+        _route_window->set_randomizer_enabled(_randomizer_enabled);
     }
 
     void RouteWindowManager::render(bool vsync)
@@ -114,6 +115,15 @@ namespace trview
         if (_route_window)
         {
             _route_window->update(delta);
+        }
+    }
+
+    void RouteWindowManager::set_randomizer_enabled(bool value)
+    {
+        _randomizer_enabled = value;
+        if (_route_window)
+        {
+            _route_window->set_randomizer_enabled(value);
         }
     }
 }
