@@ -754,6 +754,7 @@ namespace trview
         {
             set_camera_mode(CameraMode::Orbit);
         }
+        _mover->set_position(waypoint.position());
         _scene_changed = true;
     }
 
