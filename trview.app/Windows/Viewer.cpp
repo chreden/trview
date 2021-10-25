@@ -16,11 +16,11 @@ namespace trview
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight)
+        std::unique_ptr<ISectorHighlight> sector_highlight, std::unique_ptr<IMover> mover)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight))
+        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _mover(std::move(mover))
     {
         apply_acceleration_settings();
 
@@ -639,6 +639,7 @@ namespace trview
             }
 
             _level->render_transparency(camera);
+            _mover->render(camera);
             _compass->render(camera, _level->texture_storage());
         }
     }
