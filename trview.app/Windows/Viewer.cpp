@@ -639,7 +639,7 @@ namespace trview
             }
 
             _level->render_transparency(camera);
-            _mover->render(camera);
+            _mover->render(camera, _level->texture_storage());
             _compass->render(camera, _level->texture_storage());
         }
     }

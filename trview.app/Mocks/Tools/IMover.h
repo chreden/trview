@@ -9,7 +9,7 @@ namespace trview
         struct MockMover final : public IMover
         {
             virtual ~MockMover() = default;
-            MOCK_METHOD(void, render, (const ICamera&), (override));
+            MOCK_METHOD(void, render, (const ICamera&, const ILevelTextureStorage&), (override));
         };
     }
 }
