@@ -159,7 +159,7 @@ namespace trview
                 _context_pick.triangle.normal.z = 0;
                 _context_pick.triangle.normal.Normalize();
             }
-            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), IWaypoint::Type::RandoLocation, _context_pick.index);
+            on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), IWaypoint::Type::Position, _context_pick.index);
         };
         _ui->on_settings += on_settings;
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };

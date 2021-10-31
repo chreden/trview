@@ -27,12 +27,7 @@ namespace trview
             /// <summary>
             /// The waypoint is a trigger in the world.
             /// </summary>
-            Trigger,
-            /// <summary>
-            /// The waypoint is a Randomizer location. This unlocks extra properties and changes the serialisation
-            /// behaviour of the route to only export Randomiser Locations in a compatible format.
-            /// </summary>
-            RandoLocation
+            Trigger
         };
 
         /// <summary>

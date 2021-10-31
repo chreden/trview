@@ -277,7 +277,7 @@ TEST(Route, RenderDoesNotJoinRandoLocations)
     EXPECT_CALL(w1, render).Times(1);
     EXPECT_CALL(w1, render_join).Times(0);
     EXPECT_CALL(w2, render).Times(1);
-    EXPECT_CALL(w2, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(w2, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(w2, render_join).Times(0);
     EXPECT_CALL(w3, render).Times(1);
 

@@ -629,5 +629,5 @@ TEST(Viewer, OnRandoLocationCreatesWaypoint)
 
     ui.on_rando_location();
     ASSERT_TRUE(raised_type.has_value());
-    ASSERT_EQ(raised_type.value(), IWaypoint::Type::RandoLocation);
+    ASSERT_EQ(raised_type.value(), IWaypoint::Type::Position);
 }

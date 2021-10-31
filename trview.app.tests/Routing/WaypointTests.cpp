@@ -17,7 +17,7 @@ TEST(Waypoint, ConstructorProperties)
 
 TEST(Waypoint, Difficulty)
 {
-    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);
+    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red);
     ASSERT_EQ(waypoint.difficulty(), "Easy");
     waypoint.set_difficulty("Medium");
     ASSERT_EQ(waypoint.difficulty(), "Medium");
@@ -33,7 +33,7 @@ TEST(Waypoint, EmptySave)
 
 TEST(Waypoint, IsItem)
 {
-    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);
+    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red);
     ASSERT_FALSE(waypoint.is_item());
     waypoint.set_is_item(true);
     ASSERT_TRUE(waypoint.is_item());
@@ -48,7 +48,7 @@ TEST(Waypoint, Notes)
 
 TEST(Waypoint, RequiresGlitch)
 {
-    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);
+    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red);
     ASSERT_FALSE(waypoint.requires_glitch());
     waypoint.set_requires_glitch(true);
     ASSERT_TRUE(waypoint.requires_glitch());
@@ -65,7 +65,7 @@ TEST(Waypoint, SaveFile)
 
 TEST(Waypoint, VehicleRequired)
 {
-    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::RandoLocation, 0, Colour::Red);
+    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red);
     ASSERT_FALSE(waypoint.vehicle_required());
     waypoint.set_vehicle_required(true);
     ASSERT_TRUE(waypoint.vehicle_required());

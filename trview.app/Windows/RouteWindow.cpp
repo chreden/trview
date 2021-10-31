@@ -27,18 +27,6 @@ namespace trview
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
 
-        bool has_randomizer_elements(const IRoute& route)
-        {
-            for (uint32_t i = 0u; i < route.waypoints(); ++i)
-            {
-                if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         const uint32_t normal_min_height = 400;
         const uint32_t rando_min_height = 500;
     }
@@ -158,10 +146,7 @@ namespace trview
             if (_randomizer_enabled)
             {
                 filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                if (has_randomizer_elements(*_route))
-                {
-                    filter_index = 2;
-                }
+                filter_index = 2;
             }
 
             const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);

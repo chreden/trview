@@ -476,7 +476,7 @@ TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
 {
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, requires_glitch).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(waypoint, set_requires_glitch(false)).Times(1);
 
     MockRoute route;
@@ -498,7 +498,7 @@ TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
 {
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, vehicle_required).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(waypoint, set_vehicle_required(false)).Times(1);
 
     MockRoute route;
@@ -520,7 +520,7 @@ TEST(RouteWindow, IsItemSetsRouteUnsaved)
 {
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, is_item).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(waypoint, set_is_item(false)).Times(1);
 
     MockRoute route;
@@ -542,7 +542,7 @@ TEST(RouteWindow, DifficultySetsRouteUnsaved)
 {
     MockWaypoint waypoint;
     EXPECT_CALL(waypoint, difficulty).Times(AtLeast(1)).WillRepeatedly(Return("Medium"));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(waypoint, set_difficulty("Hard")).Times(1);
 
     MockRoute route;

@@ -195,10 +195,7 @@ namespace trview
         {
             auto& waypoint = _waypoints[i];
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
-
-            if (waypoint->type() != IWaypoint::Type::RandoLocation &&
-                i < _waypoints.size() - 1 &&
-                _waypoints[i + 1]->type() != IWaypoint::Type::RandoLocation)
+            if (i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
@@ -299,7 +296,7 @@ namespace trview
                 y = room->info().yBottom - y;
             }
 
-            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::RandoLocation, 0);
+            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
 
@@ -351,13 +348,10 @@ namespace trview
             new_waypoint.set_notes(to_utf16(notes));
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
 
-            if (type == IWaypoint::Type::RandoLocation)
-            {
-                new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
-                new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
-                new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
-                new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
-            }
+            new_waypoint.set_requires_glitch(read_attribute<bool>(waypoint, "RequiresGlitch", false));
+            new_waypoint.set_difficulty(read_attribute<std::string>(waypoint, "Difficulty", "Easy"));
+            new_waypoint.set_is_item(read_attribute<bool>(waypoint, "IsItem", false));
+            new_waypoint.set_vehicle_required(read_attribute<bool>(waypoint, "VehicleRequired", false));
         }
 
         route->set_unsaved(false);
@@ -419,32 +413,29 @@ namespace trview
             const IWaypoint& waypoint = route.waypoint(i);
             nlohmann::ordered_json waypoint_json;
 
-            if (waypoint.type() == IWaypoint::Type::RandoLocation)
+            auto pos = waypoint.position();
+            waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+            waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+            waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+            waypoint_json["Room"] = waypoint.room();
+            if (waypoint.requires_glitch())
             {
-                auto pos = waypoint.position();
-                waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
-                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
-                waypoint_json["Room"] = waypoint.room();
-                if (waypoint.requires_glitch())
-                {
-                    waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                }
-                if (waypoint.difficulty() != "Easy")
-                {
-                    waypoint_json["Difficulty"] = waypoint.difficulty();
-                }
-                if (waypoint.is_item())
-                {
-                    waypoint_json["IsItem"] = waypoint.is_item();
-                }
-                if (waypoint.vehicle_required())
-                {
-                    waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-                }
-
-                waypoints.push_back(waypoint_json);
+                waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
             }
+            if (waypoint.difficulty() != "Easy")
+            {
+                waypoint_json["Difficulty"] = waypoint.difficulty();
+            }
+            if (waypoint.is_item())
+            {
+                waypoint_json["IsItem"] = waypoint.is_item();
+            }
+            if (waypoint.vehicle_required())
+            {
+                waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+            }
+
+            waypoints.push_back(waypoint_json);
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
@@ -483,13 +474,10 @@ namespace trview
                 waypoint_json["save"] = to_base64(waypoint.save_file());
             }
 
-            if (waypoint.type() == IWaypoint::Type::RandoLocation)
-            {
-                waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                waypoint_json["Difficulty"] = waypoint.difficulty();
-                waypoint_json["IsItem"] = waypoint.is_item();
-                waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-            }
+            waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
+            waypoint_json["Difficulty"] = waypoint.difficulty();
+            waypoint_json["IsItem"] = waypoint.is_item();
+            waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
 
             waypoints.push_back(waypoint_json);
         }
