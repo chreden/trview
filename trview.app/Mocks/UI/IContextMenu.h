@@ -15,7 +15,6 @@ namespace trview
             MOCK_METHOD(void, set_hide_enabled, (bool), (override));
             MOCK_METHOD(bool, visible, (), (const, override));
             MOCK_METHOD(void, set_mid_waypoint_enabled, (bool), (override));
-            MOCK_METHOD(void, set_randomizer_tools, (bool), (override));
         };
     }
 }
