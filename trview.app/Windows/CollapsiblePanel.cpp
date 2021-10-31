@@ -193,4 +193,18 @@ namespace trview
         _expander = parent.add_child(std::make_unique<Button>(Size(16, 16), L"<<"));
         _token_store += _expander->on_click += [this]() { toggle_expand(); };
     }
+
+    void CollapsiblePanel::set_minimum_height(uint32_t height)
+    {
+        _initial_size.height = height;
+
+        RECT rect{ 0, 0, 0, 0 };
+        GetClientRect(window(), &rect);
+        if (rect.bottom - rect.top < height)
+        {
+            RECT new_rect{ 0, 0, rect.right - rect.left, std::max<long>(rect.bottom - rect.top, height) };
+            AdjustWindowRect(&rect, window_style, FALSE);
+            SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
+        }
+    }
 }

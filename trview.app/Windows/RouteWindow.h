@@ -64,7 +64,7 @@ namespace trview
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
-        ui::GroupBox* _lower_box;
+        ui::Window* _lower_box;
         ui::TextArea* _notes_area;
         ui::Button* _select_save;
         ui::Button* _delete_waypoint;
@@ -81,7 +81,7 @@ namespace trview
         std::unique_ptr<IBubble> _bubble;
 
         // Randomizer settings:
-        ui::Window* _rando_area;
+        ui::Window* _rando_group;
         ui::Checkbox* _requires_glitch;
         ui::Checkbox* _vehicle_required;
         ui::Checkbox* _is_item;

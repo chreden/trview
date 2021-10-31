@@ -71,6 +71,8 @@ namespace trview
         /// @param Whether the window can be made taller.
         void set_allow_increase_height(bool value);
 
+        void set_minimum_height(uint32_t height);
+
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;

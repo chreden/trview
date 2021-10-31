@@ -38,6 +38,9 @@ namespace trview
             }
             return false;
         }
+
+        const uint32_t normal_min_height = 400;
+        const uint32_t rando_min_height = 500;
     }
 
     const std::string RouteWindow::Names::export_button = "export_button";
@@ -66,7 +69,7 @@ namespace trview
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
         const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
@@ -102,7 +105,7 @@ namespace trview
         auto left_panel = std::make_unique<ui::Window>(Size(200, window().size().height), Colours::LeftPanel);
         left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        auto buttons = std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel);
+        auto buttons  = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
         buttons->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
 
         _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
@@ -167,27 +170,25 @@ namespace trview
                 on_route_export(filename.value().filename, filename.value().filter_index == 2);
             }
         };
-        auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
-        waypoints->set_enable_sorting(false);
-        waypoints->set_columns(
+        _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));
+        _waypoints->set_enable_sorting(false);
+        _waypoints->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::String, L"Type", 160 }
             }
         );
-        _token_store += waypoints->on_item_selected += [&](const auto& item) {
+        _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
             on_waypoint_selected(index);
         };
-        _token_store += waypoints->on_delete += [&]() {
+        _token_store += _waypoints->on_delete += [&]() {
             on_waypoint_deleted(_selected_index);
         };
 
-        _waypoints = left_panel->add_child(std::move(waypoints));
         return left_panel;
     }
 
@@ -199,8 +200,8 @@ namespace trview
         right_panel_layout->set_margin(Size(0, 8));
         right_panel->set_layout(std::move(right_panel_layout));
 
-        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
-        auto details_panel = std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails);
+        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details"));
+        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails));
         details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
@@ -323,13 +324,12 @@ namespace trview
         _clear_save->set_visible(false);
         _delete_waypoint->set_visible(false);
 
-        group_box->add_child(std::move(details_panel));
-        right_panel->add_child(std::move(group_box));
-
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        // Notes area.
-        _lower_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = _lower_box->add_child(std::make_unique<TextArea>(Size(panel_width - 20, _lower_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
+        _lower_box = right_panel->add_child(std::make_unique<ui::Window>(Size(), Colours::Notes));
+        _lower_box->set_layout(std::make_unique<StackLayout>(5.0f));
+
+        auto notes_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Notes"));
+        _notes_area = notes_group->add_child(std::make_unique<TextArea>(Size(panel_width - 20, 200), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
         _notes_area->set_name(Names::notes_area);
         _notes_area->set_scrollbar_visible(true);
 
@@ -345,11 +345,11 @@ namespace trview
             }
         };
 
-        _rando_area = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
-        _rando_area->set_visible(false);
+        _rando_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Randomizer"));
+        auto rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
+        rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
 
-        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
+        auto grid = rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
         grid->set_layout(std::make_unique<GridLayout>(2, 2));
 
         _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
@@ -382,7 +382,7 @@ namespace trview
                 _route->set_unsaved(true);
             }
         };
-        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
+        _difficulty = rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
         _difficulty->set_name(Names::difficulty);
         _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
         _difficulty->set_dropdown_scope(_ui.get());
@@ -394,6 +394,7 @@ namespace trview
                 _route->set_unsaved(true);
             }
         };
+        _rando_group->set_size(Size(_rando_group->size().width, rando_area->size().height + 40));
 
         return right_panel;
     }
@@ -501,14 +502,11 @@ namespace trview
         }
 
         _stats->set_items(stats);
+        _rando_group->set_visible(_randomizer_enabled);
 
-        // Handling for randomizer features:
-        if (waypoint.type() == IWaypoint::Type::RandoLocation)
+        if (_randomizer_enabled)
         {
-            _rando_area->set_visible(true);
-            _notes_area->set_visible(false);
-            _lower_box->set_title(L"Randomizer");
-
+            set_minimum_height(rando_min_height);
             _requires_glitch->set_state(waypoint.requires_glitch());
             _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
             _vehicle_required->set_state(waypoint.vehicle_required());
@@ -516,20 +514,18 @@ namespace trview
         }
         else
         {
-            _rando_area->set_visible(false);
-            _notes_area->set_visible(true);
-            _lower_box->set_title(L"Notes");
+            set_minimum_height(normal_min_height);
+        }
 
-            _notes_area->set_text(waypoint.notes());
+        _notes_area->set_text(waypoint.notes());
 
-            if (waypoint.has_save())
-            {
-                _select_save->set_text(L"SAVEGAME.0");
-            }
-            else
-            {
-                _select_save->set_text(L"Attach Save");
-            }
+        if (waypoint.has_save())
+        {
+            _select_save->set_text(L"SAVEGAME.0");
+        }
+        else
+        {
+            _select_save->set_text(L"Attach Save");
         }
     }
 
@@ -579,5 +575,7 @@ namespace trview
     void RouteWindow::set_randomizer_enabled(bool value)
     {
         _randomizer_enabled = value;
+        _rando_group->set_visible(_randomizer_enabled);
+        set_minimum_height(_randomizer_enabled ? rando_min_height : normal_min_height);
     }
 }
