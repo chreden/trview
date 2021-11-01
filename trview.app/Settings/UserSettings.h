@@ -2,6 +2,7 @@
 
 #include <list>
 #include <string>
+#include "RandomizerSettings.h"
 
 namespace trview
 {
@@ -25,6 +26,7 @@ namespace trview
         float camera_acceleration_rate{ 0.5f };
         bool camera_display_degrees{ true };
         bool randomizer_tools{ false };
+        RandomizerSettings randomizer;
 
         bool operator==(const UserSettings& other) const;
     };
