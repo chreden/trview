@@ -485,6 +485,7 @@ TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
+    window->set_randomizer_enabled(true);
     window->set_route(&route);
 
     auto requires_glitch = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::requires_glitch);
@@ -507,6 +508,7 @@ TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
+    window->set_randomizer_enabled(true);
     window->set_route(&route);
 
     auto vehicle_required = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::vehicle_required);
@@ -529,6 +531,7 @@ TEST(RouteWindow, IsItemSetsRouteUnsaved)
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
+    window->set_randomizer_enabled(true);
     window->set_route(&route);
 
     auto is_item = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_item);
@@ -551,12 +554,13 @@ TEST(RouteWindow, DifficultySetsRouteUnsaved)
     EXPECT_CALL(route, set_unsaved(true)).Times(1);
 
     auto window = register_test_module().build();
+    window->set_randomizer_enabled(true);
     window->set_route(&route);
 
     auto difficulty = window->root_control()->find<ui::Dropdown>(RouteWindow::Names::difficulty);
     ASSERT_NE(difficulty, nullptr);
     ASSERT_TRUE(difficulty->visible(true));
-    
+
     auto dropdown_button = difficulty->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
     ASSERT_NE(dropdown_button, nullptr);
     dropdown_button->clicked(Point());

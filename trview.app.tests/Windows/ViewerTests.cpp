@@ -611,23 +611,3 @@ TEST(Viewer, MidWaypointUsesCentroid)
     ASSERT_TRUE(raised_position.has_value());
     ASSERT_EQ(raised_position.value(), Vector3(3, 4, 5));
 }
-
-TEST(Viewer, OnRandoLocationCreatesWaypoint)
-{
-    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
-    auto [picking_ptr, picking] = create_mock<MockPicking>();
-    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
-    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
-
-    std::optional<IWaypoint::Type> raised_type;
-    auto token = viewer->on_waypoint_added += [&](auto&& position, auto&& normal, auto&& index, auto&& type, auto&&...)
-    {
-        raised_type = type;
-    };
-
-    activate_context_menu(picking, mouse, PickResult::Type::Room, 0, Vector3(1, 2, 3), Vector3(3, 4, 5));
-
-    ui.on_rando_location();
-    ASSERT_TRUE(raised_type.has_value());
-    ASSERT_EQ(raised_type.value(), IWaypoint::Type::Position);
-}

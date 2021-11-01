@@ -328,6 +328,7 @@ namespace trview
             _settings = settings;
             _viewer->set_settings(_settings);
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
+            _route->set_randomizer_enabled(settings.randomizer_tools);
         };
         _viewer->set_settings(_settings);
 
@@ -411,6 +412,7 @@ namespace trview
             _viewer->set_route(_route);
         };
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
+        _route->set_randomizer_enabled(_settings.randomizer_tools);
     }
 
     void Application::setup_shortcuts()

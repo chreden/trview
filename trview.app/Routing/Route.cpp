@@ -195,7 +195,7 @@ namespace trview
         {
             auto& waypoint = _waypoints[i];
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
-            if (i < _waypoints.size() - 1)
+            if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
@@ -226,6 +226,11 @@ namespace trview
             waypoint->set_route_colour(colour);
         }
         set_unsaved(true);
+    }
+
+    void Route::set_randomizer_enabled(bool enabled)
+    {
+        _randomizer_enabled = enabled;
     }
 
     void Route::set_unsaved(bool value)
