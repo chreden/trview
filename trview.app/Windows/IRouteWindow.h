@@ -5,6 +5,7 @@
 #include <trview.app/Elements/IRoom.h>
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Routing/IRoute.h>
+#include <trview.app/Settings/RandomizerSettings.h>
 
 namespace trview
 {
@@ -71,6 +72,11 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether randomizer integration is enabled.</param>
         virtual void set_randomizer_enabled(bool value) = 0;
+        /// <summary>
+        /// Set the current randomizer settings.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        virtual void set_randomizer_settings(const RandomizerSettings& settings) = 0;
     };
 }
 

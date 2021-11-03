@@ -331,56 +331,8 @@ namespace trview
         };
 
         _rando_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Randomizer"));
-        auto rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
-
-        auto grid = rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
-        grid->set_layout(std::make_unique<GridLayout>(2, 2));
-
-        _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
-        _requires_glitch->set_name(Names::requires_glitch);
-        _token_store += _requires_glitch->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_requires_glitch(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
-        _vehicle_required->set_name(Names::vehicle_required);
-        _token_store += _vehicle_required->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_vehicle_required(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
-        _is_item->set_name(Names::is_item);
-        _token_store += _is_item->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_is_item(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _difficulty = rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
-        _difficulty->set_name(Names::difficulty);
-        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
-        _difficulty->set_dropdown_scope(_ui.get());
-        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
-                _route->set_unsaved(true);
-            }
-        };
-        _rando_group->set_size(Size(_rando_group->size().width, rando_area->size().height + 40));
-
+        _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
+        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
         return right_panel;
     }
 
@@ -562,5 +514,61 @@ namespace trview
         _randomizer_enabled = value;
         _rando_group->set_visible(_randomizer_enabled);
         set_minimum_height(_randomizer_enabled ? rando_min_height : normal_min_height);
+    }
+
+    void RouteWindow::set_randomizer_settings(const RandomizerSettings& settings)
+    {
+        _randomizer_settings = settings;
+
+        const float panel_width = 270;
+
+        // Generate the UI based on the settings provided.
+        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
+        grid->set_layout(std::make_unique<GridLayout>(2, 2));
+
+        _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
+        _requires_glitch->set_name(Names::requires_glitch);
+        _token_store += _requires_glitch->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_requires_glitch(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
+        _vehicle_required->set_name(Names::vehicle_required);
+        _token_store += _vehicle_required->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_vehicle_required(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
+        _is_item->set_name(Names::is_item);
+        _token_store += _is_item->on_state_changed += [&](bool state)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_is_item(state);
+                _route->set_unsaved(true);
+            }
+        };
+        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
+        _difficulty->set_name(Names::difficulty);
+        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
+        _difficulty->set_dropdown_scope(_ui.get());
+        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
+        {
+            if (_route && _selected_index < _route->waypoints())
+            {
+                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
+                _route->set_unsaved(true);
+            }
+        };
+        _rando_group->set_size(Size(_rando_group->size().width, _rando_area->size().height + 40));
+
     }
 }

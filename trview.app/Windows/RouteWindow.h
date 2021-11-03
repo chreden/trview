@@ -55,6 +55,7 @@ namespace trview
         virtual void focus() override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
+        virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
@@ -87,5 +88,7 @@ namespace trview
         ui::Checkbox* _is_item;
         ui::Dropdown* _difficulty;
         bool _randomizer_enabled{ false };
+        RandomizerSettings _randomizer_settings;
+        ui::Window* _rando_area;
     };
 }
