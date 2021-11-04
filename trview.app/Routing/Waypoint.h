@@ -11,7 +11,7 @@ namespace trview
     /// </summary>
     class Waypoint final : public IWaypoint
     {
-    public:       
+    public:
         /// <summary>
         /// Create a new waypoint.
         /// </summary>
@@ -42,8 +42,8 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_visible(bool value) override;
         virtual DirectX::SimpleMath::Vector3 normal() const override;
-        virtual void set_randomizer_setting(const std::string& name, bool state) override;
-        virtual void set_randomizer_setting(const std::string& name, const std::string& value) override;
+        virtual WaypointRandomizerSettings randomizer_settings() const override;
+        virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) override;
     private:
         DirectX::SimpleMath::Matrix calculate_waypoint_rotation() const;
 
@@ -57,6 +57,6 @@ namespace trview
         uint32_t _room;
         Colour _route_colour;
         bool _visible{ true };
-        std::map<std::string, std::variant<bool, float, std::string>> _randomizer_settings;
+        WaypointRandomizerSettings _randomizer_settings;
     };    
 }

@@ -27,8 +27,8 @@ namespace trview
             MOCK_METHOD(void, set_visible, (bool), (override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, blob_position, (), (const, override));
             MOCK_METHOD(DirectX::SimpleMath::Vector3, normal, (), (const, override));
-            MOCK_METHOD(void, set_randomizer_setting, (const std::string&, bool), (override));
-            MOCK_METHOD(void, set_randomizer_setting, (const std::string&, const std::string&), (override));
+            MOCK_METHOD(WaypointRandomizerSettings, randomizer_settings, (), (const, override));
+            MOCK_METHOD(void, set_randomizer_settings, (const WaypointRandomizerSettings&), (override));
             /// <summary>
             /// Index used for testing ordering.
             /// </summary>

@@ -147,14 +147,14 @@ namespace trview
         return _normal;
     }
 
-    void Waypoint::set_randomizer_setting(const std::string& name, bool state)
+    IWaypoint::WaypointRandomizerSettings Waypoint::randomizer_settings() const
     {
-        _randomizer_settings[name] = state;
+        return _randomizer_settings;
     }
 
-    void Waypoint::set_randomizer_setting(const std::string& name, const std::string& value)
+    void Waypoint::set_randomizer_settings(const WaypointRandomizerSettings& settings)
     {
-        _randomizer_settings[name] = value;
+        _randomizer_settings = settings;
     }
 }
 

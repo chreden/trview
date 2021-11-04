@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <variant>
 #include <SimpleMath.h>
 #include <trview.common/Colour.h>
 #include <trview.app/Geometry/IRenderable.h>
@@ -29,6 +31,8 @@ namespace trview
             /// </summary>
             Trigger
         };
+
+        using WaypointRandomizerSettings = std::map<std::string, std::variant<bool, float, std::string>>;
 
         /// <summary>
         /// Create a waypoint.
@@ -96,8 +100,8 @@ namespace trview
         /// Get the normal to which the waypoint is aligned.
         /// </summary>
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
-        virtual void set_randomizer_setting(const std::string& name, bool state) = 0;
-        virtual void set_randomizer_setting(const std::string& name, const std::string& value) = 0;
+        virtual WaypointRandomizerSettings randomizer_settings() const = 0;
+        virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) = 0;
     };
 
     /// <summary>

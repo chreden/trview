@@ -303,23 +303,27 @@ namespace trview
 
             route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_randomizer_setting("RequiresGlitch", read_attribute<bool>(location, "RequiresGlitch", false));
+            auto settings = new_waypoint.randomizer_settings();
+
+            // TODO: Use definition
+            settings["RequiresGlitch"] = read_attribute<bool>(location, "RequiresGlitch", false);
 
             if (location.count("Difficulty") > 0)
             {
                 if (location["Difficulty"].is_number())
                 {
                     int difficulty = read_attribute<int>(location, "Difficulty");
-                    new_waypoint.set_randomizer_setting("Difficulty", difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
+                    settings["Difficulty"] = std::string(difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
                 }
                 else
                 {
-                    new_waypoint.set_randomizer_setting("Difficulty", "Easy");
+                    settings["Difficulty"] = "Easy";
                 }
             }
 
-            new_waypoint.set_randomizer_setting("IsItem", read_attribute<bool>(location, "IsItem", false));
-            new_waypoint.set_randomizer_setting("VehicleRequired", read_attribute<bool>(location, "VehicleRequired", false));
+            settings["IsItem"] = read_attribute<bool>(location, "IsItem", false);
+            settings["VehicleRequired"] = read_attribute<bool>(location, "VehicleRequired", false);
+            new_waypoint.set_randomizer_settings(settings);
         }
 
         route->set_unsaved(false);
@@ -352,11 +356,12 @@ namespace trview
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_notes(to_utf16(notes));
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
-
-            new_waypoint.set_randomizer_setting("RequiresGlitch", read_attribute<bool>(waypoint, "RequiresGlitch", false));
-            new_waypoint.set_randomizer_setting("Difficulty", read_attribute<std::string>(waypoint, "Difficulty", "Easy"));
-            new_waypoint.set_randomizer_setting("IsItem", read_attribute<bool>(waypoint, "IsItem", false));
-            new_waypoint.set_randomizer_setting("VehicleRequired", read_attribute<bool>(waypoint, "VehicleRequired", false));
+            auto settings = new_waypoint.randomizer_settings();
+            settings["RequiresGlitch"] = read_attribute<bool>(waypoint, "RequiresGlitch", false);
+            settings["Difficulty"] = read_attribute<std::string>(waypoint, "Difficulty", "Easy");
+            settings["IsItem"] = read_attribute<bool>(waypoint, "IsItem", false);
+            settings["VehicleRequired"] = read_attribute<bool>(waypoint, "VehicleRequired", false);
+            new_waypoint.set_randomizer_settings(settings);
         }
 
         route->set_unsaved(false);

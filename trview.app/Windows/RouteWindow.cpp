@@ -541,7 +541,10 @@ namespace trview
                     {
                         if (_route && _selected_index < _route->waypoints())
                         {
-                            _route->waypoint(_selected_index).set_randomizer_setting(name, state);
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            settings[name] = state;
+                            waypoint.set_randomizer_settings(settings);
                             _route->set_unsaved(true);
                         }
                     };
@@ -570,7 +573,10 @@ namespace trview
                         {
                             if (_route && _selected_index < _route->waypoints())
                             {
-                                _route->waypoint(_selected_index).set_randomizer_setting(x.first, to_utf8(value));
+                                auto& waypoint = _route->waypoint(_selected_index);
+                                auto settings = waypoint.randomizer_settings();
+                                settings[name] = to_utf8(value);
+                                waypoint.set_randomizer_settings(settings);
                                 _route->set_unsaved(true);
                             }
                         };
