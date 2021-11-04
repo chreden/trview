@@ -303,23 +303,23 @@ namespace trview
 
             route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
+            new_waypoint.set_randomizer_setting("RequiresGlitch", read_attribute<bool>(location, "RequiresGlitch", false));
 
             if (location.count("Difficulty") > 0)
             {
                 if (location["Difficulty"].is_number())
                 {
                     int difficulty = read_attribute<int>(location, "Difficulty");
-                    new_waypoint.set_difficulty(difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
+                    new_waypoint.set_randomizer_setting("Difficulty", difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
                 }
                 else
                 {
-                    new_waypoint.set_difficulty(read_attribute<std::string>(location, "Difficulty", "Easy"));
+                    new_waypoint.set_randomizer_setting("Difficulty", "Easy");
                 }
             }
 
-            new_waypoint.set_is_item(read_attribute<bool>(location, "IsItem", false));
-            new_waypoint.set_vehicle_required(read_attribute<bool>(location, "VehicleRequired", false));
+            new_waypoint.set_randomizer_setting("IsItem", read_attribute<bool>(location, "IsItem", false));
+            new_waypoint.set_randomizer_setting("VehicleRequired", read_attribute<bool>(location, "VehicleRequired", false));
         }
 
         route->set_unsaved(false);
@@ -353,10 +353,10 @@ namespace trview
             new_waypoint.set_notes(to_utf16(notes));
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
 
-            new_waypoint.set_requires_glitch(read_attribute<bool>(waypoint, "RequiresGlitch", false));
-            new_waypoint.set_difficulty(read_attribute<std::string>(waypoint, "Difficulty", "Easy"));
-            new_waypoint.set_is_item(read_attribute<bool>(waypoint, "IsItem", false));
-            new_waypoint.set_vehicle_required(read_attribute<bool>(waypoint, "VehicleRequired", false));
+            new_waypoint.set_randomizer_setting("RequiresGlitch", read_attribute<bool>(waypoint, "RequiresGlitch", false));
+            new_waypoint.set_randomizer_setting("Difficulty", read_attribute<std::string>(waypoint, "Difficulty", "Easy"));
+            new_waypoint.set_randomizer_setting("IsItem", read_attribute<bool>(waypoint, "IsItem", false));
+            new_waypoint.set_randomizer_setting("VehicleRequired", read_attribute<bool>(waypoint, "VehicleRequired", false));
         }
 
         route->set_unsaved(false);
@@ -423,6 +423,9 @@ namespace trview
             waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
             waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
             waypoint_json["Room"] = waypoint.room();
+            
+            // TODO: Fix this.
+            /*
             if (waypoint.requires_glitch())
             {
                 waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
@@ -439,6 +442,7 @@ namespace trview
             {
                 waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
             }
+            */
 
             waypoints.push_back(waypoint_json);
         }
@@ -479,10 +483,13 @@ namespace trview
                 waypoint_json["save"] = to_base64(waypoint.save_file());
             }
 
+            // TODO: Fix
+            /*
             waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
             waypoint_json["Difficulty"] = waypoint.difficulty();
             waypoint_json["IsItem"] = waypoint.is_item();
             waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
+            */
 
             waypoints.push_back(waypoint_json);
         }
