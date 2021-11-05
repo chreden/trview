@@ -444,10 +444,7 @@ namespace trview
         if (_randomizer_enabled)
         {
             set_minimum_height(rando_min_height);
-            // _requires_glitch->set_state(waypoint.requires_glitch());
-            // _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
-            // _vehicle_required->set_state(waypoint.vehicle_required());
-            // _is_item->set_state(waypoint.is_item());
+            load_randomiser_settings(waypoint);
         }
         else
         {
@@ -569,7 +566,7 @@ namespace trview
 
                         dropdown->set_values(options);
                         dropdown->set_dropdown_scope(_ui.get());
-                        _token_store += dropdown->on_value_selected += [&](const std::wstring& value)
+                        _token_store += dropdown->on_value_selected += [this, name](const std::wstring& value)
                         {
                             if (_route && _selected_index < _route->waypoints())
                             {
@@ -590,22 +587,46 @@ namespace trview
             }
         }
 
-        /*
-        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
-        _difficulty->set_name(Names::difficulty);
-        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
-        _difficulty->set_dropdown_scope(_ui.get());
-        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
-                _route->set_unsaved(true);
-            }
-        };
-        */
-
         _rando_group->set_size(Size(_rando_group->size().width, _rando_area->size().height + 40));
-        
+    }
+
+    void RouteWindow::load_randomiser_settings(const IWaypoint& waypoint)
+    {
+        auto waypoint_settings = waypoint.randomizer_settings();
+        for (const auto& s : _randomizer_settings.settings)
+        {
+            if (waypoint_settings.find(s.first) == waypoint_settings.end())
+            {
+                continue;
+            }
+
+            const auto setting = waypoint_settings[s.first];
+            switch (s.second.type)
+            {
+            case RandomizerSettings::Setting::Type::Boolean:
+            {
+                auto checkbox = _rando_area->find<Checkbox>(s.first);
+                checkbox->set_state(std::get<bool>(setting));
+                break;
+            }
+            case RandomizerSettings::Setting::Type::String:
+            {
+                if (s.second.options.empty())
+                {
+
+                }
+                else
+                {
+                    auto dropdown = _rando_area->find<Dropdown>(s.first);
+                    dropdown->set_selected_value(to_utf16(std::get<std::string>(setting)));
+                }
+                break;
+            }
+            case RandomizerSettings::Setting::Type::Number:
+            {
+                break;
+            }
+            }
+        }
     }
 }

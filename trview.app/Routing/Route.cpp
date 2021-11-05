@@ -357,6 +357,7 @@ namespace trview
             new_waypoint.set_notes(to_utf16(notes));
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
             auto settings = new_waypoint.randomizer_settings();
+            // TODO: Use defintion.
             settings["RequiresGlitch"] = read_attribute<bool>(waypoint, "RequiresGlitch", false);
             settings["Difficulty"] = read_attribute<std::string>(waypoint, "Difficulty", "Easy");
             settings["IsItem"] = read_attribute<bool>(waypoint, "IsItem", false);
