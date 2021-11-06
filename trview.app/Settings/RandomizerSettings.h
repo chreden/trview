@@ -28,15 +28,17 @@ namespace trview
             /// <summary>
             /// The default value to use.
             /// </summary>
-            std::variant<bool, std::string> default_value;
+            std::variant<bool, float, std::string> default_value;
             /// <summary>
             /// Options allowed when this is a select element. If there are no options
             /// then this isn't a select element.
             /// </summary>
-            std::vector<std::variant<bool, std::string>> options;
+            std::vector<std::variant<bool, float, std::string>> options;
         };
 
         std::map<std::string, Setting> settings;
+
+        uint32_t settings_of_type(Setting::Type type) const;
     };
 
     void to_json(nlohmann::json& json, const RandomizerSettings& settings);

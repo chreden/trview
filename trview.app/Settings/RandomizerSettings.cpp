@@ -147,4 +147,10 @@ namespace trview
             settings.settings[it.key()] = it.value().get<RandomizerSettings::Setting>();
         }
     }
+
+    uint32_t RandomizerSettings::settings_of_type(Setting::Type type) const
+    {
+        return std::count_if(settings.begin(), settings.end(),
+            [type](const auto& t) { return t.second.type == type; });
+    }
 }

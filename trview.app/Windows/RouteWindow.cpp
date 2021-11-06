@@ -519,11 +519,10 @@ namespace trview
 
         const float panel_width = 270;
 
-        // Generate the UI based on the settings provided.
-        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
-        
-        // TODO: Calculate the number of elements.
-        grid->set_layout(std::make_unique<GridLayout>(2, 2));
+        const auto num_bools = settings.settings_of_type(RandomizerSettings::Setting::Type::Boolean);
+        const auto rows = std::ceil(num_bools / 2);
+        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, rows * 25), Colours::Notes));
+        grid->set_layout(std::make_unique<GridLayout>(2, rows));
 
         for (const auto& x : _randomizer_settings.settings)
         {
@@ -549,15 +548,17 @@ namespace trview
                 }
                 case RandomizerSettings::Setting::Type::String:
                 {
+                    // TODO: Label for text element (Dropdown or otherwise)
+
                     if (x.second.options.empty())
                     {
-                        // This is just a text field
+                        // TODO: Text entry
                     }
                     else
                     {
                         auto dropdown = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
                         dropdown->set_name(x.first);
-                        
+
                         std::vector<std::wstring> options;
                         for (const auto& o : x.second.options)
                         {
@@ -582,6 +583,7 @@ namespace trview
                 }
                 case RandomizerSettings::Setting::Type::Number:
                 {
+                    // TODO: Number entry
                     break;
                 }
             }
@@ -595,35 +597,34 @@ namespace trview
         auto waypoint_settings = waypoint.randomizer_settings();
         for (const auto& s : _randomizer_settings.settings)
         {
-            if (waypoint_settings.find(s.first) == waypoint_settings.end())
-            {
-                continue;
-            }
+            const auto value_to_set =
+                waypoint_settings.find(s.first) == waypoint_settings.end() ?
+                s.second.default_value : waypoint_settings[s.first];
 
-            const auto setting = waypoint_settings[s.first];
             switch (s.second.type)
             {
             case RandomizerSettings::Setting::Type::Boolean:
             {
                 auto checkbox = _rando_area->find<Checkbox>(s.first);
-                checkbox->set_state(std::get<bool>(setting));
+                checkbox->set_state(std::get<bool>(value_to_set));
                 break;
             }
             case RandomizerSettings::Setting::Type::String:
             {
                 if (s.second.options.empty())
                 {
-
+                    // TODO: Text entry.
                 }
                 else
                 {
                     auto dropdown = _rando_area->find<Dropdown>(s.first);
-                    dropdown->set_selected_value(to_utf16(std::get<std::string>(setting)));
+                    dropdown->set_selected_value(to_utf16(std::get<std::string>(value_to_set)));
                 }
                 break;
             }
             case RandomizerSettings::Setting::Type::Number:
             {
+                // TODO: Number entry
                 break;
             }
             }
