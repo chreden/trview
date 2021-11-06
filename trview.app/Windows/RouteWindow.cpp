@@ -28,7 +28,6 @@ namespace trview
         };
 
         const uint32_t normal_min_height = 400;
-        const uint32_t rando_min_height = 500;
     }
 
     const std::string RouteWindow::Names::export_button = "export_button";
@@ -328,7 +327,9 @@ namespace trview
 
         _rando_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Randomizer"));
         _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
+        auto layout = std::make_unique<StackLayout>(5.0f);
+        layout->set_margin(Size(0, 10.0f));
+        _rando_area->set_layout(std::move(layout));
         return right_panel;
     }
 
@@ -436,16 +437,8 @@ namespace trview
 
         _stats->set_items(stats);
         _rando_group->set_visible(_randomizer_enabled);
-
-        if (_randomizer_enabled)
-        {
-            set_minimum_height(rando_min_height);
-            load_randomiser_settings(waypoint);
-        }
-        else
-        {
-            set_minimum_height(normal_min_height);
-        }
+        update_minimum_height();
+        load_randomiser_settings(waypoint);
 
         _notes_area->set_text(waypoint.notes());
 
@@ -506,7 +499,7 @@ namespace trview
     {
         _randomizer_enabled = value;
         _rando_group->set_visible(_randomizer_enabled);
-        set_minimum_height(_randomizer_enabled ? rando_min_height : normal_min_height);
+        update_minimum_height();
     }
 
     void RouteWindow::set_randomizer_settings(const RandomizerSettings& settings)
@@ -588,7 +581,9 @@ namespace trview
             }
         }
 
-        _rando_group->set_size(Size(_rando_group->size().width, _rando_area->size().height + 40));
+        Size size = Size(_rando_group->size().width, _rando_area->size().height + 21);
+        _rando_group->set_size(size);
+        update_minimum_height();
     }
 
     void RouteWindow::load_randomiser_settings(const IWaypoint& waypoint)
@@ -627,6 +622,18 @@ namespace trview
                 break;
             }
             }
+        }
+    }
+
+    void RouteWindow::update_minimum_height()
+    {
+        if (_randomizer_enabled)
+        {
+            set_minimum_height(_rando_group->absolute_position().y + _rando_group->size().height);
+        }
+        else
+        {
+            set_minimum_height(normal_min_height);
         }
     }
 }

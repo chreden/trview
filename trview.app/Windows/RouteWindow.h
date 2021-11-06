@@ -62,6 +62,7 @@ namespace trview
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
         void load_randomiser_settings(const IWaypoint& waypoint);
+        void update_minimum_height();
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
