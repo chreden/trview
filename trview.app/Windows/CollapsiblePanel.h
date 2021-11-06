@@ -54,6 +54,8 @@ namespace trview
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;
+
+        Event<Size> on_size_changed;
     protected:
         virtual void update_layout();
 

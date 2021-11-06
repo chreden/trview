@@ -82,6 +82,7 @@ namespace trview
             _device_window->resize();
             update_layout();
             _ui_renderer->set_host_size(window().size());
+            on_size_changed(window().size());
         };
 
         _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));

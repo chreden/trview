@@ -168,6 +168,10 @@ namespace trview
         _token_store += _waypoints->on_delete += [&]() {
             on_waypoint_deleted(_selected_index);
         };
+        _token_store += on_size_changed += [&](const auto& size)
+        {
+            _waypoints->set_size(Size(200, size.height - 20));
+        };
 
         return left_panel;
     }
