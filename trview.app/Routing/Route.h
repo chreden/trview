@@ -5,6 +5,7 @@
 #include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/IFiles.h>
+#include <trview.app/Settings/RandomizerSettings.h>
 
 namespace trview
 {
@@ -49,6 +50,6 @@ namespace trview
         bool _randomizer_enabled{ false };
     };
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, bool rando_import);
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export);
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, const RandomizerSettings& randomizer_settings, bool rando_import);
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export);
 }
