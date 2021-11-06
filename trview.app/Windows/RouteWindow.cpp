@@ -37,10 +37,6 @@ namespace trview
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
-    const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
-    const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
-    const std::string RouteWindow::Names::is_item = "is_item";
-    const std::string RouteWindow::Names::difficulty = "difficulty";
 
     namespace Colours
     {
@@ -549,6 +545,9 @@ namespace trview
                 case RandomizerSettings::Setting::Type::String:
                 {
                     // TODO: Label for text element (Dropdown or otherwise)
+                    auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
+                    string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
+                    string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
 
                     if (x.second.options.empty())
                     {
@@ -556,7 +555,7 @@ namespace trview
                     }
                     else
                     {
-                        auto dropdown = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
+                        auto dropdown = string_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
                         dropdown->set_name(x.first);
 
                         std::vector<std::wstring> options;
