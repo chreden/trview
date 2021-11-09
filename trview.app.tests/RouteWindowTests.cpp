@@ -472,108 +472,32 @@ TEST(RouteWindow, ClickStatShowsBubble)
     value->clicked(Point());
 }
 
-TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
+TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, requires_glitch).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
-    EXPECT_CALL(waypoint, set_requires_glitch(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_randomizer_enabled(true);
-    window->set_route(&route);
-
-    auto requires_glitch = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::requires_glitch);
-    ASSERT_NE(requires_glitch, nullptr);
-    ASSERT_TRUE(requires_glitch->visible(true));
-
-    requires_glitch->clicked(Point());
+    FAIL();
 }
 
-TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
+TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, vehicle_required).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
-    EXPECT_CALL(waypoint, set_vehicle_required(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_randomizer_enabled(true);
-    window->set_route(&route);
-
-    auto vehicle_required = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::vehicle_required);
-    ASSERT_NE(vehicle_required, nullptr);
-    ASSERT_TRUE(vehicle_required->visible(true));
-
-    vehicle_required->clicked(Point());
+    FAIL();
 }
 
-TEST(RouteWindow, IsItemSetsRouteUnsaved)
+TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, is_item).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
-    EXPECT_CALL(waypoint, set_is_item(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_randomizer_enabled(true);
-    window->set_route(&route);
-
-    auto is_item = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_item);
-    ASSERT_NE(is_item, nullptr);
-    ASSERT_TRUE(is_item->visible(true));
-
-    is_item->clicked(Point());
+    FAIL();
 }
 
-TEST(RouteWindow, DifficultySetsRouteUnsaved)
+TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, difficulty).Times(AtLeast(1)).WillRepeatedly(Return("Medium"));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::Position));
-    EXPECT_CALL(waypoint, set_difficulty("Hard")).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
-    window->set_randomizer_enabled(true);
-    window->set_route(&route);
-
-    auto difficulty = window->root_control()->find<ui::Dropdown>(RouteWindow::Names::difficulty);
-    ASSERT_NE(difficulty, nullptr);
-    ASSERT_TRUE(difficulty->visible(true));
-
-    auto dropdown_button = difficulty->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
-    ASSERT_NE(dropdown_button, nullptr);
-    dropdown_button->clicked(Point());
-
-    auto dropdown_list = difficulty->dropdown_listbox();
-    ASSERT_NE(dropdown_list, nullptr);
-
-    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "2");
-    ASSERT_NE(row, nullptr);
-
-    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
-    ASSERT_NE(cell, nullptr);
-    cell->clicked(Point());
+    FAIL();
 }
 
+TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
+{
+    FAIL();
+}
 
+TEST(RouteWindow, SetRandomizerStringUpdatesWaypoint)
+{
+    FAIL();
+}
