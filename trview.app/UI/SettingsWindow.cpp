@@ -6,6 +6,7 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Slider.h>
+#include <trview.ui/TextArea.h>
 #include <trview.ui/Layouts/GridLayout.h>
 #include <trview.ui/Layouts/StackLayout.h>
 
@@ -75,6 +76,27 @@ namespace trview
         _randomizer_tools = panel->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Enable Randomizer Tools"));
         _randomizer_tools->set_name("RandomizerTools");
         _randomizer_tools->on_state_changed += on_randomizer_tools;
+
+        auto program_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Program"));
+        auto program_panel = program_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
+        program_panel->set_layout(std::make_unique<StackLayout>());
+        auto number_panel = program_panel->add_child(std::make_unique<ui::Window>(Size(160, 50), Colour::Transparent));
+        number_panel->set_layout(std::make_unique<StackLayout>(5.0f, StackLayout::Direction::Horizontal));
+        number_panel->add_child(std::make_unique<Label>(Size(), Colour::Transparent, L"Recent Files", 8, graphics::TextAlignment::Left, graphics::ParagraphAlignment::Centre, SizeMode::Auto));
+        _max_recent_files = number_panel->add_child(std::make_unique<TextArea>(Size(100, 20), Colour(1.0f, 0.15f, 0.15f, 0.15f), Colour::White));
+        _max_recent_files->set_mode(TextArea::Mode::SingleLine);
+        _token_store += _max_recent_files->on_enter += [this](const std::wstring& value)
+        {
+            try
+            {
+                uint32_t new_value = std::stoi(value);
+                on_max_recent_files(new_value);
+            }
+            catch (...)
+            {
+                _max_recent_files->set_text(std::to_wstring(_max_recent_files_value));
+            }
+        };
 
         auto camera_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Camera Movement"));
         auto camera_panel = camera_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
@@ -195,5 +217,11 @@ namespace trview
     void SettingsWindow::set_randomizer_tools(bool value)
     {
         _randomizer_tools->set_state(value);
+    }
+
+    void SettingsWindow::set_max_recent_files(uint32_t value)
+    {
+        _max_recent_files->set_text(std::to_wstring(value));
+        _max_recent_files_value = value;
     }
 }

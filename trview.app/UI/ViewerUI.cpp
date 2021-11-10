@@ -179,6 +179,11 @@ namespace trview
             _settings.randomizer_tools = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_max_recent_files += [&](uint32_t value)
+        {
+            _settings.max_recent_files = value;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
@@ -427,6 +432,7 @@ namespace trview
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
         _settings_window->set_camera_display_degrees(settings.camera_display_degrees);
         _settings_window->set_randomizer_tools(settings.randomizer_tools);
+        _settings_window->set_max_recent_files(settings.max_recent_files);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _context_menu->set_randomizer_tools(settings.randomizer_tools);
     }
