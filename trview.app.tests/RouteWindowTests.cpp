@@ -11,6 +11,7 @@
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -474,17 +475,70 @@ TEST(RouteWindow, ClickStatShowsBubble)
 
 TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+    ASSERT_NE(randomizer_group, nullptr);
+    ASSERT_FALSE(randomizer_group->visible());
+    window->set_randomizer_enabled(true);
+    ASSERT_TRUE(randomizer_group->visible());
+}
+
+TEST(RouteWindow, WindowResizesWhenRandomizerEnabled)
+{
+    auto window = register_test_module().build();
+    const auto size = window->window().size();
+    window->set_randomizer_enabled(true);
+    const auto new_size = window->window().size();
+    ASSERT_GT(new_size.height, size.height);
 }
 
 TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
+    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, "One", { std::string("One"), std::string("Two"), std::string("Three") } };
+    settings.settings["test3"] = { "Test 3", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
+
+    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
+    ASSERT_NE(test1, nullptr);
+
+    auto test2 = randomizer_group->find<ui::Dropdown>("test2");
+    ASSERT_NE(test2, nullptr);
+
+    auto test3 = randomizer_group->find<ui::TextArea>("test3");
+    ASSERT_NE(test3, nullptr);
 }
 
 TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean, true };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_TRUE(test1->state());
+
+    test1->clicked(Point());
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_FALSE(std::get<bool>(new_settings["test1"]));
 }
 
 TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)

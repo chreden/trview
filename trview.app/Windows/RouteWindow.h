@@ -36,6 +36,7 @@ namespace trview
             static const std::string vehicle_required;
             static const std::string is_item;
             static const std::string difficulty;
+            static const std::string randomizer_group;
         };
 
         /// Create a route window as a child of the specified window.

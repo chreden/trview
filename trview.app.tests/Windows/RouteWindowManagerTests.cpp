@@ -56,3 +56,23 @@ TEST(RouteWindowManager, WindowsUpdated)
     manager->create_window();
     manager->update(1.0f);
 }
+
+TEST(RouteWindowManager, RandomizerEnabledPassed)
+{
+    FAIL();
+}
+
+TEST(RouteWindowManager, RandomizerEnabledPassedToNewWindows)
+{
+    FAIL();
+}
+
+TEST(RouteWindowManager, RandomizerSettingsPassed)
+{
+    FAIL();
+}
+
+TEST(RouteWindowManager, RandomizerSettingsPassedToNewWindow)
+{
+    FAIL();
+}

@@ -36,6 +36,7 @@ namespace trview
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
+    const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
 
     namespace Colours
     {
@@ -330,6 +331,8 @@ namespace trview
         };
 
         _rando_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Randomizer"));
+        _rando_group->set_name(Names::randomizer_group);
+        _rando_group->set_visible(false);
         _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
         auto layout = std::make_unique<StackLayout>(5.0f);
         layout->set_margin(Size(0, 10.0f));
@@ -548,7 +551,8 @@ namespace trview
 
                     if (x.second.options.empty())
                     {
-                        // TODO: Text entry
+                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
+                        text_area->set_name(x.first);
                     }
                     else
                     {
@@ -579,7 +583,11 @@ namespace trview
                 }
                 case RandomizerSettings::Setting::Type::Number:
                 {
-                    // TODO: Number entry
+                    auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
+                    string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
+                    string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
+                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
+                    number_area->set_name(x.first);
                     break;
                 }
             }
