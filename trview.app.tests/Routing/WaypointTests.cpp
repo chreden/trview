@@ -51,5 +51,12 @@ TEST(Waypoint, Visibility)
 
 TEST(Waypoint, RandomizerProperties)
 {
-    FAIL();
+    Waypoint waypoint(std::make_shared<MockMesh>(), Vector3::Zero, Vector3::Down, 0, IWaypoint::Type::Position, 0, Colour::Red);
+    auto existing = waypoint.randomizer_settings();
+    ASSERT_TRUE(existing.empty());
+    existing["test1"] = std::string("Test");
+    waypoint.set_randomizer_settings(existing);
+    auto updated = waypoint.randomizer_settings();
+    ASSERT_EQ(existing.size(), 1);
+    ASSERT_EQ(std::get<std::string>(updated["test1"]), "Test");
 }
