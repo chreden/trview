@@ -30,15 +30,15 @@ TEST(RandomizerSettings, Serialize)
     RandomizerSettings deserialized;
     from_json(json, deserialized);
 
-    ASSERT_NE(settings.settings.find("test1"), settings.settings.end());
-    auto test1 = settings.settings["test1"];
+    ASSERT_NE(deserialized.settings.find("test1"), deserialized.settings.end());
+    auto test1 = deserialized.settings["test1"];
     ASSERT_EQ(test1.display, "Test 1");
     ASSERT_EQ(std::get<bool>(test1.default_value), true);
     ASSERT_TRUE(test1.options.empty());
     ASSERT_EQ(test1.type, RandomizerSettings::Setting::Type::Boolean);
 
-    ASSERT_NE(settings.settings.find("test2"), settings.settings.end());
-    auto test2 = settings.settings["test2"];
+    ASSERT_NE(deserialized.settings.find("test2"), deserialized.settings.end());
+    auto test2 = deserialized.settings["test2"];
     ASSERT_EQ(test2.display, "Test 2");
     ASSERT_EQ(std::get<std::string>(test2.default_value), std::string("One"));
     ASSERT_EQ(test2.options.size(), 2);
@@ -46,15 +46,15 @@ TEST(RandomizerSettings, Serialize)
     ASSERT_EQ(std::get<std::string>(test2.options[1]), std::string("Two"));
     ASSERT_EQ(test2.type, RandomizerSettings::Setting::Type::String);
 
-    ASSERT_NE(settings.settings.find("test3"), settings.settings.end());
-    auto test3 = settings.settings["test3"];
+    ASSERT_NE(deserialized.settings.find("test3"), deserialized.settings.end());
+    auto test3 = deserialized.settings["test3"];
     ASSERT_EQ(test3.display, "Test 3");
     ASSERT_EQ(std::get<std::string>(test3.default_value), std::string("One"));
     ASSERT_TRUE(test3.options.empty());
     ASSERT_EQ(test3.type, RandomizerSettings::Setting::Type::String);
 
-    ASSERT_NE(settings.settings.find("test4"), settings.settings.end());
-    auto test4 = settings.settings["test4"];
+    ASSERT_NE(deserialized.settings.find("test4"), deserialized.settings.end());
+    auto test4 = deserialized.settings["test4"];
     ASSERT_EQ(test4.display, "Test 4");
     ASSERT_EQ(std::get<float>(test4.default_value), 1.5f);
     ASSERT_TRUE(test4.options.empty());

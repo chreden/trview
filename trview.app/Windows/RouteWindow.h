@@ -32,10 +32,6 @@ namespace trview
             static const std::string notes_area;
             static const std::string select_save_button;
             static const std::string waypoint_stats;
-            static const std::string requires_glitch;
-            static const std::string vehicle_required;
-            static const std::string is_item;
-            static const std::string difficulty;
             static const std::string randomizer_group;
         };
 

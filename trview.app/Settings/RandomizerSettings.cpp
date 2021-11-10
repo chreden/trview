@@ -77,7 +77,7 @@ namespace trview
         }
         case RandomizerSettings::Setting::Type::Number:
         {
-            // json["default"] = std::get<float>(setting.default_value);
+            json["default"] = std::get<float>(setting.default_value);
             break;
         }
         }
@@ -86,21 +86,11 @@ namespace trview
         {
             switch (setting.type)
             {
-            case RandomizerSettings::Setting::Type::Boolean:
-            {
-                json["options"] = to_vector<bool>(setting.options);
-                break;
-            }
-            case RandomizerSettings::Setting::Type::String:
-            {
-                json["options"] = to_vector<std::string>(setting.options);
-                break;
-            }
-            case RandomizerSettings::Setting::Type::Number:
-            {
-                // json["options"] = to_vector<float>(setting.options);
-                break;
-            }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    json["options"] = to_vector<std::string>(setting.options);
+                    break;
+                }
             }
         }
     }

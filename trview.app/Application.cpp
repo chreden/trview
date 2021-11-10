@@ -397,6 +397,7 @@ namespace trview
             {
                 _route = route;
                 _route_window->set_route(_route.get());
+                _route->set_randomizer_enabled(_settings.randomizer_tools);
                 _viewer->set_route(_route);
             }
         };
