@@ -549,10 +549,24 @@ namespace trview
                     string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
                     string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
 
+                    const auto update_setting = [this, name](const std::wstring& value)
+                    {
+                        if (_route && _selected_index < _route->waypoints())
+                        {
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            settings[name] = to_utf8(value);
+                            waypoint.set_randomizer_settings(settings);
+                            _route->set_unsaved(true);
+                        }
+                    };
+
                     if (x.second.options.empty())
                     {
                         auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
                         text_area->set_name(x.first);
+                        text_area->set_mode(TextArea::Mode::SingleLine);
+                        _token_store += text_area->on_text_changed += update_setting;
                     }
                     else
                     {
@@ -567,17 +581,7 @@ namespace trview
 
                         dropdown->set_values(options);
                         dropdown->set_dropdown_scope(_ui.get());
-                        _token_store += dropdown->on_value_selected += [this, name](const std::wstring& value)
-                        {
-                            if (_route && _selected_index < _route->waypoints())
-                            {
-                                auto& waypoint = _route->waypoint(_selected_index);
-                                auto settings = waypoint.randomizer_settings();
-                                settings[name] = to_utf8(value);
-                                waypoint.set_randomizer_settings(settings);
-                                _route->set_unsaved(true);
-                            }
-                        };
+                        _token_store += dropdown->on_value_selected += update_setting;
                     }
                     break;
                 }
@@ -587,7 +591,37 @@ namespace trview
                     string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
                     string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
                     auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
+                    number_area->set_mode(TextArea::Mode::SingleLine);
                     number_area->set_name(x.first);
+
+                    const auto update_number = [this, name, number_area](const std::wstring& text)
+                    {
+                        if (_route && _selected_index < _route->waypoints())
+                        {
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            try
+                            {
+                                const auto value = std::stof(text);
+                                settings[name] = value;
+                                waypoint.set_randomizer_settings(settings);
+                                _route->set_unsaved(true);
+                            }
+                            catch (...)
+                            {
+                                const auto value_to_set =
+                                    settings.find(name) == settings.end() ?
+                                    _randomizer_settings.settings[name].default_value : settings[name];
+                                number_area->set_text(std::to_wstring(std::get<float>(value_to_set)));
+                            }
+                        }
+                    };
+
+                    _token_store += number_area->on_enter += update_number;
+                    _token_store += number_area->on_focus_lost += [this, name, number_area, update_number]()
+                    {
+                        update_number(number_area->text());
+                    };
                     break;
                 }
             }

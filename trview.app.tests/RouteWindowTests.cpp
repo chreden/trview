@@ -633,10 +633,44 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
 
     auto test1 = randomizer_group->find<ui::TextArea>("test1");
     ASSERT_NE(test1, nullptr);
-    ASSERT_EQ(test1->text(), L"1.0000");
+    ASSERT_EQ(test1->text(), L"1.000000");
 
     test1->set_text(L"2.0");
+    test1->gained_focus();
+    test1->key_char(0xD);
 
     ASSERT_NE(new_settings.find("test1"), new_settings.end());
     ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
 }
+
+TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
+{
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"1.000000");
+
+    test1->gained_focus();
+    test1->set_text(L"2.0");
+    test1->lost_focus(nullptr);
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
+}
+
