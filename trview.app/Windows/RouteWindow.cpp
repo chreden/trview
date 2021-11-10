@@ -609,30 +609,32 @@ namespace trview
 
             switch (s.second.type)
             {
-            case RandomizerSettings::Setting::Type::Boolean:
-            {
-                auto checkbox = _rando_area->find<Checkbox>(s.first);
-                checkbox->set_state(std::get<bool>(value_to_set));
-                break;
-            }
-            case RandomizerSettings::Setting::Type::String:
-            {
-                if (s.second.options.empty())
+                case RandomizerSettings::Setting::Type::Boolean:
                 {
-                    // TODO: Text entry.
+                    auto checkbox = _rando_area->find<Checkbox>(s.first);
+                    checkbox->set_state(std::get<bool>(value_to_set));
+                    break;
                 }
-                else
+                case RandomizerSettings::Setting::Type::String:
                 {
-                    auto dropdown = _rando_area->find<Dropdown>(s.first);
-                    dropdown->set_selected_value(to_utf16(std::get<std::string>(value_to_set)));
+                    if (s.second.options.empty())
+                    {
+                        auto text = _rando_area->find<TextArea>(s.first);
+                        text->set_text(to_utf16(std::get<std::string>(value_to_set)));
+                    }
+                    else
+                    {
+                        auto dropdown = _rando_area->find<Dropdown>(s.first);
+                        dropdown->set_selected_value(to_utf16(std::get<std::string>(value_to_set)));
+                    }
+                    break;
                 }
-                break;
-            }
-            case RandomizerSettings::Setting::Type::Number:
-            {
-                // TODO: Number entry
-                break;
-            }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    auto text = _rando_area->find<TextArea>(s.first);
+                    text->set_text(std::to_wstring(std::get<float>(value_to_set)));
+                    break;
+                }
             }
         }
     }

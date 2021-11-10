@@ -38,6 +38,11 @@ namespace trview
             return _dropdown;
         }
 
+        std::wstring Dropdown::selected_value() const
+        {
+            return _button->text();
+        }
+
         void Dropdown::set_dropdown_scope(ui::Control* scope)
         {
             auto dropdown = std::make_unique<Listbox>(Size(size().width, size().height * _values.size()), Colour(0.25f, 0.25f, 0.25f));

@@ -543,15 +543,100 @@ TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 
 TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two") } };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::Dropdown>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->selected_value(), L"One");
+
+    auto dropdown_button = test1->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
+    ASSERT_NE(dropdown_button, nullptr);
+    dropdown_button->clicked(Point());
+
+    auto dropdown_list = test1->dropdown_listbox();
+    ASSERT_NE(dropdown_list, nullptr);
+
+    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
+    ASSERT_NE(row, nullptr);
+
+    auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
+    ASSERT_NE(cell, nullptr);
+    cell->clicked(Point());
+
+    test1->set_selected_value(L"Two");
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
 }
 
 TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One") };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"One");
+
+    test1->set_text(L"Two");
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
 }
 
-TEST(RouteWindow, SetRandomizerStringUpdatesWaypoint)
+TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
 {
-    FAIL();
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"1.0000");
+
+    test1->set_text(L"2.0");
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
 }

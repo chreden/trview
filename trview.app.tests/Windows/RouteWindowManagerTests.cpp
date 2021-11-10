@@ -59,20 +59,37 @@ TEST(RouteWindowManager, WindowsUpdated)
 
 TEST(RouteWindowManager, RandomizerEnabledPassed)
 {
-    FAIL();
+    auto mock_window = std::make_shared<MockRouteWindow>();
+    EXPECT_CALL(*mock_window, set_randomizer_enabled(false)).Times(1);
+    EXPECT_CALL(*mock_window, set_randomizer_enabled(true)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_randomizer_enabled(true);
 }
 
 TEST(RouteWindowManager, RandomizerEnabledPassedToNewWindows)
 {
-    FAIL();
+    auto mock_window = std::make_shared<MockRouteWindow>();
+    EXPECT_CALL(*mock_window, set_randomizer_enabled(false)).Times(0);
+    EXPECT_CALL(*mock_window, set_randomizer_enabled(true)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->set_randomizer_enabled(true);
+    manager->create_window();
 }
 
 TEST(RouteWindowManager, RandomizerSettingsPassed)
 {
-    FAIL();
+    auto mock_window = std::make_shared<MockRouteWindow>();
+    EXPECT_CALL(*mock_window, set_randomizer_settings(testing::_)).Times(2);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_randomizer_settings({});
 }
 
 TEST(RouteWindowManager, RandomizerSettingsPassedToNewWindow)
 {
-    FAIL();
+    auto mock_window = std::make_shared<MockRouteWindow>();
+    EXPECT_CALL(*mock_window, set_randomizer_settings(testing::_)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
 }

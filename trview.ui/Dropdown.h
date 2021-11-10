@@ -44,6 +44,12 @@ namespace trview
             /// Get the actual list.
             ui::Listbox* dropdown_listbox() const;
 
+            /// <summary>
+            /// Get the selected value of the dropdown.
+            /// </summary>
+            /// <returns>The selected value</returns>
+            std::wstring selected_value() const;
+
             /// Set the scope that the dropdown will appear in. This may be required if the parent control
             /// does not have space for the entire dropdown to be rendered.
             /// @param scope The scope to create the dropdown control in.
