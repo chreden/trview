@@ -563,7 +563,7 @@ namespace trview
 
                     if (x.second.options.empty())
                     {
-                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
+                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
                         text_area->set_name(x.first);
                         text_area->set_mode(TextArea::Mode::SingleLine);
                         _token_store += text_area->on_text_changed += update_setting;
@@ -590,7 +590,7 @@ namespace trview
                     auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
                     string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
                     string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
-                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colour::Grey, Colour::White));
+                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
                     number_area->set_mode(TextArea::Mode::SingleLine);
                     number_area->set_name(x.first);
 
