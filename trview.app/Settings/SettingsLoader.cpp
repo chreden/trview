@@ -38,6 +38,7 @@ namespace trview
             read_attribute(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
             read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
             read_attribute(json, settings.randomizer_tools, "randomizertools");
+            read_attribute(json, settings.max_recent_files, "maxrecentfiles");
         }
         catch (...)
         {
@@ -72,6 +73,7 @@ namespace trview
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
             json["cameradisplaydegrees"] = settings.camera_display_degrees;
             json["randomizertools"] = settings.randomizer_tools;
+            json["maxrecentfiles"] = settings.max_recent_files;
             _files->save_file(file_path, json.dump());
         }
         catch (...)

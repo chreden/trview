@@ -437,3 +437,20 @@ TEST(SettingsLoader, RandomizerToolsSaved)
     EXPECT_THAT(output, HasSubstr("\"randomizertools\":true"));
 }
 
+TEST(SettingsLoader, MaxRecentFilesLoaded)
+{
+    auto loader = setup_setting("{\"maxrecentfiles\":15}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.max_recent_files, 15);
+}
+
+TEST(SettingsLoader, MaxRecentFilesSaved)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.max_recent_files = 15;
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"maxrecentfiles\":15"));
+}
+

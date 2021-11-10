@@ -40,6 +40,7 @@ namespace trview
             camera_acceleration == other.camera_acceleration &&
             camera_display_degrees == other.camera_display_degrees &&
             randomizer_tools == other.randomizer_tools &&
-            recent_files == other.recent_files;
+            recent_files == other.recent_files &&
+            max_recent_files == other.max_recent_files;
     }
 }
