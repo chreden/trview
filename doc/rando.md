@@ -61,3 +61,8 @@ If set to `true` then the value for this attribute will always be saved in the J
 The settings above will generate the UI below.
 
 ![Screenshot](rando.png)
+
+## Import and Export
+TRView can import locations from Randomizer location files, as long as the level name exactly matches the name in the location file. Select the Randomizer location file filter on the route import dialog to do this.
+
+TRView can export into Randomizer location files as long as the level names matches the one in the json file. Select the Randomizer filter in the export menu to do this.
