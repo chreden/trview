@@ -472,7 +472,15 @@ namespace trview
                 }
                 case RandomizerSettings::Setting::Type::Number:
                 {
-                    json[setting.first] = std::get<float>(value_to_set);
+                    float value = std::get<float>(value_to_set);
+                    if (fabs(round(value) - value) < FLT_EPSILON)
+                    {
+                        json[setting.first] = static_cast<int>(round(value));
+                    }
+                    else
+                    {
+                        json[setting.first] = value;
+                    }
                     break;
                 }
             }

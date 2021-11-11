@@ -330,7 +330,11 @@ namespace trview
             }
         };
 
-        _rando_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Randomizer"));
+        _rando_group = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, 200), Colours::Notes));
+        auto group_layout = std::make_unique<StackLayout>();
+        group_layout->set_margin(Size(10, 0));
+        _rando_group->set_layout(std::move(group_layout));
+        _rando_group->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, L"Randomizer", 8, TextAlignment::Left, ParagraphAlignment::Centre));
         _rando_group->set_name(Names::randomizer_group);
         _rando_group->set_visible(false);
         _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
@@ -627,8 +631,6 @@ namespace trview
             }
         }
 
-        Size size = Size(_rando_group->size().width, _rando_area->size().height + 21);
-        _rando_group->set_size(size);
         update_minimum_height();
     }
 

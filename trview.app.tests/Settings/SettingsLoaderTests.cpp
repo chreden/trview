@@ -35,12 +35,13 @@ namespace
         return std::vector<uint8_t>(value.begin(), value.end());
     }
 
-    std::unique_ptr<SettingsLoader> setup_setting(const std::string& setting)
+    std::unique_ptr<SettingsLoader> setup_setting(const std::string& setting, std::string randomizer_settings = "")
     {
         const auto contents = to_bytes(setting);
         auto files = std::make_shared<MockFiles>();
-        EXPECT_CALL(*files, appdata_directory).Times(1).WillRepeatedly(Return("appdata"));
+        EXPECT_CALL(*files, appdata_directory).Times(2).WillRepeatedly(Return("appdata"));
         EXPECT_CALL(*files, load_file("appdata\\trview\\settings.txt")).Times(1).WillRepeatedly(Return(contents));
+        EXPECT_CALL(*files, load_file("appdata\\trview\\randomizer.json")).Times(1).WillRepeatedly(Return(to_bytes(randomizer_settings)));
         return register_test_module().with_files(files).build();
     }
 
@@ -439,20 +440,9 @@ TEST(SettingsLoader, RandomizerToolsSaved)
 
 TEST(SettingsLoader, RandomizerSettingsLoaded)
 {
-    auto loader = setup_setting("{\"randomizer\":{\"fields\":{\"test1\":{\"type\":\"boolean\",\"default\":true}}}}");
+    auto loader = setup_setting("", "{\"fields\":{\"test1\":{\"type\":\"boolean\",\"default\":true}}}");
     auto settings = loader->load_user_settings();
     ASSERT_FALSE(settings.randomizer.settings.find("test1") == settings.randomizer.settings.end());
     auto setting = settings.randomizer.settings["test1"];
     ASSERT_EQ(std::get<bool>(setting.default_value), true);
-}
-
-TEST(SettingsLoader, RandomizerSettingsSaved)
-{
-    std::string output;
-    auto loader = setup_save_setting(output);
-    UserSettings settings;
-    settings.randomizer.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean, true };
-
-    loader->save_user_settings(settings);
-    EXPECT_THAT(output, HasSubstr("\"randomizer\":{\"fields\":{\"test1\":{\"default\":true,\"display\":\"Test 1\",\"type\":\"boolean\"}}}"));
 }

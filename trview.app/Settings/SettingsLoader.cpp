@@ -38,7 +38,22 @@ namespace trview
             read_attribute(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
             read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
             read_attribute(json, settings.randomizer_tools, "randomizertools");
-            read_attribute(json, settings.randomizer, "randomizer");
+        }
+        catch (...)
+        {
+            // Nowhere to log this yet...
+        }
+
+        try
+        {
+            auto data = _files->load_file(_files->appdata_directory() + "\\trview\\randomizer.json");
+            if (!data.has_value())
+            {
+                return settings;
+            }
+
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
+            from_json(json, settings.randomizer);
         }
         catch (...)
         {
@@ -73,7 +88,6 @@ namespace trview
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
             json["cameradisplaydegrees"] = settings.camera_display_degrees;
             json["randomizertools"] = settings.randomizer_tools;
-            json["randomizer"] = settings.randomizer;
             _files->save_file(file_path, json.dump());
         }
         catch (...)
