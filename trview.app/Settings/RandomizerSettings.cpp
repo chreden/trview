@@ -62,6 +62,7 @@ namespace trview
     {
         json["display"] = setting.display;
         json["type"] = setting.type;
+        json["always_output"] = setting.always_output;
 
         switch (setting.type)
         {
@@ -99,6 +100,7 @@ namespace trview
     {
         setting.display = read_attribute<std::string>(json, "display");
         setting.type = read_attribute<RandomizerSettings::Setting::Type>(json, "type");
+        setting.always_output = read_attribute<bool>(json, "always_output", false);
         switch (setting.type)
         {
             case RandomizerSettings::Setting::Type::Boolean:

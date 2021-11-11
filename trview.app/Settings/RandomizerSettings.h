@@ -34,6 +34,10 @@ namespace trview
             /// then this isn't a select element.
             /// </summary>
             std::vector<std::variant<bool, float, std::string>> options;
+            /// <summary>
+            /// Whether to always save the value even if it is the same as the default value.
+            /// </summary>
+            bool always_output{ false };
         };
 
         std::map<std::string, Setting> settings;

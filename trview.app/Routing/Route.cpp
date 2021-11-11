@@ -453,7 +453,7 @@ namespace trview
                 waypoint_settings.find(setting.first) == waypoint_settings.end() ?
                 setting.second.default_value : waypoint_settings[setting.first];
 
-            if (value_to_set == setting.second.default_value)
+            if (!setting.second.always_output && value_to_set == setting.second.default_value)
             {
                 continue;
             }
