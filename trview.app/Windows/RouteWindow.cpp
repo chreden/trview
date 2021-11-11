@@ -520,7 +520,7 @@ namespace trview
         const float panel_width = 270;
 
         const auto num_bools = settings.settings_of_type(RandomizerSettings::Setting::Type::Boolean);
-        const auto rows = std::ceil(num_bools / 2);
+        const auto rows = static_cast<int>(std::ceil(num_bools / 2.0));
         auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, rows * 25), Colours::Notes));
         grid->set_layout(std::make_unique<GridLayout>(2, rows));
 
