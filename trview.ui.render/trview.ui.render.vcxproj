@@ -18,6 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+      <Command>copy "$(IntDir)\trview.ui.render.res" "$(OutDir)\trview.ui.render.res"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ButtonNode.h" />
     <ClInclude Include="di.h" />
@@ -32,6 +37,7 @@
     <ClInclude Include="NumericUpDownNode.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />
+    <ClInclude Include="Resources/resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="WindowNode.h" />
   </ItemGroup>
@@ -60,6 +66,9 @@
     <ProjectReference Include="..\trview.ui\trview.ui.vcxproj">
       <Project>{160bd1c8-42c1-46e6-a232-b980b9b6d57e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources/trview.ui.render.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

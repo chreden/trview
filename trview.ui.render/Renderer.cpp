@@ -12,10 +12,43 @@
 #include "ButtonNode.h"
 #include "NumericUpDownNode.h"
 
+#include "Resources/resource.h"
+#include <trview.app/Resources/ResourceHelper.h>
+#include <external/DirectXTK/Inc/WICTextureLoader.h>
+
 namespace trview
 {
     namespace ui
     {
+        namespace
+        {
+            // Load a specific texture with the specified ID from the embedded resource file.
+            // device: The Direct3D device to use to load the textures.
+            // resource_id: The integer ID of the texture in the resource file.
+            // Returns: The texture loaded from the resource.
+            graphics::Texture load_texture_from_resource(const graphics::IDevice& device, int resource_id)
+            {
+                using namespace Microsoft::WRL;
+
+                ComPtr<ID3D11Resource> resource;
+                ComPtr<ID3D11ShaderResourceView> view;
+
+                auto resource_memory = get_resource_memory(resource_id, L"PNG");
+                DirectX::CreateWICTextureFromMemory(device.device().Get(), resource_memory.data, resource_memory.size, &resource, &view);
+
+                if (!resource)
+                {
+                    std::string error("Could not load embedded texture with ID '" + std::to_string(resource_id) + "'");
+                    throw std::exception(error.c_str());
+                }
+
+                // Get the correct interface for a texture from the loaded resource.
+                ComPtr<ID3D11Texture2D> texture;
+                resource.As(&texture);
+                return graphics::Texture{ texture, view };
+            }
+        }
+
         namespace render
         {
             Renderer::Renderer(const std::shared_ptr<graphics::IDevice>& device,
@@ -32,6 +65,9 @@ namespace trview
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
                 _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
+
+                _up_down_up = load_texture_from_resource(*device, IDB_NUMERIC_UP);
+                _up_down_down = load_texture_from_resource(*device, IDB_NUMERIC_DOWN);
             }
 
             Renderer::~Renderer()
@@ -71,7 +107,7 @@ namespace trview
                 }
                 else if (auto numeric_up_down = dynamic_cast<NumericUpDown*>(control))
                 {
-                    node = std::make_unique<NumericUpDownNode>(_device, _render_target_source, numeric_up_down);
+                    node = std::make_unique<NumericUpDownNode>(_device, _render_target_source, numeric_up_down, _up_down_up, _up_down_down);
                 }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {
