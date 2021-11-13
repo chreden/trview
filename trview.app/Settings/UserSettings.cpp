@@ -2,11 +2,6 @@
 
 namespace trview
 {
-    namespace
-    {
-        const int MaxRecentFiles = 10;
-    }
-
     void UserSettings::add_recent_file(const std::string& file)
     {
         // If the file already exists in the recent files list, remove it from where it is
@@ -18,7 +13,7 @@ namespace trview
         }
 
         recent_files.push_front(file);
-        if (recent_files.size() > MaxRecentFiles)
+        if (recent_files.size() > max_recent_files)
         {
             recent_files.pop_back();
         }

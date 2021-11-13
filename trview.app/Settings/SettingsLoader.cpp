@@ -39,6 +39,8 @@ namespace trview
             read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
             read_attribute(json, settings.randomizer_tools, "randomizertools");
             read_attribute(json, settings.max_recent_files, "maxrecentfiles");
+
+            settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
         catch (...)
         {
