@@ -2,6 +2,7 @@
 #include <trview.ui/Button.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Slider.h>
+#include <trview.ui/NumericUpDown.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -11,7 +12,7 @@ TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("VSync");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::vsync);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -37,7 +38,7 @@ TEST(SettingsWindow, ClickingVSyncRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("VSync");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::vsync);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -51,7 +52,7 @@ TEST(SettingsWindow, SetGoToLaraUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("GoToLara");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::go_to_lara);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -77,7 +78,7 @@ TEST(SettingsWindow, ClickingGoToLaraRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("GoToLara");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::go_to_lara);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -91,7 +92,7 @@ TEST(SettingsWindow, SetInvertMapControlsUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("InvertMapControls");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_map_controls);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -117,7 +118,7 @@ TEST(SettingsWindow, ClickingInvertMapControlsRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("InvertMapControls");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_map_controls);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -131,7 +132,7 @@ TEST(SettingsWindow, SetItemsWindowOnStartupUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("ItemsStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::items_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -157,7 +158,7 @@ TEST(SettingsWindow, ClickingItemsWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("ItemsStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::items_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -171,7 +172,7 @@ TEST(SettingsWindow, SetTriggersWindowOnStartupUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("TriggersStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::triggers_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -197,7 +198,7 @@ TEST(SettingsWindow, ClickingTriggersWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("TriggersStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::triggers_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -211,7 +212,7 @@ TEST(SettingsWindow, SetRoomsWindowOnStartupUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("RoomsStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::rooms_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -237,7 +238,7 @@ TEST(SettingsWindow, ClickingRoomsWindowOnStartupRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("RoomsStartup");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::rooms_startup);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -251,7 +252,7 @@ TEST(SettingsWindow, SetOrbitUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("AutoOrbit");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::auto_orbit);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -277,7 +278,7 @@ TEST(SettingsWindow, ClickingOrbitRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("AutoOrbit");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::auto_orbit);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -291,7 +292,7 @@ TEST(SettingsWindow, SetInvertVerticalPanUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("InvertVerticalPan");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_vertical_pan);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -317,7 +318,7 @@ TEST(SettingsWindow, ClickingInvertVerticalPanRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("InvertVerticalPan");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::invert_vertical_pan);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -331,7 +332,7 @@ TEST(SettingsWindow, SetMovementSpeedUpdatesSlider)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("MovementSpeed");
+    auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -352,7 +353,7 @@ TEST(SettingsWindow, ClickingMovementSpeedRaisesEvent)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("MovementSpeed");
+    auto slider = host.find<Slider>(SettingsWindow::Names::movement_speed);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -372,7 +373,7 @@ TEST(SettingsWindow, SetSensitivitySlider)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("Sensitivity");
+    auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -393,7 +394,7 @@ TEST(SettingsWindow, ClickingSensitivityRaisesEvent)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("Sensitivity");
+    auto slider = host.find<Slider>(SettingsWindow::Names::sensitivity);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -413,7 +414,7 @@ TEST(SettingsWindow, SetAccelerationUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("Acceleration");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::acceleration);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -439,7 +440,7 @@ TEST(SettingsWindow, ClickingAccelerationRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("Acceleration");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::acceleration);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -453,7 +454,7 @@ TEST(SettingsWindow, SetAccelerationRateUpdatesSlider)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("AccelerationRate");
+    auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -474,7 +475,7 @@ TEST(SettingsWindow, ClickingAccelerationRateRaisesEvent)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto slider = host.find<Slider>("AccelerationRate");
+    auto slider = host.find<Slider>(SettingsWindow::Names::acceleration_rate);
     ASSERT_NE(slider, nullptr);
     ASSERT_EQ(slider->value(), 0.0f);
 
@@ -501,7 +502,7 @@ TEST(SettingsWindow, CloseClosesWindow)
     window.toggle_visibility();
     ASSERT_TRUE(control->visible());
 
-    auto close = control->find<Button>("Close");
+    auto close = control->find<Button>(SettingsWindow::Names::close);
     ASSERT_NE(close, nullptr);
 
     close->clicked(Point());
@@ -535,7 +536,7 @@ TEST(SettingsWindow, ClickingCameraDegreesRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("CameraDisplayDegrees");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::camera_display_degrees);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -549,7 +550,7 @@ TEST(SettingsWindow, SetCameraDegreesUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("CameraDisplayDegrees");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::camera_display_degrees);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -576,7 +577,7 @@ TEST(SettingsWindow, ClickingRandomizerToolsRaisesEvent)
         received_value = value;
     };
 
-    auto checkbox = host.find<Checkbox>("RandomizerTools");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::randomizer_tools);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -590,7 +591,7 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
     ui::Window host(Size(), Colour::Transparent);
     SettingsWindow window(host);
 
-    auto checkbox = host.find<Checkbox>("RandomizerTools");
+    auto checkbox = host.find<Checkbox>(SettingsWindow::Names::randomizer_tools);
     ASSERT_NE(checkbox, nullptr);
     ASSERT_FALSE(checkbox->state());
 
@@ -602,5 +603,49 @@ TEST(SettingsWindow, SetRandomizerToolsUpdatesCheckbox)
 
     window.set_randomizer_tools(true);
     ASSERT_TRUE(checkbox->state());
+    ASSERT_FALSE(received_value.has_value());
+}
+
+TEST(SettingsWindow, ChangingMaxRecentFilesRaisesEvent)
+{
+    ui::Window host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    std::optional<uint32_t> received_value;
+    auto token = window.on_max_recent_files += [&](uint32_t value)
+    {
+        received_value = value;
+    };
+
+    auto numeric_up_down = host.find<NumericUpDown>(SettingsWindow::Names::max_recent_files);
+    ASSERT_NE(numeric_up_down, nullptr);
+    ASSERT_EQ(numeric_up_down->value(), 0);
+
+    // Click on the up button.
+    auto up = numeric_up_down->find<Button>(NumericUpDown::Names::up);
+    ASSERT_NE(up, nullptr);
+    up->clicked(Point());
+
+    ASSERT_TRUE(received_value.has_value());
+    ASSERT_EQ(received_value.value(), 1);
+}
+
+TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
+{
+    ui::Window host(Size(), Colour::Transparent);
+    SettingsWindow window(host);
+
+    auto numeric_up_down = host.find<NumericUpDown>(SettingsWindow::Names::max_recent_files);
+    ASSERT_NE(numeric_up_down, nullptr);
+    ASSERT_EQ(numeric_up_down->value(), 0);
+
+    std::optional<uint32_t> received_value;
+    auto token = window.on_max_recent_files += [&](uint32_t value)
+    {
+        received_value = value;
+    };
+
+    window.set_max_recent_files(5);
+    ASSERT_EQ(numeric_up_down->value(), 5);
     ASSERT_FALSE(received_value.has_value());
 }
