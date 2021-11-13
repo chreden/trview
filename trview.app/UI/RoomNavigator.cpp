@@ -1,5 +1,4 @@
 #include "RoomNavigator.h"
-#include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.app/Elements/RoomInfo.h>
 
 #include <trlevel/trtypes.h>
@@ -12,7 +11,7 @@
 
 namespace trview
 {
-    RoomNavigator::RoomNavigator(ui::Control& parent, const ITextureStorage& texture_storage)
+    RoomNavigator::RoomNavigator(ui::Control& parent)
     {
         using namespace ui;
 
@@ -20,7 +19,7 @@ namespace trview
 
         auto room_controls = std::make_unique<ui::Window>(Size(130, 30), Colour::Transparent);
         room_controls->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
-        _current = room_controls->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 0));
+        _current = room_controls->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, 0, 0));
         _current->on_value_changed += on_room_selected;
 
         room_controls->add_child(std::make_unique<Label>(Size(30, 20), Colour::Transparent, L"of", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));

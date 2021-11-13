@@ -5,7 +5,6 @@
 #include <set>
 
 #include <trview.common/TokenStore.h>
-#include <trview.app/Graphics/ITextureStorage.h>
 #include "IViewOptions.h"
 
 namespace trview
@@ -41,7 +40,7 @@ namespace trview
             static const Colour FlipOn;
         };
 
-        explicit ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage);
+        explicit ViewOptions(ui::Control& parent);
         virtual ~ViewOptions() = default;
         virtual void set_alternate_group(uint32_t value, bool enabled) override;
         virtual void set_alternate_groups(const std::set<uint32_t>& groups) override;

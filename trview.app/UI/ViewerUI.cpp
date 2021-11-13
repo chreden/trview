@@ -267,7 +267,7 @@ namespace trview
         layout->set_margin(Size(5, 5));
         tool_window->set_layout(std::move(layout));
 
-        _view_options = view_options_source(*tool_window, texture_storage);
+        _view_options = view_options_source(*tool_window);
         _view_options->on_highlight += on_highlight;
         _view_options->on_show_triggers += on_show_triggers;
         _view_options->on_show_hidden_geometry += on_show_hidden_geometry;
@@ -279,7 +279,7 @@ namespace trview
         _view_options->on_show_wireframe += on_show_wireframe;
         _view_options->on_show_bounding_boxes += on_show_bounding_boxes;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, texture_storage);
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window);
         _room_navigator->on_room_selected += on_select_room;
 
         initialise_camera_controls(*tool_window);

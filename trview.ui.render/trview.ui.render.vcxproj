@@ -29,6 +29,7 @@
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="Mocks\IMapRenderer.h" />
     <ClInclude Include="Mocks\IRenderer.h" />
+    <ClInclude Include="NumericUpDownNode.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="stdafx.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="LabelNode.cpp" />
     <ClCompile Include="MapRenderer.cpp" />
+    <ClCompile Include="NumericUpDownNode.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderNode.cpp" />
     <ClCompile Include="stdafx.cpp">

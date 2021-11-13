@@ -18,6 +18,7 @@ namespace trview
     namespace ui
     {
         class Label;
+        class Image;
 
         /// UI element that provides a clickable area.
         class Button : public Window
@@ -82,6 +83,8 @@ namespace trview
             /// @param colour The foreground colour.
             void set_text_colour(const Colour& colour);
 
+            void set_images(const graphics::Texture& up, const graphics::Texture& down);
+
             /// Get the text if set.
             /// @returns The text.
             std::wstring text() const;
@@ -106,6 +109,7 @@ namespace trview
             float _border_thickness{ 1.0f };
             Label* _text;
             Colour _previous_colour;
+            Image* _image{ nullptr };
         };
     }
 }

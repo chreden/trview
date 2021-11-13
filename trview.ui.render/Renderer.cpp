@@ -4,11 +4,13 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Image.h>
 #include <trview.ui/Button.h>
+#include <trview.ui/NumericUpDown.h>
 
 #include "WindowNode.h"
 #include "LabelNode.h"
 #include "ImageNode.h"
 #include "ButtonNode.h"
+#include "NumericUpDownNode.h"
 
 namespace trview
 {
@@ -67,10 +69,15 @@ namespace trview
                 {
                     node = std::make_unique<ImageNode>(_device, _render_target_source, image);
                 }
+                else if (auto numeric_up_down = dynamic_cast<NumericUpDown*>(control))
+                {
+                    node = std::make_unique<NumericUpDownNode>(_device, _render_target_source, numeric_up_down);
+                }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {
                     node = std::make_unique<WindowNode>(_device, _render_target_source, window);
                 }
+                
 
                 // Process the child nodes and build the structure to match the UI model.
                 auto children = control->child_elements(true);
