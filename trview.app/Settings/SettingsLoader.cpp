@@ -67,7 +67,7 @@ namespace trview
             json["itemsstartup"] = settings.items_startup;
             json["triggersstartup"] = settings.triggers_startup;
             json["autoorbit"] = settings.auto_orbit;
-            json["recent"] = settings.recent_files;
+            json["recent"] = std::list<std::string>(settings.recent_files.begin(), std::next(settings.recent_files.begin(), std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files)));
             json["invertverticalpan"] = settings.invert_vertical_pan;
             json["background"] = settings.background_colour;
             json["roomsstartup"] = settings.rooms_startup;

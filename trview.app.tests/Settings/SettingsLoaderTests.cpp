@@ -454,3 +454,23 @@ TEST(SettingsLoader, MaxRecentFilesSaved)
     EXPECT_THAT(output, HasSubstr("\"maxrecentfiles\":15"));
 }
 
+TEST(SettingsLoader, RecentFilesTruncatedOnLoad)
+{
+    auto loader = setup_setting("{\"maxrecentfiles\":1,\"recent\":[\"a\",\"b\"]}");
+    auto settings = loader->load_user_settings();
+    ASSERT_EQ(settings.max_recent_files, 1);
+    const std::list<std::string> expected{ "a" };
+    ASSERT_EQ(settings.recent_files, expected);
+}
+
+TEST(SettingsLoader, RecentFilesTruncatedOnSave)
+{
+    std::string output;
+    auto loader = setup_save_setting(output);
+    UserSettings settings;
+    settings.max_recent_files = 1;
+    settings.recent_files = { "a", "b" };
+    loader->save_user_settings(settings);
+    EXPECT_THAT(output, HasSubstr("\"maxrecentfiles\":1"));
+    EXPECT_THAT(output, HasSubstr("\"recent\":[\"a\"]"));
+}
