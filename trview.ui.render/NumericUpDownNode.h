@@ -11,7 +11,6 @@ namespace trview
 
         namespace render
         {
-            /// Rendering node that can render a button.
             class NumericUpDownNode final : public RenderNode
             {
             public:
