@@ -54,6 +54,7 @@
     <ClInclude Include="Mocks\IFiles.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="Resources.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -92,6 +93,7 @@
     </ClCompile>
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
+    <ClCompile Include="Resources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -103,5 +103,13 @@ namespace trview
         /// @param device The device to use.
         /// @param colour The colour to fill the texture.
         Texture create_texture(const IDevice& device, const Colour& colour);
+
+        /// <summary>
+        /// Load a specific texture with the specified ID from the embedded resource file.
+        /// </summary>
+        /// <param name="device">The Direct3D device to use to load the textures.</param>
+        /// <param name="resource_id">The integer ID of the texture in the resource file.</param>
+        /// <returns>The texture loaded from the resource.</returns>
+        Texture load_texture_from_resource(const IDevice& device, int resource_id);
     }
 }
