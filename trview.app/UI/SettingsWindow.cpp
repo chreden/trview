@@ -94,7 +94,7 @@ namespace trview
         _randomizer_tools->set_name(Names::randomizer_tools);
         _randomizer_tools->on_state_changed += on_randomizer_tools;
 
-        auto program_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 80), Colour::Transparent, Colour::LightGrey, L"Program"));
+        auto program_group = panel->add_child(std::make_unique<GroupBox>(Size(380, 60), Colour::Transparent, Colour::LightGrey, L"Program"));
         auto program_panel = program_group->add_child(std::make_unique<ui::Window>(Size(360, 50), Colour::Transparent));
         program_panel->set_layout(std::make_unique<StackLayout>());
         auto number_panel = program_panel->add_child(std::make_unique<ui::Window>(Size(160, 50), Colour::Transparent));
