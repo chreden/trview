@@ -1,61 +1,61 @@
 {
     "name": "SettingsWindow",
-	"type": "window",
-	"position": "400, 200",
-	"size": "400, 300",
-	"background_colour": "0.5, 0, 0, 0",
-	"layout": {
-		"type": "stack"
-	},
-	"children": [
-		{
-			"name": "TitleBar",
-			"type": "window",
-			"size": "400, 20",
-			"background_colour": "0, 0, 0",
-			"layout": {
-				"type": "stack",
-				"size_mode": "manual"
-			},
-			"children": [
-				{
-					"type": "label",
-					"size": "400, 20",
-					"background_colour": "0, 0, 0",
-					"text": "Settings",
-					"text_size": 8,
-					"text_alignment": "centre",
-					"paragraph_alignment": "centre",
-					"horizontal_alignment": "centre"
-				}
-			]
-		},
-		{
-			"name": "Panel",
-			"type": "window",
-			"size": "400, 250",
-			"background_colour": "0,0,0,0",
-			"layout": {
-				"type": "stack",
-				"padding": 5,
-				"auto_size_dimension": "height",				
-				"margin": "5,5"
-			},
-			"children": [
-				{
-					"name": "VSync",
-					"text": "Vsync",
-					"type": "checkbox",
-					"background_colour": "0,0,0,0"
-				},
-				{
-					"name": "close",
-					"type": "button",
-					"size": "60,20",
-					"text": "Close",
-					"horizontal_alignment": "centre"
-				}
-			]
-		}
-	]	
+    "type": "window",
+    "position": "400, 200",
+    "size": "400, 300",
+    "background_colour": "0.5, 0, 0, 0",
+    "layout": {
+        "type": "stack"
+    },
+    "children": [
+        {
+            "name": "TitleBar",
+            "type": "window",
+            "size": "400, 20",
+            "background_colour": "0, 0, 0",
+            "layout": {
+                "type": "stack",
+                "size_mode": "manual"
+            },
+            "children": [
+                {
+                    "type": "label",
+                    "size": "400, 20",
+                    "background_colour": "0, 0, 0",
+                    "text": "Settings",
+                    "text_size": 8,
+                    "text_alignment": "centre",
+                    "paragraph_alignment": "centre",
+                    "horizontal_alignment": "centre"
+                }
+            ]
+        },
+        {
+            "name": "Panel",
+            "type": "window",
+            "size": "400, 250",
+            "background_colour": "0,0,0,0",
+            "layout": {
+                "type": "stack",
+                "padding": 5,
+                "auto_size_dimension": "height",
+                "margin": "5,5"
+            },
+            "children": [
+                {
+                    "name": "VSync",
+                    "text": "Vsync",
+                    "type": "checkbox",
+                    "background_colour": "0,0,0,0"
+                },
+                {
+                    "name": "close",
+                    "type": "button",
+                    "size": "60,20",
+                    "text": "Close",
+                    "horizontal_alignment": "centre"
+                }
+            ]
+        }
+    ]	
 }
