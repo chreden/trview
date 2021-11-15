@@ -961,6 +961,9 @@
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Files\UI">
+      <UniqueIdentifier>{c6bc5197-3c80-4b1f-804a-62228b062485}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\numericdown.png">
@@ -1017,6 +1020,9 @@
     </None>
     <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Files\arial7.bin" />
+    <None Include="Resources\Files\UI\settings_window.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">
