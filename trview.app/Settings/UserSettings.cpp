@@ -2,11 +2,6 @@
 
 namespace trview
 {
-    namespace
-    {
-        const int MaxRecentFiles = 10;
-    }
-
     void UserSettings::add_recent_file(const std::string& file)
     {
         // If the file already exists in the recent files list, remove it from where it is
@@ -18,7 +13,7 @@ namespace trview
         }
 
         recent_files.push_front(file);
-        if (recent_files.size() > MaxRecentFiles)
+        if (recent_files.size() > max_recent_files)
         {
             recent_files.pop_back();
         }
@@ -40,6 +35,7 @@ namespace trview
             camera_acceleration == other.camera_acceleration &&
             camera_display_degrees == other.camera_display_degrees &&
             randomizer_tools == other.randomizer_tools &&
-            recent_files == other.recent_files;
+            recent_files == other.recent_files &&
+            max_recent_files == other.max_recent_files;
     }
 }

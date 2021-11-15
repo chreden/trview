@@ -4,13 +4,12 @@
 #include <cstdint>
 #include <trview.common/Event.h>
 #include <trview.ui/Control.h>
-#include <trview.app/Graphics/ITextureStorage.h>
 
 namespace trview
 {
     struct IViewOptions
     {
-        using Source = std::function<std::unique_ptr<IViewOptions>(ui::Control&, const ITextureStorage&)>;
+        using Source = std::function<std::unique_ptr<IViewOptions>(ui::Control&)>;
 
         virtual ~IViewOptions() = 0;
         /// <summary>

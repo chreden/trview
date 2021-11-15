@@ -22,8 +22,6 @@
 #define IDB_TOMB1_ICON                  134
 #define IDB_TOMB4_ICON                  135
 #define IDB_TOMB5_ICON                  136
-#define IDB_NUMERIC_UP                  137
-#define IDB_NUMERIC_DOWN                138
 #define IDB_SETTINGS                    142
 #define IDR_LEVEL_VERTEX_SHADER         143
 #define IDR_LEVEL_PIXEL_SHADER          144

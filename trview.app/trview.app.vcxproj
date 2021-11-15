@@ -88,7 +88,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Resources\DefaultFonts.cpp" />
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
-    <ClCompile Include="Resources\ResourceHelper.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
     <ClCompile Include="Routing\Actions.cpp" />
     <ClCompile Include="Routing\IActions.cpp" />
@@ -266,7 +265,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
     <ClInclude Include="Resources\resource.h" />
-    <ClInclude Include="Resources\ResourceHelper.h" />
     <ClInclude Include="Resources\targetver.h" />
     <ClInclude Include="Routing\Action.h" />
     <ClInclude Include="Routing\Actions.h" />

@@ -63,7 +63,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source, *texture_storage);
+        generate_tool_window(view_options_source);
 
         _go_to = std::make_unique<GoTo>(*_control.get());
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -179,6 +179,11 @@ namespace trview
             _settings.randomizer_tools = value;
             on_settings(_settings);
         };
+        _token_store += _settings_window->on_max_recent_files += [&](uint32_t value)
+        {
+            _settings.max_recent_files = value;
+            on_settings(_settings);
+        };
 
         _camera_position = std::make_unique<CameraPosition>(*_control);
         _camera_position->on_position_changed += on_camera_position;
@@ -254,7 +259,7 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source)
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
@@ -262,7 +267,7 @@ namespace trview
         layout->set_margin(Size(5, 5));
         tool_window->set_layout(std::move(layout));
 
-        _view_options = view_options_source(*tool_window, texture_storage);
+        _view_options = view_options_source(*tool_window);
         _view_options->on_highlight += on_highlight;
         _view_options->on_show_triggers += on_show_triggers;
         _view_options->on_show_hidden_geometry += on_show_hidden_geometry;
@@ -274,7 +279,7 @@ namespace trview
         _view_options->on_show_wireframe += on_show_wireframe;
         _view_options->on_show_bounding_boxes += on_show_bounding_boxes;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, texture_storage);
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window);
         _room_navigator->on_room_selected += on_select_room;
 
         initialise_camera_controls(*tool_window);
@@ -427,6 +432,7 @@ namespace trview
         _settings_window->set_camera_acceleration_rate(settings.camera_acceleration_rate);
         _settings_window->set_camera_display_degrees(settings.camera_display_degrees);
         _settings_window->set_randomizer_tools(settings.randomizer_tools);
+        _settings_window->set_max_recent_files(settings.max_recent_files);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
         _context_menu->set_randomizer_tools(settings.randomizer_tools);
     }

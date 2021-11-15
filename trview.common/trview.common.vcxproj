@@ -34,6 +34,7 @@
     <ClInclude Include="Mocks\Windows\IDialogs.h" />
     <ClInclude Include="Mocks\Windows\IShortcuts.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Size.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Strings.h" />
@@ -54,6 +55,7 @@
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Size.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -83,7 +83,7 @@ namespace trview
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ITextureStorage& texture_storage);
+        void generate_tool_window(const IViewOptions::Source& view_options_source);
         void initialise_camera_controls(ui::Control& parent);
         void register_change_detection(ui::Control* control);
 

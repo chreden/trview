@@ -10,10 +10,13 @@ namespace trview
         uint32_t size;
     };
 
+    /// <summary>
     /// Get the data for the specified resource.
-    /// @param resource_id The integer identifier of the resource to load.
-    /// @param resource_type The type of resource to load.
-    /// @returns The resource.
+    /// </summary>
+    /// <param name="resource_id">The integer identifier of the resource to load.</param>
+    /// <param name="resource_type">The type of resource to load.</param>
+    /// <returns></returns>
     Resource get_resource_memory(int resource_id, const wchar_t* resource_type);
 }
+
 

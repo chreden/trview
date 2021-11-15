@@ -4,7 +4,6 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.ui/Layouts/GridLayout.h>
 #include <trview.ui/Layouts/StackLayout.h>
 
@@ -23,7 +22,7 @@ namespace trview
     const Colour ViewOptions::Colours::FlipOff{ 0.2f, 0.2f, 0.2f };
     const Colour ViewOptions::Colours::FlipOn{ 0.6f, 0.6f, 0.6f };
 
-    ViewOptions::ViewOptions(ui::Control& parent, const ITextureStorage& texture_storage)
+    ViewOptions::ViewOptions(ui::Control& parent)
     {
         using namespace ui;
 
@@ -55,7 +54,7 @@ namespace trview
         _depth_enabled->set_name(Names::depth_enabled);
         _depth_enabled->on_state_changed += on_depth_enabled;
 
-        _depth = rooms_grid->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, texture_storage.lookup("numeric_up"), texture_storage.lookup("numeric_down"), 0, 20));
+        _depth = rooms_grid->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, 0, 20));
         _depth->set_value(1);
         _depth->on_value_changed += on_depth_changed;
 

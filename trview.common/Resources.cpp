@@ -1,4 +1,4 @@
-#include "ResourceHelper.h"
+#include "Resources.h"
 
 namespace trview
 {

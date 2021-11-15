@@ -25,6 +25,7 @@ namespace trview
         float camera_acceleration_rate{ 0.5f };
         bool camera_display_degrees{ true };
         bool randomizer_tools{ false };
+        uint32_t max_recent_files{ 10u };
 
         bool operator==(const UserSettings& other) const;
     };

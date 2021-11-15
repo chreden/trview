@@ -24,9 +24,9 @@ namespace trview
             di::bind<IViewOptions::Source>.to(
                 [](const auto&) -> IViewOptions::Source
                 {
-                    return [&](auto&& parent, auto&& texture_storage)
+                    return [&](auto&& parent)
                     {
-                        return std::make_unique<ViewOptions>(parent, texture_storage);
+                        return std::make_unique<ViewOptions>(parent);
                     };
                 }),
             di::bind<IBubble::Source>.to(
