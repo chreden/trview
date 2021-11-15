@@ -75,6 +75,7 @@ namespace trview
             };
 
             add_flag(L"Water", room.water());
+            add_flag(L"Bit 1", room.flag(IRoom::Flag::Bit1));
             add_flag(L"Bit 2", room.flag(IRoom::Flag::Bit2));
             add_flag_min(LevelVersion::Tomb2, L"Outside / 3", L"Bit 3", room.outside());
             add_flag(L"Bit 4", room.flag(IRoom::Flag::Bit4));
@@ -82,7 +83,7 @@ namespace trview
             add_flag(L"Bit 6", room.flag(IRoom::Flag::Bit6));
             if (version == LevelVersion::Tomb3)
             {
-                add_flag(L"Quicksand / 7", room.quicksand());
+                add_flag(L"Quicksand / 7", room.flag(IRoom::Flag::Quicksand));
             }
             else if (version > LevelVersion::Tomb3)
             {
@@ -90,7 +91,7 @@ namespace trview
             }
             else
             {
-                add_flag(L"Bit 7", room.flag(IRoom::Flag::NoLensFlare));
+                add_flag(L"Bit 7", room.flag(IRoom::Flag::Bit7));
             }
             add_flag_min(LevelVersion::Tomb3, L"Caustics / 8", L"Bit 8", room.flag(IRoom::Flag::Caustics));
             add_flag_min(LevelVersion::Tomb3, L"Reflectivity / 9", L"Bit 9", room.flag(IRoom::Flag::WaterReflectivity));
@@ -100,7 +101,6 @@ namespace trview
             add_flag(L"Bit 13", room.flag(IRoom::Flag::Bit13));
             add_flag(L"Bit 14", room.flag(IRoom::Flag::Bit14));
             add_flag(L"Bit 15", room.flag(IRoom::Flag::Bit15));
-            add_flag(L"Bit 16", room.flag(IRoom::Flag::Bit16));
         }
     }
 

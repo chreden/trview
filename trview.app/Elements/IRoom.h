@@ -62,22 +62,23 @@ namespace trview
         enum class Flag
         {
             Water = 0x1,
-            Bit2 = 0x2,
-            Outside = 0x4,
-            Bit4 = 0x8,
-            Ponytail = 0x10,
-            Bit6 = 0x20,
-            Quicksand = 0x40,
-            NoLensFlare = 0x40,
-            Caustics = 0x80,
-            WaterReflectivity = 0x100,
-            Bit10 = 0x200,
-            Bit11 = 0x400,
-            Bit12 = 0x800,
-            Bit13 = 0x1000,
-            Bit14 = 0x2000,
-            Bit15 = 0x4000,
-            Bit16 = 0x8000
+            Bit1 = 0x2,
+            Bit2 = 0x4,
+            Outside = 0x8,
+            Bit4 = 0x10,
+            Ponytail = 0x20,
+            Bit6 = 0x40,
+            Bit7 = 0x80,
+            Quicksand = 0x80,
+            NoLensFlare = 0x80,
+            Caustics = 0x100,
+            WaterReflectivity = 0x200,
+            Bit10 = 0x400,
+            Bit11 = 0x800,
+            Bit12 = 0x1000,
+            Bit13 = 0x2000,
+            Bit14 = 0x4000,
+            Bit15 = 0x8000
         };
 
         /// <summary>

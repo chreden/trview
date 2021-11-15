@@ -157,7 +157,7 @@ TEST(RoomsWindow, ClickStatShowsBubble)
 TEST(RoomsWindow, LevelVersionChangesFlags)
 {
     auto room = std::make_shared<MockRoom>();
-    EXPECT_CALL(*room, quicksand).Times(1).WillRepeatedly(testing::Return(true));
+    EXPECT_CALL(*room, flag).Times(testing::AtLeast(1)).WillRepeatedly(testing::Return(true));
 
     auto window = register_test_module().build();
     window->set_level_version(trlevel::LevelVersion::Tomb1);
