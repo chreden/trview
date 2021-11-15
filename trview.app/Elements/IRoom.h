@@ -66,7 +66,7 @@ namespace trview
             Bit2 = 0x4,
             Outside = 0x8,
             Bit4 = 0x10,
-            Ponytail = 0x20,
+            Wind = 0x20,
             Bit6 = 0x40,
             Bit7 = 0x80,
             Quicksand = 0x80,

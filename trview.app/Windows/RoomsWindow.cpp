@@ -79,7 +79,7 @@ namespace trview
             add_flag(L"Bit 2", room.flag(IRoom::Flag::Bit2));
             add_flag_min(LevelVersion::Tomb2, L"Outside / 3", L"Bit 3", room.outside());
             add_flag(L"Bit 4", room.flag(IRoom::Flag::Bit4));
-            add_flag_min(LevelVersion::Tomb2, L"Ponytail / 5", L"Bit 5", room.flag(IRoom::Flag::Ponytail));
+            add_flag_min(LevelVersion::Tomb2, L"Wind / 5", L"Bit 5", room.flag(IRoom::Flag::Wind));
             add_flag(L"Bit 6", room.flag(IRoom::Flag::Bit6));
             if (version == LevelVersion::Tomb3)
             {
