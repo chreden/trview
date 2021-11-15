@@ -62,6 +62,7 @@ namespace trview
         virtual bool water() const override;
         virtual bool quicksand() const override;
         virtual std::weak_ptr<ITrigger> trigger_at(int32_t x, int32_t z) const override;
+        virtual bool flag(Flag flag) const override;
     private:
         void generate_geometry(trlevel::LevelVersion level_version, const IMesh::Source& mesh_source, const trlevel::tr3_room& room);
         void generate_adjacency();

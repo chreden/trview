@@ -40,6 +40,7 @@ namespace trview
         virtual void render(bool vsync) override;
         virtual void set_current_room(uint32_t room) override;
         virtual void set_items(const std::vector<Item>& items) override;
+        virtual void set_level_version(trlevel::LevelVersion version) override;
         virtual void set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms) override;
         virtual void set_selected_item(const Item& item) override;
         virtual void set_selected_trigger(const std::weak_ptr<ITrigger>& trigger) override;
@@ -83,5 +84,6 @@ namespace trview
         std::unique_ptr<Tooltip> _map_tooltip;
         std::unique_ptr<IBubble> _bubble;
         std::shared_ptr<IClipboard> _clipboard;
+        trlevel::LevelVersion _level_version;
     };
 }

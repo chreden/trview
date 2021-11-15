@@ -40,6 +40,11 @@ namespace trview
         /// Set the items in the level.
         /// @param items The items in the level.
         virtual void set_items(const std::vector<Item>& items) = 0;
+        /// <summary>
+        /// Set the level version. This will control which information is displayed.
+        /// </summary>
+        /// <param name="version">The level version</param>
+        virtual void set_level_version(trlevel::LevelVersion version) = 0;
 
         /// Set the rooms to display in the window.
         /// @param rooms The rooms to show.

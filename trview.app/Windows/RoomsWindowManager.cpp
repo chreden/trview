@@ -53,6 +53,15 @@ namespace trview
         }
     }
 
+    void RoomsWindowManager::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+        for (auto& window : _windows)
+        {
+            window->set_level_version(_level_version);
+        }
+    }
+
     void RoomsWindowManager::set_room(uint32_t room)
     {
         _current_room = room;
@@ -112,6 +121,7 @@ namespace trview
             _closing_windows.push_back(rooms_window);
         };
 
+        rooms_window->set_level_version(_level_version);
         rooms_window->set_items(_all_items);
         rooms_window->set_triggers(_all_triggers);
         rooms_window->set_rooms(_all_rooms);
