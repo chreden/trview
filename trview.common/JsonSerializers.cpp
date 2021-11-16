@@ -1,5 +1,6 @@
 #include "JsonSerializers.h"
 #include <trview.common/Json.h>
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -17,15 +18,7 @@ namespace trview
     {
         if (json.is_string())
         {
-            const auto str = json.get<std::string>();
-            if (str == "transparent")
-            {
-                colour = Colour::Transparent;
-            }
-            else
-            {
-                colour = Colour::White;
-            }
+            colour = from_named_colour(json.get<std::string>());
         }
         else
         {

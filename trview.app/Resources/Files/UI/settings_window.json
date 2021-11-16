@@ -27,11 +27,7 @@
                 "width": 400,
                 "height": 20
             },
-            "background_colour": {
-                "r": 0,
-                "g": 0,
-                "b": 0
-            },
+            "background_colour": "black",
             "layout": {
                 "type": "stack",
                 "size_mode": "manual"
@@ -43,11 +39,7 @@
                         "width": 400,
                         "height": 20
                     },
-                    "background_colour": {
-                        "r": 0,
-                        "g": 0,
-                        "b": 0
-                    },
+                    "background_colour": "black",
                     "text": "Settings",
                     "text_size": 8,
                     "text_alignment": "centre",
@@ -63,12 +55,7 @@
                 "width": 400,
                 "height": 250
             },
-            "background_colour": {
-                "r": 0,
-                "g": 0,
-                "b": 0,
-                "a": 0
-            },
+            "background_colour": "transparent",
             "layout": {
                 "type": "stack",
                 "padding": 5,
@@ -144,14 +131,10 @@
                     "text": "Program",
                     "size": {
                         "width": 380,
-                        "height": 60                        
+                        "height": 60
                     },
                     "background_colour": "transparent",
-                    "border_colour": {
-                        "r": 0.7,
-                        "g": 0.7,
-                        "b": 0.7
-                    },
+                    "border_colour": "lightgrey",
                     "children": [
                         {
                             "type": "window",
@@ -202,7 +185,7 @@
                                 }
                             ]
                         }
-                    ]                    
+                    ]
                 },
                 {
                     "type": "groupbox",
@@ -212,11 +195,7 @@
                         "height": 80
                     },
                     "background_colour": "transparent",
-                    "border_colour": {
-                        "r": 0.7,
-                        "g": 0.7,
-                        "b": 0.7
-                    },
+                    "border_colour": "lightgrey",
                     "children": [
                         {
                             "type": "window",
@@ -324,7 +303,7 @@
                                         }
                                     ]
                                 }
-                            ]                            
+                            ]
                         }
                     ]
                 },

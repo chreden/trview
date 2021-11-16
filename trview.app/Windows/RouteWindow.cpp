@@ -94,7 +94,7 @@ namespace trview
         const auto colour = route->colour();
         _colour->set_text_colour(colour);
         _colour->set_text_background_colour(colour);
-        _colour->set_selected_value(colour.name());
+        _colour->set_selected_value(colour.code());
     }
 
     std::unique_ptr<Control> RouteWindow::create_left_panel()
@@ -110,21 +110,21 @@ namespace trview
         _colour->set_text_background_colour(Colour::Green);
         _colour->set_values(
             {
-                Dropdown::Value { Colour::Green.name(), Colour::Green, Colour::Green },
-                { Colour::Red.name(), Colour::Red, Colour::Red },
-                { Colour::Blue.name(), Colour::Blue, Colour::Blue },
-                { Colour::Yellow.name(), Colour::Yellow, Colour::Yellow },
-                { Colour::Cyan.name(), Colour::Cyan, Colour::Cyan },
-                { Colour::Magenta.name(), Colour::Magenta, Colour::Magenta },
-                { Colour::Black.name(), Colour::Black, Colour::Black },
-                { Colour::White.name(), Colour::White, Colour::White }
+                Dropdown::Value { Colour::Green.code(), Colour::Green, Colour::Green },
+                { Colour::Red.code(), Colour::Red, Colour::Red },
+                { Colour::Blue.code(), Colour::Blue, Colour::Blue },
+                { Colour::Yellow.code(), Colour::Yellow, Colour::Yellow },
+                { Colour::Cyan.code(), Colour::Cyan, Colour::Cyan },
+                { Colour::Magenta.code(), Colour::Magenta, Colour::Magenta },
+                { Colour::Black.code(), Colour::Black, Colour::Black },
+                { Colour::White.code(), Colour::White, Colour::White }
             });
-        _colour->set_selected_value(Colour::Green.name());
+        _colour->set_selected_value(Colour::Green.code());
         _colour->set_dropdown_scope(_ui.get());
 
         _token_store += _colour->on_value_selected += [=](const auto& value)
         {
-            const auto new_colour = named_colour(value);
+            const auto new_colour = from_colour_code(value);
             _colour->set_text_colour(new_colour);
             _colour->set_text_background_colour(new_colour);
             on_colour_changed(new_colour);
