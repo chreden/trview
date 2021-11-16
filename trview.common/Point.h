@@ -1,5 +1,7 @@
 #pragma once
 
+#include <external/nlohmann/json.hpp>
+
 namespace trview
 {
     struct Point
@@ -17,4 +19,6 @@ namespace trview
 
         float x, y;
     };
+
+    void from_json(const nlohmann::json& json, Point& point);
 }

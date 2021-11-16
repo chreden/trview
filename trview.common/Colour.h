@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SimpleMath.h>
+#include <external/nlohmann/json.hpp>
 
 namespace trview
 {
@@ -50,4 +51,6 @@ namespace trview
     Colour operator+(const Colour& left, const Colour& right);
 
     bool operator==(const Colour& left, const Colour& right);
+
+    void from_json(const nlohmann::json& json, Colour& colour);
 }

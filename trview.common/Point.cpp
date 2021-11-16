@@ -1,4 +1,5 @@
 #include "Point.h"
+#include <trview.common/Json.h>
 
 namespace trview
 {
@@ -38,5 +39,10 @@ namespace trview
     {
         return x >= first.x && y >= first.y 
             && x <= second.x && y <= second.y; 
+    }
+
+    void from_json(const nlohmann::json& json, Point& point)
+    {
+        point = Point(read_attribute<float>(json, "x"), read_attribute<float>(json, "y"));
     }
 }

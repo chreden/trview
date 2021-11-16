@@ -1,4 +1,5 @@
 #include "Size.h"
+#include <trview.common/Json.h>
 
 namespace trview
 {
@@ -42,5 +43,10 @@ namespace trview
     bool Size::operator!=(const Size& size) const
     {
         return !operator==(size);
+    }
+
+    void from_json(const nlohmann::json& json, Size& size)
+    {
+        size = Size(read_attribute<float>(json, "width"), read_attribute<float>(json, "height"));
     }
 }

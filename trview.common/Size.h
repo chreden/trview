@@ -4,6 +4,7 @@
 /// A floating point based two dimensional size.
 
 #pragma once
+#include <external/nlohmann/json.hpp>
 
 namespace trview
 {
@@ -48,4 +49,6 @@ namespace trview
 
         float width, height;
     };
+
+    void from_json(const nlohmann::json& json, Size& size);
 }
