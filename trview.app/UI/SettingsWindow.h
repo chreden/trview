@@ -14,7 +14,6 @@ namespace trview
         class Checkbox;
         class NumericUpDown;
         class Slider;
-        class TextArea;
     }
 
     /// UI window for program level settings.
