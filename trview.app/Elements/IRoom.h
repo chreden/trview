@@ -59,6 +59,28 @@ namespace trview
             NotSelected
         };
 
+        enum class Flag
+        {
+            Water = 0x1,
+            Bit1 = 0x2,
+            Bit2 = 0x4,
+            Outside = 0x8,
+            Bit4 = 0x10,
+            Wind = 0x20,
+            Bit6 = 0x40,
+            Bit7 = 0x80,
+            Quicksand = 0x80,
+            NoLensFlare = 0x80,
+            Caustics = 0x100,
+            WaterReflectivity = 0x200,
+            Bit10 = 0x400,
+            Bit11 = 0x800,
+            Bit12 = 0x1000,
+            Bit13 = 0x2000,
+            Bit14 = 0x4000,
+            Bit15 = 0x8000
+        };
+
         /// <summary>
         /// Create a new implementation of <see cref="IRoom"/>.
         /// </summary>
@@ -125,6 +147,12 @@ namespace trview
         /// <param name="include_triggers">Whether to include triggers in the output.</param>
         /// <param name="show_water">Whether to render water effects.</param>
         virtual void get_transparent_triangles(ITransparencyBuffer& transparency, const ICamera& camera, SelectionMode selected, bool include_triggers, bool show_water) = 0;
+        /// <summary>
+        /// Checks whether the room has the specified flag.
+        /// </summary>
+        /// <param name="flag">The flag to check.</param>
+        /// <returns>Whether the room has the flag.</returns>
+        virtual bool flag(Flag flag) const = 0;
         /// <summary>
         /// Get the room info. This contains basic raw positional information about the room.
         /// </summary>

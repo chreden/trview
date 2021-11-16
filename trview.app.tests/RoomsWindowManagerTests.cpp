@@ -77,3 +77,22 @@ TEST(RoomsWindowManager, WindowsUpdated)
     manager->create_window();
     manager->update(1.0f);
 }
+
+TEST(RoomsWindowManager, LevelVersionPassedToNewWindows)
+{
+    auto mock_window = std::make_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb3)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->set_level_version(trlevel::LevelVersion::Tomb3);
+    manager->create_window();
+}
+
+TEST(RoomsWindowManager, LevelVersionPassedToWindows)
+{
+    auto mock_window = std::make_shared<MockRoomsWindow>();
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Unknown)).Times(1);
+    EXPECT_CALL(*mock_window, set_level_version(trlevel::LevelVersion::Tomb3)).Times(1);
+    auto manager = register_test_module().with_window_source([&](auto&&...) { return mock_window; }).build();
+    manager->create_window();
+    manager->set_level_version(trlevel::LevelVersion::Tomb3);
+}
