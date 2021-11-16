@@ -15,15 +15,7 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<ui::UiSource>.to(
-                [](const auto&) -> ui::UiSource
-                {
-                    return [&](uint32_t resource)
-                    {
-                        auto data = get_resource_memory(resource, L"TEXT");
-                        return ui::load_from_json(std::string(data.data, data.data + data.size));
-                    };
-                }),
+            di::bind<ui::UiSource>.to(ui::load_from_resource),
             di::bind<ISettingsWindow::Source>.to(
                 [](const auto& injector) -> ISettingsWindow::Source
                 {

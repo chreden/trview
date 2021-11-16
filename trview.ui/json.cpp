@@ -1,6 +1,7 @@
 #include "json.h"
 #include <external/nlohmann/json.hpp>
 #include <trview.common/Json.h>
+#include <trview.common/Resources.h>
 
 #include "Layouts/FreeLayout.h"
 #include "Layouts/StackLayout.h"
@@ -144,6 +145,12 @@ namespace trview
             {
                 OutputDebugStringA(e.what());
             }
+        }
+
+        std::unique_ptr<Control> load_from_resource(uint32_t resource_id)
+        {
+            auto data = get_resource_memory(resource_id, L"TEXT");
+            return ui::load_from_json(std::string(data.data, data.data + data.size));
         }
     }
 }
