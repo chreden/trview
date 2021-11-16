@@ -9,6 +9,7 @@
 #include <trview.ui/NumericUpDown.h>
 #include <trview.ui/Layouts/GridLayout.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 using namespace trview::ui;
 
@@ -31,10 +32,12 @@ namespace trview
     const std::string SettingsWindow::Names::acceleration_rate = "AccelerationRate";
     const std::string SettingsWindow::Names::close = "Close";
 
-    SettingsWindow::SettingsWindow(Control& parent)
+    SettingsWindow::SettingsWindow(Control& parent, ui::UiSource source)
     {
         const auto background_colour = Colour(0.5f, 0.0f, 0.0f, 0.0f);
         const auto title_colour = Colour::Black;
+
+        auto x = source(IDR_UI_SETTINGS_WINDOW);
 
         _window = parent.add_child(std::make_unique<ui::Window>(Point(400, 200), Size(400, 300), background_colour));
         _window->set_layout(std::make_unique<StackLayout>());

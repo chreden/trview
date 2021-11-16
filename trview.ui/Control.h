@@ -283,6 +283,12 @@ namespace trview
             bool     _focused{ false };
             std::unique_ptr<ILayout> _layout;
         };
+
+        /// <summary>
+        /// Load a user interface definition from a resource.
+        /// </summary>
+        /// <param>The resource ID to load.</param>
+        using UiSource = std::function<std::unique_ptr<Control>(uint32_t)>;
     }
 }
 

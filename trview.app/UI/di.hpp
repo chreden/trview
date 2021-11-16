@@ -6,6 +6,8 @@
 #include "ViewOptions.h"
 #include "Bubble.h"
 #include "ContextMenu.h"
+#include <trview.common/Resources.h>
+#include <trview.ui/json.h>
 
 namespace trview
 {
@@ -13,12 +15,21 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
+            di::bind<ui::UiSource>.to(
+                [](const auto&) -> ui::UiSource
+                {
+                    return [&](uint32_t resource)
+                    {
+                        auto data = get_resource_memory(resource, L"TEXT");
+                        return ui::load_from_json(std::string(data.data, data.data + data.size));
+                    };
+                }),
             di::bind<ISettingsWindow::Source>.to(
-                [](const auto&) -> ISettingsWindow::Source
+                [](const auto& injector) -> ISettingsWindow::Source
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<SettingsWindow>(parent);
+                        return std::make_unique<SettingsWindow>(parent, injector.create<ui::UiSource>());
                     };
                 }),
             di::bind<IViewOptions::Source>.to(

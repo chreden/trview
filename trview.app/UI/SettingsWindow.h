@@ -45,7 +45,7 @@ namespace trview
         /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
         /// </summary>
         /// <param name="parent">The control to which the instance will add elements.</param>
-        explicit SettingsWindow(ui::Control& parent);
+        explicit SettingsWindow(ui::Control& parent, ui::UiSource source);
         virtual ~SettingsWindow() = default;
         virtual void set_vsync(bool value) override;
         virtual void set_go_to_lara(bool value) override;
