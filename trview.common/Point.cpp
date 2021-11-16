@@ -1,5 +1,4 @@
 #include "Point.h"
-#include <trview.common/Json.h>
 
 namespace trview
 {

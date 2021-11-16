@@ -1,5 +1,4 @@
 #include "Size.h"
-#include <trview.common/Json.h>
 
 namespace trview
 {
