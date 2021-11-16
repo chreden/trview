@@ -51,20 +51,17 @@ namespace trview
             std::unique_ptr<Control> parse_json(const nlohmann::json& json)
             {
                 auto type = read_attribute<std::string>(json, "type");
+                auto position = read_attribute<Point>(json, "position", Point());
+                auto size = read_attribute<Size>(json, "size", Size());
+                auto colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
 
                 std::unique_ptr<Control> control;
                 if (type == "window")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
-                    auto colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
                     control = std::make_unique<ui::Window>(position, size, colour);
                 }
                 else if (type == "label")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
-                    auto colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
                     auto text = read_attribute<std::string>(json, "text", std::string());
                     auto text_size = read_attribute<int>(json, "text_size", 8);
                     auto size_mode = read_attribute<std::string>(json, "size_mode", "manual");
@@ -77,39 +74,28 @@ namespace trview
                 }
                 else if (type == "button")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
                     auto text = read_attribute<std::string>(json, "text", std::string());
                     control = std::make_unique<Button>(position, size, to_utf16(text));
                 }
                 else if (type == "checkbox")
                 {
-                    auto colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
                     auto text = read_attribute<std::string>(json, "text", std::string());
                     control = std::make_unique<Checkbox>(colour, to_utf16(text));
                 }
                 else if (type == "groupbox")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
                     auto text = read_attribute<std::string>(json, "text", std::string());
-                    auto background_colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
                     auto border_colour = read_attribute<Colour>(json, "border_colour", Colour::Transparent);
-                    control = std::make_unique<GroupBox>(position, size, background_colour, border_colour, to_utf16(text));
+                    control = std::make_unique<GroupBox>(position, size, colour, border_colour, to_utf16(text));
                 }
                 else if (type == "numericupdown")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
-                    auto background_colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
                     auto min_value = read_attribute<int>(json, "min_value", 0);
                     auto max_value = read_attribute<int>(json, "max_value", 100);
-                    control = std::make_unique<NumericUpDown>(position, size, background_colour, min_value, max_value);
+                    control = std::make_unique<NumericUpDown>(position, size, colour, min_value, max_value);
                 }
                 else if (type == "slider")
                 {
-                    auto position = read_attribute<Point>(json, "position", Point());
-                    auto size = read_attribute<Size>(json, "size", Size());
                     control = std::make_unique<Slider>(position, size);
                 }
 
