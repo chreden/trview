@@ -3,7 +3,6 @@
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Slider.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.common/Resources.h>
 #include <trview.ui/json.h>
 
 using namespace trview;

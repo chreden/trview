@@ -2,6 +2,7 @@
 #include <external/nlohmann/json.hpp>
 #include <trview.common/Json.h>
 #include <trview.common/Resources.h>
+#include <trview.common/JsonSerializers.h>
 
 #include "Layouts/FreeLayout.h"
 #include "Layouts/StackLayout.h"
@@ -144,6 +145,7 @@ namespace trview
             catch(const std::exception& e)
             {
                 OutputDebugStringA(e.what());
+                return nullptr;
             }
         }
 

@@ -30,7 +30,7 @@ namespace trview
     const std::string SettingsWindow::Names::acceleration_rate = "AccelerationRate";
     const std::string SettingsWindow::Names::close = "Close";
 
-    SettingsWindow::SettingsWindow(Control& parent, ui::UiSource source)
+    SettingsWindow::SettingsWindow(Control& parent, const ui::UiSource& source)
     {
         _window = parent.add_child(source(IDR_UI_SETTINGS_WINDOW));
 
