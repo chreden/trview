@@ -1,4 +1,5 @@
 {
+    "$schema": "../../../../trview.ui/schema.json",
     "name": "SettingsWindow",
     "type": "window",
     "position": {

@@ -1,0 +1,146 @@
+{
+    "$defs": {
+        "size": {
+            "type": "object",
+            "properties": {
+                "width" : { "type": "number" },
+                "height": { "type": "number" }
+            }
+        },
+        "point": {
+            "type": "object",
+            "properties": {
+                "x": { "type": "number" },
+                "y" :{ "type": "number" }
+            }
+        },
+        "colour": {
+            "anyOf": [
+                {
+                    "enum": [ "black", "grey", "lightgrey", "transparent", "white", "green", "blue", "red", "yellow", "magenta", "cyan" ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "r": { "type": "number" },
+                        "g": { "type": "number" },
+                        "b": { "type": "number" },
+                        "a": { "type": "number" }
+                    }
+                }
+            ]
+        },
+        "control": {
+            "type": "object",
+            "properties": {
+                "name": { "type": "string" },
+                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown" ] },
+                "size": { "$ref": "#/$defs/size" },
+                "position": { "$ref": "#/$defs/point" },
+                "visible": { "type": "boolean" },
+                "layout": { "$ref": "#/$defs/layout" }, 
+                "background_colour":  { "$ref": "#/$defs/colour" },
+                "horizontal_alignment": { "enum": [ "near", "centre" ] },
+                "children": {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/control" }
+                }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": { "type": { "const": "label" } }
+                    },
+                    "then": {
+                        "properties" : { 
+                            "text" : { "type": "string" },
+                            "size_mode": { "enum": ["auto", "manual" ] },
+                            "text_size": { "type": "number" },
+                            "text_alignment": { "enum": [ "left", "right", "centre", "justified" ] },
+                            "paragraph_alignment": { "enum": [ "near", "far", "centre" ] }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type" : { "const": "button" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "text": { "type": "string" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type" : { "const": "checkbox" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "text": { "type": "string" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type" : { "const": "groupbox" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "text": { "type": "string" },
+                            "border_colour": { "$ref": "#/$defs/colour" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type" : { "const": "numericupdown" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "min_value": { "type": "number" },
+                            "max_value": { "type": "number" }
+                        }
+                    }
+                }
+            ]
+        },
+        "layout": {
+            "type": "object",
+            "properties": {
+                "type" : { "enum": [ "free", "grid", "stack" ] }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": { "type": { "const": "grid" } }
+                    },
+                    "then": {
+                        "properties" : {
+                            "rows" : { "type": "number" },
+                            "columns": { "type": "number" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type": { "const": "stack" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "size_mode": { "enum": ["auto", "manual"] },
+                            "padding": { "type": "number" },
+                            "direction": { "enum": ["vertical", "horizontal" ]},
+                            "margin": { "$ref": "#/$defs/size" },
+                            "size_dimension": { "enum": [ "width", "height", "all" ] }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+
+    "oneOf": [
+        { "$ref": "#/$defs/control" }
+    ]
+}
