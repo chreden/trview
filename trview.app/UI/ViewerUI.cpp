@@ -19,7 +19,8 @@ namespace trview
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ISettingsWindow::Source& settings_window_source,
         const IViewOptions::Source& view_options_source,
-        const IContextMenu::Source& context_menu_source)
+        const IContextMenu::Source& context_menu_source,
+        const ICameraControls::Source& camera_controls_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -63,7 +64,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source);
+        generate_tool_window(view_options_source, camera_controls_source);
 
         _go_to = std::make_unique<GoTo>(*_control.get());
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -259,7 +260,7 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source)
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
@@ -282,12 +283,7 @@ namespace trview
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window);
         _room_navigator->on_room_selected += on_select_room;
 
-        initialise_camera_controls(*tool_window);
-    }
-
-    void ViewerUI::initialise_camera_controls(ui::Control& parent)
-    {
-        _camera_controls = std::make_unique<CameraControls>(parent);
+        _camera_controls = camera_controls_source(*tool_window);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
         _camera_controls->on_projection_mode_selected += on_camera_projection_mode;

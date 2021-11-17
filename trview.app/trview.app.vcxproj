@@ -118,6 +118,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="UI\ContextMenu.cpp" />
     <ClCompile Include="UI\GoTo.cpp" />
     <ClCompile Include="UI\IBubble.cpp" />
+    <ClCompile Include="UI\ICameraControls.cpp" />
     <ClCompile Include="UI\IContextMenu.cpp" />
     <ClCompile Include="UI\ISettingsWindow.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp" />
@@ -248,6 +249,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Tools\ICompass.h" />
     <ClInclude Include="Mocks\Tools\IMeasure.h" />
     <ClInclude Include="Mocks\UI\IBubble.h" />
+    <ClInclude Include="Mocks\UI\ICameraControls.h" />
     <ClInclude Include="Mocks\UI\IContextMenu.h" />
     <ClInclude Include="Mocks\UI\ISettingsWindow.h" />
     <ClInclude Include="Mocks\UI\IViewerUI.h" />
@@ -299,6 +301,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="UI\di.hpp" />
     <ClInclude Include="UI\GoTo.h" />
     <ClInclude Include="UI\IBubble.h" />
+    <ClInclude Include="UI\ICameraControls.h" />
     <ClInclude Include="UI\IContextMenu.h" />
     <ClInclude Include="UI\ISettingsWindow.h" />
     <ClInclude Include="UI\IViewerUI.h" />
@@ -357,6 +360,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </Text>
     <None Include="Resources\Files\arial7.bin" />
     <None Include="Resources\Files\arial8.bin" />
+    <None Include="Resources\Files\UI\camera_controls.json" />
     <None Include="Resources\Files\UI\settings_window.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />

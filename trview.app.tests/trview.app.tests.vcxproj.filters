@@ -105,6 +105,9 @@
     <ClCompile Include="Settings\SettingsLoaderTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="UI\CameraControlsTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

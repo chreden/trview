@@ -6,6 +6,7 @@
 #include "ViewOptions.h"
 #include "Bubble.h"
 #include "ContextMenu.h"
+#include "CameraControls.h"
 #include <trview.common/Resources.h>
 #include <trview.ui/json.h>
 
@@ -22,6 +23,14 @@ namespace trview
                     return [&](ui::Control& parent)
                     {
                         return std::make_unique<SettingsWindow>(parent, injector.create<ui::UiSource>());
+                    };
+                }),
+            di::bind<ICameraControls::Source>.to(
+                [](const auto& injector) -> ICameraControls::Source
+                {
+                    return [&](ui::Control& parent)
+                    {
+                        return std::make_unique<CameraControls>(parent, injector.create<ui::UiSource>());
                     };
                 }),
             di::bind<IViewOptions::Source>.to(
