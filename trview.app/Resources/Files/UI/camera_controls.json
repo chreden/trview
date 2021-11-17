@@ -4,7 +4,7 @@
     "text": "Camera",
     "name": "CameraControls",
     "background_colour": "transparent",
-    "border_colour": "lightgrey",
+    "border_colour": "grey",
     "size": {
         "width": 150,
         "height": 92

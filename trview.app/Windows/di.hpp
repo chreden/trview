@@ -11,6 +11,7 @@
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
 #include "Viewer.h"
+#include <trview.ui/json.h>
 
 namespace trview
 {
@@ -31,7 +32,8 @@ namespace trview
                         injector.create<ui::IInput::Source>(),
                         window,
                         injector.create<std::shared_ptr<IClipboard>>(),
-                        injector.create<IBubble::Source>());
+                        injector.create<IBubble::Source>(),
+                        ui::load_from_resource);
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),

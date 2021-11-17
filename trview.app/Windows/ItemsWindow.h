@@ -40,7 +40,8 @@ namespace trview
             const ui::IInput::Source& input_source,
             const Window& parent,
             const std::shared_ptr<IClipboard>& clipboard,
-            const IBubble::Source& bubble_source);
+            const IBubble::Source& bubble_source,
+            const ui::UiSource& ui_source);
         virtual ~ItemsWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -60,7 +61,7 @@ namespace trview
         void set_track_room(bool value);
         void set_sync_item(bool value);
         std::unique_ptr<ui::Control> create_left_panel();
-        std::unique_ptr<ui::Control> create_right_panel();
+        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
 
         ui::Control* _controls;
         ui::Listbox* _items_list;

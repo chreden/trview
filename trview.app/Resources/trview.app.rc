@@ -253,19 +253,21 @@ IDB_SETTINGS            PNG                     "Files\\settings.png"
 // TEXT
 //
 
-IDR_TEXTURE_LIST        TEXT                    "Files\\texturelist.txt"
+IDR_TEXTURE_LIST                TEXT            "Files\\texturelist.txt"
 
-IDR_FONT_LIST           TEXT                    "Files\\fontlist.txt"
+IDR_FONT_LIST                   TEXT            "Files\\fontlist.txt"
 
-IDR_TYPE_NAMES          TEXT                    "Files\\type_names.txt"
+IDR_TYPE_NAMES                  TEXT            "Files\\type_names.txt"
 
-IDR_ACTIONS             TEXT                    "Files\\actions.json"
+IDR_ACTIONS                     TEXT            "Files\\actions.json"
 
-IDR_UI_SETTINGS_WINDOW  TEXT                    "Files\\UI\\settings_window.json"
+IDR_UI_SETTINGS_WINDOW          TEXT            "Files\\UI\\settings_window.json"
 
-IDR_UI_CAMERA_CONTROLS  TEXT                    "Files\\UI\\camera_controls.json"
+IDR_UI_CAMERA_CONTROLS          TEXT            "Files\\UI\\camera_controls.json"
 
-IDR_UI_VIEW_OPTIONS     TEXT                    "Files\\UI\\view_options.json"
+IDR_UI_VIEW_OPTIONS             TEXT            "Files\\UI\\view_options.json"
+
+IDR_UI_ITEMS_WINDOW_RIGHT_PANEL TEXT            "Files\\UI\\items_window_right_panel.json"
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@
 #include "GroupBox.h"
 #include "NumericUpDown.h"
 #include "Slider.h"
+#include "Listbox.h"
 
 namespace trview
 {
@@ -103,6 +104,33 @@ namespace trview
                 else if (type == "slider")
                 {
                     control = std::make_unique<Slider>(position, size);
+                }
+                else if (type == "listbox")
+                {
+                    auto listbox = std::make_unique<Listbox>(position, size, colour);
+                    listbox->set_show_headers(read_attribute<bool>(json, "show_headers", true));
+                    listbox->set_show_scrollbar(read_attribute<bool>(json, "show_scrollbar", true));
+                    listbox->set_show_highlight(read_attribute<bool>(json, "show_highlight", true));
+
+                    if (json.count("columns") != 0)
+                    {
+                        std::vector<Listbox::Column> columns;
+                        for (const auto& col : json["columns"])
+                        {
+                            auto name = read_attribute<std::string>(col, "name");
+                            auto type = read_attribute<std::string>(col, "type");
+                            auto width = read_attribute<uint32_t>(col, "width");
+                            auto identity = read_attribute<std::string>(col, "identity", "none");
+                            columns.push_back(Listbox::Column(
+                                identity == "none" ? Listbox::Column::IdentityMode::None : Listbox::Column::IdentityMode::Key,
+                                type == "number" ? Listbox::Column::Type::Number : type == "string" ? Listbox::Column::Type::String : Listbox::Column::Type::Boolean,
+                                to_utf16(name), 
+                                width));
+                        }
+                        listbox->set_columns(columns);
+                    }
+
+                    control = std::move(listbox);
                 }
 
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));

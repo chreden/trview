@@ -16,13 +16,12 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<ui::UiSource>.to(ui::load_from_resource),
             di::bind<ISettingsWindow::Source>.to(
                 [](const auto& injector) -> ISettingsWindow::Source
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<SettingsWindow>(parent, injector.create<ui::UiSource>());
+                        return std::make_unique<SettingsWindow>(parent, ui::load_from_resource);
                     };
                 }),
             di::bind<ICameraControls::Source>.to(
@@ -30,7 +29,7 @@ namespace trview
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<CameraControls>(parent, injector.create<ui::UiSource>());
+                        return std::make_unique<CameraControls>(parent, ui::load_from_resource);
                     };
                 }),
             di::bind<IViewOptions::Source>.to(
@@ -38,7 +37,7 @@ namespace trview
                 {
                     return [&](auto&& parent)
                     {
-                        return std::make_unique<ViewOptions>(parent, injector.create<ui::UiSource>());
+                        return std::make_unique<ViewOptions>(parent, ui::load_from_resource);
                     };
                 }),
             di::bind<IBubble::Source>.to(

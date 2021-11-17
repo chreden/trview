@@ -361,6 +361,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Files\arial7.bin" />
     <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Files\UI\camera_controls.json" />
+    <None Include="Resources\Files\UI\items_window_right_panel.json" />
     <None Include="Resources\Files\UI\settings_window.json" />
     <None Include="Resources\Files\UI\view_options.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />

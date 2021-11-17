@@ -30,11 +30,20 @@
                 }
             ]
         },
+        "listbox_column": {
+            "type": "object",
+            "properties": {
+                "width": { "type": "number" },
+                "name": { "type": "string" },
+                "type": { "enum": [ "number", "string", "boolean" ] },
+                "identity": { "enum": [ "none", "key" ] }
+            }
+        },
         "control": {
             "type": "object",
             "properties": {
                 "name": { "type": "string" },
-                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown" ] },
+                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox" ] },
                 "size": { "$ref": "#/$defs/size" },
                 "position": { "$ref": "#/$defs/point" },
                 "visible": { "type": "boolean" },
@@ -102,6 +111,24 @@
                             "min_value": { "type": "number" },
                             "max_value": { "type": "number" },
                             "value":  { "type": "number" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type": { "const": "listbox" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "show_headers": { "type": "boolean" },
+                            "show_scrollbar": { "type": "boolean" },
+                            "show_highlight": { "type": "boolean" },
+                            "columns": {
+                                 "type": "array",
+                                 "items": {
+                                    "$ref": "#/$defs/listbox_column"
+                                 }
+                            }
                         }
                     }
                 }

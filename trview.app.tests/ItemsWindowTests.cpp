@@ -10,6 +10,7 @@
 #include <trview.ui/Mocks/Input/IInput.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.app/Mocks/UI/IBubble.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -42,7 +43,7 @@ namespace
 
             std::unique_ptr<ItemsWindow> build()
             {
-                return std::make_unique<ItemsWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source);
+                return std::make_unique<ItemsWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source, ui::load_from_resource);
             }
         };
 
