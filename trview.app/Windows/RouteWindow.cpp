@@ -27,17 +27,7 @@ namespace trview
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
 
-        bool has_randomizer_elements(const IRoute& route)
-        {
-            for (uint32_t i = 0u; i < route.waypoints(); ++i)
-            {
-                if (route.waypoint(i).type() == IWaypoint::Type::RandoLocation)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        const uint32_t normal_min_height = 400;
     }
 
     const std::string RouteWindow::Names::export_button = "export_button";
@@ -46,10 +36,7 @@ namespace trview
     const std::string RouteWindow::Names::notes_area = "notes_area";
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
-    const std::string RouteWindow::Names::requires_glitch = "requires_glitch";
-    const std::string RouteWindow::Names::vehicle_required = "vehicle_required";
-    const std::string RouteWindow::Names::is_item = "is_item";
-    const std::string RouteWindow::Names::difficulty = "difficulty";
+    const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
 
     namespace Colours
     {
@@ -66,7 +53,7 @@ namespace trview
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
         const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, 400)), parent, L"trview.route", L"Route", input_source, Size(470, 400)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
@@ -102,7 +89,7 @@ namespace trview
         auto left_panel = std::make_unique<ui::Window>(Size(200, window().size().height), Colours::LeftPanel);
         left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        auto buttons = std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel);
+        auto buttons  = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
         buttons->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
 
         _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
@@ -155,10 +142,7 @@ namespace trview
             if (_randomizer_enabled)
             {
                 filters.push_back({ L"Randomizer Locations", { L"*.json" } });
-                if (has_randomizer_elements(*_route))
-                {
-                    filter_index = 2;
-                }
+                filter_index = 2;
             }
 
             const auto filename = _dialogs->save_file(L"Export route", filters, filter_index);
@@ -167,27 +151,29 @@ namespace trview
                 on_route_export(filename.value().filename, filename.value().filter_index == 2);
             }
         };
-        auto _buttons = left_panel->add_child(std::move(buttons));
 
         // List box to show the waypoints in the route.
-        auto waypoints = std::make_unique<Listbox>(Size(200, window().size().height - _buttons->size().height), Colours::LeftPanel);
-        waypoints->set_enable_sorting(false);
-        waypoints->set_columns(
+        _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));
+        _waypoints->set_enable_sorting(false);
+        _waypoints->set_columns(
             {
                 { Listbox::Column::Type::Number, L"#", 30 },
                 { Listbox::Column::Type::String, L"Type", 160 }
             }
         );
-        _token_store += waypoints->on_item_selected += [&](const auto& item) {
+        _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
             on_waypoint_selected(index);
         };
-        _token_store += waypoints->on_delete += [&]() {
+        _token_store += _waypoints->on_delete += [&]() {
             on_waypoint_deleted(_selected_index);
         };
+        _token_store += on_size_changed += [&](const auto& size)
+        {
+            _waypoints->set_size(Size(200, size.height - 20));
+        };
 
-        _waypoints = left_panel->add_child(std::move(waypoints));
         return left_panel;
     }
 
@@ -199,8 +185,8 @@ namespace trview
         right_panel_layout->set_margin(Size(0, 8));
         right_panel->set_layout(std::move(right_panel_layout));
 
-        auto group_box = std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details");
-        auto details_panel = std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails);
+        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details"));
+        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails));
         details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
         _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
@@ -323,13 +309,12 @@ namespace trview
         _clear_save->set_visible(false);
         _delete_waypoint->set_visible(false);
 
-        group_box->add_child(std::move(details_panel));
-        right_panel->add_child(std::move(group_box));
-
         right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        // Notes area.
-        _lower_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, window().size().height - 160), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = _lower_box->add_child(std::make_unique<TextArea>(Size(panel_width - 20, _lower_box->size().height - 41), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
+        _lower_box = right_panel->add_child(std::make_unique<ui::Window>(Size(), Colours::Notes));
+        _lower_box->set_layout(std::make_unique<StackLayout>(5.0f));
+
+        auto notes_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Notes"));
+        _notes_area = notes_group->add_child(std::make_unique<TextArea>(Size(panel_width - 20, 200), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
         _notes_area->set_name(Names::notes_area);
         _notes_area->set_scrollbar_visible(true);
 
@@ -345,56 +330,17 @@ namespace trview
             }
         };
 
-        _rando_area = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        _rando_area->set_layout(std::make_unique<StackLayout>(5.0f));
-        _rando_area->set_visible(false);
-
-        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 50), Colours::Notes));
-        grid->set_layout(std::make_unique<GridLayout>(2, 2));
-
-        _requires_glitch = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Requires Glitch"));
-        _requires_glitch->set_name(Names::requires_glitch);
-        _token_store += _requires_glitch->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_requires_glitch(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _vehicle_required = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Vehicle Required"));
-        _vehicle_required->set_name(Names::vehicle_required);
-        _token_store += _vehicle_required->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_vehicle_required(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _is_item = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, L"Is Item"));
-        _is_item->set_name(Names::is_item);
-        _token_store += _is_item->on_state_changed += [&](bool state)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_is_item(state);
-                _route->set_unsaved(true);
-            }
-        };
-        _difficulty = _rando_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 24)));
-        _difficulty->set_name(Names::difficulty);
-        _difficulty->set_values({ L"Easy", L"Medium", L"Hard" });
-        _difficulty->set_dropdown_scope(_ui.get());
-        _token_store += _difficulty->on_value_selected += [&](const std::wstring& value)
-        {
-            if (_route && _selected_index < _route->waypoints())
-            {
-                _route->waypoint(_selected_index).set_difficulty(to_utf8(value));
-                _route->set_unsaved(true);
-            }
-        };
-
+        _rando_group = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, 200), Colours::Notes));
+        auto group_layout = std::make_unique<StackLayout>();
+        group_layout->set_margin(Size(10, 0));
+        _rando_group->set_layout(std::move(group_layout));
+        _rando_group->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, L"Randomizer", 8, TextAlignment::Left, ParagraphAlignment::Centre));
+        _rando_group->set_name(Names::randomizer_group);
+        _rando_group->set_visible(false);
+        _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
+        auto layout = std::make_unique<StackLayout>(5.0f);
+        layout->set_margin(Size(0, 10.0f));
+        _rando_area->set_layout(std::move(layout));
         return right_panel;
     }
 
@@ -501,35 +447,19 @@ namespace trview
         }
 
         _stats->set_items(stats);
+        _rando_group->set_visible(_randomizer_enabled);
+        update_minimum_height();
+        load_randomiser_settings(waypoint);
 
-        // Handling for randomizer features:
-        if (waypoint.type() == IWaypoint::Type::RandoLocation)
+        _notes_area->set_text(waypoint.notes());
+
+        if (waypoint.has_save())
         {
-            _rando_area->set_visible(true);
-            _notes_area->set_visible(false);
-            _lower_box->set_title(L"Randomizer");
-
-            _requires_glitch->set_state(waypoint.requires_glitch());
-            _difficulty->set_selected_value(to_utf16(waypoint.difficulty()));
-            _vehicle_required->set_state(waypoint.vehicle_required());
-            _is_item->set_state(waypoint.is_item());
+            _select_save->set_text(L"SAVEGAME.0");
         }
         else
         {
-            _rando_area->set_visible(false);
-            _notes_area->set_visible(true);
-            _lower_box->set_title(L"Notes");
-
-            _notes_area->set_text(waypoint.notes());
-
-            if (waypoint.has_save())
-            {
-                _select_save->set_text(L"SAVEGAME.0");
-            }
-            else
-            {
-                _select_save->set_text(L"Attach Save");
-            }
+            _select_save->set_text(L"Attach Save");
         }
     }
 
@@ -579,5 +509,181 @@ namespace trview
     void RouteWindow::set_randomizer_enabled(bool value)
     {
         _randomizer_enabled = value;
+        _rando_group->set_visible(_randomizer_enabled);
+        update_minimum_height();
+    }
+
+    void RouteWindow::set_randomizer_settings(const RandomizerSettings& settings)
+    {
+        _randomizer_settings = settings;
+
+        const float panel_width = 270;
+
+        const auto num_bools = settings.settings_of_type(RandomizerSettings::Setting::Type::Boolean);
+        const auto rows = static_cast<int>(std::ceil(num_bools / 2.0));
+        auto grid = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, rows * 25), Colours::Notes));
+        grid->set_layout(std::make_unique<GridLayout>(2, rows));
+
+        for (const auto& x : _randomizer_settings.settings)
+        {
+            const std::string name = x.first;
+            switch (x.second.type)
+            {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    auto checkbox = grid->add_child(std::make_unique<Checkbox>(Colour::Transparent, to_utf16(x.second.display)));
+                    checkbox->set_name(name);
+                    _token_store += checkbox->on_state_changed += [this, name](bool state)
+                    {
+                        if (_route && _selected_index < _route->waypoints())
+                        {
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            settings[name] = state;
+                            waypoint.set_randomizer_settings(settings);
+                            _route->set_unsaved(true);
+                        }
+                    };
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    // TODO: Label for text element (Dropdown or otherwise)
+                    auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
+                    string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
+                    string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
+
+                    const auto update_setting = [this, name](const std::wstring& value)
+                    {
+                        if (_route && _selected_index < _route->waypoints())
+                        {
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            settings[name] = to_utf8(value);
+                            waypoint.set_randomizer_settings(settings);
+                            _route->set_unsaved(true);
+                        }
+                    };
+
+                    if (x.second.options.empty())
+                    {
+                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
+                        text_area->set_name(x.first);
+                        text_area->set_mode(TextArea::Mode::SingleLine);
+                        _token_store += text_area->on_text_changed += update_setting;
+                    }
+                    else
+                    {
+                        auto dropdown = string_area->add_child(std::make_unique<Dropdown>(Size(panel_width / 2.0f, 20)));
+                        dropdown->set_name(x.first);
+
+                        std::vector<std::wstring> options;
+                        for (const auto& o : x.second.options)
+                        {
+                            options.push_back(to_utf16(std::get<std::string>(o)));
+                        }
+
+                        dropdown->set_values(options);
+                        dropdown->set_dropdown_scope(_ui.get());
+                        _token_store += dropdown->on_value_selected += update_setting;
+                    }
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
+                    string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
+                    string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
+                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
+                    number_area->set_mode(TextArea::Mode::SingleLine);
+                    number_area->set_name(x.first);
+
+                    const auto update_number = [this, name, number_area](const std::wstring& text)
+                    {
+                        if (_route && _selected_index < _route->waypoints())
+                        {
+                            auto& waypoint = _route->waypoint(_selected_index);
+                            auto settings = waypoint.randomizer_settings();
+                            try
+                            {
+                                const auto value = std::stof(text);
+                                settings[name] = value;
+                                waypoint.set_randomizer_settings(settings);
+                                _route->set_unsaved(true);
+                            }
+                            catch (...)
+                            {
+                                const auto value_to_set =
+                                    settings.find(name) == settings.end() ?
+                                    _randomizer_settings.settings[name].default_value : settings[name];
+                                number_area->set_text(std::to_wstring(std::get<float>(value_to_set)));
+                            }
+                        }
+                    };
+
+                    _token_store += number_area->on_enter += update_number;
+                    _token_store += number_area->on_focus_lost += [this, name, number_area, update_number]()
+                    {
+                        update_number(number_area->text());
+                    };
+                    break;
+                }
+            }
+        }
+
+        update_minimum_height();
+    }
+
+    void RouteWindow::load_randomiser_settings(const IWaypoint& waypoint)
+    {
+        auto waypoint_settings = waypoint.randomizer_settings();
+        for (const auto& s : _randomizer_settings.settings)
+        {
+            const auto value_to_set =
+                waypoint_settings.find(s.first) == waypoint_settings.end() ?
+                s.second.default_value : waypoint_settings[s.first];
+
+            switch (s.second.type)
+            {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    auto checkbox = _rando_area->find<Checkbox>(s.first);
+                    checkbox->set_state(std::get<bool>(value_to_set));
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    if (s.second.options.empty())
+                    {
+                        auto text = _rando_area->find<TextArea>(s.first);
+                        text->set_text(to_utf16(std::get<std::string>(value_to_set)));
+                    }
+                    else
+                    {
+                        auto dropdown = _rando_area->find<Dropdown>(s.first);
+                        dropdown->set_selected_value(to_utf16(std::get<std::string>(value_to_set)));
+                    }
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    auto text = _rando_area->find<TextArea>(s.first);
+                    text->set_text(std::to_wstring(std::get<float>(value_to_set)));
+                    break;
+                }
+            }
+        }
+    }
+
+    void RouteWindow::update_minimum_height()
+    {
+        if (_randomizer_enabled)
+        {
+            set_minimum_height(_rando_group->absolute_position().y + _rando_group->size().height);
+        }
+        else
+        {
+            set_minimum_height(normal_min_height);
+        }
     }
 }

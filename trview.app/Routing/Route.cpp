@@ -195,10 +195,7 @@ namespace trview
         {
             auto& waypoint = _waypoints[i];
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
-
-            if (waypoint->type() != IWaypoint::Type::RandoLocation &&
-                i < _waypoints.size() - 1 &&
-                _waypoints[i + 1]->type() != IWaypoint::Type::RandoLocation)
+            if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
                 waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
@@ -229,6 +226,11 @@ namespace trview
             waypoint->set_route_colour(colour);
         }
         set_unsaved(true);
+    }
+
+    void Route::set_randomizer_enabled(bool enabled)
+    {
+        _randomizer_enabled = enabled;
     }
 
     void Route::set_unsaved(bool value)
@@ -264,7 +266,58 @@ namespace trview
         return _waypoints.empty() ? 0 : _selected_index + 1;
     }
 
-    std::shared_ptr<IRoute> import_rando_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const ILevel* const level)
+    IWaypoint::WaypointRandomizerSettings import_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
+    {
+        IWaypoint::WaypointRandomizerSettings result;
+        for (const auto& setting : randomizer_settings.settings)
+        {
+            if (!json.count(setting.first))
+            {
+                result[setting.first] = setting.second.default_value;
+                continue;
+            }
+
+            switch (setting.second.type)
+            {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    result[setting.first] = read_attribute<bool>(json, setting.first, std::get<bool>(setting.second.default_value));
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    result[setting.first] = read_attribute<float>(json, setting.first, std::get<float>(setting.second.default_value));
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    // Covers the case where enum values are saved as integers.
+                    if (!setting.second.options.empty() && json.count(setting.first) && json[setting.first].is_number())
+                    {
+                        const auto index = json[setting.first].get<int>();
+                        result[setting.first] = setting.second.options[std::max(0, std::min<int>(index, setting.second.options.size() - 1))];
+                    }
+                    else
+                    {
+                        result[setting.first] = read_attribute<std::string>(json, setting.first, std::get<std::string>(setting.second.default_value));
+                    }
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    IWaypoint::WaypointRandomizerSettings import_trview_randomizer_settings(const nlohmann::json& json, const RandomizerSettings& randomizer_settings)
+    {
+        if (json.count("randomizer"))
+        {
+            return import_randomizer_settings(json["randomizer"], randomizer_settings);
+        }
+        return {};
+    }
+
+    std::shared_ptr<IRoute> import_rando_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const ILevel* const level, const RandomizerSettings& randomizer_settings)
     {
         if (!level)
         {
@@ -299,32 +352,16 @@ namespace trview
                 y = room->info().yBottom - y;
             }
 
-            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::RandoLocation, 0);
+            route->add(Vector3(x, y, z) / 1024.0f, Vector3::Down, room_number, IWaypoint::Type::Position, 0);
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
-            new_waypoint.set_requires_glitch(read_attribute<bool>(location, "RequiresGlitch", false));
-
-            if (location.count("Difficulty") > 0)
-            {
-                if (location["Difficulty"].is_number())
-                {
-                    int difficulty = read_attribute<int>(location, "Difficulty");
-                    new_waypoint.set_difficulty(difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard");
-                }
-                else
-                {
-                    new_waypoint.set_difficulty(read_attribute<std::string>(location, "Difficulty", "Easy"));
-                }
-            }
-
-            new_waypoint.set_is_item(read_attribute<bool>(location, "IsItem", false));
-            new_waypoint.set_vehicle_required(read_attribute<bool>(location, "VehicleRequired", false));
+            new_waypoint.set_randomizer_settings(import_randomizer_settings(location, randomizer_settings));
         }
 
         route->set_unsaved(false);
         return route;
     }
 
-    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data)
+    std::shared_ptr<IRoute> import_trview_route(const IRoute::Source& route_source, const std::vector<uint8_t>& data, const RandomizerSettings& randomizer_settings)
     {
         auto json = nlohmann::json::parse(data.begin(), data.end());
 
@@ -350,21 +387,14 @@ namespace trview
             auto& new_waypoint = route->waypoint(route->waypoints() - 1);
             new_waypoint.set_notes(to_utf16(notes));
             new_waypoint.set_save_file(from_base64(waypoint.value("save", "")));
-
-            if (type == IWaypoint::Type::RandoLocation)
-            {
-                new_waypoint.set_requires_glitch(waypoint["RequiresGlitch"].get<bool>());
-                new_waypoint.set_difficulty(waypoint["Difficulty"].get<std::string>());
-                new_waypoint.set_is_item(waypoint["IsItem"].get<bool>());
-                new_waypoint.set_vehicle_required(waypoint["VehicleRequired"].get<bool>());
-            }
+            new_waypoint.set_randomizer_settings(import_trview_randomizer_settings(waypoint, randomizer_settings));
         }
 
         route->set_unsaved(false);
         return route;
     }
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, bool rando_import)
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, const RandomizerSettings& randomizer_settings, bool rando_import)
     {
         try
         {
@@ -376,10 +406,10 @@ namespace trview
 
             if (rando_import)
             {
-                return import_rando_route(route_source, data.value(), level);
+                return import_rando_route(route_source, data.value(), level, randomizer_settings);
             }
             
-            return import_trview_route(route_source, data.value());
+            return import_trview_route(route_source, data.value(), randomizer_settings);
         }
         catch (std::exception& e)
         {
@@ -408,7 +438,72 @@ namespace trview
         return nlohmann::ordered_json();
     }
 
-    void export_randomizer_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename)
+    /// <summary>
+    /// Export randomizer settings direct to a randomizer locations file.
+    /// </summary>
+    /// <param name="json">The json to write to.</param>
+    /// <param name="randomizer_settings">Randomzier setings and definitions.</param>
+    /// <param name="waypoint">The waypoint to save.</param>
+    void export_randomizer_settings(nlohmann::ordered_json& json, const RandomizerSettings& randomizer_settings, const IWaypoint& waypoint)
+    {
+        auto waypoint_settings = waypoint.randomizer_settings();
+        for (const auto& setting : randomizer_settings.settings)
+        {
+            const auto value_to_set =
+                waypoint_settings.find(setting.first) == waypoint_settings.end() ?
+                setting.second.default_value : waypoint_settings[setting.first];
+
+            if (!setting.second.always_output && value_to_set == setting.second.default_value)
+            {
+                continue;
+            }
+
+            switch (setting.second.type)
+            {
+                case RandomizerSettings::Setting::Type::Boolean:
+                {
+                    json[setting.first] = std::get<bool>(value_to_set);
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::String:
+                {
+                    json[setting.first] = std::get<std::string>(value_to_set);
+                    break;
+                }
+                case RandomizerSettings::Setting::Type::Number:
+                {
+                    float value = std::get<float>(value_to_set);
+                    if (fabs(round(value) - value) < FLT_EPSILON)
+                    {
+                        json[setting.first] = static_cast<int>(round(value));
+                    }
+                    else
+                    {
+                        json[setting.first] = value;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Export randomizer settings on waypoints so that they can be loaded by trview in the future.
+    /// </summary>
+    /// <param name="json">Json to write to.</param>
+    /// <param name="settings">Randomizer settings and definitions.</param>
+    /// <param name="waypoint">The waypoint to save.</param>
+    void export_trview_randomizer_settings(nlohmann::json& json, const RandomizerSettings& randomizer_settings, const IWaypoint& waypoint)
+    {
+        nlohmann::ordered_json randomizer_node;
+        export_randomizer_settings(randomizer_node, randomizer_settings, waypoint);
+        if (!randomizer_node.is_null())
+        {
+            json["randomizer"] = randomizer_node;
+        }
+    }
+
+    void export_randomizer_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings)
     {
         // Try to load the existing route
         nlohmann::ordered_json json = try_load_route(files, route_filename);
@@ -419,32 +514,14 @@ namespace trview
             const IWaypoint& waypoint = route.waypoint(i);
             nlohmann::ordered_json waypoint_json;
 
-            if (waypoint.type() == IWaypoint::Type::RandoLocation)
-            {
-                auto pos = waypoint.position();
-                waypoint_json["X"] = static_cast<int>(pos.x * 1024);
-                waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
-                waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
-                waypoint_json["Room"] = waypoint.room();
-                if (waypoint.requires_glitch())
-                {
-                    waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                }
-                if (waypoint.difficulty() != "Easy")
-                {
-                    waypoint_json["Difficulty"] = waypoint.difficulty();
-                }
-                if (waypoint.is_item())
-                {
-                    waypoint_json["IsItem"] = waypoint.is_item();
-                }
-                if (waypoint.vehicle_required())
-                {
-                    waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-                }
+            auto pos = waypoint.position();
+            waypoint_json["X"] = static_cast<int>(pos.x * 1024);
+            waypoint_json["Y"] = static_cast<int>(pos.y * 1024);
+            waypoint_json["Z"] = static_cast<int>(pos.z * 1024);
+            waypoint_json["Room"] = waypoint.room();
+            export_randomizer_settings(waypoint_json, randomizer_settings, waypoint);
 
-                waypoints.push_back(waypoint_json);
-            }
+            waypoints.push_back(waypoint_json);
         }
 
         auto trimmed = level_filename.substr(level_filename.find_last_of("/\\") + 1);
@@ -453,7 +530,7 @@ namespace trview
         files->save_file(route_filename, json.dump(2, ' '));
     }
 
-    void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename)
+    void export_trview_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const RandomizerSettings& randomizer_settings)
     {
         nlohmann::json json;
         json["colour"] = to_utf8(route.colour().name());
@@ -482,14 +559,7 @@ namespace trview
             {
                 waypoint_json["save"] = to_base64(waypoint.save_file());
             }
-
-            if (waypoint.type() == IWaypoint::Type::RandoLocation)
-            {
-                waypoint_json["RequiresGlitch"] = waypoint.requires_glitch();
-                waypoint_json["Difficulty"] = waypoint.difficulty();
-                waypoint_json["IsItem"] = waypoint.is_item();
-                waypoint_json["VehicleRequired"] = waypoint.vehicle_required();
-            }
+            export_trview_randomizer_settings(waypoint_json, randomizer_settings, waypoint);
 
             waypoints.push_back(waypoint_json);
         }
@@ -498,17 +568,17 @@ namespace trview
         files->save_file(route_filename, json.dump());
     }
 
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export)
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export)
     {
         try
         {
             if (rando_export)
             {
-                export_randomizer_route(route, files, route_filename, level_filename);
+                export_randomizer_route(route, files, route_filename, level_filename, randomizer_settings);
             }
             else
             {
-                export_trview_route(route, files, route_filename);
+                export_trview_route(route, files, route_filename, randomizer_settings);
             }
         }
         catch (...)

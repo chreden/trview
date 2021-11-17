@@ -47,6 +47,22 @@ namespace trview
             // Nowhere to log this yet...
         }
 
+        try
+        {
+            auto data = _files->load_file(_files->appdata_directory() + "\\trview\\randomizer.json");
+            if (!data.has_value())
+            {
+                return settings;
+            }
+
+            auto json = nlohmann::json::parse(data.value().begin(), data.value().end());
+            from_json(json, settings.randomizer);
+        }
+        catch (...)
+        {
+            // Nowhere to log this yet...
+        }
+
         return settings;
     }
 

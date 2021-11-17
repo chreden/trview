@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <variant>
 #include <SimpleMath.h>
 #include <trview.common/Colour.h>
 #include <trview.app/Geometry/IRenderable.h>
@@ -27,13 +29,10 @@ namespace trview
             /// <summary>
             /// The waypoint is a trigger in the world.
             /// </summary>
-            Trigger,
-            /// <summary>
-            /// The waypoint is a Randomizer location. This unlocks extra properties and changes the serialisation
-            /// behaviour of the route to only export Randomiser Locations in a compatible format.
-            /// </summary>
-            RandoLocation
+            Trigger
         };
+
+        using WaypointRandomizerSettings = std::map<std::string, std::variant<bool, float, std::string>>;
 
         /// <summary>
         /// Create a waypoint.
@@ -48,10 +47,6 @@ namespace trview
         /// </summary>
         /// <returns>The bounding box.</returns>
         virtual DirectX::BoundingBox bounding_box() const = 0;
-        /// <summary>
-        /// Get the Randomizer 'Difficulty' value.
-        /// </summary>
-        virtual std::string difficulty() const = 0;
         /// <summary>
         /// Get the position of the waypoint in the 3D view,
         /// </summary>
@@ -70,17 +65,9 @@ namespace trview
         /// </summary>
         virtual uint32_t index() const = 0;
         /// <summary>
-        /// Whether the Randomizer 'is item' flag is set.
-        /// </summary>
-        virtual bool is_item() const = 0;
-        /// <summary>
         /// Get any notes associated with the waypoint.
         /// </summary>
         virtual std::wstring notes() const = 0;
-        /// <summary>
-        /// Whether the Randomizer 'requires glitch' flag is set.
-        /// </summary>
-        virtual bool requires_glitch() const = 0;
         /// <summary>
         /// Get the room number that the waypoint is in.
         /// </summary>
@@ -97,38 +84,14 @@ namespace trview
         /// Get the contents of the attached save file.
         /// </summary>
         virtual std::vector<uint8_t> save_file() const = 0;
-        /// <summary>
-        /// Set the Randomizer 'difficulty' value.
-        /// </summary>
-        /// <param name="value">The new difficulty value.</param>
-        virtual void set_difficulty(const std::string& value) = 0;
-        /// <summary>
-        /// Set the Randomizer 'is item' flag.
-        /// </summary>
-        /// <param name="value">The new flag value.</param>
-        virtual void set_is_item(bool value) = 0;
         /// Set the notes associated with the waypoint.
         /// @param notes The notes to save.
         virtual void set_notes(const std::wstring& notes) = 0;
-        /// <summary>
-        /// Set the Randomizer 'requires glitch' flag.
-        /// </summary>
-        /// <param name="value">The new flag value.</param>
-        virtual void set_requires_glitch(bool value) = 0;
         /// Set the route colour for the waypoint blob.
         /// @param colour The colour of the route.
         virtual void set_route_colour(const Colour& colour) = 0;
         /// Set the contents of the attached save file.
         virtual void set_save_file(const std::vector<uint8_t>& data) = 0;
-        /// <summary>
-        /// Set the Randomizer 'vehicle required' flag.
-        /// </summary>
-        /// <param name="value">The new flag value.</param>
-        virtual void set_vehicle_required(bool value) = 0;
-        /// <summary>
-        /// Get the Randomizer 'vehicle required' flag.
-        /// </summary>
-        virtual bool vehicle_required() const = 0;
         /// <summary>
         /// Get the position of the blob on top of the waypoint pole for rendering.
         /// </summary>
@@ -137,6 +100,8 @@ namespace trview
         /// Get the normal to which the waypoint is aligned.
         /// </summary>
         virtual DirectX::SimpleMath::Vector3 normal() const = 0;
+        virtual WaypointRandomizerSettings randomizer_settings() const = 0;
+        virtual void set_randomizer_settings(const WaypointRandomizerSettings& settings) = 0;
     };
 
     /// <summary>

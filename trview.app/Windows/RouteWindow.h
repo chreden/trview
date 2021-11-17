@@ -32,10 +32,7 @@ namespace trview
             static const std::string notes_area;
             static const std::string select_save_button;
             static const std::string waypoint_stats;
-            static const std::string requires_glitch;
-            static const std::string vehicle_required;
-            static const std::string is_item;
-            static const std::string difficulty;
+            static const std::string randomizer_group;
         };
 
         /// Create a route window as a child of the specified window.
@@ -55,16 +52,19 @@ namespace trview
         virtual void focus() override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
+        virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
         void load_waypoint_details(uint32_t index);
         std::unique_ptr<ui::Control> create_left_panel();
         std::unique_ptr<ui::Control> create_right_panel();
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
+        void load_randomiser_settings(const IWaypoint& waypoint);
+        void update_minimum_height();
 
         ui::Dropdown* _colour;
         ui::Listbox* _waypoints;
         ui::Listbox* _stats;
-        ui::GroupBox* _lower_box;
+        ui::Window* _lower_box;
         ui::TextArea* _notes_area;
         ui::Button* _select_save;
         ui::Button* _delete_waypoint;
@@ -81,11 +81,13 @@ namespace trview
         std::unique_ptr<IBubble> _bubble;
 
         // Randomizer settings:
-        ui::Window* _rando_area;
+        ui::Window* _rando_group;
         ui::Checkbox* _requires_glitch;
         ui::Checkbox* _vehicle_required;
         ui::Checkbox* _is_item;
         ui::Dropdown* _difficulty;
         bool _randomizer_enabled{ false };
+        RandomizerSettings _randomizer_settings;
+        ui::Window* _rando_area;
     };
 }

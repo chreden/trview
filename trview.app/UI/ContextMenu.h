@@ -16,7 +16,6 @@ namespace trview
             static const std::string hide_button;
             static const std::string orbit_button;
             static const std::string remove_waypoint_button;
-            static const std::string rando_location_button;
         };
 
         /// Create a new ContentMenu window.
@@ -32,14 +31,11 @@ namespace trview
         virtual void set_hide_enabled(bool value) override;
         virtual bool visible() const override;
         virtual void set_mid_waypoint_enabled(bool value) override;
-        virtual void set_randomizer_tools(bool value) override;
     private:
         ui::Window* _menu;
         ui::Button* _remove_button;
         ui::Button* _hide_button;
         ui::Button* _mid_button;
-        ui::Button* _rando_location_button{ nullptr };
-        std::unique_ptr<ui::Button> _rando_location_button_store;
         bool _remove_enabled{ false };
         bool _hide_enabled{ false };
         bool _mid_enabled{ false };

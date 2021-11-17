@@ -11,6 +11,7 @@
 #include <trview.common/Mocks/IFiles.h>
 #include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
+#include <trview.ui/Checkbox.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -472,104 +473,204 @@ TEST(RouteWindow, ClickStatShowsBubble)
     value->clicked(Point());
 }
 
-TEST(RouteWindow, RequiresGlitchSetRouteUnsaved)
+TEST(RouteWindow, RandomizerPanelVisibleBasedOnSetting)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, requires_glitch).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_requires_glitch(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
     auto window = register_test_module().build();
-    window->set_route(&route);
-
-    auto requires_glitch = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::requires_glitch);
-    ASSERT_NE(requires_glitch, nullptr);
-    ASSERT_TRUE(requires_glitch->visible(true));
-
-    requires_glitch->clicked(Point());
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+    ASSERT_NE(randomizer_group, nullptr);
+    ASSERT_FALSE(randomizer_group->visible());
+    window->set_randomizer_enabled(true);
+    ASSERT_TRUE(randomizer_group->visible());
 }
 
-TEST(RouteWindow, VehicleRequiredSetsRouteUnsaved)
+TEST(RouteWindow, WindowResizesWhenRandomizerEnabled)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, vehicle_required).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_vehicle_required(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
     auto window = register_test_module().build();
-    window->set_route(&route);
-
-    auto vehicle_required = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::vehicle_required);
-    ASSERT_NE(vehicle_required, nullptr);
-    ASSERT_TRUE(vehicle_required->visible(true));
-
-    vehicle_required->clicked(Point());
+    const auto size = window->window().size();
+    window->set_randomizer_enabled(true);
+    const auto new_size = window->window().size();
+    ASSERT_GT(new_size.height, size.height);
 }
 
-TEST(RouteWindow, IsItemSetsRouteUnsaved)
+TEST(RouteWindow, RandomizerPanelCreatesUIFromSettings)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, is_item).Times(AtLeast(1)).WillRepeatedly(Return(true));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_is_item(false)).Times(1);
-
-    MockRoute route;
-    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
-    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
     auto window = register_test_module().build();
-    window->set_route(&route);
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
-    auto is_item = window->root_control()->find<ui::Checkbox>(RouteWindow::Names::is_item);
-    ASSERT_NE(is_item, nullptr);
-    ASSERT_TRUE(is_item->visible(true));
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean };
+    settings.settings["test2"] = { "Test 2", RandomizerSettings::Setting::Type::String, "One", { std::string("One"), std::string("Two"), std::string("Three") } };
+    settings.settings["test3"] = { "Test 3", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
 
-    is_item->clicked(Point());
+    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
+    ASSERT_NE(test1, nullptr);
+
+    auto test2 = randomizer_group->find<ui::Dropdown>("test2");
+    ASSERT_NE(test2, nullptr);
+
+    auto test3 = randomizer_group->find<ui::TextArea>("test3");
+    ASSERT_NE(test3, nullptr);
 }
 
-TEST(RouteWindow, DifficultySetsRouteUnsaved)
+TEST(RouteWindow, ToggleRandomizerBoolUpdatesWaypoint)
 {
-    MockWaypoint waypoint;
-    EXPECT_CALL(waypoint, difficulty).Times(AtLeast(1)).WillRepeatedly(Return("Medium"));
-    EXPECT_CALL(waypoint, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
-    EXPECT_CALL(waypoint, set_difficulty("Hard")).Times(1);
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
 
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Boolean, true };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
     MockRoute route;
     EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
     EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
-    EXPECT_CALL(route, set_unsaved(true)).Times(1);
-
-    auto window = register_test_module().build();
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
     window->set_route(&route);
+    window->select_waypoint(0);
 
-    auto difficulty = window->root_control()->find<ui::Dropdown>(RouteWindow::Names::difficulty);
-    ASSERT_NE(difficulty, nullptr);
-    ASSERT_TRUE(difficulty->visible(true));
-    
-    auto dropdown_button = difficulty->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
+    auto test1 = randomizer_group->find<ui::Checkbox>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_TRUE(test1->state());
+
+    test1->clicked(Point());
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_FALSE(std::get<bool>(new_settings["test1"]));
+}
+
+TEST(RouteWindow, ChooseRandomizerDropDownUpdatesWaypoint)
+{
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One"), { std::string("One"), std::string("Two") } };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::Dropdown>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->selected_value(), L"One");
+
+    auto dropdown_button = test1->find<ui::Button>(ui::Dropdown::Names::dropdown_button);
     ASSERT_NE(dropdown_button, nullptr);
     dropdown_button->clicked(Point());
 
-    auto dropdown_list = difficulty->dropdown_listbox();
+    auto dropdown_list = test1->dropdown_listbox();
     ASSERT_NE(dropdown_list, nullptr);
 
-    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "2");
+    auto row = dropdown_list->find<ui::Control>(ui::Listbox::Names::row_name_format + "1");
     ASSERT_NE(row, nullptr);
 
     auto cell = row->find<ui::Button>(ui::Listbox::Row::Names::cell_name_format + "Name");
     ASSERT_NE(cell, nullptr);
     cell->clicked(Point());
+
+    test1->set_selected_value(L"Two");
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
 }
 
+TEST(RouteWindow, SetRandomizerTextUpdatesWaypoint)
+{
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::String, std::string("One") };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"One");
+
+    test1->set_text(L"Two");
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<std::string>(new_settings["test1"]), "Two");
+}
+
+TEST(RouteWindow, SetRandomizerNumberUpdatesWaypoint)
+{
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"1.000000");
+
+    test1->set_text(L"2.0");
+    test1->gained_focus();
+    test1->key_char(0xD);
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
+}
+
+TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
+{
+    auto window = register_test_module().build();
+    auto randomizer_group = window->root_control()->find<ui::Control>(RouteWindow::Names::randomizer_group);
+
+    RandomizerSettings settings;
+    settings.settings["test1"] = { "Test 1", RandomizerSettings::Setting::Type::Number, 1.0f };
+    window->set_randomizer_settings(settings);
+
+    IWaypoint::WaypointRandomizerSettings new_settings;
+
+    MockWaypoint waypoint;
+    MockRoute route;
+    EXPECT_CALL(route, waypoints).WillRepeatedly(Return(1));
+    EXPECT_CALL(route, waypoint(An<uint32_t>())).WillRepeatedly(ReturnRef(waypoint));
+    EXPECT_CALL(waypoint, set_randomizer_settings(An<const IWaypoint::WaypointRandomizerSettings&>())).WillRepeatedly(SaveArg<0>(&new_settings));
+    window->set_route(&route);
+    window->select_waypoint(0);
+
+    auto test1 = randomizer_group->find<ui::TextArea>("test1");
+    ASSERT_NE(test1, nullptr);
+    ASSERT_EQ(test1->text(), L"1.000000");
+
+    test1->gained_focus();
+    test1->set_text(L"2.0");
+    test1->lost_focus(nullptr);
+
+    ASSERT_NE(new_settings.find("test1"), new_settings.end());
+    ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
+}
 

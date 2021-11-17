@@ -23,6 +23,7 @@ namespace trview
         virtual void select_waypoint(uint32_t index) override;
         virtual void update(float delta) override;
         virtual void set_randomizer_enabled(bool value) override;
+        virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
         TokenStore _token_store;
         std::shared_ptr<IRouteWindow> _route_window;
@@ -34,5 +35,6 @@ namespace trview
         uint32_t _selected_waypoint{ 0u };
         IRouteWindow::Source _route_window_source;
         bool _randomizer_enabled{ false };
+        RandomizerSettings _randomizer_settings;
     };
 }

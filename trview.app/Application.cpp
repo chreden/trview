@@ -329,6 +329,7 @@ namespace trview
             _settings = settings;
             _viewer->set_settings(_settings);
             _route_window->set_randomizer_enabled(settings.randomizer_tools);
+            _route->set_randomizer_enabled(settings.randomizer_tools);
         };
         _viewer->set_settings(_settings);
 
@@ -392,17 +393,18 @@ namespace trview
         _token_store += _route_window->on_trigger_selected += [&](const auto& trigger) { select_trigger(trigger); };
         _token_store += _route_window->on_route_import += [&](const std::string& path, bool is_rando)
         {
-            auto route = import_route(_route_source, _files, path, _level.get(), is_rando);
+            auto route = import_route(_route_source, _files, path, _level.get(), _settings.randomizer, is_rando);
             if (route)
             {
                 _route = route;
                 _route_window->set_route(_route.get());
+                _route->set_randomizer_enabled(_settings.randomizer_tools);
                 _viewer->set_route(_route);
             }
         };
         _token_store += _route_window->on_route_export += [&](const std::string& path, bool is_rando)
         {
-            export_route(*_route, _files, path, _level ? _level->filename() : "", is_rando); 
+            export_route(*_route, _files, path, _level ? _level->filename() : "", _settings.randomizer, is_rando);
             _route->set_unsaved(false);
         };
         _token_store += _route_window->on_waypoint_deleted += [&](auto index) { remove_waypoint(index); };
@@ -412,6 +414,8 @@ namespace trview
             _viewer->set_route(_route);
         };
         _route_window->set_randomizer_enabled(_settings.randomizer_tools);
+        _route->set_randomizer_enabled(_settings.randomizer_tools);
+        _route_window->set_randomizer_settings(_settings.randomizer);
     }
 
     void Application::setup_shortcuts()

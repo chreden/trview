@@ -266,7 +266,7 @@ TEST(Route, Render)
     route->render(camera, texture_storage);
 }
 
-TEST(Route, RenderDoesNotJoinRandoLocations)
+TEST(Route, RenderDoesNotJoinWhenRandoEnabled)
 {
     auto [selection_renderer_ptr, selection_renderer] = create_mock<MockSelectionRenderer>();
     EXPECT_CALL(selection_renderer, render).Times(1);
@@ -277,7 +277,7 @@ TEST(Route, RenderDoesNotJoinRandoLocations)
     EXPECT_CALL(w1, render).Times(1);
     EXPECT_CALL(w1, render_join).Times(0);
     EXPECT_CALL(w2, render).Times(1);
-    EXPECT_CALL(w2, type).WillRepeatedly(Return(IWaypoint::Type::RandoLocation));
+    EXPECT_CALL(w2, type).WillRepeatedly(Return(IWaypoint::Type::Position));
     EXPECT_CALL(w2, render_join).Times(0);
     EXPECT_CALL(w3, render).Times(1);
 
@@ -293,6 +293,7 @@ TEST(Route, RenderDoesNotJoinRandoLocations)
     };
 
     auto route = register_test_module().with_selection_renderer(std::move(selection_renderer_ptr)).with_waypoint_source(source).build();
+    route->set_randomizer_enabled(true);
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);
     route->add(Vector3::Zero, Vector3::Down, 0);

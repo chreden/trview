@@ -38,6 +38,11 @@ namespace trview
             return _dropdown;
         }
 
+        std::wstring Dropdown::selected_value() const
+        {
+            return _button->text();
+        }
+
         void Dropdown::set_dropdown_scope(ui::Control* scope)
         {
             auto dropdown = std::make_unique<Listbox>(Size(size().width, size().height * _values.size()), Colour(0.25f, 0.25f, 0.25f));
@@ -100,9 +105,17 @@ namespace trview
                 return;
             }
 
-            // Set the position of the dropdown to be just below us.
-            _dropdown->set_position(absolute_position() + Point(0, size().height));
             _dropdown->set_size(Size(size().width, size().height * _values.size()));
+
+            // Set the position of the dropdown to be just below us or above depending on whether
+            // it would go off the bottom of the host control.
+            const auto dropdown_size = _dropdown->size();
+            auto offset = size().height;
+            if (absolute_position().y + size().height + dropdown_size.height > _dropdown->parent()->size().height)
+            {
+                offset = -dropdown_size.height;
+            }
+            _dropdown->set_position(absolute_position() + Point(0, offset));
 
             std::vector<Listbox::Item> items;
             for (const auto& value : _values)
