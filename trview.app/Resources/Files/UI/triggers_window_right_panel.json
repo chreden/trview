@@ -1,0 +1,162 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 270,
+        "height": 400
+    },
+    "background_colour": {
+        "r": 0.225,
+        "g": 0.225,
+        "b": 0.225
+    },
+    "layout": {
+        "type": "stack",
+        "size_mode": "manual"
+    },
+    "children": [
+        {
+            "type": "window",
+            "size": {
+                "width": 270,
+                "height": 8
+            },
+            "background_colour": {
+                "r": 0.225,
+                "g": 0.225,
+                "b": 0.225
+            }
+        },
+        {
+            "type": "groupbox",
+            "text": "Trigger Details",
+            "size": {
+                "width": 270,
+                "height": 190
+            },
+            "background_colour": {
+                "r": 0.225,
+                "g": 0.225,
+                "b": 0.225
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 250,
+                        "height": 160
+                    },
+                    "background_colour": {
+                        "r": 0.225,
+                        "g": 0.225,
+                        "b": 0.225
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "padding": 16,
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "listbox",
+                            "name": "StatsListbox",
+                            "size": {
+                                "width": 250,
+                                "height": 120
+                            },
+                            "background_colour": {
+                                "r": 0.225,
+                                "g": 0.225,
+                                "b": 0.225
+                            },
+                            "show_headers": false,
+                            "show_highlight": false,
+                            "show_scrollbar": false,
+                            "columns": [
+                                {
+                                    "type": "number",
+                                    "name": "Name",
+                                    "width": 100
+                                },
+                                {
+                                    "type": "number",
+                                    "name": "Value",
+                                    "width": 150
+                                }
+                            ]
+                        },
+                        {
+                            "type": "button",
+                            "text": "Add to Route",
+                            "name": "AddToRoute",
+                            "size": {
+                                "width": 250,
+                                "height": 20
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "window",
+            "size": {
+                "width": 270,
+                "height": 5
+            },
+            "background_colour": {
+                "r": 0.2,
+                "g": 0.2,
+                "b": 0.2
+            }
+        },
+        {
+            "type": "groupbox",
+            "text": "Commands",
+            "size": {
+                "width": 270,
+                "height": 200
+            },
+            "background_colour": {
+                "r": 0.2,
+                "g": 0.2,
+                "b": 0.2
+            },
+            "children": [
+                {
+                    "type": "listbox",
+                    "name": "TriggerCommands",
+                    "size": {
+                        "width": 250,
+                        "height": 160
+                    },
+                    "background_colour": {
+                        "r": 0.2,
+                        "g": 0.2,
+                        "b": 0.2
+                    },
+                    "columns": [
+                        {
+                            "type": "string",
+                            "name": "Type",
+                            "width": 80
+                        },
+                        {
+                            "type": "string",
+                            "name": "Index",
+                            "width": 35
+                        },
+                        {
+                            "type": "string",
+                            "name": "Entity",
+                            "width": 125
+                        }
+                    ],
+                    "show_headers": true,
+                    "show_scrollbar": true,
+                    "show_highlight": false
+                }
+            ]
+        }
+    ]
+}

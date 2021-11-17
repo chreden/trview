@@ -53,15 +53,16 @@ namespace trview
     using namespace graphics;
 
     TriggersWindow::TriggersWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-        const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source)
+        const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
+        const ui::UiSource& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", input_source, Size(520, 400)), _clipboard(clipboard),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
     }
 
-    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel()
+    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
 
@@ -164,38 +165,20 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel()
+    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
-        const float panel_width = 270;
-        auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
-        right_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 8), Colours::ItemDetails));
-        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 190), Colours::ItemDetails, Colours::DetailsBorder, L"Trigger Details"));
-        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 160), Colours::ItemDetails));
-        details_panel->set_layout(std::make_unique<StackLayout>(16.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        // Add some information about the selected item.
-        _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 120), Colours::ItemDetails));
-        _stats_list->set_name(Names::stats_listbox);
-        _stats_list->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"Name", 100 },
-                { Listbox::Column::Type::Number, L"Value", 150 },
-            }
-        );
-        _stats_list->set_show_headers(false);
-        _stats_list->set_show_scrollbar(false);
-        _stats_list->set_show_highlight(false);
+        auto right_panel = ui_source(IDR_UI_TRIGGERS_WINDOW_RIGHT_PANEL);
 
+        _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
             _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
-        auto button = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Add to Route"));
-        button->set_name(Names::add_to_route_button);
+        auto button = right_panel->find<Button>(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
             if (const auto trigger_ptr = _selected_trigger.lock())
@@ -204,24 +187,7 @@ namespace trview
             }
         };
 
-        // Spacer element.
-        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Triggers));
-
-        // Add the trigger details group box.
-        auto command_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Triggers, Colours::DetailsBorder, L"Commands"));
-        _command_list = command_group_box->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 160), Colours::Triggers));
-        _command_list->set_name(Names::trigger_commands_listbox);
-        _command_list->set_columns(
-            {
-                { Listbox::Column::Type::String, L"Type", 80 },
-                { Listbox::Column::Type::String, L"Index", 35 },
-                { Listbox::Column::Type::String, L"Entity", 125 },
-            }
-        );
-        _command_list->set_show_headers(true);
-        _command_list->set_show_scrollbar(true);
-        _command_list->set_show_highlight(false);
-
+        _command_list = right_panel->find<Listbox>(Names::trigger_commands_listbox);
         _token_store += _command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
