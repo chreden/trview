@@ -8,7 +8,7 @@
 #include "Sector.h"
 
 #include "Resources/resource.h"
-#include "Resources/ResourceHelper.h"
+#include <trview.common/Resources.h>
 
 namespace trview
 {

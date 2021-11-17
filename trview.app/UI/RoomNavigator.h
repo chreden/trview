@@ -28,10 +28,11 @@ namespace trview
     class RoomNavigator final
     {
     public:
+        /// <summary>
         /// Create the RoomNavigator control and attach it as a child to the parent control specified.
-        /// @param parent The control to attach the navigator to.
-        /// @param texture_storage The texture storage source to use for any required textures.
-        RoomNavigator(ui::Control& parent, const ITextureStorage& texture_storage);
+        /// </summary>
+        /// <param name="parent">The control to attach the navigator to.</param>
+        explicit RoomNavigator(ui::Control& parent);
 
         /// Event raised when the user selects a different room. The room that the user has selected is passed as
         /// a parameter when this event is raised.

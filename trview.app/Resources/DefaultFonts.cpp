@@ -1,6 +1,6 @@
 #include "DefaultFonts.h"
 #include "resource.h"
-#include "ResourceHelper.h"
+#include <trview.common/Resources.h>
 #include <trview.graphics/FontFactory.h>
 #include <trview.graphics/Device.h>
 

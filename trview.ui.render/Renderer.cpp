@@ -4,16 +4,28 @@
 #include <trview.ui/Label.h>
 #include <trview.ui/Image.h>
 #include <trview.ui/Button.h>
+#include <trview.ui/NumericUpDown.h>
 
 #include "WindowNode.h"
 #include "LabelNode.h"
 #include "ImageNode.h"
 #include "ButtonNode.h"
+#include "NumericUpDownNode.h"
+#include "Resources/resource.h"
 
 namespace trview
 {
     namespace ui
     {
+        namespace
+        {
+            // Load a specific texture with the specified ID from the embedded resource file.
+            // device: The Direct3D device to use to load the textures.
+            // resource_id: The integer ID of the texture in the resource file.
+            // Returns: The texture loaded from the resource.
+
+        }
+
         namespace render
         {
             Renderer::Renderer(const std::shared_ptr<graphics::IDevice>& device,
@@ -30,6 +42,9 @@ namespace trview
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
                 _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
+
+                _up_down_up = load_texture_from_resource(*device, IDB_NUMERIC_UP);
+                _up_down_down = load_texture_from_resource(*device, IDB_NUMERIC_DOWN);
             }
 
             Renderer::~Renderer()
@@ -67,10 +82,15 @@ namespace trview
                 {
                     node = std::make_unique<ImageNode>(_device, _render_target_source, image);
                 }
+                else if (auto numeric_up_down = dynamic_cast<NumericUpDown*>(control))
+                {
+                    node = std::make_unique<NumericUpDownNode>(_device, _render_target_source, numeric_up_down, _up_down_up, _up_down_down);
+                }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {
                     node = std::make_unique<WindowNode>(_device, _render_target_source, window);
                 }
+                
 
                 // Process the child nodes and build the structure to match the UI model.
                 auto children = control->child_elements(true);

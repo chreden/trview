@@ -68,6 +68,10 @@ namespace trview
         /// </summary>
         Event<bool> on_randomizer_tools;
         /// <summary>
+        /// Event raised when the 'max recent files' setting has been changed. The new setting is passed as the parameter.
+        /// </summary>
+        Event<uint32_t> on_max_recent_files;
+        /// <summary>
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// </summary>
         /// <param name="value">The new vsync setting.</param>
@@ -142,6 +146,11 @@ namespace trview
         /// <remarks>This will not raise the on_randomimzer_tools event.</remarks>
         /// <param name="value">The new setting value.</param>
         virtual void set_randomizer_tools(bool value) = 0;
+        /// <summary>
+        /// Set the maximum number of recent files.
+        /// </summary>
+        /// <param name="value">The new setting value.</param>
+        virtual void set_max_recent_files(uint32_t value) = 0;
         /// <summary>
         /// Toggle the visibility of the settings window.
         /// </summary>

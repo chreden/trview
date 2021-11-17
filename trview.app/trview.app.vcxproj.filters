@@ -212,9 +212,6 @@
     <ClCompile Include="Resources\DefaultTextures.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\ResourceHelper.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ApplicationLuaRegistry.cpp" />
     <ClCompile Include="UI\IViewerUI.cpp">
@@ -581,9 +578,6 @@
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\DefaultTextures.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\ResourceHelper.h">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\targetver.h">

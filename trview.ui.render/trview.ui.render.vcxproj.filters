@@ -33,6 +33,12 @@
     <ClInclude Include="Mocks\IMapRenderer.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="NumericUpDownNode.h">
+      <Filter>Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources/resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
@@ -59,6 +65,9 @@
     <ClCompile Include="IMapRenderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="NumericUpDownNode.cpp">
+      <Filter>Nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Nodes">
@@ -70,5 +79,13 @@
     <Filter Include="Mocks">
       <UniqueIdentifier>{2cbb355f-09d9-4f7c-8390-93f7a04895a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{6395ae0f-b4b5-4ba1-b1cf-ae5177aa86a0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources/trview.ui.render.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

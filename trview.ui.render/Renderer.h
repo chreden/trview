@@ -57,6 +57,8 @@ namespace trview
                 Size _host_size;
                 TokenStore _token_store;
                 bool _hierarchy_changed{ false };
+                graphics::Texture _up_down_up;
+                graphics::Texture _up_down_down;
             };
         }
     }

@@ -6,8 +6,6 @@
 #include <trview.graphics/Sprite.h>
 #include <trview.graphics/ViewportStore.h>
 #include <trview.input/WindowTester.h>
-#include "Resources/ResourceHelper.h"
-#include "Resources/resource.h"
 
 #include <trview.common/Strings.h>
 

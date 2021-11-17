@@ -1,5 +1,5 @@
 #include "DefaultShaders.h"
-#include "ResourceHelper.h"
+#include <trview.common/Resources.h>
 #include "resource.h"
 #include <trview.graphics/Device.h>
 #include <trview.graphics/IShaderStorage.h>

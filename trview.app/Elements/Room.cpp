@@ -784,4 +784,9 @@ namespace trview
             geometry_result.centroid = geometry_result.position;
         }
     }
+
+    bool Room::flag(Flag flag) const
+    {
+        return _flags & static_cast<uint16_t>(flag);
+    }
 }

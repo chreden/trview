@@ -184,6 +184,7 @@ namespace trview
         _items_windows->set_triggers(_level->triggers());
         _triggers_windows->set_items(_level->items());
         _triggers_windows->set_triggers(_level->triggers());
+        _rooms_windows->set_level_version(_level->version());
         _rooms_windows->set_items(_level->items());
         _rooms_windows->set_triggers(_level->triggers());
         _rooms_windows->set_rooms(_level->rooms());

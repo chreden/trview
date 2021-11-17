@@ -1,7 +1,6 @@
 #include "DefaultTextures.h"
 #include "resource.h"
-#include "ResourceHelper.h"
-#include <external/DirectXTK/Inc/WICTextureLoader.h>
+#include <trview.common/Resources.h>
 #include <trview.graphics/Device.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 
@@ -9,33 +8,6 @@ using namespace Microsoft::WRL;
 
 namespace trview
 {
-    namespace
-    {
-        // Load a specific texture with the specified ID from the embedded resource file.
-        // device: The Direct3D device to use to load the textures.
-        // resource_id: The integer ID of the texture in the resource file.
-        // Returns: The texture loaded from the resource.
-        graphics::Texture load_texture_from_resource(const graphics::IDevice& device, int resource_id)
-        {
-            ComPtr<ID3D11Resource> resource;
-            ComPtr<ID3D11ShaderResourceView> view;
-
-            auto resource_memory = get_resource_memory(resource_id, L"PNG");
-            DirectX::CreateWICTextureFromMemory(device.device().Get(), resource_memory.data, resource_memory.size, &resource, &view);
-
-            if (!resource)
-            {
-                std::string error("Could not load embedded texture with ID '" + std::to_string(resource_id) + "'");
-                throw std::exception(error.c_str());
-            }
-
-            // Get the correct interface for a texture from the loaded resource.
-            ComPtr<ID3D11Texture2D> texture;
-            resource.As(&texture);
-            return graphics::Texture{ texture, view };
-        }
-    }
-
     // Loads the textures that have been embedded in the resource file and puts them into
     // the texture storage provided.
     // device: The Direct3D device to use to load the textures.

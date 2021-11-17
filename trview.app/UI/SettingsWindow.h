@@ -12,13 +12,35 @@ namespace trview
     {
         class Control;
         class Checkbox;
+        class NumericUpDown;
         class Slider;
+        class TextArea;
     }
 
     /// UI window for program level settings.
     class SettingsWindow final : public ISettingsWindow
     {
     public:
+        struct Names
+        {
+            static const std::string vsync;
+            static const std::string go_to_lara;
+            static const std::string invert_map_controls;
+            static const std::string items_startup;
+            static const std::string triggers_startup;
+            static const std::string rooms_startup;
+            static const std::string auto_orbit;
+            static const std::string invert_vertical_pan;
+            static const std::string camera_display_degrees;
+            static const std::string randomizer_tools;
+            static const std::string max_recent_files;
+            static const std::string sensitivity;
+            static const std::string movement_speed;
+            static const std::string acceleration;
+            static const std::string acceleration_rate;
+            static const std::string close;
+        };
+
         /// <summary>
         /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
         /// </summary>
@@ -39,6 +61,7 @@ namespace trview
         virtual void set_invert_vertical_pan(bool value) override;
         virtual void set_camera_display_degrees(bool value) override;
         virtual void set_randomizer_tools(bool value) override;
+        virtual void set_max_recent_files(uint32_t value) override;
         virtual void toggle_visibility() override;
     private:
         ui::Checkbox* _vsync{ nullptr };
@@ -56,6 +79,7 @@ namespace trview
         ui::Slider* _acceleration_rate{ nullptr };
         ui::Checkbox* _camera_display_degrees{ nullptr };
         ui::Checkbox* _randomizer_tools{ nullptr };
+        ui::NumericUpDown* _max_recent_files{ nullptr };
         TokenStore _token_store;
     };
 }

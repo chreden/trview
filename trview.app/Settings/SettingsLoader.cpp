@@ -38,6 +38,9 @@ namespace trview
             read_attribute(json, settings.camera_acceleration_rate, "cameraaccelerationrate");
             read_attribute(json, settings.camera_display_degrees, "cameradisplaydegrees");
             read_attribute(json, settings.randomizer_tools, "randomizertools");
+            read_attribute(json, settings.max_recent_files, "maxrecentfiles");
+
+            settings.recent_files.resize(std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files));
         }
         catch (...)
         {
@@ -80,7 +83,7 @@ namespace trview
             json["itemsstartup"] = settings.items_startup;
             json["triggersstartup"] = settings.triggers_startup;
             json["autoorbit"] = settings.auto_orbit;
-            json["recent"] = settings.recent_files;
+            json["recent"] = std::list<std::string>(settings.recent_files.begin(), std::next(settings.recent_files.begin(), std::min<std::size_t>(settings.recent_files.size(), settings.max_recent_files)));
             json["invertverticalpan"] = settings.invert_vertical_pan;
             json["background"] = settings.background_colour;
             json["roomsstartup"] = settings.rooms_startup;
@@ -88,6 +91,7 @@ namespace trview
             json["cameraaccelerationrate"] = settings.camera_acceleration_rate;
             json["cameradisplaydegrees"] = settings.camera_display_degrees;
             json["randomizertools"] = settings.randomizer_tools;
+            json["maxrecentfiles"] = settings.max_recent_files;
             _files->save_file(file_path, json.dump());
         }
         catch (...)
