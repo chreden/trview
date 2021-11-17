@@ -38,6 +38,8 @@ namespace trview
         _route_window->on_waypoint_deleted += on_waypoint_deleted;
         _token_store += _route_window->on_window_closed += [&]() { _closing = true; };
 
+        _route_window->set_randomizer_settings(_randomizer_settings);
+        _route_window->set_randomizer_enabled(_randomizer_enabled);
         _route_window->set_items(_all_items);
         _route_window->set_rooms(_all_rooms);
         _route_window->set_triggers(_all_triggers);
@@ -46,8 +48,6 @@ namespace trview
             _route_window->set_route(_route);
         }
         _route_window->select_waypoint(_selected_waypoint);
-        _route_window->set_randomizer_settings(_randomizer_settings);
-        _route_window->set_randomizer_enabled(_randomizer_enabled);
     }
 
     void RouteWindowManager::render(bool vsync)
