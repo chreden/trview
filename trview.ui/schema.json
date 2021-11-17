@@ -77,7 +77,8 @@
                     },
                     "then": {
                         "properties": {
-                            "text": { "type": "string" }
+                            "text": { "type": "string" },
+                            "state": { "type": "boolean" } 
                         }
                     }
                 },
@@ -99,7 +100,8 @@
                     "then": {
                         "properties": {
                             "min_value": { "type": "number" },
-                            "max_value": { "type": "number" }
+                            "max_value": { "type": "number" },
+                            "value":  { "type": "number" }
                         }
                     }
                 }
