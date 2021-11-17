@@ -190,7 +190,12 @@ namespace trview
 
     void CollapsiblePanel::add_expander(Control& parent)
     {
-        _expander = parent.add_child(std::make_unique<Button>(Size(16, 16), L"<<"));
+        set_expander(parent.add_child(std::make_unique<Button>(Size(16, 16), L"<<")));
+    }
+
+    void CollapsiblePanel::set_expander(ui::Button* button)
+    {
+        _expander = button;
         _token_store += _expander->on_click += [this]() { toggle_expand(); };
     }
 }

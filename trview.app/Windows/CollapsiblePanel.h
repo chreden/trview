@@ -63,6 +63,8 @@ namespace trview
         /// @param parent The control to add the expand button to.
         void add_expander(ui::Control& parent);
 
+        void set_expander(ui::Button* button);
+
         /// Set the left and right panels to use. This should be called before anything is done with the ui
         /// element as it will also generate the ui.
         void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);

@@ -269,6 +269,8 @@ IDR_UI_VIEW_OPTIONS             TEXT            "Files\\UI\\view_options.json"
 
 IDR_UI_ITEMS_WINDOW_RIGHT_PANEL TEXT            "Files\\UI\\items_window_right_panel.json"
 
+IDR_UI_ITEMS_WINDOW_LEFT_PANEL  TEXT            "Files\\UI\\items_window_left_panel.json"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

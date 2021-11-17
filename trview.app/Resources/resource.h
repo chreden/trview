@@ -56,6 +56,7 @@
 #define IDR_UI_CAMERA_CONTROLS          33001
 #define IDR_UI_VIEW_OPTIONS             33002
 #define IDR_UI_ITEMS_WINDOW_RIGHT_PANEL 33003
+#define IDR_UI_ITEMS_WINDOW_LEFT_PANEL  33004
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
 

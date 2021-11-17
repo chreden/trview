@@ -29,6 +29,7 @@ namespace trview
             static const std::string sync_item_checkbox;
             static const std::string track_room_checkbox;
             static const std::string triggers_listbox;
+            static const std::string expander;
         };
 
         /// Create an items window as a child of the specified window.
@@ -60,7 +61,7 @@ namespace trview
         void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);
-        std::unique_ptr<ui::Control> create_left_panel();
+        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
         std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
 
         ui::Control* _controls;

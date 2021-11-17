@@ -1,11 +1,9 @@
 #include "ItemsWindow.h"
 #include <trview.app/Resources/resource.h>
 #include <trview.ui/Checkbox.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
-#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::graphics;
 
@@ -40,6 +38,7 @@ namespace trview
     const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
     const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string ItemsWindow::Names::expander{ "Expander" };
 
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
         const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const ui::UiSource& ui_source)
@@ -47,7 +46,7 @@ namespace trview
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
-        set_panels(create_left_panel(), create_right_panel(ui_source));
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -113,51 +112,24 @@ namespace trview
         _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
+    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        auto left_panel_layout = std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        left_panel_layout->set_margin(Size(0, 3));
-        left_panel->set_layout(std::move(left_panel_layout));
 
-        // Control modes:.
-        _controls = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
-        auto layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
-        layout->set_margin(Size(2, 2));
-        _controls->set_layout(std::move(layout));
-        _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
-        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        auto left_panel = ui_source(IDR_UI_ITEMS_WINDOW_LEFT_PANEL);
+        _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
         };
 
-        // Spacing between checkboxes.
-        _controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
-
-        auto sync_item = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
-        sync_item->set_name(Names::sync_item_checkbox);
+        auto sync_item = left_panel->find<Checkbox>(Names::sync_item_checkbox);
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
 
-        // Space out the button
-        _controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
+        set_expander(left_panel->find<Button>(Names::expander));
 
-        // Add the expander button at this point.
-        add_expander(*_controls);
-
-        _items_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel));
-        _items_list->set_name(Names::items_listbox);
-        _items_list->set_columns(
-            {
-                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 100 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
-            }
-        );
+        _items_list = left_panel->find<Listbox>(Names::items_listbox);
         _token_store += _items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
