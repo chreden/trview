@@ -34,11 +34,11 @@ namespace trview
                     };
                 }),
             di::bind<IViewOptions::Source>.to(
-                [](const auto&) -> IViewOptions::Source
+                [](const auto& injector) -> IViewOptions::Source
                 {
                     return [&](auto&& parent)
                     {
-                        return std::make_unique<ViewOptions>(parent);
+                        return std::make_unique<ViewOptions>(parent, injector.create<ui::UiSource>());
                     };
                 }),
             di::bind<IBubble::Source>.to(

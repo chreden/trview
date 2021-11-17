@@ -265,6 +265,8 @@ IDR_UI_SETTINGS_WINDOW  TEXT                    "Files\\UI\\settings_window.json
 
 IDR_UI_CAMERA_CONTROLS  TEXT                    "Files\\UI\\camera_controls.json"
 
+IDR_UI_VIEW_OPTIONS     TEXT                    "Files\\UI\\view_options.json"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

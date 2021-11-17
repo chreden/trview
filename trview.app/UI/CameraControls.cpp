@@ -1,7 +1,7 @@
 #include "CameraControls.h"
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
-#include "Resources/resource.h"
+#include "../Resources/resource.h"
 
 namespace trview
 {

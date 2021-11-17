@@ -1,0 +1,150 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "groupbox",
+    "background_colour": "transparent",
+    "border_colour": "grey",
+    "text": "View Options",
+    "size": {
+        "width": 150,
+        "height": 155
+    },
+    "children": [
+        {
+            "type": "window",
+            "size": {
+                "width": 150,
+                "height": 155
+            },
+            "background_colour": "transparent",
+            "layout": {
+                "type": "stack"
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 150,
+                        "height": 95
+                    },
+                    "background_colour": "transparent",
+                    "layout": {
+                        "type": "grid",
+                        "columns": 2,
+                        "rows": 4
+                    },
+                    "children": [
+                        {
+                            "type": "checkbox",
+                            "name": "highlight",
+                            "text": "Highlight",
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "triggers",
+                            "text": "Triggers",
+                            "state": true,
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "hidden_geometry",
+                            "text": "Geometry",
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "water",
+                            "state": true,
+                            "text": "Water",
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "depth_enabled",
+                            "text": "Depth",
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "numericupdown",
+                            "name": "depth",
+                            "background_colour": "transparent",
+                            "size": {
+                                "width": 50,
+                                "height": 20
+                            },
+                            "min_value": 0,
+                            "max_value": 20,
+                            "value": 1
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "wireframe",
+                            "text": "Wireframe",
+                            "background_colour": "transparent"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "show_bounding_boxes",
+                            "text": "Bounds",
+                            "background_colour": "transparent"
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 140,
+                        "height": 20
+                    },
+                    "background_colour": "transparent",
+                    "children": [
+                        {
+                            "type": "window",
+                            "name": "tr1-3-panel",
+                            "size": {
+                                "width": 140,
+                                "height": 20
+                            },
+                            "background_colour": "transparent",
+                            "children": [
+                                {
+                                    "type": "checkbox",
+                                    "name": "flip",
+                                    "text": "Flip",
+                                    "background_colour": "transparent"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "window",
+                            "name": "tr4-5-panel",
+                            "background_colour": "transparent",
+                            "visible": false,
+                            "size": {
+                                "width": 140,
+                                "height": 20
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "name": "alternate_groups",
+                                    "size": {
+                                        "width": 140,
+                                        "height": 16
+                                    },
+                                    "background_colour": "transparent",
+                                    "layout": {
+                                        "type": "stack",
+                                        "direction": "horizontal",
+                                        "size_mode": "manual"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

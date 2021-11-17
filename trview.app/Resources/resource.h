@@ -54,6 +54,7 @@
 #define IDF_ARIAL7                      32793
 #define IDR_UI_SETTINGS_WINDOW          33000
 #define IDR_UI_CAMERA_CONTROLS          33001
+#define IDR_UI_VIEW_OPTIONS             33002
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
 

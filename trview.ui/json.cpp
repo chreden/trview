@@ -80,7 +80,10 @@ namespace trview
                 else if (type == "checkbox")
                 {
                     auto text = read_attribute<std::string>(json, "text", std::string());
-                    control = std::make_unique<Checkbox>(colour, to_utf16(text));
+                    auto state = read_attribute<bool>(json, "state", false);
+                    auto checkbox = std::make_unique<Checkbox>(colour, to_utf16(text));
+                    checkbox->set_state(state);
+                    control = std::move(checkbox);
                 }
                 else if (type == "groupbox")
                 {
@@ -92,7 +95,10 @@ namespace trview
                 {
                     auto min_value = read_attribute<int>(json, "min_value", 0);
                     auto max_value = read_attribute<int>(json, "max_value", 100);
-                    control = std::make_unique<NumericUpDown>(position, size, colour, min_value, max_value);
+                    auto value = read_attribute<int>(json, "value", min_value);
+                    auto updown = std::make_unique<NumericUpDown>(position, size, colour, min_value, max_value);
+                    updown->set_value(value);
+                    control = std::move(updown);
                 }
                 else if (type == "slider")
                 {
