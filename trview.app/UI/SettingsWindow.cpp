@@ -1,7 +1,6 @@
 #include "SettingsWindow.h"
 
 #include <trview.ui/Control.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Button.h>

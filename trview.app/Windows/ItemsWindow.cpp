@@ -11,15 +11,6 @@ namespace trview
 {
     namespace
     {
-        /// Colours commonly used in this class.
-        namespace Colours
-        {
-            const Colour LeftPanel { 1.0f, 0.25f, 0.25f, 0.25f };
-            const Colour ItemDetails { 1.0f, 0.225f, 0.225f, 0.225f };
-            const Colour Triggers { 1.0f, 0.20f, 0.20f, 0.20f };
-            const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
-        }
-
         const float Height{ 420 };
 
         ui::Listbox::Item create_listbox_item(const Item& item)

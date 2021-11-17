@@ -64,7 +64,6 @@ namespace trview
         std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
         std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
 
-        ui::Control* _controls;
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
