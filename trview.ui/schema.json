@@ -15,7 +15,7 @@
             }
         },
         "colour": {
-            "oneOf": [
+            "anyOf": [
                 {
                     "enum": [ "black", "grey", "lightgrey", "transparent", "white", "green", "blue", "red", "yellow", "magenta", "cyan" ]
                 },
