@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/json.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -65,7 +66,7 @@ namespace
             std::unique_ptr<RouteWindow> build()
             {
                 return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
-                    parent, clipboard, dialogs, files, bubble_source);
+                    parent, clipboard, dialogs, files, bubble_source, ui::load_from_resource);
             }
         };
         return test_module{};

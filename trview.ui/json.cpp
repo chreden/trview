@@ -84,6 +84,8 @@ namespace trview
                 auto position = read_attribute<Point>(json, "position", Point());
                 auto size = read_attribute<Size>(json, "size", Size());
                 auto colour = read_colour(json, "background_colour", named_colours, Colour::Transparent);
+                auto text_background_colour = read_colour(json, "text_background_colour", named_colours, Colour(0.25f, 0.25f, 0.25f));
+                auto text_colour = read_colour(json, "text_colour", named_colours, Colour::White);
 
                 std::unique_ptr<Control> control;
                 if (type == "window")
@@ -105,7 +107,10 @@ namespace trview
                 else if (type == "button")
                 {
                     auto text = read_attribute<std::string>(json, "text", std::string());
-                    control = std::make_unique<Button>(position, size, to_utf16(text));
+                    auto button = std::make_unique<Button>(position, size, to_utf16(text));
+                    button->set_text_background_colour(text_background_colour);
+                    button->set_text_colour(text_colour);
+                    control = std::move(button);
                 }
                 else if (type == "checkbox")
                 {
@@ -140,6 +145,7 @@ namespace trview
                     listbox->set_show_headers(read_attribute<bool>(json, "show_headers", true));
                     listbox->set_show_scrollbar(read_attribute<bool>(json, "show_scrollbar", true));
                     listbox->set_show_highlight(read_attribute<bool>(json, "show_highlight", true));
+                    listbox->set_enable_sorting(read_attribute<bool>(json, "enable_sorting", true));
 
                     if (json.count("columns") != 0)
                     {
@@ -185,6 +191,8 @@ namespace trview
 
                     auto dropdown = std::make_unique<Dropdown>(position, size);
                     dropdown->set_values(values);
+                    dropdown->set_text_background_colour(text_background_colour);
+                    dropdown->set_text_colour(text_colour);
 
                     if (json.count("selected_value") && json["selected_value"].is_string())
                     {

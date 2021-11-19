@@ -26,6 +26,8 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string colour;
+            static const std::string waypoints;
             static const std::string export_button;
             static const std::string import_button;
             static const std::string clear_save;
@@ -41,7 +43,8 @@ namespace trview
         /// @param parent The parent window.
         explicit RouteWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source);
+            const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
+            const ui::UiSource& ui_source);
         virtual ~RouteWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_route(IRoute* route) override;
@@ -55,8 +58,8 @@ namespace trview
         virtual void set_randomizer_settings(const RandomizerSettings& settings) override;
     private:
         void load_waypoint_details(uint32_t index);
-        std::unique_ptr<ui::Control> create_left_panel();
-        std::unique_ptr<ui::Control> create_right_panel();
+        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
+        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
         ui::Listbox::Item create_listbox_item(uint32_t index, const IWaypoint& waypoint);
         void load_randomiser_settings(const IWaypoint& waypoint);
         void update_minimum_height();

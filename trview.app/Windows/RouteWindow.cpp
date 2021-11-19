@@ -7,6 +7,7 @@
 #include <trview.ui/Layouts/StackLayout.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Layouts/GridLayout.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -30,6 +31,8 @@ namespace trview
         const uint32_t normal_min_height = 400;
     }
 
+    const std::string RouteWindow::Names::colour = "colour";
+    const std::string RouteWindow::Names::waypoints = "waypoints";
     const std::string RouteWindow::Names::export_button = "export_button";
     const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
@@ -52,12 +55,13 @@ namespace trview
 
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source)
+        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
+        const ui::UiSource& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
     }
 
     void RouteWindow::render(bool vsync)
@@ -84,41 +88,21 @@ namespace trview
         _colour->set_selected_value(colour.code());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel()
+    std::unique_ptr<Control> RouteWindow::create_left_panel(const ui::UiSource& ui_source)
     {
-        auto left_panel = std::make_unique<ui::Window>(Size(200, window().size().height), Colours::LeftPanel);
-        left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-
-        auto buttons  = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
-        buttons->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
-
-        _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
-        _colour->set_text_colour(Colour::Green);
-        _colour->set_text_background_colour(Colour::Green);
-        _colour->set_values(
-            {
-                Dropdown::Value { Colour::Green.code(), Colour::Green, Colour::Green },
-                { Colour::Red.code(), Colour::Red, Colour::Red },
-                { Colour::Blue.code(), Colour::Blue, Colour::Blue },
-                { Colour::Yellow.code(), Colour::Yellow, Colour::Yellow },
-                { Colour::Cyan.code(), Colour::Cyan, Colour::Cyan },
-                { Colour::Magenta.code(), Colour::Magenta, Colour::Magenta },
-                { Colour::Black.code(), Colour::Black, Colour::Black },
-                { Colour::White.code(), Colour::White, Colour::White }
-            });
-        _colour->set_selected_value(Colour::Green.code());
+        auto left_panel = ui_source(IDR_UI_ROUTE_WINDOW_LEFT_PANEL);
+        _colour = left_panel->find<Dropdown>(Names::colour);
         _colour->set_dropdown_scope(_ui.get());
 
         _token_store += _colour->on_value_selected += [=](const auto& value)
         {
-            const auto new_colour = from_colour_code(value);
+            const auto new_colour = from_named_colour(to_utf8(value));
             _colour->set_text_colour(new_colour);
             _colour->set_text_background_colour(new_colour);
             on_colour_changed(new_colour);
         };
 
-        auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
-        import->set_name(Names::import_button);
+        auto import = left_panel->find<Button>(Names::import_button);
         _token_store += import->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
@@ -133,8 +117,7 @@ namespace trview
                 on_route_import(filename.value().filename, filename.value().filter_index == 2);
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
-        export_button->set_name(Names::export_button);
+        auto export_button = left_panel->find<Button>(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
@@ -153,14 +136,7 @@ namespace trview
         };
 
         // List box to show the waypoints in the route.
-        _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));
-        _waypoints->set_enable_sorting(false);
-        _waypoints->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::String, L"Type", 160 }
-            }
-        );
+        _waypoints = left_panel->find<Listbox>(Names::waypoints);
         _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
@@ -177,7 +153,7 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<Control> RouteWindow::create_right_panel()
+    std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         const float panel_width = 270;
         auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);

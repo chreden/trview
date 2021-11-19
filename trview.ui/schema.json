@@ -94,7 +94,9 @@
                     },
                     "then": {
                         "properties": {
-                            "text": { "type": "string" }
+                            "text": { "type": "string" },
+                            "text_colour": { "$ref": "#/$defs/colour" },
+                            "text_background_colour": { "$ref": "#/$defs/colour" }
                         }
                     }
                 },
@@ -141,6 +143,7 @@
                             "show_headers": { "type": "boolean" },
                             "show_scrollbar": { "type": "boolean" },
                             "show_highlight": { "type": "boolean" },
+                            "enable_sorting": { "type": "boolean" },
                             "columns": {
                                  "type": "array",
                                  "items": {
@@ -158,11 +161,16 @@
                         "properties": {
                             "values": {
                                  "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                 }
+                                 "items": { 
+                                     "anyOf":[
+                                        { "type": "string" },
+                                        { "$ref": "#/$defs/dropdown_value" }
+                                    ]
+                                }
                             },
-                            "selected_value": { "type": "string" }
+                            "selected_value": { "type": "string" },
+                            "text_colour": { "$ref": "#/$defs/colour" },
+                            "text_background_colour": { "$ref": "#/$defs/colour" }
                         }
                     }
                 }

@@ -1,0 +1,129 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "colours": {
+        "background": { 
+            "r": 0.25,
+            "g": 0.25,
+            "b": 0.25
+        }
+    },
+    "background_colour": "background",
+    "size": {
+        "width": 200,
+        "height": 400
+    },
+    "layout": {
+        "type": "stack",
+        "padding": 3,
+        "size_mode": "manual"
+    },
+    "children": [
+        {
+            "type": "window",
+            "size": {
+                "width": 200,
+                "height": 20
+            },
+            "background_colour": "background",
+            "layout": {
+                "type": "stack",
+                "direction": "horizontal"
+            },
+            "children": [
+                {
+                    "type": "dropdown",
+                    "name": "colour",
+                    "size": {
+                        "width": 20,
+                        "height": 20
+                    },
+                    "text_colour": "green",
+                    "text_background_colour": "green",
+                    "values": [
+                        { 
+                            "name": "green",
+                            "background_colour": "green",
+                            "foreground_colour": "green"
+                        },
+                        {
+                            "name": "red",
+                            "background_colour": "red",
+                            "foreground_colour": "red"                        
+                        },
+                        {
+                            "name": "blue",
+                            "background_colour": "blue",
+                            "foreground_colour": "blue"                        
+                        },
+                        {
+                            "name": "yellow",
+                            "background_colour": "yellow",
+                            "foreground_colour": "yellow"                        
+                        },
+                        {
+                            "name": "cyan",
+                            "background_colour": "cyan",
+                            "foreground_colour": "cyan"                        
+                        },
+                        {
+                            "name": "magenta",
+                            "background_colour": "magenta",
+                            "foreground_colour": "magenta"                        
+                        },
+                        {
+                            "name": "black",
+                            "background_colour": "black",
+                            "foreground_colour": "black"                        
+                        },
+                        {
+                            "name": "white",
+                            "background_colour": "white",
+                            "foreground_colour": "white"                        
+                        }
+                    ]
+                },
+                {
+                    "type": "button",
+                    "name": "import_button",
+                    "text": "Import",
+                    "size": {
+                        "width": 90,
+                        "height": 20
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "export_button",
+                    "text": "Export",
+                    "size": {
+                        "width": 90,
+                        "height": 20
+                    }
+                }
+            ]
+        },
+        {
+            "type": "listbox",
+            "name": "waypoints",
+            "size": {
+                "width": 200,
+                "height": 380
+            },
+            "background_colour": "background",
+            "enable_sorting": false,
+            "columns": [
+                {
+                    "name": "#",
+                    "type": "number",
+                    "width": 30
+                },
+                {
+                    "name": "Type",
+                    "type": "string",
+                    "width": 160
+                }
+            ]
+        }
+    ]
+}
