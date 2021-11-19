@@ -51,8 +51,8 @@
                     "type": "object",
                     "properties": {
                         "name": { "type": "string" },
-                        "foreground": { "$ref": "#/$defs/colour" },
-                        "background": { "$ref": "#/$defs/colour" }
+                        "foreground_colour": { "$ref": "#/$defs/colour" },
+                        "background_colour": { "$ref": "#/$defs/colour" }
                     }
                 }
             ]

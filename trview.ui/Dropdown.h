@@ -25,8 +25,8 @@ namespace trview
             struct Value
             {
                 std::wstring text;
-                Colour       foreground;
-                Colour       background;
+                Colour       foreground{ 1.0f, 0.25f, 0.25f, 0.25f };
+                Colour       background{ Colour::White };
             };
 
             /// Create a new dropdown box.

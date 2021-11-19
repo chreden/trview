@@ -163,13 +163,37 @@ namespace trview
                 }
                 else if (type == "dropdown")
                 {
-                    auto values = read_attribute<std::vector<std::string>>(json, "values");
-                    auto selected = read_attribute<std::string>(json, std::string("selected_value"), values[0]);
-                    std::vector<std::wstring> transformed;
-                    std::transform(values.begin(), values.end(), std::back_inserter(transformed), to_utf16);
+                    std::vector<Dropdown::Value> values;
+                    if (json.count("values"))
+                    {
+                        for (const auto& value : json["values"])
+                        {
+                            Dropdown::Value new_value;
+                            if (value.is_string())
+                            {
+                                new_value.text = to_utf16(value.get<std::string>());
+                            }
+                            else
+                            {
+                                new_value.text = to_utf16(read_attribute<std::string>(value, "name"));
+                                new_value.background = read_colour(value, "background_colour", named_colours, new_value.background);
+                                new_value.foreground = read_colour(value, "foreground_colour", named_colours, new_value.foreground);
+                            }
+                            values.push_back(new_value);
+                        }
+                    }
+
                     auto dropdown = std::make_unique<Dropdown>(position, size);
-                    dropdown->set_values(transformed);
-                    dropdown->set_selected_value(to_utf16(selected));
+                    dropdown->set_values(values);
+
+                    if (json.count("selected_value") && json["selected_value"].is_string())
+                    {
+                        dropdown->set_selected_value(to_utf16(json["selected_value"]));
+                    }
+                    else if (!values.empty())
+                    {
+                        dropdown->set_selected_value(values[0].text);
+                    }
                     control = std::move(dropdown);
                 }
 
