@@ -1,15 +1,18 @@
 {
     "$schema": "../../../../trview.ui/schema.json",
     "type": "window",
+    "colours": {
+        "background": {
+            "r": 0.25,
+            "g": 0.25,
+            "b": 0.25
+        }
+    },
     "size": {
         "width": 250,
         "height": 420
     },
-    "background_colour": {
-        "r": 0.25,
-        "g": 0.25,
-        "b": 0.25
-    },
+    "background_colour": "background",
     "layout": {
         "type": "stack",
         "padding": 3,
@@ -22,11 +25,7 @@
                 "width": 200,
                 "height": 20
             },
-            "background_colour": {
-                "r": 0.25,
-                "g": 0.25,
-                "b": 0.25
-            },
+            "background_colour": "background",
             "layout": {
                 "type": "stack",
                 "padding": 2,
@@ -42,11 +41,7 @@
                     "type": "checkbox",
                     "text": "Track Room",
                     "name": "TrackRoom",
-                    "background_colour": {
-                        "r": 0.25,
-                        "g": 0.25,
-                        "b": 0.25
-                    }
+                    "background_colour": "background"
                 },
                 {
                     "type": "window",
@@ -54,21 +49,13 @@
                         "width": 10,
                         "height": 20
                     },
-                    "background_colour": {
-                        "r": 0.25,
-                        "g": 0.25,
-                        "b": 0.25
-                    }
+                    "background_colour": "background"
                 },
                 {
                     "type": "checkbox",
                     "name": "SyncItem",
                     "text": "Sync Item",
-                    "background_colour": {
-                        "r": 0.25,
-                        "g": 0.25,
-                        "b": 0.25
-                    }
+                    "background_colour": "background"
                 },
                 {
                     "type": "window",
@@ -76,11 +63,7 @@
                         "width": 15,
                         "height": 20
                     },
-                    "background_colour": {
-                        "r": 0.25,
-                        "g": 0.25,
-                        "b": 0.25
-                    }
+                    "background_colour": "background"
                 },
                 {
                     "type": "button",
@@ -100,11 +83,7 @@
                 "width": 250,
                 "height": 400
             },
-            "background_colour": {
-                "r": 0.25,
-                "g": 0.25,
-                "b": 0.25
-            },
+            "background_colour": "background",
             "columns": [
                 {
                     "identity": "key",

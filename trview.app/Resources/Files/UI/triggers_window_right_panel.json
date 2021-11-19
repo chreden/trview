@@ -1,15 +1,23 @@
 {
     "$schema": "../../../../trview.ui/schema.json",
     "type": "window",
+    "colours": {
+        "background_top": {
+            "r": 0.225,
+            "g": 0.225,
+            "b": 0.225
+        },
+        "background_bottom": {
+            "r": 0.2,
+            "g": 0.2,
+            "b": 0.2
+        }
+    },
     "size": {
         "width": 270,
         "height": 400
     },
-    "background_colour": {
-        "r": 0.225,
-        "g": 0.225,
-        "b": 0.225
-    },
+    "background_colour": "background_top",
     "layout": {
         "type": "stack",
         "size_mode": "manual"
@@ -21,11 +29,7 @@
                 "width": 270,
                 "height": 8
             },
-            "background_colour": {
-                "r": 0.225,
-                "g": 0.225,
-                "b": 0.225
-            }
+            "background_colour": "background_top"
         },
         {
             "type": "groupbox",
@@ -34,11 +38,7 @@
                 "width": 270,
                 "height": 190
             },
-            "background_colour": {
-                "r": 0.225,
-                "g": 0.225,
-                "b": 0.225
-            },
+            "background_colour": "background_top",
             "children": [
                 {
                     "type": "window",
@@ -46,11 +46,7 @@
                         "width": 250,
                         "height": 160
                     },
-                    "background_colour": {
-                        "r": 0.225,
-                        "g": 0.225,
-                        "b": 0.225
-                    },
+                    "background_colour": "background_top",
                     "layout": {
                         "type": "stack",
                         "padding": 16,
@@ -64,11 +60,7 @@
                                 "width": 250,
                                 "height": 120
                             },
-                            "background_colour": {
-                                "r": 0.225,
-                                "g": 0.225,
-                                "b": 0.225
-                            },
+                            "background_colour": "background_top",
                             "show_headers": false,
                             "show_highlight": false,
                             "show_scrollbar": false,
@@ -104,11 +96,7 @@
                 "width": 270,
                 "height": 5
             },
-            "background_colour": {
-                "r": 0.2,
-                "g": 0.2,
-                "b": 0.2
-            }
+            "background_colour": "background_bottom"
         },
         {
             "type": "groupbox",
@@ -117,11 +105,7 @@
                 "width": 270,
                 "height": 200
             },
-            "background_colour": {
-                "r": 0.2,
-                "g": 0.2,
-                "b": 0.2
-            },
+            "background_colour": "background_bottom",
             "children": [
                 {
                     "type": "listbox",
@@ -130,11 +114,7 @@
                         "width": 250,
                         "height": 160
                     },
-                    "background_colour": {
-                        "r": 0.2,
-                        "g": 0.2,
-                        "b": 0.2
-                    },
+                    "background_colour": "background_bottom",
                     "columns": [
                         {
                             "type": "string",

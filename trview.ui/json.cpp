@@ -49,12 +49,40 @@ namespace trview
                 return std::make_unique<FreeLayout>();
             }
 
-            std::unique_ptr<Control> parse_json(const nlohmann::json& json)
+            Colour read_colour(const nlohmann::json& json, const std::string& attribute_name, const std::unordered_map<std::string, Colour>& named_colours, const Colour& default_colour)
             {
+                if (json.count(attribute_name) == 0)
+                {
+                    return default_colour;
+                }
+
+                if (json[attribute_name].is_string())
+                {
+                    const auto key = json[attribute_name].get<std::string>();
+                    const auto value = named_colours.find(key);
+                    if (value != named_colours.end())
+                    {
+                        return value->second;
+                    }
+                }
+
+                return json[attribute_name].get<Colour>();
+            }
+
+            std::unique_ptr<Control> parse_json(const nlohmann::json& json, std::unordered_map<std::string, Colour> named_colours)
+            {
+                if (json.count("colours") != 0)
+                {
+                    for (auto& [key, value] : json["colours"].items())
+                    {
+                        named_colours[key] = value.get<Colour>();
+                    }
+                }
+
                 auto type = read_attribute<std::string>(json, "type");
                 auto position = read_attribute<Point>(json, "position", Point());
                 auto size = read_attribute<Size>(json, "size", Size());
-                auto colour = read_attribute<Colour>(json, "background_colour", Colour::Transparent);
+                auto colour = read_colour(json, "background_colour", named_colours, Colour::Transparent);
 
                 std::unique_ptr<Control> control;
                 if (type == "window")
@@ -89,7 +117,7 @@ namespace trview
                 else if (type == "groupbox")
                 {
                     auto text = read_attribute<std::string>(json, "text", std::string());
-                    auto border_colour = read_attribute<Colour>(json, "border_colour", Colour::Transparent);
+                    auto border_colour = read_colour(json, "border_colour", named_colours, Colour::Transparent);
                     control = std::make_unique<GroupBox>(position, size, colour, border_colour, to_utf16(text));
                 }
                 else if (type == "numericupdown")
@@ -147,7 +175,7 @@ namespace trview
                 {
                     for (const auto& child : json["children"])
                     {
-                        control->add_child(parse_json(child));
+                        control->add_child(parse_json(child, named_colours));
                     }
                 }
 
@@ -159,8 +187,9 @@ namespace trview
         {
             try
             {
+                std::unordered_map<std::string, Colour> named_colours;
                 auto data = nlohmann::json::parse(json);
-                return parse_json(data);
+                return parse_json(data, named_colours);
             }
             catch(const std::exception& e)
             {
