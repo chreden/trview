@@ -82,6 +82,7 @@ namespace trview
             _device_window->resize();
             update_layout();
             _ui_renderer->set_host_size(window().size());
+            on_size_changed(window().size());
         };
 
         _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
@@ -197,5 +198,19 @@ namespace trview
     {
         _expander = button;
         _token_store += _expander->on_click += [this]() { toggle_expand(); };
+    }
+
+    void CollapsiblePanel::set_minimum_height(uint32_t height)
+    {
+        _initial_size.height = height;
+
+        RECT rect{ 0, 0, 0, 0 };
+        GetClientRect(window(), &rect);
+        if (rect.bottom - rect.top < height)
+        {
+            RECT new_rect{ 0, 0, rect.right - rect.left, std::max<long>(rect.bottom - rect.top, height) };
+            AdjustWindowRect(&rect, window_style, FALSE);
+            SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
+        }
     }
 }

@@ -5,6 +5,7 @@
 #include <trview.app/Routing/IRoute.h>
 #include <trview.app/Camera/ICamera.h>
 #include <trview.common/IFiles.h>
+#include <trview.app/Settings/RandomizerSettings.h>
 
 namespace trview
 {
@@ -32,6 +33,7 @@ namespace trview
         virtual uint32_t selected_waypoint() const override;
         virtual void select_waypoint(uint32_t index) override;
         virtual void set_colour(const Colour& colour) override;
+        virtual void set_randomizer_enabled(bool enabled) override;
         virtual void set_unsaved(bool value) override;
         virtual const IWaypoint& waypoint(uint32_t index) const override;
         virtual IWaypoint& waypoint(uint32_t index) override;
@@ -45,8 +47,9 @@ namespace trview
         uint32_t _selected_index{ 0u };
         Colour _colour{ Colour::Green };
         bool _is_unsaved{ false };
+        bool _randomizer_enabled{ false };
     };
 
-    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, bool rando_import);
-    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, bool rando_export);
+    std::shared_ptr<IRoute> import_route(const IRoute::Source& route_source, const std::shared_ptr<IFiles>& files, const std::string& route_filename, const ILevel* const level, const RandomizerSettings& randomizer_settings, bool rando_import);
+    void export_route(const IRoute& route, std::shared_ptr<IFiles>& files, const std::string& route_filename, const std::string& level_filename, const RandomizerSettings& randomizer_settings, bool rando_export);
 }

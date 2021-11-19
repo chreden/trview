@@ -54,6 +54,8 @@ namespace trview
 
         /// Event raised when the window is closed.
         Event<> on_window_closed;
+
+        Event<Size> on_size_changed;
     protected:
         virtual void update_layout();
 
@@ -72,6 +74,8 @@ namespace trview
         /// Set whether the window can be made taller.
         /// @param Whether the window can be made taller.
         void set_allow_increase_height(bool value);
+
+        void set_minimum_height(uint32_t height);
 
         TokenStore   _token_store;
         ui::Control* _left_panel;

@@ -113,6 +113,11 @@ namespace trview
         /// <param name="colour">The colour to use.</param>
         virtual void set_colour(const Colour& colour) = 0;
         /// <summary>
+        /// Set whether randomizer tools are enabled.
+        /// </summary>
+        /// <param name="enabled">Whether randomizer tools are enabled.</param>
+        virtual void set_randomizer_enabled(bool enabled) = 0;
+        /// <summary>
         /// Set whether the route has unsaved changes.
         /// </summary>
         /// <param name="value">Whether the route has unsaved changes.</param>

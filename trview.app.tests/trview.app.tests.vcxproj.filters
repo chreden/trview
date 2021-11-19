@@ -108,6 +108,9 @@
     <ClCompile Include="UI\CameraControlsTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

@@ -102,7 +102,6 @@ namespace trview
         _context_menu->on_remove_waypoint += on_remove_waypoint;
         _context_menu->on_orbit_here += on_orbit;
         _context_menu->on_hide += on_hide;
-        _context_menu->on_rando_location += on_rando_location;
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
@@ -430,7 +429,6 @@ namespace trview
         _settings_window->set_randomizer_tools(settings.randomizer_tools);
         _settings_window->set_max_recent_files(settings.max_recent_files);
         _camera_position->set_display_degrees(settings.camera_display_degrees);
-        _context_menu->set_randomizer_tools(settings.randomizer_tools);
     }
 
     void ViewerUI::set_selected_room(const std::shared_ptr<IRoom>& room)

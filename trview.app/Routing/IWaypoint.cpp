@@ -18,11 +18,6 @@ namespace trview
             return IWaypoint::Type::Entity;
         }
 
-        if (value == "Rando Location")
-        {
-            return IWaypoint::Type::RandoLocation;
-        }
-
         return IWaypoint::Type::Position;
     }
 
@@ -36,8 +31,6 @@ namespace trview
                 return L"Position";
             case IWaypoint::Type::Trigger:
                 return L"Trigger";
-            case IWaypoint::Type::RandoLocation:
-                return L"Rando Location";
         }
         return L"Unknown";
     }

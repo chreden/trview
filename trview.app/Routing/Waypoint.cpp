@@ -147,44 +147,14 @@ namespace trview
         return _normal;
     }
 
-    std::string Waypoint::difficulty() const 
+    IWaypoint::WaypointRandomizerSettings Waypoint::randomizer_settings() const
     {
-        return _difficulty;
+        return _randomizer_settings;
     }
 
-    bool Waypoint::is_item() const
+    void Waypoint::set_randomizer_settings(const WaypointRandomizerSettings& settings)
     {
-        return _is_item;
-    }
-
-    bool Waypoint::requires_glitch() const
-    {
-        return _requires_glitch;
-    }
-
-    bool Waypoint::vehicle_required() const
-    {
-        return _vehicle_required;
-    }
-
-    void Waypoint::set_difficulty(const std::string& value)
-    {
-        _difficulty = value;
-    }
-
-    void Waypoint::set_is_item(bool value)
-    {
-        _is_item = value;
-    }
-
-    void Waypoint::set_requires_glitch(bool value)
-    {
-        _requires_glitch = value;
-    }
-
-    void Waypoint::set_vehicle_required(bool value)
-    {
-        _vehicle_required = value;
+        _randomizer_settings = settings;
     }
 }
 

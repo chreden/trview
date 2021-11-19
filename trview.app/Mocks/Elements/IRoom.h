@@ -35,6 +35,7 @@ namespace trview
             MOCK_METHOD(std::weak_ptr<ITrigger>, trigger_at, (int32_t, int32_t), (const, override));
             MOCK_METHOD(void, update_bounding_box, (), (override));
             MOCK_METHOD(bool, water, (), (const, override));
+            MOCK_METHOD(bool, flag, (IRoom::Flag), (const, override));
         };
     }
 }

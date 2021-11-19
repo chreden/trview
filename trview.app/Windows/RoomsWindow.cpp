@@ -59,6 +59,49 @@ namespace trview
             return { {{ L"#", std::to_wstring(item.number()) },
                      { L"Type", trigger_type_name(item.type()) }} };
         }
+
+        ui::Listbox::Item make_item (const std::wstring& name, const std::wstring& value)
+        {
+            return ui::Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
+        };
+
+        void add_room_flags(std::vector<ui::Listbox::Item>& stats, trlevel::LevelVersion version, const IRoom& room)
+        {
+            using trlevel::LevelVersion;
+            const auto add_flag = [&](const std::wstring& name, bool flag) { stats.push_back(make_item(name, format_bool(flag))); };
+            const auto add_flag_min = [&](LevelVersion min_version, const std::wstring& name, const std::wstring& alt_name, bool flag) 
+            {
+                add_flag(version >= min_version ? name : alt_name, flag);
+            };
+
+            add_flag(L"Water", room.water());
+            add_flag(L"Bit 1", room.flag(IRoom::Flag::Bit1));
+            add_flag(L"Bit 2", room.flag(IRoom::Flag::Bit2));
+            add_flag_min(LevelVersion::Tomb2, L"Outside / 3", L"Bit 3", room.outside());
+            add_flag(L"Bit 4", room.flag(IRoom::Flag::Bit4));
+            add_flag_min(LevelVersion::Tomb2, L"Wind / 5", L"Bit 5", room.flag(IRoom::Flag::Wind));
+            add_flag(L"Bit 6", room.flag(IRoom::Flag::Bit6));
+            if (version == LevelVersion::Tomb3)
+            {
+                add_flag(L"Quicksand / 7", room.flag(IRoom::Flag::Quicksand));
+            }
+            else if (version > LevelVersion::Tomb3)
+            {
+                add_flag(L"Block Lens Flare / 7", room.flag(IRoom::Flag::NoLensFlare));
+            }
+            else
+            {
+                add_flag(L"Bit 7", room.flag(IRoom::Flag::Bit7));
+            }
+            add_flag_min(LevelVersion::Tomb3, L"Caustics / 8", L"Bit 8", room.flag(IRoom::Flag::Caustics));
+            add_flag_min(LevelVersion::Tomb3, L"Reflectivity / 9", L"Bit 9", room.flag(IRoom::Flag::WaterReflectivity));
+            add_flag_min(LevelVersion::Tomb4, L"Snow (NGLE) / 10", L"Bit 10", room.flag(IRoom::Flag::Bit10));
+            add_flag_min(LevelVersion::Tomb4, L"D / Rain / 11", L"Bit 11", room.flag(IRoom::Flag::Bit11));
+            add_flag_min(LevelVersion::Tomb4, L"P / Cold / 12", L"Bit 12", room.flag(IRoom::Flag::Bit12));
+            add_flag(L"Bit 13", room.flag(IRoom::Flag::Bit13));
+            add_flag(L"Bit 14", room.flag(IRoom::Flag::Bit14));
+            add_flag(L"Bit 15", room.flag(IRoom::Flag::Bit15));
+        }
     }
 
     const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
@@ -324,6 +367,11 @@ namespace trview
         _all_items = items;
     }
 
+    void RoomsWindow::set_level_version(trlevel::LevelVersion version)
+    {
+        _level_version = version;
+    }
+
     void RoomsWindow::set_rooms(const std::vector<std::weak_ptr<IRoom>>& rooms)
     {
         using namespace ui;
@@ -400,27 +448,10 @@ namespace trview
         render_minimap();
 
         // Load the stats for the room.
-        auto make_item = [](const auto& name, const auto& value)
-        {
-            return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
-        };
-
         std::vector<Listbox::Item> stats;
         stats.push_back(make_item(L"X", std::to_wstring(room->info().x)));
         stats.push_back(make_item(L"Y", std::to_wstring(room->info().yBottom)));
         stats.push_back(make_item(L"Z", std::to_wstring(room->info().z)));
-        if (room->water())
-        {
-            stats.push_back(make_item(L"Water", format_bool(room->water())));
-        }
-        if (room->outside())
-        {
-            stats.push_back(make_item(L"Outside", format_bool(room->outside())));
-        }
-        if (room->quicksand())
-        {
-            stats.push_back(make_item(L"Quicksand", format_bool(room->quicksand())));
-        }
         if (room->alternate_mode() != Room::AlternateMode::None)
         {
             stats.push_back(make_item(L"Alternate", std::to_wstring(room->alternate_room())));
@@ -429,6 +460,7 @@ namespace trview
                 stats.push_back(make_item(L"Alternate Group", std::to_wstring(room->alternate_group())));
             }
         }
+        add_room_flags(stats, _level_version, *room);
         _stats_box->set_items(stats);
 
         std::vector<Listbox::Item> list_neighbours;
@@ -496,8 +528,8 @@ namespace trview
         _stats_box->set_name(Names::stats_listbox);
         _stats_box->set_columns(
             {
-                { Listbox::Column::Type::String, L"Name", 100 },
-                { Listbox::Column::Type::String, L"Value", 70 },
+                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::String, L"Name", 100 },
+                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Value", 70 },
             }
         );
         _stats_box->set_show_headers(false);

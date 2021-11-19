@@ -97,6 +97,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Routing\Waypoint.cpp" />
     <ClCompile Include="Settings\ISettingsLoader.cpp" />
     <ClCompile Include="Settings\IStartupOptions.cpp" />
+    <ClCompile Include="Settings\RandomizerSettings.cpp" />
     <ClCompile Include="Settings\SettingsLoader.cpp" />
     <ClCompile Include="Settings\StartupOptions.cpp" />
     <ClCompile Include="Settings\UserSettings.cpp" />
@@ -281,6 +282,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Settings\di.hpp" />
     <ClInclude Include="Settings\IStartupOptions.h" />
     <ClInclude Include="Settings\ISettingsLoader.h" />
+    <ClInclude Include="Settings\RandomizerSettings.h" />
     <ClInclude Include="Settings\SettingsLoader.h" />
     <ClInclude Include="Settings\StartupOptions.h" />
     <ClInclude Include="Settings\UserSettings.h" />

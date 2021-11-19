@@ -47,11 +47,6 @@ namespace trview
         /// Event raised when the orbit here button is pressed.
         Event<> on_orbit;
 
-        /// <summary>
-        /// Event raised when the Rando location button is pressed.
-        /// </summary>
-        Event<> on_rando_location;
-
         /// Event raised when an alternate group is toggled.
         Event<uint32_t, bool> on_alternate_group;
 

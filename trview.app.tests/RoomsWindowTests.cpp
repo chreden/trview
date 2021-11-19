@@ -153,3 +153,38 @@ TEST(RoomsWindow, ClickStatShowsBubble)
     ASSERT_NE(value, nullptr);
     value->clicked(Point());
 }
+
+TEST(RoomsWindow, LevelVersionChangesFlags)
+{
+    auto room = std::make_shared<MockRoom>();
+    EXPECT_CALL(*room, flag).Times(testing::AtLeast(1)).WillRepeatedly(testing::Return(true));
+
+    auto window = register_test_module().build();
+    window->set_level_version(trlevel::LevelVersion::Tomb1);
+    window->set_rooms({ room });
+    window->set_current_room(0);
+
+    auto stats_box = window->root_control()->find<Listbox>(RoomsWindow::Names::stats_listbox);
+    const auto get_item_names = [](const auto& items)
+    {
+        std::vector<std::wstring> names;
+        for (const auto& item : items)
+        {
+            names.push_back(item.value(L"Name"));
+        }
+        return names;
+    };
+    auto names = get_item_names(stats_box->items());
+
+    ASSERT_THAT(names, testing::Contains(L"Bit 7"));
+    ASSERT_THAT(names, testing::Not(testing::Contains(L"Quicksand / 7")));
+
+    window->set_level_version(trlevel::LevelVersion::Tomb3);
+    window->set_rooms({ room });
+    window->set_current_room(0);
+    names = get_item_names(stats_box->items());
+
+    ASSERT_THAT(names, testing::Not(testing::Contains(L"Bit 7")));
+    ASSERT_THAT(names, testing::Contains(L"Quicksand / 7"));
+}
+

@@ -346,6 +346,9 @@
     <ClCompile Include="UI\ICameraControls.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Settings\RandomizerSettings.cpp">
+      <Filter>Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -892,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Mocks\UI\ICameraControls.h">
       <Filter>Mocks\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings\RandomizerSettings.h">
+      <Filter>Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
