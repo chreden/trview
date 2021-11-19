@@ -15,7 +15,7 @@
             }
         },
         "colour": {
-            "anyOf": [
+            "oneOf": [
                 {
                     "enum": [ "black", "grey", "lightgrey", "transparent", "white", "green", "blue", "red", "yellow", "magenta", "cyan" ]
                 },
@@ -42,11 +42,26 @@
                 "identity": { "enum": [ "none", "key" ] }
             }
         },
+        "dropdown_value": {
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "foreground": { "$ref": "#/$defs/colour" },
+                        "background": { "$ref": "#/$defs/colour" }
+                    }
+                }
+            ]
+        },
         "control": {
             "type": "object",
             "properties": {
                 "name": { "type": "string" },
-                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox" ] },
+                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox", "dropdown" ] },
                 "size": { "$ref": "#/$defs/size" },
                 "position": { "$ref": "#/$defs/point" },
                 "visible": { "type": "boolean" },
@@ -132,6 +147,22 @@
                                     "$ref": "#/$defs/listbox_column"
                                  }
                             }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type": { "const": "dropdown" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "values": {
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                 }
+                            },
+                            "selected_value": { "type": "string" }
                         }
                     }
                 }

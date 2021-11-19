@@ -31,6 +31,7 @@ namespace trview
             static const std::string track_room_checkbox;
             static const std::string triggers_listbox;
             static const std::string trigger_commands_listbox;
+            static const std::string expander;
         };
 
         explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,

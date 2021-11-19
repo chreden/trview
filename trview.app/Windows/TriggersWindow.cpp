@@ -1,29 +1,16 @@
 #include "TriggersWindow.h"
-#include <trview.common/Colour.h>
 #include <trview.app/Resources/resource.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Dropdown.h>
 #include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
-#include <trview.ui/Layouts/StackLayout.h>
 
 namespace trview
 {
     namespace
     {
-        /// Colours commonly used in this class.
-        namespace Colours
-        {
-            const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-            const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
-            const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
-            const Colour Triggers{ 1.0f, 0.20f, 0.20f, 0.20f };
-            const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
-        }
-
         ui::Listbox::Item create_listbox_item(const ITrigger& item)
         {
             return { {{ L"#", std::to_wstring(item.number()) },
@@ -49,6 +36,7 @@ namespace trview
     const std::string TriggersWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string TriggersWindow::Names::triggers_listbox{ "Triggers" };
     const std::string TriggersWindow::Names::trigger_commands_listbox{ "TriggerCommands" };
+    const std::string TriggersWindow::Names::expander{ "Expander" };
 
     using namespace graphics;
 
@@ -66,50 +54,19 @@ namespace trview
     {
         using namespace ui;
 
-        auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        auto left_panel_layout = std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        left_panel_layout->set_margin(Size(0, 3));
-        left_panel->set_layout(std::move(left_panel_layout));
+        auto left_panel = ui_source(IDR_UI_TRIGGERS_WINDOW_LEFT_PANEL);
 
-        // Control modes:.
-        auto controls_box = left_panel->add_child(std::make_unique<ui::Window>(Size(250, 50), Colours::LeftPanel));
-        auto controls_box_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        controls_box_layout->set_margin(Size(2, 2));
-        controls_box->set_layout(std::move(controls_box_layout));
-        _controls = controls_box->add_child(std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel));
-        auto controls_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
-        controls_layout->set_margin(Size(2, 2));
-        _controls->set_layout(std::move(controls_layout));
-        _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
-        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
 
-        // Spacing between checkboxes.
-        _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
-
-        auto sync_trigger = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Trigger"));
-        sync_trigger->set_name(Names::sync_trigger_checkbox);
+        auto sync_trigger = left_panel->find<Checkbox>(Names::sync_trigger_checkbox);
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
 
-        // Space out the button
-        _controls->add_child(std::make_unique<ui::Window>(Size(5, 20), Colours::LeftPanel));
+        set_expander(left_panel->find<Button>(Names::expander));
 
-        // Add the expander button at this point.
-        add_expander(*_controls);
-
-        // Command filter:
-        auto controls_row2 = controls_box->add_child(std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel));
-        auto controls_row2_layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
-        controls_row2_layout->set_margin(Size(2, 0));
-        controls_row2->set_layout(std::move(controls_row2_layout));
-
-        _command_filter = controls_row2->add_child(std::make_unique<Dropdown>(Size(236, 20)));
-        _command_filter->set_name(Names::filter_dropdown);
-        std::vector<std::wstring> default_commands { L"All", L"Flipmaps" };
-        _command_filter->set_values(default_commands);
+        _command_filter = left_panel->find<Dropdown>(Names::filter_dropdown);
         _command_filter->set_dropdown_scope(_ui.get());
-        _command_filter->set_selected_value(L"All");
         _token_store += _command_filter->on_value_selected += [&](const auto& value) 
         {
             _selected_commands.clear();
@@ -126,18 +83,7 @@ namespace trview
             apply_filters();
         };
 
-        auto controls_box_bottom = controls_box->size().height;
-
-        _triggers_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - controls_box_bottom), Colours::LeftPanel));
-        _triggers_list->set_name(Names::triggers_listbox);
-        _triggers_list->set_columns(
-            {
-                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 130 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
-            }
-        );
+        _triggers_list = left_panel->find<Listbox>(Names::triggers_listbox);
         _token_store += _triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));

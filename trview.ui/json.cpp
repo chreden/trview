@@ -16,6 +16,7 @@
 #include "NumericUpDown.h"
 #include "Slider.h"
 #include "Listbox.h"
+#include "Dropdown.h"
 
 namespace trview
 {
@@ -159,6 +160,17 @@ namespace trview
                     }
 
                     control = std::move(listbox);
+                }
+                else if (type == "dropdown")
+                {
+                    auto values = read_attribute<std::vector<std::string>>(json, "values");
+                    auto selected = read_attribute<std::string>(json, std::string("selected_value"), values[0]);
+                    std::vector<std::wstring> transformed;
+                    std::transform(values.begin(), values.end(), std::back_inserter(transformed), to_utf16);
+                    auto dropdown = std::make_unique<Dropdown>(position, size);
+                    dropdown->set_values(transformed);
+                    dropdown->set_selected_value(to_utf16(selected));
+                    control = std::move(dropdown);
                 }
 
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));
