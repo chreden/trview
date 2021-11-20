@@ -28,6 +28,7 @@ namespace trview
         {
             static const std::string colour;
             static const std::string waypoints;
+            static const std::string delete_waypoint;
             static const std::string export_button;
             static const std::string import_button;
             static const std::string clear_save;
@@ -35,6 +36,7 @@ namespace trview
             static const std::string select_save_button;
             static const std::string waypoint_stats;
             static const std::string randomizer_group;
+            static const std::string randomizer_area;
         };
 
         /// Create a route window as a child of the specified window.

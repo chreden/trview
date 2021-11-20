@@ -33,6 +33,7 @@ namespace trview
 
     const std::string RouteWindow::Names::colour = "colour";
     const std::string RouteWindow::Names::waypoints = "waypoints";
+    const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
     const std::string RouteWindow::Names::export_button = "export_button";
     const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
@@ -40,15 +41,12 @@ namespace trview
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
+    const std::string RouteWindow::Names::randomizer_area = "randomizer_area";
 
     namespace Colours
     {
-        const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-        const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
-        const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
         const Colour Notes{ 1.0f, 0.20f, 0.20f, 0.20f };
         const Colour NotesTextArea{ 1.0f, 0.15f, 0.15f, 0.15f };
-        const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
     using namespace graphics;
@@ -156,25 +154,10 @@ namespace trview
     std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         const float panel_width = 270;
-        auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
-        auto right_panel_layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        right_panel_layout->set_margin(Size(0, 8));
-        right_panel->set_layout(std::move(right_panel_layout));
 
-        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details"));
-        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails));
-        details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
+        auto right_panel = ui_source(IDR_UI_ROUTE_WINDOW_RIGHT_PANEL);
 
-        _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
-        _stats->set_name(Names::waypoint_stats);
-        _stats->set_show_highlight(false);
-        _stats->set_show_headers(false);
-        _stats->set_show_scrollbar(true);
-        _stats->set_columns(
-            {
-                { Listbox::Column::Type::String, L"Name", 100 },
-                { Listbox::Column::Type::String, L"Value", 140 }
-            });
+        _stats = right_panel->find<Listbox>(Names::waypoint_stats);
         _token_store += _stats->on_item_selected += [&](const auto& item)
         {
             if (item.value(L"Name") == L"Room Position" || 
@@ -203,11 +186,7 @@ namespace trview
             }
         };
 
-        auto save_area = details_panel->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 20), Colours::ItemDetails));
-        save_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-
-        _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
-        _select_save->set_name(Names::select_save_button);
+        _select_save = right_panel->find<Button>(Names::select_save_button);
         _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -254,8 +233,7 @@ namespace trview
             }
         };
 
-        _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
-        _clear_save->set_name(Names::clear_save);
+        _clear_save = right_panel->find<Button>(Names::clear_save);
         _token_store += _clear_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -272,7 +250,7 @@ namespace trview
             }
         };
 
-        _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
+        _delete_waypoint = right_panel->find<Button>(Names::delete_waypoint);
         _token_store += _delete_waypoint->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
@@ -281,19 +259,7 @@ namespace trview
             }
         };
 
-        _select_save->set_visible(false);
-        _clear_save->set_visible(false);
-        _delete_waypoint->set_visible(false);
-
-        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        _lower_box = right_panel->add_child(std::make_unique<ui::Window>(Size(), Colours::Notes));
-        _lower_box->set_layout(std::make_unique<StackLayout>(5.0f));
-
-        auto notes_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = notes_group->add_child(std::make_unique<TextArea>(Size(panel_width - 20, 200), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
-        _notes_area->set_name(Names::notes_area);
-        _notes_area->set_scrollbar_visible(true);
-
+        _notes_area = right_panel->find<TextArea>(Names::notes_area);
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -306,17 +272,8 @@ namespace trview
             }
         };
 
-        _rando_group = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, 200), Colours::Notes));
-        auto group_layout = std::make_unique<StackLayout>();
-        group_layout->set_margin(Size(10, 0));
-        _rando_group->set_layout(std::move(group_layout));
-        _rando_group->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, L"Randomizer", 8, TextAlignment::Left, ParagraphAlignment::Centre));
-        _rando_group->set_name(Names::randomizer_group);
-        _rando_group->set_visible(false);
-        _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        auto layout = std::make_unique<StackLayout>(5.0f);
-        layout->set_margin(Size(0, 10.0f));
-        _rando_area->set_layout(std::move(layout));
+        _rando_group = right_panel->find<ui::Window>(Names::randomizer_group);
+        _rando_area = right_panel->find<ui::Window>(Names::randomizer_area);
         return right_panel;
     }
 

@@ -17,6 +17,7 @@
 #include "Slider.h"
 #include "Listbox.h"
 #include "Dropdown.h"
+#include "TextArea.h"
 
 namespace trview
 {
@@ -203,6 +204,14 @@ namespace trview
                         dropdown->set_selected_value(values[0].text);
                     }
                     control = std::move(dropdown);
+                }
+                else if (type == "textarea")
+                {
+                    auto text_alignment = read_attribute<std::string>(json, "text_alignment", "left");
+                    auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, text_alignment == "left" ? graphics::TextAlignment::Left : graphics::TextAlignment::Centre);
+                    text_area->set_scrollbar_visible(read_attribute<bool>(json, "show_scrollbar", true));
+                    text_area->set_read_only(read_attribute<bool>(json, "read_only", false));
+                    control = std::move(text_area);
                 }
 
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));
