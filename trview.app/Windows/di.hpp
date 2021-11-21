@@ -84,7 +84,8 @@ namespace trview
                             injector.create<ui::IInput::Source>(),
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<IBubble::Source>(),
-                            window);
+                            window,
+                            ui::load_from_resource);
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),

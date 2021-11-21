@@ -279,6 +279,9 @@ IDR_UI_ROUTE_WINDOW_LEFT_PANEL TEXT             "Files\\UI\\route_window_left_pa
 
 IDR_UI_ROUTE_WINDOW_RIGHT_PANEL TEXT            "Files\\UI\\route_window_right_panel.json"
 
+IDR_UI_ROOMS_WINDOW_LEFT_PANEL TEXT             "Files\\UI\\rooms_window_left_panel.json"
+
+IDR_UI_ROOMS_WINDOW_RIGHT_PANEL TEXT             "Files\\UI\\rooms_window_right_panel.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //

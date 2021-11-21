@@ -7,6 +7,7 @@
 #include <trview.common/Strings.h>
 #include <trview.input/IMouse.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -104,6 +105,9 @@ namespace trview
         }
     }
 
+    const std::string RoomsWindow::Names::sync_room{ "sync_room" };
+    const std::string RoomsWindow::Names::track_item{ "track_item" };
+    const std::string RoomsWindow::Names::track_trigger{ "track_trigger" };
     const std::string RoomsWindow::Names::rooms_listbox{ "Rooms" };
     const std::string RoomsWindow::Names::triggers_listbox{ "Triggers" };
     const std::string RoomsWindow::Names::stats_listbox{ "Stats" };
@@ -114,13 +118,14 @@ namespace trview
         const ui::IInput::Source& input_source,
         const std::shared_ptr<IClipboard>& clipboard,
         const IBubble::Source& bubble_source,
-        const Window& parent)
+        const Window& parent,
+        const ui::UiSource& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
         _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
         set_allow_increase_height(false);
 
         using namespace input;
@@ -213,61 +218,47 @@ namespace trview
         };
     }
 
-    std::unique_ptr<ui::Control> RoomsWindow::create_left_panel()
+    std::unique_ptr<ui::Control> RoomsWindow::create_left_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        auto controls = std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel);
-        auto layout = std::make_unique<StackLayout>(6.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
-        layout->set_margin(Size(2, 2));
-        controls->set_layout(std::move(layout));
+        auto left_panel = ui_source(IDR_UI_ROOMS_WINDOW_LEFT_PANEL);
+        // auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
+        // left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
 
-        _sync_room_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Room"));
-        _sync_room_checkbox->set_state(true);
+        // auto controls = std::make_unique<ui::Window>(Size(250, 20), Colours::LeftPanel);
+        // auto layout = std::make_unique<StackLayout>(6.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
+        // layout->set_margin(Size(2, 2));
+        // controls->set_layout(std::move(layout));
+
+        // _sync_room_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Room"));
+        // _sync_room_checkbox->set_state(true);
+        _sync_room_checkbox = left_panel->find<Checkbox>(Names::sync_room);
         _token_store += _sync_room_checkbox->on_state_changed += [this](bool value)
         {
             set_sync_room(value);
         };
 
-        _track_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Item"));
+        _track_item_checkbox = left_panel->find<Checkbox>(Names::track_item);
+        // _track_item_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Item"));
         _track_item_checkbox->set_state(false);
         _token_store += _track_item_checkbox->on_state_changed += [this](bool value)
         {
             set_track_item(value);
         };
 
-        _track_trigger_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Trigger"));
+        _track_trigger_checkbox = left_panel->find<Checkbox>(Names::track_trigger);
+        // _track_trigger_checkbox = controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Trigger"));
         _track_trigger_checkbox->set_state(false);
         _token_store += _track_trigger_checkbox->on_state_changed += [this](bool value)
         {
             set_track_trigger(value);
         };
 
-        _controls = left_panel->add_child(std::move(controls));
-        _rooms_list = left_panel->add_child(create_rooms_list());
-
-        // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
-
-        return left_panel;
-    }
-
-    std::unique_ptr<ui::Listbox> RoomsWindow::create_rooms_list()
-    {
-        using namespace ui;
-
-        auto rooms_list = std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel);
-        rooms_list->set_name(Names::rooms_listbox);
-        rooms_list->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"#", 40 },
-                { Listbox::Column::Type::Number, L"Items", 100 },
-                { Listbox::Column::Type::Number, L"Triggers", 100 }
-            }
-        );
-        _token_store += rooms_list->on_item_selected += [&](const auto& item)
+        // _controls = left_panel->add_child(std::move(controls));
+        // _rooms_list = left_panel->add_child(create_rooms_list());
+        _rooms_list = left_panel->find<Listbox>(Names::rooms_listbox);
+        _token_store += _rooms_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
             load_room_details(_all_rooms[index]);
@@ -276,7 +267,11 @@ namespace trview
                 on_room_selected(index);
             }
         };
-        return rooms_list;
+
+        // Fix items list size now that it has been added to the panel.
+        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
+
+        return left_panel;
     }
 
     void RoomsWindow::create_neighbours_list(ui::Control& parent)
@@ -493,7 +488,7 @@ namespace trview
         _triggers_list->set_items(list_triggers);
     }
 
-    std::unique_ptr<ui::Control> RoomsWindow::create_right_panel()
+    std::unique_ptr<ui::Control> RoomsWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
         const float panel_width = 380;

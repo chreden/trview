@@ -1062,6 +1062,12 @@
     <None Include="Resources\Files\UI\route_window_right_panel.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
+    <None Include="Resources\Files\UI\rooms_window_left_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\rooms_window_right_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

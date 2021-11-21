@@ -19,6 +19,9 @@ namespace trview
     public:
         struct Names
         {
+            static const std::string sync_room;
+            static const std::string track_item;
+            static const std::string track_trigger;
             static const std::string rooms_listbox;
             static const std::string triggers_listbox;
             static const std::string stats_listbox;
@@ -34,7 +37,8 @@ namespace trview
             const ui::IInput::Source& input_source,
             const std::shared_ptr<IClipboard>& clipboard,
             const IBubble::Source& bubble_source,
-            const Window& parent);
+            const Window& parent,
+            const ui::UiSource& ui_source);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
         virtual void render(bool vsync) override;
@@ -48,9 +52,8 @@ namespace trview
         virtual void update(float delta) override;
     private:
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
-        std::unique_ptr<ui::Control> create_left_panel();
-        std::unique_ptr<ui::Control> create_right_panel();
-        std::unique_ptr<ui::Listbox> create_rooms_list();
+        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
+        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
         void create_neighbours_list(ui::Control& parent);
         void create_items_list(ui::Control& parent);
         void create_triggers_list(ui::Control& parent);
