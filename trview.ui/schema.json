@@ -61,7 +61,7 @@
             "type": "object",
             "properties": {
                 "name": { "type": "string" },
-                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox", "dropdown" ] },
+                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox", "dropdown", "textarea" ] },
                 "size": { "$ref": "#/$defs/size" },
                 "position": { "$ref": "#/$defs/point" },
                 "visible": { "type": "boolean" },
@@ -171,6 +171,20 @@
                             "selected_value": { "type": "string" },
                             "text_colour": { "$ref": "#/$defs/colour" },
                             "text_background_colour": { "$ref": "#/$defs/colour" }
+                        }
+                    }
+                },
+                {
+                    "if": {
+                        "properties": { "type": { "const": "textarea" } }
+                    },
+                    "then": {
+                        "properties": {
+                            "show_scrollbar": { "type": "boolean" },
+                            "text_alignment": { "enum": [ "left", "right", "centre", "justified" ] },
+                            "read_only": { "type": "boolean" },
+                            "line_mode": { "enum": ["single", "multi" ] },
+                            "text" : { "type": "string" }
                         }
                     }
                 }

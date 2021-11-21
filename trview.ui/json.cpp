@@ -211,6 +211,9 @@ namespace trview
                     auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, text_alignment == "left" ? graphics::TextAlignment::Left : graphics::TextAlignment::Centre);
                     text_area->set_scrollbar_visible(read_attribute<bool>(json, "show_scrollbar", true));
                     text_area->set_read_only(read_attribute<bool>(json, "read_only", false));
+                    auto line_mode = read_attribute<std::string>(json, "line_mode", "multi");
+                    text_area->set_mode(line_mode == "multi" ? TextArea::Mode::MultiLine : TextArea::Mode::SingleLine);
+                    text_area->set_text(to_utf16(read_attribute<std::string>(json, "text", "")));
                     control = std::move(text_area);
                 }
 
