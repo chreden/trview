@@ -25,6 +25,9 @@ namespace trview
             static const std::string rooms_listbox;
             static const std::string triggers_listbox;
             static const std::string stats_listbox;
+            static const std::string minimap;
+            static const std::string neighbours_listbox;
+            static const std::string items_listbox;
         };
 
         /// Create a rooms window as a child of the specified window.
@@ -54,9 +57,6 @@ namespace trview
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
         std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
         std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
-        void create_neighbours_list(ui::Control& parent);
-        void create_items_list(ui::Control& parent);
-        void create_triggers_list(ui::Control& parent);
         void set_sync_room(bool value);
         void set_track_item(bool value);
         void set_track_trigger(bool value);

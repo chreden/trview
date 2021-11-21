@@ -18,6 +18,7 @@
 #include "Listbox.h"
 #include "Dropdown.h"
 #include "TextArea.h"
+#include "Image.h"
 
 namespace trview
 {
@@ -215,6 +216,10 @@ namespace trview
                     text_area->set_mode(line_mode == "multi" ? TextArea::Mode::MultiLine : TextArea::Mode::SingleLine);
                     text_area->set_text(to_utf16(read_attribute<std::string>(json, "text", "")));
                     control = std::move(text_area);
+                }
+                else if (type == "image")
+                {
+                    control = std::make_unique<Image>(position, size);
                 }
 
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));
