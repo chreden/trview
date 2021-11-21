@@ -283,6 +283,7 @@ IDR_UI_ROOMS_WINDOW_LEFT_PANEL TEXT             "Files\\UI\\rooms_window_left_pa
 
 IDR_UI_ROOMS_WINDOW_RIGHT_PANEL TEXT            "Files\\UI\\rooms_window_right_panel.json"
 IDR_UI_CONTEXT_MENU             TEXT            "Files\\UI\\context_menu.json"
+IDR_UI_GO_TO                    TEXT            "Files\\UI\\go_to.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //

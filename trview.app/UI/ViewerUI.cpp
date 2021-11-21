@@ -7,6 +7,7 @@
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include <trview.ui/json.h>
 
 using namespace trview::ui;
 
@@ -66,7 +67,7 @@ namespace trview
 
         generate_tool_window(view_options_source, camera_controls_source);
 
-        _go_to = std::make_unique<GoTo>(*_control.get());
+        _go_to = std::make_unique<GoTo>(*_control.get(), ui::load_from_resource);
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
             if (_go_to->name() == L"Item")

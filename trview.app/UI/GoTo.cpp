@@ -1,44 +1,23 @@
 #include "GoTo.h"
 #include <trview.ui/TextArea.h>
 #include <trview.ui/GroupBox.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
-    namespace
-    {
-        const float WindowWidth = 87.0f;
-        const float WindowHeight = 60.0f;
-        const float Width = 57.0f;
-        const float Height = 20.0f;
-    }
+    const std::string GoTo::Names::group{ "group" };
+    const std::string GoTo::Names::text_area{ "text_area" };
 
-    GoTo::GoTo(ui::Control& parent)
+    GoTo::GoTo(ui::Control& parent, const ui::UiSource& ui_source)
     {
         using namespace ui;
 
-        auto parent_size = parent.size();
+        _window = parent.add_child(ui_source(IDR_UI_GO_TO));
+        _group = _window->find<GroupBox>(Names::group);
+        _text_area = _window->find<TextArea>(Names::text_area);
 
-        auto window = std::make_unique<ui::Window>(
-            Point(parent_size.width / 2.0f - WindowWidth / 2.0f, parent_size.height / 2.0f - WindowHeight / 2.0f),
-            Size(WindowWidth, WindowHeight),
-            Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        window->set_visible(false);
-
-        auto box = std::make_unique<GroupBox>(
-            Point(5, 0),
-            Size(WindowWidth - 10, WindowHeight),
-            Colour::Transparent,
-            Colour::Grey,
-            L"Go to Room");
-
-        auto text_area = std::make_unique<TextArea>(
-            Size(Width, Height),
-            Colour(1.0f, 0.2f, 0.2f, 0.2f),
-            Colour::White,
-            graphics::TextAlignment::Centre);
-        text_area->set_mode(TextArea::Mode::SingleLine);
-        _token_store += text_area->on_escape += [&]() { toggle_visible(); };
-        _token_store += text_area->on_enter += [&](const std::wstring& text)
+        _token_store += _text_area->on_escape += [&]() { toggle_visible(); };
+        _token_store += _text_area->on_enter += [&](const std::wstring& text)
         {
             try
             {
@@ -52,14 +31,12 @@ namespace trview
             }
         };
 
-        _text_area = box->add_child(std::move(text_area));
-        _group = window->add_child(std::move(box));
-        _window = parent.add_child(std::move(window));
-
-        _token_store += parent.on_size_changed += [&](const Size& size)
+        const auto update_position = [&](const Size& size)
         {
-            _window->set_position(Point(size.width / 2.0f - _window->size().width / 2.0f, size.height / 2.0f - WindowHeight / 2.0f));
+            _window->set_position(Point(size.width / 2.0f - _window->size().width / 2.0f, size.height / 2.0f - _window->size().height / 2.0f));
         };
+        _token_store += parent.on_size_changed += update_position;
+        update_position(parent.size());
     }
 
     bool GoTo::visible() const
