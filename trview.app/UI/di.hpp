@@ -53,7 +53,7 @@ namespace trview
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<ContextMenu>(parent);
+                        return std::make_unique<ContextMenu>(parent, ui::load_from_resource);
                     };
                 }),
             di::bind<IViewerUI>.to<ViewerUI>()

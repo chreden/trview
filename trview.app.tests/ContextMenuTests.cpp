@@ -1,4 +1,5 @@
 #include <trview.app/UI/ContextMenu.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -6,7 +7,7 @@ using namespace trview::tests;
 TEST(ContextMenu, AddWaypointRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_hide_enabled(true);
     menu.set_visible(true);
 
@@ -24,7 +25,7 @@ TEST(ContextMenu, AddWaypointRaised)
 TEST(ContextMenu, HideButtonTextColourChangesWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
 
     auto button = parent.find<ui::Button>(ContextMenu::Names::hide_button);
@@ -42,7 +43,7 @@ TEST(ContextMenu, HideButtonTextColourChangesWhenDisabled)
 TEST(ContextMenu, HideNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
 
     bool raised = false;
@@ -59,7 +60,7 @@ TEST(ContextMenu, HideNotRaisedWhenDisabled)
 TEST(ContextMenu, HideRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_hide_enabled(true);
     menu.set_visible(true);
 
@@ -77,7 +78,7 @@ TEST(ContextMenu, HideRaised)
 TEST(ContextMenu, OrbitHereRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_hide_enabled(true);
     menu.set_visible(true);
 
@@ -95,7 +96,7 @@ TEST(ContextMenu, OrbitHereRaised)
 TEST(ContextMenu, RemoveWaypointButtonTextColourChangesWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
 
     auto button = parent.find<ui::Button>(ContextMenu::Names::remove_waypoint_button);
     ASSERT_NE(button, nullptr);
@@ -112,7 +113,7 @@ TEST(ContextMenu, RemoveWaypointButtonTextColourChangesWhenDisabled)
 TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
 
     bool raised = false;
@@ -129,7 +130,7 @@ TEST(ContextMenu, RemoveWaypointNotRaisedWhenDisabled)
 TEST(ContextMenu, RemoveWaypointRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_remove_enabled(true);
 
     bool raised = false;
@@ -146,7 +147,7 @@ TEST(ContextMenu, RemoveWaypointRaised)
 TEST(ContextMenu, ShowContextMenu)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
 
     auto control = menu.control();
     ASSERT_NE(control, nullptr);
@@ -161,7 +162,7 @@ TEST(ContextMenu, ShowContextMenu)
 TEST(ContextMenu, AddMidWaypointRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
     menu.set_mid_waypoint_enabled(true);
 
@@ -179,7 +180,7 @@ TEST(ContextMenu, AddMidWaypointRaised)
 TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
 
     auto button = parent.find<ui::Button>(ContextMenu::Names::add_mid_waypoint_button);
@@ -198,7 +199,7 @@ TEST(ContextMenu, AddMidWaypointTextColourChangesWhenDisabled)
 TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
-    ContextMenu menu(parent);
+    ContextMenu menu(parent, ui::load_from_resource);
     menu.set_visible(true);
 
     bool raised = false;

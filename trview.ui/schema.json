@@ -61,7 +61,7 @@
             "type": "object",
             "properties": {
                 "name": { "type": "string" },
-                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox", "dropdown", "textarea" ] },
+                "type": { "enum": [ "window", "button", "label", "checkbox", "groupbox", "slider", "numericupdown", "listbox", "dropdown", "textarea", "image" ] },
                 "size": { "$ref": "#/$defs/size" },
                 "position": { "$ref": "#/$defs/point" },
                 "visible": { "type": "boolean" },
