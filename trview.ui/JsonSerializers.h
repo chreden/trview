@@ -10,7 +10,7 @@ namespace trview
 {
     namespace ui
     {
-        void from_json(const nlohmann::json& json, SizeMode mode);
+        void from_json(const nlohmann::json& json, SizeMode& mode);
         void from_json(const nlohmann::json& json, StackLayout::Direction& direction);
         void from_json(const nlohmann::json& json, Listbox::Column::IdentityMode& identity_mode);
         void from_json(const nlohmann::json& json, Listbox::Column::Type& type);

@@ -11,15 +11,6 @@ namespace trview
 {
     namespace
     {
-        namespace Colours
-        {
-            const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-            const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
-            const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
-            const Colour Triggers{ 1.0f, 0.20f, 0.20f, 0.20f };
-            const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
-        }
-
         ui::Listbox::Item create_listbox_item(const std::weak_ptr<IRoom>& room_ptr, const std::vector<Item>& items, const std::vector<std::weak_ptr<ITrigger>>& triggers)
         {
             const auto room = room_ptr.lock();

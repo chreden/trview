@@ -4,7 +4,7 @@ namespace trview
 {
     namespace ui
     {
-        void from_json(const nlohmann::json& json, SizeMode mode)
+        void from_json(const nlohmann::json& json, SizeMode& mode)
         {
             const auto text = json.get<std::string>();
             mode = text == "auto" ? SizeMode::Auto : SizeMode::Manual;
@@ -19,7 +19,7 @@ namespace trview
         void from_json(const nlohmann::json& json, Listbox::Column::IdentityMode& identity_mode)
         {
             const auto text = json.get<std::string>();
-            identity_mode = "key" ? Listbox::Column::IdentityMode::Key : Listbox::Column::IdentityMode::None;
+            identity_mode = text == "key" ? Listbox::Column::IdentityMode::Key : Listbox::Column::IdentityMode::None;
         }
 
         void from_json(const nlohmann::json& json, Listbox::Column::Type& type)

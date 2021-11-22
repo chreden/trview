@@ -155,7 +155,7 @@ namespace trview
                             const auto name = read_attribute<std::string>(col, "name");
                             const auto type = read_attribute<Listbox::Column::Type>(col, "type", Listbox::Column::Type::String);
                             const auto width = read_attribute<uint32_t>(col, "width");
-                            const auto identity = read_attribute<Listbox::Column::IdentityMode>(col, "identity", Listbox::Column::IdentityMode::None);
+                            const auto identity = read_attribute<Listbox::Column::IdentityMode>(col, "identity", Listbox::Column::IdentityMode::Key);
                             columns.push_back(Listbox::Column(identity, type, to_utf16(name), width));
                         }
                         listbox->set_columns(columns);
