@@ -280,7 +280,7 @@ namespace trview
         _view_options->on_show_wireframe += on_show_wireframe;
         _view_options->on_show_bounding_boxes += on_show_bounding_boxes;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window);
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui::load_from_resource);
         _room_navigator->on_room_selected += on_select_room;
 
         _camera_controls = camera_controls_source(*tool_window);

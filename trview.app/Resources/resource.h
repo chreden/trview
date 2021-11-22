@@ -67,6 +67,7 @@
 #define IDR_UI_CONTEXT_MENU             33012
 #define IDR_UI_LEVEL_INFO               33013
 #define IDR_UI_CONSOLE                  33014
+#define IDR_UI_ROOM_NAVIGATOR           33015
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
 

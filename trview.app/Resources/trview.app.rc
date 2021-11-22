@@ -279,6 +279,7 @@ IDR_UI_CONTEXT_MENU                 TEXT         "Files\\UI\\context_menu.json"
 IDR_UI_GO_TO                        TEXT         "Files\\UI\\go_to.json"
 IDR_UI_LEVEL_INFO                   TEXT         "Files\\UI\\level_info.json"
 IDR_UI_CONSOLE                      TEXT         "Files\\UI\\console.json"
+IDR_UI_ROOM_NAVIGATOR               TEXT         "Files\\UI\\room_navigator.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //
