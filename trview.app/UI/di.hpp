@@ -56,7 +56,22 @@ namespace trview
                         return std::make_unique<ContextMenu>(parent, ui::load_from_resource);
                     };
                 }),
-            di::bind<IViewerUI>.to<ViewerUI>()
+            di::bind<IViewerUI>.to(
+                [](const auto& injector) -> std::unique_ptr<IViewerUI>
+                {
+                    return std::make_unique<ViewerUI>(
+                        injector.create<Window>(),
+                        injector.create<std::shared_ptr<ITextureStorage>>(),
+                        injector.create<std::shared_ptr<IShortcuts>>(),
+                        injector.create<ui::IInput::Source>(),
+                        injector.create<ui::render::IRenderer::Source>(),
+                        injector.create<ui::render::IMapRenderer::Source>(),
+                        injector.create<ISettingsWindow::Source>(),
+                        injector.create<IViewOptions::Source>(),
+                        injector.create<IContextMenu::Source>(),
+                        injector.create<ICameraControls::Source>(),
+                        ui::load_from_resource);
+                })
         );
     }
 }

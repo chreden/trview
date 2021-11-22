@@ -31,7 +31,8 @@ namespace trview
             const ISettingsWindow::Source& settings_window_source,
             const IViewOptions::Source& view_options_source,
             const IContextMenu::Source& context_menu_source,
-            const ICameraControls::Source& camera_controls_source);
+            const ICameraControls::Source& camera_controls_source,
+            const ui::UiSource& ui_source);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -84,7 +85,7 @@ namespace trview
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source);
+        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::UiSource& ui_source);
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;

@@ -9,6 +9,7 @@
 #include <trview.app/Mocks/UI/IViewOptions.h>
 #include <trview.app/Mocks/UI/IContextMenu.h>
 #include <trview.app/Mocks/UI/ICameraControls.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -41,7 +42,8 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source, camera_controls_source);
+                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source, camera_controls_source,
+                    ui::load_from_resource);
             }
 
             test_module& with_settings_window_source(const ISettingsWindow::Source& source)

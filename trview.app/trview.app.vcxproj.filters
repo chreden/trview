@@ -1086,6 +1086,9 @@
     <None Include="Resources\Files\UI\camera_position.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
+    <None Include="Resources\Files\UI\tool_window.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

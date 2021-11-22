@@ -6,7 +6,7 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 #include <trview.ui/json.h>
 
 using namespace trview::ui;
@@ -21,7 +21,8 @@ namespace trview
         const ISettingsWindow::Source& settings_window_source,
         const IViewOptions::Source& view_options_source,
         const IContextMenu::Source& context_menu_source,
-        const ICameraControls::Source& camera_controls_source)
+        const ICameraControls::Source& camera_controls_source,
+        const ui::UiSource& ui_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -65,7 +66,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source, camera_controls_source);
+        generate_tool_window(view_options_source, camera_controls_source, ui_source);
 
         _go_to = std::make_unique<GoTo>(*_control.get(), ui::load_from_resource);
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -260,13 +261,10 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::UiSource& ui_source)
     {
         // This is the main tool window on the side of the screen.
-        auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        auto layout = std::make_unique<StackLayout>(5.0f);
-        layout->set_margin(Size(5, 5));
-        tool_window->set_layout(std::move(layout));
+        auto tool_window = _control->add_child(ui_source(IDR_UI_TOOL_WINDOW));
 
         _view_options = view_options_source(*tool_window);
         _view_options->on_highlight += on_highlight;
