@@ -92,21 +92,25 @@
                     "width": 30
                 },
                 {
+                    "identity": "none",
                     "type": "number",
                     "name": "Room",
                     "width": 30
                 },
                 {
+                    "identity": "none",
                     "type": "number",
                     "name": "ID",
                     "width": 30
                 },
                 {
+                    "identity": "none",
                     "type": "string",
                     "name": "Type",
                     "width": 100
                 },
                 {
+                    "identity": "none",
                     "type": "boolean",
                     "name": "Hide",
                     "width": 50

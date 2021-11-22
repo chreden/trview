@@ -129,6 +129,7 @@
                                             "width": 100
                                         },
                                         {
+                                            "identity": "none",
                                             "type": "string",
                                             "name": "Value",
                                             "width": 70

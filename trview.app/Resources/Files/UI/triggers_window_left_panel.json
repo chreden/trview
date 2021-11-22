@@ -143,16 +143,19 @@
                     "width": 30
                 },
                 {
+                    "identity": "none",
                     "name": "Room",
                     "type": "number",
                     "width": 30
                 },
                 {
+                    "identity": "none",
                     "name": "Type",
                     "type": "string",
                     "width": 130
                 },
                 {
+                    "identity": "none",
                     "name": "Hide",
                     "type": "boolean",
                     "width": 50
