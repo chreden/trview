@@ -112,6 +112,7 @@
     <ClInclude Include="Mocks\IShader.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="JsonSerializers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IShaderStorage.cpp">
@@ -190,6 +191,7 @@
     <ClCompile Include="IDeviceWindow.cpp">
       <Filter>Device</Filter>
     </ClCompile>
+    <ClCompile Include="JsonSerializers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

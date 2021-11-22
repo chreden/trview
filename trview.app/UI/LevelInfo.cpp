@@ -47,15 +47,17 @@ namespace trview
         settings->on_click += on_toggle_settings;
 
         // Have the control move itself when the parent control resizes.
-        _token_store += control.on_size_changed += [=](const Size& size)
+        const auto update_position = [=](const Size& size)
         {
             panel->set_position(Point(size.width / 2.0f - panel->size().width / 2.0f, 0));
         };
+        _token_store += control.on_size_changed += update_position;
         _token_store += panel->on_size_changed += [=](const Size& size)
         {
-            auto parent = panel->parent();
-            panel->set_position(Point(parent->size().width / 2.0f - size.width / 2.0f, 0));
+            update_position(panel->parent()->size());
         };
+
+        update_position(control.size());
     }
 
     // Set the name of the level.

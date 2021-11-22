@@ -70,6 +70,7 @@
             },
             "columns": [
                 {
+                    "identity": "key",
                     "name": "#",
                     "type": "number",
                     "width": 40

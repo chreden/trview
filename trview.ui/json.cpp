@@ -3,6 +3,8 @@
 #include <trview.common/Json.h>
 #include <trview.common/Resources.h>
 #include <trview.common/JsonSerializers.h>
+#include <trview.graphics/JsonSerializers.h>
+#include "JsonSerializers.h"
 
 #include "Layouts/FreeLayout.h"
 #include "Layouts/StackLayout.h"
@@ -20,6 +22,8 @@
 #include "TextArea.h"
 #include "Image.h"
 
+using namespace trview::graphics;
+
 namespace trview
 {
     namespace ui
@@ -28,25 +32,22 @@ namespace trview
         {
             std::unique_ptr<ILayout> parse_layout(const nlohmann::json& json)
             {
-                auto type = read_attribute<std::string>(json, "type");
+                const auto type = read_attribute<std::string>(json, "type");
                 if (type == "stack")
                 {
-                    auto size_mode = read_attribute<std::string>(json, "size_mode", "auto");
-                    auto padding = read_attribute<float>(json, "padding", 0.0f);
-                    auto direction = read_attribute<std::string>(json, "direction", "vertical");
-                    auto layout = std::make_unique<StackLayout>(padding,
-                        direction == "vertical" ? StackLayout::Direction::Vertical : StackLayout::Direction::Horizontal,
-                        size_mode == "auto" ? SizeMode::Auto : SizeMode::Manual);
+                    const auto size_mode = read_attribute<SizeMode>(json, "size_mode", SizeMode::Auto);
+                    const auto direction = read_attribute<StackLayout::Direction>(json, "direction", StackLayout::Direction::Vertical);
+                    const auto padding = read_attribute<float>(json, "padding", 0.0f);
+                    auto layout = std::make_unique<StackLayout>(padding, direction, size_mode);
                     layout->set_margin(read_attribute<Size>(json, "margin", Size()));
-                    auto size_dimension = read_attribute<std::string>(json, "auto_size_dimension", "all");
-                    layout->set_auto_size_dimension(
-                        size_dimension == "all" ? SizeDimension::All : size_dimension == "width" ? SizeDimension::Width : SizeDimension::Height);
+                    const auto size_dimension = read_attribute<SizeDimension>(json, "auto_size_dimension", SizeDimension::All);
+                    layout->set_auto_size_dimension(size_dimension);
                     return std::move(layout);
                 }
                 else if (type == "grid")
                 {
-                    auto columns = read_attribute<uint32_t>(json, "columns", 1u);
-                    auto rows = read_attribute<uint32_t>(json, "rows", 1u);
+                    const auto columns = read_attribute<uint32_t>(json, "columns", 1u);
+                    const auto rows = read_attribute<uint32_t>(json, "rows", 1u);
                     return std::make_unique<GridLayout>(columns, rows);
                 }
                 return std::make_unique<FreeLayout>();
@@ -82,12 +83,12 @@ namespace trview
                     }
                 }
 
-                auto type = read_attribute<std::string>(json, "type");
-                auto position = read_attribute<Point>(json, "position", Point());
-                auto size = read_attribute<Size>(json, "size", Size());
-                auto colour = read_colour(json, "background_colour", named_colours, Colour::Transparent);
-                auto text_background_colour = read_colour(json, "text_background_colour", named_colours, Colour(0.25f, 0.25f, 0.25f));
-                auto text_colour = read_colour(json, "text_colour", named_colours, Colour::White);
+                const auto type = read_attribute<std::string>(json, "type");
+                const auto position = read_attribute<Point>(json, "position", Point());
+                const auto size = read_attribute<Size>(json, "size", Size());
+                const auto colour = read_colour(json, "background_colour", named_colours, Colour::Transparent);
+                const auto text_background_colour = read_colour(json, "text_background_colour", named_colours, Colour(0.25f, 0.25f, 0.25f));
+                const auto text_colour = read_colour(json, "text_colour", named_colours, Colour::White);
 
                 std::unique_ptr<Control> control;
                 if (type == "window")
@@ -96,19 +97,16 @@ namespace trview
                 }
                 else if (type == "label")
                 {
-                    auto text = read_attribute<std::string>(json, "text", std::string());
-                    auto text_size = read_attribute<int>(json, "text_size", 8);
-                    auto size_mode = read_attribute<std::string>(json, "size_mode", "manual");
-                    auto text_alignment = read_attribute<std::string>(json, "text_alignment", "left");
-                    auto paragraph_alignment = read_attribute<std::string>(json, "paragraph_alignment", "near");
-                    control = std::make_unique<Label>(position, size, colour, to_utf16(text), text_size, 
-                        text_alignment == "left" ? graphics::TextAlignment::Left : graphics::TextAlignment::Centre, // TODO: Parse all
-                        paragraph_alignment == "near" ? graphics::ParagraphAlignment::Near : graphics::ParagraphAlignment::Centre, // TODO: Parse all
-                        size_mode == "auto" ? SizeMode::Auto : SizeMode::Manual);
+                    const auto text = read_attribute<std::string>(json, "text", std::string());
+                    const auto text_size = read_attribute<int>(json, "text_size", 8);
+                    const auto size_mode = read_attribute<SizeMode>(json, "size_mode", SizeMode::Manual);
+                    const auto text_alignment = read_attribute<TextAlignment>(json, "text_alignment", TextAlignment::Left);
+                    const auto paragraph_alignment = read_attribute<ParagraphAlignment>(json, "paragraph_alignment", ParagraphAlignment::Near);
+                    control = std::make_unique<Label>(position, size, colour, to_utf16(text), text_size, text_alignment, paragraph_alignment, size_mode);
                 }
                 else if (type == "button")
                 {
-                    auto text = read_attribute<std::string>(json, "text", std::string());
+                    const auto text = read_attribute<std::string>(json, "text", std::string());
                     auto button = std::make_unique<Button>(position, size, to_utf16(text));
                     button->set_text_background_colour(text_background_colour);
                     button->set_text_colour(text_colour);
@@ -116,23 +114,23 @@ namespace trview
                 }
                 else if (type == "checkbox")
                 {
-                    auto text = read_attribute<std::string>(json, "text", std::string());
-                    auto state = read_attribute<bool>(json, "state", false);
+                    const auto text = read_attribute<std::string>(json, "text", std::string());
+                    const auto state = read_attribute<bool>(json, "state", false);
                     auto checkbox = std::make_unique<Checkbox>(colour, to_utf16(text));
                     checkbox->set_state(state);
                     control = std::move(checkbox);
                 }
                 else if (type == "groupbox")
                 {
-                    auto text = read_attribute<std::string>(json, "text", std::string());
-                    auto border_colour = read_colour(json, "border_colour", named_colours, Colour::Transparent);
+                    const auto text = read_attribute<std::string>(json, "text", std::string());
+                    const auto border_colour = read_colour(json, "border_colour", named_colours, Colour::Transparent);
                     control = std::make_unique<GroupBox>(position, size, colour, border_colour, to_utf16(text));
                 }
                 else if (type == "numericupdown")
                 {
-                    auto min_value = read_attribute<int>(json, "min_value", 0);
-                    auto max_value = read_attribute<int>(json, "max_value", 100);
-                    auto value = read_attribute<int>(json, "value", min_value);
+                    const auto min_value = read_attribute<int>(json, "min_value", 0);
+                    const auto max_value = read_attribute<int>(json, "max_value", 100);
+                    const auto value = read_attribute<int>(json, "value", min_value);
                     auto updown = std::make_unique<NumericUpDown>(position, size, colour, min_value, max_value);
                     updown->set_value(value);
                     control = std::move(updown);
@@ -154,15 +152,11 @@ namespace trview
                         std::vector<Listbox::Column> columns;
                         for (const auto& col : json["columns"])
                         {
-                            auto name = read_attribute<std::string>(col, "name");
-                            auto type = read_attribute<std::string>(col, "type");
-                            auto width = read_attribute<uint32_t>(col, "width");
-                            auto identity = read_attribute<std::string>(col, "identity", "none");
-                            columns.push_back(Listbox::Column(
-                                identity == "none" ? Listbox::Column::IdentityMode::None : Listbox::Column::IdentityMode::Key,
-                                type == "number" ? Listbox::Column::Type::Number : type == "string" ? Listbox::Column::Type::String : Listbox::Column::Type::Boolean,
-                                to_utf16(name), 
-                                width));
+                            const auto name = read_attribute<std::string>(col, "name");
+                            const auto type = read_attribute<Listbox::Column::Type>(col, "type", Listbox::Column::Type::String);
+                            const auto width = read_attribute<uint32_t>(col, "width");
+                            const auto identity = read_attribute<Listbox::Column::IdentityMode>(col, "identity", Listbox::Column::IdentityMode::None);
+                            columns.push_back(Listbox::Column(identity, type, to_utf16(name), width));
                         }
                         listbox->set_columns(columns);
                     }
@@ -208,12 +202,12 @@ namespace trview
                 }
                 else if (type == "textarea")
                 {
-                    auto text_alignment = read_attribute<std::string>(json, "text_alignment", "left");
-                    auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, text_alignment == "left" ? graphics::TextAlignment::Left : graphics::TextAlignment::Centre);
+                    const auto text_alignment = read_attribute<TextAlignment>(json, "text_alignment", TextAlignment::Left);
+                    auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, text_alignment);
                     text_area->set_scrollbar_visible(read_attribute<bool>(json, "show_scrollbar", true));
                     text_area->set_read_only(read_attribute<bool>(json, "read_only", false));
-                    auto line_mode = read_attribute<std::string>(json, "line_mode", "multi");
-                    text_area->set_mode(line_mode == "multi" ? TextArea::Mode::MultiLine : TextArea::Mode::SingleLine);
+                    const auto line_mode = read_attribute<TextArea::Mode>(json, "line_mode", TextArea::Mode::MultiLine);
+                    text_area->set_mode(line_mode);
                     text_area->set_text(to_utf16(read_attribute<std::string>(json, "text", "")));
                     control = std::move(text_area);
                 }
@@ -224,8 +218,8 @@ namespace trview
 
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));
                 control->set_visible(read_attribute<bool>(json, "visible", true));
-                control->set_horizontal_alignment(read_attribute<std::string>(json, "horizontal_alignment", "near") == "near" ? Align::Near : Align::Centre);
-                control->set_vertical_alignment(read_attribute<std::string>(json, "vertical_alignment", "near") == "near" ? Align::Near : Align::Centre);
+                control->set_horizontal_alignment(read_attribute<Align>(json, "horizontal_alignment", Align::Near));
+                control->set_vertical_alignment(read_attribute<Align>(json, "vertical_alignment", Align::Near));
 
                 if (json.count("layout") != 0)
                 {
