@@ -64,7 +64,8 @@
 #define IDR_UI_ROOMS_WINDOW_LEFT_PANEL 33009
 #define IDR_UI_ROOMS_WINDOW_RIGHT_PANEL 33010
 #define IDR_UI_GO_TO                    33011
-#define IDR_UI_CONTEXT_MENU 33012
+#define IDR_UI_CONTEXT_MENU             33012
+#define IDR_UI_LEVEL_INFO               33013
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
 

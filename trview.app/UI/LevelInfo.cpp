@@ -6,7 +6,7 @@
 #include <trview.ui/Button.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.common/Strings.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -24,7 +24,11 @@ namespace trview
         };
     }
 
-    LevelInfo::LevelInfo(ui::Control& control, const ITextureStorage& texture_storage)
+    const std::string LevelInfo::Names::version{ "version" };
+    const std::string LevelInfo::Names::name{ "name" };
+    const std::string LevelInfo::Names::settings{ "settings" };
+
+    LevelInfo::LevelInfo(ui::Control& control, const ITextureStorage& texture_storage, const ui::UiSource& ui_source)
     {
         for (const auto& tex : texture_names)
         {
@@ -32,34 +36,25 @@ namespace trview
         }
 
         using namespace ui;
-        auto panel = std::make_unique<ui::Window>(Point(control.size().width / 2.0f - 50, 0), Size(100, 24), Colour(0.5f, 0.0f, 0.0f, 0.0f));
-        auto panel_layout = std::make_unique<StackLayout>(5.0f, StackLayout::Direction::Horizontal);
-        panel_layout->set_margin(Size(5, 5));
-        panel->set_layout(std::move(panel_layout));
-        auto version = std::make_unique<Image>(Size(16, 16));
-        version->set_background_colour(Colour(0, 0, 0, 0));
-        version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
+        auto panel = control.add_child(ui_source(IDR_UI_LEVEL_INFO));
+        _version = panel->find<Image>(Names::version);
+        _version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
 
-        auto name = std::make_unique<Label>(Size(74, 16), Colour::Transparent, L"No level", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
-        name->set_vertical_alignment(Align::Centre);
+        _name = panel->find<Label>(Names::name);
 
-        auto settings = std::make_unique<Button>(Size(16, 16), texture_storage.lookup("settings"), texture_storage.lookup("settings"));
+        auto settings = panel->find<Button>(Names::settings);
+        settings->set_images(texture_storage.lookup("settings"), texture_storage.lookup("settings"));
         settings->on_click += on_toggle_settings;
 
-        _version = panel->add_child(std::move(version));
-        _name = panel->add_child(std::move(name));
-        panel->add_child(std::move(settings));
-        _panel = control.add_child(std::move(panel));
-
         // Have the control move itself when the parent control resizes.
-        _token_store += control.on_size_changed += [&](const Size& size)
+        _token_store += control.on_size_changed += [=](const Size& size)
         {
-            _panel->set_position(Point(size.width / 2.0f - _panel->size().width / 2.0f, 0));
+            panel->set_position(Point(size.width / 2.0f - panel->size().width / 2.0f, 0));
         };
-        _token_store += _panel->on_size_changed += [&](const Size& size)
+        _token_store += panel->on_size_changed += [=](const Size& size)
         {
-            auto parent = _panel->parent();
-            _panel->set_position(Point(parent->size().width / 2.0f - size.width / 2.0f, 0));
+            auto parent = panel->parent();
+            panel->set_position(Point(parent->size().width / 2.0f - size.width / 2.0f, 0));
         };
     }
 

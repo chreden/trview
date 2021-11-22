@@ -367,6 +367,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Files\UI\go_to.json" />
     <None Include="Resources\Files\UI\items_window_left_panel.json" />
     <None Include="Resources\Files\UI\items_window_right_panel.json" />
+    <None Include="Resources\Files\UI\level_info.json" />
     <None Include="Resources\Files\UI\rooms_window_left_panel.json" />
     <None Include="Resources\Files\UI\rooms_window_right_panel.json" />
     <None Include="Resources\Files\UI\route_window_left_panel.json" />

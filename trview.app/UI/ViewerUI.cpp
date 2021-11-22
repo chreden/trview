@@ -106,7 +106,7 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage);
+        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage, ui::load_from_resource);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window = settings_window_source(*_control.get());

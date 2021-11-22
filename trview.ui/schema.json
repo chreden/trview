@@ -68,6 +68,7 @@
                 "layout": { "$ref": "#/$defs/layout" }, 
                 "background_colour":  { "$ref": "#/$defs/colour" },
                 "horizontal_alignment": { "enum": [ "near", "centre" ] },
+                "vertical_alignment": { "enum": [ "near", "centre" ] },
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/$defs/control" }
