@@ -14,7 +14,7 @@
         "x": 10
     },
     "size": {
-        "width": 200,
+        "width": 150,
         "height": 155
     },
     "layout": {
@@ -188,7 +188,7 @@
                                     "type": "label",
                                     "text": "X: ",
                                     "size": {
-                                        "width": 30,
+                                        "width": 20,
                                         "height": 20
                                     }
                                 }
@@ -199,7 +199,7 @@
                             "text": "0",
                             "name": "X",
                             "size": {
-                                "width": 69,
+                                "width": 79,
                                 "height": 20
                             },
                             "line_mode": "single"
@@ -238,7 +238,7 @@
                                     "type": "label",
                                     "text": "Y: ",
                                     "size": {
-                                        "width": 30,
+                                        "width": 20,
                                         "height": 20
                                     }
                                 }
@@ -249,7 +249,7 @@
                             "text": "0",
                             "name": "Y",
                             "size": {
-                                "width": 69,
+                                "width": 79,
                                 "height": 20
                             },
                             "line_mode": "single"
@@ -288,7 +288,7 @@
                                     "type": "label",
                                     "text": "Z: ",
                                     "size": {
-                                        "width": 30,
+                                        "width": 20,
                                         "height": 20
                                     }
                                 }
@@ -299,7 +299,7 @@
                             "text": "0",
                             "name": "Z",
                             "size": {
-                                "width": 69,
+                                "width": 79,
                                 "height": 20
                             },
                             "line_mode": "single"
