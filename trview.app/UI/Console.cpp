@@ -1,29 +1,33 @@
 #include "Console.h"
+#include "../Resources/resource.h"
+
+using namespace trview::ui;
 
 namespace trview
 {
-    Console::Console(ui::Control& parent)
-    {
-        _window = parent.add_child(std::make_unique<ui::Window>(Point(), Size(500, 300), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        _token_store += parent.on_size_changed += [&](auto size)
-        {
-            _window->set_position(Point(size.width - 500, size.height / 2.0f));
-        };
-        _window->set_position(Point(parent.size().width - 500, parent.size().height / 2.0f));
-        _window->set_visible(false);
+    const std::string Console::Names::log{ "log" };
+    const std::string Console::Names::input{ "input" };
 
-        _log = _window->add_child(std::make_unique<ui::TextArea>(Size(500, 282), Colour(0.0f, 0.0f, 0.0f, 0.0f), Colour::White));
-        _log->set_read_only(true);
-        _log->set_scrollbar_visible(true);
+    Console::Console(Control& parent, const UiSource& ui_source)
+    {
+        _window = parent.add_child(ui_source(IDR_UI_CONSOLE));
+        
+        _log = _window->find<TextArea>(Names::log);
         _token_store += _log->on_tab += [&](auto) { _input->on_focus_requested(); };
 
-        _input = _window->add_child(std::make_unique<ui::TextArea>(Point(0, 282), Size(500, 18), Colour(0.75f, 0.0f, 0.0f, 0.0f), Colour::White));
-        _input->set_mode(ui::TextArea::Mode::SingleLine);
+        _input = _window->find<TextArea>(Names::input);
         _token_store += _input->on_enter += [&](const auto& text)
         {
             on_command(text);
             _input->set_text(L"");
         };
+
+        const auto update_position = [&](auto size)
+        {
+            _window->set_position(Point(size.width - 500, size.height / 2.0f));
+        };
+        _token_store += parent.on_size_changed += update_position;
+        update_position(parent.size());
     }
 
     bool Console::visible() const

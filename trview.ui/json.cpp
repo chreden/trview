@@ -225,6 +225,7 @@ namespace trview
                 control->set_name(read_attribute<std::string>(json, "name", std::string()));
                 control->set_visible(read_attribute<bool>(json, "visible", true));
                 control->set_horizontal_alignment(read_attribute<std::string>(json, "horizontal_alignment", "near") == "near" ? Align::Near : Align::Centre);
+                control->set_vertical_alignment(read_attribute<std::string>(json, "vertical_alignment", "near") == "near" ? Align::Near : Align::Centre);
 
                 if (json.count("layout") != 0)
                 {

@@ -1077,6 +1077,9 @@
     <None Include="Resources\Files\UI\level_info.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
+    <None Include="Resources\Files\UI\console.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

@@ -190,7 +190,7 @@ namespace trview
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
 
-        _console = std::make_unique<Console>(*_control);
+        _console = std::make_unique<Console>(*_control, ui::load_from_resource);
         _console->on_command += on_command;
 
         // Create the renderer for the UI based on the controls created.

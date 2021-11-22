@@ -8,7 +8,13 @@ namespace trview
     class Console final
     {
     public:
-        explicit Console(ui::Control& parent);
+        struct Names
+        {
+            static const std::string log;
+            static const std::string input;
+        };
+
+        explicit Console(ui::Control& parent, const ui::UiSource& ui_source);
 
         bool visible() const;
 
@@ -19,7 +25,7 @@ namespace trview
         Event<std::wstring> on_command;
     private:
         TokenStore _token_store;
-        ui::Window* _window;
+        ui::Control* _window;
         ui::TextArea* _log;
         ui::TextArea* _input;
     };
