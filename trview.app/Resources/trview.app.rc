@@ -261,12 +261,9 @@ IDR_TYPE_NAMES                  TEXT            "Files\\type_names.txt"
 
 IDR_ACTIONS                     TEXT            "Files\\actions.json"
 
-IDR_UI_SETTINGS_WINDOW          TEXT            "Files\\UI\\settings_window.json"
-
-IDR_UI_CAMERA_CONTROLS          TEXT            "Files\\UI\\camera_controls.json"
-
-IDR_UI_VIEW_OPTIONS             TEXT            "Files\\UI\\view_options.json"
-
+IDR_UI_SETTINGS_WINDOW              TEXT         "Files\\UI\\settings_window.json"
+IDR_UI_CAMERA_CONTROLS              TEXT         "Files\\UI\\camera_controls.json"
+IDR_UI_VIEW_OPTIONS                 TEXT         "Files\\UI\\view_options.json"
 IDR_UI_ITEMS_WINDOW_RIGHT_PANEL     TEXT         "Files\\UI\\items_window_right_panel.json"
 IDR_UI_ITEMS_WINDOW_LEFT_PANEL      TEXT         "Files\\UI\\items_window_left_panel.json"
 IDR_UI_TRIGGERS_WINDOW_LEFT_PANEL   TEXT         "Files\\UI\\triggers_window_left_panel.json"
@@ -280,6 +277,7 @@ IDR_UI_GO_TO                        TEXT         "Files\\UI\\go_to.json"
 IDR_UI_LEVEL_INFO                   TEXT         "Files\\UI\\level_info.json"
 IDR_UI_CONSOLE                      TEXT         "Files\\UI\\console.json"
 IDR_UI_ROOM_NAVIGATOR               TEXT         "Files\\UI\\room_navigator.json"
+IDR_UI_CAMERA_POSITION              TEXT         "Files\\UI\\camera_position.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //

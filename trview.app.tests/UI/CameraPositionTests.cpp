@@ -1,4 +1,5 @@
 #include <trview.app/UI/CameraPosition.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -13,7 +14,7 @@ TEST(CameraPosition, PositionEventRaised)
     int times_called = 0;
     Vector3 new_position;
 
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
     auto token = subject.on_position_changed += [&times_called, &new_position](const auto& position) 
     {
         ++times_called;
@@ -46,7 +47,7 @@ TEST(CameraPosition, PositionEventRaised)
 TEST(CameraPosition, CoordinatesUpdated)
 {
     ui::Window window(Point(), Size(100, 100), Colour::Transparent);
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
 
     auto area_x = window.find<TextArea>("X");
     auto area_y = window.find<TextArea>("Y");
@@ -67,7 +68,7 @@ TEST(CameraPosition, RotationEventRaised)
     float new_yaw = 0;
     float new_pitch = 0;
 
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
     auto token = subject.on_rotation_changed += [&times_called, &new_yaw, &new_pitch](float yaw, float pitch)
     {
         ++times_called;
@@ -93,7 +94,7 @@ TEST(CameraPosition, RotationEventRaised)
 TEST(CameraPosition, RotationUpdated)
 {
     ui::Window window(Point(), Size(100, 100), Colour::Transparent);
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
 
     const auto pi = 3.1415926535897932384626433832795f;
 
@@ -109,7 +110,7 @@ TEST(CameraPosition, RotationUpdated)
 TEST(CameraPosition, RotationShowRadians)
 {
     ui::Window window(Point(), Size(100, 100), Colour::Transparent);
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
     subject.set_display_degrees(false);
 
     const auto pi = 3.1415926535897932384626433832795f;
@@ -126,7 +127,7 @@ TEST(CameraPosition, RotationShowRadians)
 TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
 {
     ui::Window window(Point(), Size(100, 100), Colour::Transparent);
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
 
     auto area_yaw = window.find<TextArea>("Yaw");
     area_yaw->gained_focus();
@@ -150,7 +151,7 @@ TEST(CameraPosition, RotationNotUpdatedWithInvalidValues)
 TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
 {
     ui::Window window(Point(), Size(100, 100), Colour::Transparent);
-    auto subject = CameraPosition(window);
+    auto subject = CameraPosition(window, ui::load_from_resource);
 
     auto area_x = window.find<TextArea>("X");
     area_x->gained_focus();

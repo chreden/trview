@@ -14,9 +14,18 @@ namespace trview
     class CameraPosition final
     {
     public:
+        struct Names
+        {
+            static const std::string x;
+            static const std::string y;
+            static const std::string z;
+            static const std::string yaw;
+            static const std::string pitch;
+        };
+
         /// Create a new CameraPosition display.
         /// @param parent The parent control.
-        explicit CameraPosition(ui::Control& parent);
+        explicit CameraPosition(ui::Control& parent, const ui::UiSource& ui_source);
 
         /// Update the position text.
         /// @param position The camera position.
@@ -48,15 +57,12 @@ namespace trview
         /// If successful this will also raise the on_rotation_changed event.
         void update_rotation_coordinate(float& coordinate, const std::wstring& text);
 
-        /// Create a coordinate entry text field.
-        ui::TextArea* create_coordinate_entry(ui::Control& parent, float& coordinate, const std::wstring& name, bool is_rotation = false);
+        void bind_coordinate_entry(ui::TextArea* entry, float& coordinate, bool is_rotation = false);
 
         TokenStore _token_store;
-        ui::Control* _position_display;
         ui::TextArea* _x;
         ui::TextArea* _y;
         ui::TextArea* _z;
-        ui::Control* _rotation_display;
         ui::TextArea* _yaw;
         ui::TextArea* _pitch;
         DirectX::SimpleMath::Vector3 _position;

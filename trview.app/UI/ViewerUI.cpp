@@ -186,7 +186,7 @@ namespace trview
             on_settings(_settings);
         };
 
-        _camera_position = std::make_unique<CameraPosition>(*_control);
+        _camera_position = std::make_unique<CameraPosition>(*_control, ui::load_from_resource);
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
 
