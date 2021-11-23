@@ -59,12 +59,10 @@ namespace trview
     protected:
         virtual void update_layout();
 
-        /// Add the expander button. This should be called by derived classes when they
-        /// are ready to add the button. It will be added to the control specified as the 
-        /// next child.
-        /// @param parent The control to add the expand button to.
-        void add_expander(ui::Control& parent);
-
+        /// <summary>
+        /// Set the expander button. This should be called by derived classes when they have the button to bind.
+        /// </summary>
+        /// <param name="button">The button to use as the expander button.</param>
         void set_expander(ui::Button* button);
 
         /// Set the left and right panels to use. This should be called before anything is done with the ui

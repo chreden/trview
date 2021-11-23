@@ -189,11 +189,6 @@ namespace trview
         SetWindowPos(window(), 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE);
     }
 
-    void CollapsiblePanel::add_expander(Control& parent)
-    {
-        set_expander(parent.add_child(std::make_unique<Button>(Size(16, 16), L"<<")));
-    }
-
     void CollapsiblePanel::set_expander(ui::Button* button)
     {
         _expander = button;
