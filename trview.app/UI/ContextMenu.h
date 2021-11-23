@@ -18,8 +18,11 @@ namespace trview
             static const std::string remove_waypoint_button;
         };
 
+        /// <summary>
         /// Create a new ContentMenu window.
-        /// @param parent The control to add the window to.
+        /// </summary>
+        /// <param name="parent">The control to add the window to.</param>
+        /// <param name="ui_source">The UI source function.</param>
         explicit ContextMenu(ui::Control& parent, const ui::UiSource& ui_source);
         virtual ~ContextMenu() = default;
         /// Get the root control.

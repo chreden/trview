@@ -23,8 +23,11 @@ namespace trview
             static const std::string pitch;
         };
 
-        /// Create a new CameraPosition display.
-        /// @param parent The parent control.
+        /// <summary>
+        /// Create a new CameraPositon display.
+        /// </summary>
+        /// <param name="parent">The parent control.</param>
+        /// <param name="ui_source">The UI source function.</param>
         explicit CameraPosition(ui::Control& parent, const ui::UiSource& ui_source);
 
         /// Update the position text.

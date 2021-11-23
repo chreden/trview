@@ -60,6 +60,7 @@
     <ClCompile Include="UI\BubbleTests.cpp" />
     <ClCompile Include="UI\CameraControlsTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
+    <ClCompile Include="UI\GoToTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />
