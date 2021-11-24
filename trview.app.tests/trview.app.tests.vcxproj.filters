@@ -117,6 +117,9 @@
     <ClCompile Include="UI\ConsoleTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\RoomNavigatorTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
