@@ -103,6 +103,16 @@ namespace trview
             return _view;
         }
 
+        std::string Texture::name() const
+        {
+            return _name;
+        }
+
+        void Texture::set_name(const std::string& name)
+        {
+            _name = name;
+        }
+
         Texture create_texture(const IDevice& device, uint32_t width, uint32_t height, const Colour& colour)
         {
             return Texture(device, width, height, std::vector<uint32_t>(width * height, colour));

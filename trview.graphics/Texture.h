@@ -83,6 +83,9 @@ namespace trview
             /// Gets the shader resource view for the texture.
             /// @returns The shader resource view.
             const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& view() const;
+
+            std::string name() const;
+            void set_name(const std::string& name);
         private:
             /// The D3D texture that has been created or stored. Can be empty if this was created with the default constructor.
             Microsoft::WRL::ComPtr<ID3D11Texture2D> _texture;
@@ -90,6 +93,11 @@ namespace trview
             /// The resource view for the D3D texture. Can be empty if this was created with the default constructor or if this texture was created
             /// with the Bind::DepthStencil bind mode.
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _view;
+
+            /// <summary>
+            /// Name of the texture, mostly used in testing.
+            /// </summary>
+            std::string _name;
         };
 
         /// Create a texture of the specified size filled with the specified colour.
