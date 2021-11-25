@@ -292,6 +292,33 @@ TEST(Viewer, AddWaypointRaised)
     auto [mouse_ptr, mouse] = create_mock<MockMouse>();
 
     MockLevel level;
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).with_picking(std::move(picking_ptr)).with_mouse(std::move(mouse_ptr)).build();
+    viewer->open(&level);
+
+    std::optional<std::tuple<Vector3, Vector3, uint32_t, IWaypoint::Type, uint32_t>> added_waypoint;
+    auto token = viewer->on_waypoint_added += [&added_waypoint](const auto& position, const auto& normal, uint32_t room, IWaypoint::Type type, uint32_t index)
+    {
+        added_waypoint = { position, normal, room, type, index };
+    };
+
+    activate_context_menu(picking, mouse, PickResult::Type::Room, 50, Vector3(100, 200, 300));
+
+    ui.on_add_waypoint();
+
+    ASSERT_TRUE(added_waypoint.has_value());
+    ASSERT_EQ(std::get<0>(added_waypoint.value()), Vector3(100, 200, 300));
+    ASSERT_EQ(std::get<2>(added_waypoint.value()), 50u);
+    ASSERT_EQ(std::get<3>(added_waypoint.value()), IWaypoint::Type::Position);
+    ASSERT_EQ(std::get<4>(added_waypoint.value()), 50u);
+}
+
+TEST(Viewer, AddWaypointRaisedUsesItemPosition)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    auto [picking_ptr, picking] = create_mock<MockPicking>();
+    auto [mouse_ptr, mouse] = create_mock<MockMouse>();
+
+    MockLevel level;
     std::vector<Item> items_list(51);
     Item item(50, 10, 0, L"Test", 0, 0, {}, Vector3::Zero);
     items_list[50] = item;
@@ -306,11 +333,12 @@ TEST(Viewer, AddWaypointRaised)
         added_waypoint = { position, normal, room, type, index };
     };
 
-    activate_context_menu(picking, mouse, PickResult::Type::Entity, 50);
+    activate_context_menu(picking, mouse, PickResult::Type::Entity, 50, Vector3(100, 200, 300));
 
     ui.on_add_waypoint();
 
     ASSERT_TRUE(added_waypoint.has_value());
+    ASSERT_EQ(std::get<0>(added_waypoint.value()), Vector3::Zero);
     ASSERT_EQ(std::get<2>(added_waypoint.value()), 10u);
     ASSERT_EQ(std::get<3>(added_waypoint.value()), IWaypoint::Type::Entity);
     ASSERT_EQ(std::get<4>(added_waypoint.value()), 50u);

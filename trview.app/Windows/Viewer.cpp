@@ -92,6 +92,15 @@ namespace trview
                 _context_pick.triangle.normal.z = 0;
                 _context_pick.triangle.normal.Normalize();
             }
+
+            if (_context_pick.type == PickResult::Type::Entity)
+            {
+                _context_pick.position = _level->items()[_context_pick.index].position();
+            }
+            else if (_context_pick.type == PickResult::Type::Trigger)
+            {
+                _context_pick.position = _level->triggers()[_context_pick.index].lock()->position();
+            }
             on_waypoint_added(_context_pick.position, _context_pick.triangle.normal, room_from_pick(_context_pick), type, _context_pick.index);
         };
         _token_store += _ui->on_add_mid_waypoint += [&]()
