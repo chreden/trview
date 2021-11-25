@@ -107,5 +107,14 @@ namespace trview
             set_handles_input(enabled);
             _label->set_text_colour(enabled ? Colour(1.0f, 1.0f, 1.0f, 1.0f) : Colour(1.0f, 0.7f, 0.7f, 0.7f));
         }
+
+        std::wstring Checkbox::text() const
+        {
+            if (_label)
+            {
+                return _label->text();
+            }
+            return std::wstring();
+        }
     }
 }

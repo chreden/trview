@@ -10,6 +10,13 @@ namespace trview
         const std::string Dropdown::Names::dropdown_button{ "DropdownButton" };
         const std::string Dropdown::Names::dropdown_listbox{ "DropdownListbox" };
 
+        bool Dropdown::Value::operator ==(const Value& other) const
+        {
+            return text == other.text &&
+                foreground == other.foreground &&
+                background == other.background;
+        }
+
         Dropdown::Dropdown(const Point& position, const Size& size)
             : Window(position, size, Colour::Transparent)
         {
@@ -145,6 +152,27 @@ namespace trview
             }
 
             _dropdown->set_visible(false);
+        }
+
+        std::vector<Dropdown::Value> Dropdown::values() const
+        {
+            return _values;
+        }
+
+        Colour Dropdown::text_colour() const
+        {
+            return _button->text_colour().value_or(Colour::Transparent);
+        }
+
+        Colour Dropdown::text_background_colour() const
+        {
+            return _button->text_background_colour().value_or(Colour::Transparent);
+        }
+
+        std::ostream& operator<<(std::ostream& os, const Dropdown::Value value)
+        {
+            os << "Name: " << to_utf8(value.text) << ", Foreground: " << value.foreground << ", Background: " << value.background;
+            return os;
         }
     }
 }

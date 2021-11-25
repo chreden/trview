@@ -58,5 +58,10 @@ namespace trview
             auto child = remove_child(child_element);
             _area->add_child(std::move(child));
         }
+
+        Colour GroupBox::border_colour() const
+        {
+            return _border_colour;
+        }
     }
 }

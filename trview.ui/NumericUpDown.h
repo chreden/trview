@@ -25,6 +25,8 @@ namespace trview
             void set_value(int32_t value);
             void set_maximum(int32_t maximum);
             int32_t value() const;
+            int32_t min_value() const;
+            int32_t max_value() const;
         private:
             int32_t _minimum;
             int32_t _maximum;

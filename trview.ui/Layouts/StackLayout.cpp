@@ -144,5 +144,30 @@ namespace trview
             _margin = margin;
             recalculate_layout();
         }
+
+        SizeMode StackLayout::size_mode() const
+        {
+            return _size_mode;
+        }
+
+        float StackLayout::padding() const
+        {
+            return _padding;
+        }
+
+        StackLayout::Direction StackLayout::direction() const
+        {
+            return _direction;
+        }
+
+        Size StackLayout::margin() const
+        {
+            return _margin;
+        }
+
+        SizeDimension StackLayout::size_dimension() const
+        {
+            return _size_dimension;
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 #include <trview.ui/Window.h>
 #include <trview.ui/Layouts/GridLayout.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -26,4 +27,19 @@ TEST(GridLayout, ControlsPositionedCorrectly)
     ASSERT_EQ(x1y2->position(), Point(0, 100));
     ASSERT_EQ(x2y2->absolute_position(), Point(50, 100));
     ASSERT_EQ(x2y2->position(), Point(50, 100));
+}
+
+TEST(GridLayout, LoadFromJson)
+{
+    const std::string json = "{\"type\":\"window\", \"layout\":{\"type\":\"grid\",\"rows\":4,\"columns\":2}}";
+
+    auto loaded = ui::load_from_json(json);
+    ASSERT_NE(loaded, nullptr);
+
+    const auto layout = loaded->layout();
+    ASSERT_NE(layout, nullptr);
+    auto grid = dynamic_cast<const GridLayout*>(layout);
+    ASSERT_NE(grid, nullptr);
+    ASSERT_EQ(grid->rows(), 4);
+    ASSERT_EQ(grid->columns(), 2);
 }

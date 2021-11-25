@@ -220,6 +220,11 @@ namespace trview
 
             virtual bool scroll(int delta) override;
             virtual bool key_down(uint16_t key, bool control_pressed, bool shift_pressed) override;
+
+            bool show_headers() const;
+            bool show_scrollbar() const;
+            bool show_highlight() const;
+            bool enable_sorting() const;
         private:
             /// Generate all child UI elements.
             void generate_ui();

@@ -303,5 +303,10 @@ namespace trview
             _layout = std::move(layout);
             _layout->bind(*this);
         }
+
+        const ILayout* const Control::layout() const
+        {
+            return _layout.get();
+        }
     }
 }

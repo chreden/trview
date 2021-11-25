@@ -2,8 +2,10 @@
 #include <trview.ui/Listbox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Control.h>
+#include <trview.ui/Button.h>
 #include <Windows.h>
 #include <gmock\gmock-matchers.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -248,4 +250,52 @@ TEST(Listbox, ClearSelectionClearsSelection)
 
     listbox.clear_selection();
     ASSERT_FALSE(listbox.selected_item().has_value());
+}
+
+TEST(Listbox, LoadFromJson)
+{
+    std::string columns_json = "[{\"name\":\"Col1\",\"type\":\"number\",\"identity\":\"key\",\"width\":100},{\"name\":\"Col2\",\"type\":\"string\",\"identity\":\"key\",\"width\":200},{\"name\":\"Col3\",\"type\":\"boolean\",\"identity\":\"none\",\"width\":300}]";
+    std::string json = "{\"type\":\"listbox\",\"show_headers\":true,\"show_scrollbar\":false,\"show_highlight\":false,\"enable_sorting\":false,\"columns\":" + columns_json + ",\"size\":{\"width\":200,\"height\":200}}";
+    auto control = load_from_json(json);
+    ASSERT_NE(control, nullptr);
+
+    auto listbox = dynamic_cast<Listbox*>(control.get());
+    ASSERT_NE(listbox, nullptr);
+
+    ASSERT_TRUE(listbox->show_headers());
+    ASSERT_FALSE(listbox->show_scrollbar());
+    ASSERT_FALSE(listbox->show_highlight());
+    ASSERT_FALSE(listbox->enable_sorting());
+
+    auto header1 = listbox->find<Control>(Listbox::Names::header_name_format + "Col1");
+    ASSERT_NE(header1, nullptr);
+
+    auto header2 = listbox->find<Control>(Listbox::Names::header_name_format + "Col2");
+    ASSERT_NE(header2, nullptr);
+
+    auto header3 = listbox->find<Control>(Listbox::Names::header_name_format + "Col3");
+    ASSERT_NE(header3, nullptr);
+
+    Listbox::Item item(
+        {
+            { L"Col1", L"1.5" },
+            { L"Col2", L"Test" },
+            { L"Col3", L"1" }
+        });
+    listbox->set_items({ item });
+
+    auto row = listbox->find<Control>(Listbox::Names::row_name_format + "0");
+    ASSERT_NE(row, nullptr);
+
+    auto cell1 = row->find<Button>(Listbox::Row::Names::cell_name_format + "Col1");
+    ASSERT_NE(cell1, nullptr);
+    ASSERT_EQ(cell1->text(), L"1.5");
+
+    auto cell2 = row->find<Button>(Listbox::Row::Names::cell_name_format + "Col2");
+    ASSERT_NE(cell2, nullptr);
+    ASSERT_EQ(cell2->text(), L"Test");
+
+    auto cell3 = row->find<Checkbox>(Listbox::Row::Names::cell_name_format + "Col3");
+    ASSERT_NE(cell3, nullptr);
+    ASSERT_TRUE(cell3->state());
 }

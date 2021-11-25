@@ -1118,5 +1118,20 @@ namespace trview
         {
             _read_only = value;
         }
+
+        bool TextArea::scrollbar_visible() const
+        {
+            return _scroll_visible;
+        }
+
+        graphics::TextAlignment TextArea::text_alignment() const
+        {
+            return _alignment;
+        }
+
+        TextArea::Mode TextArea::line_mode() const
+        {
+            return _mode;
+        }
     }
 }
