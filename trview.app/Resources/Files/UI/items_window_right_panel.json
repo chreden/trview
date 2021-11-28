@@ -1,0 +1,144 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "colours": {
+        "background_top": {
+            "r": 0.225,
+            "g": 0.225,
+            "b": 0.225
+        },
+        "background_bottom": {
+            "r": 0.2,
+            "g": 0.2,
+            "b": 0.2
+        }
+    },
+    "background_colour": "background_top",
+    "size": {
+        "width": 200,
+        "height": 420
+    },
+    "layout": {
+        "type": "stack",
+        "size_mode": "manual"
+    },
+    "children": [
+        {
+            "type": "window",
+            "size": {
+                "width": 200,
+                "height": 8
+            },
+            "background_colour": "background_top"
+        },
+        {
+            "type": "groupbox",
+            "text": "Item Details",
+            "size": {
+                "width": 200,
+                "height": 240
+            },
+            "background_colour": "background_top",
+            "border_colour": "transparent",
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 180,
+                        "height": 230
+                    },
+                    "background_colour": "background_top",
+                    "layout": {
+                        "type": "stack",
+                        "padding": 8,
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "listbox",
+                            "name": "Stats",
+                            "size": {
+                                "width": 180,
+                                "height": 180
+                            },
+                            "background_colour": "background_top",
+                            "columns": [
+                                {
+                                    "type": "number",
+                                    "name": "Name",
+                                    "width": 60
+                                },
+                                {
+                                    "type": "number",
+                                    "name": "Value",
+                                    "width": 120
+                                }
+                            ],
+                            "show_headers": false,
+                            "show_scrollbar": false,
+                            "show_highlight": false
+                        },
+                        {
+                            "type": "button",
+                            "name": "AddToRoute",
+                            "text": "Add to Route",
+                            "size": {
+                                "width": 180,
+                                "height": 20
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "window",
+            "size": {
+                "width": 200,
+                "height": 5
+            },
+            "background_colour": "background_bottom"
+        },
+        {
+            "type": "groupbox",
+            "text": "Triggered By",
+            "size": {
+                "width": 200,
+                "height": 170
+            },
+            "background_colour": "background_bottom",
+            "border_colour": "transparent",
+            "children": [
+                {
+                    "type": "listbox",
+                    "name": "Triggers",
+                    "size": {
+                        "width": 190,
+                        "height": 130
+                    },
+                    "background_colour": "background_bottom",
+                    "columns": [
+                        {
+                            "type": "number",
+                            "name": "#",
+                            "width": 25
+                        },
+                        {
+                            "type": "number",
+                            "name": "Room",
+                            "width": 35
+                        },
+                        {
+                            "type": "string",
+                            "name": "Type",
+                            "width": 120
+                        }
+                    ],
+                    "show_headers": true,
+                    "show_scrollbar": true,
+                    "show_highlight": true
+                }
+            ]
+        }
+    ]
+}

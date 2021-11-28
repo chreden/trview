@@ -1,0 +1,312 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "background_colour": "transparent",
+    "colours": {
+        "background": {
+            "a": 0.5,
+            "r": 0,
+            "g": 0,
+            "b": 0
+        }
+    },
+    "position": {
+        "x": 10
+    },
+    "size": {
+        "width": 150,
+        "height": 155
+    },
+    "layout": {
+        "type": "stack",
+        "padding": 10
+    },
+    "children": [
+        {
+            "type": "window",
+            "name": "rotation_panel",
+            "size": {
+                "width": 200,
+                "height": 60
+            },
+            "background_colour": "background",
+            "layout": {
+                "type": "stack",
+                "margin": {
+                    "width": 5,
+                    "height": 5
+                }
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 100,
+                        "height": 20
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "direction": "horizontal"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 10,
+                                "height": 20
+                            },
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 10,
+                                        "height": 1
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "text": "Yaw: ",
+                                    "size": {
+                                        "width": 30,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "textarea",
+                            "text": "0",
+                            "name": "Yaw",
+                            "size": {
+                                "width": 69,
+                                "height": 20
+                            },
+                            "line_mode": "single"
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 100,
+                        "height": 20
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "direction": "horizontal"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 10,
+                                "height": 20
+                            },
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 10,
+                                        "height": 1
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "text": "Pitch: ",
+                                    "size": {
+                                        "width": 30,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "textarea",
+                            "text": "0",
+                            "name": "Pitch",
+                            "size": {
+                                "width": 69,
+                                "height": 20
+                            },
+                            "line_mode": "single"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "window",
+            "name": "position_panel",
+            "size": {
+                "width": 200,
+                "height": 90
+            },
+            "background_colour": "background",
+            "layout": {
+                "type": "stack",
+                "margin": {
+                    "width": 5,
+                    "height": 5
+                }
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 100,
+                        "height": 20
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "direction": "horizontal"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 10,
+                                "height": 20
+                            },
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 10,
+                                        "height": 1
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "text": "X: ",
+                                    "size": {
+                                        "width": 20,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "textarea",
+                            "text": "0",
+                            "name": "X",
+                            "size": {
+                                "width": 79,
+                                "height": 20
+                            },
+                            "line_mode": "single"
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 100,
+                        "height": 20
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "direction": "horizontal"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 10,
+                                "height": 20
+                            },
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 10,
+                                        "height": 1
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "text": "Y: ",
+                                    "size": {
+                                        "width": 20,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "textarea",
+                            "text": "0",
+                            "name": "Y",
+                            "size": {
+                                "width": 79,
+                                "height": 20
+                            },
+                            "line_mode": "single"
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 100,
+                        "height": 20
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "direction": "horizontal"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 10,
+                                "height": 20
+                            },
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 10,
+                                        "height": 1
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "text": "Z: ",
+                                    "size": {
+                                        "width": 20,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "textarea",
+                            "text": "0",
+                            "name": "Z",
+                            "size": {
+                                "width": 79,
+                                "height": 20
+                            },
+                            "line_mode": "single"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,56 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 300,
+        "height": 24
+    },
+    "background_colour": {
+        "a": 0.5,
+        "r": 0,
+        "g": 0,
+        "b": 0
+    },
+    "layout": {
+        "type": "stack",
+        "padding": 5,
+        "direction": "horizontal",
+        "margin": {
+            "width": 5,
+            "height": 5
+        }
+    },
+    "children": [
+        {
+            "type": "image",
+            "name": "version",
+            "size": {
+                "width": 16,
+                "height": 16
+            },
+            "background_colour": "transparent"
+        },
+        {
+            "type": "label",
+            "name": "name",
+            "text": "No level",
+            "size": {
+                "width": 74,
+                "height": 16
+            },
+            "background_colour": "transparent", 
+            "text_alignment": "centre",
+            "paragraph_alignment": "centre",
+            "size_mode": "auto",
+            "vertical_alignment": "centre"
+        },
+        {
+            "type": "button",
+            "name": "settings",
+            "size": {
+                "width": 16,
+                "height": 16
+            }
+        }
+    ]
+}

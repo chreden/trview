@@ -28,8 +28,24 @@ namespace trview
             up->set_border_thickness(0u);
             down->set_border_thickness(0u); 
 
-            _token_store += up->on_click += [&]() { set_value(_value + 1); on_value_changed(_value); };
-            _token_store += down->on_click += [&]() { set_value(_value - 1); on_value_changed(_value); };
+            _token_store += up->on_click += [&]() 
+            {
+                const auto previous = _value;
+                set_value(_value + 1);
+                if (previous != _value)
+                {
+                    on_value_changed(_value);
+                }
+            };
+            _token_store += down->on_click += [&]()
+            { 
+                const auto previous = _value;
+                set_value(_value - 1);
+                if (previous != _value)
+                {
+                    on_value_changed(_value);
+                }
+            };
 
             set_value(_minimum);
         }

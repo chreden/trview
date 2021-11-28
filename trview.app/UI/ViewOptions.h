@@ -24,6 +24,7 @@ namespace trview
         struct Names
         {
             static const std::string depth_enabled;
+            static const std::string depth;
             static const std::string flip;
             static const std::string hidden_geometry;
             static const std::string highlight;
@@ -32,6 +33,9 @@ namespace trview
             static const std::string water;
             static const std::string wireframe;
             static const std::string group;
+            static const std::string tr_1_3_panel;
+            static const std::string tr_4_5_panel;
+            static const std::string alternate_groups;
         };
 
         struct Colours
@@ -40,7 +44,7 @@ namespace trview
             static const Colour FlipOn;
         };
 
-        explicit ViewOptions(ui::Control& parent);
+        explicit ViewOptions(ui::Control& parent, const ui::UiSource& source);
         virtual ~ViewOptions() = default;
         virtual void set_alternate_group(uint32_t value, bool enabled) override;
         virtual void set_alternate_groups(const std::set<uint32_t>& groups) override;

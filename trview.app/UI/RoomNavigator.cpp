@@ -2,40 +2,28 @@
 #include <trview.app/Elements/RoomInfo.h>
 
 #include <trlevel/trtypes.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/NumericUpDown.h>
-#include <trview.ui/Checkbox.h>
 #include <trview.ui/Listbox.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
-    RoomNavigator::RoomNavigator(ui::Control& parent)
+    const std::string RoomNavigator::Names::current_room{ "current_room" };
+    const std::string RoomNavigator::Names::max_rooms{ "max_rooms" };
+    const std::string RoomNavigator::Names::stats{ "stats" };
+
+    RoomNavigator::RoomNavigator(ui::Control& parent, const ui::UiSource& ui_source)
     {
         using namespace ui;
 
-        auto rooms_groups = std::make_unique<GroupBox>(Size(150, 100), Colour::Transparent, Colour::Grey, L"Room");
-
-        auto room_controls = std::make_unique<ui::Window>(Size(130, 30), Colour::Transparent);
-        room_controls->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
-        _current = room_controls->add_child(std::make_unique<NumericUpDown>(Size(50, 20), Colour::Transparent, 0, 0));
+        auto navigator = parent.add_child(ui_source(IDR_UI_ROOM_NAVIGATOR));
+        
+        _current = navigator->find<NumericUpDown>(Names::current_room);
         _current->on_value_changed += on_room_selected;
 
-        room_controls->add_child(std::make_unique<Label>(Size(30, 20), Colour::Transparent, L"of", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
-        _max = room_controls->add_child(std::make_unique<Label>(Size(50, 20), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
-        rooms_groups->add_child(std::move(room_controls));
-
-        auto listbox = std::make_unique<Listbox>(Point(0, 25), Size(130, 80), Colour::Transparent);
-        listbox->set_show_scrollbar(false);
-        listbox->set_show_headers(false);
-        listbox->set_columns(
-            {
-                { Listbox::Column::Type::String, L"Name", 50 },
-                { Listbox::Column::Type::String, L"Value", 80 }
-            });
-        _listbox = rooms_groups->add_child(std::move(listbox));
-        parent.add_child(std::move(rooms_groups));
+        _max = navigator->find<Label>(Names::max_rooms);
+        _listbox = navigator->find<Listbox>(Names::stats);
     }
 
     void RoomNavigator::set_room_info(RoomInfo room_info)

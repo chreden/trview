@@ -1,0 +1,324 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "name": "SettingsWindow",
+    "type": "window",
+    "position": {
+        "x": 400,
+        "y": 200
+    },
+    "size": {
+        "width": 400,
+        "height": 300
+    },
+    "background_colour": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 0.5
+    },
+    "visible": false,
+    "layout": {
+        "type": "stack"
+    },
+    "children": [
+        {
+            "name": "TitleBar",
+            "type": "window",
+            "size": {
+                "width": 400,
+                "height": 20
+            },
+            "background_colour": "black",
+            "layout": {
+                "type": "stack",
+                "size_mode": "manual"
+            },
+            "children": [
+                {
+                    "type": "label",
+                    "size": {
+                        "width": 400,
+                        "height": 20
+                    },
+                    "background_colour": "black",
+                    "text": "Settings",
+                    "text_size": 8,
+                    "text_alignment": "centre",
+                    "paragraph_alignment": "centre",
+                    "horizontal_alignment": "centre"
+                }
+            ]
+        },
+        {
+            "name": "Panel",
+            "type": "window",
+            "size": {
+                "width": 400,
+                "height": 250
+            },
+            "background_colour": "transparent",
+            "layout": {
+                "type": "stack",
+                "padding": 5,
+                "auto_size_dimension": "height",
+                "margin": {
+                    "width": 5,
+                    "height": 5
+                }
+            },
+            "children": [
+                {
+                    "name": "VSync",
+                    "text": "Vsync",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "GoToLara",
+                    "text": "Go to Lara",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "InvertMapControls",
+                    "text": "Invert map controls",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "ItemsStartup",
+                    "text": "Open Items Window at startup",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "TriggersStartup",
+                    "text": "Open Triggers Window at startup",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "RoomsStartup",
+                    "text": "Open Rooms Window at startup",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "AutoOrbit",
+                    "text": "Switch to orbit on selection",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "InvertVerticalPan",
+                    "text": "Invert vertical panning",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "CameraDisplayDegrees",
+                    "text": "Use degrees for camera angle display",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "name": "RandomizerTools",
+                    "text": "Enable Randomizer Tools",
+                    "type": "checkbox",
+                    "background_colour": "transparent"
+                },
+                {
+                    "type": "groupbox",
+                    "text": "Program",
+                    "size": {
+                        "width": 380,
+                        "height": 60
+                    },
+                    "background_colour": "transparent",
+                    "border_colour": "lightgrey",
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 360,
+                                "height": 50
+                            },
+                            "background_colour": "transparent",
+                            "layout": {
+                                "type": "stack"
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 160,
+                                        "height": 50
+                                    },
+                                    "background_colour": "transparent",
+                                    "layout": {
+                                        "type": "stack",
+                                        "direction": "horizontal",
+                                        "padding": 5
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "label",
+                                            "size": {
+                                                "width": 60,
+                                                "height": 20
+                                            },
+                                            "background_colour": "transparent",
+                                            "text": "Recent Files",
+                                            "paragraph_alignment": "centre"
+                                        },
+                                        {
+                                            "name": "MaxRecentFiles",
+                                            "type": "numericupdown",
+                                            "size": {
+                                                "width": 50,
+                                                "height": 20
+                                            },
+                                            "background_colour": "transparent",
+                                            "min_value": 0,
+                                            "max_value": 100
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "groupbox",
+                    "text": "Camera Movement",
+                    "size": {
+                        "width": 380,
+                        "height": 80
+                    },
+                    "background_colour": "transparent",
+                    "border_colour": "lightgrey",
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 360,
+                                "height": 50
+                            },
+                            "background_colour": "transparent",
+                            "layout": {
+                                "type": "grid",
+                                "rows": 2,
+                                "columns": 2
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 160,
+                                        "height": 50
+                                    },
+                                    "background_colour": "transparent",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 0,
+                                        "direction": "horizontal"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "label",
+                                            "background_colour": "transparent",
+                                            "text": "Sensitivity",
+                                            "size_mode": "auto"
+                                        },
+                                        {
+                                            "type": "slider",
+                                            "name": "Sensitivity",
+                                            "size": {
+                                                "width": 100,
+                                                "height": 16
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 160,
+                                        "height": 50
+                                    },
+                                    "background_colour": "transparent",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 0,
+                                        "direction": "horizontal"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "label",
+                                            "background_colour": "transparent",
+                                            "text": "Movement Speed",
+                                            "size_mode": "auto"
+                                        },
+                                        {
+                                            "type": "slider",
+                                            "name": "MovementSpeed",
+                                            "size": {
+                                                "width": 100,
+                                                "height": 16
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "checkbox",
+                                    "name": "Acceleration",
+                                    "text": "Acceleration",
+                                    "background_colour": "transparent"
+                                },
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 160,
+                                        "height": 50
+                                    },
+                                    "background_colour": "transparent",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 0,
+                                        "direction": "horizontal"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "label",
+                                            "background_colour": "transparent",
+                                            "text": "Acceleration Rate",
+                                            "size_mode": "auto"
+                                        },
+                                        {
+                                            "type": "slider",
+                                            "name": "AccelerationRate",
+                                            "size": {
+                                                "width": 100,
+                                                "height": 16
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Close",
+                    "type": "button",
+                    "size": {
+                        "width": 60,
+                        "height": 20
+                    },
+                    "text": "Close",
+                    "horizontal_alignment": "centre"
+                }
+            ]
+        }
+    ]	
+}

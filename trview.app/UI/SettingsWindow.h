@@ -14,7 +14,6 @@ namespace trview
         class Checkbox;
         class NumericUpDown;
         class Slider;
-        class TextArea;
     }
 
     /// UI window for program level settings.
@@ -45,7 +44,8 @@ namespace trview
         /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
         /// </summary>
         /// <param name="parent">The control to which the instance will add elements.</param>
-        explicit SettingsWindow(ui::Control& parent);
+        /// <param name="source">The function to call to get the UI elements.</param>
+        explicit SettingsWindow(ui::Control& parent, const ui::UiSource& source);
         virtual ~SettingsWindow() = default;
         virtual void set_vsync(bool value) override;
         virtual void set_go_to_lara(bool value) override;

@@ -1,0 +1,49 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 87,
+        "height": 60
+    },
+    "background_colour": {
+        "a": 0.5,
+        "r": 0,
+        "g": 0,
+        "b": 0
+    },
+    "visible": false,
+    "children": [
+        {
+            "type": "groupbox",
+            "name": "group",
+            "position": {
+                "x": 5,
+                "y": 0
+            },
+            "size": {
+                "width": 77,
+                "height": 60
+            },
+            "background_colour": "transparent",
+            "border_colour": "grey",
+            "text": "Go to Room",
+            "children": [
+                {
+                    "type": "textarea",
+                    "name": "text_area",
+                    "size": {
+                        "width": 57,
+                        "height": 20
+                    },
+                    "background_colour": {
+                        "r": 0.2,
+                        "g": 0.2,
+                        "b": 0.2
+                    },
+                    "text_alignment": "centre",
+                    "line_mode": "single"
+                }
+            ]
+        }
+    ]
+}

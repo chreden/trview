@@ -39,7 +39,7 @@ namespace trview
     {
     }
 
-    std::wstring Colour::name() const
+    std::wstring Colour::code() const
     {
         uint32_t value = *this;
         return std::to_wstring(value);
@@ -67,7 +67,7 @@ namespace trview
         return *this;
     }
 
-    Colour named_colour(const std::wstring& name)
+    Colour from_colour_code(const std::wstring& name)
     {
         uint32_t value = std::stoul(name);
         return Colour(
@@ -75,6 +75,24 @@ namespace trview
             ((value >> 16) & 0xff) / 255.0f,
             ((value >> 8) & 0xff) / 255.0f,
             (value & 0xff) / 255.0f);
+    }
+
+    Colour from_named_colour(const std::string& name)
+    {
+        std::string lowercase_name;
+        std::transform(name.begin(), name.end(), std::back_inserter(lowercase_name), ::tolower);
+        if (lowercase_name == "black") { return Colour::Black; }
+        if (lowercase_name == "grey") { return Colour::Grey; }
+        if (lowercase_name == "lightgrey") { return Colour::LightGrey; }
+        if (lowercase_name == "transparent") { return Colour::Transparent; }
+        if (lowercase_name == "white") { return Colour::White; }
+        if (lowercase_name == "green") { return Colour::Green; }
+        if (lowercase_name == "blue") { return Colour::Blue; }
+        if (lowercase_name == "red") { return Colour::Red; }
+        if (lowercase_name == "yellow") { return Colour::Yellow; }
+        if (lowercase_name == "magenta") { return Colour::Magenta; }
+        if (lowercase_name == "cyan") { return Colour::Cyan; }
+        return Colour::White;
     }
 
     Colour operator+(const Colour& left, const Colour& right)

@@ -6,7 +6,8 @@
 #include <trview.app/UI/ContextMenu.h>
 #include <trview.input/WindowTester.h>
 #include <trview.common/Windows/Shortcuts.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
+#include <trview.ui/json.h>
 
 using namespace trview::ui;
 
@@ -19,7 +20,9 @@ namespace trview
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ISettingsWindow::Source& settings_window_source,
         const IViewOptions::Source& view_options_source,
-        const IContextMenu::Source& context_menu_source)
+        const IContextMenu::Source& context_menu_source,
+        const ICameraControls::Source& camera_controls_source,
+        const ui::UiSource& ui_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
@@ -63,9 +66,9 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source);
+        generate_tool_window(view_options_source, camera_controls_source, ui_source);
 
-        _go_to = std::make_unique<GoTo>(*_control.get());
+        _go_to = std::make_unique<GoTo>(*_control.get(), ui::load_from_resource);
         _token_store += _go_to->on_selected += [&](uint32_t index)
         {
             if (_go_to->name() == L"Item")
@@ -104,7 +107,7 @@ namespace trview
         _context_menu->set_remove_enabled(false);
         _context_menu->set_hide_enabled(false);
 
-        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage);
+        _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage, ui::load_from_resource);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
         _settings_window = settings_window_source(*_control.get());
@@ -184,11 +187,11 @@ namespace trview
             on_settings(_settings);
         };
 
-        _camera_position = std::make_unique<CameraPosition>(*_control);
+        _camera_position = std::make_unique<CameraPosition>(*_control, ui::load_from_resource);
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
 
-        _console = std::make_unique<Console>(*_control);
+        _console = std::make_unique<Console>(*_control, ui::load_from_resource);
         _console->on_command += on_command;
 
         // Create the renderer for the UI based on the controls created.
@@ -258,13 +261,10 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::UiSource& ui_source)
     {
         // This is the main tool window on the side of the screen.
-        auto tool_window = _control->add_child(std::make_unique<ui::Window>(Size(150.0f, 348.0f), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        auto layout = std::make_unique<StackLayout>(5.0f);
-        layout->set_margin(Size(5, 5));
-        tool_window->set_layout(std::move(layout));
+        auto tool_window = _control->add_child(ui_source(IDR_UI_TOOL_WINDOW));
 
         _view_options = view_options_source(*tool_window);
         _view_options->on_highlight += on_highlight;
@@ -278,15 +278,10 @@ namespace trview
         _view_options->on_show_wireframe += on_show_wireframe;
         _view_options->on_show_bounding_boxes += on_show_bounding_boxes;
 
-        _room_navigator = std::make_unique<RoomNavigator>(*tool_window);
+        _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui::load_from_resource);
         _room_navigator->on_room_selected += on_select_room;
 
-        initialise_camera_controls(*tool_window);
-    }
-
-    void ViewerUI::initialise_camera_controls(ui::Control& parent)
-    {
-        _camera_controls = std::make_unique<CameraControls>(parent);
+        _camera_controls = camera_controls_source(*tool_window);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
         _camera_controls->on_projection_mode_selected += on_camera_projection_mode;

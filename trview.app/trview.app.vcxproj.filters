@@ -343,6 +343,9 @@
     <ClCompile Include="UI\IContextMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ICameraControls.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
@@ -887,6 +890,12 @@
     <ClInclude Include="Mocks\UI\IContextMenu.h">
       <Filter>Mocks\UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI\ICameraControls.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\UI\ICameraControls.h">
+      <Filter>Mocks\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
     </ClInclude>
@@ -967,6 +976,9 @@
     <Filter Include="Mocks\Settings">
       <UniqueIdentifier>{dd4f8f55-fa38-46f7-8a03-a4f1ed7b68b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Files\UI">
+      <UniqueIdentifier>{c6bc5197-3c80-4b1f-804a-62228b062485}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Files\numericdown.png">
@@ -1023,6 +1035,60 @@
     </None>
     <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Files\arial7.bin" />
+    <None Include="Resources\Files\UI\settings_window.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\camera_controls.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\view_options.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\items_window_right_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\items_window_left_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\triggers_window_left_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\triggers_window_right_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\route_window_left_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\route_window_right_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\rooms_window_left_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\rooms_window_right_panel.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\context_menu.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\go_to.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\level_info.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\console.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\room_navigator.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\camera_position.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
+    <None Include="Resources\Files\UI\tool_window.json">
+      <Filter>Resources\Files\UI</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\trview.app.rc">

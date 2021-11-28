@@ -18,9 +18,12 @@ namespace trview
             static const std::string remove_waypoint_button;
         };
 
+        /// <summary>
         /// Create a new ContentMenu window.
-        /// @param parent The control to add the window to.
-        explicit ContextMenu(ui::Control& parent);
+        /// </summary>
+        /// <param name="parent">The control to add the window to.</param>
+        /// <param name="ui_source">The UI source function.</param>
+        explicit ContextMenu(ui::Control& parent, const ui::UiSource& ui_source);
         virtual ~ContextMenu() = default;
         /// Get the root control.
         /// @returns The root control.
@@ -32,7 +35,7 @@ namespace trview
         virtual bool visible() const override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        ui::Window* _menu;
+        ui::Control* _menu;
         ui::Button* _remove_button;
         ui::Button* _hide_button;
         ui::Button* _mid_button;

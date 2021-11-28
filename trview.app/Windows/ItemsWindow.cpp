@@ -1,11 +1,9 @@
 #include "ItemsWindow.h"
 #include <trview.app/Resources/resource.h>
 #include <trview.ui/Checkbox.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
-#include <trview.ui/Layouts/StackLayout.h>
 
 using namespace trview::graphics;
 
@@ -13,15 +11,6 @@ namespace trview
 {
     namespace
     {
-        /// Colours commonly used in this class.
-        namespace Colours
-        {
-            const Colour LeftPanel { 1.0f, 0.25f, 0.25f, 0.25f };
-            const Colour ItemDetails { 1.0f, 0.225f, 0.225f, 0.225f };
-            const Colour Triggers { 1.0f, 0.20f, 0.20f, 0.20f };
-            const Colour DetailsBorder { 0.0f, 0.0f, 0.0f, 0.0f };
-        }
-
         const float Height{ 420 };
 
         ui::Listbox::Item create_listbox_item(const Item& item)
@@ -40,14 +29,15 @@ namespace trview
     const std::string ItemsWindow::Names::sync_item_checkbox{ "SyncItem" };
     const std::string ItemsWindow::Names::track_room_checkbox{ "TrackRoom" };
     const std::string ItemsWindow::Names::triggers_listbox{ "Triggers" };
+    const std::string ItemsWindow::Names::expander{ "Expander" };
 
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
-        const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source)
+        const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const ui::UiSource& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -113,51 +103,24 @@ namespace trview
         _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel()
+    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
-        auto left_panel = std::make_unique<ui::Window>(Size(250, window().size().height), Colours::LeftPanel);
-        auto left_panel_layout = std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        left_panel_layout->set_margin(Size(0, 3));
-        left_panel->set_layout(std::move(left_panel_layout));
 
-        // Control modes:.
-        _controls = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
-        auto layout = std::make_unique<StackLayout>(2.0f, StackLayout::Direction::Horizontal, SizeMode::Manual);
-        layout->set_margin(Size(2, 2));
-        _controls->set_layout(std::move(layout));
-        _track_room_checkbox = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Track Room"));
-        _track_room_checkbox->set_name(Names::track_room_checkbox);
+        auto left_panel = ui_source(IDR_UI_ITEMS_WINDOW_LEFT_PANEL);
+        _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
         };
 
-        // Spacing between checkboxes.
-        _controls->add_child(std::make_unique<ui::Window>(Size(10, 20), Colours::LeftPanel));
-
-        auto sync_item = _controls->add_child(std::make_unique<Checkbox>(Colours::LeftPanel, L"Sync Item"));
-        sync_item->set_name(Names::sync_item_checkbox);
+        auto sync_item = left_panel->find<Checkbox>(Names::sync_item_checkbox);
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
 
-        // Space out the button
-        _controls->add_child(std::make_unique<ui::Window>(Size(15, 20), Colours::LeftPanel));
+        set_expander(left_panel->find<Button>(Names::expander));
 
-        // Add the expander button at this point.
-        add_expander(*_controls);
-
-        _items_list = left_panel->add_child(std::make_unique<Listbox>(Size(250, window().size().height - _controls->size().height), Colours::LeftPanel));
-        _items_list->set_name(Names::items_listbox);
-        _items_list->set_columns(
-            {
-                { Listbox::Column::IdentityMode::Key, Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"Room", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Number, L"ID", 30 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::String, L"Type", 100 },
-                { Listbox::Column::IdentityMode::None, Listbox::Column::Type::Boolean, L"Hide", 50 }
-            }
-        );
+        _items_list = left_panel->find<Listbox>(Names::items_listbox);
         _token_store += _items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
@@ -182,39 +145,19 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_right_panel()
+    std::unique_ptr<ui::Control> ItemsWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         using namespace ui;
 
-        auto right_panel = std::make_unique<ui::Window>(Size(200, Height), Colours::ItemDetails);
-        right_panel->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 8), Colours::ItemDetails));
-
-        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 240), Colours::ItemDetails, Colours::DetailsBorder, L"Item Details"));
-        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(180, 230), Colours::ItemDetails));
-        details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-
-        // Add some information about the selected item.
-        _stats_list = details_panel->add_child(std::make_unique<Listbox>(Size(180, 180), Colours::ItemDetails));
-        _stats_list->set_name(Names::stats_listbox);
-        _stats_list->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"Name", 60 },
-                { Listbox::Column::Type::Number, L"Value", 120 },
-            }
-        );
-        _stats_list->set_show_headers(false);
-        _stats_list->set_show_scrollbar(false);
-        _stats_list->set_show_highlight(false);
-
+        auto right_panel = ui_source(IDR_UI_ITEMS_WINDOW_RIGHT_PANEL);
+        _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
             _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
-        auto add_to_route = details_panel->add_child(std::make_unique<Button>(Size(180, 20), L"Add to Route"));
-        add_to_route->set_name(Names::add_to_route_button);
+        auto add_to_route = right_panel->find<Button>(Names::add_to_route_button);
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())
@@ -223,25 +166,7 @@ namespace trview
             }
         };
 
-        // Spacer element.
-        right_panel->add_child(std::make_unique<ui::Window>(Size(200, 5), Colours::Triggers));
-
-        // Add the trigger details group box.
-        auto trigger_group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(200, 170), Colours::Triggers, Colours::DetailsBorder, L"Triggered By"));
-
-        _trigger_list = trigger_group_box->add_child(std::make_unique<Listbox>(Size(190, 130), Colours::Triggers));
-        _trigger_list->set_name(Names::triggers_listbox);
-        _trigger_list->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"#", 25 },
-                { Listbox::Column::Type::Number, L"Room", 35 },
-                { Listbox::Column::Type::String, L"Type", 120 },
-            }
-        );
-        _trigger_list ->set_show_headers(true);
-        _trigger_list ->set_show_scrollbar(true);
-        _trigger_list ->set_show_highlight(true);
-
+        _trigger_list = right_panel->find<Listbox>(Names::triggers_listbox);
         _token_store += _trigger_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));

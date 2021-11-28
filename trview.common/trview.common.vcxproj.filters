@@ -55,6 +55,7 @@
       <Filter>Mocks</Filter>
     </ClInclude>
     <ClInclude Include="Resources.h" />
+    <ClInclude Include="JsonSerializers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -94,6 +95,7 @@
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="Resources.cpp" />
+    <ClCompile Include="JsonSerializers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

@@ -1,0 +1,167 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "colours": {
+        "background": {
+            "r": 0.25,
+            "g": 0.25,
+            "b": 0.25
+        }
+    },
+    "background_colour": "background",
+    "size": {
+        "width": 250,
+        "height": 400
+    },
+    "layout": {
+        "type": "stack",
+        "padding": 3,
+        "size_mode": "manual"
+    },
+    "children": [
+        {
+            "type": "window",
+            "size": {
+                "width": 250,
+                "height": 50
+            },
+            "background_colour": "background",
+            "layout": {
+                "type": "stack",
+                "padding": 2,
+                "size_mode": "manual",
+                "margin": {
+                    "width": 2,
+                    "height": 2
+                }
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 250,
+                        "height": 20
+                    },
+                    "background_colour": "background",
+                    "layout": {
+                        "type": "stack",
+                        "padding": 2,
+                        "margin": {
+                            "width": 2,
+                            "height": 2
+                        },
+                        "direction": "horizontal",
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "checkbox",
+                            "name": "TrackRoom",
+                            "text": "Track Room",
+                            "background_colour": "background"
+                        },
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 5,
+                                "height": 20
+                            },
+                            "background_colour": "background"
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "SyncTriggers",
+                            "text": "Sync Trigger",
+                            "background_colour": "background"
+                        },
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 5,
+                                "height": 20
+                            },
+                            "background_colour": "background"
+                        },
+                        {
+                            "type": "button",
+                            "text": "<<",
+                            "name": "Expander",
+                            "size": {
+                                "width": 16,
+                                "height": 16
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "size": {
+                        "width": 250,
+                        "height": 20
+                    },
+                    "background_colour": "background",
+                    "layout": {
+                        "type": "stack",
+                        "padding": 2,
+                        "direction": "horizontal",
+                        "size_mode": "manual",
+                        "margin": {
+                            "width": 2,
+                            "height": 0
+                        }
+                    },
+                    "children": [
+                        {
+                            "type": "dropdown",
+                            "name": "FilterDropdown",
+                            "size": {
+                                "width": 236,
+                                "height": 20
+                            },
+                            "values": [
+                                "All",
+                                "Flipmaps"
+                            ],
+                            "selected_value": "All"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "listbox",
+            "name": "Triggers",
+            "size": {
+                "width": 250,
+                "height": 350
+            },
+            "columns": [
+                {
+                    "identity": "key",
+                    "name": "#",
+                    "type": "number",
+                    "width": 30
+                },
+                {
+                    "identity": "none",
+                    "name": "Room",
+                    "type": "number",
+                    "width": 30
+                },
+                {
+                    "identity": "none",
+                    "name": "Type",
+                    "type": "string",
+                    "width": 130
+                },
+                {
+                    "identity": "none",
+                    "name": "Hide",
+                    "type": "boolean",
+                    "width": 50
+                }
+            ]
+        }
+    ]
+
+}

@@ -1,0 +1,76 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 300,
+        "height": 300
+    },
+    "colours": {
+        "background": {
+            "r": 0.15,
+            "g": 0.15,
+            "b": 0.15
+        },
+        "button": {
+            "r": 0.2,
+            "g": 0.2,
+            "b": 0.2
+        }
+    },
+    "background_colour": "background",
+    "layout": {
+        "type": "stack"
+    },
+    "children": [
+        {
+            "type": "button",
+            "text": "Add Waypoint",
+            "name": "AddWaypoint",
+            "background_colour": "button",
+            "size": {
+                "width": 100,
+                "height": 24
+            }
+        },
+        {
+            "type": "button",
+            "text": "Add Mid Waypoint",
+            "name": "AddMidWaypoint",
+            "background_colour": "button",
+            "size": {
+                "width": 100,
+                "height": 24
+            }
+        },
+        {
+            "type": "button",
+            "text": "Remove Waypoint",
+            "name": "RemoveWaypoint",
+            "background_colour": "button",
+            "size": {
+                "width": 100,
+                "height": 24
+            }
+        },
+        {
+            "type": "button",
+            "text": "Orbit Here",
+            "name": "Orbit",
+            "background_colour": "button",
+            "size": {
+                "width": 100,
+                "height": 24
+            }
+        },
+        {
+            "type": "button",
+            "text": "Hide",
+            "name": "Hide",
+            "background_colour": "button",
+            "size": {
+                "width": 100,
+                "height": 24
+            }
+        }
+    ]
+}

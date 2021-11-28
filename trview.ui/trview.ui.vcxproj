@@ -30,6 +30,8 @@
     <ClInclude Include="IInput.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="json.h" />
+    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layouts\FreeLayout.h" />
     <ClInclude Include="Layouts\GridLayout.h" />
@@ -56,6 +58,8 @@
     <ClCompile Include="IInput.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="json.cpp" />
+    <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layouts\FreeLayout.cpp" />
     <ClCompile Include="Layouts\GridLayout.cpp" />
@@ -85,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Control.inl" />
+    <None Include="schema.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

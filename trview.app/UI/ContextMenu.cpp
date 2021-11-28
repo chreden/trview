@@ -1,7 +1,7 @@
 #include "ContextMenu.h"
 #include <trview.ui/Button.h>
 #include <trview.ui/Label.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 using namespace trview::ui;
 
@@ -9,8 +9,6 @@ namespace trview
 {
     namespace Colours
     {
-        const Colour Background{ 0.15f, 0.15f, 0.15f };
-        const Colour Button{ 0.2f, 0.2f, 0.2f };
         const Colour Enabled{ 1.0f, 1.0f, 1.0f };
         const Colour Disabled{ 0.4f, 0.4f, 0.4f };
     }
@@ -21,24 +19,18 @@ namespace trview
     const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
 
-    ContextMenu::ContextMenu(Control& parent)
+    ContextMenu::ContextMenu(Control& parent, const ui::UiSource& ui_source)
     {
-        _menu = parent.add_child(std::make_unique<ui::Window>(Point(300, 300), Size(200, 100), Colours::Background));
-        _menu->set_layout(std::make_unique<StackLayout>());
+        _menu = parent.add_child(ui_source(IDR_UI_CONTEXT_MENU));
 
-        // Add waypoint button.
-        auto button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Waypoint"));
-        button->set_name(Names::add_waypoint_button);
-        button->set_text_background_colour(Colours::Button);
-        _token_store += button->on_click += [&]()
+        auto add_waypoint = _menu->find<Button>(Names::add_waypoint_button);
+        _token_store += add_waypoint->on_click += [&]()
         {
             on_add_waypoint();
             set_visible(false);
         };
 
-        _mid_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Add Mid Waypoint"));
-        _mid_button->set_name(Names::add_mid_waypoint_button);
-        _mid_button->set_text_background_colour(Colours::Button);
+        _mid_button = _menu->find<Button>(Names::add_mid_waypoint_button);
         _token_store += _mid_button->on_click += [&]()
         {
             if (_mid_enabled)
@@ -48,10 +40,7 @@ namespace trview
             }
         };
 
-        // Add the similar remove waypoint button 
-        _remove_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Remove Waypoint"));
-        _remove_button->set_name(Names::remove_waypoint_button);
-        _remove_button->set_text_background_colour(Colours::Button);
+        _remove_button = _menu->find<Button>(Names::remove_waypoint_button);
         _token_store += _remove_button->on_click += [&]()
         {
             if (_remove_enabled)
@@ -61,18 +50,14 @@ namespace trview
             }
         };
 
-        auto orbit_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Orbit Here"));
-        orbit_button->set_name(Names::orbit_button);
-        orbit_button->set_text_background_colour(Colours::Button);
+        auto orbit_button = _menu->find<Button>(Names::orbit_button);
         _token_store += orbit_button->on_click += [&]()
         {
             on_orbit_here();
             set_visible(false);
         };
 
-        _hide_button = _menu->add_child(std::make_unique<Button>(Size(100, 24), L"Hide"));
-        _hide_button->set_name(Names::hide_button);
-        _hide_button->set_text_background_colour(Colours::Button);
+        _hide_button = _menu->find<Button>(Names::hide_button);
         _token_store += _hide_button->on_click += [&]()
         {
             if (_hide_enabled)

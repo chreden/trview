@@ -31,10 +31,12 @@ namespace trview
             static const std::string track_room_checkbox;
             static const std::string triggers_listbox;
             static const std::string trigger_commands_listbox;
+            static const std::string expander;
         };
 
         explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source);
+            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
+            const ui::UiSource& ui_source);
         virtual ~TriggersWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -49,8 +51,8 @@ namespace trview
         virtual void update_layout() override;
     private:
         void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        std::unique_ptr<ui::Control> create_left_panel();
-        std::unique_ptr<ui::Control> create_right_panel();
+        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
+        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
         void load_trigger_details(const ITrigger& trigger);

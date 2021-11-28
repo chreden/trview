@@ -6,59 +6,48 @@
 
 #pragma once
 
-#include <trview.common/Event.h>
 #include <trview.common/TokenStore.h>
-#include <trview.app/Camera/CameraMode.h>
-#include <trview.app/Camera/ProjectionMode.h>
+#include <trview.ui/Checkbox.h>
+#include "ICameraControls.h"
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Checkbox;
-    }
-
-    /// The camera controls control has settings for the operation mode of the camera and
-    /// other camera related settings.
-    class CameraControls
+    /// <summary>
+    /// The camera controls control has settings for the operation mode of the camera and other camera related settings.
+    /// </summary>
+    class CameraControls final : public ICameraControls
     {
     public:
+        struct Names
+        {
+            static const std::string reset;
+            static const std::string orbit;
+            static const std::string free;
+            static const std::string axis;
+            static const std::string ortho;
+        };
+
+        /// <summary>
         /// Creates an instance of the CameraControls class.
-        /// @param parent The control to which the instance will be added as a child.
-        explicit CameraControls(ui::Control& parent);
-
-        /// Event raised when the camera mode has been selected by the user. The newly selected
-        /// camera mode is passed as a parameter when the event is raised.
-        /// @remarks This event is not raised by the set_mode function.
-        Event<CameraMode> on_mode_selected;
-
-        /// Event raised when the camera projection mode has been selected by the user. The newly selected
-        /// projection mode is passed as a parameter when the event is raised.
-        /// @remarks This is event is not raised by the set_projection_mode function.
-        Event<ProjectionMode> on_projection_mode_selected;
-
-        /// Event raised when the user clicks the reset button.
-        Event<> on_reset;
-
-        /// Set the current camera mode. This will not raise the on_mode_selected event.
-        /// @param mode The camera mode to change to.
-        /// @remarks This will not raise the on_mode_selected event.
-        void set_mode(CameraMode mode);
-
-        /// Set the current camera projection mode. This will not raise the on_projection_mode_selected event
-        /// @param mode The projection mode to change to.
-        /// @remarks This will not raise the on_projection_mode_selected event.
-        void set_projection_mode(ProjectionMode mode);
+        /// </summary>
+        /// <param name="parent">The control to which the instance will be added as a child.</param>
+        /// <param name="source">The function to call to find the UI elements.</param>
+        explicit CameraControls(ui::Control& parent, const ui::UiSource& source);
+        virtual ~CameraControls() = default;
+        virtual void set_mode(CameraMode mode) override;
+        virtual void set_projection_mode(ProjectionMode mode) override;
     private:
+        /// <summary>
         /// Set the current camera mode.
-        /// @param mode The new camera mode.
-        /// @remarks This will raise the on_mode_selected event.
+        /// </summary>
+        /// <param name="mode">The new camera mode.</param>
+        /// <remarks>This will raise the on_mode_selected event.</remarks>
         void change_mode(CameraMode mode);
-
+        /// <summary>
         /// Set the current camera projection mode.
-        /// @param mode The new camera projection mode.
-        /// @remakrs This will raise the on_projection_mode_selected event
+        /// </summary>
+        /// <param name="mode">The new camera projection mode.</param>
+        /// <remarks>This will raise the on_projection_mode_selected event</remarks>
         void change_projection(ProjectionMode mode);
 
         ui::Checkbox* _orbit;

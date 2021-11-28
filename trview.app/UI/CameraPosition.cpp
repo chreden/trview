@@ -2,7 +2,7 @@
 #include <trlevel/ILevel.h>
 #include <trview.ui/Label.h>
 #include <trview.common/Strings.h>
-#include <trview.ui/Layouts/StackLayout.h>
+#include "../Resources/resource.h"
 
 using namespace trview::ui;
 using namespace trview::graphics;
@@ -21,30 +21,31 @@ namespace trview
         }
     }
 
-    CameraPosition::CameraPosition(Control& parent)
+    const std::string CameraPosition::Names::x{ "X" };
+    const std::string CameraPosition::Names::y{ "Y" };
+    const std::string CameraPosition::Names::z{ "Z" };
+    const std::string CameraPosition::Names::yaw{ "Yaw" };
+    const std::string CameraPosition::Names::pitch{ "Pitch" };
+
+    CameraPosition::CameraPosition(Control& parent, const ui::UiSource& ui_source)
     {
-        _position_display = parent.add_child(std::make_unique<ui::Window>(Point(10, parent.size().height - 90), Size(200, 90), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        auto position_layout = std::make_unique<StackLayout>();
-        position_layout->set_margin(Size(5, 5));
-        _position_display->set_layout(std::move(position_layout));
+        auto panel = parent.add_child(ui_source(IDR_UI_CAMERA_POSITION));
+        _yaw = panel->find<TextArea>(Names::yaw);
+        _pitch = panel->find<TextArea>(Names::pitch);
+        _x = panel->find<TextArea>(Names::x);
+        _y = panel->find<TextArea>(Names::y);
+        _z = panel->find<TextArea>(Names::z);
 
-        _x = create_coordinate_entry(*_position_display, _position.x, L"X");
-        _y = create_coordinate_entry(*_position_display, _position.y, L"Y");
-        _z = create_coordinate_entry(*_position_display, _position.z, L"Z");
+        bind_coordinate_entry(_yaw, _rotation_yaw, true);
+        bind_coordinate_entry(_pitch, _rotation_pitch, true);
+        bind_coordinate_entry(_x, _position.x, false);
+        bind_coordinate_entry(_y, _position.y, false);
+        bind_coordinate_entry(_z, _position.z, false);
 
-        _rotation_display = parent.add_child(std::make_unique<ui::Window>(Point(10, parent.size().height - 90 - 5 - 60), Size(200, 60), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
-        auto rotation_layout = std::make_unique<StackLayout>();
-        rotation_layout->set_margin(Size(5, 5));
-        _rotation_display->set_layout(std::move(rotation_layout));
-        _yaw = create_coordinate_entry(*_rotation_display, _rotation_yaw, L"Yaw", true);
-        _pitch = create_coordinate_entry(*_rotation_display, _rotation_pitch, L"Pitch", true);
-
-        auto update_position = [&](Size size)
+        const auto update_position = [=](Size size)
         {
-            _position_display->set_position(Point(_position_display->position().x, size.height - 10 - _position_display->size().height));
-            _rotation_display->set_position(Point(_position_display->position().x, size.height - 10 - _position_display->size().height - 5 - _rotation_display->size().height));
+            panel->set_position(Point(panel->position().x, size.height - 10 - panel->size().height));
         };
-
         _token_store += parent.on_size_changed += update_position;
         update_position(parent.size());
 
@@ -102,26 +103,15 @@ namespace trview
         }
     }
 
-    TextArea* CameraPosition::create_coordinate_entry(Control& parent, float& coordinate, const std::wstring& name, bool is_rotation)
+    void CameraPosition::bind_coordinate_entry(ui::TextArea* entry, float& coordinate, bool is_rotation)
     {
-        const auto label_width = is_rotation ? 30 : 10;
-        auto line = parent.add_child(std::make_unique<ui::Window>(Size(100, 20), Colour::Transparent));
-        line->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
-        auto line_area = line->add_child(std::make_unique<ui::Window>(Size(10, 20), Colour::Transparent));
-        line_area->set_layout(std::make_unique<StackLayout>());
-        line_area->add_child(std::make_unique<ui::Window>(Size(10, 1), Colour::Transparent));
-        line_area->add_child(std::make_unique<Label>(Size(label_width, 20), Colour::Transparent, name + L": ", 8));
-        auto entry = line->add_child(std::make_unique<TextArea>(Size(90 - (line_area->size().width - 10), 20), Colour::Transparent, Colour::White));
-        entry->set_mode(TextArea::Mode::SingleLine);
-        entry->set_text(convert_number(0));
-        entry->set_name(to_utf8(name));
         _token_store += entry->on_focused += [=]() { entry->highlight_all(); };
         _token_store += entry->on_click += [=]() { entry->highlight_all(); };
         _token_store += entry->on_focus_lost += [=]() { entry->clear_highlight(); };
         _token_store += entry->on_escape += [=]()
         {
             entry->on_focus_clear_requested();
-            entry->set_text(convert_number(coordinate)); 
+            entry->set_text(convert_number(coordinate));
         };
         _token_store += entry->on_enter += [this, &coordinate, entry, is_rotation](const std::wstring& text)
         {
@@ -135,7 +125,6 @@ namespace trview
             }
             entry->on_focus_clear_requested();
         };
-        return entry;
     }
 
     void CameraPosition::update_position_coordinate(float& coordinate, const std::wstring& text)

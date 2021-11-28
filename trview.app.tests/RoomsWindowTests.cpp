@@ -11,6 +11,7 @@
 #include <trview.app/Mocks/Elements/ITrigger.h>
 #include <trview.common/Mocks/Windows/IClipboard.h>
 #include <trview.app/Mocks/UI/IBubble.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::tests;
@@ -50,7 +51,7 @@ namespace
 
             std::unique_ptr<RoomsWindow> build()
             {
-                return std::make_unique<RoomsWindow>(device_window_source, renderer_source, map_renderer_source, input_source, clipboard, bubble_source, window);
+                return std::make_unique<RoomsWindow>(device_window_source, renderer_source, map_renderer_source, input_source, clipboard, bubble_source, window, load_from_resource);
             }
         };
         return test_module{};

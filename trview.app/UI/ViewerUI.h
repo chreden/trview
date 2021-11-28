@@ -1,7 +1,7 @@
 #pragma once
 
 #include <trview.app/Tools/Toolbar.h>
-#include <trview.app/UI/CameraControls.h>
+#include <trview.app/UI/ICameraControls.h>
 #include <trview.app/UI/CameraPosition.h>
 #include <trview.app/UI/Console.h>
 #include <trview.app/UI/IContextMenu.h>
@@ -30,7 +30,9 @@ namespace trview
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ISettingsWindow::Source& settings_window_source,
             const IViewOptions::Source& view_options_source,
-            const IContextMenu::Source& context_menu_source);
+            const IContextMenu::Source& context_menu_source,
+            const ICameraControls::Source& camera_controls_source,
+            const ui::UiSource& ui_source);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -83,8 +85,7 @@ namespace trview
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source);
-        void initialise_camera_controls(ui::Control& parent);
+        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::UiSource& ui_source);
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;
@@ -102,7 +103,7 @@ namespace trview
         std::unique_ptr<Toolbar> _toolbar;
         std::unique_ptr<LevelInfo> _level_info;
         std::unique_ptr<ISettingsWindow> _settings_window;
-        std::unique_ptr<CameraControls> _camera_controls;
+        std::unique_ptr<ICameraControls> _camera_controls;
         std::unique_ptr<CameraPosition> _camera_position;
         std::unique_ptr<ui::render::IMapRenderer> _map_renderer;
         std::unique_ptr<Tooltip> _map_tooltip;

@@ -34,6 +34,7 @@
     <ClInclude Include="IShader.h" />
     <ClInclude Include="IShaderStorage.h" />
     <ClInclude Include="ISprite.h" />
+    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Mocks\D3D\ID3D11DeviceContext.h" />
     <ClInclude Include="Mocks\IDevice.h" />
     <ClInclude Include="mocks\IDeviceWindow.h" />
@@ -72,6 +73,7 @@
     <ClCompile Include="IRenderTarget.cpp" />
     <ClCompile Include="IShaderStorage.cpp" />
     <ClCompile Include="ISprite.cpp" />
+    <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PixelShaderStore.cpp" />
     <ClCompile Include="RasterizerStateStore.cpp" />

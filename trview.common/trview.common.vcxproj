@@ -24,6 +24,7 @@
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Files.h" />
+    <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="IFiles.h" />
     <ClInclude Include="Json.h" />
@@ -53,6 +54,7 @@
     <ClCompile Include="EventToken.cpp" />
     <ClCompile Include="Files.cpp" />
     <ClCompile Include="IFiles.cpp" />
+    <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="MessageHandler.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Resources.cpp" />

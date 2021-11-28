@@ -105,8 +105,23 @@
     <ClCompile Include="Settings\SettingsLoaderTests.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="UI\CameraControlsTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
     <ClCompile Include="Settings\RandomizerSettingsTests.cpp">
       <Filter>Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\GoToTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\ConsoleTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\RoomNavigatorTests.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\LevelInfoTests.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

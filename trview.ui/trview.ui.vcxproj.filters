@@ -76,6 +76,8 @@
     <ClInclude Include="Layouts\ILayout.h">
       <Filter>Layouts</Filter>
     </ClInclude>
+    <ClInclude Include="json.h" />
+    <ClInclude Include="JsonSerializers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Control.cpp">
@@ -148,6 +150,8 @@
     <ClCompile Include="Layouts\StackLayout.cpp">
       <Filter>Layouts</Filter>
     </ClCompile>
+    <ClCompile Include="json.cpp" />
+    <ClCompile Include="JsonSerializers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">
@@ -185,5 +189,6 @@
     <None Include="Control.inl">
       <Filter>Controls</Filter>
     </None>
+    <None Include="schema.json" />
   </ItemGroup>
 </Project>

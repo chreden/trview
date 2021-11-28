@@ -58,7 +58,12 @@
     <ClCompile Include="TriggersWindowManagerTests.cpp" />
     <ClCompile Include="TriggersWindowTests.cpp" />
     <ClCompile Include="UI\BubbleTests.cpp" />
+    <ClCompile Include="UI\CameraControlsTests.cpp" />
     <ClCompile Include="UI\CameraPositionTests.cpp" />
+    <ClCompile Include="UI\ConsoleTests.cpp" />
+    <ClCompile Include="UI\GoToTests.cpp" />
+    <ClCompile Include="UI\LevelInfoTests.cpp" />
+    <ClCompile Include="UI\RoomNavigatorTests.cpp" />
     <ClCompile Include="UI\ViewerUITests.cpp" />
     <ClCompile Include="UI\ViewOptionsTests.cpp" />
     <ClCompile Include="ViewMenuTests.cpp" />

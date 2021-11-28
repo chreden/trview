@@ -10,12 +10,12 @@
 #include <string>
 #include <trview.common/Event.h>
 #include <trview.common/TokenStore.h>
+#include <trview.ui/Control.h>
 
 namespace trview
 {
     namespace ui
     {
-        class Control;
         class GroupBox;
         class TextArea;
     }
@@ -25,9 +25,15 @@ namespace trview
     class GoTo final
     {
     public:
+        struct Names
+        {
+            static const std::string group;
+            static const std::string text_area;
+        };
+
         /// Creates an instance of the GoTo class. This will add UI elements to the control provided.
         /// @param parent The control to which the instance will be added as a child.
-        explicit GoTo(ui::Control& parent);
+        explicit GoTo(ui::Control& parent, const ui::UiSource& ui_source);
 
         /// Gets whether the window is currently visible.
         /// @returns True if the window is visible.

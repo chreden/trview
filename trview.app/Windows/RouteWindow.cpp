@@ -7,6 +7,7 @@
 #include <trview.ui/Layouts/StackLayout.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Layouts/GridLayout.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -30,6 +31,9 @@ namespace trview
         const uint32_t normal_min_height = 400;
     }
 
+    const std::string RouteWindow::Names::colour = "colour";
+    const std::string RouteWindow::Names::waypoints = "waypoints";
+    const std::string RouteWindow::Names::delete_waypoint = "delete_waypoint";
     const std::string RouteWindow::Names::export_button = "export_button";
     const std::string RouteWindow::Names::import_button = "import_button";
     const std::string RouteWindow::Names::clear_save = "clear_save";
@@ -37,27 +41,25 @@ namespace trview
     const std::string RouteWindow::Names::select_save_button = "select_save_button";
     const std::string RouteWindow::Names::waypoint_stats = "waypoint_stats";
     const std::string RouteWindow::Names::randomizer_group = "randomizer_group";
+    const std::string RouteWindow::Names::randomizer_area = "randomizer_area";
 
     namespace Colours
     {
-        const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-        const Colour LeftPanel{ 1.0f, 0.25f, 0.25f, 0.25f };
-        const Colour ItemDetails{ 1.0f, 0.225f, 0.225f, 0.225f };
         const Colour Notes{ 1.0f, 0.20f, 0.20f, 0.20f };
         const Colour NotesTextArea{ 1.0f, 0.15f, 0.15f, 0.15f };
-        const Colour DetailsBorder{ 0.0f, 0.0f, 0.0f, 0.0f };
     }
 
     using namespace graphics;
 
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
-        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source)
+        const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
+        const ui::UiSource& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
-        set_panels(create_left_panel(), create_right_panel());
+        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
     }
 
     void RouteWindow::render(bool vsync)
@@ -81,44 +83,24 @@ namespace trview
         const auto colour = route->colour();
         _colour->set_text_colour(colour);
         _colour->set_text_background_colour(colour);
-        _colour->set_selected_value(colour.name());
+        _colour->set_selected_value(colour.code());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel()
+    std::unique_ptr<Control> RouteWindow::create_left_panel(const ui::UiSource& ui_source)
     {
-        auto left_panel = std::make_unique<ui::Window>(Size(200, window().size().height), Colours::LeftPanel);
-        left_panel->set_layout(std::make_unique<StackLayout>(3.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-
-        auto buttons  = left_panel->add_child(std::make_unique<ui::Window>(Size(200, 20), Colours::LeftPanel));
-        buttons->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
-
-        _colour = buttons->add_child(std::make_unique<Dropdown>(Size(20, 20)));
-        _colour->set_text_colour(Colour::Green);
-        _colour->set_text_background_colour(Colour::Green);
-        _colour->set_values(
-            {
-                Dropdown::Value { Colour::Green.name(), Colour::Green, Colour::Green },
-                { Colour::Red.name(), Colour::Red, Colour::Red },
-                { Colour::Blue.name(), Colour::Blue, Colour::Blue },
-                { Colour::Yellow.name(), Colour::Yellow, Colour::Yellow },
-                { Colour::Cyan.name(), Colour::Cyan, Colour::Cyan },
-                { Colour::Magenta.name(), Colour::Magenta, Colour::Magenta },
-                { Colour::Black.name(), Colour::Black, Colour::Black },
-                { Colour::White.name(), Colour::White, Colour::White }
-            });
-        _colour->set_selected_value(Colour::Green.name());
+        auto left_panel = ui_source(IDR_UI_ROUTE_WINDOW_LEFT_PANEL);
+        _colour = left_panel->find<Dropdown>(Names::colour);
         _colour->set_dropdown_scope(_ui.get());
 
         _token_store += _colour->on_value_selected += [=](const auto& value)
         {
-            const auto new_colour = named_colour(value);
+            const auto new_colour = from_named_colour(to_utf8(value));
             _colour->set_text_colour(new_colour);
             _colour->set_text_background_colour(new_colour);
             on_colour_changed(new_colour);
         };
 
-        auto import = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Import"));
-        import->set_name(Names::import_button);
+        auto import = left_panel->find<Button>(Names::import_button);
         _token_store += import->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
@@ -133,8 +115,7 @@ namespace trview
                 on_route_import(filename.value().filename, filename.value().filter_index == 2);
             }
         };
-        auto export_button = buttons->add_child(std::make_unique<Button>(Size(90, 20), L"Export"));
-        export_button->set_name(Names::export_button);
+        auto export_button = left_panel->find<Button>(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
@@ -153,14 +134,7 @@ namespace trview
         };
 
         // List box to show the waypoints in the route.
-        _waypoints = left_panel->add_child(std::make_unique<Listbox>(Size(200, window().size().height - buttons->size().height), Colours::LeftPanel));
-        _waypoints->set_enable_sorting(false);
-        _waypoints->set_columns(
-            {
-                { Listbox::Column::Type::Number, L"#", 30 },
-                { Listbox::Column::Type::String, L"Type", 160 }
-            }
-        );
+        _waypoints = left_panel->find<Listbox>(Names::waypoints);
         _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
@@ -177,28 +151,13 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<Control> RouteWindow::create_right_panel()
+    std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::UiSource& ui_source)
     {
         const float panel_width = 270;
-        auto right_panel = std::make_unique<ui::Window>(Size(panel_width, window().size().height), Colours::ItemDetails);
-        auto right_panel_layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
-        right_panel_layout->set_margin(Size(0, 8));
-        right_panel->set_layout(std::move(right_panel_layout));
 
-        auto group_box = right_panel->add_child(std::make_unique<GroupBox>(Size(panel_width, 160), Colours::ItemDetails, Colours::DetailsBorder, L"Waypoint Details"));
-        auto details_panel = group_box->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 140), Colours::ItemDetails));
-        details_panel->set_layout(std::make_unique<StackLayout>(8.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
+        auto right_panel = ui_source(IDR_UI_ROUTE_WINDOW_RIGHT_PANEL);
 
-        _stats = details_panel->add_child(std::make_unique<Listbox>(Size(panel_width - 20, 80), Colours::ItemDetails));
-        _stats->set_name(Names::waypoint_stats);
-        _stats->set_show_highlight(false);
-        _stats->set_show_headers(false);
-        _stats->set_show_scrollbar(true);
-        _stats->set_columns(
-            {
-                { Listbox::Column::Type::String, L"Name", 100 },
-                { Listbox::Column::Type::String, L"Value", 140 }
-            });
+        _stats = right_panel->find<Listbox>(Names::waypoint_stats);
         _token_store += _stats->on_item_selected += [&](const auto& item)
         {
             if (item.value(L"Name") == L"Room Position" || 
@@ -227,11 +186,7 @@ namespace trview
             }
         };
 
-        auto save_area = details_panel->add_child(std::make_unique<ui::Window>(Size(panel_width - 20, 20), Colours::ItemDetails));
-        save_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual));
-
-        _select_save = save_area->add_child(std::make_unique<Button>(Size(panel_width - 40, 20), L"Attach Save"));
-        _select_save->set_name(Names::select_save_button);
+        _select_save = right_panel->find<Button>(Names::select_save_button);
         _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -278,8 +233,7 @@ namespace trview
             }
         };
 
-        _clear_save = save_area->add_child(std::make_unique<Button>(Size(20, 20), L"X"));
-        _clear_save->set_name(Names::clear_save);
+        _clear_save = right_panel->find<Button>(Names::clear_save);
         _token_store += _clear_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -296,7 +250,7 @@ namespace trview
             }
         };
 
-        _delete_waypoint = details_panel->add_child(std::make_unique<Button>(Size(panel_width - 20, 20), L"Delete Waypoint"));
+        _delete_waypoint = right_panel->find<Button>(Names::delete_waypoint);
         _token_store += _delete_waypoint->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
@@ -305,19 +259,7 @@ namespace trview
             }
         };
 
-        _select_save->set_visible(false);
-        _clear_save->set_visible(false);
-        _delete_waypoint->set_visible(false);
-
-        right_panel->add_child(std::make_unique<ui::Window>(Size(panel_width, 5), Colours::Notes));
-        _lower_box = right_panel->add_child(std::make_unique<ui::Window>(Size(), Colours::Notes));
-        _lower_box->set_layout(std::make_unique<StackLayout>(5.0f));
-
-        auto notes_group = _lower_box->add_child(std::make_unique<GroupBox>(Size(panel_width, 200), Colours::Notes, Colours::DetailsBorder, L"Notes"));
-        _notes_area = notes_group->add_child(std::make_unique<TextArea>(Size(panel_width - 20, 200), Colours::NotesTextArea, Colour(1.0f, 1.0f, 1.0f)));
-        _notes_area->set_name(Names::notes_area);
-        _notes_area->set_scrollbar_visible(true);
-
+        _notes_area = right_panel->find<TextArea>(Names::notes_area);
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -330,17 +272,8 @@ namespace trview
             }
         };
 
-        _rando_group = _lower_box->add_child(std::make_unique<ui::Window>(Size(panel_width, 200), Colours::Notes));
-        auto group_layout = std::make_unique<StackLayout>();
-        group_layout->set_margin(Size(10, 0));
-        _rando_group->set_layout(std::move(group_layout));
-        _rando_group->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, L"Randomizer", 8, TextAlignment::Left, ParagraphAlignment::Centre));
-        _rando_group->set_name(Names::randomizer_group);
-        _rando_group->set_visible(false);
-        _rando_area = _rando_group->add_child(std::make_unique<ui::Window>(Size(panel_width, window().size().height - 160), Colours::Notes));
-        auto layout = std::make_unique<StackLayout>(5.0f);
-        layout->set_margin(Size(0, 10.0f));
-        _rando_area->set_layout(std::move(layout));
+        _rando_group = right_panel->find<ui::Window>(Names::randomizer_group);
+        _rando_area = right_panel->find<ui::Window>(Names::randomizer_area);
         return right_panel;
     }
 

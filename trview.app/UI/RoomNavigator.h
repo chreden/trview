@@ -9,13 +9,12 @@
 #include <cstdint>
 #include <trview.common/Event.h>
 #include <trview.app/Graphics/ITextureStorage.h>
+#include <trview.ui/Control.h>
 
 namespace trview
 {
     namespace ui
     {
-        class Control;
-        class Checkbox;
         class Label;
         class NumericUpDown;
         class Listbox;
@@ -28,11 +27,18 @@ namespace trview
     class RoomNavigator final
     {
     public:
+        struct Names
+        {
+            static const std::string current_room;
+            static const std::string max_rooms;
+            static const std::string stats;
+        };
+
         /// <summary>
         /// Create the RoomNavigator control and attach it as a child to the parent control specified.
         /// </summary>
         /// <param name="parent">The control to attach the navigator to.</param>
-        explicit RoomNavigator(ui::Control& parent);
+        explicit RoomNavigator(ui::Control& parent, const ui::UiSource& ui_source);
 
         /// Event raised when the user selects a different room. The room that the user has selected is passed as
         /// a parameter when this event is raised.
