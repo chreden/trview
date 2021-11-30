@@ -1,4 +1,5 @@
 #include "TextureStorage.h"
+#include <trview.common/Strings.h>
 
 namespace trview
 {
@@ -14,7 +15,7 @@ namespace trview
 
     graphics::Texture TextureStorage::lookup(const std::string& key) const
     {
-        auto found = _textures.find(key);
+        auto found = _textures.find(to_lowercase(key));
         if (found == _textures.end())
         {
             return graphics::Texture();
@@ -24,6 +25,6 @@ namespace trview
 
     void TextureStorage::store(const std::string& key, const graphics::Texture& texture)
     {
-        _textures.insert({ key, texture });
+        _textures.insert({ to_lowercase(key), texture });
     }
 }

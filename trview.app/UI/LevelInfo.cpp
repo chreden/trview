@@ -43,7 +43,6 @@ namespace trview
         _name = panel->find<Label>(Names::name);
 
         auto settings = panel->find<Button>(Names::settings);
-        settings->set_images(texture_storage.lookup("settings"), texture_storage.lookup("settings"));
         settings->on_click += on_toggle_settings;
 
         // Have the control move itself when the parent control resizes.

@@ -158,5 +158,13 @@ namespace trview
             _image->set_texture(up);
             on_invalidate();
         }
+
+        void Button::set_font(const std::string& font)
+        {
+            if (_text)
+            {
+                _text->set_font(font);
+            }
+        }
     }
 }

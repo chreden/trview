@@ -18,11 +18,13 @@ namespace trview
             : Window(point, size, background_colour), _minimum(minimum), _maximum(maximum)
         {
             _label = add_child(std::make_unique<Label>(Size(size.width - 16, size.height), background_colour, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
-            auto up = add_child(std::make_unique<Button>(Point(size.width - 16, 0), Size(16, size.height / 2)));
+            auto up = add_child(std::make_unique<Button>(Point(size.width - 16, 0), Size(16, size.height / 2), L"!"));
             up->set_name(Names::up);
+            up->set_font("Icons");
             up->set_background_colour(Colour::Transparent);
-            auto down = add_child(std::make_unique<Button>(Point(size.width - 16, size.height / 2), Size(16, size.height / 2)));
+            auto down = add_child(std::make_unique<Button>(Point(size.width - 16, size.height / 2), Size(16, size.height / 2), L"\""));
             down->set_name(Names::down);
+            down->set_font("Icons");
             down->set_background_colour(Colour::Transparent);
 
             up->set_border_thickness(0u);

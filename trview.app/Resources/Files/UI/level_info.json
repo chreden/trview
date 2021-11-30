@@ -50,7 +50,9 @@
             "size": {
                 "width": 16,
                 "height": 16
-            }
+            },
+            "font": "Icons",
+            "text": "\u0020"
         }
     ]
 }

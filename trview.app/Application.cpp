@@ -2,7 +2,6 @@
 
 #include "Resources/resource.h"
 #include "Resources/DefaultShaders.h"
-#include "Resources/DefaultFonts.h"
 #include "Resources/DefaultTextures.h"
 
 #include <external/boost/di.hpp>
@@ -25,6 +24,7 @@
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
 #include <trview.app/Settings/IStartupOptions.h>
+#include <trview.ui.render/DefaultFonts.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -621,7 +621,7 @@ namespace trview
         load_default_shaders(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IShaderStorage>>());
-        load_default_fonts(
+        ui::render::load_default_fonts(
             injector.create<std::shared_ptr<graphics::IDevice>>(),
             injector.create<std::shared_ptr<IFontFactory>>());
         load_default_textures(

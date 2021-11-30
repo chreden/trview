@@ -1,9 +1,0 @@
-unknown_icon 131
-tomb3_icon 130
-tomb2_icon 133
-tomb1_icon 134
-tomb4_icon 135
-tomb5_icon 136
-numeric_up 137
-numeric_down 138
-settings 142

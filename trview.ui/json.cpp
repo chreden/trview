@@ -110,6 +110,7 @@ namespace trview
                     auto button = std::make_unique<Button>(position, size, to_utf16(text));
                     button->set_text_background_colour(text_background_colour);
                     button->set_text_colour(text_colour);
+                    button->set_font(read_attribute<std::string>(json, "font", "Arial"));
                     control = std::move(button);
                 }
                 else if (type == "checkbox")

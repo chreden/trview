@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include <trview.common/Resources.h>
 #include <external/DirectXTK/Inc/WICTextureLoader.h>
+#include <trview.common/Strings.h>
 
 using namespace Microsoft::WRL;
 
@@ -123,19 +124,19 @@ namespace trview
             return create_texture(device, 1, 1, colour);
         }
 
-        Texture load_texture_from_resource(const graphics::IDevice& device, int resource_id)
+        Texture load_texture_from_resource(const graphics::IDevice& device, const std::wstring& name)
         {
             using namespace Microsoft::WRL;
 
             ComPtr<ID3D11Resource> resource;
             ComPtr<ID3D11ShaderResourceView> view;
 
-            auto resource_memory = get_resource_memory(resource_id, L"PNG");
+            auto resource_memory = get_resource_memory(name.c_str(), L"TEXTURE");
             DirectX::CreateWICTextureFromMemory(device.device().Get(), resource_memory.data, resource_memory.size, &resource, &view);
 
             if (!resource)
             {
-                std::string error("Could not load embedded texture with ID '" + std::to_string(resource_id) + "'");
+                std::string error("Could not load embedded texture with ID '" + to_utf8(name) + "'");
                 throw std::exception(error.c_str());
             }
 

@@ -25,6 +25,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ButtonNode.h" />
+    <ClInclude Include="DefaultFonts.h" />
     <ClInclude Include="di.h" />
     <ClInclude Include="di.hpp" />
     <ClInclude Include="ImageNode.h" />
@@ -34,7 +35,6 @@
     <ClInclude Include="MapRenderer.h" />
     <ClInclude Include="Mocks\IMapRenderer.h" />
     <ClInclude Include="Mocks\IRenderer.h" />
-    <ClInclude Include="NumericUpDownNode.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderNode.h" />
     <ClInclude Include="Resources/resource.h" />
@@ -43,12 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ButtonNode.cpp" />
+    <ClCompile Include="DefaultFonts.cpp" />
     <ClCompile Include="ImageNode.cpp" />
     <ClCompile Include="IMapRenderer.cpp" />
     <ClCompile Include="IRenderer.cpp" />
     <ClCompile Include="LabelNode.cpp" />
     <ClCompile Include="MapRenderer.cpp" />
-    <ClCompile Include="NumericUpDownNode.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderNode.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +69,14 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources/trview.ui.render.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Files\Fonts\arial7.bin" />
+    <None Include="Resources\Files\Fonts\arial8.bin" />
+    <None Include="Resources\Files\Fonts\icons8.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\Files\Fonts\icons8.bmp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

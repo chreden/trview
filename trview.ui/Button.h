@@ -85,6 +85,8 @@ namespace trview
 
             void set_images(const graphics::Texture& up, const graphics::Texture& down);
 
+            void set_font(const std::string& font);
+
             /// Get the text if set.
             /// @returns The text.
             std::wstring text() const;

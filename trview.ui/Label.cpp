@@ -81,5 +81,15 @@ namespace trview
         {
             return !_measurer || _measurer->is_valid_character(character);
         }
+
+        std::string Label::font() const
+        {
+            return _font;
+        }
+
+        void Label::set_font(const std::string& font)
+        {
+            _font = font;
+        }
     }
 }

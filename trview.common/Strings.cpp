@@ -1,4 +1,5 @@
 #include "Strings.h"
+#include <algorithm>
 
 namespace trview
 {
@@ -40,5 +41,12 @@ namespace trview
     bool is_link(const std::wstring& text)
     {
         return text.find(L"http://") == 0 || text.find(L"https://") == 0 || text.find(L"www.") == 0;
+    }
+
+    std::string to_lowercase(const std::string& value)
+    {
+        std::string result;
+        std::transform(value.begin(), value.end(), std::back_inserter(result), std::tolower);
+        return result;
     }
 }
