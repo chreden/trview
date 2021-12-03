@@ -38,6 +38,7 @@
     <ClInclude Include="Layouts\ILayout.h" />
     <ClInclude Include="Layouts\StackLayout.h" />
     <ClInclude Include="Listbox.h" />
+    <ClInclude Include="Mocks\IFontMeasurer.h" />
     <ClInclude Include="Mocks\Input\IInput.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="Scrollbar.h" />

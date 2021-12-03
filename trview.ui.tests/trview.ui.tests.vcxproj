@@ -166,6 +166,9 @@
     <ClCompile Include="WindowTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
+      <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
     </ProjectReference>
