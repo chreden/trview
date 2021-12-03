@@ -5,6 +5,8 @@ namespace trview
 {
     namespace ui
     {
+        const std::string Button::Names::text{ "text" };
+
         namespace Colours
         {
             const Colour Background{ 0.25f, 0.25f, 0.25f };
@@ -15,6 +17,7 @@ namespace trview
             : Window(position, size, Colours::Background)
         {
             _text = add_child(std::make_unique<Label>(Point(2, 2), size - Size(4, 4), Colours::Background, text, 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
+            _text->set_name(Names::text);
             set_handles_hover(true);
         }
 
@@ -87,6 +90,11 @@ namespace trview
             if (_text)
             {
                 _text->set_text(text);
+            }
+            else
+            {
+                _text = add_child(std::make_unique<Label>(Point(2, 2), size() - Size(4, 4), Colours::Background, text, 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre));
+                _text->set_name(Names::text);
             }
         }
 

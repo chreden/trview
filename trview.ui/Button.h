@@ -19,6 +19,11 @@ namespace trview
         class Button : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string text;
+            };
+
             /// Creates a new button with a label.
             /// @param position The position of the new element.
             /// @param size The size of the new element.

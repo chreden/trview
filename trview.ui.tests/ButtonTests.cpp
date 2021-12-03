@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <trview.ui/Button.h>
+#include <trview.ui/Label.h>
 #include <trview.ui/json.h>
 
 using namespace trview;
@@ -44,6 +45,20 @@ TEST(Button, SetText)
 
     button.set_text(L"Updated");
     ASSERT_EQ(text->text(), L"Updated");
+}
+
+TEST(Button, UpdateButtonToHaveText)
+{
+    Button button(Size(10, 10));
+
+    auto text = button.find<Label>(Button::Names::text);
+    ASSERT_EQ(text, nullptr);
+
+    button.set_text(L"Test");
+
+    text = button.find<Label>(Button::Names::text);
+    ASSERT_NE(text, nullptr);
+    ASSERT_EQ(text->text(), L"Test");
 }
 
 TEST(Button, UpdateButtonToHaveText)
