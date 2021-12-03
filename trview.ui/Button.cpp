@@ -1,6 +1,5 @@
 #include "Button.h"
 #include "Label.h"
-#include "Image.h"
 
 namespace trview
 {
@@ -10,13 +9,6 @@ namespace trview
         {
             const Colour Background{ 0.25f, 0.25f, 0.25f };
             const Colour Highlight{ 0.0f, 0.05f, 0.05f, 0.05f };
-        }
-
-        Button::Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image)
-            : Window(position, size, Colour::Transparent), _up_image(up_image), _down_image(down_image), _text(nullptr)
-        {
-            _image = add_child(std::make_unique<Image>(size));
-            _image->set_texture(up_image);
         }
 
         Button::Button(Point position, Size size, const std::wstring& text)
@@ -38,11 +30,6 @@ namespace trview
 
         Button::Button(const Size& size, const std::wstring& text)
             : Button(Point(), size, text)
-        {
-        }
-
-        Button::Button(const Size& size, graphics::Texture up_image, graphics::Texture down_image)
-            : Button(Point(), size, up_image, down_image)
         {
         }
 
@@ -144,19 +131,6 @@ namespace trview
                 return _text->background_colour();
             }
             return std::optional<Colour>();
-        }
-
-        void Button::set_images(const graphics::Texture& up, const graphics::Texture& down)
-        {
-            if (!_image)
-            {
-                _image = add_child(std::make_unique<Image>(size()));
-            }
-
-            _up_image = up;
-            _down_image = down;
-            _image->set_texture(up);
-            on_invalidate();
         }
 
         void Button::set_font(const std::string& font)

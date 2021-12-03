@@ -3,12 +3,7 @@
 
 #pragma once
 
-#include <trview.graphics/Texture.h>
-#include <trview.common/Event.h>
-#include <trview.common/Colour.h>
-
 #include "Window.h"
-
 #include <optional>
 
 namespace trview
@@ -24,13 +19,6 @@ namespace trview
         class Button : public Window
         {
         public:
-            /// Creates a new button with provided textures.
-            /// @param position The position of the new element.
-            /// @param size The size of the new element.
-            /// @param up_image The texture to use when the button is in the up state.
-            /// @param down_image The texture to use when the button is in the down state.
-            Button(Point position, Size size, graphics::Texture up_image, graphics::Texture down_image);
-
             /// Creates a new button with a label.
             /// @param position The position of the new element.
             /// @param size The size of the new element.
@@ -50,12 +38,6 @@ namespace trview
             /// @param size The size of the new element.
             /// @param text The text to display on the button.
             Button(const Size& size, const std::wstring& text);
-
-            /// Creates a new button with provided textures.
-            /// @param size The size of the new element.
-            /// @param up_image The texture to use when the button is in the up state.
-            /// @param down_image The texture to use when the button is in the down state.
-            Button(const Size& size, graphics::Texture up_image, graphics::Texture down_image);
 
             /// Destructor for the button.
             virtual ~Button() = default;
@@ -83,8 +65,6 @@ namespace trview
             /// @param colour The foreground colour.
             void set_text_colour(const Colour& colour);
 
-            void set_images(const graphics::Texture& up, const graphics::Texture& down);
-
             void set_font(const std::string& font);
 
             /// Get the text if set.
@@ -106,12 +86,9 @@ namespace trview
             virtual void mouse_leave() override;
             virtual bool clicked(Point position) override;
         private:
-            graphics::Texture _up_image;
-            graphics::Texture _down_image;
             float _border_thickness{ 1.0f };
             Label* _text;
             Colour _previous_colour;
-            Image* _image{ nullptr };
         };
     }
 }
