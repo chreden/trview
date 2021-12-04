@@ -260,6 +260,8 @@ namespace trview
             /// </summary>
             /// <param name="delta">The elapsed time since the previous update.</param>
             void update(float delta);
+
+            const ILayout* const layout() const;
         protected:
             /// To be called after a child element has been added to the control.
             /// @param child_element The element that was added.

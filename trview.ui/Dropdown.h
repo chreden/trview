@@ -27,6 +27,8 @@ namespace trview
                 std::wstring text;
                 Colour       foreground{ 1.0f, 0.25f, 0.25f, 0.25f };
                 Colour       background{ Colour::White };
+
+                bool operator ==(const Value& other) const;
             };
 
             /// Create a new dropdown box.
@@ -79,6 +81,10 @@ namespace trview
             Event<std::wstring> on_value_selected;
 
             virtual void lost_focus(Control* new_focus) override;
+
+            std::vector<Value> values() const;
+            Colour text_colour() const;
+            Colour text_background_colour() const;
         private:
             void update_dropdown();
 
@@ -86,5 +92,7 @@ namespace trview
             ui::Button* _button;
             ui::Listbox* _dropdown;
         };
+
+        std::ostream& operator<<(std::ostream& os, const Dropdown::Value value);
     }
 }

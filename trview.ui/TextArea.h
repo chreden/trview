@@ -79,6 +79,9 @@ namespace trview
             void set_scrollbar_visible(bool value);
             void highlight_all();
             void clear_highlight();
+            bool scrollbar_visible() const;
+            graphics::TextAlignment text_alignment() const;
+            Mode line_mode() const;
         private:
             struct LineEntry
             {

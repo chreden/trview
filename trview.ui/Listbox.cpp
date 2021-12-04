@@ -423,5 +423,25 @@ namespace trview
         {
             return _selected_item;
         }
+
+        bool Listbox::show_headers() const
+        {
+            return _show_headers;
+        }
+
+        bool Listbox::show_scrollbar() const
+        {
+            return _show_scrollbar;
+        }
+
+        bool Listbox::show_highlight() const
+        {
+            return _show_highlight;
+        }
+
+        bool Listbox::enable_sorting() const
+        {
+            return _enable_sorting;
+        }
     }
 }

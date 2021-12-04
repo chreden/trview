@@ -45,6 +45,12 @@ namespace trview
             /// </summary>
             /// <param name="margin">The margin to apply.</param>
             void set_margin(const Size& margin);
+
+            SizeMode size_mode() const;
+            float padding() const;
+            Direction direction() const;
+            Size margin() const;
+            SizeDimension size_dimension() const;
         private:
             Point get_next_position() const;
             Point get_next_position(Point previous_position, Size previous_size) const;

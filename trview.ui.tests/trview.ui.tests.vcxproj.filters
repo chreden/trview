@@ -7,5 +7,13 @@
     <ClCompile Include="ListboxTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="StackLayoutTests.cpp" />
+    <ClCompile Include="ImageTests.cpp" />
+    <ClCompile Include="SliderTests.cpp" />
+    <ClCompile Include="LabelTests.cpp" />
+    <ClCompile Include="GroupBoxTests.cpp" />
+    <ClCompile Include="NumericUpDownTests.cpp" />
+    <ClCompile Include="TextAreaTests.cpp" />
+    <ClCompile Include="DropdownTests.cpp" />
+    <ClCompile Include="WindowTests.cpp" />
   </ItemGroup>
 </Project>

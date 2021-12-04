@@ -20,5 +20,15 @@ namespace trview
                 ++_cells;
             };
         }
+
+        uint32_t GridLayout::columns() const
+        {
+            return _columns;
+        }
+
+        uint32_t GridLayout::rows() const
+        {
+            return _rows;
+        }
     }
 }

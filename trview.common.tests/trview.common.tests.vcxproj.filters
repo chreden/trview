@@ -3,9 +3,10 @@
   <ItemGroup>
     <ClCompile Include="TimerTests.cpp" />
     <ClCompile Include="EventTests.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="AlgorithmsTests.cpp" />
+    <ClCompile Include="SizeTests.cpp" />
+    <ClCompile Include="PointTests.cpp" />
+    <ClCompile Include="ColourTests.cpp" />
   </ItemGroup>
 </Project>

@@ -20,8 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlgorithmsTests.cpp" />
+    <ClCompile Include="ColourTests.cpp" />
     <ClCompile Include="EventTests.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PointTests.cpp" />
+    <ClCompile Include="SizeTests.cpp" />
     <ClCompile Include="TimerTests.cpp" />
   </ItemGroup>
   <ItemGroup>

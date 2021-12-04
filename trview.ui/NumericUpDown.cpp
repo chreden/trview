@@ -73,5 +73,15 @@ namespace trview
         {
             return _value;
         }
+
+        int32_t NumericUpDown::min_value() const
+        {
+            return _minimum;
+        }
+
+        int32_t NumericUpDown::max_value() const
+        {
+            return _maximum;
+        }
     }
 }

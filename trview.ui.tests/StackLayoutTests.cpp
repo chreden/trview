@@ -2,6 +2,7 @@
 
 #include <trview.ui/Window.h>
 #include <trview.ui/Layouts/StackLayout.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -122,4 +123,23 @@ TEST(StackLayout, Margin)
 
     auto element = control.add_child(std::make_unique<ui::Window>(Size(10, 10), Colour::White));
     ASSERT_EQ(element->position(), Point(0, 5));
+}
+
+TEST(StackLayout, LoadFromJson)
+{
+    const std::string json = "{\"type\":\"window\", \"layout\":{\"type\":\"stack\",\"size_mode\":\"manual\",\"padding\":6,\"direction\":\"horizontal\",\"margin\":{\"width\":10,\"height\":20},\"auto_size_dimension\":\"width\"}}";
+
+    auto loaded = ui::load_from_json(json);
+    ASSERT_NE(loaded, nullptr);
+
+    const auto layout = loaded->layout();
+    ASSERT_NE(layout, nullptr);
+    auto stack = dynamic_cast<const StackLayout*>(layout);
+    ASSERT_NE(stack, nullptr);
+
+    ASSERT_EQ(stack->size_mode(), SizeMode::Manual);
+    ASSERT_EQ(stack->padding(), 6.0);
+    ASSERT_EQ(stack->direction(), StackLayout::Direction::Horizontal);
+    ASSERT_EQ(stack->margin(), Size(10, 20));
+    ASSERT_EQ(stack->size_dimension(), SizeDimension::Width);
 }

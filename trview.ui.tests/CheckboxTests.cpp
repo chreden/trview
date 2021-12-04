@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/json.h>
 
 using namespace trview;
 using namespace trview::ui;
@@ -60,4 +61,18 @@ TEST(Checkbox, StateChangeCycle)
     ASSERT_EQ((std::size_t)2u, states.size());
     ASSERT_EQ(true, static_cast<bool>(states[0]));
     ASSERT_EQ(false, static_cast<bool>(states[1]));
+}
+
+TEST(Checkbox, LoadFromJson)
+{
+    const std::string json = "{ \"type\":\"checkbox\", \"text\":\"Test text\", \"state\":true }";
+
+    auto loaded = ui::load_from_json(json);
+    ASSERT_NE(loaded, nullptr);
+
+    auto checkbox = dynamic_cast<Checkbox*>(loaded.get());
+    ASSERT_NE(checkbox, nullptr);
+
+    ASSERT_EQ(checkbox->text(), L"Test text");
+    ASSERT_EQ(checkbox->state(), true);
 }
