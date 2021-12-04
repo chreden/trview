@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/Label.h>
 #include <trview.ui/json.h>
+#include <optional>
 
 using namespace trview;
 using namespace trview::ui;
@@ -75,4 +77,34 @@ TEST(Checkbox, LoadFromJson)
 
     ASSERT_EQ(checkbox->text(), L"Test text");
     ASSERT_EQ(checkbox->state(), true);
+}
+
+TEST(Checkbox, Text)
+{
+    Checkbox checkbox(Point(), L"Test");
+    ASSERT_EQ(checkbox.text(), L"Test");
+
+    auto text = checkbox.find<Label>(Checkbox::Names::text);
+    ASSERT_NE(text, nullptr);
+    ASSERT_EQ(text->text(), L"Test");
+}
+
+TEST(Checkbox, Enabled)
+{
+    Checkbox checkbox;
+
+    std::optional<bool> raised;
+    auto token = checkbox.on_state_changed += [&](bool state)
+    {
+        raised = state;
+    };
+
+    ASSERT_TRUE(checkbox.enabled());
+    checkbox.set_enabled(false);
+    ASSERT_FALSE(checkbox.enabled());
+    ASSERT_FALSE(checkbox.state());
+
+    checkbox.clicked(Point());
+    ASSERT_FALSE(raised.has_value());
+    ASSERT_FALSE(checkbox.state());
 }
