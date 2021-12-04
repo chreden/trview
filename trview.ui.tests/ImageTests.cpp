@@ -12,3 +12,14 @@ TEST(Image, LoadFromJson)
     ASSERT_NE(image, nullptr);
     ASSERT_NE(dynamic_cast<Image*>(image.get()), nullptr);
 }
+
+TEST(Image, Texture)
+{
+    Image image{ Size() };
+
+    graphics::Texture texture;
+    texture.set_name("Test");
+
+    image.set_texture(texture);
+    ASSERT_EQ(image.texture().name(), "Test");
+}
