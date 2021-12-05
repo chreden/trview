@@ -1,5 +1,4 @@
 #include "Button.h"
-#include "Label.h"
 
 namespace trview
 {

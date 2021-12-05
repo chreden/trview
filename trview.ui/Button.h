@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Window.h"
+#include "Label.h"
 #include <optional>
 
 namespace trview
@@ -12,9 +13,6 @@ namespace trview
 
     namespace ui
     {
-        class Label;
-        class Image;
-
         /// UI element that provides a clickable area.
         class Button : public Window
         {

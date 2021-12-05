@@ -4,6 +4,8 @@ namespace trview
 {
     namespace ui
     {
+        const std::string Scrollbar::Names::blob{ "blob" };
+
         Scrollbar::Scrollbar(const Size& size, const Colour& background_colour)
             : Scrollbar(Point(), size, background_colour)
         {
@@ -13,6 +15,7 @@ namespace trview
             : Window(position, size, background_colour)
         {
             _blob = add_child(std::make_unique<Window>(Point(1, 1), Size(size.width - 2, 10), Colour(0.2f, 0.2f, 0.2f)));
+            _blob->set_name(Names::blob);
         }
 
         void Scrollbar::set_range(float range_start, float range_end, float maximum)

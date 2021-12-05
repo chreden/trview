@@ -13,6 +13,11 @@ namespace trview
         class Scrollbar final : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string blob;
+            };
+
             /// Create a new scrollbar.
             /// @param size The size of the new scrollbar.
             /// @param background_colour The background colour of the scrollbar.
