@@ -25,7 +25,23 @@ TEST(TextArea, LoadFromJson)
 
 TEST(TextArea, OnTextChangedRaised)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+
+    std::vector<std::wstring> raised;
+    auto token = text_area.on_text_changed += [&](const auto& value)
+    {
+        raised.push_back(value);
+    };
+
+    for (const auto& c : std::wstring(L"Test"))
+    {
+        text_area.key_char(c);
+    }
+
+    ASSERT_EQ(raised.size(), 4);
+    const std::vector<std::wstring> expected{ L"T", L"Te", L"Tes", L"Test" };
+    ASSERT_EQ(raised, expected);
 }
 
 TEST(TextArea, OnEnterRaised)
@@ -103,22 +119,47 @@ TEST(TextArea, OnTabRaised)
 
 TEST(TextArea, OnTabNotRaisedInMultiLine)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+
+    bool raised = false;
+    auto token = text_area.on_click += [&]()
+    {
+        raised = true;
+    };
+
+    text_area.key_char(VK_TAB);
+    ASSERT_FALSE(raised);
 }
 
 TEST(TextArea, OnClickRaised)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.set_text(L"Test");
+
+    bool raised = false;
+    auto token = text_area.on_click += [&]()
+    {
+        raised = true;
+    };
+
+    text_area.clicked(Point());
+    ASSERT_TRUE(raised);
 }
 
 TEST(TextArea, Text)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    ASSERT_EQ(text_area.text(), L"");
+    text_area.set_text(L"Test message");
+    ASSERT_EQ(text_area.text(), L"Test message");
 }
 
-TEST(TextArea, Mode) 
+TEST(TextArea, Mode)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    ASSERT_EQ(text_area.line_mode(), TextArea::Mode::MultiLine);
+    text_area.set_mode(TextArea::Mode::SingleLine);
+    ASSERT_EQ(text_area.line_mode(), TextArea::Mode::SingleLine);
 }
 
 TEST(TextArea, ReadOnly)
@@ -160,7 +201,14 @@ TEST(TextArea, CopyNoSelection)
 
 TEST(TextArea, DeleteSelection)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"Test message");
+
+    text_area.key_down(VK_HOME, false, false);
+    text_area.key_down(VK_RIGHT, true, true);
+    text_area.key_down(VK_DELETE, false, false);
+    ASSERT_EQ(text_area.text(), L" message");
 }
 
 TEST(TextArea, Paste)
@@ -206,7 +254,10 @@ TEST(TextArea, LinkWithCtrlEnter)
 
 TEST(TextArea, TextAlignment)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    ASSERT_EQ(text_area.text_alignment(), graphics::TextAlignment::Left);
+    text_area.set_text_alignment(graphics::TextAlignment::Right);
+    ASSERT_EQ(text_area.text_alignment(), graphics::TextAlignment::Right);
 }
 
 TEST(TextArea, Typing)
