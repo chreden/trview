@@ -26,3 +26,11 @@ TEST(Window, LoadFromJson)
     auto child = window->find<Control>("child");
     ASSERT_NE(child, nullptr);
 }
+
+TEST(Window, BackgroundColour)
+{
+    ui::Window window(Size(), Colour::White);
+    ASSERT_EQ(window.background_colour(), Colour::White);
+    window.set_background_colour(Colour::Red);
+    ASSERT_EQ(window.background_colour(), Colour::Red);
+}
