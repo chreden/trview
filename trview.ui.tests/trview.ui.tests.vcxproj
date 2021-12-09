@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="ButtonTests.cpp" />
     <ClCompile Include="CheckboxTests.cpp" />
+    <ClCompile Include="ControlTests.cpp" />
     <ClCompile Include="DropdownTests.cpp" />
     <ClCompile Include="GridLayoutTests.cpp" />
     <ClCompile Include="GroupBoxTests.cpp" />
