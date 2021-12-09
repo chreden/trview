@@ -8,18 +8,17 @@ namespace trview
 {
     Tooltip::Tooltip(ui::Control& control)
     {
-        auto container = std::make_unique<ui::Window>(Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f));
+        _container = control.add_child(std::make_unique<ui::Window>(Size(), Colour(0.5f, 0.0f, 0.0f, 0.0f)));
         auto layout = std::make_unique<StackLayout>();
         layout->set_margin(Size(5, 5));
-        container->set_layout(std::move(layout));
-        container->set_visible(false);
-        container->set_handles_input(false);
 
-        auto label = std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto);
-        label->set_handles_input(false);
+        _container->set_layout(std::move(layout));
+        _container->set_visible(false);
+        _container->set_handles_input(false);
+        _container->set_z(-1);
 
-        _label = container->add_child(std::move(label));
-        _container = control.add_child(std::move(container));
+        _label = _container->add_child(std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto));
+        _label->set_handles_input(false);
     }
 
     void Tooltip::set_position(const Point& position)

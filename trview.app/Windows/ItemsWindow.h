@@ -10,6 +10,7 @@
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.app/UI/IBubble.h>
 #include <trview.ui/ILoader.h>
+#include <trview.app/UI/Tooltip.h>
 
 namespace trview
 {
@@ -64,6 +65,7 @@ namespace trview
         void set_sync_item(bool value);
         std::unique_ptr<ui::Control> create_left_panel(const ui::ILoader& ui_source);
         std::unique_ptr<ui::Control> create_right_panel(const ui::ILoader& ui_source);
+        void bind_tooltip();
 
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
@@ -81,5 +83,6 @@ namespace trview
         std::optional<Item> _selected_item;
         std::shared_ptr<IClipboard> _clipboard;
         std::unique_ptr<IBubble> _bubble;
+        std::unique_ptr<Tooltip> _tooltip;
     };
 }

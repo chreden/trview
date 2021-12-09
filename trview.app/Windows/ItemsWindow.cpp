@@ -34,7 +34,7 @@ namespace trview
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
         const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const std::shared_ptr<ui::ILoader>& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard),
-        _bubble(bubble_source(*_ui))
+        _bubble(bubble_source(*_ui)), _tooltip(std::make_unique<Tooltip>(*_ui))
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
         set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
@@ -207,6 +207,8 @@ namespace trview
         stats.push_back(make_item(L"OCB", std::to_wstring(item.ocb())));
         _stats_list->set_items(stats);
 
+        bind_tooltip();
+
         std::vector<Listbox::Item> triggers;
         for (auto& trigger : item.triggers())
         {
@@ -291,5 +293,26 @@ namespace trview
     void ItemsWindow::update(float delta)
     {
         _ui->update(delta);
+    }
+
+    void ItemsWindow::bind_tooltip()
+    {
+        using namespace ui;
+
+        const auto items = _stats_list->items();
+        for (uint32_t i = 0; i < items.size(); ++i)
+        {
+            auto row = _stats_list->find<Listbox::Row>(Listbox::Names::row_name_format + std::to_string(i));
+            auto cell = row->find<Button>(Listbox::Row::Names::cell_name_format + "Name");
+            if (cell->text() == L"OCB")
+            {
+                _token_store += cell->on_click += [this, cell]()
+                {
+                    _tooltip->set_position(cell->absolute_position());
+                    _tooltip->set_text(L"OCB is a number");
+                    _tooltip->set_visible(true);
+                };
+            }
+        }
     }
 }
