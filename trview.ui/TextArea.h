@@ -14,6 +14,11 @@ namespace trview
         class TextArea final : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string scrollbar;
+            };
+
             enum class Mode
             {
                 MultiLine,

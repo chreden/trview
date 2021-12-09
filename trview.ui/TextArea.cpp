@@ -6,6 +6,8 @@ namespace trview
 {
     namespace ui
     {
+        const std::string TextArea::Names::scrollbar{ "scrollbar" };
+
         TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, const std::shared_ptr<IShell>& shell)
             : TextArea(Point(), size, background_colour, text_colour, shell)
         {
@@ -21,6 +23,7 @@ namespace trview
             _cursor = add_child(std::make_unique<Window>(Size(1, 14), text_colour));
             _cursor->set_visible(focused());
             _scrollbar = add_child(std::make_unique<Scrollbar>(Point(size.width - 10, 0), Size(10, _area->size().height), Colour(0.3f, 0.3f, 0.3f)));
+            _scrollbar->set_name(Names::scrollbar);
             _scrollbar->set_visible(false);
             set_handles_input(true);
 

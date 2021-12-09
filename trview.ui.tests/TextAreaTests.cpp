@@ -272,3 +272,53 @@ TEST(TextArea, Typing)
 
     ASSERT_EQ(text_area.text(), L"Test message");
 }
+
+TEST(TextArea, Cut)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.set_text(L"Test message");
+    text_area.gained_focus();
+ 
+    text_area.key_down(VK_HOME, false, false);
+    text_area.key_down(VK_RIGHT, true, true);
+
+    std::wstring value;
+    bool cut = text_area.cut(value);
+
+    ASSERT_TRUE(cut);
+    ASSERT_EQ(value, L"Test");
+    ASSERT_EQ(text_area.text(), L" message");
+}
+
+TEST(TextArea, CutNoSelection)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.set_text(L"Test message");
+    text_area.gained_focus();
+
+    std::wstring value;
+    bool cut = text_area.cut(value);
+
+    ASSERT_FALSE(cut);
+    ASSERT_EQ(value, L"");
+    ASSERT_EQ(text_area.text(), L"Test message");
+}
+
+TEST(TextArea, ScrollbarVisible)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    ASSERT_FALSE(text_area.scrollbar_visible());
+
+    auto scrollbar = text_area.find<Scrollbar>(TextArea::Names::scrollbar);
+    ASSERT_NE(scrollbar, nullptr);
+    ASSERT_FALSE(scrollbar->visible());
+
+    text_area.set_scrollbar_visible(true);
+    ASSERT_FALSE(scrollbar->visible());
+
+    text_area.set_text(L"This\nis\na\nmutliline\nmessage");
+    ASSERT_TRUE(scrollbar->visible());
+
+    text_area.set_scrollbar_visible(false);
+    ASSERT_FALSE(scrollbar->visible());
+}
