@@ -197,11 +197,11 @@ TEST(TextArea, LinkWithCtrlEnter)
     auto shell = std::make_shared<MockShell>();
     EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
 
-    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, shell);
     text_area.gained_focus();
     text_area.set_text(L"http://example.com");
     text_area.key_down(VK_HOME, false, false);
-    text_area.key_down(VK_RETURN, true, false);
+    text_area.key_char(0xA);
 }
 
 TEST(TextArea, TextAlignment)
