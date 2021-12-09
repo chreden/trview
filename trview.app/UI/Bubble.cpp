@@ -5,17 +5,12 @@ using namespace trview::graphics;
 
 namespace trview
 {
-    namespace
-    {
-        const Colour Background{ Colour::Grey };
-    }
-
     const float Bubble::FadeTime{ 0.66666666666666666666666666666667f };
     const std::string Bubble::Names::Bubble{ "Bubble" };
 
     Bubble::Bubble(Control& control)
     {
-        _label = control.add_child(std::make_unique<Label>(Size(40, 20), Background, L"Copied", 8, TextAlignment::Centre, ParagraphAlignment::Centre));
+        _label = control.add_child(std::make_unique<Label>(Size(40, 20), Colour::Grey, L"Copied", 8, TextAlignment::Centre, ParagraphAlignment::Centre));
         _label->set_name(Names::Bubble);
         _label->set_visible(false);
         _label->set_z(-1);
@@ -45,7 +40,7 @@ namespace trview
     void Bubble::show(const Point& position)
     {
         _label->set_position(position - Point(_label->size().width * 0.5f, 0));
-        _label->set_background_colour(Background);
+        _label->set_background_colour(Colour::Grey);
         _label->set_text_colour(Colour::White);
         _label->set_visible(true);
     }
