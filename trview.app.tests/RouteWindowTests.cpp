@@ -686,5 +686,20 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
 
 TEST(RouteWindow, RandomizerTextAreasUseShell)
 {
-    FAIL();
+    auto shell = std::make_shared<MockShell>();
+    EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
+
+    auto window = register_test_module().with_shell(shell).build();
+
+    RandomizerSettings settings;
+    settings.settings["test_text"] = { "test_text", RandomizerSettings::Setting::Type::String };
+
+    window->set_randomizer_enabled(true);
+    window->set_randomizer_settings(settings);
+
+    auto text_area = window->root_control()->find<TextArea>("test_text");
+    ASSERT_NE(text_area, nullptr);
+
+    text_area->set_text(L"http://example.com");
+    text_area->clicked(Point(5, 5));
 }
