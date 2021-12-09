@@ -36,6 +36,9 @@ namespace trview
         : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard),
         _bubble(bubble_source(*_ui)), _tooltip(std::make_unique<Tooltip>(*_ui))
     {
+        _tips[L"OCB"] = L"Changes entity behaviour";
+        _tips[L"Clear Body"] = L"Removed when Bodybag is triggered";
+
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
         set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
     }
@@ -293,6 +296,16 @@ namespace trview
     void ItemsWindow::update(float delta)
     {
         _ui->update(delta);
+
+        if (_tooltip_timer.has_value())
+        {
+            _tooltip_timer = _tooltip_timer.value() + delta;
+            if (_tooltip_timer.value() > 0.6f)
+            {
+                _tooltip->set_visible(true);
+                _tooltip_timer.reset();
+            }
+        }
     }
 
     void ItemsWindow::bind_tooltip()
@@ -302,15 +315,28 @@ namespace trview
         const auto items = _stats_list->items();
         for (uint32_t i = 0; i < items.size(); ++i)
         {
-            auto row = _stats_list->find<Listbox::Row>(Listbox::Names::row_name_format + std::to_string(i));
-            auto cell = row->find<Button>(Listbox::Row::Names::cell_name_format + "Name");
-            if (cell->text() == L"OCB")
+            const auto row = _stats_list->find<Listbox::Row>(Listbox::Names::row_name_format + std::to_string(i));
+            const auto cell = row->find<Button>(Listbox::Row::Names::cell_name_format + "Name");
+            const auto found = _tips.find(cell->text());
+            if (found != _tips.end())
             {
-                _token_store += cell->on_click += [this, cell]()
+                const auto tip = found->second;
+                _token_store += cell->on_mouse_enter += [this, tip]()
                 {
-                    _tooltip->set_position(cell->absolute_position());
-                    _tooltip->set_text(L"OCB is a number");
-                    _tooltip->set_visible(true);
+                    _tooltip_timer = 0.0f;
+                    _tooltip->set_position(client_cursor_position(window()) + Point(0, 20));
+                    _tooltip->set_text(tip);
+                };
+
+                _token_store += cell->on_mouse_move += [this, cell]()
+                {
+                    _tooltip->set_position(client_cursor_position(window()) + Point(0, 20));
+                };
+
+                _token_store += cell->on_mouse_leave += [this, cell]()
+                {
+                    _tooltip_timer.reset();
+                    _tooltip->set_visible(false);
                 };
             }
         }

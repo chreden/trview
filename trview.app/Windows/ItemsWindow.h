@@ -84,5 +84,8 @@ namespace trview
         std::shared_ptr<IClipboard> _clipboard;
         std::unique_ptr<IBubble> _bubble;
         std::unique_ptr<Tooltip> _tooltip;
+
+        std::unordered_map<std::wstring, std::wstring> _tips;
+        std::optional<float> _tooltip_timer;
     };
 }

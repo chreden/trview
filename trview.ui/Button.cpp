@@ -47,6 +47,7 @@ namespace trview
 
         void Button::mouse_enter()
         {
+            Control::mouse_enter();
             if (_text)
             {
                 // Store the old background colour so that if the background has been changed by a call
@@ -58,6 +59,7 @@ namespace trview
 
         void Button::mouse_leave()
         {
+            Control::mouse_leave();
             // Check that the button has the same background colour as when we changed to the highlight colour.
             if (_text && _text->background_colour() == _previous_colour + Colours::Highlight)
             {

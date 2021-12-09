@@ -195,6 +195,10 @@ namespace trview
             /// </summary>
             Event<float> on_update;
 
+            Event<> on_mouse_enter;
+            Event<> on_mouse_move;
+            Event<> on_mouse_leave;
+
             /// To be called when the mouse has been pressed down over the element.
             /// @param position The position of the mouse down relative to the control.
             /// @return True if the event was handled by the element.
