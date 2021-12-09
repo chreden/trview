@@ -1,15 +1,18 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/GroupBox.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.ui/Label.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(GroupBox, LoadFromJson)
 {
     const std::string json = "{\"type\":\"groupbox\",\"text\":\"Test\",\"border_colour\":\"red\"}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
     auto group_box = dynamic_cast<GroupBox*>(control.get());
     ASSERT_NE(group_box, nullptr);

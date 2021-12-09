@@ -2,6 +2,7 @@
 
 #include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
+#include <trview.common/Windows/IShell.h>
 
 namespace trview
 {
@@ -24,7 +25,7 @@ namespace trview
             /// @param background_colour The background colour of the text area.
             /// @param text_colour The text colour for the text area.
             /// @param text_alignment The text alignment of the label.
-            TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment = graphics::TextAlignment::Left);
+            TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, const std::shared_ptr<IShell>& shell);
 
             /// Create a text area.
             /// @param position The position to place the control.
@@ -32,7 +33,7 @@ namespace trview
             /// @param background_colour The background colour of the text area.
             /// @param text_colour The text colour for the text area.
             /// @param text_alignment The text alignment of the label.
-            explicit TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment = graphics::TextAlignment::Left);
+            explicit TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, const std::shared_ptr<IShell>& shell);
 
             /// Set the text in the text area to be the specified text.
             /// @param text The text to use.
@@ -82,6 +83,7 @@ namespace trview
             bool scrollbar_visible() const;
             graphics::TextAlignment text_alignment() const;
             Mode line_mode() const;
+            void set_text_alignment(graphics::TextAlignment alignment);
         private:
             struct LineEntry
             {
@@ -188,6 +190,7 @@ namespace trview
             bool _read_only{ false };
             int32_t _scroll_offset{ 0 };
             bool _scroll_visible{ false };
+            std::shared_ptr<IShell> _shell;
         };
     }
 }

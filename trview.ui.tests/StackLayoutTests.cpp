@@ -1,10 +1,13 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 
 #include <trview.ui/Window.h>
 #include <trview.ui/Layouts/StackLayout.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 // Tests that padding is correctly applied in between elements.
@@ -129,7 +132,7 @@ TEST(StackLayout, LoadFromJson)
 {
     const std::string json = "{\"type\":\"window\", \"layout\":{\"type\":\"stack\",\"size_mode\":\"manual\",\"padding\":6,\"direction\":\"horizontal\",\"margin\":{\"width\":10,\"height\":20},\"auto_size_dimension\":\"width\"}}";
 
-    auto loaded = ui::load_from_json(json);
+    auto loaded = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(loaded, nullptr);
 
     const auto layout = loaded->layout();

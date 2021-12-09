@@ -8,11 +8,11 @@ namespace trview
     const std::string GoTo::Names::group{ "group" };
     const std::string GoTo::Names::text_area{ "text_area" };
 
-    GoTo::GoTo(ui::Control& parent, const ui::UiSource& ui_source)
+    GoTo::GoTo(ui::Control& parent, const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        _window = parent.add_child(ui_source(IDR_UI_GO_TO));
+        _window = parent.add_child(ui_source.load_from_resource(IDR_UI_GO_TO));
         _group = _window->find<GroupBox>(Names::group);
         _text_area = _window->find<TextArea>(Names::text_area);
 

@@ -8,9 +8,9 @@ namespace trview
     const std::string Console::Names::log{ "log" };
     const std::string Console::Names::input{ "input" };
 
-    Console::Console(Control& parent, const UiSource& ui_source)
+    Console::Console(Control& parent, const ILoader& ui_source)
     {
-        _window = parent.add_child(ui_source(IDR_UI_CONSOLE));
+        _window = parent.add_child(ui_source.load_from_resource(IDR_UI_CONSOLE));
         
         _log = _window->find<TextArea>(Names::log);
         _token_store += _log->on_tab += [&](auto) { _input->on_focus_requested(); };

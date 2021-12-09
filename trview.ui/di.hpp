@@ -2,6 +2,7 @@
 
 #include <external/boost/di.hpp>
 #include "Input.h"
+#include "JsonLoader.h"
 
 namespace trview
 {
@@ -23,7 +24,8 @@ namespace trview
                                 injector.create<std::shared_ptr<IClipboard>>(),
                                 injector.create<input::IMouse::Source>()(window));
                         };
-                    })
+                    }),
+                di::bind<ILoader>.to<JsonLoader>()
             );
         }
     }

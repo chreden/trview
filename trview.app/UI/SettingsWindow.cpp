@@ -29,9 +29,9 @@ namespace trview
     const std::string SettingsWindow::Names::acceleration_rate = "AccelerationRate";
     const std::string SettingsWindow::Names::close = "Close";
 
-    SettingsWindow::SettingsWindow(Control& parent, const ui::UiSource& source)
+    SettingsWindow::SettingsWindow(Control& parent, const std::shared_ptr<ui::ILoader>& source)
     {
-        _window = parent.add_child(source(IDR_UI_SETTINGS_WINDOW));
+        _window = parent.add_child(source->load_from_resource(IDR_UI_SETTINGS_WINDOW));
 
         _vsync = _window->find<Checkbox>(Names::vsync);
         _vsync->on_state_changed += on_vsync;

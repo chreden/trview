@@ -6,13 +6,13 @@ namespace trview
 {
     namespace ui
     {
-        TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
-            : TextArea(Point(), size, background_colour, text_colour, text_alignment)
+        TextArea::TextArea(const Size& size, const Colour& background_colour, const Colour& text_colour, const std::shared_ptr<IShell>& shell)
+            : TextArea(Point(), size, background_colour, text_colour, shell)
         {
         }
 
-        TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, graphics::TextAlignment text_alignment)
-            : Window(position, size, background_colour), _text_colour(text_colour), _alignment(text_alignment)
+        TextArea::TextArea(const Point& position, const Size& size, const Colour& background_colour, const Colour& text_colour, const std::shared_ptr<IShell>& shell)
+            : Window(position, size, background_colour), _text_colour(text_colour), _shell(shell)
         {
             _area = add_child(std::make_unique<ui::Window>(Size(size.width - 10, size.height), background_colour));
             auto layout = std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Vertical, SizeMode::Manual);
@@ -140,7 +140,7 @@ namespace trview
             auto link = word_at_cursor(visual_to_logical(position_to_visual(position)));
             if (is_link(link))
             {
-                ShellExecute(0, 0, link.c_str(), 0, 0, SW_SHOW);
+                _shell->open(link);
             }
 
             on_click();
@@ -353,7 +353,7 @@ namespace trview
                     auto word = word_at_cursor(_logical_cursor);
                     if (is_link(word))
                     {
-                        ShellExecute(0, 0, word.c_str(), 0, 0, SW_SHOW);
+                        _shell->open(word);
                     }
                     return true;
                 }
@@ -1132,6 +1132,11 @@ namespace trview
         TextArea::Mode TextArea::line_mode() const
         {
             return _mode;
+        }
+
+        void TextArea::set_text_alignment(graphics::TextAlignment alignment)
+        {
+            _alignment = alignment;
         }
     }
 }

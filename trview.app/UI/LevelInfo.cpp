@@ -28,7 +28,7 @@ namespace trview
     const std::string LevelInfo::Names::name{ "name" };
     const std::string LevelInfo::Names::settings{ "settings" };
 
-    LevelInfo::LevelInfo(ui::Control& control, const ITextureStorage& texture_storage, const ui::UiSource& ui_source)
+    LevelInfo::LevelInfo(ui::Control& control, const ITextureStorage& texture_storage, const ui::ILoader& ui_source)
     {
         for (const auto& tex : texture_names)
         {
@@ -36,7 +36,7 @@ namespace trview
         }
 
         using namespace ui;
-        auto panel = control.add_child(ui_source(IDR_UI_LEVEL_INFO));
+        auto panel = control.add_child(ui_source.load_from_resource(IDR_UI_LEVEL_INFO));
         _version = panel->find<Image>(Names::version);
         _version->set_texture(get_version_image(trlevel::LevelVersion::Unknown));
 

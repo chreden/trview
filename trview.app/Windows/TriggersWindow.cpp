@@ -42,19 +42,19 @@ namespace trview
 
     TriggersWindow::TriggersWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
-        const ui::UiSource& ui_source)
+        const std::shared_ptr<ui::ILoader>& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", input_source, Size(520, 400)), _clipboard(clipboard),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;
-        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
+        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
     }
 
-    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel(const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        auto left_panel = ui_source(IDR_UI_TRIGGERS_WINDOW_LEFT_PANEL);
+        auto left_panel = ui_source.load_from_resource(IDR_UI_TRIGGERS_WINDOW_LEFT_PANEL);
 
         _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
@@ -111,11 +111,11 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel(const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        auto right_panel = ui_source(IDR_UI_TRIGGERS_WINDOW_RIGHT_PANEL);
+        auto right_panel = ui_source.load_from_resource(IDR_UI_TRIGGERS_WINDOW_RIGHT_PANEL);
 
         _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)

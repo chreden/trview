@@ -16,6 +16,7 @@
 #include <trview.ui/Input.h>
 #include <trview.ui.render/Renderer.h>
 #include <trview.ui.render/MapRenderer.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -32,7 +33,7 @@ namespace trview
             const IViewOptions::Source& view_options_source,
             const IContextMenu::Source& context_menu_source,
             const ICameraControls::Source& camera_controls_source,
-            const ui::UiSource& ui_source);
+            const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
         virtual std::shared_ptr<ISector> current_minimap_sector() const override;
@@ -85,7 +86,7 @@ namespace trview
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::UiSource& ui_source);
+        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source);
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;

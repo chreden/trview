@@ -12,7 +12,8 @@
 #include <trview.app/Mocks/UI/IBubble.h>
 #include <trview.app/Mocks/Routing/IWaypoint.h>
 #include <trview.ui/Checkbox.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace DirectX::SimpleMath;
 using namespace testing;
@@ -21,6 +22,7 @@ using namespace trview::graphics;
 using namespace trview::graphics::mocks;
 using namespace trview::mocks;
 using namespace trview::tests;
+using namespace trview::ui;
 using namespace trview::ui::mocks;
 using namespace trview::ui::render::mocks;
 
@@ -33,11 +35,12 @@ namespace
             IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
             ui::render::IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
             ui::IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
-            Window parent{ create_test_window(L"RouteWindowTests") };
+            trview::Window parent{ create_test_window(L"RouteWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
             IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); }};
+            std::shared_ptr<IShell> shell{ std::make_shared<MockShell>() };
 
             test_module& with_clipboard(const std::shared_ptr<IClipboard>& clipboard)
             {
@@ -63,10 +66,16 @@ namespace
                 return *this;
             }
 
+            test_module& with_shell(const std::shared_ptr<IShell>& shell)
+            {
+                this->shell = shell;
+                return *this;
+            }
+
             std::unique_ptr<RouteWindow> build()
             {
                 return std::make_unique<RouteWindow>(device_window_source, renderer_source, input_source,
-                    parent, clipboard, dialogs, files, bubble_source, ui::load_from_resource);
+                    parent, clipboard, dialogs, files, bubble_source, std::make_shared<JsonLoader>(shell), shell);
             }
         };
         return test_module{};
@@ -126,7 +135,7 @@ TEST(RouteWindow, WaypointRoomPositionCalculatedCorrectly)
 TEST(RouteWindow, PositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -155,7 +164,7 @@ TEST(RouteWindow, PositionValuesCopiedToClipboard)
 TEST(RouteWindow, RoomPositionValuesCopiedToClipboard)
 {
     auto clipboard = std::make_shared<MockClipboard>();
-    EXPECT_CALL(*clipboard, write(An<const Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
+    EXPECT_CALL(*clipboard, write(An<const trview::Window&>(), std::wstring(L"133120, 256000, 332800"))).Times(1);
 
     auto window = register_test_module().with_clipboard(clipboard).build();
 
@@ -675,3 +684,7 @@ TEST(RouteWindow, SetRandomizerNumberUpdatesWaypointByChangingFocus)
     ASSERT_EQ(std::get<float>(new_settings["test1"]), 2.0);
 }
 
+TEST(RouteWindow, RandomizerTextAreasUseShell)
+{
+    FAIL();
+}

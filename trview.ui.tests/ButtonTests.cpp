@@ -1,8 +1,11 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/Button.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 /// Tests that the click event is raised when the button is clicked on.
@@ -18,7 +21,7 @@ TEST(Button, ClickEventRaised)
 TEST(Button, LoadFromJson)
 {
     const std::string json = "{\"type\":\"button\",\"text\":\"Test\",\"text_colour\":\"red\",\"text_background_colour\":\"blue\"}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
     auto button = dynamic_cast<Button*>(control.get());
     ASSERT_NE(button, nullptr);

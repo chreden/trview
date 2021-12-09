@@ -1,5 +1,6 @@
 #include <trview.app/UI/RoomNavigator.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/NumericUpDown.h>
 #include <trview.ui/Button.h>
@@ -8,12 +9,13 @@
 #include <trview.app/Elements/RoomInfo.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
 {
     ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, load_from_resource);
+    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
     navigator.set_max_rooms(0);
 
     std::optional<uint32_t> raised;
@@ -34,7 +36,7 @@ TEST(RoomNavigator, MaxRoomsLimitsCurrentRoom)
 TEST(RoomNavigator, MaxRoomsUpdatesLabel)
 {
     ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, load_from_resource);
+    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
     navigator.set_max_rooms(0);
 
     auto max = window.find<Label>(RoomNavigator::Names::max_rooms);
@@ -48,7 +50,7 @@ TEST(RoomNavigator, MaxRoomsUpdatesLabel)
 TEST(RoomNavigator, CoordinatesDisplayed)
 {
     ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, load_from_resource);
+    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
 
     RoomInfo info;
     info.x = 1024;
@@ -77,7 +79,7 @@ TEST(RoomNavigator, CoordinatesDisplayed)
 TEST(RoomNavigator, RoomSelectedEventRaised)
 {
     ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, load_from_resource);
+    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
 
     std::optional<uint32_t> raised;
     auto token = navigator.on_room_selected += [&](auto room)
@@ -100,7 +102,7 @@ TEST(RoomNavigator, RoomSelectedEventRaised)
 TEST(RoomNavigator, SetCurrentRoomUpdatesUpDown)
 {
     ui::Window window(Size(), Colour::White);
-    RoomNavigator navigator(window, load_from_resource);
+    RoomNavigator navigator(window, JsonLoader(std::make_shared<MockShell>()));
     navigator.set_max_rooms(10);
     auto current = window.find<NumericUpDown>(RoomNavigator::Names::current_room);
     ASSERT_NE(current, nullptr);

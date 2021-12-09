@@ -52,7 +52,7 @@
     <ClInclude Include="Layouts\ILayout.h">
       <Filter>Layouts</Filter>
     </ClInclude>
-    <ClInclude Include="json.h" />
+    <ClInclude Include="JsonLoader.h" />
     <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Button.h">
       <Filter>Controls\Button</Filter>
@@ -81,6 +81,7 @@
     <ClInclude Include="Mocks\IFontMeasurer.h">
       <Filter>Mocks</Filter>
     </ClInclude>
+    <ClInclude Include="ILoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Listbox.cpp">
@@ -129,7 +130,7 @@
     <ClCompile Include="Layouts\StackLayout.cpp">
       <Filter>Layouts</Filter>
     </ClCompile>
-    <ClCompile Include="json.cpp" />
+    <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Button.cpp">
       <Filter>Controls\Button</Filter>
@@ -155,6 +156,7 @@
     <ClCompile Include="Window.cpp">
       <Filter>Controls\Window</Filter>
     </ClCompile>
+    <ClCompile Include="ILoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Types">

@@ -7,6 +7,7 @@
 #include <trview.ui/Control.h>
 #include <trview.ui/TextArea.h>
 #include <trview.common/TokenStore.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -28,7 +29,7 @@ namespace trview
         /// </summary>
         /// <param name="parent">The parent control.</param>
         /// <param name="ui_source">The UI source function.</param>
-        explicit CameraPosition(ui::Control& parent, const ui::UiSource& ui_source);
+        explicit CameraPosition(ui::Control& parent, const ui::ILoader& ui_source);
 
         /// Update the position text.
         /// @param position The camera position.

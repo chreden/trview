@@ -56,6 +56,15 @@
     </ClInclude>
     <ClInclude Include="Resources.h" />
     <ClInclude Include="JsonSerializers.h" />
+    <ClInclude Include="Windows\IShell.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\Shell.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\IShell.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Size.cpp" />
@@ -96,6 +105,12 @@
     <ClCompile Include="IFiles.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
+    <ClCompile Include="Windows\Shell.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\IShell.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

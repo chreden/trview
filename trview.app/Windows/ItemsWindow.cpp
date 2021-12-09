@@ -32,12 +32,12 @@ namespace trview
     const std::string ItemsWindow::Names::expander{ "Expander" };
 
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
-        const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const ui::UiSource& ui_source)
+        const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const std::shared_ptr<ui::ILoader>& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard),
         _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
-        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
+        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -103,11 +103,11 @@ namespace trview
         _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel(const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        auto left_panel = ui_source(IDR_UI_ITEMS_WINDOW_LEFT_PANEL);
+        auto left_panel = ui_source.load_from_resource(IDR_UI_ITEMS_WINDOW_LEFT_PANEL);
         _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
@@ -145,11 +145,11 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_right_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> ItemsWindow::create_right_panel(const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        auto right_panel = ui_source(IDR_UI_ITEMS_WINDOW_RIGHT_PANEL);
+        auto right_panel = ui_source.load_from_resource(IDR_UI_ITEMS_WINDOW_RIGHT_PANEL);
         _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {

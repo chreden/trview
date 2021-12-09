@@ -1,14 +1,16 @@
 #include <trview.app/UI/CameraControls.h>
 #include <trview.ui/Button.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(CameraControls, ResetRaisesEvent)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     bool raised = false;
     auto token = controls.on_reset += [&]()
@@ -27,7 +29,7 @@ TEST(CameraControls, ResetRaisesEvent)
 TEST(CameraControls, OrbitRaisesModeSelected)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -47,7 +49,7 @@ TEST(CameraControls, OrbitRaisesModeSelected)
 TEST(CameraControls, FreeRaisesModeSelected)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -67,7 +69,7 @@ TEST(CameraControls, FreeRaisesModeSelected)
 TEST(CameraControls, AxisRaisesModeSelected)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     std::optional<CameraMode> selected_mode;
     auto token = controls.on_mode_selected += [&](auto mode)
@@ -87,7 +89,7 @@ TEST(CameraControls, AxisRaisesModeSelected)
 TEST(CameraControls, OrthoOnRaisesProjectionMode)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     std::optional<ProjectionMode> selected_mode;
     auto token = controls.on_projection_mode_selected += [&](auto mode)
@@ -107,7 +109,7 @@ TEST(CameraControls, OrthoOnRaisesProjectionMode)
 TEST(CameraControls, OrthoOffRaisesProjectionMode)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     std::optional<ProjectionMode> selected_mode;
     auto token = controls.on_projection_mode_selected += [&](auto mode)
@@ -128,7 +130,7 @@ TEST(CameraControls, OrthoOffRaisesProjectionMode)
 TEST(CameraControls, SetModeFreeUpdatesCheckboxes)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     auto free = host.find<Checkbox>(CameraControls::Names::free);
     ASSERT_NE(free, nullptr);
@@ -150,7 +152,7 @@ TEST(CameraControls, SetModeFreeUpdatesCheckboxes)
 TEST(CameraControls, SetModeOrbitpdatesCheckboxes)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     auto free = host.find<Checkbox>(CameraControls::Names::free);
     ASSERT_NE(free, nullptr);
@@ -172,7 +174,7 @@ TEST(CameraControls, SetModeOrbitpdatesCheckboxes)
 TEST(CameraControls, SetModeAxisUpdatesCheckboxes)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     auto free = host.find<Checkbox>(CameraControls::Names::free);
     ASSERT_NE(free, nullptr);
@@ -194,7 +196,7 @@ TEST(CameraControls, SetModeAxisUpdatesCheckboxes)
 TEST(CameraControls, SetProjectionsModeOrthoUpdatesCheckboxes)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
     ASSERT_NE(ortho, nullptr);
@@ -208,7 +210,7 @@ TEST(CameraControls, SetProjectionsModeOrthoUpdatesCheckboxes)
 TEST(CameraControls, SetProjectionsModePerspectiveUpdatesCheckboxes)
 {
     ui::Window host(Size(), Colour::Transparent);
-    CameraControls controls(host, load_from_resource);
+    CameraControls controls(host, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
     auto ortho = host.find<Checkbox>(CameraControls::Names::ortho);
     ASSERT_NE(ortho, nullptr);

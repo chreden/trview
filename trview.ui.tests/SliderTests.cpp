@@ -1,18 +1,20 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <trview.ui/Slider.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <optional>
 #include <trview.ui/Mocks/Input/IInput.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 using namespace trview::ui::mocks;
 
 TEST(Slider, LoadFromJson)
 {
     const std::string json = "{ \"type\":\"slider\" }";
-    auto slider = ui::load_from_json(json);
+    auto slider = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(slider, nullptr);
     ASSERT_NE(dynamic_cast<Slider*>(slider.get()), nullptr);
 }

@@ -25,11 +25,11 @@ namespace trview
     const Colour ViewOptions::Colours::FlipOff{ 0.2f, 0.2f, 0.2f };
     const Colour ViewOptions::Colours::FlipOn{ 0.6f, 0.6f, 0.6f };
 
-    ViewOptions::ViewOptions(ui::Control& parent, const ui::UiSource& source)
+    ViewOptions::ViewOptions(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source)
     {
         using namespace ui;
 
-        auto options = parent.add_child(source(IDR_UI_VIEW_OPTIONS));
+        auto options = parent.add_child(source->load_from_resource(IDR_UI_VIEW_OPTIONS));
 
         _highlight = options->find<Checkbox>(Names::highlight);
         _highlight->on_state_changed += on_highlight;

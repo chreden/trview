@@ -2,6 +2,7 @@
 
 #include <trview.ui/Window.h>
 #include <trview.ui/TextArea.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -14,7 +15,7 @@ namespace trview
             static const std::string input;
         };
 
-        explicit Console(ui::Control& parent, const ui::UiSource& ui_source);
+        explicit Console(ui::Control& parent, const ui::ILoader& ui_source);
 
         bool visible() const;
 

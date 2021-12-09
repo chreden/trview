@@ -1,16 +1,19 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/NumericUpDown.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.ui/Button.h>
 #include <trview.ui/Label.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(NumericUpDown, LoadFromJson)
 {
     const std::string json = "{\"type\":\"numericupdown\",\"min_value\":10,\"max_value\":90,\"value\":50}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
     auto numeric_up_down = dynamic_cast<NumericUpDown*>(control.get());
     ASSERT_NE(numeric_up_down, nullptr);

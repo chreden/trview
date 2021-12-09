@@ -27,9 +27,9 @@ namespace trview
     const std::string CameraPosition::Names::yaw{ "Yaw" };
     const std::string CameraPosition::Names::pitch{ "Pitch" };
 
-    CameraPosition::CameraPosition(Control& parent, const ui::UiSource& ui_source)
+    CameraPosition::CameraPosition(Control& parent, const ui::ILoader& ui_source)
     {
-        auto panel = parent.add_child(ui_source(IDR_UI_CAMERA_POSITION));
+        auto panel = parent.add_child(ui_source.load_from_resource(IDR_UI_CAMERA_POSITION));
         _yaw = panel->find<TextArea>(Names::yaw);
         _pitch = panel->find<TextArea>(Names::pitch);
         _x = panel->find<TextArea>(Names::x);

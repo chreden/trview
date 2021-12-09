@@ -1,16 +1,18 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <trview.ui/TextArea.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <optional>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(TextArea, LoadFromJson)
 {
     const std::string json = "{\"type\":\"textarea\",\"show_scrollbar\":false,\"text_alignment\":\"centre\",\"read_only\":true,\"line_mode\":\"single\",\"text\":\"Test\",\"size\":{\"width\":100,\"height\":100}}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
     auto textarea = dynamic_cast<TextArea*>(control.get());
     ASSERT_NE(textarea, nullptr);
@@ -28,7 +30,7 @@ TEST(TextArea, OnTextChangedRaised)
 
 TEST(TextArea, OnEnterRaised)
 {
-    TextArea text_area(Size(100, 20), Colour::Black, Colour::White);
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
     text_area.set_mode(TextArea::Mode::SingleLine);
     text_area.gained_focus();
 
@@ -47,7 +49,7 @@ TEST(TextArea, OnEnterRaised)
 
 TEST(TextArea, OnEnterNotRaisedInMultiLine)
 {
-    TextArea text_area(Size(100, 20), Colour::Black, Colour::White);
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
     text_area.gained_focus();
 
     std::optional<std::wstring> raised;
@@ -65,7 +67,7 @@ TEST(TextArea, OnEnterNotRaisedInMultiLine)
 
 TEST(TextArea, OnEscapeRaised)
 {
-    TextArea text_area(Size(100, 20), Colour::Black, Colour::White);
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
     text_area.set_mode(TextArea::Mode::SingleLine);
     text_area.gained_focus();
 
@@ -82,7 +84,7 @@ TEST(TextArea, OnEscapeRaised)
 
 TEST(TextArea, OnTabRaised)
 {
-    TextArea text_area(Size(100, 20), Colour::Black, Colour::White);
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
     text_area.set_mode(TextArea::Mode::SingleLine);
     text_area.gained_focus();
 
@@ -121,12 +123,39 @@ TEST(TextArea, Mode)
 
 TEST(TextArea, ReadOnly)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"Test message");
+    text_area.set_read_only(true);
+
+    text_area.key_char(L'X');
+    ASSERT_EQ(text_area.text(), L"Test message");
 }
 
 TEST(TextArea, CopySelection)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"Test message");
+    text_area.highlight_all();
+
+    std::wstring text;
+    bool copied = text_area.copy(text);
+
+    ASSERT_TRUE(copied);
+    ASSERT_EQ(text, L"Test message");
+}
+
+TEST(TextArea, CopyNoSelection)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"Test message");
+
+    std::wstring text;
+    bool copied = text_area.copy(text);
+
+    ASSERT_FALSE(copied);
 }
 
 TEST(TextArea, DeleteSelection)
@@ -136,12 +165,43 @@ TEST(TextArea, DeleteSelection)
 
 TEST(TextArea, Paste)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.paste(L"Test message");
+    ASSERT_EQ(text_area.text(), L"Test message");
+}
+
+TEST(TextArea, PasteAtStart)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"message");
+    text_area.key_down(VK_HOME, false, false);
+    text_area.paste(L"Test ");
+    ASSERT_EQ(text_area.text(), L"Test message");
 }
 
 TEST(TextArea, LinkClickable)
 {
-    FAIL();
+    auto shell = std::make_shared<MockShell>();
+    EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
+
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, shell);
+    text_area.gained_focus();
+    text_area.set_text(L"http://example.com");
+    text_area.clicked(Point(5, 5));
+}
+
+TEST(TextArea, LinkWithCtrlEnter)
+{
+    auto shell = std::make_shared<MockShell>();
+    EXPECT_CALL(*shell, open(std::wstring(L"http://example.com"))).Times(1);
+
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+    text_area.set_text(L"http://example.com");
+    text_area.key_down(VK_HOME, false, false);
+    text_area.key_down(VK_RETURN, true, false);
 }
 
 TEST(TextArea, TextAlignment)
@@ -151,5 +211,13 @@ TEST(TextArea, TextAlignment)
 
 TEST(TextArea, Typing)
 {
-    FAIL();
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.gained_focus();
+
+    for (const auto& c : std::wstring(L"Test message"))
+    {
+        text_area.key_char(c);
+    }
+
+    ASSERT_EQ(text_area.text(), L"Test message");
 }

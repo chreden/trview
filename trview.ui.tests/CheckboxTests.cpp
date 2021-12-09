@@ -1,10 +1,13 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <optional>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 /// Tests that the state change event is not raised when the set_state function
@@ -69,7 +72,7 @@ TEST(Checkbox, LoadFromJson)
 {
     const std::string json = "{ \"type\":\"checkbox\", \"text\":\"Test text\", \"state\":true }";
 
-    auto loaded = ui::load_from_json(json);
+    auto loaded = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(loaded, nullptr);
 
     auto checkbox = dynamic_cast<Checkbox*>(loaded.get());

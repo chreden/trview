@@ -1,5 +1,6 @@
 #include <trview.app/UI/LevelInfo.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.ui/Window.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.ui/Button.h>
@@ -15,7 +16,7 @@ TEST(LevelInfo, NameUpdated)
 {
     ui::Window parent(Size(), Colour::White);
     MockTextureStorage texture_storage;
-    LevelInfo info(parent, texture_storage, load_from_resource);
+    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
 
     info.set_level("test");
 
@@ -28,7 +29,7 @@ TEST(LevelInfo, OnToggleSettingsRaised)
 {
     ui::Window parent(Size(), Colour::White);
     MockTextureStorage texture_storage;
-    LevelInfo info(parent, texture_storage, load_from_resource);
+    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
 
     bool raised = false;
     auto token = info.on_toggle_settings += [&]()
@@ -51,7 +52,7 @@ TEST(LevelInfo, VersionImageChanged)
     texture.set_name("TR3");
     ON_CALL(texture_storage, lookup("tomb3_icon")).WillByDefault(Return(texture));
 
-    LevelInfo info(parent, texture_storage, load_from_resource);
+    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
 
     info.set_level_version(trlevel::LevelVersion::Tomb3);
 
@@ -64,7 +65,7 @@ TEST(LevelInfo, CentresWhenParentResizes)
 {
     ui::Window parent(Size(400, 400), Colour::White);
     MockTextureStorage texture_storage;
-    LevelInfo info(parent, texture_storage, load_from_resource);
+    LevelInfo info(parent, texture_storage, JsonLoader(std::make_shared<MockShell>()));
 
     auto window = parent.child_elements()[0];
     ASSERT_NE(window, nullptr);

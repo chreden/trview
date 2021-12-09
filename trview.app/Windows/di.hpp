@@ -11,7 +11,7 @@
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
 #include "Viewer.h"
-#include <trview.ui/json.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -33,7 +33,7 @@ namespace trview
                         window,
                         injector.create<std::shared_ptr<IClipboard>>(),
                         injector.create<IBubble::Source>(),
-                        ui::load_from_resource);
+                        injector.create<std::shared_ptr<ui::ILoader>>());
                 };
             }),
             di::bind<IItemsWindowManager>.to<ItemsWindowManager>(),
@@ -49,7 +49,7 @@ namespace trview
                             window,
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<IBubble::Source>(),
-                            ui::load_from_resource);
+                            injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),
@@ -67,7 +67,8 @@ namespace trview
                             injector.create<std::shared_ptr<IDialogs>>(),
                             injector.create<std::shared_ptr<IFiles>>(),
                             injector.create<IBubble::Source>(),
-                            ui::load_from_resource);
+                            injector.create<std::shared_ptr<ui::ILoader>>(),
+                            injector.create<std::shared_ptr<IShell>>());
                     };
                 }
             ),
@@ -85,7 +86,7 @@ namespace trview
                             injector.create<std::shared_ptr<IClipboard>>(),
                             injector.create<IBubble::Source>(),
                             window,
-                            ui::load_from_resource);
+                            injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),

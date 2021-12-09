@@ -1,4 +1,4 @@
-#include "json.h"
+#include "JsonLoader.h"
 #include <external/nlohmann/json.hpp>
 #include <trview.common/Json.h>
 #include <trview.common/Resources.h>
@@ -73,7 +73,7 @@ namespace trview
                 return json[attribute_name].get<Colour>();
             }
 
-            std::unique_ptr<Control> parse_json(const nlohmann::json& json, std::unordered_map<std::string, Colour> named_colours)
+            std::unique_ptr<Control> parse_json(const nlohmann::json& json, std::unordered_map<std::string, Colour> named_colours, const std::shared_ptr<IShell>& shell)
             {
                 if (json.count("colours") != 0)
                 {
@@ -203,8 +203,8 @@ namespace trview
                 }
                 else if (type == "textarea")
                 {
-                    const auto text_alignment = read_attribute<TextAlignment>(json, "text_alignment", TextAlignment::Left);
-                    auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, text_alignment);
+                    auto text_area = std::make_unique<TextArea>(position, size, colour, text_colour, shell);
+                    text_area->set_text_alignment(read_attribute<TextAlignment>(json, "text_alignment", TextAlignment::Left));
                     text_area->set_scrollbar_visible(read_attribute<bool>(json, "show_scrollbar", true));
                     text_area->set_read_only(read_attribute<bool>(json, "read_only", false));
                     const auto line_mode = read_attribute<TextArea::Mode>(json, "line_mode", TextArea::Mode::MultiLine);
@@ -232,7 +232,7 @@ namespace trview
                 {
                     for (const auto& child : json["children"])
                     {
-                        control->add_child(parse_json(child, named_colours));
+                        control->add_child(parse_json(child, named_colours, shell));
                     }
                 }
 
@@ -240,13 +240,13 @@ namespace trview
             }
         }
 
-        std::unique_ptr<Control> load_from_json(const std::string& json)
+        std::unique_ptr<Control> JsonLoader::load_from_json(const std::string& json) const
         {
             try
             {
                 std::unordered_map<std::string, Colour> named_colours;
                 auto data = nlohmann::json::parse(json);
-                return parse_json(data, named_colours);
+                return parse_json(data, named_colours, _shell);
             }
             catch(const std::exception& e)
             {
@@ -255,10 +255,15 @@ namespace trview
             }
         }
 
-        std::unique_ptr<Control> load_from_resource(uint32_t resource_id)
+        JsonLoader::JsonLoader(const std::shared_ptr<IShell>& shell)
+            : _shell(shell)
+        {
+        }
+
+        std::unique_ptr<Control> JsonLoader::load_from_resource(uint32_t resource_id) const
         {
             auto data = get_resource_memory(resource_id, L"TEXT");
-            return ui::load_from_json(std::string(data.data, data.data + data.size));
+            return load_from_json(std::string(data.data, data.data + data.size));
         }
     }
 }

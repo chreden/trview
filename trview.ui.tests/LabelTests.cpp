@@ -1,11 +1,13 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include <trview.ui/Label.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 #include <trview.ui/Mocks/IFontMeasurer.h>
 #include <optional>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 using namespace trview::ui::mocks;
 using namespace trview::graphics;
@@ -13,7 +15,7 @@ using namespace trview::graphics;
 TEST(Label, LoadFromJson)
 {
     const std::string json = "{\"type\":\"label\",\"text\":\"Test\",\"size_mode\":\"auto\",\"text_size\":10,\"text_alignment\":\"right\",\"paragraph_alignment\":\"centre\"}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
 
     auto label = dynamic_cast<Label*>(control.get());

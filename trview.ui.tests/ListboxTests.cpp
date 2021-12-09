@@ -1,13 +1,16 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/Listbox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Control.h>
 #include <trview.ui/Button.h>
 #include <Windows.h>
-#include <gmock\gmock-matchers.h>
-#include <trview.ui/json.h>
+#include <gmock/gmock-matchers.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 /// Tests that clicking on an item raises the item selected event.
@@ -256,7 +259,7 @@ TEST(Listbox, LoadFromJson)
 {
     std::string columns_json = "[{\"name\":\"Col1\",\"type\":\"number\",\"identity\":\"key\",\"width\":100},{\"name\":\"Col2\",\"type\":\"string\",\"identity\":\"key\",\"width\":200},{\"name\":\"Col3\",\"type\":\"boolean\",\"identity\":\"none\",\"width\":300}]";
     std::string json = "{\"type\":\"listbox\",\"show_headers\":true,\"show_scrollbar\":false,\"show_highlight\":false,\"enable_sorting\":false,\"columns\":" + columns_json + ",\"size\":{\"width\":200,\"height\":200}}";
-    auto control = load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
 
     auto listbox = dynamic_cast<Listbox*>(control.get());

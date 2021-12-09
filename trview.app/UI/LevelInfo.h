@@ -15,6 +15,7 @@
 #include <trview.common/TokenStore.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.ui/Control.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -40,7 +41,7 @@ namespace trview
         /// control provided.
         /// @param parent The control to which the instance will be added as a child.
         /// @param texture_storage Texture storage instance to use.
-        LevelInfo(ui::Control& parent, const ITextureStorage& texture_storage, const ui::UiSource& ui_source);
+        LevelInfo(ui::Control& parent, const ITextureStorage& texture_storage, const ui::ILoader& ui_source);
 
         /// Sets the name of the level.
         /// @param name The level name.
