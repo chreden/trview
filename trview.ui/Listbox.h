@@ -26,7 +26,7 @@ namespace trview
                 static const std::string header_name_format;
             };
 
-            /// A column in a list box.
+            /// A co in a list box.
             class Column final
             {
             public:
