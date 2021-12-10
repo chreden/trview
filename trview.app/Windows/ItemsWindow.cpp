@@ -328,6 +328,11 @@ namespace trview
                     _tooltip->set_text(tip);
                 };
 
+                _token_store += cell->on_mouse_move += [this, cell]()
+                {
+                    _tooltip->set_position(client_cursor_position(window()) + Point(0, 20));
+                };
+
                 _token_store += cell->on_mouse_leave += [this, cell]()
                 {
                     _tooltip_timer.reset();
