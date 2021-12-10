@@ -65,6 +65,7 @@ namespace trview
 
         bool Slider::move(Point position)
         {
+            Control::move(position);
             if (_input && _input->focus_control() == this)
             {
                 set_blob_position(position, true);

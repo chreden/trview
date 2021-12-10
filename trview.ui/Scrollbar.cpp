@@ -50,6 +50,7 @@ namespace trview
 
         bool Scrollbar::move(Point position)
         {
+            Control::move(position);
             if (_input && _input->focus_control() == this)
             {
                 return clicked(position);

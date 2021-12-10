@@ -195,8 +195,17 @@ namespace trview
             /// </summary>
             Event<float> on_update;
 
+            /// <summary>
+            /// Event raised when the mouse has entered the control bounds.
+            /// </summary>
             Event<> on_mouse_enter;
+            /// <summary>
+            /// Event raised when the mouse has moved when over the control.
+            /// </summary>
             Event<> on_mouse_move;
+            /// <summary>
+            /// Event raised when the mouse has left the control bounds.
+            /// </summary>
             Event<> on_mouse_leave;
 
             /// To be called when the mouse has been pressed down over the element.
