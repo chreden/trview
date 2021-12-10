@@ -8,6 +8,7 @@
 
 #include <trview.common/TokenStore.h>
 #include <trview.ui/Checkbox.h>
+#include <trview.ui/ILoader.h>
 #include "ICameraControls.h"
 
 namespace trview
@@ -32,7 +33,7 @@ namespace trview
         /// </summary>
         /// <param name="parent">The control to which the instance will be added as a child.</param>
         /// <param name="source">The function to call to find the UI elements.</param>
-        explicit CameraControls(ui::Control& parent, const ui::UiSource& source);
+        explicit CameraControls(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~CameraControls() = default;
         virtual void set_mode(CameraMode mode) override;
         virtual void set_projection_mode(ProjectionMode mode) override;

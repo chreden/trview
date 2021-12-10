@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="ButtonTests.cpp" />
     <ClCompile Include="CheckboxTests.cpp" />
+    <ClCompile Include="ControlTests.cpp" />
     <ClCompile Include="DropdownTests.cpp" />
     <ClCompile Include="GridLayoutTests.cpp" />
     <ClCompile Include="GroupBoxTests.cpp" />
@@ -160,12 +161,16 @@
     <ClCompile Include="ListboxTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NumericUpDownTests.cpp" />
+    <ClCompile Include="ScrollbarTests.cpp" />
     <ClCompile Include="SliderTests.cpp" />
     <ClCompile Include="StackLayoutTests.cpp" />
     <ClCompile Include="TextAreaTests.cpp" />
     <ClCompile Include="WindowTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\external\googlemock\googlemock.vcxproj">
+      <Project>{6e37091e-954c-4654-9b42-5980410791f4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\external\googletest\googletest.vcxproj">
       <Project>{eafd7489-57e3-4b6d-a704-f7c5ef640434}</Project>
     </ProjectReference>

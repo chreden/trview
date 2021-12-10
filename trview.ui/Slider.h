@@ -10,6 +10,11 @@ namespace trview
         class Slider : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string blob;
+            };
+
             Slider(Point position, Size size);
             explicit Slider(const Size& size);
             virtual ~Slider() = default;

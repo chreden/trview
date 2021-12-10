@@ -23,6 +23,7 @@
 #include <trview.common/Files.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
+#include <trview.common/Windows/Shell.h>
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.ui.render/DefaultFonts.h>
 
@@ -615,6 +616,7 @@ namespace trview
             di::bind<IApplication>.to<Application>(),
             di::bind<IDialogs>.to<Dialogs>(),
             di::bind<IFiles>.to<Files>(),
+            di::bind<IShell>.to<Shell>(),
             di::bind<IStartupOptions::CommandLine>.to(command_line)
         );
 

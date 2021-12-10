@@ -15,5 +15,7 @@
     <ClCompile Include="TextAreaTests.cpp" />
     <ClCompile Include="DropdownTests.cpp" />
     <ClCompile Include="WindowTests.cpp" />
+    <ClCompile Include="ScrollbarTests.cpp" />
+    <ClCompile Include="ControlTests.cpp" />
   </ItemGroup>
 </Project>

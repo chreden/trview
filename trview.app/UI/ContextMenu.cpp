@@ -19,9 +19,9 @@ namespace trview
     const std::string ContextMenu::Names::add_mid_waypoint_button{ "AddMidWaypoint" };
     const std::string ContextMenu::Names::remove_waypoint_button{ "RemoveWaypoint" };
 
-    ContextMenu::ContextMenu(Control& parent, const ui::UiSource& ui_source)
+    ContextMenu::ContextMenu(Control& parent, const std::shared_ptr<ui::ILoader>& ui_source)
     {
-        _menu = parent.add_child(ui_source(IDR_UI_CONTEXT_MENU));
+        _menu = parent.add_child(ui_source->load_from_resource(IDR_UI_CONTEXT_MENU));
 
         auto add_waypoint = _menu->find<Button>(Names::add_waypoint_button);
         _token_store += add_waypoint->on_click += [&]()

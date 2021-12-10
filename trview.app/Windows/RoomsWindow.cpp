@@ -111,13 +111,13 @@ namespace trview
         const std::shared_ptr<IClipboard>& clipboard,
         const IBubble::Source& bubble_source,
         const Window& parent,
-        const ui::UiSource& ui_source)
+        const std::shared_ptr<ui::ILoader>& loader)
         : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
         _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
 
-        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
+        set_panels(create_left_panel(*loader), create_right_panel(*loader));
         set_allow_increase_height(false);
 
         using namespace input;
@@ -210,11 +210,11 @@ namespace trview
         };
     }
 
-    std::unique_ptr<ui::Control> RoomsWindow::create_left_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> RoomsWindow::create_left_panel(const ui::ILoader& loader)
     {
         using namespace ui;
 
-        auto left_panel = ui_source(IDR_UI_ROOMS_WINDOW_LEFT_PANEL);
+        auto left_panel = loader.load_from_resource(IDR_UI_ROOMS_WINDOW_LEFT_PANEL);
         _sync_room_checkbox = left_panel->find<Checkbox>(Names::sync_room);
         _token_store += _sync_room_checkbox->on_state_changed += [this](bool value)
         {
@@ -402,13 +402,13 @@ namespace trview
         _triggers_list->set_items(list_triggers);
     }
 
-    std::unique_ptr<ui::Control> RoomsWindow::create_right_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<ui::Control> RoomsWindow::create_right_panel(const ui::ILoader& ui_source)
     {
         using namespace ui;
 
         const float panel_width = 380;
         const float upper_height = 380;
-        auto right_panel = ui_source(IDR_UI_ROOMS_WINDOW_RIGHT_PANEL);
+        auto right_panel = ui_source.load_from_resource(IDR_UI_ROOMS_WINDOW_RIGHT_PANEL);
         
         _minimap = right_panel->find<ui::Image>(Names::minimap);
         _map_tooltip = std::make_unique<Tooltip>(*_minimap->parent());

@@ -9,6 +9,7 @@
 #include "IItemsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
 #include <trview.app/UI/IBubble.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -42,7 +43,7 @@ namespace trview
             const Window& parent,
             const std::shared_ptr<IClipboard>& clipboard,
             const IBubble::Source& bubble_source,
-            const ui::UiSource& ui_source);
+            const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ItemsWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -61,8 +62,8 @@ namespace trview
         void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);
-        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
-        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
+        std::unique_ptr<ui::Control> create_left_panel(const ui::ILoader& ui_source);
+        std::unique_ptr<ui::Control> create_right_panel(const ui::ILoader& ui_source);
 
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;

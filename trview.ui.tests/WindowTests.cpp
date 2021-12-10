@@ -1,15 +1,18 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 #include <trview.ui/Window.h>
 #include <trview.ui/Layouts/GridLayout.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(Window, LoadFromJson)
 {
     const std::string json = "{\"type\":\"window\",\"name\":\"test\",\"size\":{\"width\":100,\"height\":200},\"position\":{\"x\":300,\"y\":400},\"visible\":false,\"background_colour\":\"red\",\"horizontal_alignment\":\"centre\",\"vertical_alignment\":\"centre\",\"layout\":{\"type\":\"grid\"},\"children\":[{\"type\":\"window\",\"name\":\"child\"}]}";
-    auto control = ui::load_from_json(json);
+    auto control = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(control, nullptr);
     auto window = dynamic_cast<ui::Window*>(control.get());
     ASSERT_NE(window, nullptr);
@@ -25,4 +28,12 @@ TEST(Window, LoadFromJson)
     ASSERT_EQ(window->vertical_alignment(), Align::Centre);
     auto child = window->find<Control>("child");
     ASSERT_NE(child, nullptr);
+}
+
+TEST(Window, BackgroundColour)
+{
+    ui::Window window(Size(), Colour::White);
+    ASSERT_EQ(window.background_colour(), Colour::White);
+    window.set_background_colour(Colour::Red);
+    ASSERT_EQ(window.background_colour(), Colour::Red);
 }

@@ -8,7 +8,7 @@
 #include "ContextMenu.h"
 #include "CameraControls.h"
 #include <trview.common/Resources.h>
-#include <trview.ui/json.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -21,7 +21,7 @@ namespace trview
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<SettingsWindow>(parent, ui::load_from_resource);
+                        return std::make_unique<SettingsWindow>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<ICameraControls::Source>.to(
@@ -29,7 +29,7 @@ namespace trview
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<CameraControls>(parent, ui::load_from_resource);
+                        return std::make_unique<CameraControls>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<IViewOptions::Source>.to(
@@ -37,7 +37,7 @@ namespace trview
                 {
                     return [&](auto&& parent)
                     {
-                        return std::make_unique<ViewOptions>(parent, ui::load_from_resource);
+                        return std::make_unique<ViewOptions>(parent, injector.create< std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<IBubble::Source>.to(
@@ -49,11 +49,11 @@ namespace trview
                     };
                 }),
             di::bind<IContextMenu::Source>.to(
-                [](const auto&) -> IContextMenu::Source
+                [](const auto& injector) -> IContextMenu::Source
                 {
                     return [&](ui::Control& parent)
                     {
-                        return std::make_unique<ContextMenu>(parent, ui::load_from_resource);
+                        return std::make_unique<ContextMenu>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
             di::bind<IViewerUI>.to(
@@ -70,7 +70,7 @@ namespace trview
                         injector.create<IViewOptions::Source>(),
                         injector.create<IContextMenu::Source>(),
                         injector.create<ICameraControls::Source>(),
-                        ui::load_from_resource);
+                        injector.create<std::shared_ptr<ui::ILoader>>());
                 })
         );
     }

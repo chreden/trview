@@ -11,6 +11,7 @@
 #include "IRoomsWindow.h"
 #include <trview.app/UI/IBubble.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -41,7 +42,7 @@ namespace trview
             const std::shared_ptr<IClipboard>& clipboard,
             const IBubble::Source& bubble_source,
             const Window& parent,
-            const ui::UiSource& ui_source);
+            const std::shared_ptr<ui::ILoader>& loader);
         virtual ~RoomsWindow() = default;
         virtual void clear_selected_trigger() override;
         virtual void render(bool vsync) override;
@@ -55,8 +56,8 @@ namespace trview
         virtual void update(float delta) override;
     private:
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
-        std::unique_ptr<ui::Control> create_left_panel(const ui::UiSource& ui_source);
-        std::unique_ptr<ui::Control> create_right_panel(const ui::UiSource& ui_source);
+        std::unique_ptr<ui::Control> create_left_panel(const ui::ILoader& ui_source);
+        std::unique_ptr<ui::Control> create_right_panel(const ui::ILoader& ui_source);
         void set_sync_room(bool value);
         void set_track_item(bool value);
         void set_track_trigger(bool value);

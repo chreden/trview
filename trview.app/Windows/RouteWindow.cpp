@@ -54,12 +54,12 @@ namespace trview
     RouteWindow::RouteWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
         const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
-        const ui::UiSource& ui_source)
+        const std::shared_ptr<ui::ILoader>& ui_source, const std::shared_ptr<IShell>& shell)
         : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
-        _bubble(bubble_source(*_ui))
+        _bubble(bubble_source(*_ui)), _shell(shell)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
-        set_panels(create_left_panel(ui_source), create_right_panel(ui_source));
+        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
     }
 
     void RouteWindow::render(bool vsync)
@@ -86,9 +86,9 @@ namespace trview
         _colour->set_selected_value(colour.code());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<Control> RouteWindow::create_left_panel(const ui::ILoader& ui_source)
     {
-        auto left_panel = ui_source(IDR_UI_ROUTE_WINDOW_LEFT_PANEL);
+        auto left_panel = ui_source.load_from_resource(IDR_UI_ROUTE_WINDOW_LEFT_PANEL);
         _colour = left_panel->find<Dropdown>(Names::colour);
         _colour->set_dropdown_scope(_ui.get());
 
@@ -151,11 +151,11 @@ namespace trview
         return left_panel;
     }
 
-    std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::UiSource& ui_source)
+    std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::ILoader& ui_source)
     {
         const float panel_width = 270;
 
-        auto right_panel = ui_source(IDR_UI_ROUTE_WINDOW_RIGHT_PANEL);
+        auto right_panel = ui_source.load_from_resource(IDR_UI_ROUTE_WINDOW_RIGHT_PANEL);
 
         _stats = right_panel->find<Listbox>(Names::waypoint_stats);
         _token_store += _stats->on_item_selected += [&](const auto& item)
@@ -500,7 +500,7 @@ namespace trview
 
                     if (x.second.options.empty())
                     {
-                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
+                        auto text_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White, _shell));
                         text_area->set_name(x.first);
                         text_area->set_mode(TextArea::Mode::SingleLine);
                         _token_store += text_area->on_text_changed += update_setting;
@@ -527,7 +527,7 @@ namespace trview
                     auto string_area = _rando_area->add_child(std::make_unique<ui::Window>(Size(panel_width, 20), Colours::Notes));
                     string_area->set_layout(std::make_unique<StackLayout>(0.0f, StackLayout::Direction::Horizontal));
                     string_area->add_child(std::make_unique<Label>(Size(100, 20), Colours::Notes, to_utf16(x.second.display), 8, TextAlignment::Left, ParagraphAlignment::Centre));
-                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White));
+                    auto number_area = string_area->add_child(std::make_unique<TextArea>(Size(panel_width / 2.0f, 20), Colours::NotesTextArea, Colour::White, _shell));
                     number_area->set_mode(TextArea::Mode::SingleLine);
                     number_area->set_name(x.first);
 

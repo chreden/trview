@@ -2,6 +2,7 @@
 
 #include "IContextMenu.h"
 #include <trview.ui/Button.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -23,7 +24,7 @@ namespace trview
         /// </summary>
         /// <param name="parent">The control to add the window to.</param>
         /// <param name="ui_source">The UI source function.</param>
-        explicit ContextMenu(ui::Control& parent, const ui::UiSource& ui_source);
+        explicit ContextMenu(ui::Control& parent, const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ContextMenu() = default;
         /// Get the root control.
         /// @returns The root control.

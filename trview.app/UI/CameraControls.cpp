@@ -11,11 +11,11 @@ namespace trview
     const std::string CameraControls::Names::axis = "Axis";
     const std::string CameraControls::Names::ortho = "Ortho";
 
-    CameraControls::CameraControls(ui::Control& parent, const ui::UiSource& source)
+    CameraControls::CameraControls(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source)
     {
         using namespace ui;
 
-        auto camera_window = parent.add_child(source(IDR_UI_CAMERA_CONTROLS));
+        auto camera_window = parent.add_child(source->load_from_resource(IDR_UI_CAMERA_CONTROLS));
 
         auto reset = camera_window->find<Button>(Names::reset);
         reset->on_click += on_reset;

@@ -1,10 +1,13 @@
+#include <gmock/gmock.h>
 #include "gtest/gtest.h"
 
 #include <trview.ui/Window.h>
 #include <trview.ui/Layouts/GridLayout.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 /// Tests that controls are placed correctly when added to the grid.
@@ -33,7 +36,7 @@ TEST(GridLayout, LoadFromJson)
 {
     const std::string json = "{\"type\":\"window\", \"layout\":{\"type\":\"grid\",\"rows\":4,\"columns\":2}}";
 
-    auto loaded = ui::load_from_json(json);
+    auto loaded = JsonLoader(std::make_shared<MockShell>()).load_from_json(json);
     ASSERT_NE(loaded, nullptr);
 
     const auto layout = loaded->layout();

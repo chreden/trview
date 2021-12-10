@@ -5,6 +5,7 @@
 
 #include "ISettingsWindow.h"
 #include <trview.common/TokenStore.h>
+#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -45,7 +46,7 @@ namespace trview
         /// </summary>
         /// <param name="parent">The control to which the instance will add elements.</param>
         /// <param name="source">The function to call to get the UI elements.</param>
-        explicit SettingsWindow(ui::Control& parent, const ui::UiSource& source);
+        explicit SettingsWindow(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~SettingsWindow() = default;
         virtual void set_vsync(bool value) override;
         virtual void set_go_to_lara(bool value) override;

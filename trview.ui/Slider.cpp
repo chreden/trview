@@ -9,6 +9,8 @@ namespace trview
             const float BlobWidth = 10.f;
         }
 
+        const std::string Slider::Names::blob{ "blob" };
+
         Slider::Slider(Point position, Size size)
             : Window(position, size, Colour::Transparent)
         {
@@ -18,13 +20,13 @@ namespace trview
                 Size(size.width - BlobWidth * 2.f, 2.f),
                 Colour::LightGrey);
 
-            auto blob = std::make_unique<Window>(
+            add_child(std::move(line));
+
+            _blob = add_child(std::make_unique<Window>(
                 Point(0, 0),
                 Size(BlobWidth, size.height),
-                Colour::LightGrey);
-
-            add_child(std::move(line));
-            _blob = add_child(std::move(blob));
+                Colour::LightGrey));
+            _blob->set_name(Names::blob);
 
             set_blob_position(Point(0, 0));
         }
@@ -41,7 +43,6 @@ namespace trview
 
         void Slider::set_value(float value)
         {
-            _value = value;
             set_blob_position(value);
         }
 
@@ -74,6 +75,8 @@ namespace trview
 
         void Slider::set_blob_position(float percentage, bool raise_event)
         {
+            _value = percentage;
+
             const float SliderSize = size().width - BlobWidth * 2;
             const float x = BlobWidth + percentage * SliderSize - BlobWidth * 0.5f;
 

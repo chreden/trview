@@ -15,6 +15,11 @@ namespace trview
         class Checkbox : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string text;
+            };
+
             /// Creates a checkbox.
             explicit Checkbox();
 
@@ -70,8 +75,8 @@ namespace trview
         private:
             void create_image(const Size& size);
 
-            ui::Label*  _label;
-            ui::Label*  _check;
+            ui::Label*  _label { nullptr };
+            ui::Label*  _check { nullptr };
             bool        _state{ false };
             bool        _enabled{ true };
         };

@@ -11,6 +11,11 @@ namespace trview
         class GroupBox : public Window
         {
         public:
+            struct Names
+            {
+                static const std::string title;
+            };
+
             GroupBox(const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text);
             GroupBox(const Point& point, const Size& size, const Colour& background_colour, const Colour& border_colour, const std::wstring& text);
             std::wstring title() const;

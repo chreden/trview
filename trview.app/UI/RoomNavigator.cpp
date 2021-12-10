@@ -13,11 +13,11 @@ namespace trview
     const std::string RoomNavigator::Names::max_rooms{ "max_rooms" };
     const std::string RoomNavigator::Names::stats{ "stats" };
 
-    RoomNavigator::RoomNavigator(ui::Control& parent, const ui::UiSource& ui_source)
+    RoomNavigator::RoomNavigator(ui::Control& parent, const ui::ILoader& ui_source)
     {
         using namespace ui;
 
-        auto navigator = parent.add_child(ui_source(IDR_UI_ROOM_NAVIGATOR));
+        auto navigator = parent.add_child(ui_source.load_from_resource(IDR_UI_ROOM_NAVIGATOR));
         
         _current = navigator->find<NumericUpDown>(Names::current_room);
         _current->on_value_changed += on_room_selected;

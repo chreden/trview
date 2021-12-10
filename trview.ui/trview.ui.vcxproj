@@ -28,9 +28,10 @@
     <ClInclude Include="GroupBox.h" />
     <ClInclude Include="IFontMeasurer.h" />
     <ClInclude Include="IInput.h" />
+    <ClInclude Include="ILoader.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="json.h" />
+    <ClInclude Include="JsonLoader.h" />
     <ClInclude Include="JsonSerializers.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layouts\FreeLayout.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Layouts\ILayout.h" />
     <ClInclude Include="Layouts\StackLayout.h" />
     <ClInclude Include="Listbox.h" />
+    <ClInclude Include="Mocks\IFontMeasurer.h" />
     <ClInclude Include="Mocks\Input\IInput.h" />
     <ClInclude Include="NumericUpDown.h" />
     <ClInclude Include="Scrollbar.h" />
@@ -56,9 +58,10 @@
     <ClCompile Include="GroupBox.cpp" />
     <ClCompile Include="IFontMeasurer.cpp" />
     <ClCompile Include="IInput.cpp" />
+    <ClCompile Include="ILoader.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="json.cpp" />
+    <ClCompile Include="JsonLoader.cpp" />
     <ClCompile Include="JsonSerializers.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layouts\FreeLayout.cpp" />

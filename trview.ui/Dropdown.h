@@ -89,8 +89,8 @@ namespace trview
             void update_dropdown();
 
             std::vector<Value> _values;
-            ui::Button* _button;
-            ui::Listbox* _dropdown;
+            ui::Button* _button{ nullptr };
+            ui::Listbox* _dropdown{ nullptr };
         };
 
         std::ostream& operator<<(std::ostream& os, const Dropdown::Value value);

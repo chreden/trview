@@ -1,13 +1,15 @@
 #include <trview.app/UI/Console.h>
-#include <trview.ui/json.h>
+#include <trview.ui/JsonLoader.h>
+#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
+using namespace trview::mocks;
 using namespace trview::ui;
 
 TEST(Console, CommandEventRaised)
 {
     ui::Window window(Size(), Colour::White);
-    Console console(window, load_from_resource);
+    Console console(window, JsonLoader(std::make_shared<MockShell>()));
 
     std::optional<std::wstring> raised;
     auto token = console.on_command += [&](auto value)
@@ -29,7 +31,7 @@ TEST(Console, CommandEventRaised)
 TEST(Console, Visible)
 {
     ui::Window window(Size(), Colour::White);
-    Console console(window, load_from_resource);
+    Console console(window, JsonLoader(std::make_shared<MockShell>()));
 
     ASSERT_FALSE(console.visible());
 
@@ -44,7 +46,7 @@ TEST(Console, Visible)
 TEST(Console, PrintAddsLine)
 {
     ui::Window window(Size(), Colour::White);
-    Console console(window, load_from_resource);
+    Console console(window, JsonLoader(std::make_shared<MockShell>()));
 
     auto log = window.find<TextArea>(Console::Names::log);
     ASSERT_NE(log, nullptr);
