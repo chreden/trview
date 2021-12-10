@@ -10,7 +10,7 @@ namespace trview
         {
             LabelNode::LabelNode(const std::shared_ptr<graphics::IDevice>& device, const graphics::IRenderTarget::SizeSource& render_target_source, Label* label, const graphics::IFontFactory& font_factory)
                 : WindowNode(device, render_target_source, label), 
-                _font(font_factory.create_font("Arial", label->text_size(), label->text_alignment(), label->paragraph_alignment())), _label(label)
+                _font(font_factory.create_font(label->font(), label->text_size(), label->text_alignment(), label->paragraph_alignment())), _label(label)
             {
                 generate_font_texture();
                 if (label->size_mode() == SizeMode::Auto)

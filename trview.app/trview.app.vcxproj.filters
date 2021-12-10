@@ -203,9 +203,6 @@
     <ClCompile Include="Windows\ViewerLuaRegistry.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Resources\DefaultFonts.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Resources\DefaultShaders.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -572,9 +569,6 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="Resources\resource.h">
-      <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Resources\DefaultFonts.h">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\DefaultShaders.h">
@@ -981,15 +975,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Files\numericdown.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\numericup.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
-    <Image Include="Resources\Files\settings.png">
-      <Filter>Resources\Files</Filter>
-    </Image>
     <Image Include="Resources\Files\tomb1.png">
       <Filter>Resources\Files</Filter>
     </Image>
@@ -1033,8 +1018,6 @@
     <None Include="Resources\Generated\ui_vertex_shader.cso">
       <Filter>Resources\Generated</Filter>
     </None>
-    <None Include="Resources\Files\arial8.bin" />
-    <None Include="Resources\Files\arial7.bin" />
     <None Include="Resources\Files\UI\settings_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
@@ -1096,13 +1079,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Files\texturelist.txt">
-      <Filter>Resources\Files</Filter>
-    </Text>
     <Text Include="Resources\Files\type_names.txt">
-      <Filter>Resources\Files</Filter>
-    </Text>
-    <Text Include="Resources\Files\fontlist.txt">
       <Filter>Resources\Files</Filter>
     </Text>
     <Text Include="Resources\Files\actions.json">

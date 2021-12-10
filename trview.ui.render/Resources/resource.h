@@ -13,5 +13,3 @@
 #endif
 #endif
 
-#define IDB_NUMERIC_UP                  137
-#define IDB_NUMERIC_DOWN                138

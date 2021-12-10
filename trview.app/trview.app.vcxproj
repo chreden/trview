@@ -85,7 +85,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Menus\RecentFiles.cpp" />
     <ClCompile Include="Menus\UpdateChecker.cpp" />
     <ClCompile Include="Menus\ViewMenu.cpp" />
-    <ClCompile Include="Resources\DefaultFonts.cpp" />
     <ClCompile Include="Resources\DefaultShaders.cpp" />
     <ClCompile Include="Resources\DefaultTextures.cpp" />
     <ClCompile Include="Routing\Action.cpp" />
@@ -264,7 +263,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\Windows\ITriggersWindow.h" />
     <ClInclude Include="Mocks\Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IViewer.h" />
-    <ClInclude Include="Resources\DefaultFonts.h" />
     <ClInclude Include="Resources\DefaultShaders.h" />
     <ClInclude Include="Resources\DefaultTextures.h" />
     <ClInclude Include="Resources\resource.h" />
@@ -342,9 +340,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ResourceCompile Include="Resources\trview.app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\Files\numericdown.png" />
-    <Image Include="Resources\Files\numericup.png" />
-    <Image Include="Resources\Files\settings.png" />
     <Image Include="Resources\Files\small.ico" />
     <Image Include="Resources\Files\tomb1.png" />
     <Image Include="Resources\Files\tomb2.png" />
@@ -360,8 +355,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <Text Include="Resources\Files\actions.json">
       <FileType>Document</FileType>
     </Text>
-    <None Include="Resources\Files\arial7.bin" />
-    <None Include="Resources\Files\arial8.bin" />
     <None Include="Resources\Files\UI\camera_controls.json" />
     <None Include="Resources\Files\UI\camera_position.json" />
     <None Include="Resources\Files\UI\console.json" />
@@ -407,8 +400,6 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Resources\Files\fontlist.txt" />
-    <Text Include="Resources\Files\texturelist.txt" />
     <Text Include="Resources\Files\type_names.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

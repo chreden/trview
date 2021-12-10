@@ -43,9 +43,9 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-IDB_NUMERIC_UP          PNG                     "Files\\numericup.png"
-
-IDB_NUMERIC_DOWN        PNG                     "Files\\numericdown.png"
+ARIAL8               SPRITEFONT              "Files\\Fonts\\arial8.bin"
+ARIAL7               SPRITEFONT              "Files\\Fonts\\arial7.bin"
+ICONS8               SPRITEFONT              "Files\\Fonts\\icons8.bin"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -123,6 +123,9 @@
     <ClCompile Include="UI\LevelInfoTests.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\TextureStorage.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">

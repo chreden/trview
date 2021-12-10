@@ -5,5 +5,6 @@
     <ClCompile Include="VertexShaderTests.cpp" />
     <ClCompile Include="PixelShaderTests.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="FontFactoryTests.cpp" />
   </ItemGroup>
 </Project>

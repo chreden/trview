@@ -97,7 +97,8 @@
                         "properties": {
                             "text": { "type": "string" },
                             "text_colour": { "$ref": "#/$defs/colour" },
-                            "text_background_colour": { "$ref": "#/$defs/colour" }
+                            "text_background_colour": { "$ref": "#/$defs/colour" },
+                            "font": { "type": "string" }
                         }
                     }
                 },

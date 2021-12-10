@@ -10,8 +10,6 @@
 #include "LabelNode.h"
 #include "ImageNode.h"
 #include "ButtonNode.h"
-#include "NumericUpDownNode.h"
-#include "Resources/resource.h"
 
 namespace trview
 {
@@ -42,9 +40,6 @@ namespace trview
                 D3D11_DEPTH_STENCIL_DESC ui_depth_stencil_desc;
                 memset(&ui_depth_stencil_desc, 0, sizeof(ui_depth_stencil_desc));
                 _depth_stencil_state = device->create_depth_stencil_state(ui_depth_stencil_desc);
-
-                _up_down_up = load_texture_from_resource(*device, IDB_NUMERIC_UP);
-                _up_down_down = load_texture_from_resource(*device, IDB_NUMERIC_DOWN);
             }
 
             Renderer::~Renderer()
@@ -81,10 +76,6 @@ namespace trview
                 else if (auto image = dynamic_cast<Image*>(control))
                 {
                     node = std::make_unique<ImageNode>(_device, _render_target_source, image);
-                }
-                else if (auto numeric_up_down = dynamic_cast<NumericUpDown*>(control))
-                {
-                    node = std::make_unique<NumericUpDownNode>(_device, _render_target_source, numeric_up_down, _up_down_up, _up_down_down);
                 }
                 else if (auto window = dynamic_cast<Window*>(control))
                 {

@@ -28,4 +28,11 @@ namespace trview
     /// @param value The value to check.
     /// @returns Whether it is a link.
     bool is_link(const std::wstring& text);
+
+    /// <summary>
+    /// Convert a string to lowercase.
+    /// </summary>
+    /// <param name="value">The string to convert.</param>
+    /// <returns>The converted string.</returns>
+    std::string to_lowercase(const std::string& value);
 }

@@ -64,11 +64,16 @@ namespace trview
 
             /// Determine whether the character specified is in the character set.
             bool is_valid_character(wchar_t character) const;
+
+            std::string font() const;
+
+            void set_font(const std::string& font);
         private:
             std::wstring                   _text;
             int                            _text_size;
             graphics::TextAlignment        _text_alignment;
             graphics::ParagraphAlignment   _paragraph_alignment;
+            std::string                    _font{ "Arial" };
             SizeMode                       _size_mode;
             Colour                         _text_colour;
             IFontMeasurer*                 _measurer{ nullptr };
