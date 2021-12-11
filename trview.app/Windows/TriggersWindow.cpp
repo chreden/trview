@@ -53,16 +53,16 @@ namespace trview
     void TriggersWindow::bind_controls()
     {
         using namespace ui;
-        _track_room_checkbox = _left_panel->find<Checkbox>(Names::track_room_checkbox);
+        _track_room_checkbox = _ui->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
 
-        auto sync_trigger = _left_panel->find<Checkbox>(Names::sync_trigger_checkbox);
+        auto sync_trigger = _ui->find<Checkbox>(Names::sync_trigger_checkbox);
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
 
-        set_expander(_left_panel->find<Button>(Names::expander));
+        set_expander(_ui->find<Button>(Names::expander));
 
-        _command_filter = _left_panel->find<Dropdown>(Names::filter_dropdown);
+        _command_filter = _ui->find<Dropdown>(Names::filter_dropdown);
         _command_filter->set_dropdown_scope(_ui.get());
         _token_store += _command_filter->on_value_selected += [&](const auto& value)
         {
@@ -80,7 +80,7 @@ namespace trview
             apply_filters();
         };
 
-        _triggers_list = _left_panel->find<Listbox>(Names::triggers_listbox);
+        _triggers_list = _ui->find<Listbox>(Names::triggers_listbox);
         _token_store += _triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
@@ -105,14 +105,14 @@ namespace trview
         // Fix items list size now that it has been added to the panel.
         _triggers_list->set_size(Size(250, _left_panel->size().height - _triggers_list->position().y));
 
-        _stats_list = _right_panel->find<Listbox>(Names::stats_listbox);
+        _stats_list = _ui->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
             _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
-        auto button = _right_panel->find<Button>(Names::add_to_route_button);
+        auto button = _ui->find<Button>(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
             if (const auto trigger_ptr = _selected_trigger.lock())
@@ -121,7 +121,7 @@ namespace trview
             }
         };
 
-        _command_list = _right_panel->find<Listbox>(Names::trigger_commands_listbox);
+        _command_list = _ui->find<Listbox>(Names::trigger_commands_listbox);
         _token_store += _command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
