@@ -311,5 +311,11 @@ namespace trview
         {
             return _layout.get();
         }
+
+        void Control::set_auto_size_dimension(SizeDimension dimension)
+        {
+            _auto_size_dimension = dimension;
+            on_invalidate();
+        }
     }
 }

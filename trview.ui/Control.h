@@ -13,6 +13,7 @@
 #include "Align.h"
 #include "IInput.h"
 #include "Layouts/ILayout.h"
+#include "SizeDimension.h"
 
 namespace trview
 {
@@ -275,6 +276,8 @@ namespace trview
             void update(float delta);
 
             const ILayout* const layout() const;
+
+            void set_auto_size_dimension(SizeDimension dimension);
         protected:
             /// To be called after a child element has been added to the control.
             /// @param child_element The element that was added.
@@ -297,6 +300,7 @@ namespace trview
             int      _z{ 0 };
             bool     _focused{ false };
             std::unique_ptr<ILayout> _layout;
+            SizeDimension _auto_size_dimension{ SizeDimension::None };
         };
     }
 }

@@ -13,6 +13,7 @@
                 "width": 450,
                 "height": 420
             },
+            "auto_size": "height",
             "layout": {
                 "type": "stack",
                 "direction": "horizontal",

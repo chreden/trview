@@ -68,10 +68,6 @@ namespace trview
         /// <param name="button">The button to use as the expander button.</param>
         void set_expander(ui::Button* button);
 
-        /// Set the left and right panels to use. This should be called before anything is done with the ui
-        /// element as it will also generate the ui.
-        void set_panels(std::unique_ptr<ui::Control> left_panel, std::unique_ptr<ui::Control> right_panel);
-
         /// Set whether the window can be made taller.
         /// @param Whether the window can be made taller.
         void set_allow_increase_height(bool value);

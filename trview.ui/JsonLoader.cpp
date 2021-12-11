@@ -221,6 +221,7 @@ namespace trview
                 control->set_visible(read_attribute<bool>(json, "visible", true));
                 control->set_horizontal_alignment(read_attribute<Align>(json, "horizontal_alignment", Align::Near));
                 control->set_vertical_alignment(read_attribute<Align>(json, "vertical_alignment", Align::Near));
+                control->set_auto_size_dimension(read_attribute<SizeDimension>(json, "auto_size", SizeDimension::None));
 
                 if (json.count("layout") != 0)
                 {
