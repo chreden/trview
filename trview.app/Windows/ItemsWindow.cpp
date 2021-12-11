@@ -33,14 +33,14 @@ namespace trview
 
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
         const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const std::shared_ptr<ui::ILoader>& ui_source)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height)), _clipboard(clipboard),
+        : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height), ui_source->load_from_resource(IDR_UI_ITEMS_WINDOW)),
         _bubble(bubble_source(*_ui)), _tooltip(std::make_unique<Tooltip>(*_ui))
     {
         _tips[L"OCB"] = L"Changes entity behaviour";
         _tips[L"Clear Body"] = L"Removed when Bodybag is triggered";
 
         CollapsiblePanel::on_window_closed += IItemsWindow::on_window_closed;
-        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
+        bind_controls();
     }
 
     void ItemsWindow::set_items(const std::vector<Item>& items)
@@ -106,11 +106,11 @@ namespace trview
         _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
-    std::unique_ptr<ui::Control> ItemsWindow::create_left_panel(const ui::ILoader& ui_source)
+    void ItemsWindow::bind_controls()
     {
         using namespace ui;
 
-        auto left_panel = ui_source.load_from_resource(IDR_UI_ITEMS_WINDOW_LEFT_PANEL);
+        auto left_panel = _ui->find<Control>("left_panel");
         _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
@@ -145,14 +145,7 @@ namespace trview
         // Fix items list size now that it has been added to the panel.
         _items_list->set_size(Size(250, left_panel->size().height - _items_list->position().y));
 
-        return left_panel;
-    }
-
-    std::unique_ptr<ui::Control> ItemsWindow::create_right_panel(const ui::ILoader& ui_source)
-    {
-        using namespace ui;
-
-        auto right_panel = ui_source.load_from_resource(IDR_UI_ITEMS_WINDOW_RIGHT_PANEL);
+        auto right_panel = _ui->find<Control>("right_panel");
         _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
@@ -176,8 +169,6 @@ namespace trview
             set_track_room(false);
             on_trigger_selected(_all_triggers[index]);
         };
-
-        return right_panel;
     }
 
     void ItemsWindow::load_item_details(const Item& item)
