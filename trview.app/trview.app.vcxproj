@@ -369,8 +369,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <None Include="Resources\Files\UI\route_window_right_panel.json" />
     <None Include="Resources\Files\UI\settings_window.json" />
     <None Include="Resources\Files\UI\tool_window.json" />
-    <None Include="Resources\Files\UI\triggers_window_left_panel.json" />
-    <None Include="Resources\Files\UI\triggers_window_right_panel.json" />
+    <None Include="Resources\Files\UI\triggers_window.json" />
     <None Include="Resources\Files\UI\view_options.json" />
     <None Include="Resources\Generated\level_pixel_shader.cso" />
     <None Include="Resources\Generated\level_vertex_shader.cso" />

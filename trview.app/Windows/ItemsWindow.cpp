@@ -110,20 +110,19 @@ namespace trview
     {
         using namespace ui;
 
-        auto left_panel = _ui->find<Control>("left_panel");
-        _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
+        _track_room_checkbox = _left_panel->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value)
         {
             set_track_room(value);
         };
 
-        auto sync_item = left_panel->find<Checkbox>(Names::sync_item_checkbox);
+        auto sync_item = _left_panel->find<Checkbox>(Names::sync_item_checkbox);
         sync_item->set_state(_sync_item);
         _token_store += sync_item->on_state_changed += [this](bool value) { set_sync_item(value); };
 
-        set_expander(left_panel->find<Button>(Names::expander));
+        set_expander(_left_panel->find<Button>(Names::expander));
 
-        _items_list = left_panel->find<Listbox>(Names::items_listbox);
+        _items_list = _left_panel->find<Listbox>(Names::items_listbox);
         _token_store += _items_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
@@ -143,17 +142,16 @@ namespace trview
         };
 
         // Fix items list size now that it has been added to the panel.
-        _items_list->set_size(Size(250, left_panel->size().height - _items_list->position().y));
+        _items_list->set_size(Size(250, _left_panel->size().height - _items_list->position().y));
 
-        auto right_panel = _ui->find<Control>("right_panel");
-        _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
+        _stats_list = _right_panel->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
             _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
-        auto add_to_route = right_panel->find<Button>(Names::add_to_route_button);
+        auto add_to_route = _right_panel->find<Button>(Names::add_to_route_button);
         _token_store += add_to_route->on_click += [&]()
         {
             if (_selected_item.has_value())
@@ -162,7 +160,7 @@ namespace trview
             }
         };
 
-        _trigger_list = right_panel->find<Listbox>(Names::triggers_listbox);
+        _trigger_list = _right_panel->find<Listbox>(Names::triggers_listbox);
         _token_store += _trigger_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
