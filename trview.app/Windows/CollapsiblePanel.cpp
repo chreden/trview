@@ -164,11 +164,6 @@ namespace trview
         _allow_increase_height = value;
     }
 
-    std::unique_ptr<Control> CollapsiblePanel::create_divider()
-    {
-        return std::make_unique<ui::Window>(Size(1, window().size().height), Colours::Divider);
-    }
-
     void CollapsiblePanel::update_layout()
     {
         _ui->set_size(window().size());
@@ -198,11 +193,8 @@ namespace trview
 
         RECT rect{ 0, 0, 0, 0 };
         GetClientRect(window(), &rect);
-        if (rect.bottom - rect.top < height)
-        {
-            RECT new_rect{ 0, 0, rect.right - rect.left, std::max<long>(rect.bottom - rect.top, height) };
-            AdjustWindowRect(&rect, window_style, FALSE);
-            SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
-        }
+        RECT new_rect{ 0, 0, rect.right - rect.left, height };
+        AdjustWindowRect(&rect, window_style, FALSE);
+        SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
     }
 }

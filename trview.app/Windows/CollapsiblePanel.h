@@ -82,7 +82,6 @@ namespace trview
         std::unique_ptr<graphics::IDeviceWindow> _device_window;
     private:
         void toggle_expand();
-        std::unique_ptr<ui::Control> create_divider();
         void register_change_detection(ui::Control* control);
 
         Window _parent;
