@@ -35,6 +35,9 @@ namespace trview
         CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
             const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size);
 
+        CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
+            const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size, std::unique_ptr<ui::Control> ui);
+
         virtual ~CollapsiblePanel() = default;
 
         /// Handles a window message.
@@ -78,7 +81,7 @@ namespace trview
         TokenStore   _token_store;
         ui::Control* _left_panel;
         ui::Control* _right_panel;
-        std::unique_ptr<ui::Window> _ui;
+        std::unique_ptr<ui::Control> _ui;
         std::unique_ptr<ui::IInput> _input;
         std::unique_ptr<graphics::IDeviceWindow> _device_window;
     private:

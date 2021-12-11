@@ -74,8 +74,15 @@ namespace trview
 
     CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
         const Window& parent, const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size)
+        : CollapsiblePanel(device_window_source, std::move(ui_renderer), parent, window_class, title, input_source, size, std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f)))
+    {
+    }
+
+    CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
+        const Window& parent, const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size,
+        std::unique_ptr<Control> ui)
         : MessageHandler(create_window(parent, window_class, title, size)), _window_resizer(window()), _device_window(device_window_source(window())),
-        _ui_renderer(std::move(ui_renderer)), _parent(parent), _initial_size(size)
+        _ui_renderer(std::move(ui_renderer)), _parent(parent), _initial_size(size), _ui(std::move(ui))
     {
         _token_store += _window_resizer.on_resize += [=]()
         {
@@ -85,9 +92,7 @@ namespace trview
             on_size_changed(window().size());
         };
 
-        _ui = std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f));
         register_change_detection(_ui.get());
-
         _input = input_source(window(), *_ui);
     }
 
