@@ -96,16 +96,11 @@ namespace trview
         _input = input_source(window(), *_ui);
 
         // Auto-bind
-        auto left = _ui->find<Control>("left_panel");
-        auto right = _ui->find<Control>("right_panel");
-        if (left && right)
-        {
-            _panels = _ui->find<Control>("panels");
-            _left_panel = left;
-            _right_panel = right;
-            _divider = _ui->find<Control>("divider");
-            _ui_renderer->load(_ui.get());
-        }
+        _panels = _ui->find<Control>("panels");
+        _left_panel = _ui->find<Control>("left_panel");;
+        _right_panel = _ui->find<Control>("right_panel");
+        _divider = _ui->find<Control>("divider");
+        _ui_renderer->load(_ui.get());
     }
 
     void CollapsiblePanel::register_change_detection(Control* control)
