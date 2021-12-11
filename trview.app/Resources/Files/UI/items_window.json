@@ -14,6 +14,7 @@
                 "height": 420
             },
             "auto_size": "height",
+            "background_colour": "red",
             "layout": {
                 "type": "stack",
                 "direction": "horizontal",
@@ -24,6 +25,7 @@
                 {
                     "type": "window",
                     "name": "left_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background": {
                             "r": 0.25,
@@ -102,6 +104,7 @@
                         {
                             "type": "listbox",
                             "name": "Items",
+                            "auto_size": "height",
                             "size": {
                                 "width": 250,
                                 "height": 400
@@ -145,6 +148,7 @@
                 {
                     "type": "window",
                     "name": "divider",
+                    "auto_size": "height",
                     "size": {
                         "width": 1,
                         "height": 420
@@ -154,6 +158,7 @@
                 {
                     "type": "window",
                     "name": "right_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background_top": {
                             "r": 0.225,

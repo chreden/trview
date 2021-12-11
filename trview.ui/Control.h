@@ -286,6 +286,8 @@ namespace trview
             TokenStore _token_store;
             IInput* _input{ nullptr };
         private:
+            void set_parent(Control* parent);
+
             std::vector<std::unique_ptr<Control>> _child_elements;
 
             Control* _parent{ nullptr };

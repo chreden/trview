@@ -49,7 +49,7 @@ namespace trview
         {
             static_assert(std::is_base_of<Control, T>::value, "Element must be derived from Control");
 
-            child_element->_parent = this;
+            child_element->set_parent(this);
             T* element = static_cast<T*>(child_element.get());
             _child_elements.push_back(std::move(child_element));
 

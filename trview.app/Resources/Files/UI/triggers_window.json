@@ -9,6 +9,7 @@
         {
             "type": "window",
             "name": "panels",
+            "auto_size": "height",
             "size": {
                 "width": 520,
                 "height": 400
@@ -23,6 +24,7 @@
                 {
                     "type": "window",
                     "name": "left_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background": {
                             "r": 0.25,
@@ -153,6 +155,7 @@
                         {
                             "type": "listbox",
                             "name": "Triggers",
+                            "auto_size": "height",
                             "size": {
                                 "width": 250,
                                 "height": 350
@@ -189,6 +192,7 @@
                 {
                     "type": "window",
                     "name": "divider",
+                    "auto_size": "height",
                     "size": {
                         "width": 1,
                         "height": 420
@@ -198,6 +202,7 @@
                 {
                     "type": "window",
                     "name": "right_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background_top": {
                             "r": 0.225,

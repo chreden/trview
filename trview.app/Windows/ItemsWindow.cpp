@@ -103,7 +103,6 @@ namespace trview
     void ItemsWindow::update_layout()
     {
         CollapsiblePanel::update_layout();
-        _items_list->set_size(Size(_items_list->size().width, _left_panel->size().height - _items_list->position().y));
     }
 
     void ItemsWindow::bind_controls()

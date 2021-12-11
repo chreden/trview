@@ -10,6 +10,7 @@
         {
             "type": "window",
             "name": "panels",
+            "auto_size": "height",
             "size": {
                 "width": 470,
                 "height": 400
@@ -24,6 +25,7 @@
                 {
                     "type": "window",
                     "name": "left_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background": { 
                             "r": 0.25,
@@ -129,6 +131,7 @@
                         {
                             "type": "listbox",
                             "name": "waypoints",
+                            "auto_size": "height",
                             "size": {
                                 "width": 200,
                                 "height": 380
@@ -153,6 +156,7 @@
                 {
                     "type": "window",
                     "name": "divider",
+                    "auto_size": "height",
                     "size": {
                         "width": 1,
                         "height": 420
@@ -162,6 +166,7 @@
                 {
                     "type": "window",
                     "name": "right_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background": { 
                             "r": 0.225,

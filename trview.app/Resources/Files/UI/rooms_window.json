@@ -9,6 +9,7 @@
         {
             "type": "window",
             "name": "panels",
+            "auto_size": "height",
             "size": {
                 "width": 630,
                 "height": 680
@@ -23,6 +24,7 @@
                 {
                     "type": "window",
                     "name": "left_panel",
+                    "auto_size": "height",
                     "colours": {
                         "background": {
                             "r": 0.25,
@@ -85,6 +87,7 @@
                         {
                             "type": "listbox",
                             "name": "Rooms",
+                            "auto_size": "height",
                             "background_colour": "background",
                             "size": {
                                 "width": 250,
@@ -113,6 +116,7 @@
                 {
                     "type": "window",
                     "name": "divider",
+                    "auto_size": "height",
                     "size": {
                         "width": 1,
                         "height": 420
@@ -122,6 +126,7 @@
                 {
                     "type": "window",
                     "name": "right_panel",
+                    "auto_size": "height",
                     "size": {
                         "width": 380,
                         "height": 680

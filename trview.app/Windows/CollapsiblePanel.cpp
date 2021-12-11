@@ -172,11 +172,6 @@ namespace trview
     void CollapsiblePanel::update_layout()
     {
         _ui->set_size(window().size());
-        _panels->set_size(window().size());
-        const auto new_height = window().size().height;
-        _left_panel->set_size(Size(_left_panel->size().width, new_height));
-        _divider->set_size(Size(_divider->size().width, new_height));
-        _right_panel->set_size(Size(_right_panel->size().width, new_height));
     }
 
     void CollapsiblePanel::toggle_expand()
