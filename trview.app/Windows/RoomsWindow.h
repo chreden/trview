@@ -56,8 +56,7 @@ namespace trview
         virtual void update(float delta) override;
     private:
         void load_room_details(const std::weak_ptr<IRoom>& room_ptr);
-        std::unique_ptr<ui::Control> create_left_panel(const ui::ILoader& ui_source);
-        std::unique_ptr<ui::Control> create_right_panel(const ui::ILoader& ui_source);
+        void bind_controls();
         void set_sync_room(bool value);
         void set_track_item(bool value);
         void set_track_trigger(bool value);

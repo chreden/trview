@@ -112,12 +112,11 @@ namespace trview
         const IBubble::Source& bubble_source,
         const Window& parent,
         const std::shared_ptr<ui::ILoader>& loader)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680)), _map_renderer(map_renderer_source(Size(341, 341))),
+        : CollapsiblePanel(device_window_source, renderer_source(Size(630, 680)), parent, L"trview.rooms", L"Rooms", input_source, Size(630, 680), loader->load_from_resource(IDR_UI_ROOMS_WINDOW)), _map_renderer(map_renderer_source(Size(341, 341))),
         _bubble(bubble_source(*_ui)), _clipboard(clipboard)
     {
         CollapsiblePanel::on_window_closed += IRoomsWindow::on_window_closed;
-
-        set_panels(create_left_panel(*loader), create_right_panel(*loader));
+        bind_controls();
         set_allow_increase_height(false);
 
         using namespace input;
@@ -210,32 +209,31 @@ namespace trview
         };
     }
 
-    std::unique_ptr<ui::Control> RoomsWindow::create_left_panel(const ui::ILoader& loader)
+    void RoomsWindow::bind_controls()
     {
         using namespace ui;
 
-        auto left_panel = loader.load_from_resource(IDR_UI_ROOMS_WINDOW_LEFT_PANEL);
-        _sync_room_checkbox = left_panel->find<Checkbox>(Names::sync_room);
+        _sync_room_checkbox = _ui->find<Checkbox>(Names::sync_room);
         _token_store += _sync_room_checkbox->on_state_changed += [this](bool value)
         {
             set_sync_room(value);
         };
 
-        _track_item_checkbox = left_panel->find<Checkbox>(Names::track_item);
+        _track_item_checkbox = _ui->find<Checkbox>(Names::track_item);
         _track_item_checkbox->set_state(false);
         _token_store += _track_item_checkbox->on_state_changed += [this](bool value)
         {
             set_track_item(value);
         };
 
-        _track_trigger_checkbox = left_panel->find<Checkbox>(Names::track_trigger);
+        _track_trigger_checkbox = _ui->find<Checkbox>(Names::track_trigger);
         _track_trigger_checkbox->set_state(false);
         _token_store += _track_trigger_checkbox->on_state_changed += [this](bool value)
         {
             set_track_trigger(value);
         };
 
-        _rooms_list = left_panel->find<Listbox>(Names::rooms_listbox);
+        _rooms_list = _ui->find<Listbox>(Names::rooms_listbox);
         _token_store += _rooms_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
@@ -247,9 +245,49 @@ namespace trview
         };
 
         // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(250, left_panel->size().height - _rooms_list->position().y));
+        _rooms_list->set_size(Size(250, _ui->size().height - _rooms_list->position().y));
 
-        return left_panel;
+        const float panel_width = 380;
+        const float upper_height = 380;
+
+        _minimap = _ui->find<ui::Image>(Names::minimap);
+        _map_tooltip = std::make_unique<Tooltip>(*_minimap->parent());
+
+        _stats_box = _ui->find<Listbox>(Names::stats_listbox);
+        _token_store += _stats_box->on_item_selected += [this](const auto& item)
+        {
+            if (item.value(L"Name") == L"Alternate")
+            {
+                on_room_selected(std::stoi(item.value(L"Value")));
+            }
+            else
+            {
+                _clipboard->write(window(), item.value(L"Value"));
+                _bubble->show(client_cursor_position(window()) - Point(0, 20));
+            }
+        };
+
+        _neighbours_list = _ui->find<Listbox>(Names::neighbours_listbox);
+        _token_store += _neighbours_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            load_room_details(_all_rooms[index]);
+            on_room_selected(index);
+        };
+
+        _items_list = _ui->find<Listbox>(Names::items_listbox);
+        _token_store += _items_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_item_selected(_all_items[index]);
+        };
+
+        _triggers_list = _ui->find<Listbox>(Names::triggers_listbox);
+        _token_store += _triggers_list->on_item_selected += [&](const auto& item)
+        {
+            auto index = std::stoi(item.value(L"#"));
+            on_trigger_selected(_all_triggers[index]);
+        };
     }
 
     void RoomsWindow::set_current_room(uint32_t room)
@@ -400,56 +438,6 @@ namespace trview
             }
         }
         _triggers_list->set_items(list_triggers);
-    }
-
-    std::unique_ptr<ui::Control> RoomsWindow::create_right_panel(const ui::ILoader& ui_source)
-    {
-        using namespace ui;
-
-        const float panel_width = 380;
-        const float upper_height = 380;
-        auto right_panel = ui_source.load_from_resource(IDR_UI_ROOMS_WINDOW_RIGHT_PANEL);
-        
-        _minimap = right_panel->find<ui::Image>(Names::minimap);
-        _map_tooltip = std::make_unique<Tooltip>(*_minimap->parent());
-
-        _stats_box = right_panel->find<Listbox>(Names::stats_listbox);
-        _token_store += _stats_box->on_item_selected += [this](const auto& item)
-        {
-            if (item.value(L"Name") == L"Alternate")
-            {
-                on_room_selected(std::stoi(item.value(L"Value")));
-            }
-            else
-            {
-                _clipboard->write(window(), item.value(L"Value"));
-                _bubble->show(client_cursor_position(window()) - Point(0, 20));
-            }
-        };
-
-        _neighbours_list = right_panel->find<Listbox>(Names::neighbours_listbox);
-        _token_store += _neighbours_list->on_item_selected += [&](const auto& item)
-        {
-            auto index = std::stoi(item.value(L"#"));
-            load_room_details(_all_rooms[index]);
-            on_room_selected(index);
-        };
-        
-        _items_list = right_panel->find<Listbox>(Names::items_listbox);
-        _token_store += _items_list->on_item_selected += [&](const auto& item)
-        {
-            auto index = std::stoi(item.value(L"#"));
-            on_item_selected(_all_items[index]);
-        };
-
-        _triggers_list = right_panel->find<Listbox>(Names::triggers_listbox);
-        _token_store += _triggers_list->on_item_selected += [&](const auto& item)
-        {
-            auto index = std::stoi(item.value(L"#"));
-            on_trigger_selected(_all_triggers[index]);
-        };
-        
-        return right_panel;
     }
 
     void RoomsWindow::set_sync_room(bool value)

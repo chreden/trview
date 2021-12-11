@@ -47,8 +47,7 @@
 #define IDR_UI_ITEMS_WINDOW             33004
 #define IDR_UI_TRIGGERS_WINDOW          33005
 #define IDR_UI_ROUTE_WINDOW             33007
-#define IDR_UI_ROOMS_WINDOW_LEFT_PANEL  33009
-#define IDR_UI_ROOMS_WINDOW_RIGHT_PANEL 33010
+#define IDR_UI_ROOMS_WINDOW             33009
 #define IDR_UI_GO_TO                    33011
 #define IDR_UI_CONTEXT_MENU             33012
 #define IDR_UI_LEVEL_INFO               33013
