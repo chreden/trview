@@ -8,6 +8,7 @@
     "children": [
         {
             "type": "window",
+            "name": "panels",
             "size": {
                 "width": 450,
                 "height": 420

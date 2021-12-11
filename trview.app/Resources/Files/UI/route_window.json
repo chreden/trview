@@ -1,0 +1,383 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 470,
+        "height": 400
+    },
+    "background_colour": "black",
+    "children": [
+        {
+            "type": "window",
+            "name": "panels",
+            "size": {
+                "width": 470,
+                "height": 400
+            },
+            "layout": {
+                "type": "stack",
+                "direction": "horizontal",
+                "size_mode": "manual",
+                "padding": 0
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "name": "left_panel",
+                    "colours": {
+                        "background": { 
+                            "r": 0.25,
+                            "g": 0.25,
+                            "b": 0.25
+                        }
+                    },
+                    "background_colour": "background",
+                    "size": {
+                        "width": 200,
+                        "height": 400
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "padding": 3,
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 200,
+                                "height": 20
+                            },
+                            "background_colour": "background",
+                            "layout": {
+                                "type": "stack",
+                                "direction": "horizontal"
+                            },
+                            "children": [
+                                {
+                                    "type": "dropdown",
+                                    "name": "colour",
+                                    "size": {
+                                        "width": 20,
+                                        "height": 20
+                                    },
+                                    "text_colour": "green",
+                                    "text_background_colour": "green",
+                                    "values": [
+                                        { 
+                                            "name": "green",
+                                            "background_colour": "green",
+                                            "foreground_colour": "green"
+                                        },
+                                        {
+                                            "name": "red",
+                                            "background_colour": "red",
+                                            "foreground_colour": "red"                        
+                                        },
+                                        {
+                                            "name": "blue",
+                                            "background_colour": "blue",
+                                            "foreground_colour": "blue"                        
+                                        },
+                                        {
+                                            "name": "yellow",
+                                            "background_colour": "yellow",
+                                            "foreground_colour": "yellow"                        
+                                        },
+                                        {
+                                            "name": "cyan",
+                                            "background_colour": "cyan",
+                                            "foreground_colour": "cyan"                        
+                                        },
+                                        {
+                                            "name": "magenta",
+                                            "background_colour": "magenta",
+                                            "foreground_colour": "magenta"                        
+                                        },
+                                        {
+                                            "name": "black",
+                                            "background_colour": "black",
+                                            "foreground_colour": "black"                        
+                                        },
+                                        {
+                                            "name": "white",
+                                            "background_colour": "white",
+                                            "foreground_colour": "white"                        
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "button",
+                                    "name": "import_button",
+                                    "text": "Import",
+                                    "size": {
+                                        "width": 90,
+                                        "height": 20
+                                    }
+                                },
+                                {
+                                    "type": "button",
+                                    "name": "export_button",
+                                    "text": "Export",
+                                    "size": {
+                                        "width": 90,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listbox",
+                            "name": "waypoints",
+                            "size": {
+                                "width": 200,
+                                "height": 380
+                            },
+                            "background_colour": "background",
+                            "enable_sorting": false,
+                            "columns": [
+                                {
+                                    "name": "#",
+                                    "type": "number",
+                                    "width": 30
+                                },
+                                {
+                                    "name": "Type",
+                                    "type": "string",
+                                    "width": 160
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "name": "divider",
+                    "size": {
+                        "width": 1,
+                        "height": 420
+                    },
+                    "background_colour": "black"
+                },
+                {
+                    "type": "window",
+                    "name": "right_panel",
+                    "colours": {
+                        "background": { 
+                            "r": 0.225,
+                            "g": 0.225,
+                            "b": 0.225
+                        },
+                        "background_lower" : {
+                            "r": 0.2,
+                            "g": 0.2,
+                            "b": 0.2
+                        }
+                    },
+                    "size": {
+                        "width": 270,
+                        "height": 400
+                    },
+                    "background_colour": "background",
+                    "layout": {
+                        "type": "stack",
+                        "size_mode": "manual",
+                        "margin": { 
+                            "width": 0,
+                            "height": 8
+                        }
+                    },
+                    "children": [
+                        {
+                            "type": "groupbox",
+                            "text": "Waypoint Details",
+                            "size": {
+                                "width": 270,
+                                "height": 160
+                            },
+                            "background_colour": "background",
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 250,
+                                        "height": 140
+                                    },
+                                    "background_colour": "background",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 8,
+                                        "size_mode": "manual"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "listbox",
+                                            "name": "waypoint_stats",
+                                            "background_colour": "background",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 80
+                                            },
+                                            "show_highlight": false,
+                                            "show_scrollbar": true,
+                                            "show_headers": false,
+                                            "columns": [
+                                                {
+                                                    "name": "Name",
+                                                    "width": 100,
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "name": "Value",
+                                                    "width": 140,
+                                                    "type": "string"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "window",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 20
+                                            },
+                                            "background_colour": "background",
+                                            "layout": {
+                                                "type": "stack",
+                                                "direction": "horizontal",
+                                                "padding": 8,
+                                                "size_mode": "manual"
+                                            },
+                                            "children": [
+                                                {
+                                                    "type": "button",
+                                                    "text": "Attach Save",
+                                                    "name": "select_save_button",
+                                                    "visible": false,
+                                                    "size": {
+                                                        "width": 210,
+                                                        "height": 20
+                                                    }
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "text": "X",
+                                                    "name": "clear_save",
+                                                    "visible": false,
+                                                    "size": {
+                                                        "width": 20,
+                                                        "height": 20
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "button",
+                                            "name": "delete_waypoint",
+                                            "visible": false,
+                                            "text": "Delete Waypoint",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 20
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 270,
+                                "height": 5
+                            },
+                            "background_colour": "background_lower"
+                        },
+                        {
+                            "type": "window",
+                            "background_colour": "background_lower",
+                            "layout": {
+                                "type": "stack",
+                                "padding": 5
+                            },
+                            "children": [
+                                {
+                                    "type": "groupbox",
+                                    "text": "Notes",
+                                    "size": {
+                                        "width": 270,
+                                        "height": 200
+                                    },
+                                    "background_colour": "background_lower",
+                                    "children": [
+                                        {
+                                            "type": "textarea",
+                                            "name": "notes_area",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 200
+                                            },
+                                            "background_colour": {
+                                                "r": 0.15,
+                                                "g": 0.15,
+                                                "b": 0.15
+                                            },
+                                            "text_colour": "white",
+                                            "show_scrollbar": true
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "window",
+                                    "name": "randomizer_group",
+                                    "visible": false,
+                                    "size": {
+                                        "width": 270,
+                                        "height": 200
+                                    },
+                                    "background_colour": "background_lower",
+                                    "layout": {
+                                        "type": "stack",
+                                        "margin": {
+                                            "width": 10,
+                                            "height": 0
+                                        }
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "label",
+                                            "text": "Randomizer",
+                                            "size": {
+                                                "width": 100,
+                                                "height": 20
+                                            },
+                                            "background_colour": "background_lower",
+                                            "paragraph_alignment": "centre"
+                                        },
+                                        {
+                                            "type": "window",
+                                            "name": "randomizer_area",
+                                            "size": {
+                                                "width": 270,
+                                                "height": 240
+                                            },
+                                            "background_colour": "background_lower",
+                                            "layout": {
+                                                "type": "stack",
+                                                "margin": {
+                                                    "width": 0,
+                                                    "height": 10
+                                                }
+                                            }
+                                        }
+                                    ]
+                                    
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+    
+}

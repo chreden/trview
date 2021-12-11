@@ -100,7 +100,7 @@ namespace trview
         auto right = _ui->find<Control>("right_panel");
         if (left && right)
         {
-            _panels = _ui.get();
+            _panels = _ui->find<Control>("panels");
             _left_panel = left;
             _right_panel = right;
             _divider = _ui->find<Control>("divider");

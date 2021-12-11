@@ -1033,7 +1033,7 @@
     <None Include="Resources\Files\UI\triggers_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
-    <None Include="Resources\Files\UI\route_window_left_panel.json">
+    <None Include="Resources\Files\UI\route_window.json">
       <Filter>Resources\Files\UI</Filter>
     </None>
     <None Include="Resources\Files\UI\route_window_right_panel.json">
