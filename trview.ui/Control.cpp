@@ -147,6 +147,7 @@ namespace trview
 
         bool Control::move(Point)
         {
+            on_mouse_move();
             return false;
         }
 
@@ -234,10 +235,12 @@ namespace trview
 
         void Control::mouse_enter()
         {
+            on_mouse_enter();
         }
 
         void Control::mouse_leave()
         {
+            on_mouse_leave();
         }
 
         bool Control::handles_hover() const

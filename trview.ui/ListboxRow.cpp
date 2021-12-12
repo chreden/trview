@@ -122,12 +122,14 @@ namespace trview
 
         void Listbox::Row::mouse_enter()
         {
+            Control::mouse_enter();
             _hovered = true;
             update_row_colour();
         }
 
         void Listbox::Row::mouse_leave()
         {
+            Control::mouse_leave();
             _hovered = false;
             update_row_colour();
         }

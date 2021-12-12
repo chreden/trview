@@ -500,6 +500,8 @@ namespace trview
 
         bool TextArea::move(Point position)
         {
+            Control::move(position);
+
             if (_lines.empty() || _line_structure.empty())
             {
                 return true;
