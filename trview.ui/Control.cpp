@@ -332,7 +332,7 @@ namespace trview
             {
                 _token_store += _parent->on_size_changed += [this, parent](const auto& size)
                 {
-                    if (_auto_size_dimension == SizeDimension::Height)
+                    if (parent == _parent && _auto_size_dimension == SizeDimension::Height)
                     {
                         set_size(Size(_size.width, parent->size().height - _position.y));
                     }

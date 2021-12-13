@@ -102,9 +102,6 @@ namespace trview
             }
         };
 
-        // Fix items list size now that it has been added to the panel.
-        _triggers_list->set_size(Size(250, _left_panel->size().height - _triggers_list->position().y));
-
         _stats_list = _ui->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {

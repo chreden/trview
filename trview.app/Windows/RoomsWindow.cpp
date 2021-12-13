@@ -244,12 +244,6 @@ namespace trview
             }
         };
 
-        // Fix items list size now that it has been added to the panel.
-        _rooms_list->set_size(Size(250, _ui->size().height - _rooms_list->position().y));
-
-        const float panel_width = 380;
-        const float upper_height = 380;
-
         _minimap = _ui->find<ui::Image>(Names::minimap);
         _map_tooltip = std::make_unique<Tooltip>(*_minimap->parent());
 
