@@ -12,6 +12,7 @@
 #include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
 #include <trview.app/Mocks/Windows/IRouteWindowManager.h>
 #include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
+#include <trview.app/Mocks/Windows/ILightsWindowManager.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.common/Mocks/Windows/IDialogs.h>
 #include <trview.common/Mocks/IFiles.h>
@@ -54,6 +55,7 @@ namespace
             std::shared_ptr<IDialogs> dialogs{ mock_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ mock_shared<MockFiles>() };
             std::unique_ptr<IImGuiBackend> imgui_backend{ std::make_unique<NullImGuiBackend>() };
+            std::unique_ptr<ILightsWindowManager> lights_window_manager{ mock_unique<MockLightsWindowManager>() };
 
             std::unique_ptr<Application> build()
             {
@@ -61,7 +63,7 @@ namespace
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader), std::move(file_dropper),
                     std::move(level_loader), std::move(level_switcher), std::move(recent_files), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
-                    level_source, startup_options, dialogs, files, std::move(imgui_backend));
+                    level_source, startup_options, dialogs, files, std::move(imgui_backend), std::move(lights_window_manager));
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

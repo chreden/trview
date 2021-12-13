@@ -57,6 +57,7 @@ namespace trview
         toggles[Options::show_bounding_boxes] = [this](bool value) { set_show_bounding_boxes(value); };
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
+        toggles[Options::lights] = [this](bool value) { set_show_lights(value); };
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
@@ -159,6 +160,10 @@ namespace trview
             else if (_context_pick.type == PickResult::Type::Trigger)
             {
                 on_trigger_visibility(_level->triggers()[_context_pick.index], false);
+            }
+            else if (_context_pick.type == PickResult::Type::Light)
+            {
+                on_light_visibility(_level->lights()[_context_pick.index], false);
             }
         };
         _token_store += _ui->on_orbit += [&]()
@@ -361,6 +366,7 @@ namespace trview
             _camera.set_rotation_pitch(-0.78539f);
             _camera.set_zoom(8.f);
         });
+        add_shortcut(false, 'L', [&]() { toggle_show_lights(); });
 
         _token_store += _keyboard.on_key_down += [&](uint16_t key, bool control, bool)
         {
@@ -514,6 +520,7 @@ namespace trview
         _level->set_show_water(_ui->toggle(Options::water));
         _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
         _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
+        _level->set_show_lights(_ui->toggle(Options::lights));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -1009,6 +1016,14 @@ namespace trview
         }
     }
 
+    void Viewer::toggle_show_lights()
+    {
+        if (_level)
+        {
+            set_show_lights(!_level->show_lights());
+        }
+    }
+
     void Viewer::set_show_water(bool show)
     {
         if (_level)
@@ -1032,6 +1047,15 @@ namespace trview
         {
             _level->set_show_bounding_boxes(show);
             _ui->set_toggle(Options::show_bounding_boxes, show);
+        }
+    }
+
+    void Viewer::set_show_lights(bool show)
+    {
+        if (_level)
+        {
+            _level->set_show_lights(show);
+            _ui->set_toggle(Options::lights, show);
         }
     }
 
@@ -1112,6 +1136,9 @@ namespace trview
         case PickResult::Type::Waypoint:
             on_waypoint_selected(pick.index);
             break;
+        case PickResult::Type::Light:
+            on_light_selected(_level->lights()[pick.index]);
+            break;
         }
     }
 
@@ -1131,5 +1158,16 @@ namespace trview
     CameraMode Viewer::camera_mode() const
     {
         return _camera_mode;
+    }
+
+    void Viewer::select_light(const std::weak_ptr<ILight>& light)
+    {
+        auto light_ptr = light.lock();
+        _target = light_ptr->position();
+        if (_settings.auto_orbit)
+        {
+            set_camera_mode(CameraMode::Orbit);
+        }
+        _scene_changed = true;
     }
 }

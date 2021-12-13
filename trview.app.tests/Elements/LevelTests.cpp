@@ -10,6 +10,7 @@
 #include <trview.app/Mocks/Elements/IEntity.h>
 #include <trview.app/Mocks/Elements/IRoom.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ILight.h>
 #include <trview.app/Mocks/Camera/ICamera.h>
 #include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
 #include <trview.graphics/mocks/IShader.h>
@@ -44,11 +45,12 @@ namespace
             IEntity::AiSource ai_source{ [](auto&&...) { return mock_shared<MockEntity>(); } };
             IRoom::Source room_source{ [](auto&&...) { return mock_shared<MockRoom>(); } };
             ITrigger::Source trigger_source{ [](auto&&...) {return mock_shared<MockTrigger>(); } };
+            ILight::Source light_source{ [](auto&&...) { return std::make_shared<MockLight>(); } };
 
             std::unique_ptr<Level> build()
             {
                 return std::make_unique<Level>(device, shader_storage, std::move(level), level_texture_storage, std::move(mesh_storage), std::move(transparency_buffer),
-                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source);
+                    std::move(selection_renderer), type_name_lookup, entity_source, ai_source, room_source, trigger_source, light_source);
             }
 
             test_module& with_type_name_lookup(const std::shared_ptr<ITypeNameLookup>& type_name_lookup)
@@ -253,7 +255,7 @@ TEST(Level, PickUsesCorrectOptionalFilters)
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = mock_shared<MockRoom>();
-    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::HiddenGeometry)).Times(1);
+    EXPECT_CALL(*room, pick(A<const Vector3&>(), A<const Vector3&>(), PickFilter::Geometry | PickFilter::Entities | PickFilter::StaticMeshes | PickFilter::Triggers | PickFilter::HiddenGeometry | PickFilter::Lights)).Times(1);
 
     auto level = register_test_module()
         .with_level(std::move(mock_level_ptr))
@@ -261,6 +263,7 @@ TEST(Level, PickUsesCorrectOptionalFilters)
         .build();
     level->set_show_triggers(true);
     level->set_show_hidden_geometry(true);
+    level->set_show_lights(true);
 
     NiceMock<MockCamera> camera;
     level->pick(camera, Vector3::Zero, Vector3::Forward);

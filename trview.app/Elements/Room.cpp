@@ -108,6 +108,24 @@ namespace trview
             }
         }
 
+        if (has_flag(filters, PickFilter::Lights) && pick_results.empty())
+        {
+            for (const auto& light : _lights)
+            {
+                auto light_ptr = light.lock();
+                if (!light_ptr || !light_ptr->visible())
+                {
+                    continue;
+                }
+
+                auto light_result = light_ptr->pick(position, direction);
+                if (light_result.hit)
+                {
+                    pick_results.push_back(light_result);
+                }
+            }
+        }
+
         if (has_flag(filters, PickFilter::Triggers) && pick_results.empty())
         {
             for (const auto& trigger_pair : _triggers)
@@ -204,6 +222,22 @@ namespace trview
         for (const auto& mesh : _static_meshes)
         {
             mesh->render_bounding_box(camera, *_texture_storage, Colour::White);
+        }
+    }
+
+    void Room::render_lights(const ICamera& camera, const std::weak_ptr<ILight>& selected_light)
+    {
+        const auto selected = selected_light.lock();
+        for (const auto& light : _lights)
+        {
+            if (auto light_ptr = light.lock())
+            {
+                light_ptr->render(camera, *_texture_storage, Colour::White);
+                if (light_ptr == selected)
+                {
+                    light_ptr->render_direction(camera, *_texture_storage);
+                }
+            }
         }
     }
 
@@ -318,6 +352,29 @@ namespace trview
             return;
         }
         _triggers.insert({ trigger_ptr->sector_id(), trigger });
+    }
+
+    void Room::add_light(const std::weak_ptr<ILight>& light)
+    {
+        _lights.push_back(light);
+
+        // Place suns in the middle of the room instead of 9 million units away.
+        // Only do this if the light position is massive - don't change Tomb Editor placed suns.
+        // Stack them in a line so they don't overlap each other.
+        auto light_ptr = light.lock();
+        if (light_ptr && light_ptr->type() == trlevel::LightType::Sun && light_ptr->position().x > 9000)
+        {
+            uint32_t suns = 0;
+            for (const auto& other_light : _lights)
+            {
+                auto other_light_ptr = other_light.lock();
+                if (other_light_ptr->type() == trlevel::LightType::Sun && other_light_ptr != light_ptr)
+                {
+                    ++suns;
+                }
+            }
+            light_ptr->set_position(centre() + Vector3(0, 0, 0.25f * suns));
+        }
     }
 
     void 

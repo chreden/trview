@@ -40,8 +40,10 @@
 #define ID_VIEW_ROUTE                   ID_APP_VIEW_ROUTE
 #define ID_VIEW_TOOLS                   ID_APP_VIEW_TOOLS
 #define ID_VIEW_UNHIDE_ALL              ID_APP_VIEW_UNHIDE_ALL
+#define ID_WINDOWS_LIGHTS               ID_APP_WINDOWS_LIGHTS
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
+#define IDR_UI_LIGHTS_WINDOW            33019
 
 // Next default values for new objects
 // 

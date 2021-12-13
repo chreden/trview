@@ -68,6 +68,7 @@ BEGIN
         MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
+        MENUITEM "&Lights\tCtrl+L"              ID_WINDOWS_LIGHTS
     END
     POPUP "&Help"
     BEGIN

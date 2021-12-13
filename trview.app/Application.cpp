@@ -107,13 +107,14 @@ namespace trview
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
         std::shared_ptr<IFiles> files,
-        std::unique_ptr<IImGuiBackend> imgui_backend)
+        std::unique_ptr<IImGuiBackend> imgui_backend,
+        std::unique_ptr<ILightsWindowManager> lights_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend))
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _imgui_backend(std::move(imgui_backend)), _lights_windows(std::move(lights_window_manager))
     {
         SetWindowLongPtr(window(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_imgui_backend.get()));
 
@@ -132,6 +133,7 @@ namespace trview
         setup_triggers_windows();
         setup_rooms_windows();
         setup_route_window();
+        setup_lights_windows();
         setup_viewer(*startup_options);
 
         register_lua();
@@ -187,6 +189,8 @@ namespace trview
         _route_window->set_items(_level->items());
         _route_window->set_triggers(_level->triggers());
         _route_window->set_rooms(_level->rooms());
+        _lights_windows->set_level_version(_level->version());
+        _lights_windows->set_lights(_level->lights());
         _route->clear();
         _route->set_unsaved(false);
         _route_window->set_route(_route.get());
@@ -312,6 +316,8 @@ namespace trview
         _token_store += _viewer->on_room_selected += [this](uint32_t room) { select_room(room); };
         _token_store += _viewer->on_trigger_selected += [this](const auto& trigger) { select_trigger(trigger); };
         _token_store += _viewer->on_trigger_visibility += [this](const auto& trigger, bool value) { set_trigger_visibility(trigger, value); };
+        _token_store += _viewer->on_light_selected += [this](const auto& light) { select_light(light); };
+        _token_store += _viewer->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
         _token_store += _viewer->on_waypoint_added += [this](const auto& position, const auto& normal, auto room, auto type, auto index) { add_waypoint(position, normal, room, type, index); };
         _token_store += _viewer->on_waypoint_selected += [this](auto index) { select_waypoint(index); };
         _token_store += _viewer->on_waypoint_removed += [this](auto index) { remove_waypoint(index); };
@@ -417,6 +423,12 @@ namespace trview
         _route_window->set_randomizer_settings(_settings.randomizer);
     }
 
+    void Application::setup_lights_windows()
+    {
+        _token_store += _lights_windows->on_light_selected += [this](const auto& light) { select_light(light); };
+        _token_store += _lights_windows->on_light_visibility += [this](const auto& light, bool value) { set_light_visibility(light, value); };
+    }
+
     void Application::setup_shortcuts()
     {
         auto add_shortcut = [&](bool control, uint16_t key, std::function<void()> fn)
@@ -477,6 +489,7 @@ namespace trview
         _items_windows->set_room(room);
         _rooms_windows->set_room(room);
         _triggers_windows->set_room(room);
+        _lights_windows->set_room(room);
     }
 
     void Application::select_trigger(const std::weak_ptr<ITrigger>& trigger)
@@ -519,6 +532,20 @@ namespace trview
         }
     }
 
+    void Application::select_light(const std::weak_ptr<ILight>& light)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        auto light_ptr = light.lock();
+        select_room(light_ptr->room());
+        _level->set_selected_light(light_ptr->number());
+        _viewer->select_light(light);
+        _lights_windows->set_selected_light(light);
+    }
+
     void Application::set_item_visibility(const Item& item, bool visible)
     {
         if (!_level)
@@ -543,6 +570,23 @@ namespace trview
             {
                 _level->set_trigger_visibility(trigger_ptr->number(), visible);
                 _triggers_windows->set_trigger_visible(trigger, visible);
+            }
+        }
+    }
+
+    void Application::set_light_visibility(const std::weak_ptr<ILight>& light, bool visible)
+    {
+        if (!_level)
+        {
+            return;
+        }
+
+        if (const auto light_ptr = light.lock())
+        {
+            if (light_ptr->visible() != visible)
+            {
+                _level->set_light_visibility(light_ptr->number(), visible);
+                _lights_windows->set_light_visible(light, visible);
             }
         }
     }
@@ -585,6 +629,7 @@ namespace trview
         _triggers_windows->update(elapsed);
         _rooms_windows->update(elapsed);
         _route_window->update(elapsed);
+        _lights_windows->update(elapsed);
 
         _viewer->render();
 
@@ -597,6 +642,7 @@ namespace trview
         _triggers_windows->render();
         _rooms_windows->render();
         _route_window->render();
+        _lights_windows->render();
         _viewer->render_ui();
 
         ImGui::PopFont();

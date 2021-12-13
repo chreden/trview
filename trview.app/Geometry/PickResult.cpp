@@ -20,6 +20,8 @@ namespace trview
                 return L"Room";
             case PickResult::Type::Waypoint:
                 return L"Waypoint";
+            case PickResult::Type::Light:
+                return L"Light";
             }
             return L"?";
         }
@@ -113,6 +115,15 @@ namespace trview
                             }
                         }
                     }
+                }
+                break;
+            }
+            case PickResult::Type::Light:
+            {
+                const auto light = level.lights()[result.index];
+                if (auto light_ptr = light.lock())
+                {
+                    stream << L"Light " << result.index << L" - " << light_type_name(light_ptr->type());
                 }
                 break;
             }

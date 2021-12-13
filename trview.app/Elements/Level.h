@@ -40,7 +40,8 @@ namespace trview
             const IEntity::EntitySource& entity_source,
             const IEntity::AiSource& ai_source,
             const IRoom::Source& room_source,
-            const ITrigger::Source& trigger_source);
+            const ITrigger::Source& trigger_source,
+            const ILight::Source& light_source);
         virtual ~Level() = default;
         virtual std::vector<RoomInfo> room_info() const override;
         virtual RoomInfo room_info(uint32_t room) const override;
@@ -73,19 +74,25 @@ namespace trview
         virtual void set_show_water(bool show) override;
         virtual void set_show_wireframe(bool show) override;
         virtual void set_show_bounding_boxes(bool show) override;
+        virtual void set_show_lights(bool show) override;
+        virtual bool show_lights() const override;
         virtual bool show_triggers() const override;
         virtual void set_selected_trigger(uint32_t number) override;
+        virtual void set_selected_light(uint32_t number) override;
         virtual const ILevelTextureStorage& texture_storage() const override;
         virtual std::set<uint32_t> alternate_groups() const override;
         virtual trlevel::LevelVersion version() const override;
         virtual std::string filename() const override;
         virtual void set_filename(const std::string& filename) override;
+        virtual std::vector<std::weak_ptr<ILight>> lights() const override;
+        virtual void set_light_visibility(uint32_t index, bool state) override;
     private:
         void generate_rooms(const trlevel::ILevel& level, const IRoom::Source& room_source, const IMeshStorage& mesh_storage);
         void generate_triggers(const ITrigger::Source& trigger_source);
         void generate_entities(const trlevel::ILevel& level, const ITypeNameLookup& type_names, const IEntity::EntitySource& entity_source, const IEntity::AiSource& ai_source, const IMeshStorage& mesh_storage);
         void regenerate_neighbours();
         void generate_neighbours(std::set<uint16_t>& results, uint16_t selected_room, int32_t max_depth);
+        void generate_lights(const trlevel::ILevel& level, const ILight::Source& light_source);
 
         // Render the rooms in the level.
         // context: The device context.
@@ -127,6 +134,7 @@ namespace trview
         std::vector<std::shared_ptr<ITrigger>> _triggers;
         std::vector<std::shared_ptr<IEntity>> _entities;
         std::vector<Item> _items;
+        std::vector<std::shared_ptr<ILight>> _lights;
 
         graphics::IShader*          _vertex_shader;
         graphics::IShader*          _pixel_shader;
@@ -139,6 +147,7 @@ namespace trview
         uint16_t           _selected_room{ 0u };
         std::weak_ptr<IEntity> _selected_item;
         std::weak_ptr<ITrigger> _selected_trigger;
+        std::weak_ptr<ILight> _selected_light;
         uint32_t           _neighbour_depth{ 1 };
         std::set<uint16_t> _neighbours;
 
@@ -152,6 +161,7 @@ namespace trview
         bool _show_water{ true };
         bool _show_wireframe{ false };
         bool _show_bounding_boxes{ false };
+        bool _show_lights{ false };
 
         std::unique_ptr<ISelectionRenderer> _selection_renderer;
         std::set<uint32_t> _alternate_groups;

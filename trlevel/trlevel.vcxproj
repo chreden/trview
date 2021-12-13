@@ -171,6 +171,8 @@
     <ClInclude Include="Mocks\ILevelLoader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="trtypes.h" />
+    <ClInclude Include="tr_lights.h" />
+    <ClInclude Include="tr_rooms.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ILevel.cpp" />
@@ -185,6 +187,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="trtypes.cpp" />
+    <ClCompile Include="tr_lights.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\external\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">

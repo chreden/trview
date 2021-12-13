@@ -5,6 +5,7 @@
 #include <trview.app/Elements/ITrigger.h>
 #include <trview.app/Elements/IRoom.h>
 #include <trview.app/Elements/IEntity.h>
+#include <trview.app/Elements/ILight.h>
 #include <trview.common/Event.h>
 
 namespace trview
@@ -39,6 +40,7 @@ namespace trview
         /// @returns All items in the level.
         virtual std::vector<Item> items() const = 0;
         virtual std::vector<graphics::Texture> level_textures() const = 0;
+        virtual std::vector<std::weak_ptr<ILight>> lights() const = 0;
         /// Get the number of rooms in the level.
         virtual uint32_t number_of_rooms() const = 0;
         virtual void on_camera_moved() = 0;
@@ -73,16 +75,20 @@ namespace trview
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
         virtual void set_item_visibility(uint32_t index, bool state) = 0;
         virtual void set_selected_trigger(uint32_t number) = 0;
+        virtual void set_selected_light(uint32_t number) = 0;
         virtual void set_show_hidden_geometry(bool show) = 0;
         virtual void set_show_triggers(bool show) = 0;
         virtual void set_show_water(bool show) = 0;
         virtual void set_show_wireframe(bool show) = 0;
         virtual void set_show_bounding_boxes(bool show) = 0;
+        virtual void set_show_lights(bool show) = 0;
         virtual void set_trigger_visibility(uint32_t index, bool state) = 0;
         virtual void set_neighbour_depth(uint32_t depth) = 0;
         virtual void set_selected_room(uint16_t index) = 0;
         virtual void set_selected_item(uint32_t index) = 0;
+        virtual void set_light_visibility(uint32_t index, bool state) = 0;
         virtual bool show_hidden_geometry() const = 0;
+        virtual bool show_lights() const = 0;
         virtual bool show_triggers() const = 0;
         virtual const ILevelTextureStorage& texture_storage() const = 0;
         /// Get the triggers in this level.

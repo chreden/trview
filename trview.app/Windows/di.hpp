@@ -10,6 +10,8 @@
 #include "TriggersWindowManager.h"
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
+#include "LightsWindowManager.h"
+#include "LightsWindow.h"
 #include "Viewer.h"
 
 namespace trview
@@ -64,6 +66,16 @@ namespace trview
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
+            di::bind<ILightsWindow>.to<LightsWindow>().in(di::unique),
+            di::bind<ILightsWindow::Source>.to(
+                [](const auto& injector) -> ILightsWindow::Source
+                {
+                    return [&]()
+                    {
+                        return injector.create<std::shared_ptr<ILightsWindow>>();
+                    };
+                }),
+            di::bind<ILightsWindowManager>.to<LightsWindowManager>(),
             di::bind<IViewer>.to<Viewer>()
         );
     }

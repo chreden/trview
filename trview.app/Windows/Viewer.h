@@ -86,6 +86,7 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
+        virtual void select_light(const std::weak_ptr<ILight>& light) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
     private:
@@ -107,9 +108,11 @@ namespace trview
         void toggle_show_triggers();
         void set_show_hidden_geometry(bool show);
         void toggle_show_hidden_geometry();
+        void toggle_show_lights();
         void set_show_water(bool show);
         void set_show_wireframe(bool show);
         void set_show_bounding_boxes(bool show);
+        void set_show_lights(bool show);
         uint32_t room_from_pick(const PickResult& pick) const;
         void add_recent_orbit(const PickResult& pick);
         void select_previous_orbit();

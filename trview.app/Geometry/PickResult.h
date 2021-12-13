@@ -19,7 +19,8 @@ namespace trview
             Trigger,
             Waypoint,
             Compass,
-            StaticMesh
+            StaticMesh,
+            Light
         };
 
         bool                         hit{ false };
