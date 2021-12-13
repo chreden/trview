@@ -193,8 +193,11 @@ namespace trview
 
         RECT rect{ 0, 0, 0, 0 };
         GetClientRect(window(), &rect);
-        RECT new_rect{ 0, 0, rect.right - rect.left, height };
-        AdjustWindowRect(&rect, window_style, FALSE);
-        SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
+        if (rect.bottom - rect.top < height)
+        {
+            RECT new_rect{ 0, 0, rect.right - rect.left, std::max<long>(rect.bottom - rect.top, height) };
+            AdjustWindowRect(&rect, window_style, FALSE);
+            SetWindowPos(window(), nullptr, 0, 0, new_rect.right - new_rect.left, new_rect.bottom - new_rect.top, SWP_NOMOVE);
+        }
     }
 }

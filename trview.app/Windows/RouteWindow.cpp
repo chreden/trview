@@ -603,7 +603,7 @@ namespace trview
     {
         if (_randomizer_enabled)
         {
-            set_minimum_height(_rando_group->absolute_position().y + _rando_group->size().height);
+            set_minimum_height(_rando_area->absolute_position().y + _rando_area->size().height);
         }
         else
         {

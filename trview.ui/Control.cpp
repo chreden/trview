@@ -214,6 +214,11 @@ namespace trview
 
         void Control::set_size(Size size)
         {
+            if (_size == size)
+            {
+                return;
+            }
+
             _size = size;
             on_size_changed(size);
             on_invalidate();

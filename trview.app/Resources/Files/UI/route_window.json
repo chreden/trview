@@ -300,6 +300,7 @@
                         {
                             "type": "window",
                             "background_colour": "background_lower",
+                            "auto_size": "height",
                             "layout": {
                                 "type": "stack",
                                 "padding": 5
@@ -334,6 +335,7 @@
                                 {
                                     "type": "window",
                                     "name": "randomizer_group",
+                                    "auto_size": "height",
                                     "visible": false,
                                     "size": {
                                         "width": 270,
@@ -375,7 +377,7 @@
                                             }
                                         }
                                     ]
-                                    
+
                                 }
                             ]
                         }
