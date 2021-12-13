@@ -303,6 +303,7 @@
                         {
                             "type": "groupbox",
                             "text": "Commands",
+                            "auto_size": "height",
                             "size": {
                                 "width": 270,
                                 "height": 200
@@ -312,6 +313,7 @@
                                 {
                                     "type": "listbox",
                                     "name": "TriggerCommands",
+                                    "auto_size": "height",
                                     "size": {
                                         "width": 250,
                                         "height": 160

@@ -100,11 +100,6 @@ namespace trview
         _current_room = room;
     }
 
-    void ItemsWindow::update_layout()
-    {
-        CollapsiblePanel::update_layout();
-    }
-
     void ItemsWindow::bind_controls()
     {
         using namespace ui;

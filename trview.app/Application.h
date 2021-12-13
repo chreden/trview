@@ -21,6 +21,7 @@
 #include <trview.app/Windows/IViewer.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/IDialogs.h>
+#include <trview.common/Windows/IShortcuts.h>
 
 namespace trview
 {

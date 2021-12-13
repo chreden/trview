@@ -259,6 +259,7 @@
                         },
                         {
                             "type": "groupbox",
+                            "auto_size": "height",
                             "text": "Triggered By",
                             "size": {
                                 "width": 200,
@@ -270,6 +271,7 @@
                                 {
                                     "type": "listbox",
                                     "name": "Triggers",
+                                    "auto_size": "height",
                                     "size": {
                                         "width": 190,
                                         "height": 130

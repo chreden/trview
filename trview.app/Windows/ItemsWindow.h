@@ -55,9 +55,6 @@ namespace trview
         virtual void set_selected_item(const Item& item) override;
         virtual std::optional<Item> selected_item() const override;
         virtual void update(float delta) override;
-    protected:
-        /// After the window has been resized, adjust the sizes of the child elements.
-        virtual void update_layout() override;
     private:
         void populate_items(const std::vector<Item>& items);
         void load_item_details(const Item& item);

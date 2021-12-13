@@ -11,7 +11,6 @@
 #include <trview.ui/IInput.h>
 #include <trview.ui/Window.h>
 #include <trview.app/Windows/WindowResizer.h>
-#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {
@@ -25,16 +24,23 @@ namespace trview
     class CollapsiblePanel : public MessageHandler
     {
     public:
-        /// Create a collapsible panel window as a child of the specified window.
-        /// @param device_window_source The device window source function.
-        /// @param ui_renderer The renderer to use.
-        /// @param parent The parent window.
-        /// @param window_class Window class name
-        /// @param title Window title
-        /// @param size Window size
-        CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
-            const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size);
+        struct Names
+        {
+            static const std::string left_panel;
+            static const std::string right_panel;
+        };
 
+        /// <summary>
+        /// Create a collapsible panel window as a child of the specified window.
+        /// </summary>
+        /// <param name="device_window_source">The device window source function.</param>
+        /// <param name="ui_renderer">The renderer to use.</param>
+        /// <param name="parent">The parent window.</param>
+        /// <param name="window_class">Window class name</param>
+        /// <param name="title">Window title</param>
+        /// <param name="input_source">Function to call to create an IInput.</param>
+        /// <param name="size">Window size</param>
+        /// <param name="ui">UI for the window.</param>
         CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer, const Window& parent,
             const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size, std::unique_ptr<ui::Control> ui);
 
@@ -60,8 +66,6 @@ namespace trview
 
         Event<Size> on_size_changed;
     protected:
-        virtual void update_layout();
-
         /// <summary>
         /// Set the expander button. This should be called by derived classes when they have the button to bind.
         /// </summary>
@@ -86,9 +90,7 @@ namespace trview
 
         Window _parent;
         std::unique_ptr<ui::render::IRenderer>   _ui_renderer;
-        ui::Control* _panels;
         WindowResizer   _window_resizer;
-        ui::Control* _divider;
         ui::Button* _expander;
         Size        _initial_size;
         bool        _allow_increase_height{ true };

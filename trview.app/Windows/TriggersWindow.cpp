@@ -227,12 +227,6 @@ namespace trview
         }
     }
 
-    void TriggersWindow::update_layout()
-    {
-        CollapsiblePanel::update_layout();
-        _triggers_list->set_size(Size(_triggers_list->size().width, _left_panel->size().height - _triggers_list->position().y));
-    }
-
     void TriggersWindow::set_sync_trigger(bool value)
     {
         if (_sync_trigger != value)

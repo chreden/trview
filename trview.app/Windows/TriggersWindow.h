@@ -48,8 +48,6 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
-    protected:
-        virtual void update_layout() override;
     private:
         void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
         void bind_controls();

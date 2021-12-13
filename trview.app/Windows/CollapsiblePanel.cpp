@@ -9,73 +9,61 @@ using namespace trview::ui;
 
 namespace trview
 {
+    const std::string CollapsiblePanel::Names::left_panel{ "left_panel" };
+    const std::string CollapsiblePanel::Names::right_panel{ "right_panel" };
+
     namespace
     {
-        namespace
+        const DWORD window_style = WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+
+        LRESULT CALLBACK panel_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
-            const DWORD window_style = WS_OVERLAPPEDWINDOW & ~(WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
-
-            /// Colours commonly used in this class.
-            namespace Colours
-            {
-                const Colour Divider{ 1.0f, 0.0f, 0.0f, 0.0f };
-            }
-
-            LRESULT CALLBACK panel_window_procedure(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-            {
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-
-            Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
-            {
-                RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
-                AdjustWindowRect(&rect, window_style, FALSE);
-
-                const auto parent_window = is_message_only(parent) ? HWND_MESSAGE : parent.window();
-                Window items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
-                    CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
-
-                if (parent_window != HWND_MESSAGE)
-                {
-                    ShowWindow(items_window, nCmdShow);
-                }
-                UpdateWindow(items_window);
-
-                return items_window;
-            }
-
-            ATOM register_class(HINSTANCE hInstance, const std::wstring& window_class)
-            {
-                WNDCLASSEXW wcex;
-                wcex.cbSize = sizeof(WNDCLASSEX);
-                wcex.style = CS_HREDRAW | CS_VREDRAW;
-                wcex.lpfnWndProc = panel_window_procedure;
-                wcex.cbClsExtra = 0;
-                wcex.cbWndExtra = 0;
-                wcex.hInstance = hInstance;
-                wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRVIEW));
-                wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-                wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-                wcex.lpszMenuName = nullptr;
-                wcex.lpszClassName = window_class.c_str();
-                wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-                return RegisterClassExW(&wcex);
-            }
-
-            Window create_window(const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
-            {
-                HINSTANCE hInstance = GetModuleHandle(nullptr);
-                register_class(hInstance, window_class);
-                return init_instance(parent, hInstance, window_class, title, size, SW_NORMAL);
-            }
+            return DefWindowProc(hWnd, message, wParam, lParam);
         }
-    }
 
-    CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
-        const Window& parent, const std::wstring& window_class, const std::wstring& title, const ui::IInput::Source& input_source, const Size& size)
-        : CollapsiblePanel(device_window_source, std::move(ui_renderer), parent, window_class, title, input_source, size, std::make_unique<ui::Window>(window().size(), Colour(1.0f, 0.5f, 0.5f, 0.5f)))
-    {
+        Window init_instance(const Window& parent, HINSTANCE hInstance, const std::wstring& window_class, const std::wstring& title, const Size& size, int nCmdShow)
+        {
+            RECT rect{ 0, 0, static_cast<LONG>(size.width), static_cast<LONG>(size.height) };
+            AdjustWindowRect(&rect, window_style, FALSE);
+
+            const auto parent_window = is_message_only(parent) ? HWND_MESSAGE : parent.window();
+            Window items_window = CreateWindowW(window_class.c_str(), title.c_str(), window_style,
+                CW_USEDEFAULT, 0, rect.right - rect.left, rect.bottom - rect.top, parent, nullptr, hInstance, nullptr);
+
+            if (parent_window != HWND_MESSAGE)
+            {
+                ShowWindow(items_window, nCmdShow);
+            }
+            UpdateWindow(items_window);
+
+            return items_window;
+        }
+
+        ATOM register_class(HINSTANCE hInstance, const std::wstring& window_class)
+        {
+            WNDCLASSEXW wcex;
+            wcex.cbSize = sizeof(WNDCLASSEX);
+            wcex.style = CS_HREDRAW | CS_VREDRAW;
+            wcex.lpfnWndProc = panel_window_procedure;
+            wcex.cbClsExtra = 0;
+            wcex.cbWndExtra = 0;
+            wcex.hInstance = hInstance;
+            wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_TRVIEW));
+            wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+            wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+            wcex.lpszMenuName = nullptr;
+            wcex.lpszClassName = window_class.c_str();
+            wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+            return RegisterClassExW(&wcex);
+        }
+
+        Window create_window(const Window& parent, const std::wstring& window_class, const std::wstring& title, const Size& size)
+        {
+            HINSTANCE hInstance = GetModuleHandle(nullptr);
+            register_class(hInstance, window_class);
+            return init_instance(parent, hInstance, window_class, title, size, SW_NORMAL);
+        }
     }
 
     CollapsiblePanel::CollapsiblePanel(const graphics::IDeviceWindow::Source& device_window_source, std::unique_ptr<ui::render::IRenderer> ui_renderer,
@@ -87,7 +75,7 @@ namespace trview
         _token_store += _window_resizer.on_resize += [=]()
         {
             _device_window->resize();
-            update_layout();
+            _ui->set_size(window().size());
             _ui_renderer->set_host_size(window().size());
             on_size_changed(window().size());
         };
@@ -95,11 +83,8 @@ namespace trview
         register_change_detection(_ui.get());
         _input = input_source(window(), *_ui);
 
-        // Auto-bind
-        _panels = _ui->find<Control>("panels");
-        _left_panel = _ui->find<Control>("left_panel");;
-        _right_panel = _ui->find<Control>("right_panel");
-        _divider = _ui->find<Control>("divider");
+        _left_panel = _ui->find<Control>(Names::left_panel);;
+        _right_panel = _ui->find<Control>(Names::right_panel);
         _ui_renderer->load(_ui.get());
     }
 
@@ -162,11 +147,6 @@ namespace trview
     void CollapsiblePanel::set_allow_increase_height(bool value)
     {
         _allow_increase_height = value;
-    }
-
-    void CollapsiblePanel::update_layout()
-    {
-        _ui->set_size(window().size());
     }
 
     void CollapsiblePanel::toggle_expand()
