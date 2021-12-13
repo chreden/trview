@@ -34,7 +34,7 @@ namespace trview
     ItemsWindow::ItemsWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source, const ui::IInput::Source& input_source, const Window& parent,
         const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source, const std::shared_ptr<ui::ILoader>& ui_source)
         : CollapsiblePanel(device_window_source, renderer_source(Size(450, Height)), parent, L"trview.items", L"Items", input_source, Size(450, Height), ui_source->load_from_resource(IDR_UI_ITEMS_WINDOW)),
-        _bubble(bubble_source(*_ui)), _tooltip(std::make_unique<Tooltip>(*_ui))
+        _clipboard(clipboard), _bubble(bubble_source(*_ui)), _tooltip(std::make_unique<Tooltip>(*_ui))
     {
         _tips[L"OCB"] = L"Changes entity behaviour";
         _tips[L"Clear Body"] = L"Removed when Bodybag is triggered";
