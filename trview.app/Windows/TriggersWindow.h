@@ -48,12 +48,9 @@ namespace trview
         virtual void set_items(const std::vector<Item>& items) override;
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
-    protected:
-        virtual void update_layout() override;
     private:
         void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        std::unique_ptr<ui::Control> create_left_panel(const ui::ILoader& ui_source);
-        std::unique_ptr<ui::Control> create_right_panel(const ui::ILoader& ui_source);
+        void bind_controls();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
         void load_trigger_details(const ITrigger& trigger);

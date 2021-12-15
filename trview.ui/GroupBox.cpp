@@ -37,7 +37,9 @@ namespace trview
             };
 
             // Inner area.
-            _area = add_child(std::make_unique<Window>(Point(10, 21), size - Size(10, 21), background_colour));
+            auto area = std::make_unique<Window>(Point(10, 21), size - Size(10, 21), background_colour);
+            area->set_auto_size_dimension(SizeDimension::Height);
+            _area = add_child(std::move(area));
         }
 
         std::wstring GroupBox::title() const

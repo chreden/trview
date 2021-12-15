@@ -11,6 +11,7 @@
 #include <trview.common/MessageHandler.h>
 #include <trview.common/TokenStore.h>
 #include <trview.app/Elements/Item.h>
+#include <trview.common/Windows/IShortcuts.h>
 
 namespace trview
 {

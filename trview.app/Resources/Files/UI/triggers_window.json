@@ -1,0 +1,350 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "size": {
+        "width": 520,
+        "height": 400
+    },
+    "children": [
+        {
+            "type": "window",
+            "name": "panels",
+            "auto_size": "height",
+            "size": {
+                "width": 520,
+                "height": 400
+            },
+            "layout": {
+                "type": "stack",
+                "padding": 0,
+                "size_mode": "manual",
+                "direction": "horizontal"
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "name": "left_panel",
+                    "auto_size": "height",
+                    "colours": {
+                        "background": {
+                            "r": 0.25,
+                            "g": 0.25,
+                            "b": 0.25
+                        }
+                    },
+                    "background_colour": "background",
+                    "size": {
+                        "width": 250,
+                        "height": 400
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "padding": 3,
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 250,
+                                "height": 50
+                            },
+                            "background_colour": "background",
+                            "layout": {
+                                "type": "stack",
+                                "padding": 2,
+                                "size_mode": "manual",
+                                "margin": {
+                                    "width": 2,
+                                    "height": 2
+                                }
+                            },
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 250,
+                                        "height": 20
+                                    },
+                                    "background_colour": "background",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 2,
+                                        "margin": {
+                                            "width": 2,
+                                            "height": 2
+                                        },
+                                        "direction": "horizontal",
+                                        "size_mode": "manual"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "checkbox",
+                                            "name": "TrackRoom",
+                                            "text": "Track Room",
+                                            "background_colour": "background"
+                                        },
+                                        {
+                                            "type": "window",
+                                            "size": {
+                                                "width": 5,
+                                                "height": 20
+                                            },
+                                            "background_colour": "background"
+                                        },
+                                        {
+                                            "type": "checkbox",
+                                            "name": "SyncTriggers",
+                                            "text": "Sync Trigger",
+                                            "background_colour": "background"
+                                        },
+                                        {
+                                            "type": "window",
+                                            "size": {
+                                                "width": 5,
+                                                "height": 20
+                                            },
+                                            "background_colour": "background"
+                                        },
+                                        {
+                                            "type": "button",
+                                            "text": "<<",
+                                            "name": "Expander",
+                                            "size": {
+                                                "width": 16,
+                                                "height": 16
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 250,
+                                        "height": 20
+                                    },
+                                    "background_colour": "background",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 2,
+                                        "direction": "horizontal",
+                                        "size_mode": "manual",
+                                        "margin": {
+                                            "width": 2,
+                                            "height": 0
+                                        }
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "dropdown",
+                                            "name": "FilterDropdown",
+                                            "size": {
+                                                "width": 236,
+                                                "height": 20
+                                            },
+                                            "values": [
+                                                "All",
+                                                "Flipmaps"
+                                            ],
+                                            "selected_value": "All"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listbox",
+                            "name": "Triggers",
+                            "auto_size": "height",
+                            "size": {
+                                "width": 250,
+                                "height": 350
+                            },
+                            "columns": [
+                                {
+                                    "identity": "key",
+                                    "name": "#",
+                                    "type": "number",
+                                    "width": 30
+                                },
+                                {
+                                    "identity": "none",
+                                    "name": "Room",
+                                    "type": "number",
+                                    "width": 30
+                                },
+                                {
+                                    "identity": "none",
+                                    "name": "Type",
+                                    "type": "string",
+                                    "width": 130
+                                },
+                                {
+                                    "identity": "none",
+                                    "name": "Hide",
+                                    "type": "boolean",
+                                    "width": 50
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "name": "divider",
+                    "auto_size": "height",
+                    "size": {
+                        "width": 1,
+                        "height": 420
+                    },
+                    "background_colour": "black"
+                },
+                {
+                    "type": "window",
+                    "name": "right_panel",
+                    "auto_size": "height",
+                    "colours": {
+                        "background_top": {
+                            "r": 0.225,
+                            "g": 0.225,
+                            "b": 0.225
+                        },
+                        "background_bottom": {
+                            "r": 0.2,
+                            "g": 0.2,
+                            "b": 0.2
+                        }
+                    },
+                    "size": {
+                        "width": 270,
+                        "height": 400
+                    },
+                    "background_colour": "background_top",
+                    "layout": {
+                        "type": "stack",
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 270,
+                                "height": 8
+                            },
+                            "background_colour": "background_top"
+                        },
+                        {
+                            "type": "groupbox",
+                            "text": "Trigger Details",
+                            "size": {
+                                "width": 270,
+                                "height": 190
+                            },
+                            "background_colour": "background_top",
+                            "children": [
+                                {
+                                    "type": "window",
+                                    "size": {
+                                        "width": 250,
+                                        "height": 160
+                                    },
+                                    "background_colour": "background_top",
+                                    "layout": {
+                                        "type": "stack",
+                                        "padding": 16,
+                                        "size_mode": "manual"
+                                    },
+                                    "children": [
+                                        {
+                                            "type": "listbox",
+                                            "name": "StatsListbox",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 120
+                                            },
+                                            "background_colour": "background_top",
+                                            "show_headers": false,
+                                            "show_highlight": false,
+                                            "show_scrollbar": false,
+                                            "columns": [
+                                                {
+                                                    "type": "number",
+                                                    "name": "Name",
+                                                    "width": 100
+                                                },
+                                                {
+                                                    "type": "number",
+                                                    "name": "Value",
+                                                    "width": 150
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "button",
+                                            "text": "Add to Route",
+                                            "name": "AddToRoute",
+                                            "size": {
+                                                "width": 250,
+                                                "height": 20
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 270,
+                                "height": 5
+                            },
+                            "background_colour": "background_bottom"
+                        },
+                        {
+                            "type": "groupbox",
+                            "text": "Commands",
+                            "auto_size": "height",
+                            "size": {
+                                "width": 270,
+                                "height": 200
+                            },
+                            "background_colour": "background_bottom",
+                            "children": [
+                                {
+                                    "type": "listbox",
+                                    "name": "TriggerCommands",
+                                    "auto_size": "height",
+                                    "size": {
+                                        "width": 250,
+                                        "height": 160
+                                    },
+                                    "background_colour": "background_bottom",
+                                    "columns": [
+                                        {
+                                            "type": "string",
+                                            "name": "Type",
+                                            "width": 80
+                                        },
+                                        {
+                                            "type": "string",
+                                            "name": "Index",
+                                            "width": 35
+                                        },
+                                        {
+                                            "type": "string",
+                                            "name": "Entity",
+                                            "width": 125
+                                        }
+                                    ],
+                                    "show_headers": true,
+                                    "show_scrollbar": true,
+                                    "show_highlight": false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

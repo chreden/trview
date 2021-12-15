@@ -55,11 +55,11 @@ namespace trview
         const ui::IInput::Source& input_source, const trview::Window& parent, const std::shared_ptr<IClipboard>& clipboard,
         const std::shared_ptr<IDialogs>& dialogs, const std::shared_ptr<IFiles>& files, const IBubble::Source& bubble_source,
         const std::shared_ptr<ui::ILoader>& ui_source, const std::shared_ptr<IShell>& shell)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height)), _clipboard(clipboard), _dialogs(dialogs), _files(files),
-        _bubble(bubble_source(*_ui)), _shell(shell)
+        : CollapsiblePanel(device_window_source, renderer_source(Size(470, normal_min_height)), parent, L"trview.route", L"Route", input_source, Size(470, normal_min_height), ui_source->load_from_resource(IDR_UI_ROUTE_WINDOW)),
+        _clipboard(clipboard), _dialogs(dialogs), _files(files), _bubble(bubble_source(*_ui)), _shell(shell)
     {
         CollapsiblePanel::on_window_closed += IRouteWindow::on_window_closed;
-        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
+        bind_controls();
     }
 
     void RouteWindow::render(bool vsync)
@@ -86,10 +86,9 @@ namespace trview
         _colour->set_selected_value(colour.code());
     }
 
-    std::unique_ptr<Control> RouteWindow::create_left_panel(const ui::ILoader& ui_source)
+    void RouteWindow::bind_controls()
     {
-        auto left_panel = ui_source.load_from_resource(IDR_UI_ROUTE_WINDOW_LEFT_PANEL);
-        _colour = left_panel->find<Dropdown>(Names::colour);
+        _colour = _ui->find<Dropdown>(Names::colour);
         _colour->set_dropdown_scope(_ui.get());
 
         _token_store += _colour->on_value_selected += [=](const auto& value)
@@ -100,7 +99,7 @@ namespace trview
             on_colour_changed(new_colour);
         };
 
-        auto import = left_panel->find<Button>(Names::import_button);
+        auto import = _ui->find<Button>(Names::import_button);
         _token_store += import->on_click += [&]()
         {
             std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
@@ -115,10 +114,10 @@ namespace trview
                 on_route_import(filename.value().filename, filename.value().filter_index == 2);
             }
         };
-        auto export_button = left_panel->find<Button>(Names::export_button);
+        auto export_button = _ui->find<Button>(Names::export_button);
         _token_store += export_button->on_click += [&]()
         {
-            std::vector<IDialogs::FileFilter> filters { { L"trview route", { L"*.tvr" } } };
+            std::vector<IDialogs::FileFilter> filters{ { L"trview route", { L"*.tvr" } } };
             uint32_t filter_index = 1;
             if (_randomizer_enabled)
             {
@@ -134,7 +133,7 @@ namespace trview
         };
 
         // List box to show the waypoints in the route.
-        _waypoints = left_panel->find<Listbox>(Names::waypoints);
+        _waypoints = _ui->find<Listbox>(Names::waypoints);
         _token_store += _waypoints->on_item_selected += [&](const auto& item) {
             auto index = std::stoi(item.value(L"#"));
             load_waypoint_details(index);
@@ -148,19 +147,12 @@ namespace trview
             _waypoints->set_size(Size(200, size.height - 20));
         };
 
-        return left_panel;
-    }
-
-    std::unique_ptr<Control> RouteWindow::create_right_panel(const ui::ILoader& ui_source)
-    {
         const float panel_width = 270;
 
-        auto right_panel = ui_source.load_from_resource(IDR_UI_ROUTE_WINDOW_RIGHT_PANEL);
-
-        _stats = right_panel->find<Listbox>(Names::waypoint_stats);
+        _stats = _ui->find<Listbox>(Names::waypoint_stats);
         _token_store += _stats->on_item_selected += [&](const auto& item)
         {
-            if (item.value(L"Name") == L"Room Position" || 
+            if (item.value(L"Name") == L"Room Position" ||
                 item.value(L"Name") == L"Position")
             {
                 _clipboard->write(window(), item.value(L"Value"));
@@ -186,7 +178,7 @@ namespace trview
             }
         };
 
-        _select_save = right_panel->find<Button>(Names::select_save_button);
+        _select_save = _ui->find<Button>(Names::select_save_button);
         _token_store += _select_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -233,7 +225,7 @@ namespace trview
             }
         };
 
-        _clear_save = right_panel->find<Button>(Names::clear_save);
+        _clear_save = _ui->find<Button>(Names::clear_save);
         _token_store += _clear_save->on_click += [&]()
         {
             if (!(_route && _selected_index < _route->waypoints()))
@@ -250,7 +242,7 @@ namespace trview
             }
         };
 
-        _delete_waypoint = right_panel->find<Button>(Names::delete_waypoint);
+        _delete_waypoint = _ui->find<Button>(Names::delete_waypoint);
         _token_store += _delete_waypoint->on_click += [&]()
         {
             if (_route && _selected_index < _route->waypoints())
@@ -259,7 +251,7 @@ namespace trview
             }
         };
 
-        _notes_area = right_panel->find<TextArea>(Names::notes_area);
+        _notes_area = _ui->find<TextArea>(Names::notes_area);
         _token_store += _notes_area->on_text_changed += [&](const std::wstring& text)
         {
             if (_route && _selected_index < _route->waypoints())
@@ -272,9 +264,8 @@ namespace trview
             }
         };
 
-        _rando_group = right_panel->find<ui::Window>(Names::randomizer_group);
-        _rando_area = right_panel->find<ui::Window>(Names::randomizer_area);
-        return right_panel;
+        _rando_group = _ui->find<ui::Window>(Names::randomizer_group);
+        _rando_area = _ui->find<ui::Window>(Names::randomizer_area);
     }
 
     Listbox::Item RouteWindow::create_listbox_item(uint32_t index, const IWaypoint& waypoint)
@@ -612,7 +603,7 @@ namespace trview
     {
         if (_randomizer_enabled)
         {
-            set_minimum_height(_rando_group->absolute_position().y + _rando_group->size().height);
+            set_minimum_height(_rando_area->absolute_position().y + _rando_area->size().height);
         }
         else
         {

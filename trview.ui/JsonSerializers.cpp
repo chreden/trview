@@ -76,9 +76,13 @@ namespace trview
             {
                 dimension = SizeDimension::Height;
             }
-            else
+            else if (text == "all")
             {
                 dimension = SizeDimension::All;
+            }
+            else
+            {
+                dimension = SizeDimension::None;
             }
         }
     }

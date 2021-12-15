@@ -72,7 +72,8 @@
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/$defs/control" }
-                }
+                },
+                "auto_size": { "enum": [ "all", "none", "width", "height" ] }
             },
             "allOf": [
                 {

@@ -43,31 +43,28 @@ namespace trview
     TriggersWindow::TriggersWindow(const IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
         const std::shared_ptr<ui::ILoader>& ui_source)
-        : CollapsiblePanel(device_window_source, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", input_source, Size(520, 400)), _clipboard(clipboard),
-        _bubble(bubble_source(*_ui))
+        : CollapsiblePanel(device_window_source, renderer_source(Size(520, 400)), parent, L"trview.triggers", L"Triggers", input_source, Size(520, 400), ui_source->load_from_resource(IDR_UI_TRIGGERS_WINDOW)),
+        _clipboard(clipboard), _bubble(bubble_source(*_ui))
     {
         CollapsiblePanel::on_window_closed += ITriggersWindow::on_window_closed;
-        set_panels(create_left_panel(*ui_source), create_right_panel(*ui_source));
+        bind_controls();
     }
 
-    std::unique_ptr<ui::Control> TriggersWindow::create_left_panel(const ui::ILoader& ui_source)
+    void TriggersWindow::bind_controls()
     {
         using namespace ui;
-
-        auto left_panel = ui_source.load_from_resource(IDR_UI_TRIGGERS_WINDOW_LEFT_PANEL);
-
-        _track_room_checkbox = left_panel->find<Checkbox>(Names::track_room_checkbox);
+        _track_room_checkbox = _ui->find<Checkbox>(Names::track_room_checkbox);
         _token_store += _track_room_checkbox->on_state_changed += [this](bool value) { set_track_room(value); };
 
-        auto sync_trigger = left_panel->find<Checkbox>(Names::sync_trigger_checkbox);
+        auto sync_trigger = _ui->find<Checkbox>(Names::sync_trigger_checkbox);
         sync_trigger->set_state(_sync_trigger);
         _token_store += sync_trigger->on_state_changed += [this](bool value) { set_sync_trigger(value); };
 
-        set_expander(left_panel->find<Button>(Names::expander));
+        set_expander(_ui->find<Button>(Names::expander));
 
-        _command_filter = left_panel->find<Dropdown>(Names::filter_dropdown);
+        _command_filter = _ui->find<Dropdown>(Names::filter_dropdown);
         _command_filter->set_dropdown_scope(_ui.get());
-        _token_store += _command_filter->on_value_selected += [&](const auto& value) 
+        _token_store += _command_filter->on_value_selected += [&](const auto& value)
         {
             _selected_commands.clear();
             if (value == L"Flipmaps")
@@ -83,7 +80,7 @@ namespace trview
             apply_filters();
         };
 
-        _triggers_list = left_panel->find<Listbox>(Names::triggers_listbox);
+        _triggers_list = _ui->find<Listbox>(Names::triggers_listbox);
         _token_store += _triggers_list->on_item_selected += [&](const auto& item)
         {
             auto index = std::stoi(item.value(L"#"));
@@ -105,26 +102,14 @@ namespace trview
             }
         };
 
-        // Fix items list size now that it has been added to the panel.
-        _triggers_list->set_size(Size(250, left_panel->size().height - _triggers_list->position().y));
-
-        return left_panel;
-    }
-
-    std::unique_ptr<ui::Control> TriggersWindow::create_right_panel(const ui::ILoader& ui_source)
-    {
-        using namespace ui;
-
-        auto right_panel = ui_source.load_from_resource(IDR_UI_TRIGGERS_WINDOW_RIGHT_PANEL);
-
-        _stats_list = right_panel->find<Listbox>(Names::stats_listbox);
+        _stats_list = _ui->find<Listbox>(Names::stats_listbox);
         _token_store += _stats_list->on_item_selected += [this](const ui::Listbox::Item& item)
         {
             _clipboard->write(window(), item.value(L"Value"));
             _bubble->show(client_cursor_position(window()) - Point(0, 20));
         };
 
-        auto button = right_panel->find<Button>(Names::add_to_route_button);
+        auto button = _ui->find<Button>(Names::add_to_route_button);
         _token_store += button->on_click += [&]()
         {
             if (const auto trigger_ptr = _selected_trigger.lock())
@@ -133,7 +118,7 @@ namespace trview
             }
         };
 
-        _command_list = right_panel->find<Listbox>(Names::trigger_commands_listbox);
+        _command_list = _ui->find<Listbox>(Names::trigger_commands_listbox);
         _token_store += _command_list->on_item_selected += [&](const auto& trigger_item)
         {
             auto index = std::stoi(trigger_item.value(L"#"));
@@ -147,8 +132,6 @@ namespace trview
                 }
             }
         };
-
-        return right_panel;
     }
 
     void TriggersWindow::set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -239,12 +222,6 @@ namespace trview
                 _selected_trigger.reset();
             }
         }
-    }
-
-    void TriggersWindow::update_layout()
-    {
-        CollapsiblePanel::update_layout();
-        _triggers_list->set_size(Size(_triggers_list->size().width, _left_panel->size().height - _triggers_list->position().y));
     }
 
     void TriggersWindow::set_sync_trigger(bool value)
