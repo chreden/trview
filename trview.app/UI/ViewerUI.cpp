@@ -266,16 +266,9 @@ namespace trview
         auto tool_window = _control->add_child(ui_source.load_from_resource(IDR_UI_TOOL_WINDOW));
 
         _view_options = view_options_source(*tool_window);
-        _view_options->on_highlight += on_highlight;
-        _view_options->on_show_triggers += on_show_triggers;
-        _view_options->on_show_hidden_geometry += on_show_hidden_geometry;
-        _view_options->on_show_water += on_show_water;
+        _view_options->on_toggle_changed += on_toggle_changed;
         _view_options->on_depth_changed += on_depth_level_changed;
-        _view_options->on_depth_enabled += on_depth;
-        _view_options->on_flip += on_flip;
         _view_options->on_alternate_group += on_alternate_group;
-        _view_options->on_show_wireframe += on_show_wireframe;
-        _view_options->on_show_bounding_boxes += on_show_bounding_boxes;
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui_source);
         _room_navigator->on_room_selected += on_select_room;
@@ -322,19 +315,9 @@ namespace trview
         _camera_controls->set_projection_mode(mode);
     }
 
-    void ViewerUI::set_depth_enabled(bool value)
-    {
-        _view_options->set_depth_enabled(value);
-    }
-
     void ViewerUI::set_depth_level(int32_t value)
     {
         _view_options->set_depth(value);
-    }
-
-    void ViewerUI::set_flip(bool value)
-    {
-        _view_options->set_flip(value);
     }
 
     void ViewerUI::set_flip_enabled(bool value)
@@ -345,11 +328,6 @@ namespace trview
     void ViewerUI::set_hide_enabled(bool value)
     {
         _context_menu->set_hide_enabled(value);
-    }
-
-    void ViewerUI::set_highlight(bool value)
-    {
-        _view_options->set_highlight(value);
     }
 
     void ViewerUI::set_host_size(const Size& size)
@@ -445,11 +423,6 @@ namespace trview
         }
     }
 
-    void ViewerUI::set_show_hidden_geometry(bool value)
-    {
-        _view_options->set_show_hidden_geometry(value);
-    }
-
     void ViewerUI::set_show_measure(bool value)
     {
         _measure->set_visible(value);
@@ -467,26 +440,6 @@ namespace trview
         _map_tooltip->set_visible(_map_tooltip->visible() && _show_tooltip);
     }
 
-    void ViewerUI::set_show_triggers(bool value)
-    {
-        _view_options->set_show_triggers(value);
-    }
-
-    void ViewerUI::set_show_water(bool value)
-    {
-        _view_options->set_show_water(value);
-    }
-
-    void ViewerUI::set_show_wireframe(bool value)
-    {
-        _view_options->set_show_wireframe(value);
-    }
-
-    void ViewerUI::set_show_bounding_boxes(bool value)
-    {
-        _view_options->set_show_bounding_boxes(value);
-    }
-
     void ViewerUI::set_use_alternate_groups(bool value)
     {
         _view_options->set_use_alternate_groups(value);
@@ -495,31 +448,6 @@ namespace trview
     void ViewerUI::set_visible(bool value)
     {
         _control->set_visible(value);
-    }
-
-    bool ViewerUI::show_hidden_geometry() const
-    {
-        return _view_options->show_hidden_geometry();
-    }
-
-    bool ViewerUI::show_triggers() const
-    {
-        return _view_options->show_triggers();
-    }
-
-    bool ViewerUI::show_water() const
-    {
-        return _view_options->show_water();
-    }
-
-    bool ViewerUI::show_wireframe() const
-    {
-        return _view_options->show_wireframe();
-    }
-
-    bool ViewerUI::show_bounding_boxes() const
-    {
-        return _view_options->show_bounding_boxes();
     }
 
     bool ViewerUI::show_context_menu() const
@@ -545,5 +473,15 @@ namespace trview
     void ViewerUI::set_mid_waypoint_enabled(bool value)
     {
         _context_menu->set_mid_waypoint_enabled(value);
+    }
+
+    void ViewerUI::set_toggle(const std::string& name, bool value)
+    {
+        _view_options->set_toggle(name, value);
+    }
+
+    bool ViewerUI::toggle(const std::string& name) const
+    {
+        return _view_options->toggle(name);
     }
 }

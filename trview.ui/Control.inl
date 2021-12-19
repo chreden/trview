@@ -45,6 +45,42 @@ namespace trview
         }
 
         template <typename T>
+        std::vector<const T*> Control::find_all() const
+        {
+            std::vector<const T*> results;
+            T* as_t = dynamic_cast<const T*>(this);
+            if (as_t)
+            {
+                results.push_back(as_t);
+            }
+
+            for (const auto& child : _child_elements)
+            {
+                auto child_results = child->find_all<T>();
+                results.insert(results.end(), child_results.begin(), child_results.end());
+            }
+            return results;
+        }
+
+        template <typename T>
+        std::vector<T*> Control::find_all()
+        {
+            std::vector<T*> results;
+            T* as_t = dynamic_cast<T*>(this);
+            if (as_t)
+            {
+                results.push_back(as_t);
+            }
+
+            for (auto& child : _child_elements)
+            {
+                auto child_results = child->find_all<T>();
+                results.insert(results.end(), child_results.begin(), child_results.end());
+            }
+            return results;
+        }
+
+        template <typename T>
         T* Control::add_child(std::unique_ptr<T>&& child_element)
         {
             static_assert(std::is_base_of<Control, T>::value, "Element must be derived from Control");

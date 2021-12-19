@@ -50,6 +50,17 @@ namespace trview
 
         initialise_input();
 
+
+        std::unordered_map<std::string, std::function<void(bool)>> toggles;
+        toggles["highlight"] = [this](bool) { toggle_highlight(); };
+        toggles["hidden_geometry"] = [this](bool value) { set_show_hidden_geometry(value); };
+        toggles["water"] = [this](bool value) { set_show_water(value); };
+        toggles["wireframe"] = [this](bool value) { set_show_wireframe(value); };
+        toggles["triggers"] = [this](bool value) { set_show_triggers(value); };
+        toggles["show_bounding_boxes"] = [this](bool value) { set_show_bounding_boxes(value); };
+        toggles["flip"] = [this](bool value) { set_alternate_mode(value); };
+        toggles["depth_enabled"] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
+
         _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
@@ -60,15 +71,16 @@ namespace trview
             }
         };
         _token_store += _ui->on_select_room += [&](uint32_t room) { on_room_selected(room); };
-        _token_store += _ui->on_highlight += [&](bool) { toggle_highlight(); };
-        _token_store += _ui->on_show_hidden_geometry += [&](bool value) { set_show_hidden_geometry(value); };
-        _token_store += _ui->on_show_water += [&](bool value) { set_show_water(value); };
-        _token_store += _ui->on_show_wireframe += [&](bool value) { set_show_wireframe(value); };
-        _token_store += _ui->on_show_triggers += [&](bool value) { set_show_triggers(value); };
-        _token_store += _ui->on_show_bounding_boxes += [&](bool value) { set_show_bounding_boxes(value); };
-        _token_store += _ui->on_flip += [&](bool value) { set_alternate_mode(value); };
+        _token_store += _ui->on_toggle_changed += [this, toggles](const std::string& name, bool value)
+        {
+            auto toggle = toggles.find(name);
+            if (toggle == toggles.end())
+            {
+                return;
+            }
+            toggle->second(value);
+        };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_depth += [&](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
         _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
@@ -484,11 +496,11 @@ namespace trview
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
-        _level->set_show_triggers(_ui->show_triggers());
-        _level->set_show_hidden_geometry(_ui->show_hidden_geometry());
-        _level->set_show_water(_ui->show_water());
-        _level->set_show_wireframe(_ui->show_wireframe()); 
-        _level->set_show_bounding_boxes(_ui->show_bounding_boxes());
+        _level->set_show_triggers(_ui->toggle("triggers"));
+        _level->set_show_hidden_geometry(_ui->toggle("hidden_geometry"));
+        _level->set_show_water(_ui->toggle("water"));
+        _level->set_show_wireframe(_ui->toggle("wireframe")); 
+        _level->set_show_bounding_boxes(_ui->toggle("show_bounding_boxes"));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -496,10 +508,12 @@ namespace trview
 
         // Reset UI buttons
         _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        _ui->set_highlight(false);
+        // _ui->set_highlight(false);
+        _ui->set_toggle("highlight", false);
         _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(_level->alternate_groups());
-        _ui->set_flip(false);
+        // _ui->set_flip(false);
+        _ui->set_toggle("flip", false);
         _ui->set_flip_enabled(_level->any_alternates());
 
         Item lara;
@@ -512,7 +526,8 @@ namespace trview
             on_room_selected(0);
         }
 
-        _ui->set_depth_enabled(false);
+        // TODO: Fix depth enabled.
+        // _ui->set_depth_enabled(false);
         _ui->set_depth_level(1);
 
         // Strip the last part of the path away.
@@ -658,7 +673,7 @@ namespace trview
         {
             bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
             _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
-            _ui->set_highlight(new_value);
+            // _ui->set_highlight(new_value);
         }
     }
 
@@ -775,7 +790,8 @@ namespace trview
         {
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
-            _ui->set_flip(enabled);
+            // _ui->set_flip(enabled);
+            // TODO: Fix
         }
     }
 
@@ -939,7 +955,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_triggers(show);
-            _ui->set_show_triggers(show);
+            // _ui->set_show_triggers(show);
         }
     }
 
@@ -956,7 +972,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_hidden_geometry(show);
-            _ui->set_show_hidden_geometry(show);
+            // _ui->set_show_hidden_geometry(show);
         }
     }
 
@@ -981,7 +997,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_wireframe(show);
-            _ui->set_show_wireframe(show);
+            // _ui->set_show_wireframe(show);
         }
     }
 
@@ -990,7 +1006,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_bounding_boxes(show);
-            _ui->set_show_bounding_boxes(show);
+            // _ui->set_show_bounding_boxes(show);
         }
     }
 
