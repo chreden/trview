@@ -1,4 +1,5 @@
 #include <trview.app/UI/ViewerUI.h>
+#include <trview.app/Windows/IViewer.h>
 #include <trview.app/Mocks/Graphics/ITextureStorage.h>
 #include <trview.common/Mocks/Windows/IShortcuts.h>
 #include <trview.ui.render/Mocks/IRenderer.h>
@@ -103,9 +104,9 @@ TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
     auto view_options_ptr_actual = std::move(view_options_ptr);
     auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
 
-    EXPECT_CALL(view_options, set_toggle("show_bounding_boxes", true)).Times(1);
+    EXPECT_CALL(view_options, set_toggle(IViewer::Options::show_bounding_boxes, true)).Times(1);
 
-    ui->set_toggle("show_bounding_boxes", true);
+    ui->set_toggle(IViewer::Options::show_bounding_boxes, true);
 }
 
 TEST(ViewerUI, ShowBoundingBoxesEventRaised)
@@ -120,9 +121,9 @@ TEST(ViewerUI, ShowBoundingBoxesEventRaised)
         show = { name, value };
     };
 
-    view_options.on_toggle_changed("show_bounding_boxes", true);
+    view_options.on_toggle_changed(IViewer::Options::show_bounding_boxes, true);
     ASSERT_TRUE(show.has_value());
-    ASSERT_EQ(std::get<0>(show.value()), "show_bounding_boxes");
+    ASSERT_EQ(std::get<0>(show.value()), IViewer::Options::show_bounding_boxes);
     ASSERT_TRUE(std::get<1>(show.value()));
 }
 
