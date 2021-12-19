@@ -103,9 +103,9 @@ TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
     auto view_options_ptr_actual = std::move(view_options_ptr);
     auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
 
-    EXPECT_CALL(view_options, set_show_bounding_boxes(true)).Times(1);
+    EXPECT_CALL(view_options, set_toggle("show_bounding_boxes", true)).Times(1);
 
-    ui->set_show_bounding_boxes(true);
+    ui->set_toggle("show_bounding_boxes", true);
 }
 
 TEST(ViewerUI, ShowBoundingBoxesEventRaised)
@@ -114,15 +114,16 @@ TEST(ViewerUI, ShowBoundingBoxesEventRaised)
     auto view_options_ptr_actual = std::move(view_options_ptr);
     auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
 
-    std::optional<bool> show;
-    auto token = ui->on_show_bounding_boxes += [&](const auto& value)
+    std::optional<std::tuple<std::string, bool>> show;
+    auto token = ui->on_toggle_changed += [&](const auto& name, const auto& value)
     {
-        show = value;
+        show = { name, value };
     };
 
-    view_options.on_show_bounding_boxes(true);
+    view_options.on_toggle_changed("show_bounding_boxes", true);
     ASSERT_TRUE(show.has_value());
-    ASSERT_TRUE(show.value());
+    ASSERT_EQ(std::get<0>(show.value()), "show_bounding_boxes");
+    ASSERT_TRUE(std::get<1>(show.value()));
 }
 
 TEST(ViewerUI, SetMidWaypointEnabled)

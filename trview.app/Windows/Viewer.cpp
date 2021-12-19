@@ -508,11 +508,9 @@ namespace trview
 
         // Reset UI buttons
         _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        // _ui->set_highlight(false);
         _ui->set_toggle("highlight", false);
         _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(_level->alternate_groups());
-        // _ui->set_flip(false);
         _ui->set_toggle("flip", false);
         _ui->set_flip_enabled(_level->any_alternates());
 
@@ -526,8 +524,7 @@ namespace trview
             on_room_selected(0);
         }
 
-        // TODO: Fix depth enabled.
-        // _ui->set_depth_enabled(false);
+        _ui->set_toggle("depth", false);
         _ui->set_depth_level(1);
 
         // Strip the last part of the path away.
@@ -673,7 +670,7 @@ namespace trview
         {
             bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
             _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
-            // _ui->set_highlight(new_value);
+            _ui->set_toggle("highlight", new_value);
         }
     }
 
@@ -790,8 +787,7 @@ namespace trview
         {
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
-            // _ui->set_flip(enabled);
-            // TODO: Fix
+            _ui->set_toggle("flip", enabled);
         }
     }
 
@@ -955,7 +951,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_triggers(show);
-            // _ui->set_show_triggers(show);
+            _ui->set_toggle("triggers", show);
         }
     }
 
@@ -972,7 +968,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_hidden_geometry(show);
-            // _ui->set_show_hidden_geometry(show);
+            _ui->set_toggle("hidden_geometry", show);
         }
     }
 
@@ -997,7 +993,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_wireframe(show);
-            // _ui->set_show_wireframe(show);
+            _ui->set_toggle("wireframe", show);
         }
     }
 
@@ -1006,7 +1002,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_bounding_boxes(show);
-            // _ui->set_show_bounding_boxes(show);
+            _ui->set_toggle("show_bounding_boxes", show);
         }
     }
 

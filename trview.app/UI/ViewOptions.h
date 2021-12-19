@@ -50,10 +50,10 @@ namespace trview
         virtual void set_alternate_group(uint32_t value, bool enabled) override;
         virtual void set_alternate_groups(const std::set<uint32_t>& groups) override;
         virtual void set_depth(int32_t value) override;
-        virtual void set_toggle(const std::string& name, bool value) override;
-        virtual bool toggle(const std::string& name) const override;
-        virtual void set_use_alternate_groups(bool value) override;
         virtual void set_flip_enabled(bool enabled) override;
+        virtual void set_toggle(const std::string& name, bool value) override;
+        virtual void set_use_alternate_groups(bool value) override;
+        virtual bool toggle(const std::string& name) const override;
     private:
         void find_toggles(ui::Control& options);
 
