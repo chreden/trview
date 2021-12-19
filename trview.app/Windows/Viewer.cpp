@@ -52,14 +52,14 @@ namespace trview
 
 
         std::unordered_map<std::string, std::function<void(bool)>> toggles;
-        toggles["highlight"] = [this](bool) { toggle_highlight(); };
-        toggles["hidden_geometry"] = [this](bool value) { set_show_hidden_geometry(value); };
-        toggles["water"] = [this](bool value) { set_show_water(value); };
-        toggles["wireframe"] = [this](bool value) { set_show_wireframe(value); };
-        toggles["triggers"] = [this](bool value) { set_show_triggers(value); };
-        toggles["show_bounding_boxes"] = [this](bool value) { set_show_bounding_boxes(value); };
-        toggles["flip"] = [this](bool value) { set_alternate_mode(value); };
-        toggles["depth_enabled"] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
+        toggles[Options::highlight] = [this](bool) { toggle_highlight(); };
+        toggles[Options::hidden_geometry] = [this](bool value) { set_show_hidden_geometry(value); };
+        toggles[Options::water] = [this](bool value) { set_show_water(value); };
+        toggles[Options::wireframe] = [this](bool value) { set_show_wireframe(value); };
+        toggles[Options::triggers] = [this](bool value) { set_show_triggers(value); };
+        toggles[Options::show_bounding_boxes] = [this](bool value) { set_show_bounding_boxes(value); };
+        toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
+        toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
 
         _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
@@ -496,11 +496,11 @@ namespace trview
         _token_store += _level->on_alternate_group_selected += [&](uint16_t group, bool enabled) { set_alternate_group(group, enabled); };
         _token_store += _level->on_level_changed += [&]() { _scene_changed = true; };
 
-        _level->set_show_triggers(_ui->toggle("triggers"));
-        _level->set_show_hidden_geometry(_ui->toggle("hidden_geometry"));
-        _level->set_show_water(_ui->toggle("water"));
-        _level->set_show_wireframe(_ui->toggle("wireframe")); 
-        _level->set_show_bounding_boxes(_ui->toggle("show_bounding_boxes"));
+        _level->set_show_triggers(_ui->toggle(Options::triggers));
+        _level->set_show_hidden_geometry(_ui->toggle(Options::hidden_geometry));
+        _level->set_show_water(_ui->toggle(Options::water));
+        _level->set_show_wireframe(_ui->toggle(Options::wireframe)); 
+        _level->set_show_bounding_boxes(_ui->toggle(Options::show_bounding_boxes));
 
         // Set up the views.
         auto rooms = _level->room_info();
@@ -508,10 +508,10 @@ namespace trview
 
         // Reset UI buttons
         _ui->set_max_rooms(static_cast<uint32_t>(rooms.size()));
-        _ui->set_toggle("highlight", false);
+        _ui->set_toggle(Options::highlight, false);
         _ui->set_use_alternate_groups(_level->version() >= trlevel::LevelVersion::Tomb4);
         _ui->set_alternate_groups(_level->alternate_groups());
-        _ui->set_toggle("flip", false);
+        _ui->set_toggle(Options::flip, false);
         _ui->set_flip_enabled(_level->any_alternates());
 
         Item lara;
@@ -524,7 +524,7 @@ namespace trview
             on_room_selected(0);
         }
 
-        _ui->set_toggle("depth", false);
+        _ui->set_toggle(Options::depth_enabled, false);
         _ui->set_depth_level(1);
 
         // Strip the last part of the path away.
@@ -670,7 +670,7 @@ namespace trview
         {
             bool new_value = !_level->highlight_mode_enabled(Level::RoomHighlightMode::Highlight);
             _level->set_highlight_mode(Level::RoomHighlightMode::Highlight, new_value);
-            _ui->set_toggle("highlight", new_value);
+            _ui->set_toggle(Options::highlight, new_value);
         }
     }
 
@@ -787,7 +787,7 @@ namespace trview
         {
             _was_alternate_select = true;
             _level->set_alternate_mode(enabled);
-            _ui->set_toggle("flip", enabled);
+            _ui->set_toggle(Options::flip, enabled);
         }
     }
 
@@ -951,7 +951,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_triggers(show);
-            _ui->set_toggle("triggers", show);
+            _ui->set_toggle(Options::triggers, show);
         }
     }
 
@@ -968,7 +968,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_hidden_geometry(show);
-            _ui->set_toggle("hidden_geometry", show);
+            _ui->set_toggle(Options::hidden_geometry, show);
         }
     }
 
@@ -993,7 +993,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_wireframe(show);
-            _ui->set_toggle("wireframe", show);
+            _ui->set_toggle(Options::wireframe, show);
         }
     }
 
@@ -1002,7 +1002,7 @@ namespace trview
         if (_level)
         {
             _level->set_show_bounding_boxes(show);
-            _ui->set_toggle("show_bounding_boxes", show);
+            _ui->set_toggle(Options::show_bounding_boxes, show);
         }
     }
 

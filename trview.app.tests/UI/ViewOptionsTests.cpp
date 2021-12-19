@@ -1,4 +1,5 @@
 #include <trview.app/UI/ViewOptions.h>
+#include <trview.app/Windows/IViewer.h>
 #include <trview.ui/Window.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Button.h>
@@ -20,11 +21,11 @@ TEST(ViewOptions, HighlightCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::highlight);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::highlight);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::highlight);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::highlight);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -33,10 +34,10 @@ TEST(ViewOptions, HighlightCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::highlight);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::highlight);
     ASSERT_FALSE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::highlight, true);
+    view_options.set_toggle(IViewer::Options::highlight, true);
     ASSERT_TRUE(checkbox->state());
 };
 
@@ -51,11 +52,11 @@ TEST(ViewOptions, TriggersCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::triggers);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::triggers);
     ASSERT_TRUE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::triggers);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::triggers);
     ASSERT_FALSE(std::get<1>(clicked.value()));
 }
 
@@ -64,10 +65,10 @@ TEST(ViewOptions, TriggersCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::triggers);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::triggers);
     ASSERT_TRUE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::triggers, false);
+    view_options.set_toggle(IViewer::Options::triggers, false);
     ASSERT_FALSE(checkbox->state());
 }
 
@@ -82,11 +83,11 @@ TEST(ViewOptions, HiddenGeometryCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::hidden_geometry);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::hidden_geometry);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::hidden_geometry);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::hidden_geometry);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -95,10 +96,10 @@ TEST(ViewOptions, HiddenGeometryCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::hidden_geometry);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::hidden_geometry);
     ASSERT_FALSE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::hidden_geometry, true);
+    view_options.set_toggle(IViewer::Options::hidden_geometry, true);
     ASSERT_TRUE(checkbox->state());
 }
 
@@ -113,11 +114,11 @@ TEST(ViewOptions, WaterCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::water);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::water);
     ASSERT_TRUE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::water);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::water);
     ASSERT_FALSE(std::get<1>(clicked.value()));
 }
 
@@ -126,10 +127,10 @@ TEST(ViewOptions, WaterCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::water);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::water);
     ASSERT_TRUE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::water, false);
+    view_options.set_toggle(IViewer::Options::water, false);
     ASSERT_FALSE(checkbox->state());
 }
 
@@ -144,11 +145,11 @@ TEST(ViewOptions, DepthCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::depth_enabled);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::depth_enabled);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::depth_enabled);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::depth_enabled);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -157,10 +158,10 @@ TEST(ViewOptions, DepthCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::depth_enabled);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::depth_enabled);
     ASSERT_FALSE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::depth_enabled, true);
+    view_options.set_toggle(IViewer::Options::depth_enabled, true);
     ASSERT_TRUE(checkbox->state());
 }
 
@@ -175,11 +176,11 @@ TEST(ViewOptions, WireframeCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::wireframe);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::wireframe);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::wireframe);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::wireframe);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -188,10 +189,10 @@ TEST(ViewOptions, WireframeCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::wireframe);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::wireframe);
     ASSERT_FALSE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::wireframe, true);
+    view_options.set_toggle(IViewer::Options::wireframe, true);
     ASSERT_TRUE(checkbox->state());
 }
 
@@ -206,11 +207,11 @@ TEST(ViewOptions, BoundsCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::show_bounding_boxes);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::show_bounding_boxes);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::show_bounding_boxes);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::show_bounding_boxes);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -219,10 +220,10 @@ TEST(ViewOptions, BoundsCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::show_bounding_boxes);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::show_bounding_boxes);
     ASSERT_FALSE(checkbox->state());
     
-    view_options.set_toggle(ViewOptions::Names::show_bounding_boxes, true);
+    view_options.set_toggle(IViewer::Options::show_bounding_boxes, true);
     ASSERT_TRUE(checkbox->state());
 }
 
@@ -237,11 +238,11 @@ TEST(ViewOptions, FlipCheckboxToggle)
         clicked = { name, value };
     };
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
     ASSERT_FALSE(checkbox->state());
     checkbox->clicked({});
     ASSERT_TRUE(clicked.has_value());
-    ASSERT_EQ(std::get<0>(clicked.value()), ViewOptions::Names::flip);
+    ASSERT_EQ(std::get<0>(clicked.value()), IViewer::Options::flip);
     ASSERT_TRUE(std::get<1>(clicked.value()));
 }
 
@@ -250,10 +251,10 @@ TEST(ViewOptions, FlipCheckboxUpdated)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
     ASSERT_FALSE(checkbox->state());
 
-    view_options.set_toggle(ViewOptions::Names::flip, true);
+    view_options.set_toggle(IViewer::Options::flip, true);
     ASSERT_TRUE(checkbox->state());
 }
 
@@ -262,7 +263,7 @@ TEST(ViewOptions, FlipCheckboxEnabled)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
     ASSERT_TRUE(checkbox->enabled());
 
     view_options.set_flip_enabled(false);
@@ -315,7 +316,7 @@ TEST(ViewOptions, FlipCheckboxHiddenWithAlternateGroups)
     ui::Window window(Size(1, 1), Colour::White);
     auto view_options = ViewOptions(window, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
 
-    auto checkbox = window.find<ui::Checkbox>(ViewOptions::Names::flip);
+    auto checkbox = window.find<ui::Checkbox>(IViewer::Options::flip);
     ASSERT_TRUE(checkbox->visible());
 
     view_options.set_use_alternate_groups(true);

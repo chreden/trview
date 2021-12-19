@@ -10,15 +10,7 @@ namespace trview
 {
     using namespace ui;
 
-    const std::string ViewOptions::Names::hidden_geometry{ "hidden_geometry" };
-    const std::string ViewOptions::Names::highlight{ "highlight" };
-    const std::string ViewOptions::Names::depth_enabled{ "depth_enabled" };
     const std::string ViewOptions::Names::depth{ "depth" };
-    const std::string ViewOptions::Names::triggers{ "triggers" };
-    const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
-    const std::string ViewOptions::Names::water{ "water" };
-    const std::string ViewOptions::Names::wireframe{ "wireframe" };
-    const std::string ViewOptions::Names::flip{ "flip" };
     const std::string ViewOptions::Names::group{ "group" };
     const std::string ViewOptions::Names::tr_1_3_panel{ "tr1-3-panel" };
     const std::string ViewOptions::Names::tr_4_5_panel{ "tr4-5-panel" };

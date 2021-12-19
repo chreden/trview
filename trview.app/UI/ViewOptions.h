@@ -24,15 +24,7 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string depth_enabled;
             static const std::string depth;
-            static const std::string flip;
-            static const std::string hidden_geometry;
-            static const std::string highlight;
-            static const std::string triggers;
-            static const std::string show_bounding_boxes;
-            static const std::string water;
-            static const std::string wireframe;
             static const std::string group;
             static const std::string tr_1_3_panel;
             static const std::string tr_4_5_panel;
