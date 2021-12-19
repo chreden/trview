@@ -10,12 +10,6 @@ namespace trview
 {
     using namespace ui;
 
-    const std::string ViewOptions::Names::depth{ "depth" };
-    const std::string ViewOptions::Names::group{ "group" };
-    const std::string ViewOptions::Names::tr_1_3_panel{ "tr1-3-panel" };
-    const std::string ViewOptions::Names::tr_4_5_panel{ "tr4-5-panel" };
-    const std::string ViewOptions::Names::alternate_groups{ "alternate_groups" };
-
     const Colour ViewOptions::Colours::FlipOff{ 0.2f, 0.2f, 0.2f };
     const Colour ViewOptions::Colours::FlipOn{ 0.6f, 0.6f, 0.6f };
 

@@ -24,11 +24,11 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string depth;
-            static const std::string group;
-            static const std::string tr_1_3_panel;
-            static const std::string tr_4_5_panel;
-            static const std::string alternate_groups;
+            inline static const std::string depth = "depth";
+            inline static const std::string group = "group";
+            inline static const std::string tr_1_3_panel = "tr1-3-panel";
+            inline static const std::string tr_4_5_panel = "tr4-5-panel";
+            inline static const std::string alternate_groups = "alternate_groups";
         };
 
         struct Colours
