@@ -1,7 +1,6 @@
 #include "ViewOptions.h"
-
+#include <trview.app/Windows/IViewer.h>
 #include <trview.ui/Button.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/NumericUpDown.h>
 #include "../Resources/resource.h"
@@ -19,13 +18,11 @@ namespace trview
 
         auto options = parent.add_child(source->load_from_resource(IDR_UI_VIEW_OPTIONS));
 
-        _depth = options->find<NumericUpDown>(Names::depth);
-        _depth->on_value_changed += on_depth_changed;
-
         _tr1_3_panel = options->find<ui::Window>(Names::tr_1_3_panel);
         _tr4_5_panel = options->find<ui::Window>(Names::tr_4_5_panel);
         _alternate_groups = options->find<ui::Window>(Names::alternate_groups);
 
+        find_scalars(*options);
         find_toggles(*options);
     }
 
@@ -68,21 +65,27 @@ namespace trview
         }
     }
 
-    void ViewOptions::set_depth(int32_t value)
-    {
-        _depth->set_value(value);
-    }
-
     void ViewOptions::set_use_alternate_groups(bool value)
     {
         _tr1_3_panel->set_visible(!value);
         _tr4_5_panel->set_visible(value);
     }
 
+    void ViewOptions::find_scalars(ui::Control& options)
+    {
+        for (auto scalar : options.find_all<NumericUpDown>())
+        {
+            _scalars[scalar->name()] = scalar;
+            _token_store += scalar->on_value_changed += [this, scalar](int32_t value)
+            {
+                on_scalar_changed(scalar->name(), value);
+            };
+        }
+    }
+
     void ViewOptions::find_toggles(Control& options)
     {
-        auto toggles = options.find_all<Checkbox>();
-        for (auto toggle : toggles)
+        for (auto toggle : options.find_all<Checkbox>())
         {
             _toggles[toggle->name()] = toggle;
             _token_store += toggle->on_state_changed += [this, toggle](bool value)
@@ -90,6 +93,16 @@ namespace trview
                 on_toggle_changed(toggle->name(), value);
             };
         }
+    }
+
+    void ViewOptions::set_scalar(const std::string& name, int32_t value)
+    {
+        auto scalar = _scalars.find(name);
+        if (scalar == _scalars.end())
+        {
+            return;
+        }
+        scalar->second->set_value(value);
     }
 
     void ViewOptions::set_toggle(const std::string& name, bool value) 
@@ -114,7 +127,7 @@ namespace trview
 
     void ViewOptions::set_flip_enabled(bool enabled)
     {
-        auto flip = _toggles.find("flip");
+        auto flip = _toggles.find(IViewer::Options::flip);
         if (flip != _toggles.end())
         {
             flip->second->set_enabled(enabled);

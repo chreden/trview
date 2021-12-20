@@ -17,9 +17,9 @@ namespace trview
         /// </summary>
         Event<uint32_t, bool> on_alternate_group;
         /// <summary>
-        /// Event raised when the user has changed the depth of neighbour to display. The newly selected depth is passed when the event is raised.
+        /// Event raised when the user changes a scalar setting.
         /// </summary>
-        Event<int32_t> on_depth_changed;
+        Event<std::string, int32_t> on_scalar_changed;
         /// <summary>
         /// Event raised when the user changes a toggle.
         /// </summary>
@@ -36,15 +36,16 @@ namespace trview
         /// <param name="groups">The groups in the level.</param>
         virtual void set_alternate_groups(const std::set<uint32_t>& groups) = 0;
         /// <summary>
-        /// Set the value of the depth control. This will not raise the on_depth_changed event.
-        /// </summary>
-        /// <param name="value">The neighbour depth to use.</param>
-        virtual void set_depth(int32_t value) = 0;
-        /// <summary>
         /// Set whether to use alternate groups method of flipmaps.
         /// </summary>
         /// <param name="value">Whether to use alternate groups or a single toggle.</param>
         virtual void set_use_alternate_groups(bool value) = 0;
+        /// <summary>
+        /// Set the value of a scalar setting.
+        /// </summary>
+        /// <param name="name">The name of the setting.</param>
+        /// <param name="value">The value to set.</param>
+        virtual void set_scalar(const std::string& name, int32_t value) = 0;
         /// <summary>
         /// Set the value of a toggle variable.
         /// </summary>

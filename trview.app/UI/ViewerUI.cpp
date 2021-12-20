@@ -267,7 +267,7 @@ namespace trview
 
         _view_options = view_options_source(*tool_window);
         _view_options->on_toggle_changed += on_toggle_changed;
-        _view_options->on_depth_changed += on_depth_level_changed;
+        _view_options->on_scalar_changed += on_scalar_changed;
         _view_options->on_alternate_group += on_alternate_group;
 
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui_source);
@@ -313,11 +313,6 @@ namespace trview
     void ViewerUI::set_camera_projection_mode(ProjectionMode mode)
     {
         _camera_controls->set_projection_mode(mode);
-    }
-
-    void ViewerUI::set_depth_level(int32_t value)
-    {
-        _view_options->set_depth(value);
     }
 
     void ViewerUI::set_flip_enabled(bool value)
@@ -473,6 +468,11 @@ namespace trview
     void ViewerUI::set_mid_waypoint_enabled(bool value)
     {
         _context_menu->set_mid_waypoint_enabled(value);
+    }
+
+    void ViewerUI::set_scalar(const std::string& name, int32_t value)
+    {
+        _view_options->set_scalar(name, value);
     }
 
     void ViewerUI::set_toggle(const std::string& name, bool value)

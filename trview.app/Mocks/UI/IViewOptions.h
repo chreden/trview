@@ -11,7 +11,7 @@ namespace trview
             virtual ~MockViewOptions() = default;
             MOCK_METHOD(void, set_alternate_group, (uint32_t, bool), (override));
             MOCK_METHOD(void, set_alternate_groups, (const std::set<uint32_t>&), (override));
-            MOCK_METHOD(void, set_depth, (int32_t), (override));
+            MOCK_METHOD(void, set_scalar, (const std::string&, int32_t), (override));
             MOCK_METHOD(void, set_flip_enabled, (bool), (override));
             MOCK_METHOD(void, set_use_alternate_groups, (bool), (override));
             MOCK_METHOD(void, set_toggle, (const std::string&, bool), (override));

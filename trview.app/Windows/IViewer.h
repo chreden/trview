@@ -17,6 +17,7 @@ namespace trview
     {
         struct Options
         {
+            inline static const std::string depth = "depth";
             inline static const std::string depth_enabled = "depth_enabled";
             inline static const std::string flip = "flip";
             inline static const std::string hidden_geometry = "hidden_geometry";

@@ -46,7 +46,6 @@ namespace trview
         virtual void set_camera_rotation(float yaw, float pitch) override;
         virtual void set_camera_mode(CameraMode mode) override;
         virtual void set_camera_projection_mode(ProjectionMode mode) override;
-        virtual void set_depth_level(int32_t value) override;
         virtual void set_flip_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;
 
@@ -72,6 +71,7 @@ namespace trview
         virtual void print_console(const std::wstring& text) override;
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
+        virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:

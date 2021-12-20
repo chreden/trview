@@ -21,7 +21,6 @@ namespace trview
             MOCK_METHOD(void, set_camera_rotation, (float, float), (override));
             MOCK_METHOD(void, set_camera_mode, (CameraMode), (override));
             MOCK_METHOD(void, set_camera_projection_mode, (ProjectionMode), (override));
-            MOCK_METHOD(void, set_depth_level, (int32_t), (override));
             MOCK_METHOD(void, set_flip_enabled, (bool), (override));
             MOCK_METHOD(void, set_hide_enabled, (bool), (override));
             MOCK_METHOD(void, set_host_size, (const Size&), (override));
@@ -47,6 +46,7 @@ namespace trview
             MOCK_METHOD(void, set_mid_waypoint_enabled, (bool), (override));
             MOCK_METHOD(void, set_toggle, (const std::string&, bool), (override));
             MOCK_METHOD(bool, toggle, (const std::string&), (const, override));
+            MOCK_METHOD(void, set_scalar, (const std::string&, int32_t), (override));
         };
     }
 }

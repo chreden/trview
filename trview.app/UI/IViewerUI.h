@@ -59,8 +59,10 @@ namespace trview
         /// Event raised when the camera is reset.
         Event<> on_camera_reset;
 
-        /// Event raised when the depth level changes.
-        Event<int32_t> on_depth_level_changed;
+        /// <summary>
+        /// Event raised when a scalar value has changed.
+        /// </summary>
+        Event<std::string, int32_t> on_scalar_changed;
 
         /// Event raised when the hide button is clicked.
         Event<> on_hide;
@@ -129,10 +131,6 @@ namespace trview
         /// Set the camera projection mode.
         /// @param mode The current camera projection mode.
         virtual void set_camera_projection_mode(ProjectionMode mode) = 0;
-
-        /// Set the level of depth.
-        /// @param value The depth level.
-        virtual void set_depth_level(int32_t value) = 0;
 
         /// Set whether there are any flipmaps in the level.
         /// @param value Whether there are any flipmaps.
@@ -226,6 +224,12 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether the button is enabled.</param>
         virtual void set_mid_waypoint_enabled(bool value) = 0;
+        /// <summary>
+        /// Set the value of a scalar setting.
+        /// </summary>
+        /// <param name="name">The name of the setting.</param>
+        /// <param name="value">The value to set.</param>
+        virtual void set_scalar(const std::string& name, int32_t value) = 0;
         /// <summary>
         /// Set the value of a toggle variable.
         /// </summary>

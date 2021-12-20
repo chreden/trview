@@ -61,6 +61,9 @@ namespace trview
         toggles[Options::flip] = [this](bool value) { set_alternate_mode(value); };
         toggles[Options::depth_enabled] = [this](bool value) { if (_level) { _level->set_highlight_mode(ILevel::RoomHighlightMode::Neighbours, value); } };
 
+        std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
+        scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+
         _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
         _token_store += _ui->on_select_item += [&](uint32_t index)
@@ -81,7 +84,15 @@ namespace trview
             toggle->second(value);
         };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_depth_level_changed += [&](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+        _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, bool value)
+        {
+            auto scalar = scalars.find(name);
+            if (scalar == scalars.end())
+            {
+                return;
+            }
+            scalar->second(value);
+        };
         _token_store += _ui->on_camera_reset += [&]() { _camera.reset(); };
         _token_store += _ui->on_camera_mode += [&](CameraMode mode) { set_camera_mode(mode); };
         _token_store += _ui->on_camera_projection_mode += [&](ProjectionMode mode) { set_camera_projection_mode(mode); };
@@ -525,7 +536,7 @@ namespace trview
         }
 
         _ui->set_toggle(Options::depth_enabled, false);
-        _ui->set_depth_level(1);
+        _ui->set_scalar(Options::depth, 1);
 
         // Strip the last part of the path away.
         const auto filename = _level->filename();
