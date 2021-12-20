@@ -73,7 +73,7 @@ namespace trview
 
     void ViewOptions::find_scalars(ui::Control& options)
     {
-        for (auto scalar : options.find_all<NumericUpDown>())
+        for (auto scalar : options.find<NumericUpDown>())
         {
             _scalars[scalar->name()] = scalar;
             _token_store += scalar->on_value_changed += [this, scalar](int32_t value)
@@ -85,7 +85,7 @@ namespace trview
 
     void ViewOptions::find_toggles(Control& options)
     {
-        for (auto toggle : options.find_all<Checkbox>())
+        for (auto toggle : options.find<Checkbox>())
         {
             _toggles[toggle->name()] = toggle;
             _token_store += toggle->on_state_changed += [this, toggle](bool value)

@@ -45,7 +45,7 @@ namespace trview
         }
 
         template <typename T>
-        std::vector<const T*> Control::find_all() const
+        std::vector<const T*> Control::find() const
         {
             std::vector<const T*> results;
             T* as_t = dynamic_cast<const T*>(this);
@@ -56,14 +56,14 @@ namespace trview
 
             for (const auto& child : _child_elements)
             {
-                auto child_results = child->find_all<T>();
+                auto child_results = child->find<T>();
                 results.insert(results.end(), child_results.begin(), child_results.end());
             }
             return results;
         }
 
         template <typename T>
-        std::vector<T*> Control::find_all()
+        std::vector<T*> Control::find()
         {
             std::vector<T*> results;
             T* as_t = dynamic_cast<T*>(this);
@@ -74,7 +74,7 @@ namespace trview
 
             for (auto& child : _child_elements)
             {
-                auto child_results = child->find_all<T>();
+                auto child_results = child->find<T>();
                 results.insert(results.end(), child_results.begin(), child_results.end());
             }
             return results;

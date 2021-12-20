@@ -78,6 +78,22 @@ TEST(Control, Find)
     ASSERT_EQ(found, child_ptr);
 }
 
+TEST(Control, FindType)
+{
+    TestControl control;
+
+    auto child = std::make_unique<TestControl>();
+    child->set_name("Child");
+    auto child_ptr = child.get();
+    auto added = control.add_child(std::move(child));
+
+    auto found = control.find<TestControl>();
+
+    const std::vector<TestControl*> expected{ &control, child_ptr };
+    ASSERT_EQ(added, child_ptr);
+    ASSERT_THAT(found, testing::ContainerEq(expected));
+}
+
 TEST(Control, RemoveChild)
 {
     TestControl control;

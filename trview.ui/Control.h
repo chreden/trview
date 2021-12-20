@@ -150,7 +150,7 @@ namespace trview
             /// <typeparam name="T">The control type to find.</typeparam>
             /// <returns>The controls with the given types. If there are no control found, this returns an empty vector.</returns>
             template <typename T>
-            std::vector<const T*> find_all() const;
+            std::vector<const T*> find() const;
 
             /// <summary>
             /// Find all controls with the specified type.
@@ -158,7 +158,7 @@ namespace trview
             /// <typeparam name="T">The control type to find.</typeparam>
             /// <returns>The controls with the given types. If there are no control found, this returns an empty vector.</returns>
             template <typename T>
-            std::vector<T*> find_all();
+            std::vector<T*> find();
 
             /// Get the z order of the control.
             /// @returns The z order.
