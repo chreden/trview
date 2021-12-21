@@ -563,11 +563,12 @@ TEST(Viewer, SetShowBoundingBox)
     auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
 
     EXPECT_CALL(level, set_show_bounding_boxes(false)).Times(1);
-    EXPECT_CALL(ui, set_show_bounding_boxes(true)).Times(1);
+    EXPECT_CALL(ui, set_toggle(testing::A<const std::string&>(), testing::A<bool>())).Times(testing::AtLeast(0));
+    EXPECT_CALL(ui, set_toggle(IViewer::Options::show_bounding_boxes, true)).Times(1);
     EXPECT_CALL(level, set_show_bounding_boxes(true)).Times(1);
 
     viewer->open(&level);
-    ui.on_show_bounding_boxes(true);
+    ui.on_toggle_changed(IViewer::Options::show_bounding_boxes, true);
 }
 
 TEST(Viewer, OnAddWaypointRaisedForWaypoint)

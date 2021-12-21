@@ -59,20 +59,13 @@ namespace trview
         /// Event raised when the camera is reset.
         Event<> on_camera_reset;
 
-        /// Event raised when the depth level changes.
-        Event<int32_t> on_depth_level_changed;
-
-        /// Event raised when the depth setting is changed.
-        Event<bool> on_depth;
-
-        /// Event raised when the flip settings is changed.
-        Event<bool> on_flip;
+        /// <summary>
+        /// Event raised when a scalar value has changed.
+        /// </summary>
+        Event<std::string, int32_t> on_scalar_changed;
 
         /// Event raised when the hide button is clicked.
         Event<> on_hide;
-
-        /// Event raised when the higlight setting is changed.
-        Event<bool> on_highlight;
 
         /// Event raised when a minimap sector is hovered over.
         Event<std::shared_ptr<ISector>> on_sector_hover;
@@ -85,23 +78,6 @@ namespace trview
 
         /// Event raised when the user settings are changed.
         Event<UserSettings> on_settings;
-
-        /// Event raised when the hidden geometry setting is changed.
-        Event<bool> on_show_hidden_geometry;
-
-        /// Event raised when the show triggers setting is changed.
-        Event<bool> on_show_triggers;
-
-        /// Event raised when the show water setting is changed.
-        Event<bool> on_show_water;
-
-        /// Event raised when the show wireframe setting is changed.
-        Event<bool> on_show_wireframe;
-
-        /// <summary>
-        /// Event raised when the show bouding boxes setting is changed.
-        /// </summary>
-        Event<bool> on_show_bounding_boxes;
 
         /// Event raised when a tool is selected.
         Event<Tool> on_tool_selected;
@@ -119,6 +95,11 @@ namespace trview
 
         /// Event raised when user enters a command.
         Event<std::wstring> on_command;
+
+        /// <summary>
+        /// Event raised when the user changes a toggle.
+        /// </summary>
+        Event<std::string, bool> on_toggle_changed;
 
         /// Render the UI.
         virtual void render() = 0;
@@ -151,18 +132,6 @@ namespace trview
         /// @param mode The current camera projection mode.
         virtual void set_camera_projection_mode(ProjectionMode mode) = 0;
 
-        /// Set whether depth is enabled.
-        /// @param value Whether depth is enabled.
-        virtual void set_depth_enabled(bool value) = 0;
-
-        /// Set the level of depth.
-        /// @param value The depth level.
-        virtual void set_depth_level(int32_t value) = 0;
-
-        /// Set the current flip state.
-        /// @param value The flip state.
-        virtual void set_flip(bool value) = 0;
-
         /// Set whether there are any flipmaps in the level.
         /// @param value Whether there are any flipmaps.
         virtual void set_flip_enabled(bool value) = 0;
@@ -170,10 +139,6 @@ namespace trview
         /// Set whether the hide button on the context menu is enabled.
         /// @param value Whether the hide button is enabled.
         virtual void set_hide_enabled(bool value) = 0;
-
-        /// Set whether highlight is enabled.
-        /// @param value Whether highlight is enabled.
-        virtual void set_highlight(bool value) = 0;
 
         /// Set the size of the host window.
         virtual void set_host_size(const Size& size) = 0;
@@ -221,10 +186,6 @@ namespace trview
         /// "param value Whether the context menu is visible.
         virtual void set_show_context_menu(bool value) = 0;
 
-        /// Set whether hidden geometry is visible.
-        /// @param value Whether hidden geometry is visible.
-        virtual void set_show_hidden_geometry(bool value) = 0;
-
         /// Set whether to show the measure label.
         /// @param value Whether to show the measure label.
         virtual void set_show_measure(bool value) = 0;
@@ -237,24 +198,6 @@ namespace trview
         /// @param value Whether to show the tooltip.
         virtual void set_show_tooltip(bool value) = 0;
 
-        /// Set whether triggers are visible.
-        /// @param value Whether triggers are visible.
-        virtual void set_show_triggers(bool value) = 0;
-
-        /// Set whether water is visible.
-        /// @param value Whether water is visible.
-        virtual void set_show_water(bool value) = 0;
-
-        /// Set whether wireframe is visible.
-        /// @param value Whether wireframe is visible.
-        virtual void set_show_wireframe(bool value) = 0;
-
-        /// <summary>
-        /// Set whether to show bounding boxes.
-        /// </summary>
-        /// <param name="value">Whether bounding boxes are visible.</param>
-        virtual void set_show_bounding_boxes(bool value) = 0;
-
         /// Set whether the level uses alternate groups.
         /// @param value Whether alternate groups are used.
         virtual void set_use_alternate_groups(bool value) = 0;
@@ -262,23 +205,6 @@ namespace trview
         /// Set whether the UI is visible.
         /// @param value Whether the UI is visible.
         virtual void set_visible(bool value) = 0;
-
-        /// Get whether hidden geometry is visible.
-        virtual bool show_hidden_geometry() const = 0;
-
-        /// Get whether triggers are visible.
-        virtual bool show_triggers() const = 0;
-
-        /// Get whether water is visible.
-        virtual bool show_water() const = 0;
-
-        /// Get whether wireframe is visible.
-        virtual bool show_wireframe() const = 0;
-
-        /// <summary>
-        /// Get whether bounding boxes are visible.
-        /// </summary>
-        virtual bool show_bounding_boxes() const = 0;
 
         /// Get whether the context menu is visible.
         virtual bool show_context_menu() const = 0;
@@ -298,5 +224,23 @@ namespace trview
         /// </summary>
         /// <param name="value">Whether the button is enabled.</param>
         virtual void set_mid_waypoint_enabled(bool value) = 0;
+        /// <summary>
+        /// Set the value of a scalar setting.
+        /// </summary>
+        /// <param name="name">The name of the setting.</param>
+        /// <param name="value">The value to set.</param>
+        virtual void set_scalar(const std::string& name, int32_t value) = 0;
+        /// <summary>
+        /// Set the value of a toggle variable.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <param name="value">The new state.</param>
+        virtual void set_toggle(const std::string& name, bool value) = 0;
+        /// <summary>
+        /// Get the value of a toggle variable.
+        /// </summary>
+        /// <param name="name">The name of the variable.</param>
+        /// <returns>The state of the variable.</returns>
+        virtual bool toggle(const std::string& name) const = 0;
     };
 }

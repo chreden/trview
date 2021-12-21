@@ -15,6 +15,19 @@ namespace trview
 {
     struct IViewer
     {
+        struct Options
+        {
+            inline static const std::string depth = "depth";
+            inline static const std::string depth_enabled = "depth_enabled";
+            inline static const std::string flip = "flip";
+            inline static const std::string hidden_geometry = "hidden_geometry";
+            inline static const std::string highlight = "highlight";
+            inline static const std::string show_bounding_boxes = "show_bounding_boxes";
+            inline static const std::string triggers = "triggers";
+            inline static const std::string water = "water";
+            inline static const std::string wireframe = "wireframe";
+        };
+
         virtual ~IViewer() = 0;
 
         /// Event raised when the user settings have changed.

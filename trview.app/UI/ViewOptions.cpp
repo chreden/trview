@@ -1,26 +1,13 @@
 #include "ViewOptions.h"
-
+#include <trview.app/Windows/IViewer.h>
 #include <trview.ui/Button.h>
-#include <trview.ui/GroupBox.h>
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/NumericUpDown.h>
 #include "../Resources/resource.h"
 
 namespace trview
 {
-    const std::string ViewOptions::Names::hidden_geometry{ "hidden_geometry" };
-    const std::string ViewOptions::Names::highlight{ "highlight" };
-    const std::string ViewOptions::Names::depth_enabled{ "depth_enabled" };
-    const std::string ViewOptions::Names::depth{ "depth" };
-    const std::string ViewOptions::Names::triggers{ "triggers" };
-    const std::string ViewOptions::Names::show_bounding_boxes { "show_bounding_boxes" };
-    const std::string ViewOptions::Names::water{ "water" };
-    const std::string ViewOptions::Names::wireframe{ "wireframe" };
-    const std::string ViewOptions::Names::flip{ "flip" };
-    const std::string ViewOptions::Names::group{ "group" };
-    const std::string ViewOptions::Names::tr_1_3_panel{ "tr1-3-panel" };
-    const std::string ViewOptions::Names::tr_4_5_panel{ "tr4-5-panel" };
-    const std::string ViewOptions::Names::alternate_groups{ "alternate_groups" };
+    using namespace ui;
 
     const Colour ViewOptions::Colours::FlipOff{ 0.2f, 0.2f, 0.2f };
     const Colour ViewOptions::Colours::FlipOn{ 0.6f, 0.6f, 0.6f };
@@ -31,35 +18,12 @@ namespace trview
 
         auto options = parent.add_child(source->load_from_resource(IDR_UI_VIEW_OPTIONS));
 
-        _highlight = options->find<Checkbox>(Names::highlight);
-        _highlight->on_state_changed += on_highlight;
-
-        _triggers = options->find<Checkbox>(Names::triggers);
-        _triggers->on_state_changed += on_show_triggers;
-
-        _hidden_geometry = options->find<Checkbox>(Names::hidden_geometry);
-        _hidden_geometry->on_state_changed += on_show_hidden_geometry;
-
-        _water = options->find<Checkbox>(Names::water);
-        _water->on_state_changed += on_show_water;
-
-        _depth_enabled = options->find<Checkbox>(Names::depth_enabled);
-        _depth_enabled->on_state_changed += on_depth_enabled;
-
-        _depth = options->find<NumericUpDown>(Names::depth);
-        _depth->on_value_changed += on_depth_changed;
-
-        _wireframe = options->find<Checkbox>(Names::wireframe);
-        _wireframe->on_state_changed += on_show_wireframe;
-
-        _bounding_boxes = options->find<Checkbox>(Names::show_bounding_boxes);
-        _bounding_boxes->on_state_changed += on_show_bounding_boxes;
-
         _tr1_3_panel = options->find<ui::Window>(Names::tr_1_3_panel);
-        _flip = options->find<Checkbox>(Names::flip);
-        _flip->on_state_changed += on_flip;
         _tr4_5_panel = options->find<ui::Window>(Names::tr_4_5_panel);
         _alternate_groups = options->find<ui::Window>(Names::alternate_groups);
+
+        find_scalars(*options);
+        find_toggles(*options);
     }
 
     void ViewOptions::set_alternate_group(uint32_t value, bool enabled)
@@ -101,84 +65,72 @@ namespace trview
         }
     }
 
-    void ViewOptions::set_depth(int32_t value)
-    {
-        _depth->set_value(value);
-    }
-    
-    void ViewOptions::set_depth_enabled(bool value)
-    {
-        _depth_enabled->set_state(value);
-    }
-
-    void ViewOptions::set_flip(bool flip)
-    {
-        _flip->set_state(flip);
-    }
-
-    void ViewOptions::set_flip_enabled(bool enabled)
-    {
-        _flip->set_enabled(enabled);
-    }
-
-    void ViewOptions::set_highlight(bool highlight)
-    {
-        _highlight->set_state(highlight);
-    }
-
-    void ViewOptions::set_show_hidden_geometry(bool show)
-    {
-        _hidden_geometry->set_state(show);
-    }
-
-    void ViewOptions::set_show_triggers(bool show)
-    {
-        _triggers->set_state(show);
-    }
-
-    void ViewOptions::set_show_water(bool show)
-    {
-        _water->set_state(show);
-    }
-
-    void ViewOptions::set_show_wireframe(bool show)
-    {
-        _wireframe->set_state(show);
-    }
-
     void ViewOptions::set_use_alternate_groups(bool value)
     {
         _tr1_3_panel->set_visible(!value);
         _tr4_5_panel->set_visible(value);
     }
 
-    void ViewOptions::set_show_bounding_boxes(bool value)
+    void ViewOptions::find_scalars(ui::Control& options)
     {
-        _bounding_boxes->set_state(value);
+        for (auto scalar : options.find<NumericUpDown>())
+        {
+            _scalars[scalar->name()] = scalar;
+            _token_store += scalar->on_value_changed += [this, scalar](int32_t value)
+            {
+                on_scalar_changed(scalar->name(), value);
+            };
+        }
     }
 
-    bool ViewOptions::show_hidden_geometry() const
+    void ViewOptions::find_toggles(Control& options)
     {
-        return _hidden_geometry->state();
+        for (auto toggle : options.find<Checkbox>())
+        {
+            _toggles[toggle->name()] = toggle;
+            _token_store += toggle->on_state_changed += [this, toggle](bool value)
+            {
+                on_toggle_changed(toggle->name(), value);
+            };
+        }
     }
 
-    bool ViewOptions::show_triggers() const
+    void ViewOptions::set_scalar(const std::string& name, int32_t value)
     {
-        return _triggers->state();
+        auto scalar = _scalars.find(name);
+        if (scalar == _scalars.end())
+        {
+            return;
+        }
+        scalar->second->set_value(value);
     }
 
-    bool ViewOptions::show_water() const
+    void ViewOptions::set_toggle(const std::string& name, bool value) 
     {
-        return _water->state();
+        auto toggle = _toggles.find(name);
+        if (toggle == _toggles.end())
+        {
+            return;
+        }
+        toggle->second->set_state(value);
     }
 
-    bool ViewOptions::show_wireframe() const
+    bool ViewOptions::toggle(const std::string& name) const 
     {
-        return _wireframe->state();
+        auto toggle = _toggles.find(name);
+        if (toggle == _toggles.end())
+        {
+            return false;
+        }
+        return toggle->second->state();
     }
 
-    bool ViewOptions::show_bounding_boxes() const
+    void ViewOptions::set_flip_enabled(bool enabled)
     {
-        return _bounding_boxes->state();
+        auto flip = _toggles.find(IViewer::Options::flip);
+        if (flip != _toggles.end())
+        {
+            flip->second->set_enabled(enabled);
+        }
     }
 }

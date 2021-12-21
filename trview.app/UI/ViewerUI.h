@@ -46,12 +46,8 @@ namespace trview
         virtual void set_camera_rotation(float yaw, float pitch) override;
         virtual void set_camera_mode(CameraMode mode) override;
         virtual void set_camera_projection_mode(ProjectionMode mode) override;
-        virtual void set_depth_enabled(bool value) override;
-        virtual void set_depth_level(int32_t value) override;
-        virtual void set_flip(bool value) override;
         virtual void set_flip_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;
-        virtual void set_highlight(bool value) override;
 
         /// Set the size of the host window.
         void set_host_size(const Size& size) override;
@@ -65,26 +61,19 @@ namespace trview
         virtual void set_selected_room(const std::shared_ptr<IRoom>& room) override;
         virtual void set_settings(const UserSettings& settings) override;
         virtual void set_show_context_menu(bool value) override;
-        virtual void set_show_hidden_geometry(bool value) override;
         virtual void set_show_measure(bool value) override;
         virtual void set_show_minimap(bool value) override;
         virtual void set_show_tooltip(bool value) override;
-        virtual void set_show_triggers(bool value) override;
-        virtual void set_show_water(bool value) override;
-        virtual void set_show_wireframe(bool value) override;
-        virtual void set_show_bounding_boxes(bool value) override;
         virtual void set_use_alternate_groups(bool value) override;
         virtual void set_visible(bool value) override;
-        virtual bool show_hidden_geometry() const override;
-        virtual bool show_triggers() const override;
-        virtual bool show_water() const override;
-        virtual bool show_wireframe() const override;
-        virtual bool show_bounding_boxes() const override;
         virtual bool show_context_menu() const override;
         virtual void toggle_settings_visibility() override;
         virtual void print_console(const std::wstring& text) override;
         virtual void initialise_input() override;
         virtual void set_mid_waypoint_enabled(bool value) override;
+        virtual void set_scalar(const std::string& name, int32_t value) override;
+        virtual void set_toggle(const std::string& name, bool value) override;
+        virtual bool toggle(const std::string& name) const override;
     private:
         void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source);
         void register_change_detection(ui::Control* control);
