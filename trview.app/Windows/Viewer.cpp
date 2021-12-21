@@ -1117,21 +1117,27 @@ namespace trview
     std::wstring Viewer::generate_pick_message(const PickResult& result) const
     {
         std::wstringstream stream;
-        stream << pick_to_string(result);
 
         switch (result.type)
         {
         case PickResult::Type::Entity:
             {
                 const auto item = _level->items()[result.index];
-                stream << L" - " << item.type();
+                stream << L"Item " << result.index << L" - " << item.type();
                 break;
             }
         case PickResult::Type::Trigger:
-            break;
+            {
+                const auto trigger = _level->triggers()[result.index];
+                if (auto trigger_ptr = trigger.lock())
+                {
+                    stream << trigger_type_name(trigger_ptr->type()) << L" " << result.index;
+                }
+                break;
+            }
         case PickResult::Type::Room:
-            break;
         case PickResult::Type::Waypoint:
+            stream << pick_to_string(result);
             break;
         }
 
