@@ -32,7 +32,9 @@ namespace trview
             const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
             for (auto i = 0u; i < line_count; ++i)
             {
-                _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+                auto line = _area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual));
+                line->set_text_colour(_text_colour);
+                _lines.push_back(line);
             }
         }
 
@@ -292,6 +294,20 @@ namespace trview
                 static_cast<float>(std::min<int32_t>(_scroll_offset + static_cast<int32_t>(_lines.size()), static_cast<int32_t>(_line_structure.size()))), 
                 static_cast<float>(_line_structure.size()));
             set_scrollbar_visible(_scroll_visible);
+
+            if (_size_mode == SizeMode::Auto && !_text.empty())
+            {
+                auto line = _lines[_text.size() - 1];
+                auto height = line->position().y + line->size().height;
+
+                float width = 0;
+                for (const auto& line : _lines)
+                {
+                    width = std::max(width, line->measure_text(line->text()).width);
+                }
+
+                set_size(Size(width + 2, height));
+            }
         }
 
         bool TextArea::key_char(wchar_t character)
@@ -447,6 +463,15 @@ namespace trview
             _logical_cursor.position = _text.empty() ? 0 : static_cast<int32_t>(_text.back().size());
             notify_text_updated();
             update_structure();
+        }
+
+        void TextArea::set_text_colour(const Colour& colour)
+        {
+            _text_colour = colour;
+            for (auto& line : _lines)
+            {
+                line->set_text_colour(_text_colour);
+            }
         }
 
         void TextArea::set_mode(Mode mode)
@@ -1142,6 +1167,11 @@ namespace trview
         void TextArea::set_text_alignment(graphics::TextAlignment alignment)
         {
             _alignment = alignment;
+        }
+
+        void TextArea::set_size_mode(SizeMode size_mode)
+        {
+            _size_mode = size_mode;
         }
     }
 }

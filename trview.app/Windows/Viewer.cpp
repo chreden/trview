@@ -1134,7 +1134,7 @@ namespace trview
                     stream << trigger_type_name(trigger_ptr->type()) << L" " << result.index;
                     for (const auto command : trigger_ptr->commands())
                     {
-                        stream << L"\n\t" << command_type_name(command.type());
+                        stream << L"\n  " << command_type_name(command.type());
                         if (command_has_index(command.type()))
                         {
                             stream << L" " << command.index();

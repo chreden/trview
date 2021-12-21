@@ -3,6 +3,7 @@
 #include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
 #include <trview.common/Windows/IShell.h>
+#include "SizeMode.h"
 
 namespace trview
 {
@@ -43,6 +44,12 @@ namespace trview
             /// Set the text in the text area to be the specified text.
             /// @param text The text to use.
             void set_text(const std::wstring& text);
+
+            /// <summary>
+            /// Set the text colour for the text area.
+            /// </summary>
+            /// <param name="colour">The new colour.</param>
+            void set_text_colour(const Colour& colour);
 
             /// Set the line mode of the text area.
             /// @param mode The new mode.
@@ -89,6 +96,7 @@ namespace trview
             graphics::TextAlignment text_alignment() const;
             Mode line_mode() const;
             void set_text_alignment(graphics::TextAlignment alignment);
+            void set_size_mode(SizeMode size_mode);
         private:
             struct LineEntry
             {
@@ -196,6 +204,7 @@ namespace trview
             int32_t _scroll_offset{ 0 };
             bool _scroll_visible{ false };
             std::shared_ptr<IShell> _shell;
+            SizeMode _size_mode{ SizeMode::Manual };
         };
     }
 }

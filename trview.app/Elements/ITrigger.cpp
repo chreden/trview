@@ -117,7 +117,6 @@ namespace trview
         switch (type)
         {
         case TriggerCommandType::Object:
-        case TriggerCommandType::Camera:
         case TriggerCommandType::LookAtItem:
             return true;
         }
