@@ -1132,6 +1132,19 @@ namespace trview
                 if (auto trigger_ptr = trigger.lock())
                 {
                     stream << trigger_type_name(trigger_ptr->type()) << L" " << result.index;
+                    for (const auto command : trigger_ptr->commands())
+                    {
+                        stream << L"\n\t" << command_type_name(command.type());
+                        if (command_has_index(command.type()))
+                        {
+                            stream << L" " << command.index();
+                            if (command_is_item(command.type()))
+                            {
+                                const auto item = _level->items()[command.index()];
+                                stream << L" - " << item.type();
+                            }
+                        }
+                    }
                 }
                 break;
             }

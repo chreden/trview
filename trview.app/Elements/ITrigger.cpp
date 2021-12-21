@@ -27,7 +27,7 @@ namespace trview
 
         const std::unordered_map<TriggerCommandType, std::wstring> command_type_names
         {
-            { TriggerCommandType::Object, L"Object" },
+            { TriggerCommandType::Object, L"Item" },
             { TriggerCommandType::Camera, L"Camera" },
             { TriggerCommandType::UnderwaterCurrent, L"Current" },
             { TriggerCommandType::FlipMap, L"Flip Map" },
@@ -105,5 +105,22 @@ namespace trview
             return TriggerCommandType::Object;
         }
         return type->second;
+    }
+
+    bool command_has_index(TriggerCommandType type)
+    {
+        return !(type == TriggerCommandType::ClearBodies || type == TriggerCommandType::EndLevel);
+    }
+
+    bool command_is_item(TriggerCommandType type)
+    {
+        switch (type)
+        {
+        case TriggerCommandType::Object:
+        case TriggerCommandType::Camera:
+        case TriggerCommandType::LookAtItem:
+            return true;
+        }
+        return false;
     }
 }

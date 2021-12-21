@@ -49,4 +49,7 @@ namespace trview
 
     bool has_command(const ITrigger& trigger, TriggerCommandType type);
     bool has_any_command(const ITrigger& trigger, const std::vector<TriggerCommandType>& type);
+
+    bool command_has_index(TriggerCommandType type);
+    bool command_is_item(TriggerCommandType type);
 }
