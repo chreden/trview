@@ -11,13 +11,13 @@ namespace trview
             switch (type)
             {
             case PickResult::Type::Entity:
-                return L"I";
+                return L"Item";
             case PickResult::Type::Trigger:
-                return L"T";
+                return L"Trigger";
             case PickResult::Type::Room:
-                return L"R";
+                return L"Room";
             case PickResult::Type::Waypoint:
-                return L"W";
+                return L"Waypoint";
             }
             return L"?";
         }
@@ -55,7 +55,7 @@ namespace trview
             return axis_to_string(static_cast<Compass::Axis>(pick.index));
         }
 
-        return pick_type_to_string(pick.type) + L"-" + std::to_wstring(pick.index);
+        return pick_type_to_string(pick.type) + L" " + std::to_wstring(pick.index);
     }
 
     Colour pick_to_colour(const PickResult& pick)

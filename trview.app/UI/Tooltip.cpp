@@ -23,7 +23,7 @@ namespace trview
 
     void Tooltip::set_position(const Point& position)
     {
-        _container->set_position(Point(position.x - _container->size().width, position.y - _container->size().height));
+        _container->set_position(Point(position.x + 8, position.y + 8));
     }
 
     void Tooltip::set_text(const std::wstring& text)

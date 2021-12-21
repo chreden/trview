@@ -265,10 +265,11 @@ namespace trview
             }
         };
 
-        _token_store += _picking->on_pick += [&](const PickInfo& pickInfo, const PickResult& result)
+        _token_store += _picking->on_pick += [&](PickInfo pickInfo, PickResult result)
         {
             _current_pick = result;
 
+            result.text = generate_pick_message(result);
             _ui->set_pick(pickInfo, result);
 
             // Highlight sectors in the minimap.
@@ -1111,5 +1112,29 @@ namespace trview
     CameraMode Viewer::camera_mode() const
     {
         return _camera_mode;
+    }
+
+    std::wstring Viewer::generate_pick_message(const PickResult& result) const
+    {
+        std::wstringstream stream;
+        stream << pick_to_string(result);
+
+        switch (result.type)
+        {
+        case PickResult::Type::Entity:
+            {
+                const auto item = _level->items()[result.index];
+                stream << L" - " << item.type();
+                break;
+            }
+        case PickResult::Type::Trigger:
+            break;
+        case PickResult::Type::Room:
+            break;
+        case PickResult::Type::Waypoint:
+            break;
+        }
+
+        return stream.str();
     }
 }
