@@ -18,9 +18,7 @@ namespace trview
         _container->set_handles_input(false);
         _container->set_z(-1);
 
-        // TODO: Get a shell from DI.
-        auto shell = std::make_shared<Shell>();
-        _area = _container->add_child(std::make_unique<ui::TextArea>(Size(200, 250), Colour::Transparent, Colour::White, shell));
+        _area = _container->add_child(std::make_unique<ui::TextArea>(Size(200, 250), Colour::Transparent, Colour::White, nullptr));
         _area->set_handles_input(false);
         _area->set_size_mode(SizeMode::Auto);
     }

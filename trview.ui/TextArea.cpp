@@ -26,15 +26,30 @@ namespace trview
             _scrollbar->set_name(Names::scrollbar);
             _scrollbar->set_visible(false);
             set_handles_input(true);
+            create_lines();
+            _token_store += on_size_changed += [this](auto) 
+            {
+                create_lines(); 
+            };
+        }
 
+        void TextArea::create_lines()
+        {
             // Create all line labels to fill the area.
             const auto line_height = 14;
             const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
-            for (auto i = 0u; i < line_count; ++i)
+            bool any = false;
+            for (auto i = _lines.size(); i < line_count; ++i)
             {
                 auto line = _area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual));
                 line->set_text_colour(_text_colour);
                 _lines.push_back(line);
+                any = true;
+            }
+
+            if (any)
+            {
+                update_structure();
             }
         }
 
@@ -143,7 +158,7 @@ namespace trview
             _selection_end = _selection_start;
 
             auto link = word_at_cursor(visual_to_logical(position_to_visual(position)));
-            if (is_link(link))
+            if (_shell && is_link(link))
             {
                 _shell->open(link);
             }
@@ -297,8 +312,10 @@ namespace trview
 
             if (_size_mode == SizeMode::Auto && !_text.empty())
             {
-                auto line = _lines[_text.size() - 1];
-                auto height = line->position().y + line->size().height;
+                // Calculate what the height should be - all the lines might not be there yet. The resize
+                // later will make the lines be present and then we will go through again to get the correct
+                // width.
+                auto height = 1 + 14 * _text.size();
 
                 float width = 0;
                 for (const auto& line : _lines)
@@ -306,6 +323,7 @@ namespace trview
                     width = std::max(width, line->measure_text(line->text()).width);
                 }
 
+                _area->set_size(Size(width + 2, height));
                 set_size(Size(width + 2, height));
             }
         }
@@ -370,7 +388,7 @@ namespace trview
                 case 0xA:
                 {
                     auto word = word_at_cursor(_logical_cursor);
-                    if (is_link(word))
+                    if (_shell && is_link(word))
                     {
                         _shell->open(word);
                     }

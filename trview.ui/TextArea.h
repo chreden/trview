@@ -182,6 +182,7 @@ namespace trview
             std::wstring selected_text() const;
             std::wstring word_at_cursor(LogicalPosition point) const;
             void scroll_cursor_into_view(bool down);
+            void create_lines();
 
             Control* _area;
             std::vector<Label*> _lines;
