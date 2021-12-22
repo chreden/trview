@@ -40,6 +40,6 @@ namespace trview
         bool visible() const;
     private:
         ui::Control* _container;
-        ui::TextArea* _label;
+        ui::TextArea* _area;
     };
 }
