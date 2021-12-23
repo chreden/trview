@@ -47,6 +47,7 @@ namespace trview
             {
                 auto line = _area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual));
                 line->set_text_colour(_text_colour);
+                line->set_handles_input(handles_input());
                 _lines.push_back(line);
             }
 
@@ -1190,6 +1191,18 @@ namespace trview
         void TextArea::set_size_mode(SizeMode size_mode)
         {
             _size_mode = size_mode;
+        }
+
+        void TextArea::set_handles_input(bool value)
+        {
+            Control::set_handles_input(value);
+            for (auto& child : find<Control>())
+            {
+                if (child != this)
+                {
+                    child->set_handles_input(handles_input());
+                }
+            }
         }
     }
 }

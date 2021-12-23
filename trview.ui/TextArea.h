@@ -87,6 +87,7 @@ namespace trview
             virtual bool cut(std::wstring& output) override;
             virtual bool clicked(Point position) override;
             virtual bool scroll(int delta) override;
+            virtual void set_handles_input(bool value) override;
             bool read_only() const;
             void set_read_only(bool value);
             void set_scrollbar_visible(bool value);
