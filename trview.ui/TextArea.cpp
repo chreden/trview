@@ -38,19 +38,19 @@ namespace trview
             // Create all line labels to fill the area.
             const auto line_height = 14;
             const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
-            bool any = false;
+            if (_lines.size() >= line_count)
+            {
+                return;
+            }
+
             for (auto i = _lines.size(); i < line_count; ++i)
             {
                 auto line = _area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual));
                 line->set_text_colour(_text_colour);
                 _lines.push_back(line);
-                any = true;
             }
 
-            if (any)
-            {
-                update_structure();
-            }
+            update_structure();
         }
 
         void TextArea::gained_focus()
