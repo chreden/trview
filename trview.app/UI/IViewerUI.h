@@ -242,5 +242,10 @@ namespace trview
         /// <param name="name">The name of the variable.</param>
         /// <returns>The state of the variable.</returns>
         virtual bool toggle(const std::string& name) const = 0;
+        /// <summary>
+        /// Update the UI.
+        /// </summary>
+        /// <param name="elapsed">The time since the previous update.</param>
+        virtual void update(float elapsed) = 0;
     };
 }

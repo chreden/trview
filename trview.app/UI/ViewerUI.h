@@ -74,6 +74,7 @@ namespace trview
         virtual void set_scalar(const std::string& name, int32_t value) override;
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
+        virtual void update(float elapsed) override;
     private:
         void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source);
         void register_change_detection(ui::Control* control);
@@ -101,5 +102,7 @@ namespace trview
         std::unique_ptr<Console> _console;
         ui::Label* _measure;
         bool _show_tooltip{ true };
+        std::optional<float> _tooltip_timer;
+        Point _previous_hover;
     };
 }
