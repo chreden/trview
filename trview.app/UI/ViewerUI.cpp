@@ -12,11 +12,6 @@ using namespace trview::ui;
 
 namespace trview
 {
-    namespace
-    {
-        const float tooltip_time = 0.5f;
-    }
-
     ViewerUI::ViewerUI(const Window& window, const std::shared_ptr<ITextureStorage>& texture_storage,
         const std::shared_ptr<IShortcuts>& shortcuts,
         const ui::IInput::Source& input_source,
@@ -367,31 +362,14 @@ namespace trview
 
     void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
     {
-        _map_tooltip->set_visible(false);
-
-        if (!result.hit)
+        _tooltip->set_visible(result.hit && _show_tooltip);
+        if (result.hit)
         {
-            _tooltip_timer.reset();
-            _tooltip->set_visible(false);
-            return;
+            _map_tooltip->set_visible(false);
+            _tooltip->set_text(pick_to_string(result));
+            _tooltip->set_position(info.screen_position);
+            _tooltip->set_text_colour(pick_to_colour(result));
         }
-
-        if (_tooltip_timer.has_value())
-        {
-            if (!_tooltip->visible() && _previous_hover != info.screen_position)
-            {
-                _previous_hover = info.screen_position;
-                _tooltip_timer = 0.0f;
-            }
-        }
-        else if (!_tooltip_timer.has_value() && !_tooltip->visible())
-        {
-            _tooltip_timer = 0.0f;
-        }
-
-        _tooltip->set_text(pick_to_string(result));
-        _tooltip->set_position(info.screen_position);
-        _tooltip->set_text_colour(pick_to_colour(result));
     }
 
     void ViewerUI::set_remove_waypoint_enabled(bool value)
@@ -501,18 +479,5 @@ namespace trview
     bool ViewerUI::toggle(const std::string& name) const
     {
         return _view_options->toggle(name);
-    }
-
-    void ViewerUI::update(float elapsed)
-    {
-        if (_tooltip_timer.has_value())
-        {
-            _tooltip_timer = _tooltip_timer.value() + elapsed;
-            if (_tooltip_timer > tooltip_time)
-            {
-                _tooltip->set_visible(true);
-                _tooltip_timer.reset();
-            }
-        }
     }
 }

@@ -555,7 +555,6 @@ namespace trview
     {
         _timer.update();
         update_camera();
-        _ui->update(_timer.elapsed());
 
         if (_mouse_changed || _scene_changed)
         {
