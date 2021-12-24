@@ -362,7 +362,7 @@ namespace trview
 
     void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
     {
-        _tooltip->set_visible(result.hit && _show_tooltip);
+        _tooltip->set_visible(result.hit && _show_tooltip && !_context_menu->visible());
         if (result.hit)
         {
             _map_tooltip->set_visible(false);
@@ -410,6 +410,7 @@ namespace trview
         _context_menu->set_visible(value);
         if (value)
         {
+            _tooltip->set_visible(false);
             _context_menu->set_position(client_cursor_position(_window));
         }
     }
