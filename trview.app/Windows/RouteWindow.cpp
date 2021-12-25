@@ -3,7 +3,7 @@
 #include <trview.ui/GroupBox.h>
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
-#include <trview.common/Windows/Clipboard.h>
+#include <trview.common/Windows/IClipboard.h>
 #include <trview.ui/Layouts/StackLayout.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/Layouts/GridLayout.h>

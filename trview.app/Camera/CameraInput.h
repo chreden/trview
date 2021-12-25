@@ -3,7 +3,7 @@
 #include <SimpleMath.h>
 #include <cstdint>
 
-#include <trview.input/Mouse.h>
+#include <trview.input/IMouse.h>
 #include <trview.common/Event.h>
 
 #include <trview.app/Camera/CameraMode.h>

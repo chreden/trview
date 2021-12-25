@@ -1,6 +1,6 @@
 #include "DefaultTextures.h"
 #include <trview.common/Resources.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <trview.common/Strings.h>
 

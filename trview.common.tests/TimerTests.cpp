@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.common/Timer.h>
 
 using namespace trview;

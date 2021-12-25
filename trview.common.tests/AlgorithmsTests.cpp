@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.common/Algorithms.h>
 
 using namespace trview;

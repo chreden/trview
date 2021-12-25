@@ -1,6 +1,4 @@
-#include <gtest/gtest.h>
 #include <trview.app/Graphics/TextureStorage.h>
-#include <trview.graphics/mocks/IDevice.h>
 
 using namespace trview;
 using namespace trview::graphics;

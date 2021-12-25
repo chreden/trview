@@ -12,9 +12,9 @@
 
 #include <trview.common/Timer.h>
 #include <trview.common/Window.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include <trview.input/Keyboard.h>
-#include <trview.input/Mouse.h>
+#include <trview.input/IMouse.h>
 #include <trview.common/TokenStore.h>
 
 #include <trview.app/Camera/FreeCamera.h>
@@ -35,7 +35,7 @@
 #include <trview.app/Menus/MenuDetector.h>
 #include <trview.app/Lua/Lua.h>
 #include <trview.common/Windows/Shortcuts.h>
-#include <trview.graphics/DeviceWindow.h>
+#include <trview.graphics/IDeviceWindow.h>
 #include <trview.app/Windows/IViewer.h>
 
 namespace trview

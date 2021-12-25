@@ -104,7 +104,7 @@ TEST(Level, LoadTypeNames)
     entity.Room = 0;
     entity.TypeID = 123;
 
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb2));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
@@ -123,7 +123,7 @@ TEST(Level, LoadFromEntitySources)
 
     tr4_ai_object ai_object{};
 
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
@@ -154,7 +154,7 @@ TEST(Level, LoadFromEntitySources)
 
 TEST(Level, LoadRooms)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, get_version).WillRepeatedly(Return(LevelVersion::Tomb4));
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(3));
 
@@ -173,7 +173,7 @@ TEST(Level, LoadRooms)
 
 TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
     int entity_source_called = 0;
@@ -202,7 +202,7 @@ TEST(Level, OcbAdjustmentsPerformedWhenNeeded)
 
 TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     EXPECT_CALL(mock_level, num_entities()).WillRepeatedly(Return(1));
     int entity_source_called = 0;
@@ -231,7 +231,7 @@ TEST(Level, OcbAdjustmentsNotPerformedWhenNotNeeded)
 
 TEST(Level, PickUsesCorrectDefaultFilters)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = std::make_shared<MockRoom>();
@@ -248,7 +248,7 @@ TEST(Level, PickUsesCorrectDefaultFilters)
 
 TEST(Level, PickUsesCorrectOptionalFilters)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = std::make_shared<MockRoom>();
@@ -267,7 +267,7 @@ TEST(Level, PickUsesCorrectOptionalFilters)
 
 TEST(Level, PickUsesCorrectMinimalFilters)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
 
     auto room = std::make_shared<MockRoom>();
@@ -286,7 +286,7 @@ TEST(Level, PickUsesCorrectMinimalFilters)
 
 TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     auto room = std::make_shared<MockRoom>();
 
@@ -314,7 +314,7 @@ TEST(Level, BoundingBoxesNotRenderedWhenDisabled)
 
 TEST(Level, BoundingBoxesRenderedWhenEnabled)
 {
-    auto [mock_level_ptr, mock_level] = create_mock<MockLevel>();
+    auto [mock_level_ptr, mock_level] = create_mock<trlevel::mocks::MockLevel>();
     EXPECT_CALL(mock_level, num_rooms()).WillRepeatedly(Return(1));
     auto room = std::make_shared<MockRoom>();
 

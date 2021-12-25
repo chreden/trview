@@ -1,11 +1,9 @@
 #include "Viewer.h"
 
 #include <trlevel/ILevel.h>
-#include <trview.graphics/DeviceWindow.h>
 #include <trview.graphics/RenderTargetStore.h>
-#include <trview.graphics/Sprite.h>
+#include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
-#include <trview.input/WindowTester.h>
 
 #include <trview.common/Strings.h>
 
@@ -377,9 +375,9 @@ namespace trview
 
         using namespace input;
 
-        _token_store += _mouse->mouse_click += [&](Mouse::Button button)
+        _token_store += _mouse->mouse_click += [&](IMouse::Button button)
         {
-            if (button == Mouse::Button::Left)
+            if (button == IMouse::Button::Left)
             {
                 if (!_ui->is_cursor_over())
                 {
@@ -451,7 +449,7 @@ namespace trview
                     }
                 }
             }
-            else if (button == Mouse::Button::Right)
+            else if (button == IMouse::Button::Right)
             {
                 _ui->set_show_context_menu(false);
 
@@ -836,7 +834,7 @@ namespace trview
         _camera.set_view_size(size);
         _free_camera.set_view_size(size);
         _ui->set_host_size(size);
-        _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::RenderTarget::DepthStencilMode::Enabled);
+        _scene_target = _render_target_source(static_cast<uint32_t>(size.width), static_cast<uint32_t>(size.height), graphics::IRenderTarget::DepthStencilMode::Enabled);
         _scene_sprite->set_host_size(size);
         _scene_changed = true;
     }

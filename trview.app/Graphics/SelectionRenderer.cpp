@@ -1,7 +1,7 @@
 #include "SelectionRenderer.h"
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/IShader.h>
-#include <trview.graphics/RenderTarget.h>
+#include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/VertexShaderStore.h>
 #include <trview.graphics/PixelShaderStore.h>
@@ -116,7 +116,7 @@ namespace trview
         // If the texture hasn't been made yet or the size needs to change, re-create the texture.
         if (!_texture || _texture->size() != Size(viewport.Width, viewport.Height))
         {
-            _texture = _render_target_source(static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), RenderTarget::DepthStencilMode::Enabled);
+            _texture = _render_target_source(static_cast<uint32_t>(viewport.Width), static_cast<uint32_t>(viewport.Height), IRenderTarget::DepthStencilMode::Enabled);
         }
 
         // Render the item (all regular faces and transparent faces) to a render target.

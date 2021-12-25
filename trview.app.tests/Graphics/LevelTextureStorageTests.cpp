@@ -15,7 +15,7 @@ using namespace trview::graphics::mocks;
 
 TEST(LevelTextureStorage, PaletteLoadedTomb1)
 {
-    MockLevel level;
+    trlevel::mocks::MockLevel level;
     EXPECT_CALL(level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb1));
     EXPECT_CALL(level, get_palette_entry(_)).Times(AtLeast(1));
     LevelTextureStorage subject(std::make_shared<MockDevice>(), std::make_unique<MockTextureStorage>(), level);
@@ -23,7 +23,7 @@ TEST(LevelTextureStorage, PaletteLoadedTomb1)
 
 TEST(LevelTextureStorage, PaletteLoadedTomb2)
 {
-    MockLevel level;
+    trlevel::mocks::MockLevel level;
     EXPECT_CALL(level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb2));
     EXPECT_CALL(level, get_palette_entry(_)).Times(AtLeast(1));
     LevelTextureStorage subject(std::make_shared<MockDevice>(), std::make_unique<MockTextureStorage>(), level);
@@ -31,7 +31,7 @@ TEST(LevelTextureStorage, PaletteLoadedTomb2)
 
 TEST(LevelTextureStorage, PaletteLoadedTomb3)
 {
-    MockLevel level;
+    trlevel::mocks::MockLevel level;
     EXPECT_CALL(level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb3));
     EXPECT_CALL(level, get_palette_entry(_)).Times(AtLeast(1));
     LevelTextureStorage subject(std::make_shared<MockDevice>(), std::make_unique<MockTextureStorage>(), level);
@@ -39,7 +39,7 @@ TEST(LevelTextureStorage, PaletteLoadedTomb3)
 
 TEST(LevelTextureStorage, PaletteNotLoadedTomb4)
 {
-    MockLevel level;
+    trlevel::mocks::MockLevel level;
     EXPECT_CALL(level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb4));
     EXPECT_CALL(level, get_palette_entry(_)).Times(Exactly(0));
     LevelTextureStorage subject(std::make_shared<MockDevice>(), std::make_unique<MockTextureStorage>(), level);
@@ -47,7 +47,7 @@ TEST(LevelTextureStorage, PaletteNotLoadedTomb4)
 
 TEST(LevelTextureStorage, PaletteNotLoadedTomb5)
 {
-    MockLevel level;
+    trlevel::mocks::MockLevel level;
     EXPECT_CALL(level, get_version()).WillRepeatedly(Return(LevelVersion::Tomb5));
     EXPECT_CALL(level, get_palette_entry(_)).Times(Exactly(0));
     LevelTextureStorage subject(std::make_shared<MockDevice>(), std::make_unique<MockTextureStorage>(), level);

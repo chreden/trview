@@ -14,8 +14,8 @@
 #include <trview.app/UI/IViewOptions.h>
 #include <trview.input/Mouse.h>
 #include <trview.ui/Input.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.ui.render/MapRenderer.h>
+#include <trview.ui.render/IRenderer.h>
+#include <trview.ui.render/IMapRenderer.h>
 #include <trview.ui/ILoader.h>
 
 namespace trview

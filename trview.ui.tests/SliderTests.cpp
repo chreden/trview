@@ -1,10 +1,6 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <trview.ui/Slider.h>
 #include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 #include <optional>
-#include <trview.ui/Mocks/Input/IInput.h>
 
 using namespace trview;
 using namespace trview::mocks;

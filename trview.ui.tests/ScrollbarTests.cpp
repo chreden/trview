@@ -1,4 +1,3 @@
-#include <gtest/gtest.h>
 #include <trview.ui/Scrollbar.h>
 #include <optional>
 

@@ -37,3 +37,75 @@ namespace testing
     }
 }
 
+// Mock headers
+#include <trlevel/Mocks/ILevel.h>
+#include <trlevel/Mocks/ILevelLoader.h>
+#include <trview.app/Mocks/Camera/ICamera.h>
+#include <trview.app/Mocks/Graphics/ILevelTextureStorage.h>
+#include <trview.app/Mocks/Geometry/IMesh.h>
+#include <trview.app/Mocks/Geometry/IPicking.h>
+#include <trview.app/Mocks/Graphics/IMeshStorage.h>
+#include <trview.app/Mocks/Graphics/ISectorHighlight.h>
+#include <trview.app/Mocks/Graphics/ISelectionRenderer.h>
+#include <trview.app/Mocks/Graphics/ITextureStorage.h>
+#include <trview.app/Mocks/Geometry/ITransparencyBuffer.h>
+#include <trview.app/Mocks/Elements/IEntity.h>
+#include <trview.app/Mocks/Elements/ILevel.h>
+#include <trview.app/Mocks/Elements/IRoom.h>
+#include <trview.app/Mocks/Elements/ISector.h>
+#include <trview.app/Mocks/Elements/IStaticMesh.h>
+#include <trview.app/Mocks/Elements/ITrigger.h>
+#include <trview.app/Mocks/Elements/ITypeNameLookup.h>
+#include <trview.app/Mocks/Menus/IUpdateChecker.h>
+#include <trview.app/Mocks/Menus/IFileDropper.h>
+#include <trview.app/Mocks/Menus/ILevelSwitcher.h>
+#include <trview.app/Mocks/Menus/IRecentFiles.h>
+#include <trview.app/Mocks/Routing/IRoute.h>
+#include <trview.app/Mocks/Routing/IWaypoint.h>
+#include <trview.app/Mocks/Settings/ISettingsLoader.h>
+#include <trview.app/Mocks/Settings/IStartupOptions.h>
+#include <trview.app/Mocks/Tools/ICompass.h>
+#include <trview.app/Mocks/Tools/IMeasure.h>
+#include <trview.app/Mocks/UI/IBubble.h>
+#include <trview.app/Mocks/UI/ICameraControls.h>
+#include <trview.app/Mocks/UI/IContextMenu.h>
+#include <trview.app/Mocks/UI/ISettingsWindow.h>
+#include <trview.app/Mocks/UI/IViewOptions.h>
+#include <trview.app/Mocks/UI/IViewerUI.h>
+#include <trview.app/Mocks/Windows/IItemsWindow.h>
+#include <trview.app/Mocks/Windows/IItemsWindowManager.h>
+#include <trview.app/Mocks/Windows/IRoomsWindow.h>
+#include <trview.app/Mocks/Windows/IRoomsWindowManager.h>
+#include <trview.app/Mocks/Windows/IRouteWindow.h>
+#include <trview.app/Mocks/Windows/IRouteWindowManager.h>
+#include <trview.app/Mocks/Windows/ITriggersWindow.h>
+#include <trview.app/Mocks/Windows/ITriggersWindowManager.h>
+#include <trview.app/Mocks/Windows/IViewer.h>
+#include <trview.common/Mocks/IFiles.h>
+#include <trview.common/Mocks/Windows/IClipboard.h>
+#include <trview.common/Mocks/Windows/IDialogs.h>
+#include <trview.common/Mocks/Windows/IShell.h>
+#include <trview.common/Mocks/Windows/IShortcuts.h>
+#include <trview.graphics/mocks/D3D/ID3D11DeviceContext.h>
+#include <trview.graphics/mocks/IDevice.h>
+#include <trview.graphics/mocks/IDeviceWindow.h>
+#include <trview.graphics/mocks/IRenderTarget.h>
+#include <trview.graphics/mocks/IShader.h>
+#include <trview.graphics/mocks/IShaderStorage.h>
+#include <trview.graphics/mocks/ISprite.h>
+#include <trview.input/Mocks/IMouse.h>
+#include <trview.ui/Mocks/Input/IInput.h>
+#include <trview.ui.render/Mocks/IRenderer.h>
+#include <trview.ui.render/Mocks/IMapRenderer.h>
+
+#include <trview.ui/Button.h>
+#include <trview.ui/Checkbox.h>
+#include <trview.ui/Dropdown.h>
+#include <trview.ui/Image.h>
+#include <trview.ui/Label.h>
+#include <trview.ui/Listbox.h>
+#include <trview.ui/NumericUpDown.h>
+#include <trview.ui/Slider.h>
+#include <trview.ui/TextArea.h>
+#include <trview.ui/JsonLoader.h>
+

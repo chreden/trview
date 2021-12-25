@@ -7,7 +7,7 @@
 #include <trview.app/UI/Tooltip.h>
 #include "CollapsiblePanel.h"
 #include <trview.app/Elements/Item.h>
-#include <trview.ui.render/MapRenderer.h>
+#include <trview.ui.render/IMapRenderer.h>
 #include "IRoomsWindow.h"
 #include <trview.app/UI/IBubble.h>
 #include <trview.common/Windows/IClipboard.h>
