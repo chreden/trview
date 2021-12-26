@@ -10,12 +10,10 @@
 #include <trview.app/Mocks/Elements/IStaticMesh.h>
 #include <trview.app/Mocks/Elements/ISector.h>
 #include <trview.app/Mocks/Elements/ITrigger.h>
-#include <external/boost/di.hpp>
 
 using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
-using namespace boost;
 using testing::Return;
 
 namespace
@@ -37,19 +35,8 @@ namespace
 
             std::unique_ptr<Room> build()
             {
-                return di::make_injector
-                (
-                    di::bind<IMesh::Source>.to(mesh_source),
-                    di::bind<trlevel::ILevel>.to(*tr_level),
-                    di::bind<trlevel::tr3_room>.to(room),
-                    di::bind<ILevelTextureStorage>.to(level_texture_storage),
-                    di::bind<IMeshStorage>.to(*mesh_storage),
-                    di::bind<uint32_t>.to(index),
-                    di::bind<ILevel>.to(*level),
-                    di::bind<IStaticMesh::MeshSource>.to(static_mesh_source),
-                    di::bind<IStaticMesh::PositionSource>.to(static_mesh_position_source),
-                    di::bind<ISector::Source>.to(sector_source)
-                ).create<std::unique_ptr<Room>>();
+                return std::make_unique<Room>(mesh_source, *tr_level, room, level_texture_storage, *mesh_storage,
+                    index, *level, static_mesh_source, static_mesh_position_source, sector_source);
             }
 
             test_module& with_level(const std::shared_ptr<ILevel>& level)
