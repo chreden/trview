@@ -1202,6 +1202,7 @@ namespace trview
         void TextArea::set_size_mode(SizeMode size_mode)
         {
             _size_mode = size_mode;
+            update_structure();
         }
 
         void TextArea::set_handles_input(bool value)

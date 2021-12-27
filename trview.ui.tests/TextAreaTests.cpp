@@ -319,3 +319,23 @@ TEST(TextArea, ScrollbarVisible)
     text_area.set_scrollbar_visible(false);
     ASSERT_FALSE(scrollbar->visible());
 }
+
+TEST(TextArea, DisableHandlesInput)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.set_handles_input(false);
+    const auto children = text_area.find<Control>();
+    for (const auto& child : children)
+    {
+        ASSERT_FALSE(child->handles_input());
+    }
+}
+
+TEST(TextArea, AutoSize)
+{
+    TextArea text_area(Size(100, 20), Colour::Black, Colour::White, std::make_shared<MockShell>());
+    text_area.set_text(L"Some text\nOver several\nLines\n\nMore text");
+    ASSERT_EQ(text_area.size(), Size(100, 20));
+    text_area.set_size_mode(SizeMode::Auto);
+    ASSERT_NE(text_area.size(), Size(100, 20));
+}
