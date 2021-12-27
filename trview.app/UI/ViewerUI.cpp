@@ -366,7 +366,7 @@ namespace trview
         if (result.hit)
         {
             _map_tooltip->set_visible(false);
-            _tooltip->set_text(pick_to_string(result));
+            _tooltip->set_text(result.text);
             _tooltip->set_position(info.screen_position);
             _tooltip->set_text_colour(pick_to_colour(result));
         }

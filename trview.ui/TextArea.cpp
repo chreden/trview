@@ -319,13 +319,24 @@ namespace trview
                 auto height = 1 + 14 * _text.size();
 
                 float width = 0;
-                for (const auto& line : _lines)
+                const auto first_line = _lines[0];
+                for (const auto& text : _text)
                 {
-                    width = std::max(width, line->measure_text(line->text()).width);
+                    auto new_width = first_line->measure_text(text).width;
+                    width = std::max(width, new_width);
                 }
 
-                _area->set_size(Size(width + 2, height));
-                set_size(Size(width + 2, height));
+                const auto new_size = Size(width + 2, height);
+                if (size() != new_size)
+                {
+                    _area->set_size(new_size);
+                    set_size(new_size);
+                    for (auto& line : _lines)
+                    {
+                        line->set_size(Size(width, line->size().height));
+                    }
+                    update_structure();
+                }
             }
         }
 

@@ -1149,9 +1149,32 @@ namespace trview
                 break;
             }
         case PickResult::Type::Room:
-        case PickResult::Type::Waypoint:
             stream << pick_to_string(result);
             break;
+        case PickResult::Type::Waypoint:
+            {
+                auto& waypoint = _route->waypoint(result.index);
+                stream << L"Waypoint " << result.index;
+
+                const auto level_items = _level->items();
+                const auto level_triggers = _level->triggers();
+                if (waypoint.type() == IWaypoint::Type::Entity && waypoint.index() < level_items.size())
+                {
+                    stream << L" - " << level_items[waypoint.index()].type();
+                }
+                else if (waypoint.type() == IWaypoint::Type::Trigger && waypoint.index() < level_triggers.size())
+                {
+                    const auto trigger_ptr = level_triggers[waypoint.index()].lock();
+                    stream << L" - " << trigger_type_name(trigger_ptr->type()) << L" " << waypoint.index();
+                }
+
+                const auto notes = waypoint.notes();
+                if (!notes.empty())
+                {
+                    stream << L"\n\n" << notes;
+                }
+                break;
+            }
         }
 
         return stream.str();
