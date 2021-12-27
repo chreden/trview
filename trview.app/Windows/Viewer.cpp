@@ -269,7 +269,10 @@ namespace trview
         {
             _current_pick = result;
 
-            result.text = generate_pick_message(result, *_level, *_route);
+            if (_level && _route)
+            {
+                result.text = generate_pick_message(result, *_level, *_route);
+            }
             _ui->set_pick(pickInfo, result);
 
             // Highlight sectors in the minimap.
