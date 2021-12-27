@@ -311,33 +311,7 @@ namespace trview
                 static_cast<float>(_line_structure.size()));
             set_scrollbar_visible(_scroll_visible);
 
-            if (_size_mode == SizeMode::Auto && !_text.empty())
-            {
-                // Calculate what the height should be - all the lines might not be there yet. The resize
-                // later will make the lines be present and then we will go through again to get the correct
-                // width.
-                auto height = 1 + 14 * _text.size();
-
-                float width = 0;
-                const auto first_line = _lines[0];
-                for (const auto& text : _text)
-                {
-                    auto new_width = first_line->measure_text(text).width;
-                    width = std::max(width, new_width);
-                }
-
-                const auto new_size = Size(width + 2, height);
-                if (size() != new_size)
-                {
-                    _area->set_size(new_size);
-                    set_size(new_size);
-                    for (auto& line : _lines)
-                    {
-                        line->set_size(Size(width, line->size().height));
-                    }
-                    update_structure();
-                }
-            }
+            calculate_auto_size();
         }
 
         bool TextArea::key_char(wchar_t character)
@@ -492,6 +466,7 @@ namespace trview
             _logical_cursor.line = _text.empty() ? 0 : static_cast<int32_t>(_text.size() - 1);
             _logical_cursor.position = _text.empty() ? 0 : static_cast<int32_t>(_text.back().size());
             notify_text_updated();
+            calculate_auto_size();
             update_structure();
         }
 
@@ -1213,6 +1188,37 @@ namespace trview
                 if (child != this)
                 {
                     child->set_handles_input(handles_input());
+                }
+            }
+        }
+
+        void TextArea::calculate_auto_size()
+        {
+            if (_size_mode == SizeMode::Auto && !_text.empty())
+            {
+                // Calculate what the height should be - all the lines might not be there yet. The resize
+                // later will make the lines be present and then we will go through again to get the correct
+                // width.
+                auto height = 1 + 14 * _text.size();
+
+                float width = 0;
+                const auto first_line = _lines[0];
+                for (const auto& text : _text)
+                {
+                    auto new_width = first_line->measure_text(text).width;
+                    width = std::max(width, new_width);
+                }
+
+                const auto new_size = Size(width + 2, height);
+                if (size() != new_size)
+                {
+                    for (auto& line : _lines)
+                    {
+                        line->set_size(Size(width, line->size().height));
+                    }
+
+                    _area->set_size(new_size);
+                    set_size(new_size);
                 }
             }
         }
