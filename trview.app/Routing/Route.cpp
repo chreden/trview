@@ -197,7 +197,7 @@ namespace trview
             waypoint->render(camera, texture_storage, Color(1.0f, 1.0f, 1.0f));
             if (!_randomizer_enabled && i < _waypoints.size() - 1)
             {
-                waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
+                // waypoint->render_join(*_waypoints[i + 1], camera, texture_storage, _colour);
             }
         }
 

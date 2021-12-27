@@ -8,7 +8,7 @@ namespace trview
 {
     namespace
     {
-        const float PoleThickness = 0.05f;
+        const float PoleThickness = 0.005f;
         const float RopeThickness = 0.015f;
     }
 
@@ -29,7 +29,7 @@ namespace trview
         light_direction.Normalize();
 
         auto pole_wvp = pole_world * camera.view_projection();
-        _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
+        // _mesh->render(pole_wvp, texture_storage, colour, 0.75f, light_direction);
 
         // The light blob.
         auto blob_wvp = Matrix::CreateScale(PoleThickness, PoleThickness, PoleThickness) * Matrix::CreateTranslation(-Vector3(0, 0.5f + PoleThickness * 0.5f, 0)) * rotation * Matrix::CreateTranslation(_position) * camera.view_projection();

@@ -116,6 +116,7 @@ namespace trview
 
         void register_lua();
         void apply_acceleration_settings();
+        static int lua_show_tra(lua_State* state);
 
         const std::shared_ptr<graphics::IDevice> _device;
         Window _window;
