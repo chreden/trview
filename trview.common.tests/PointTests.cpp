@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.common/Point.h>
 #include <trview.common/JsonSerializers.h>
 

@@ -11,7 +11,7 @@
 #include <trview.app/Geometry/ITransparencyBuffer.h>
 #include <trview.app/Graphics/ISelectionRenderer.h>
 #include <trview.app/Graphics/IMeshStorage.h>
-#include <trview.graphics/RenderTarget.h>
+#include <trview.graphics/IRenderTarget.h>
 #include <trview.graphics/Texture.h>
 
 namespace trview

@@ -1,9 +1,6 @@
-#include <gmock/gmock.h>
-#include "gtest/gtest.h"
 #include <trview.ui/Checkbox.h>
 #include <trview.ui/Label.h>
 #include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 #include <optional>
 
 using namespace trview;

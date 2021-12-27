@@ -1,7 +1,5 @@
 #include "RoomsWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview.ui.render/Renderer.h>
-#include <trview.graphics/DeviceWindow.h>
 #include <trview.common/Windows/Shortcuts.h>
 
 namespace trview

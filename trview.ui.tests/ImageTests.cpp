@@ -1,8 +1,5 @@
-#include <gmock/gmock.h>
-#include "gtest/gtest.h"
 #include <trview.ui/Image.h>
 #include <trview.ui/JsonLoader.h>
-#include <trview.common/Mocks/Windows/IShell.h>
 
 using namespace trview;
 using namespace trview::mocks;

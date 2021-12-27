@@ -13,7 +13,7 @@
 #include <SimpleMath.h>
 
 #include <trview.app/Geometry/ITransparencyBuffer.h>
-#include <trview.graphics/RenderTarget.h>
+#include <trview.graphics/IRenderTarget.h>
 #include "ISelectionRenderer.h"
 
 namespace trview

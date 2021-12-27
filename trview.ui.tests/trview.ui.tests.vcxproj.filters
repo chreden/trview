@@ -17,5 +17,9 @@
     <ClCompile Include="WindowTests.cpp" />
     <ClCompile Include="ScrollbarTests.cpp" />
     <ClCompile Include="ControlTests.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
 </Project>

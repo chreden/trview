@@ -1,6 +1,5 @@
 #include "TriggersWindowManager.h"
 #include <trview.app/Windows/WindowIDs.h>
-#include <trview.common/Windows/Shortcuts.h>
 
 namespace trview
 {

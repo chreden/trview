@@ -1,5 +1,5 @@
 #include "Measure.h"
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include <trview.app/Camera/ICamera.h>
 
 using namespace trview::graphics;

@@ -3,7 +3,7 @@
 #include <memory>
 #include <trlevel/trtypes.h>
 #include <trlevel/LevelVersion.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include "IMesh.h"
 
 namespace trview

@@ -7,7 +7,7 @@
 #include <trlevel/trtypes.h>
 #include <trlevel/ILevel.h>
 #include <trview.app/Graphics/ILevelTextureStorage.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 
 namespace trview
 {

@@ -6,6 +6,8 @@
 #include "IInput.h"
 #include <trview.input/Mouse.h>
 #include <trview.common/Windows/IClipboard.h>
+#include <trview.common/Windows/IShortcuts.h>
+
 
 namespace trview
 {

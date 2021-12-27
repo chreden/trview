@@ -1,5 +1,3 @@
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
 #include <trview.ui/Control.h>
 #include <optional>
 

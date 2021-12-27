@@ -5,7 +5,7 @@
 #include <wrl/client.h>
 #include <d3d11.h>
 #include <trview.app/Geometry/MeshVertex.h>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include <trview.graphics/Texture.h>
 #include "ITransparencyBuffer.h"
 

@@ -1,7 +1,7 @@
 #include "DefaultShaders.h"
 #include <trview.common/Resources.h>
 #include "resource.h"
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 #include <trview.graphics/IShaderStorage.h>
 #include <trview.graphics/VertexShader.h>
 #include <trview.graphics/PixelShader.h>

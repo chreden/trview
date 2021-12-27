@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include <trview.common/Colour.h>
 #include <trview.common/JsonSerializers.h>
 

@@ -2,7 +2,7 @@
 
 #include <trview.app/Graphics/ITextureStorage.h>
 #include <unordered_map>
-#include <trview.graphics/Device.h>
+#include <trview.graphics/IDevice.h>
 
 namespace trview
 {

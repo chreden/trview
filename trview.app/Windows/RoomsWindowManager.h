@@ -47,7 +47,7 @@ namespace trview
         std::vector<std::weak_ptr<IRoom>> _all_rooms;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         TokenStore _token_store;
-        uint32_t _current_room;
+        uint32_t _current_room{ 0u };
         std::weak_ptr<ITrigger> _selected_trigger;
         std::optional<Item> _selected_item;
         IRoomsWindow::Source _rooms_window_source;
