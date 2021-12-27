@@ -1,6 +1,8 @@
 #include "PickResult.h"
 #include <trview.app/Tools/Compass.h>
 #include <trview.common/Colour.h>
+#include "../Elements/ILevel.h"
+#include "../Routing/IRoute.h"
 
 namespace trview
 {
@@ -78,5 +80,71 @@ namespace trview
             return next;
         }
         return current;
+    }
+
+    std::wstring generate_pick_message(const PickResult& result, const ILevel& level, const IRoute& route)
+    {
+        std::wstringstream stream;
+
+        switch (result.type)
+        {
+        case PickResult::Type::Entity:
+        {
+            const auto item = level.items()[result.index];
+            stream << L"Item " << result.index << L" - " << item.type();
+            break;
+        }
+        case PickResult::Type::Trigger:
+        {
+            const auto trigger = level.triggers()[result.index];
+            if (auto trigger_ptr = trigger.lock())
+            {
+                stream << trigger_type_name(trigger_ptr->type()) << L" " << result.index;
+                for (const auto command : trigger_ptr->commands())
+                {
+                    stream << L"\n  " << command_type_name(command.type());
+                    if (command_has_index(command.type()))
+                    {
+                        stream << L" " << command.index();
+                        if (command_is_item(command.type()))
+                        {
+                            const auto item = level.items()[command.index()];
+                            stream << L" - " << item.type();
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        case PickResult::Type::Room:
+            stream << pick_to_string(result);
+            break;
+        case PickResult::Type::Waypoint:
+        {
+            auto& waypoint = route.waypoint(result.index);
+            stream << L"Waypoint " << result.index;
+
+            const auto level_items = level.items();
+            const auto level_triggers = level.triggers();
+            if (waypoint.type() == IWaypoint::Type::Entity && waypoint.index() < level_items.size())
+            {
+                stream << L" - " << level_items[waypoint.index()].type();
+            }
+            else if (waypoint.type() == IWaypoint::Type::Trigger && waypoint.index() < level_triggers.size())
+            {
+                const auto trigger_ptr = level_triggers[waypoint.index()].lock();
+                stream << L" - " << trigger_type_name(trigger_ptr->type()) << L" " << waypoint.index();
+            }
+
+            const auto notes = waypoint.notes();
+            if (!notes.empty())
+            {
+                stream << L"\n\n" << notes;
+            }
+            break;
+        }
+        }
+
+        return stream.str();
     }
  }

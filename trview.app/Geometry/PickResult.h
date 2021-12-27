@@ -6,6 +6,8 @@
 namespace trview
 {
     struct Colour;
+    struct ILevel;
+    struct IRoute;
 
     struct PickResult
     {
@@ -42,4 +44,6 @@ namespace trview
 
     /// If the next pick is nearer than the current and is a hit, choose that one.
     PickResult nearest_result(const PickResult& current, const PickResult& next);
+
+    std::wstring generate_pick_message(const PickResult& result, const ILevel& level, const IRoute& route);
 }

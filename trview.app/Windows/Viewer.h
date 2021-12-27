@@ -113,7 +113,6 @@ namespace trview
         void select_previous_orbit();
         void select_next_orbit();
         void select_pick(const PickResult& pick);
-        std::wstring generate_pick_message(const PickResult& pick) const;
 
         void register_lua();
         void apply_acceleration_settings();
