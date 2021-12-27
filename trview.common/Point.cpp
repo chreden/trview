@@ -31,7 +31,7 @@ namespace trview
 
     bool Point::operator==(const Point& other) const
     {
-        return !(*this == other);
+        return !(*this != other);
     }
 
     bool Point::operator!=(const Point& other) const
