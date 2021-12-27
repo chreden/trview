@@ -3750,10 +3750,10 @@
 				"name": "Compass"
 			}, {
 				"id": 364,
-				"name": "Steam"
+				"name": "Smoke emitter"
 			}, {
 				"id": 365,
-				"name": "Steam"
+				"name": "Steam emitter"
 			}, {
 				"id": 366,
 				"name": "Earthquake"
