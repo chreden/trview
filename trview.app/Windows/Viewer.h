@@ -84,7 +84,6 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
-        virtual void open_tra(const std::string& filename) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
     private:

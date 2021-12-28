@@ -92,13 +92,6 @@ namespace trview
         return 0;
     }
 
-    static int trview_open_lau(lua_State* L)
-    {
-        const char* filename = luaL_checkstring(L, 1);
-        op->show_tra(filename);
-        return 0;
-    }
-
     // trview.recent (int) - opens a recent file indexed by parameter
     static int trview_recent ( lua_State* L )
     {
@@ -222,7 +215,6 @@ namespace trview
     {
         { "open", trview_open },
         { "recent", trview_recent },
-        { "open_tra", trview_open_lau },
         { "__index", trview_index },
         { "__newindex", trview_newindex },
         { NULL, NULL },

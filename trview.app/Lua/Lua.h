@@ -63,11 +63,6 @@ namespace trview
         // called when a lua script has gone crazy and may be stuck 
         // should return T/F for whether to kill the script
         std::function<bool ()> on_crazy;
-
-        /// <summary>
-        /// Called to show TRA mode.
-        /// </summary>
-        std::function<void(const std::string&)> show_tra;
     }; 
 
     extern LuaFunctionRegistry lua_registry;

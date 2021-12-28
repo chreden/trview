@@ -6,10 +6,6 @@
 #include <trview.graphics/ViewportStore.h>
 
 #include <trview.common/Strings.h>
-#include <fstream>
-#include <iostream>
-
-#include <trview.lau/drm.h>
 
 namespace trview
 {
@@ -501,20 +497,6 @@ namespace trview
         current_camera().update(_timer.elapsed());
     }
 
-    template <typename T>
-    T read(std::istream& file)
-    {
-        T value;
-        read<T>(file, value);
-        return value;
-    }
-
-    template < typename T >
-    void read(std::istream& file, T& value)
-    {
-        file.read(reinterpret_cast<char*>(&value), sizeof(value));
-    }
-
     void Viewer::open(ILevel* level)
     {
         _level = level;
@@ -561,7 +543,6 @@ namespace trview
         _ui->set_level(name, _level->version());
         _window.set_title("trview - " + name);
         _measure->reset();
-
 
         _recent_orbits.clear();
         _recent_orbit_index = 0u;
@@ -1130,62 +1111,5 @@ namespace trview
     CameraMode Viewer::camera_mode() const
     {
         return _camera_mode;
-    }
-
-    void Viewer::open_tra(const std::string& filename)
-    {
-        using namespace DirectX::SimpleMath;
-
-        // viewer->_route->clear();
-
-        auto drm = lau::load_drm(std::wstring(L"C:\\Projects\\Applications\\trview\\lau\\drm\\") + to_utf16(filename) + L".drm");
-        auto count = drm->textures.size();
-
-        float scale = 1.0f / 2048.0f;
-        // float scale = 1;
-        auto m = Matrix::CreateScale(scale);
-        //auto offset = Vector3::Transform(Vector3(drm->world_offset.x, drm->world_offset.z, drm->world_offset.y), m);
-        // auto offset = Vector3::Zero;
-        // auto offset = Vector3::Transform(Vector3(drm->world_offset.x, -drm->world_offset.z, 0), m);
-        // auto offset = Vector3::Transform(Vector3(ox, oy, oz), m);
-        // auto offset = Vector3(ox, oy, oz);
-        auto offset = Vector3::Zero;
-        // if (std::string(fn) == "gr2")
-        // {
-        //     offset = Vector3::Zero;
-        // }
-
-        float min_x = FLT_MAX;
-        float min_y = FLT_MAX;
-        float min_z = FLT_MAX;
-        float max_x = -FLT_MAX; 
-        float max_y = -FLT_MAX;
-        float max_z = -FLT_MAX;
-
-        // FILE* stream;
-        // AllocConsole();
-        // freopen_s(&stream, "CONOUT$", "w", stdout);
-
-        for (const auto& vert : drm->world_mesh)
-        {
-            min_x = std::min<float>(min_x, vert.x);
-            min_y = std::min<float>(min_y, vert.y);
-            min_z = std::min<float>(min_z, vert.z);
-            max_x = std::max<float>(max_x, vert.x);
-            max_y = std::max<float>(max_y, vert.y);
-            max_z = std::max<float>(max_z, vert.z);
-        }
-
-        // auto extent = Vector3::Transform(Vector3(max_x - min_x, -(max_z - min_z), max_y - min_y), m);
-        // auto extent = Vector3::Transform(Vector3(0, max_z - min_z, 0), m);
-        // offset += extent * 0.5f;
-
-        for (const auto& vert : drm->world_mesh)
-        {
-            // viewer->_route->add(Vector3::Transform(Vector3(vert.x, -vert.z, vert.y), m) + offset, 0);
-            _route->add(Vector3::Transform(Vector3(vert.x, vert.y, vert.z) + offset, m), Vector3::Down, 0);
-        }
-
-        _scene_changed = true;
     }
 }
