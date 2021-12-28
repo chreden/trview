@@ -25,6 +25,8 @@
 
 namespace trview
 {
+    struct ILauWindowManager;
+
     struct IApplication
     {
         virtual ~IApplication() = 0;
@@ -53,7 +55,8 @@ namespace trview
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
-            std::shared_ptr<IFiles> files);
+            std::shared_ptr<IFiles> files,
+            std::unique_ptr<ILauWindowManager> lau_window_manager);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -116,6 +119,7 @@ namespace trview
         std::unique_ptr<ITriggersWindowManager> _triggers_windows;
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
+        std::unique_ptr<ILauWindowManager> _lau_windows;
         Timer _timer;
     };
 

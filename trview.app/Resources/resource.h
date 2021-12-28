@@ -55,6 +55,7 @@
 #define IDR_UI_ROOM_NAVIGATOR           33015
 #define IDR_UI_CAMERA_POSITION          33016
 #define IDR_UI_TOOL_WINDOW              33017
+#define IDR_UI_LAU_WINDOW               33018
 #define IDC_STATIC                      -1
 #define ID_WINDOWS_ROOMS                ID_APP_WINDOWS_ROOMS
 

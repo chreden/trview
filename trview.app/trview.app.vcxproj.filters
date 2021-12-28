@@ -346,6 +346,12 @@
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\LauWindow.cpp">
+      <Filter>Windows\Lau</Filter>
+    </ClCompile>
+    <ClCompile Include="Windows\LauWindowManager.cpp">
+      <Filter>Windows\Lau</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -893,6 +899,21 @@
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
     </ClInclude>
+    <ClInclude Include="Windows\ILauWindow.h">
+      <Filter>Windows\Lau</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\ILauWindowManager.h">
+      <Filter>Windows\Lau</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\LauWindow.h">
+      <Filter>Windows\Lau</Filter>
+    </ClInclude>
+    <ClInclude Include="Windows\LauWindowManager.h">
+      <Filter>Windows\Lau</Filter>
+    </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILauWindowManager.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
@@ -972,6 +993,9 @@
     </Filter>
     <Filter Include="Resources\Files\UI">
       <UniqueIdentifier>{c6bc5197-3c80-4b1f-804a-62228b062485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows\Lau">
+      <UniqueIdentifier>{aed2ab82-bed6-4921-83aa-f6145c0b5083}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

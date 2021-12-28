@@ -1,0 +1,9 @@
+{
+    "$schema": "../../../../trview.ui/schema.json",
+    "type": "window",
+    "background_colour": "red",
+    "size": {
+        "width": 600,
+        "height": 680
+    }
+}

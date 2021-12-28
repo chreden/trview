@@ -10,6 +10,8 @@
 #include "TriggersWindowManager.h"
 #include "RouteWindowManager.h"
 #include "RoomsWindowManager.h"
+#include "LauWindowManager.h"
+#include "LauWindow.h"
 #include "Viewer.h"
 #include <trview.ui/ILoader.h>
 
@@ -90,6 +92,20 @@ namespace trview
                     };
                 }),
             di::bind<IRoomsWindowManager>.to<RoomsWindowManager>(),
+            di::bind<ILauWindow::Source>.to(
+                [](const auto& injector) -> ILauWindow::Source
+                {
+                    return [&](auto window)
+                    {
+                        return std::make_shared<LauWindow>(
+                            injector.create<IDeviceWindow::Source>(),
+                            injector.create<ui::render::IRenderer::Source>(),
+                            injector.create<ui::IInput::Source>(),
+                            window, 
+                            injector.create<std::shared_ptr<ui::ILoader>>());
+                    };
+                }),
+            di::bind<ILauWindowManager>.to<LauWindowManager>(),
             di::bind<IViewer>.to<Viewer>()
         );
     }

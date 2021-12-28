@@ -120,13 +120,14 @@ namespace trview
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
-        std::shared_ptr<IFiles> files)
+        std::shared_ptr<IFiles> files,
+        std::unique_ptr<ILauWindowManager> lau_window_manager)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source())
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _lau_windows(std::move(lau_window_manager))
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -144,6 +145,8 @@ namespace trview
         setup_rooms_windows();
         setup_route_window();
         setup_viewer(*startup_options);
+
+        _lau_windows->create_window();
 
         register_lua();
         lua_init(&lua_registry);
@@ -570,6 +573,7 @@ namespace trview
         _triggers_windows->render(_settings.vsync);
         _rooms_windows->render(_settings.vsync);
         _route_window->render(_settings.vsync);
+        _lau_windows->render(_settings.vsync);
     }
 
     bool Application::should_discard_changes()

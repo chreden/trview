@@ -141,6 +141,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClCompile Include="Windows\ITriggersWindow.cpp" />
     <ClCompile Include="Windows\ITriggersWindowManager.cpp" />
     <ClCompile Include="Windows\IViewer.cpp" />
+    <ClCompile Include="Windows\LauWindow.cpp" />
+    <ClCompile Include="Windows\LauWindowManager.cpp" />
     <ClCompile Include="Windows\RoomsWindow.cpp" />
     <ClCompile Include="Windows\RoomsWindowManager.cpp" />
     <ClCompile Include="Windows\RouteWindow.cpp" />
@@ -256,6 +258,7 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Mocks\UI\IViewOptions.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindow.h" />
     <ClInclude Include="Mocks\Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Mocks\Windows\ILauWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindow.h" />
     <ClInclude Include="Mocks\Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Mocks\Windows\IRouteWindow.h" />
@@ -317,6 +320,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\di.hpp" />
     <ClInclude Include="Windows\IItemsWindow.h" />
     <ClInclude Include="Windows\IItemsWindowManager.h" />
+    <ClInclude Include="Windows\ILauWindow.h" />
+    <ClInclude Include="Windows\ILauWindowManager.h" />
     <ClInclude Include="Windows\IRoomsWindow.h" />
     <ClInclude Include="Windows\IRoomsWindowManager.h" />
     <ClInclude Include="Windows\IRouteWindow.h" />
@@ -326,6 +331,8 @@ copy ""$(OutDir)*.cso"" ""$(ProjectDir)Resources\Generated""</Command>
     <ClInclude Include="Windows\ITriggersWindow.h" />
     <ClInclude Include="Windows\ITriggersWindowManager.h" />
     <ClInclude Include="Windows\IViewer.h" />
+    <ClInclude Include="Windows\LauWindow.h" />
+    <ClInclude Include="Windows\LauWindowManager.h" />
     <ClInclude Include="Windows\RoomsWindow.h" />
     <ClInclude Include="Windows\RoomsWindowManager.h" />
     <ClInclude Include="Windows\RouteWindow.h" />

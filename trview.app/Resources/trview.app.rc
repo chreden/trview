@@ -262,6 +262,7 @@ IDR_UI_CONSOLE                      TEXT         "Files\\UI\\console.json"
 IDR_UI_ROOM_NAVIGATOR               TEXT         "Files\\UI\\room_navigator.json"
 IDR_UI_CAMERA_POSITION              TEXT         "Files\\UI\\camera_position.json"
 IDR_UI_TOOL_WINDOW                  TEXT         "Files\\UI\\tool_window.json"
+IDR_UI_LAU_WINDOW                   TEXT         "Files\\UI\\lau_window.json"
 
 /////////////////////////////////////////////////////////////////////////////
 //
