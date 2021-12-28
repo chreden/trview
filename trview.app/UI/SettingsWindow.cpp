@@ -46,9 +46,6 @@ namespace trview
         _randomizer_tools = _window->find<Checkbox>(Names::randomizer_tools);
         _randomizer_tools->on_state_changed += on_randomizer_tools;
 
-        _lau = _window->find<Checkbox>(Names::lau);
-        _lau->on_state_changed += on_lau;
-
         _max_recent_files = _window->find<NumericUpDown>(Names::max_recent_files);
         _token_store += _max_recent_files->on_value_changed += [this](int32_t value) { on_max_recent_files(value); };
 
@@ -153,11 +150,6 @@ namespace trview
     void SettingsWindow::set_randomizer_tools(bool value)
     {
         _randomizer_tools->set_state(value);
-    }
-
-    void SettingsWindow::set_lau(bool value)
-    {
-        _lau->set_state(value);
     }
 
     void SettingsWindow::set_max_recent_files(uint32_t value)

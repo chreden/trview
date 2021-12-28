@@ -33,7 +33,6 @@ namespace trview
             inline static const std::string invert_vertical_pan = "InvertVerticalPan";
             inline static const std::string camera_display_degrees = "CameraDisplayDegrees";
             inline static const std::string randomizer_tools = "RandomizerTools";
-            inline static const std::string lau = "LAU";
             inline static const std::string max_recent_files = "MaxRecentFiles";
             inline static const std::string sensitivity = "Sensitivity";
             inline static const std::string movement_speed = "MovementSpeed";
@@ -63,7 +62,6 @@ namespace trview
         virtual void set_invert_vertical_pan(bool value) override;
         virtual void set_camera_display_degrees(bool value) override;
         virtual void set_randomizer_tools(bool value) override;
-        virtual void set_lau(bool value) override;
         virtual void set_max_recent_files(uint32_t value) override;
         virtual void toggle_visibility() override;
     private:
@@ -82,7 +80,6 @@ namespace trview
         ui::Slider* _acceleration_rate{ nullptr };
         ui::Checkbox* _camera_display_degrees{ nullptr };
         ui::Checkbox* _randomizer_tools{ nullptr };
-        ui::Checkbox* _lau{ nullptr };
         ui::NumericUpDown* _max_recent_files{ nullptr };
         TokenStore _token_store;
     };
