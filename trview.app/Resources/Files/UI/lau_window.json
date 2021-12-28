@@ -4,6 +4,149 @@
     "background_colour": "red",
     "size": {
         "width": 600,
-        "height": 680
-    }
+        "height": 600
+    },
+    "children": [
+        {
+            "type": "window",
+            "name": "panels",
+            "size": {
+                "width": 600,
+                "height": 600
+            },
+            "auto_size": "height",
+            "background_colour": "red",
+            "layout": {
+                "type": "stack",
+                "direction": "horizontal",
+                "size_mode": "manual",
+                "padding": 0
+            },
+            "children": [
+                {
+                    "type": "window",
+                    "name": "left_panel",
+                    "auto_size": "height",
+                    "colours": {
+                        "background": {
+                            "r": 0.25,
+                            "g": 0.25,
+                            "b": 0.25
+                        }
+                    },
+                    "size": {
+                        "width": 250,
+                        "height": 600
+                    },
+                    "background_colour": "background",
+                    "layout": {
+                        "type": "stack",
+                        "padding": 3,
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 250,
+                                "height": 24
+                            },
+                            "background_colour": "background",
+                            "layout": {
+                                "type": "stack",
+                                "padding": 2,
+                                "direction": "horizontal",
+                                "size_mode": "manual",
+                                "margin": {
+                                    "width": 2,
+                                    "height": 2
+                                }
+                            },
+                            "children": [
+                                {
+                                    "type": "button",
+                                    "text": "Open",
+                                    "name": "Open",
+                                    "size": {
+                                        "width": 90,
+                                        "height": 20
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listbox",
+                            "name": "Sections",
+                            "auto_size": "height",
+                            "size": {
+                                "width": 250,
+                                "height": 600
+                            },
+                            "background_colour": "background",
+                            "columns": [
+                                {
+                                    "identity": "key",
+                                    "type": "number",
+                                    "name": "#",
+                                    "width": 30
+                                },
+                                {
+                                    "identity": "none",
+                                    "type": "string",
+                                    "name": "Type",
+                                    "width": 220
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "window",
+                    "name": "divider",
+                    "auto_size": "height",
+                    "size": {
+                        "width": 1,
+                        "height": 600
+                    },
+                    "background_colour": "black"
+                },
+                {
+                    "type": "window",
+                    "name": "right_panel",
+                    "auto_size": "height",
+                    "colours": {
+                        "background_top": {
+                            "r": 0.225,
+                            "g": 0.225,
+                            "b": 0.225
+                        },
+                        "background_bottom": {
+                            "r": 0.2,
+                            "g": 0.2,
+                            "b": 0.2
+                        }
+                    },
+                    "background_colour": "background_top",
+                    "size": {
+                        "width": 350,
+                        "height": 600
+                    },
+                    "layout": {
+                        "type": "stack",
+                        "size_mode": "manual"
+                    },
+                    "children": [
+                        {
+                            "type": "window",
+                            "size": {
+                                "width": 350,
+                                "height": 8
+                            },
+                            "background_colour": "background_top"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
