@@ -68,6 +68,10 @@ namespace trview
         /// </summary>
         Event<bool> on_randomizer_tools;
         /// <summary>
+        /// Event raised when the 'Enable Legend/Anniversary/Underworld Preview' setting has been changed. The new setting is passed as the parameter.
+        /// </summary>
+        Event<bool> on_lau;
+        /// <summary>
         /// Event raised when the 'max recent files' setting has been changed. The new setting is passed as the parameter.
         /// </summary>
         Event<uint32_t> on_max_recent_files;
@@ -143,9 +147,15 @@ namespace trview
         /// <summary>
         /// Set the value of randomizer tools.
         /// </summary>
-        /// <remarks>This will not raise the on_randomimzer_tools event.</remarks>
+        /// <remarks>This will not raise the on_randomizer_tools event.</remarks>
         /// <param name="value">The new setting value.</param>
         virtual void set_randomizer_tools(bool value) = 0;
+        /// <summary>
+        /// Set the value of lau.
+        /// </summary>
+        /// <param name="value">This will not raise the on_lau event.</param>
+        /// <param name="value">The new setting value.</param>
+        virtual void set_lau(bool value) = 0;
         /// <summary>
         /// Set the maximum number of recent files.
         /// </summary>

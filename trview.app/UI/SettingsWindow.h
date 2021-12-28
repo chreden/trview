@@ -23,22 +23,23 @@ namespace trview
     public:
         struct Names
         {
-            static const std::string vsync;
-            static const std::string go_to_lara;
-            static const std::string invert_map_controls;
-            static const std::string items_startup;
-            static const std::string triggers_startup;
-            static const std::string rooms_startup;
-            static const std::string auto_orbit;
-            static const std::string invert_vertical_pan;
-            static const std::string camera_display_degrees;
-            static const std::string randomizer_tools;
-            static const std::string max_recent_files;
-            static const std::string sensitivity;
-            static const std::string movement_speed;
-            static const std::string acceleration;
-            static const std::string acceleration_rate;
-            static const std::string close;
+            inline static const std::string vsync = "VSync";
+            inline static const std::string go_to_lara = "GoToLara";
+            inline static const std::string invert_map_controls = "InvertMapControls";
+            inline static const std::string items_startup = "ItemsStartup";
+            inline static const std::string triggers_startup = "TriggersStartup";
+            inline static const std::string rooms_startup = "RoomsStartup";
+            inline static const std::string auto_orbit = "AutoOrbit";
+            inline static const std::string invert_vertical_pan = "InvertVerticalPan";
+            inline static const std::string camera_display_degrees = "CameraDisplayDegrees";
+            inline static const std::string randomizer_tools = "RandomizerTools";
+            inline static const std::string lau = "LAU";
+            inline static const std::string max_recent_files = "MaxRecentFiles";
+            inline static const std::string sensitivity = "Sensitivity";
+            inline static const std::string movement_speed = "MovementSpeed";
+            inline static const std::string acceleration = "Acceleration";
+            inline static const std::string acceleration_rate = "AccelerationRate";
+            inline static const std::string close = "Close";
         };
 
         /// <summary>
@@ -62,6 +63,7 @@ namespace trview
         virtual void set_invert_vertical_pan(bool value) override;
         virtual void set_camera_display_degrees(bool value) override;
         virtual void set_randomizer_tools(bool value) override;
+        virtual void set_lau(bool value) override;
         virtual void set_max_recent_files(uint32_t value) override;
         virtual void toggle_visibility() override;
     private:
@@ -80,6 +82,7 @@ namespace trview
         ui::Slider* _acceleration_rate{ nullptr };
         ui::Checkbox* _camera_display_degrees{ nullptr };
         ui::Checkbox* _randomizer_tools{ nullptr };
+        ui::Checkbox* _lau{ nullptr };
         ui::NumericUpDown* _max_recent_files{ nullptr };
         TokenStore _token_store;
     };

@@ -26,6 +26,7 @@ namespace trview
         float camera_acceleration_rate{ 0.5f };
         bool camera_display_degrees{ true };
         bool randomizer_tools{ false };
+        bool lau{ false };
         RandomizerSettings randomizer;
         uint32_t max_recent_files{ 10u };
 

@@ -12,23 +12,6 @@ using namespace trview::ui;
 
 namespace trview
 {
-    const std::string SettingsWindow::Names::vsync = "VSync";
-    const std::string SettingsWindow::Names::go_to_lara = "GoToLara";
-    const std::string SettingsWindow::Names::invert_map_controls = "InvertMapControls";
-    const std::string SettingsWindow::Names::items_startup = "ItemsStartup";
-    const std::string SettingsWindow::Names::triggers_startup = "TriggersStartup";
-    const std::string SettingsWindow::Names::rooms_startup = "RoomsStartup";
-    const std::string SettingsWindow::Names::auto_orbit = "AutoOrbit";
-    const std::string SettingsWindow::Names::invert_vertical_pan = "InvertVerticalPan";
-    const std::string SettingsWindow::Names::camera_display_degrees = "CameraDisplayDegrees";
-    const std::string SettingsWindow::Names::randomizer_tools = "RandomizerTools";
-    const std::string SettingsWindow::Names::max_recent_files = "MaxRecentFiles";
-    const std::string SettingsWindow::Names::sensitivity = "Sensitivity";
-    const std::string SettingsWindow::Names::movement_speed = "MovementSpeed";
-    const std::string SettingsWindow::Names::acceleration = "Acceleration";
-    const std::string SettingsWindow::Names::acceleration_rate = "AccelerationRate";
-    const std::string SettingsWindow::Names::close = "Close";
-
     SettingsWindow::SettingsWindow(Control& parent, const std::shared_ptr<ui::ILoader>& source)
     {
         _window = parent.add_child(source->load_from_resource(IDR_UI_SETTINGS_WINDOW));
@@ -62,6 +45,9 @@ namespace trview
 
         _randomizer_tools = _window->find<Checkbox>(Names::randomizer_tools);
         _randomizer_tools->on_state_changed += on_randomizer_tools;
+
+        _lau = _window->find<Checkbox>(Names::lau);
+        _lau->on_state_changed += on_lau;
 
         _max_recent_files = _window->find<NumericUpDown>(Names::max_recent_files);
         _token_store += _max_recent_files->on_value_changed += [this](int32_t value) { on_max_recent_files(value); };
@@ -167,6 +153,11 @@ namespace trview
     void SettingsWindow::set_randomizer_tools(bool value)
     {
         _randomizer_tools->set_state(value);
+    }
+
+    void SettingsWindow::set_lau(bool value)
+    {
+        _lau->set_state(value);
     }
 
     void SettingsWindow::set_max_recent_files(uint32_t value)
