@@ -48,7 +48,7 @@ namespace trview
 
             std::istringstream stream() const
             {
-                std::string data(reinterpret_cast<const char*>(&data[0]), data.size());
+                std::string data(reinterpret_cast<const char*>(&this->data[0]), this->data.size());
                 return std::istringstream(data, std::ios::binary);
             }
         };

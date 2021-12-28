@@ -117,5 +117,7 @@ namespace trview
         virtual void set_show_ui(bool value) = 0;
 
         virtual bool ui_input_active() const = 0;
+
+        virtual void open_tra(const std::string& filename) = 0;
     };
 }

@@ -1117,9 +1117,6 @@ namespace trview
     void Viewer::apply_acceleration_settings()
     {
         _free_camera.set_acceleration_settings(_settings.camera_acceleration, _settings.camera_acceleration_rate);
-        lua_pushcfunction(state, lua_show_tra);
-        lua_setfield(state, -2, "tra");
-
     }
 
     void Viewer::set_settings(const UserSettings& settings)
@@ -1133,23 +1130,15 @@ namespace trview
     CameraMode Viewer::camera_mode() const
     {
         return _camera_mode;
-        return 0;
     }
 
-    int Viewer::lua_show_tra(lua_State* state)
+    void Viewer::open_tra(const std::string& filename)
     {
-        auto viewer = (*reinterpret_cast<Viewer**>(luaL_checkudata(state, 1, "trview.mt")));
-        auto fn = lua_tostring(state, 2);
-
-        auto ox = lua_tonumber(state, 3);
-        auto oy = lua_tonumber(state, 4);
-        auto oz = lua_tonumber(state, 5);
-
         using namespace DirectX::SimpleMath;
 
         // viewer->_route->clear();
 
-        auto drm = lau::load_drm(std::wstring(L"C:\\Projects\\Applications\\trview\\lau\\drm\\") + to_utf16(fn) + L".drm");
+        auto drm = lau::load_drm(std::wstring(L"C:\\Projects\\Applications\\trview\\lau\\drm\\") + to_utf16(filename) + L".drm");
         auto count = drm->textures.size();
 
         float scale = 1.0f / 2048.0f;
@@ -1159,7 +1148,8 @@ namespace trview
         // auto offset = Vector3::Zero;
         // auto offset = Vector3::Transform(Vector3(drm->world_offset.x, -drm->world_offset.z, 0), m);
         // auto offset = Vector3::Transform(Vector3(ox, oy, oz), m);
-        auto offset = Vector3(ox, oy, oz);
+        // auto offset = Vector3(ox, oy, oz);
+        auto offset = Vector3::Zero;
         // if (std::string(fn) == "gr2")
         // {
         //     offset = Vector3::Zero;
@@ -1193,9 +1183,9 @@ namespace trview
         for (const auto& vert : drm->world_mesh)
         {
             // viewer->_route->add(Vector3::Transform(Vector3(vert.x, -vert.z, vert.y), m) + offset, 0);
-            viewer->_route->add(Vector3::Transform(Vector3(vert.x, vert.y, vert.z) + offset, m), 0);
+            _route->add(Vector3::Transform(Vector3(vert.x, vert.y, vert.z) + offset, m), Vector3::Down, 0);
         }
-        
-        viewer->_scene_changed = true;
+
+        _scene_changed = true;
     }
 }

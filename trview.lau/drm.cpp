@@ -325,6 +325,7 @@ namespace trview
                 return drm;
             }
 
+            /*
             read_file_header(*drm, drm->sections);
 
             if (drm->file_header.flags[1])
@@ -336,10 +337,12 @@ namespace trview
             {
                 // Load a level file - this is all strictly not to do with the DRM file itself - it should
                 // really be done outside but can be moved later.
-                const auto& world_manifest_section = drm->sections[std::get<0>(drm->sections[0].links[0])];
-                std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index, 0 };
-                read_meshes(*drm, drm->sections, world_manifest_section, visited_sections, 1);
+                // TODO: Fix
+                // const auto& world_manifest_section = drm->sections[std::get<0>(drm->sections[0].links[0])];
+                // std::unordered_set<uint32_t> visited_sections{ world_manifest_section.index, 0 };
+                // read_meshes(*drm, drm->sections, world_manifest_section, visited_sections, 1);
             }
+            */
 
             // Load textures
             for (const auto& section : drm->sections)

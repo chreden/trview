@@ -19,5 +19,10 @@ namespace trview
         {
             open ( path );
         };
+
+        lua_registry.show_tra = [this](const std::string& path)
+        {
+            _viewer->open_tra(path);
+        };
     }
 }

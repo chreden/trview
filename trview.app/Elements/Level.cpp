@@ -251,6 +251,8 @@ namespace trview
         }
 
 #if 1
+        using namespace Microsoft::WRL;
+
         static std::vector<TransparentTriangle> tris;
         if (tris.empty())
         {
@@ -287,7 +289,7 @@ namespace trview
                 outer.write(reinterpret_cast<char*>(&final_data[0]), final_data.size());
                 outer.close();
 
-                HRESULT hr = DirectX::CreateDDSTextureFromMemory(device.device().Get(), &final_data[0], final_data.size(), resource.GetAddressOf(), resource_view.GetAddressOf());
+                HRESULT hr = DirectX::CreateDDSTextureFromMemory(_device->device().Get(), &final_data[0], final_data.size(), resource.GetAddressOf(), resource_view.GetAddressOf());
                 textures.push_back(resource);
             }
 
