@@ -146,8 +146,6 @@ namespace trview
         setup_route_window();
         setup_viewer(*startup_options);
 
-        _lau_windows->create_window();
-
         register_lua();
         lua_init(&lua_registry);
     }

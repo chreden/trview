@@ -70,6 +70,7 @@ BEGIN
         MENUITEM "&Triggers\tCtrl+T",           ID_WINDOWS_TRIGGERS
         MENUITEM "Roo&ms\tCtrl+M",              ID_WINDOWS_ROOMS
         MENUITEM "&Route\tCtrl+R",              ID_WINDOWS_ROUTE
+        MENUITEM "LA&U\tCtrl+U",                ID_WINDOWS_LAU
     END
     POPUP "&Help"
     BEGIN

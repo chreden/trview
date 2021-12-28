@@ -1,4 +1,6 @@
 #include "LauWindowManager.h"
+#include <trview.common/Windows/IShortcuts.h>
+#include "../Resources/resource.h"
 
 namespace trview
 {
@@ -6,13 +8,18 @@ namespace trview
     {
     }
 
-    LauWindowManager::LauWindowManager(const Window& window, const ILauWindow::Source& lau_window_source)
+    LauWindowManager::LauWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILauWindow::Source& lau_window_source)
         : MessageHandler(window), _lau_window_source(lau_window_source)
     {
+        _token_store += shortcuts->add_shortcut(true, 'U') += [&]() { create_window(); };
     }
 
     std::optional<int> LauWindowManager::process_message(UINT message, WPARAM wParam, LPARAM lParam)
     {
+        if (message == WM_COMMAND && LOWORD(wParam) == ID_WINDOWS_LAU)
+        {
+            create_window();
+        }
         return {};
     }
 

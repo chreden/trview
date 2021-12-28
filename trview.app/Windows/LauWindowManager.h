@@ -7,10 +7,11 @@
 
 namespace trview
 {
+    struct IShortcuts;
     class LauWindowManager final : public ILauWindowManager, public MessageHandler
     {
     public:
-        LauWindowManager(const Window& window, const ILauWindow::Source& lau_window_source);
+        LauWindowManager(const Window& window, const std::shared_ptr<IShortcuts>& shortcuts, const ILauWindow::Source& lau_window_source);
         virtual ~LauWindowManager() = default;
         virtual std::optional<int> process_message(UINT message, WPARAM wParam, LPARAM lParam) override;
         virtual void render(bool vsync) override;
