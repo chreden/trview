@@ -116,8 +116,8 @@ namespace trview
                 items.push_back({{ { L"#", std::to_wstring(section.index) },
                                    { L"Type", section_type_to_string(section.header.type) } }});
             }
-            _sections->set_items(items);
             _sections->clear_selection();
+            _sections->set_items(items);
             _texture_panel->set_visible(false);
         }
         catch(const std::exception&)
