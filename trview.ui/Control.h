@@ -109,7 +109,7 @@ namespace trview
 
             /// Set whether this control handles input when tested in is_mouse_over. Defaults to true.
             /// @param value Whether the control handles input.
-            void set_handles_input(bool value);
+            virtual void set_handles_input(bool value);
 
             /// Gets whether this control handles mouse hover events.
             bool handles_hover() const;

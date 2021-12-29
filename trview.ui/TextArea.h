@@ -3,6 +3,7 @@
 #include "Scrollbar.h"
 #include <trview.graphics/TextAlignment.h>
 #include <trview.common/Windows/IShell.h>
+#include "SizeMode.h"
 
 namespace trview
 {
@@ -44,6 +45,12 @@ namespace trview
             /// @param text The text to use.
             void set_text(const std::wstring& text);
 
+            /// <summary>
+            /// Set the text colour for the text area.
+            /// </summary>
+            /// <param name="colour">The new colour.</param>
+            void set_text_colour(const Colour& colour);
+
             /// Set the line mode of the text area.
             /// @param mode The new mode.
             void set_mode(Mode mode);
@@ -80,6 +87,7 @@ namespace trview
             virtual bool cut(std::wstring& output) override;
             virtual bool clicked(Point position) override;
             virtual bool scroll(int delta) override;
+            virtual void set_handles_input(bool value) override;
             bool read_only() const;
             void set_read_only(bool value);
             void set_scrollbar_visible(bool value);
@@ -89,6 +97,7 @@ namespace trview
             graphics::TextAlignment text_alignment() const;
             Mode line_mode() const;
             void set_text_alignment(graphics::TextAlignment alignment);
+            void set_size_mode(SizeMode size_mode);
         private:
             struct LineEntry
             {
@@ -174,6 +183,8 @@ namespace trview
             std::wstring selected_text() const;
             std::wstring word_at_cursor(LogicalPosition point) const;
             void scroll_cursor_into_view(bool down);
+            void create_lines();
+            void calculate_auto_size();
 
             Control* _area;
             std::vector<Label*> _lines;
@@ -196,6 +207,7 @@ namespace trview
             int32_t _scroll_offset{ 0 };
             bool _scroll_visible{ false };
             std::shared_ptr<IShell> _shell;
+            SizeMode _size_mode{ SizeMode::Manual };
         };
     }
 }

@@ -26,14 +26,32 @@ namespace trview
             _scrollbar->set_name(Names::scrollbar);
             _scrollbar->set_visible(false);
             set_handles_input(true);
+            create_lines();
+            _token_store += on_size_changed += [this](auto) 
+            {
+                create_lines(); 
+            };
+        }
 
+        void TextArea::create_lines()
+        {
             // Create all line labels to fill the area.
             const auto line_height = 14;
             const auto line_count = static_cast<uint32_t>(_area->size().height / line_height);
-            for (auto i = 0u; i < line_count; ++i)
+            if (_lines.size() >= line_count)
             {
-                _lines.push_back(_area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual)));
+                return;
             }
+
+            for (auto i = _lines.size(); i < line_count; ++i)
+            {
+                auto line = _area->add_child(std::make_unique<Label>(Size(_area->size().width, line_height), this->background_colour(), L"", 8, _alignment, graphics::ParagraphAlignment::Near, SizeMode::Manual));
+                line->set_text_colour(_text_colour);
+                line->set_handles_input(handles_input());
+                _lines.push_back(line);
+            }
+
+            update_structure();
         }
 
         void TextArea::gained_focus()
@@ -141,7 +159,7 @@ namespace trview
             _selection_end = _selection_start;
 
             auto link = word_at_cursor(visual_to_logical(position_to_visual(position)));
-            if (is_link(link))
+            if (_shell && is_link(link))
             {
                 _shell->open(link);
             }
@@ -292,6 +310,8 @@ namespace trview
                 static_cast<float>(std::min<int32_t>(_scroll_offset + static_cast<int32_t>(_lines.size()), static_cast<int32_t>(_line_structure.size()))), 
                 static_cast<float>(_line_structure.size()));
             set_scrollbar_visible(_scroll_visible);
+
+            calculate_auto_size();
         }
 
         bool TextArea::key_char(wchar_t character)
@@ -354,7 +374,7 @@ namespace trview
                 case 0xA:
                 {
                     auto word = word_at_cursor(_logical_cursor);
-                    if (is_link(word))
+                    if (_shell && is_link(word))
                     {
                         _shell->open(word);
                     }
@@ -446,7 +466,17 @@ namespace trview
             _logical_cursor.line = _text.empty() ? 0 : static_cast<int32_t>(_text.size() - 1);
             _logical_cursor.position = _text.empty() ? 0 : static_cast<int32_t>(_text.back().size());
             notify_text_updated();
+            calculate_auto_size();
             update_structure();
+        }
+
+        void TextArea::set_text_colour(const Colour& colour)
+        {
+            _text_colour = colour;
+            for (auto& line : _lines)
+            {
+                line->set_text_colour(_text_colour);
+            }
         }
 
         void TextArea::set_mode(Mode mode)
@@ -1142,6 +1172,55 @@ namespace trview
         void TextArea::set_text_alignment(graphics::TextAlignment alignment)
         {
             _alignment = alignment;
+        }
+
+        void TextArea::set_size_mode(SizeMode size_mode)
+        {
+            _size_mode = size_mode;
+            update_structure();
+        }
+
+        void TextArea::set_handles_input(bool value)
+        {
+            Control::set_handles_input(value);
+            for (auto& child : find<Control>())
+            {
+                if (child != this)
+                {
+                    child->set_handles_input(handles_input());
+                }
+            }
+        }
+
+        void TextArea::calculate_auto_size()
+        {
+            if (_size_mode == SizeMode::Auto && !_text.empty())
+            {
+                // Calculate what the height should be - all the lines might not be there yet. The resize
+                // later will make the lines be present and then we will go through again to get the correct
+                // width.
+                auto height = 1 + 14 * _text.size();
+
+                float width = 0;
+                const auto first_line = _lines[0];
+                for (const auto& text : _text)
+                {
+                    auto new_width = first_line->measure_text(text).width;
+                    width = std::max(width, new_width);
+                }
+
+                const auto new_size = Size(width + 2, height);
+                if (size() != new_size)
+                {
+                    for (auto& line : _lines)
+                    {
+                        line->set_size(Size(width, line->size().height));
+                    }
+
+                    _area->set_size(new_size);
+                    set_size(new_size);
+                }
+            }
         }
     }
 }

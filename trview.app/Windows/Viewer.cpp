@@ -265,10 +265,14 @@ namespace trview
             }
         };
 
-        _token_store += _picking->on_pick += [&](const PickInfo& pickInfo, const PickResult& result)
+        _token_store += _picking->on_pick += [&](PickInfo pickInfo, PickResult result)
         {
             _current_pick = result;
 
+            if (_level && _route)
+            {
+                result.text = generate_pick_message(result, *_level, *_route);
+            }
             _ui->set_pick(pickInfo, result);
 
             // Highlight sectors in the minimap.

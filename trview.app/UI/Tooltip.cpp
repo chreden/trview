@@ -1,6 +1,7 @@
 #include "Tooltip.h"
 #include <trview.ui/Layouts/StackLayout.h>
-#include <trview.ui/Label.h>
+#include <trview.ui/TextArea.h>
+#include <trview.common/Windows/Shell.h>
 
 using namespace trview::ui;
 
@@ -17,23 +18,24 @@ namespace trview
         _container->set_handles_input(false);
         _container->set_z(-1);
 
-        _label = _container->add_child(std::make_unique<ui::Label>(Point(500, 0), Size(38, 30), Colour::Transparent, L"0", 8, graphics::TextAlignment::Centre, graphics::ParagraphAlignment::Centre, SizeMode::Auto));
-        _label->set_handles_input(false);
+        _area = _container->add_child(std::make_unique<ui::TextArea>(Size(200, 250), Colour::Transparent, Colour::White, nullptr));
+        _area->set_handles_input(false);
+        _area->set_size_mode(SizeMode::Auto);
     }
 
     void Tooltip::set_position(const Point& position)
     {
-        _container->set_position(Point(position.x - _container->size().width, position.y - _container->size().height));
+        _container->set_position(Point(position.x + 8, position.y + 8));
     }
 
     void Tooltip::set_text(const std::wstring& text)
     {
-        _label->set_text(text);
+        _area->set_text(text);
     }
 
     void Tooltip::set_text_colour(const Colour& colour)
     {
-        _label->set_text_colour(colour);
+        _area->set_text_colour(colour);
     }
 
     void Tooltip::set_visible(bool value)

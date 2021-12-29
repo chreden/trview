@@ -8,7 +8,7 @@ namespace trview
 {
     namespace ui
     {
-        class Label;
+        class TextArea;
         class Control;
     }
 
@@ -40,6 +40,6 @@ namespace trview
         bool visible() const;
     private:
         ui::Control* _container;
-        ui::Label* _label;
+        ui::TextArea* _area;
     };
 }
