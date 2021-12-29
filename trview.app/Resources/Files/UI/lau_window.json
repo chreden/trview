@@ -94,7 +94,7 @@
                                     "identity": "none",
                                     "type": "string",
                                     "name": "Type",
-                                    "width": 220
+                                    "width": 210
                                 }
                             ]
                         }

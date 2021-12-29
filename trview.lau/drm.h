@@ -100,5 +100,6 @@ namespace trview
         };
 
         std::unique_ptr<Drm> load_drm(const std::wstring& filename);
+        std::wstring section_type_to_string(const SectionType& type);
     }
 }

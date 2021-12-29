@@ -370,5 +370,23 @@ namespace trview
 
             return drm;
         }
+
+        std::wstring section_type_to_string(const SectionType& type)
+        {
+            switch (type)
+            {
+            case SectionType::Audio:
+                return L"Audio";
+            case SectionType::Section:
+                return L"Section";
+            case SectionType::Texture:
+                return L"Texture";
+            case SectionType::Trigger:
+                return L"Trigger";
+            case SectionType::WorldMesh:
+                return L"WorldMesh";
+            }
+            return L"Unknown";
+        }
     }
 }
