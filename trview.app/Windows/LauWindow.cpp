@@ -18,15 +18,21 @@ namespace trview
             return Listbox::Item{ { { L"Name", name }, { L"Value", value } } };
         };
 
+        DirectX::DDS_PIXELFORMAT dds_format(const lau::Texture& texture)
+        {
+            using namespace DirectX;
+            if (texture.format == "DXT1") { return DDSPF_DXT1; }
+            if (texture.format == "DXT2") { return DDSPF_DXT2; }
+            if (texture.format == "DXT3") { return DDSPF_DXT3; }
+            if (texture.format == "DXT4") { return DDSPF_DXT4; }
+            if (texture.format == "DXT5") { return DDSPF_DXT5; }
+            return DDSPF_DXT1;
+        }
+
         graphics::Texture create_texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const lau::Texture& texture)
         {
             using namespace Microsoft::WRL;
             using namespace DirectX;
-
-            graphics::Texture output;
-
-            ComPtr<ID3D11Resource> resource;
-            ComPtr<ID3D11ShaderResourceView> resource_view;
 
             DDS_HEADER header;
             memset(&header, 0, sizeof(header));
@@ -35,10 +41,7 @@ namespace trview
             header.height = texture.height;
             header.width = texture.width;
             header.pitchOrLinearSize = texture.data.size();
-            header.ddspf.size = sizeof(header.ddspf);
-            // header.ddspf.dwFlags = 0x1; // Alpha?
-            header.ddspf.flags = 4;
-            header.ddspf.fourCC = 827611204;
+            header.ddspf = dds_format(texture);
             header.caps = 4096;
 
             std::vector<uint8_t> final_data(4 + sizeof(header) + texture.data.size(), 0u);
@@ -47,10 +50,10 @@ namespace trview
             memcpy(&final_data[4], &header, sizeof(header));
             memcpy(&final_data[4 + sizeof(header)], &texture.data[0], texture.data.size());
 
+            ComPtr<ID3D11Resource> resource;
+            ComPtr<ID3D11ShaderResourceView> resource_view;
             HRESULT hr = DirectX::CreateDDSTextureFromMemory(device.Get(), &final_data[0], final_data.size(), resource.GetAddressOf(), resource_view.GetAddressOf());
 
-            // ComPtr<ID3D11Texture2D> texture_resource;
-            // resource.As<ID3D11Texture2D>(texture_resource.GetAddressOf());
             ComPtr<ID3D11Texture2D> texture_resource;
             resource.As(&texture_resource);
 
