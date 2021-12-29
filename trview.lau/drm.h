@@ -23,9 +23,7 @@ namespace trview
         {
             Section = 0,
             Texture = 5,
-            Audio = 6,
-            Trigger = 7,
-            WorldMesh = 10
+            Audio = 6
         };
 
         struct SectionHeader
