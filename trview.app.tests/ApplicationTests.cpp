@@ -153,6 +153,12 @@ namespace
                 this->files = files;
                 return *this;
             }
+
+            test_module& with_lau_window_manager(std::unique_ptr<ILauWindowManager> lau_window_manager)
+            {
+                this->lau_window_manager = std::move(lau_window_manager);
+                return *this;
+            }
         };
         return test_module{};
     }
@@ -487,6 +493,8 @@ TEST(Application, WindowManagersAndViewerRendered)
     EXPECT_CALL(rooms_window_manager, render).Times(1);
     auto [triggers_window_manager_ptr, triggers_window_manager] = create_mock<MockTriggersWindowManager>();
     EXPECT_CALL(triggers_window_manager, render).Times(1);
+    auto [lau_window_manager_ptr, lau_window_manager] = create_mock<MockLauWindowManager>();
+    EXPECT_CALL(lau_window_manager, render).Times(1);
     auto [viewer_ptr, viewer] = create_mock<MockViewer>();
     EXPECT_CALL(viewer, render).Times(1);
 
@@ -495,6 +503,7 @@ TEST(Application, WindowManagersAndViewerRendered)
         .with_items_window_manager(std::move(items_window_manager_ptr))
         .with_rooms_window_manager(std::move(rooms_window_manager_ptr))
         .with_triggers_window_manager(std::move(triggers_window_manager_ptr))
+        .with_lau_window_manager(std::move(lau_window_manager_ptr))
         .with_viewer(std::move(viewer_ptr))
         .build();
     application->render();

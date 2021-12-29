@@ -914,6 +914,9 @@
     <ClInclude Include="Mocks\Windows\ILauWindowManager.h">
       <Filter>Mocks\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="Mocks\Windows\ILauWindow.h">
+      <Filter>Mocks\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">

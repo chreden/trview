@@ -126,6 +126,9 @@
     <ClCompile Include="Graphics\TextureStorage.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Windows\LauWindowManagerTests.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Input">
