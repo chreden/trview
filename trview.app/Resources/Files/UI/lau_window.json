@@ -143,6 +143,27 @@
                                 "height": 8
                             },
                             "background_colour": "background_top"
+                        },
+                        {
+                            "type": "window",
+                            "name": "texture_panel",
+                            "size": {
+                                "width": 350,
+                                "height": 592
+                            },
+                            "auto_size": "height",
+                            "background_colour": "background_top",
+                            "visible": false,
+                            "children": [
+                                {
+                                    "type": "image",
+                                    "name": "texture",
+                                    "size": {
+                                        "width": 350,
+                                        "height": 350
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }

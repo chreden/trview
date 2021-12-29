@@ -381,10 +381,6 @@ namespace trview
                 return L"Section";
             case SectionType::Texture:
                 return L"Texture";
-            case SectionType::Trigger:
-                return L"Trigger";
-            case SectionType::WorldMesh:
-                return L"WorldMesh";
             }
             return L"Unknown";
         }

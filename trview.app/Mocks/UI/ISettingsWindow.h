@@ -23,7 +23,6 @@ namespace trview
             MOCK_METHOD(void, set_invert_vertical_pan, (bool), (override));
             MOCK_METHOD(void, set_camera_display_degrees, (bool), (override));
             MOCK_METHOD(void, set_randomizer_tools, (bool), (override));
-            MOCK_METHOD(void, set_lau, (bool), (override));
             MOCK_METHOD(void, set_max_recent_files, (uint32_t), (override));
             MOCK_METHOD(void, toggle_visibility, (), (override));
         };

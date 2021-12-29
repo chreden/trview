@@ -3,6 +3,7 @@
 #include "ILauWindow.h"
 #include "CollapsiblePanel.h"
 #include <trview.ui/ILoader.h>
+#include <trview.lau/drm.h>
 
 namespace trview
 {
@@ -10,6 +11,8 @@ namespace trview
     {
         class Button;
         class Listbox;
+        class Control;
+        class Image;
     }
 
     struct IDialogs;
@@ -21,6 +24,8 @@ namespace trview
         {
             inline static const std::string open = "Open";
             inline static const std::string sections = "Sections";
+            inline static const std::string texture_panel = "texture_panel";
+            inline static const std::string texture = "texture";
         };
 
         explicit LauWindow(const graphics::IDeviceWindow::Source& device_window_source,
@@ -34,9 +39,13 @@ namespace trview
     private:
         void bind_controls();
         void load_file(const std::string& filename);
+        void load_section(uint32_t index);
 
         std::shared_ptr<IDialogs> _dialogs;
         ui::Button* _open{ nullptr };
         ui::Listbox* _sections{ nullptr };
+        ui::Control* _texture_panel{ nullptr };
+        ui::Image* _texture{ nullptr };
+        std::unique_ptr<lau::Drm> _drm;
     };
 }
