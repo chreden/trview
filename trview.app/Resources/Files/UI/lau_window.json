@@ -88,13 +88,25 @@
                                     "identity": "key",
                                     "type": "number",
                                     "name": "#",
-                                    "width": 30
+                                    "width": 50
+                                },
+                                {
+                                    "identity": "key",
+                                    "type": "number",
+                                    "name": "ID",
+                                    "width": 50
+                                },
+                                {
+                                    "identity": "key",
+                                    "type": "number",
+                                    "name": "Size",
+                                    "width": 50
                                 },
                                 {
                                     "identity": "none",
                                     "type": "string",
                                     "name": "Type",
-                                    "width": 210
+                                    "width": 90
                                 }
                             ]
                         }

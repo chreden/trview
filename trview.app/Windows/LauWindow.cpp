@@ -114,6 +114,8 @@ namespace trview
             for (const auto section : _drm->sections)
             {
                 items.push_back({{ { L"#", std::to_wstring(section.index) },
+                                   { L"ID", std::to_wstring(section.header.id) },
+                                   { L"Size", std::to_wstring(section.data.size()) },
                                    { L"Type", section_type_to_string(section.header.type) } }});
             }
             _sections->clear_selection();
