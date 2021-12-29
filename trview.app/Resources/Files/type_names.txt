@@ -2983,8 +2983,11 @@
 				"id": 375,
 				"name": "Compass"
 			}, {
+				"id": 380,
+				"name": "White smoke emitter"
+			}, {
 				"id": 381,
-				"name": "Smoke emitter"
+				"name": "Black smoke emitter"
 			}, {
 				"id": 382,
 				"name": "Steam emitter"
@@ -3749,11 +3752,14 @@
 				"id": 356,
 				"name": "Compass"
 			}, {
+				"id": 363,
+				"name": "White smoke emitter"
+			}, {
 				"id": 364,
-				"name": "Steam"
+				"name": "Black smoke emitter"
 			}, {
 				"id": 365,
-				"name": "Steam"
+				"name": "Steam emitter"
 			}, {
 				"id": 366,
 				"name": "Earthquake"
