@@ -26,6 +26,7 @@ namespace trview
             inline static const std::string sections = "Sections";
             inline static const std::string texture_panel = "texture_panel";
             inline static const std::string texture = "texture";
+            inline static const std::string texture_stats = "texture_stats";
         };
 
         explicit LauWindow(const graphics::IDeviceWindow::Source& device_window_source,
@@ -46,6 +47,7 @@ namespace trview
         ui::Listbox* _sections{ nullptr };
         ui::Control* _texture_panel{ nullptr };
         ui::Image* _texture{ nullptr };
+        ui::Listbox* _texture_stats{ nullptr };
         std::unique_ptr<lau::Drm> _drm;
     };
 }

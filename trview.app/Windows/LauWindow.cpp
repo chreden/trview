@@ -26,7 +26,7 @@ namespace trview
             if (texture.format == "DXT3") { return DDSPF_DXT3; }
             if (texture.format == "DXT4") { return DDSPF_DXT4; }
             if (texture.format == "DXT5") { return DDSPF_DXT5; }
-            return DDSPF_DXT1;
+            return DDSPF_A8R8G8B8;
         }
 
         graphics::Texture create_texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const lau::Texture& texture)
@@ -102,6 +102,7 @@ namespace trview
 
         _texture_panel = _ui->find<Control>(Names::texture_panel);
         _texture = _ui->find<Image>(Names::texture);
+        _texture_stats = _ui->find<Listbox>(Names::texture_stats);
     }
 
     void LauWindow::load_file(const std::string& filename)
@@ -116,6 +117,8 @@ namespace trview
                                    { L"Type", section_type_to_string(section.header.type) } }});
             }
             _sections->set_items(items);
+            _sections->clear_selection();
+            _texture_panel->set_visible(false);
         }
         catch(const std::exception&)
         {
@@ -131,10 +134,19 @@ namespace trview
             if (section.header.type == lau::SectionType::Texture &&
                 _drm->textures.find(section.header.id) != _drm->textures.end())
             {
+                const auto& texture = _drm->textures[section.header.id];
+
                 _texture_panel->set_visible(true);
                 Microsoft::WRL::ComPtr<ID3D11Device> device;
                 _device_window->context()->GetDevice(&device);
-                _texture->set_texture(create_texture(device, _drm->textures[section.header.id]));
+                _texture->set_texture(create_texture(device, texture));
+
+                std::vector<Listbox::Item> stats;
+                stats.push_back(make_item(L"ID", std::to_wstring(texture.id)));
+                stats.push_back(make_item(L"Width", std::to_wstring(texture.width)));
+                stats.push_back(make_item(L"Height", std::to_wstring(texture.height)));
+                stats.push_back(make_item(L"Format", to_utf16(texture.format)));
+                _texture_stats->set_items(stats);
             }
             else
             {
