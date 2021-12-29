@@ -13,6 +13,7 @@ namespace trview
         class Listbox;
         class Control;
         class Image;
+        class Label;
     }
 
     struct IDialogs;
@@ -27,6 +28,7 @@ namespace trview
             inline static const std::string texture_panel = "texture_panel";
             inline static const std::string texture = "texture";
             inline static const std::string texture_stats = "texture_stats";
+            inline static const std::string filename = "filename";
         };
 
         explicit LauWindow(const graphics::IDeviceWindow::Source& device_window_source,
@@ -48,6 +50,7 @@ namespace trview
         ui::Control* _texture_panel{ nullptr };
         ui::Image* _texture{ nullptr };
         ui::Listbox* _texture_stats{ nullptr };
+        ui::Label* _filename{ nullptr };
         std::unique_ptr<lau::Drm> _drm;
     };
 }

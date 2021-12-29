@@ -103,14 +103,15 @@ namespace trview
         _texture_panel = _ui->find<Control>(Names::texture_panel);
         _texture = _ui->find<Image>(Names::texture);
         _texture_stats = _ui->find<Listbox>(Names::texture_stats);
+        _filename = _ui->find<Label>(Names::filename);
     }
 
     void LauWindow::load_file(const std::string& filename)
     {
         try
         {
-            std::vector<Listbox::Item> items;
             _drm = lau::load_drm(to_utf16(filename));
+            std::vector<Listbox::Item> items;
             for (const auto section : _drm->sections)
             {
                 items.push_back({{ { L"#", std::to_wstring(section.index) },
@@ -121,6 +122,10 @@ namespace trview
             _sections->clear_selection();
             _sections->set_items(items);
             _texture_panel->set_visible(false);
+
+            auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
+            auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
+            _filename->set_text(to_utf16(name));
         }
         catch(const std::exception&)
         {

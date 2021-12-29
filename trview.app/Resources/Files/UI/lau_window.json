@@ -54,7 +54,7 @@
                             "background_colour": "background",
                             "layout": {
                                 "type": "stack",
-                                "padding": 2,
+                                "padding": 10,
                                 "direction": "horizontal",
                                 "size_mode": "manual",
                                 "margin": {
@@ -67,6 +67,16 @@
                                     "type": "button",
                                     "text": "Open",
                                     "name": "Open",
+                                    "size": {
+                                        "width": 90,
+                                        "height": 20
+                                    }
+                                },
+                                {
+                                    "type": "label",
+                                    "name": "filename",
+                                    "size_mode": "auto",
+                                    "vertical_alignment": "centre",
                                     "size": {
                                         "width": 90,
                                         "height": 20
@@ -150,14 +160,6 @@
                     "children": [
                         {
                             "type": "window",
-                            "size": {
-                                "width": 350,
-                                "height": 8
-                            },
-                            "background_colour": "background_top"
-                        },
-                        {
-                            "type": "window",
                             "name": "texture_panel",
                             "size": {
                                 "width": 350,
@@ -175,7 +177,7 @@
                                     "type": "image",
                                     "name": "texture",
                                     "size": {
-                                        "width": 350,
+                                        "width": 348,
                                         "height": 350
                                     }
                                 },
@@ -196,13 +198,13 @@
                                             "identity": "key",
                                             "type": "string",
                                             "name": "Name",
-                                            "width": 175
+                                            "width": 174
                                         },
                                         {
                                             "identity": "none",
                                             "type": "string",
                                             "name": "Value",
-                                            "width": 175
+                                            "width": 174
                                         }
                                     ]
                                 }
