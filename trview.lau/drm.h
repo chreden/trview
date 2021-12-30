@@ -63,13 +63,13 @@ namespace trview
             int16_t x;
             int16_t y;
             int16_t z;
-            uint16_t a;
-            uint16_t b;
-            uint16_t c;
-            uint16_t d;
-            uint16_t e;
-            uint16_t f;
-            uint16_t g;
+            int16_t a;
+            int16_t b;
+            int16_t c;
+            int16_t d;
+            int16_t e;
+            int16_t f;
+            int16_t g;
         };
 
         struct Triangle
@@ -97,7 +97,6 @@ namespace trview
             Vector3 world_offset;
         };
 
-        std::unique_ptr<Drm> load_drm(const std::wstring& filename);
         std::wstring section_type_to_string(const SectionType& type);
     }
 }

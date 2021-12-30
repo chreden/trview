@@ -4,6 +4,7 @@
 #include "CollapsiblePanel.h"
 #include <trview.ui/ILoader.h>
 #include <trview.lau/drm.h>
+#include <trview.lau/IDrmLoader.h>
 
 namespace trview
 {
@@ -35,6 +36,7 @@ namespace trview
             const ui::render::IRenderer::Source& renderer_source,
             const ui::IInput::Source& input_source,
             const std::shared_ptr<IDialogs>& dialogs,
+            const std::shared_ptr<lau::IDrmLoader>& drm_loader,
             const Window& parent,
             const std::shared_ptr<ui::ILoader>& loader);
         virtual ~LauWindow() = default;
@@ -52,5 +54,6 @@ namespace trview
         ui::Listbox* _texture_stats{ nullptr };
         ui::Label* _filename{ nullptr };
         std::unique_ptr<lau::Drm> _drm;
+        std::shared_ptr<lau::IDrmLoader> _drm_loader;
     };
 }

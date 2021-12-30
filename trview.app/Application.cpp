@@ -20,6 +20,7 @@
 #include <trview.app/Tools/di.h>
 #include <trview.app/UI/di.h>
 #include <trview.app/Windows/di.h>
+#include <trview.lau/di.h>
 #include <trview.common/Files.h>
 #include <trview.common/windows/Clipboard.h>
 #include <trview.common/Windows/Dialogs.h>
@@ -594,6 +595,7 @@ namespace trview
             trlevel::register_module(),
             ui::register_module(),
             ui::render::register_module(),
+            lau::register_module(),
             register_app_elements_module(),
             register_app_geometry_module(),
             register_app_graphics_module(),

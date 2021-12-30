@@ -5,6 +5,8 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="IDrmLoader.h" />
     <ClInclude Include="DrmLoader.h" />
+    <ClInclude Include="di.h" />
+    <ClInclude Include="di.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drm.cpp" />

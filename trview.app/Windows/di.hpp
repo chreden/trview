@@ -102,6 +102,7 @@ namespace trview
                             injector.create<ui::render::IRenderer::Source>(),
                             injector.create<ui::IInput::Source>(),
                             injector.create<std::shared_ptr<IDialogs>>(),
+                            injector.create<std::shared_ptr<lau::IDrmLoader>>(),
                             window, 
                             injector.create<std::shared_ptr<ui::ILoader>>());
                     };

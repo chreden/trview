@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <trview.common/IFiles.h>
+
 #include "IDrmLoader.h"
 
 namespace trview
@@ -9,9 +12,15 @@ namespace trview
         class DrmLoader final : public IDrmLoader
         {
         public:
+            explicit DrmLoader(const std::shared_ptr<IFiles>& files);
             virtual ~DrmLoader() = default;
+            virtual std::unique_ptr<Drm> load(const std::wstring filename) const;
         private:
+            void read_file_header(Drm& drm) const;
+            void generate_textures(Drm& drm) const;
+            void load_vertex_data(Drm& drm, const Section& section) const;
 
+            std::shared_ptr<IFiles> _files;
         };
     }
 }

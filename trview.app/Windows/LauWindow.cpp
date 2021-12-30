@@ -69,10 +69,11 @@ namespace trview
         const ui::render::IRenderer::Source& renderer_source,
         const ui::IInput::Source& input_source,
         const std::shared_ptr<IDialogs>& dialogs,
+        const std::shared_ptr<lau::IDrmLoader>& drm_loader,
         const trview::Window& parent,
         const std::shared_ptr<ui::ILoader>& loader)
         : CollapsiblePanel(device_window_source, renderer_source(Size(600, 600)), parent, L"trview.lau", L"LAU Development", input_source,
-             Size(600, 600), loader->load_from_resource(IDR_UI_LAU_WINDOW)), _dialogs(dialogs)
+             Size(600, 600), loader->load_from_resource(IDR_UI_LAU_WINDOW)), _dialogs(dialogs), _drm_loader(drm_loader)
     {
         bind_controls();
     }
@@ -110,7 +111,7 @@ namespace trview
     {
         try
         {
-            _drm = lau::load_drm(to_utf16(filename));
+            _drm = _drm_loader->load(to_utf16(filename));
             std::vector<Listbox::Item> items;
             for (const auto section : _drm->sections)
             {
