@@ -1117,10 +1117,13 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
+        float extra_scale = 0.1f;
+        auto scale = Matrix::CreateScale(drm.scale.x, drm.scale.y, drm.scale.z) * Matrix::CreateScale(extra_scale);
+
         std::vector<MeshVertex> vertices;
         for (const auto& vertex : drm.world_mesh)
         {
-            Vector3 pos = Vector3(vertex.x, vertex.y, vertex.z) / 10000;
+            Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
             Vector3 norm = pos;
             norm.Normalize();
             vertices.push_back(MeshVertex{ pos, norm, Vector2::Zero, Colour::White});

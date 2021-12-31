@@ -89,6 +89,7 @@ namespace trview
             uint32_t version;
             FileHeader file_header;
             std::vector<Section> sections;
+            Vector3 scale;
             std::vector<Vertex> world_mesh;
             std::vector<Triangle> world_triangles;
             std::unordered_map<uint16_t, Texture> textures;

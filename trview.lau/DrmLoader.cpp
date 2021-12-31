@@ -171,6 +171,7 @@ namespace trview
             float scale_x = read<float>(stream);
             float scale_y = read<float>(stream);
             float scale_z = read<float>(stream);
+            drm.scale = { scale_x, scale_y, scale_z };
             float scale_w = read<float>(stream);
 
             uint32_t vertex_count = read<uint32_t>(stream);
