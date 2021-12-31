@@ -64,7 +64,8 @@ namespace trview
             std::unique_ptr<IMeasure> measure,
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
-            std::unique_ptr<ISectorHighlight> sector_highlight);
+            std::unique_ptr<ISectorHighlight> sector_highlight,
+            const IMesh::Source& mesh_source);
         virtual ~Viewer() = default;
         virtual CameraMode camera_mode() const override;
         virtual void render() override;
@@ -84,6 +85,7 @@ namespace trview
         virtual void set_show_tooltip(bool value) override;
         virtual void set_show_ui(bool value) override;
         virtual bool ui_input_active() const override;
+        virtual void set_drm(const lau::Drm& drm) override;
         const ICamera& current_camera() const;
         ICamera& current_camera();
     private:
@@ -165,6 +167,9 @@ namespace trview
 
         std::vector<PickResult> _recent_orbits;
         std::size_t _recent_orbit_index{ 0u };
+
+        IMesh::Source _mesh_source;
+        std::shared_ptr<IMesh> _drm_mesh;
     };
 }
 

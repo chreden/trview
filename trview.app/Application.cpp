@@ -147,6 +147,11 @@ namespace trview
         setup_route_window();
         setup_viewer(*startup_options);
 
+        _token_store += _lau_windows->on_mesh += [&](const auto& drm)
+        {
+            _viewer->set_drm(drm);
+        };
+
         register_lua();
         lua_init(&lua_registry);
     }

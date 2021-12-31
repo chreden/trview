@@ -127,6 +127,8 @@ namespace trview
             auto last_index = std::min(filename.find_last_of('\\'), filename.find_last_of('/'));
             auto name = last_index == filename.npos ? filename : filename.substr(std::min(last_index + 1, filename.size()));
             _filename->set_text(to_utf16(name));
+
+            on_mesh(*_drm);
         }
         catch(const std::exception&)
         {

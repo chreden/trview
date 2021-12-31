@@ -17,11 +17,11 @@ namespace trview
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
         std::unique_ptr<input::IMouse> mouse, const std::shared_ptr<IShortcuts>& shortcuts, const std::shared_ptr<IRoute> route, const graphics::ISprite::Source& sprite_source,
         std::unique_ptr<ICompass> compass, std::unique_ptr<IMeasure> measure, const graphics::IRenderTarget::SizeSource& render_target_source, const graphics::IDeviceWindow::Source& device_window_source,
-        std::unique_ptr<ISectorHighlight> sector_highlight)
+        std::unique_ptr<ISectorHighlight> sector_highlight, const IMesh::Source& mesh_source)
         : _shortcuts(shortcuts), _camera(window.size()), _free_camera(window.size()), _timer(default_time_source()), _keyboard(window),
         _mouse(std::move(mouse)), _window_resizer(window), _alternate_group_toggler(window),
         _menu_detector(window), _device(device), _route(route), _window(window), _ui(std::move(ui)), _picking(std::move(picking)), _compass(std::move(compass)), _measure(std::move(measure)),
-        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight))
+        _render_target_source(render_target_source), _sector_highlight(std::move(sector_highlight)), _mesh_source(mesh_source)
     {
         apply_acceleration_settings();
 
@@ -621,6 +621,11 @@ namespace trview
 
             _level->render_transparency(camera);
             _compass->render(camera, _level->texture_storage());
+
+            if (_drm_mesh)
+            {
+                _drm_mesh->render(camera.view_projection(), _level->texture_storage(), Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
+            }
         }
     }
 
@@ -1111,5 +1116,29 @@ namespace trview
     CameraMode Viewer::camera_mode() const
     {
         return _camera_mode;
+    }
+
+    void Viewer::set_drm(const lau::Drm& drm)
+    {
+        using namespace DirectX::SimpleMath;
+
+        std::vector<MeshVertex> vertices;
+        for (const auto& vertex : drm.world_mesh)
+        {
+            Vector3 pos = Vector3(vertex.x, vertex.y, vertex.z) / 10000;
+            Vector3 norm = pos;
+            norm.Normalize();
+            vertices.push_back(MeshVertex{ pos, norm, Vector2::Zero, Colour::White });
+        }
+
+        std::vector<uint32_t> indices;
+        for (const auto& triangle : drm.world_triangles)
+        {
+            indices.push_back(triangle.v0);
+            indices.push_back(triangle.v1);
+            indices.push_back(triangle.v2);
+        }
+
+        _drm_mesh = _mesh_source(vertices, {}, indices, {}, {});
     }
 }

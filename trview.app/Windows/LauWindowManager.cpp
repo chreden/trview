@@ -49,6 +49,7 @@ namespace trview
         {
             _closing_windows.push_back(lau_window);
         };
+        lau_window->on_mesh += on_mesh;
 
         _windows.push_back(lau_window);
         return lau_window;

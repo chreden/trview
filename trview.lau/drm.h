@@ -68,8 +68,6 @@ namespace trview
             int16_t c;
             int16_t d;
             int16_t e;
-            int16_t f;
-            int16_t g;
         };
 
         struct Triangle

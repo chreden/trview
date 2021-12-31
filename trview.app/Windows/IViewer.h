@@ -10,6 +10,7 @@
 #include <trview.app/Routing/IRoute.h>
 #include <trview.app/Settings/UserSettings.h>
 #include <trview.app/Camera/CameraMode.h>
+#include <trview.lau/drm.h>
 
 namespace trview
 {
@@ -117,5 +118,7 @@ namespace trview
         virtual void set_show_ui(bool value) = 0;
 
         virtual bool ui_input_active() const = 0;
+
+        virtual void set_drm(const lau::Drm& drm) = 0;
     };
 }

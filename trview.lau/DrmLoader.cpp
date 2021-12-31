@@ -130,6 +130,7 @@ namespace trview
                 if (has_flag(reference.usage, SectionUsage::VertexData))
                 {
                     load_vertex_data(drm, drm.sections[reference.index >> 3]);
+                    break;
                 }
             }
         }
@@ -181,9 +182,28 @@ namespace trview
             skip(stream, 12);
 
             read_vector<uint8_t>(stream, length - 40 - 20 - 12);
-            auto vertices = read_vector<Vertex>(stream, vertex_count);
 
-            drm.world_mesh = vertices;
+            auto base = drm.world_mesh.size();
+
+            auto vertices = read_vector<Vertex>(stream, vertex_count);
+            drm.world_mesh.insert(drm.world_mesh.end(), vertices.begin(), vertices.end());
+
+            // Load the mesh:
+            uint16_t index_count = read<uint16_t>(stream);
+            skip(stream, 2);
+            uint16_t texture_id = read<uint16_t>(stream);
+            read_vector<uint16_t>(stream, 5);
+            auto indices = read_vector<uint16_t>(stream, index_count);
+
+            for (uint32_t i = 0; i < indices.size() / 3; ++i)
+            {
+                drm.world_triangles.push_back(
+                    {
+                        indices[base + i * 3],
+                        indices[base + i * 3 + 1],
+                        indices[base + i * 3 + 2]
+                    });
+            }
         }
     }
 }
