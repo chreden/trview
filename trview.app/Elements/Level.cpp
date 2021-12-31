@@ -192,6 +192,11 @@ namespace trview
             _pixel_shader->apply(context);
 
             render_rooms(camera);
+
+            if (_drm_mesh)
+            {
+                _drm_mesh->render(camera.view_projection(), texture_storage(), Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
+            }
         }
 
         if (render_selection)
@@ -726,6 +731,11 @@ namespace trview
                 entity->adjust_y(new_height - entity_pos.y);
             }
         }
+    }
+
+    void Level::set_drm_mesh(const std::shared_ptr<IMesh>& mesh)
+    {
+        _drm_mesh = mesh;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

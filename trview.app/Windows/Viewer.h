@@ -169,7 +169,6 @@ namespace trview
         std::size_t _recent_orbit_index{ 0u };
 
         IMesh::Source _mesh_source;
-        std::shared_ptr<IMesh> _drm_mesh;
     };
 }
 

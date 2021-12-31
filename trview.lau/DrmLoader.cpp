@@ -130,7 +130,6 @@ namespace trview
                 if (has_flag(reference.usage, SectionUsage::VertexData))
                 {
                     load_vertex_data(drm, drm.sections[reference.index >> 3]);
-                    break;
                 }
             }
         }
@@ -193,6 +192,7 @@ namespace trview
             skip(stream, 2);
             uint16_t texture_id = read<uint16_t>(stream);
             read_vector<uint16_t>(stream, 5);
+            uint32_t eom = read<uint32_t>(stream);
             auto indices = read_vector<uint16_t>(stream, index_count);
 
             for (uint32_t i = 0; i < indices.size() / 3; ++i)

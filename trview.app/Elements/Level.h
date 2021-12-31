@@ -64,6 +64,7 @@ namespace trview
         virtual void set_alternate_mode(bool enabled) override;
         virtual void set_alternate_group(uint32_t group, bool enabled) override;
         virtual bool alternate_group(uint32_t group) const override;
+        virtual void set_drm_mesh(const std::shared_ptr<IMesh>& mesh) override;
         virtual std::weak_ptr<IRoom> room(uint32_t id) const override;
         virtual bool alternate_mode() const override;
         virtual bool any_alternates() const override;
@@ -157,6 +158,7 @@ namespace trview
         std::set<uint32_t> _alternate_groups;
         trlevel::LevelVersion _version;
         std::string _filename;
+        std::shared_ptr<IMesh> _drm_mesh;
     };
 
     /// Find the first item with the type id specified.

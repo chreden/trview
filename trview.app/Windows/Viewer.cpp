@@ -621,11 +621,6 @@ namespace trview
 
             _level->render_transparency(camera);
             _compass->render(camera, _level->texture_storage());
-
-            if (_drm_mesh)
-            {
-                _drm_mesh->render(camera.view_projection(), _level->texture_storage(), Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
-            }
         }
     }
 
@@ -1128,17 +1123,19 @@ namespace trview
             Vector3 pos = Vector3(vertex.x, vertex.y, vertex.z) / 10000;
             Vector3 norm = pos;
             norm.Normalize();
-            vertices.push_back(MeshVertex{ pos, norm, Vector2::Zero, Colour::White });
+            vertices.push_back(MeshVertex{ pos, norm, Vector2::Zero, Colour::White});
         }
 
         std::vector<uint32_t> indices;
         for (const auto& triangle : drm.world_triangles)
         {
             indices.push_back(triangle.v0);
-            indices.push_back(triangle.v1);
             indices.push_back(triangle.v2);
+            indices.push_back(triangle.v1);
         }
 
-        _drm_mesh = _mesh_source(vertices, {}, indices, {}, {});
+        _level->set_drm_mesh(_mesh_source(vertices, { indices }, {}, {}, {}));
+        _target = Vector3::Zero;
+        _scene_changed = true;
     }
 }
