@@ -44,6 +44,7 @@ namespace trview
 
             enum class SectionUsage : uint32_t
             {
+                Bounds = 4,
                 VertexData = 128
             };
 
@@ -129,7 +130,10 @@ namespace trview
             {
                 if (has_flag(reference.usage, SectionUsage::VertexData))
                 {
-                    load_vertex_data(drm, drm.sections[reference.index >> 3]);
+                    if (!has_flag(reference.usage, SectionUsage::Bounds))
+                    {
+                        load_vertex_data(drm, drm.sections[reference.index >> 3]);
+                    }
                 }
             }
         }
@@ -179,32 +183,50 @@ namespace trview
 
             read_vector<uint8_t>(stream, 20);
 
-            skip(stream, 12);
+            Vector3 offset = read<Vector3>(stream);
 
             read_vector<uint8_t>(stream, length - 40 - 20 - 12);
 
-            auto base = drm.world_mesh.size();
+            uint16_t base = static_cast<uint16_t>(drm.world_mesh.size());
 
             auto vertices = read_vector<Vertex>(stream, vertex_count);
+            for (auto& vert : vertices)
+            {
+                // Temporarily remove this part
+                // vert.x += offset.x;
+                // vert.y += offset.y;
+                // vert.z += offset.z;
+            }
             drm.world_mesh.insert(drm.world_mesh.end(), vertices.begin(), vertices.end());
 
-            // Load the mesh:
-            uint16_t index_count = read<uint16_t>(stream);
-            skip(stream, 2);
-            uint16_t texture_id = read<uint16_t>(stream);
-            read_vector<uint16_t>(stream, 5);
-            uint32_t eom = read<uint32_t>(stream);
-            auto indices = read_vector<uint16_t>(stream, index_count);
-
-            for (uint32_t i = 0; i < indices.size() / 3; ++i)
+            bool more_mesh = false;
+            do
             {
-                drm.world_triangles.push_back(
-                    {
-                        indices[base + i * 3],
-                        indices[base + i * 3 + 1],
-                        indices[base + i * 3 + 2]
-                    });
-            }
+                // Load the mesh:
+                uint16_t index_count = read<uint16_t>(stream);
+                skip(stream, 2);
+                uint16_t texture_id = read<uint16_t>(stream);
+                read_vector<uint16_t>(stream, 5);
+                uint32_t eom = read<uint32_t>(stream);
+                auto indices = read_vector<uint16_t>(stream, index_count);
+
+                for (uint32_t i = 0; i < indices.size() / 3; ++i)
+                {
+                    drm.world_triangles.push_back(
+                        {
+                            static_cast<uint16_t>(indices[i * 3] + base),
+                            static_cast<uint16_t>(indices[i * 3 + 1] + base),
+                            static_cast<uint16_t>(indices[i * 3 + 2] + base)
+                        });
+                }
+
+                more_mesh = read<uint32_t>(stream) > 0;
+                if (more_mesh)
+                {
+                    stream.seekg(-4, std::ios::cur);
+                }
+
+            } while (more_mesh);
         }
     }
 }

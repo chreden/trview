@@ -1117,7 +1117,7 @@ namespace trview
     {
         using namespace DirectX::SimpleMath;
 
-        float extra_scale = 0.1f;
+        float extra_scale = 0.01f;
         auto scale = Matrix::CreateScale(drm.scale.x, drm.scale.y, drm.scale.z) * Matrix::CreateScale(extra_scale);
 
         std::vector<MeshVertex> vertices;
