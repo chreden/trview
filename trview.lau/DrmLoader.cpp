@@ -170,6 +170,8 @@ namespace trview
             uint32_t number_of_headers = section.header.preamble / 32 / 8;
             auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
 
+            auto start = stream.tellg();
+
             read_vector<uint16_t>(stream, 8);
 
             float scale_x = read<float>(stream);
@@ -219,6 +221,9 @@ namespace trview
                             static_cast<uint16_t>(indices[i * 3 + 2] + base)
                         });
                 }
+
+                stream.seekg(start, std::ios::beg);
+                stream.seekg(eom, std::ios::cur);
 
                 more_mesh = read<uint32_t>(stream) > 0;
                 if (more_mesh)
