@@ -34,8 +34,8 @@ namespace trview
         D3D11_SAMPLER_DESC sampler_desc;
         memset(&sampler_desc, 0, sizeof(sampler_desc));
         sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
         sampler_desc.MaxAnisotropy = 1;
         sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
@@ -195,7 +195,7 @@ namespace trview
 
             if (_drm_mesh)
             {
-                _drm_mesh->render(camera.view_projection(), texture_storage(), Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
+                _drm_mesh->render(camera.view_projection(), *_drm_texture_storage, Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
             }
         }
 
@@ -733,9 +733,10 @@ namespace trview
         }
     }
 
-    void Level::set_drm_mesh(const std::shared_ptr<IMesh>& mesh)
+    void Level::set_drm_mesh(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ILevelTextureStorage>& texture_storage)
     {
         _drm_mesh = mesh;
+        _drm_texture_storage = texture_storage;
     }
 
     bool find_item_by_type_id(const ILevel& level, uint32_t type_id, Item& output_item)

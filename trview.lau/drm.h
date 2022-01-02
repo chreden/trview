@@ -35,6 +35,33 @@ namespace trview
             uint32_t separator;
         };
 
+        struct Vertex
+        {
+            int16_t x;
+            int16_t y;
+            int16_t z;
+            int8_t nx;
+            int8_t ny;
+            int8_t nz;
+            uint8_t unknown[3];
+            uint16_t u;
+            uint16_t v;
+            // uint8_t u_1;
+            // uint16_t u;
+            // uint8_t u_2[5];
+            // uint16_t v;
+            // int16_t a;
+            // int16_t b;
+            // int16_t c;
+            // int16_t d;
+            // // uint16_t d;
+            // // float u;
+            // // float v;
+            // uint8_t u;
+            // uint8_t v;
+            //uint8_t unknown[10];
+        };
+
 #pragma pack(pop)
 
         struct Section
@@ -58,17 +85,7 @@ namespace trview
             float z;
         };
 
-        struct Vertex
-        {
-            int16_t x;
-            int16_t y;
-            int16_t z;
-            int16_t a;
-            int16_t b;
-            int16_t c;
-            int16_t d;
-            int16_t e;
-        };
+
 
         struct Triangle
         {

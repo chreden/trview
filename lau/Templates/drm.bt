@@ -59,12 +59,36 @@ struct TextureData (int extra)
     byte data[pixel_data_length];
 };
 
-struct Vertex
+struct Vector3
 {
     int16 x;
     int16 y;
     int16 z;
-    int16 unknown[5];
+};
+
+struct Normal
+{
+    byte x;
+    byte y;
+    byte z;
+};
+
+struct Vertex
+{
+    Vector3 position;
+    Normal normal;
+    // Vector3 normal;
+    ubyte unknown[7];
+    //uint16 unknown[4];
+    //ubyte u;
+    //ubyte v;
+    // int16 unknown[5];
+    // int16 unknown;    
+    // uint16 unknown[5];
+    // uint16 u;
+    // uint16 v;
+    //float u;
+    //float v;
 };
 
 struct Mesh(uint32 start)

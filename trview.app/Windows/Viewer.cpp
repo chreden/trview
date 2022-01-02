@@ -7,11 +7,56 @@
 
 #include <trview.common/Strings.h>
 
+#include <external/DirectXTK/Src/DDS.h>
+#include <external/DirectXTK/Inc/DDSTextureLoader.h>
+
 namespace trview
 {
     namespace
     {
         const float _CAMERA_MOVEMENT_SPEED_MULTIPLIER = 23.0f;
+
+        DirectX::DDS_PIXELFORMAT dds_format(const lau::Texture& texture)
+        {
+            using namespace DirectX;
+            if (texture.format == "DXT1") { return DDSPF_DXT1; }
+            if (texture.format == "DXT2") { return DDSPF_DXT2; }
+            if (texture.format == "DXT3") { return DDSPF_DXT3; }
+            if (texture.format == "DXT4") { return DDSPF_DXT4; }
+            if (texture.format == "DXT5") { return DDSPF_DXT5; }
+            return DDSPF_A8R8G8B8;
+        }
+
+        graphics::Texture create_texture(const Microsoft::WRL::ComPtr<ID3D11Device>& device, const lau::Texture& texture)
+        {
+            using namespace Microsoft::WRL;
+            using namespace DirectX;
+
+            DDS_HEADER header;
+            memset(&header, 0, sizeof(header));
+            header.size = sizeof(header);
+            header.flags = 0x1 | 0x2 | 0x4 | 0x1000 | 0x80000;
+            header.height = texture.height;
+            header.width = texture.width;
+            header.pitchOrLinearSize = texture.data.size();
+            header.ddspf = dds_format(texture);
+            header.caps = 4096;
+
+            std::vector<uint8_t> final_data(4 + sizeof(header) + texture.data.size(), 0u);
+            uint32_t magic = 542327876u;
+            memcpy(&final_data[0], &magic, sizeof(magic));
+            memcpy(&final_data[4], &header, sizeof(header));
+            memcpy(&final_data[4 + sizeof(header)], &texture.data[0], texture.data.size());
+
+            ComPtr<ID3D11Resource> resource;
+            ComPtr<ID3D11ShaderResourceView> resource_view;
+            HRESULT hr = DirectX::CreateDDSTextureFromMemory(device.Get(), &final_data[0], final_data.size(), resource.GetAddressOf(), resource_view.GetAddressOf());
+
+            ComPtr<ID3D11Texture2D> texture_resource;
+            resource.As(&texture_resource);
+
+            return graphics::Texture(texture_resource, resource_view);
+        }
     }
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
@@ -1126,7 +1171,17 @@ namespace trview
             Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
             Vector3 norm = pos;
             norm.Normalize();
-            vertices.push_back(MeshVertex{ pos, norm, Vector2::Zero, Colour::White});
+            float u = vertex.u / 65535.0f;
+            float v = vertex.v / 65535.0f;
+            // float u = vertex.u;
+            // float v = vertex.v;
+
+            // float u = 0;
+            // float v = 0;
+
+            // float u = vertex.unknown[6] / 255.0f;
+            // float v = vertex.unknown[9] / 255.0f;
+            vertices.push_back(MeshVertex{ pos, norm, Vector2(u, v), Colour::White});
         }
 
         std::vector<uint32_t> indices;
@@ -1137,7 +1192,71 @@ namespace trview
             indices.push_back(triangle.v1);
         }
 
-        _level->set_drm_mesh(_mesh_source(vertices, { indices }, {}, {}, {}));
+        graphics::Texture tex = create_texture(_device->device(), (*drm.textures.begin()).second);
+
+        class DrmTextureStorage : public ILevelTextureStorage
+        {
+        public:
+            DrmTextureStorage(graphics::Texture texture)
+                : _texture(texture)
+            {
+
+            }
+
+            virtual ~DrmTextureStorage() = default;
+            virtual graphics::Texture texture(uint32_t texture_index) const
+            {
+                return _texture;
+            }
+
+            virtual graphics::Texture untextured() const
+            {
+                return graphics::Texture();
+            }
+
+            virtual Vector2 uv(uint32_t texture_index, uint32_t uv_index) const
+            {
+                return Vector2::Zero;
+            }
+
+            virtual uint32_t tile(uint32_t texture_index) const
+            {
+                return 0u;
+            }
+
+            virtual uint32_t num_tiles() const
+            {
+                return 0u;
+            }
+
+            virtual uint16_t attribute(uint32_t texture_index) const
+            {
+                return 0u;
+            }
+
+            virtual DirectX::SimpleMath::Color palette_from_texture(uint32_t texture) const
+            {
+                return Colour::White;
+            }
+
+            virtual graphics::Texture coloured(uint32_t colour) const
+            {
+                return graphics::Texture();
+            }
+
+            virtual graphics::Texture lookup(const std::string& key) const
+            {
+                return graphics::Texture();
+            }
+
+            virtual void store(const std::string& key, const graphics::Texture& texture)
+            {
+            }
+
+            graphics::Texture _texture;
+        };
+
+        _level->set_drm_mesh(_mesh_source(vertices, { indices }, {}, {}, {}), std::make_shared<DrmTextureStorage>(tex));
         _target = Vector3::Zero;
         _scene_changed = true;
     }

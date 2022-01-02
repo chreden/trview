@@ -69,7 +69,7 @@ namespace trview
         /// @param group The group to toggle.
         /// @param enabled Whether the group is enabled.
         virtual void set_alternate_group(uint32_t group, bool enabled) = 0;
-        virtual void set_drm_mesh(const std::shared_ptr<IMesh>& mesh) = 0;
+        virtual void set_drm_mesh(const std::shared_ptr<IMesh>& mesh, const std::shared_ptr<ILevelTextureStorage>& texture_storage) = 0;
         virtual void set_filename(const std::string& filename) = 0;
         virtual void set_highlight_mode(RoomHighlightMode mode, bool enabled) = 0;
         virtual void set_item_visibility(uint32_t index, bool state) = 0;
