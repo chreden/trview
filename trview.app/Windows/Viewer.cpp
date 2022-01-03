@@ -82,7 +82,7 @@ namespace trview
             toggle->second(value);
         };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, bool value)
+        _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, int32_t value)
         {
             auto scalar = scalars.find(name);
             if (scalar == scalars.end())
