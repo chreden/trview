@@ -106,6 +106,11 @@ namespace trview
 
         std::unordered_map<std::string, std::function<void(int32_t)>> scalars;
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
+        scalars[Options::uv] = [this](int32_t value) 
+        { 
+            _drm_uv_scale = value;
+            generate_drm(); 
+        };
 
         _ui->initialise_input();
         _token_store += _ui->on_ui_changed += [&]() {_ui_changed = true; };
@@ -127,7 +132,7 @@ namespace trview
             toggle->second(value);
         };
         _token_store += _ui->on_alternate_group += [&](uint32_t group, bool value) { set_alternate_group(group, value); };
-        _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, bool value)
+        _token_store += _ui->on_scalar_changed += [this, scalars](const std::string& name, int32_t value)
         {
             auto scalar = scalars.find(name);
             if (scalar == scalars.end())
@@ -1160,7 +1165,20 @@ namespace trview
 
     void Viewer::set_drm(const lau::Drm& drm)
     {
+        _drm = drm;
+        generate_drm();
+    }
+
+    void Viewer::generate_drm()
+    {
         using namespace DirectX::SimpleMath;
+
+        if (!_drm.has_value()) 
+        {
+            return;
+        }
+
+        auto& drm = _drm.value();
 
         float extra_scale = 0.01f;
         auto scale = Matrix::CreateScale(drm.scale.x, drm.scale.y, drm.scale.z) * Matrix::CreateScale(extra_scale);
@@ -1169,10 +1187,10 @@ namespace trview
         for (const auto& vertex : drm.world_mesh)
         {
             Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
-            Vector3 norm = pos;
+            Vector3 norm = Vector3(vertex.nx, vertex.ny, vertex.nz);
             norm.Normalize();
-            float u = vertex.u / 65535.0f;
-            float v = vertex.v / 65535.0f;
+            float u = vertex.u / (static_cast<float>(_drm_uv_scale));
+            float v = vertex.v / (static_cast<float>(_drm_uv_scale));
             // float u = vertex.u;
             // float v = vertex.v;
 
@@ -1181,7 +1199,7 @@ namespace trview
 
             // float u = vertex.unknown[6] / 255.0f;
             // float v = vertex.unknown[9] / 255.0f;
-            vertices.push_back(MeshVertex{ pos, norm, Vector2(u, v), Colour::White});
+            vertices.push_back(MeshVertex{ pos, norm, Vector2(u, v), Colour::White });
         }
 
         std::vector<uint32_t> indices;
@@ -1192,7 +1210,8 @@ namespace trview
             indices.push_back(triangle.v1);
         }
 
-        graphics::Texture tex = create_texture(_device->device(), (*drm.textures.begin()).second);
+        uint16_t id = 94;
+        graphics::Texture tex = create_texture(_device->device(), drm.textures[id]);
 
         class DrmTextureStorage : public ILevelTextureStorage
         {

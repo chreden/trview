@@ -36,7 +36,7 @@ namespace trview
         sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
         sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
         sampler_desc.MaxAnisotropy = 1;
         sampler_desc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
         sampler_desc.MaxLOD = D3D11_FLOAT32_MAX;
@@ -182,7 +182,7 @@ namespace trview
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
-            context->PSSetSamplers(0, 1, &_sampler_state);
+            context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
             if (_show_wireframe)
             {
                 context->RSSetState(_wireframe_rasterizer.Get());

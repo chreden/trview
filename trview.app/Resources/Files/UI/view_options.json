@@ -30,7 +30,7 @@
                     "layout": {
                         "type": "grid",
                         "columns": 2,
-                        "rows": 4
+                        "rows": 5
                     },
                     "children": [
                         {
@@ -88,6 +88,18 @@
                             "name": "show_bounding_boxes",
                             "text": "Bounds",
                             "background_colour": "transparent"
+                        },
+                        {
+                            "type": "numericupdown",
+                            "name": "uv",
+                            "background_colour": "transparent",
+                            "size": {
+                                "width": 50,
+                                "height": 20
+                            },
+                            "min_value": 1,
+                            "max_value": 65536,
+                            "value": 512
                         }
                     ]
                 },

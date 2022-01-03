@@ -115,6 +115,7 @@ namespace trview
         void select_previous_orbit();
         void select_next_orbit();
         void select_pick(const PickResult& pick);
+        void generate_drm();
 
         void register_lua();
         void apply_acceleration_settings();
@@ -169,6 +170,8 @@ namespace trview
         std::size_t _recent_orbit_index{ 0u };
 
         IMesh::Source _mesh_source;
+        std::optional<lau::Drm> _drm;
+        int32_t _drm_uv_scale{ 512 };
     };
 }
 

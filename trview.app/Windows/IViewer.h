@@ -27,6 +27,7 @@ namespace trview
             inline static const std::string triggers = "triggers";
             inline static const std::string water = "water";
             inline static const std::string wireframe = "wireframe";
+            inline static const std::string uv = "uv";
         };
 
         virtual ~IViewer() = 0;
