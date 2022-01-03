@@ -32,6 +32,11 @@ namespace trview
             using namespace Microsoft::WRL;
             using namespace DirectX;
 
+            if (texture.width == 0 || texture.height == 0)
+            {
+                return graphics::Texture();
+            }
+
             DDS_HEADER header;
             memset(&header, 0, sizeof(header));
             header.size = sizeof(header);
@@ -108,7 +113,7 @@ namespace trview
         scalars[Options::depth] = [this](int32_t value) { if (_level) { _level->set_neighbour_depth(value); } };
         scalars[Options::uv] = [this](int32_t value) 
         { 
-            _drm_uv_scale = value;
+            _drm_uv_scale_u = value;
             generate_drm(); 
         };
 
@@ -233,6 +238,12 @@ namespace trview
         _token_store += _ui->on_tool_selected += [&](auto tool) { _active_tool = tool; _measure->reset(); };
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
+            // TODO: Remove hack.
+            _drm_uv_scale_u = position.x * 1024;
+            _drm_uv_scale_v = position.y * 1024;
+            generate_drm();
+            return;
+
             if (_camera_mode == CameraMode::Orbit)
             {
                 set_camera_mode(CameraMode::Free);
@@ -630,7 +641,7 @@ namespace trview
             }
 
             _scene_sprite->render(_scene_target->texture(), 0, 0, _window.size().width, _window.size().height);
-            _ui->set_camera_position(current_camera().position());
+            // _ui->set_camera_position(current_camera().position());
             _ui->set_camera_rotation(current_camera().rotation_yaw(), current_camera().rotation_pitch());
 
             _ui->render();
@@ -1189,35 +1200,33 @@ namespace trview
             Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
             Vector3 norm = Vector3(vertex.nx, vertex.ny, vertex.nz);
             norm.Normalize();
-            float u = vertex.u / (static_cast<float>(_drm_uv_scale));
-            float v = vertex.v / (static_cast<float>(_drm_uv_scale));
-            // float u = vertex.u;
-            // float v = vertex.v;
+            float u = vertex.u / (static_cast<float>(_drm_uv_scale_u));
+            float v = vertex.v / (static_cast<float>(_drm_uv_scale_v));
 
-            // float u = 0;
-            // float v = 0;
-
-            // float u = vertex.unknown[6] / 255.0f;
-            // float v = vertex.unknown[9] / 255.0f;
             vertices.push_back(MeshVertex{ pos, norm, Vector2(u, v), Colour::White });
         }
 
-        std::vector<uint32_t> indices;
+        std::unordered_map<uint16_t, std::vector<uint32_t>> indices;
         for (const auto& triangle : drm.world_triangles)
         {
-            indices.push_back(triangle.v0);
-            indices.push_back(triangle.v2);
-            indices.push_back(triangle.v1);
+            indices[triangle.texture].push_back(triangle.v0);
+            indices[triangle.texture].push_back(triangle.v2);
+            indices[triangle.texture].push_back(triangle.v1);
         }
 
-        uint16_t id = 94;
-        graphics::Texture tex = create_texture(_device->device(), drm.textures[id]);
+        std::vector<graphics::Texture> all_textures;
+        std::vector<std::vector<uint32_t>> all_indices;
+        for (const auto& indices : indices)
+        {
+            all_textures.push_back(create_texture(_device->device(), drm.textures[indices.first]));
+            all_indices.push_back(indices.second);
+        }
 
         class DrmTextureStorage : public ILevelTextureStorage
         {
         public:
-            DrmTextureStorage(graphics::Texture texture)
-                : _texture(texture)
+            DrmTextureStorage(const std::vector<graphics::Texture>& textures)
+                : _textures(textures)
             {
 
             }
@@ -1225,7 +1234,7 @@ namespace trview
             virtual ~DrmTextureStorage() = default;
             virtual graphics::Texture texture(uint32_t texture_index) const
             {
-                return _texture;
+                return _textures[texture_index];
             }
 
             virtual graphics::Texture untextured() const
@@ -1272,10 +1281,10 @@ namespace trview
             {
             }
 
-            graphics::Texture _texture;
+            const std::vector<graphics::Texture> _textures;
         };
 
-        _level->set_drm_mesh(_mesh_source(vertices, { indices }, {}, {}, {}), std::make_shared<DrmTextureStorage>(tex));
+        _level->set_drm_mesh(_mesh_source(vertices, all_indices, {}, {}, {}), std::make_shared<DrmTextureStorage>(all_textures));
         _target = Vector3::Zero;
         _scene_changed = true;
     }

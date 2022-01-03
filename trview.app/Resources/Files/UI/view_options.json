@@ -99,7 +99,7 @@
                             },
                             "min_value": 1,
                             "max_value": 65536,
-                            "value": 512
+                            "value": 1000
                         }
                     ]
                 },

@@ -90,6 +90,7 @@ namespace trview
         struct Triangle
         {
             uint16_t v0, v1, v2;
+            uint16_t texture;
         };
 
         struct Texture

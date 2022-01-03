@@ -218,7 +218,8 @@ namespace trview
                         {
                             static_cast<uint16_t>(indices[i * 3] + base),
                             static_cast<uint16_t>(indices[i * 3 + 1] + base),
-                            static_cast<uint16_t>(indices[i * 3 + 2] + base)
+                            static_cast<uint16_t>(indices[i * 3 + 2] + base),
+                            texture_id
                         });
                 }
 
