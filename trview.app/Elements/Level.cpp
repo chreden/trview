@@ -182,7 +182,7 @@ namespace trview
 
         {
             graphics::RasterizerStateStore rasterizer_store(context);
-            context->PSSetSamplers(0, 1, &_sampler_state);
+            context->PSSetSamplers(0, 1, _sampler_state.GetAddressOf());
             if (_show_wireframe)
             {
                 context->RSSetState(_wireframe_rasterizer.Get());
