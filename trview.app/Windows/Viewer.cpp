@@ -62,6 +62,11 @@ namespace trview
 
             return graphics::Texture(texture_resource, resource_view);
         }
+
+        DirectX::SimpleMath::Vector2 convert_uv(int32_t uv)
+        {
+            return DirectX::SimpleMath::Vector2::Zero;
+        }
     }
 
     Viewer::Viewer(const Window& window, const std::shared_ptr<graphics::IDevice>& device, std::unique_ptr<IViewerUI> ui, std::unique_ptr<IPicking> picking,
@@ -239,8 +244,8 @@ namespace trview
         _token_store += _ui->on_camera_position += [&](const auto& position)
         {
             // TODO: Remove hack.
-            _drm_uv_scale_u = position.x * 1024;
-            _drm_uv_scale_v = position.y * 1024;
+            _drm_uv_scale_u = position.x * 1024.0f;
+            _drm_uv_scale_v = position.y * 1024.0f;
             generate_drm();
             return;
 
@@ -1195,15 +1200,14 @@ namespace trview
         auto scale = Matrix::CreateScale(drm.scale.x, drm.scale.y, drm.scale.z) * Matrix::CreateScale(extra_scale);
 
         std::vector<MeshVertex> vertices;
-        for (const auto& vertex : drm.world_mesh)
+        uint32_t i = 0;
+        for (auto& vertex : drm.world_mesh)
         {
             Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
             Vector3 norm = Vector3(vertex.nx, vertex.ny, vertex.nz);
             norm.Normalize();
-            float u = vertex.u / (static_cast<float>(_drm_uv_scale_u));
-            float v = vertex.v / (static_cast<float>(_drm_uv_scale_v));
-
-            vertices.push_back(MeshVertex{ pos, norm, Vector2(u, v), Colour::White });
+            Vector2 uv = convert_uv(vertex.uv);
+            vertices.push_back(MeshVertex{ pos, norm, uv, Colour::White });
         }
 
         std::unordered_map<uint16_t, std::vector<uint32_t>> indices;

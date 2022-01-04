@@ -171,8 +171,8 @@ namespace trview
 
         IMesh::Source _mesh_source;
         std::optional<lau::Drm> _drm;
-        int32_t _drm_uv_scale_u{ 512 };
-        int32_t _drm_uv_scale_v{ 512 };
+        float _drm_uv_scale_u{ 1.0f };
+        float _drm_uv_scale_v{ 1.0f };
     };
 }
 

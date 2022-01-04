@@ -195,7 +195,7 @@ namespace trview
 
             if (_drm_mesh)
             {
-                _drm_mesh->render(camera.view_projection(), *_drm_texture_storage, Colour::White, 1.0f, DirectX::SimpleMath::Vector3::Down);
+                _drm_mesh->render(camera.view_projection(), *_drm_texture_storage, Colour::White, 1.0f, -camera.forward());
             }
         }
 

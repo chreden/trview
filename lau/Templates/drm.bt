@@ -77,18 +77,9 @@ struct Vertex
 {
     Vector3 position;
     Normal normal;
-    // Vector3 normal;
-    ubyte unknown[7];
-    //uint16 unknown[4];
-    //ubyte u;
-    //ubyte v;
-    // int16 unknown[5];
-    // int16 unknown;    
-    // uint16 unknown[5];
-    // uint16 u;
-    // uint16 v;
-    //float u;
-    //float v;
+    byte pad;
+    uint16 segment;
+    uint32 uv;
 };
 
 struct Mesh(uint32 start)
@@ -207,6 +198,10 @@ struct FileHeader(int extra, int size)
     {
         byte unknown[24];
         uint32 size_of_section;
+
+        
+
+
         byte unknown1[size_of_section - 40];
         while(true)
         {
@@ -220,6 +215,8 @@ struct FileHeader(int extra, int size)
             // uint16 unknown2;
             FSkip(2);
         }
+//FSkip(92);
+
     }
 
     // Hack to keep the old stuff working

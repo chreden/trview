@@ -191,7 +191,7 @@ namespace trview
 
             uint16_t base = static_cast<uint16_t>(drm.world_mesh.size());
 
-            auto vertices = read_vector<Vertex>(stream, vertex_count);
+            auto vertices = read_vector<MVertex>(stream, vertex_count);
             for (auto& vert : vertices)
             {
                 // Temporarily remove this part
