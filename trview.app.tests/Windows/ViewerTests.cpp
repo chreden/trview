@@ -640,3 +640,13 @@ TEST(Viewer, MidWaypointUsesCentroid)
     ASSERT_TRUE(raised_position.has_value());
     ASSERT_EQ(raised_position.value(), Vector3(3, 4, 5));
 }
+
+TEST(Viewer, DepthViewOptionUpdatesLevel)
+{
+    auto [ui_ptr, ui] = create_mock<MockViewerUI>();
+    MockLevel level;
+    EXPECT_CALL(level, set_neighbour_depth(6)).Times(1);
+    auto viewer = register_test_module().with_ui(std::move(ui_ptr)).build();
+    viewer->open(&level);
+    ui.on_scalar_changed(IViewer::Options::depth, 6);
+}
