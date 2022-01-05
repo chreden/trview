@@ -65,7 +65,10 @@ namespace trview
 
         DirectX::SimpleMath::Vector2 convert_uv(int32_t uv)
         {
-            return DirectX::SimpleMath::Vector2::Zero;
+            DirectX::SimpleMath::Vector2 result;
+            *(reinterpret_cast<uint64_t*>(&result.x)) =
+                static_cast<uint64_t>(uv >> 0x10) << 0x30 | static_cast<uint64_t>(uv << 0x10);
+            return result;
         }
     }
 
