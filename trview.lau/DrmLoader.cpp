@@ -197,6 +197,7 @@ namespace trview
                 }
 
                 load_world_mesh(drm, drm.sections[8]);
+                load_world_mesh(drm, drm.sections[12]);
                 load_world_mesh(drm, drm.sections[11]);
             }
         }
@@ -312,6 +313,13 @@ namespace trview
             auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
 
             const uint32_t start = stream.tellg();
+
+            if (section.index == 12)
+            {
+                // This is fine.
+                stream.seekg(1904, std::ios::cur);
+            }
+
             uint32_t num = 0;
             bool done = false;
             while (!done)
