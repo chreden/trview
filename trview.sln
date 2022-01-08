@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "external\goog
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googlemock", "external\googlemock\googlemock.vcxproj", "{6E37091E-954C-4654-9B42-5980410791F4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trview.lau.tests", "trview.lau.tests\trview.lau.tests.vcxproj", "{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -239,6 +241,14 @@ Global
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x64.Build.0 = Release|x64
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x86.ActiveCfg = Release|Win32
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x86.Build.0 = Release|Win32
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Debug|x64.ActiveCfg = Debug|x64
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Debug|x64.Build.0 = Debug|x64
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Debug|x86.ActiveCfg = Debug|Win32
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Debug|x86.Build.0 = Debug|Win32
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Release|x64.ActiveCfg = Release|x64
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Release|x64.Build.0 = Release|x64
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Release|x86.ActiveCfg = Release|Win32
+		{3B7986A9-8B96-4D63-86C5-EBE520FE0AA9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

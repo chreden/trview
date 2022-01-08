@@ -56,6 +56,19 @@ namespace trview
             int32_t uv;
         };
 
+        struct WorldVertex
+        {
+            int16_t x;
+            int16_t y;
+            int16_t z;
+            int16_t w;
+            int32_t colour;
+            int16_t u;
+            int16_t v;
+            uint16_t bend;
+            uint16_t bend_index;
+        };
+
 #pragma pack(pop)
 
         struct Section
@@ -79,11 +92,15 @@ namespace trview
             float z;
         };
 
-
+        struct Vector2
+        {
+            float x;
+            float y;
+        };
 
         struct Triangle
         {
-            uint16_t v0, v1, v2;
+            uint32_t v0, v1, v2;
             uint16_t texture;
         };
 
@@ -96,13 +113,20 @@ namespace trview
             std::vector<uint8_t> data;
         };
 
+        struct Vertex
+        {
+            Vector3 position;
+            Vector3 normal;
+            Vector2 uv;
+        };
+
         struct Drm
         {
             uint32_t version;
             FileHeader file_header;
             std::vector<Section> sections;
             Vector3 scale;
-            std::vector<MVertex> world_mesh;
+            std::vector<Vertex> world_mesh;
             std::vector<Triangle> world_triangles;
             std::unordered_map<uint16_t, Texture> textures;
             Vector3 world_offset;

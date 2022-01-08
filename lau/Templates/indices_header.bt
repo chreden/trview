@@ -1,0 +1,27 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+struct Header
+{
+    uint32 index_count;
+    FSkip(36);
+    uint32 end;
+    uint16 indices[index_count];
+    uint16 unknown;
+};
+
+while(true)
+{
+    Header header;
+}

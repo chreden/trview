@@ -2,6 +2,8 @@
 #include <trview.common/Strings.h>
 #include <unordered_map>
 #include <unordered_set>
+#include "Geometry.h"
+#include <Windows.h>
 
 namespace trview
 {
@@ -126,15 +128,76 @@ namespace trview
             uint32_t number_of_headers = header.header.preamble / 32 / 8;
             auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
 
+            // local int start = FTell();
+
+            auto flags = read_vector<uint16_t>(stream, 4);
+            uint32_t id = read<uint32_t>(stream);
+            bool has_world_mesh = !flags[1];
+
+            if (!flags[1])
+            {
+                auto world_header = read_vector<uint8_t>(stream, 260);
+                float x = read<float>(stream);
+                float y = read<float>(stream);
+                float z = read<float>(stream);
+
+                // unknown data, ignore for now.
+                /*
+                uint32 unknown_3;
+                ushort unknown_4;
+                byte unknown_2[size - (FTell() - start)];
+                */
+            }
+
+            std::unordered_set<uint32_t> loaded;
             for (const auto& reference : references)
             {
-                if (has_flag(reference.usage, SectionUsage::VertexData))
+                uint32_t index = reference.index >> 3;
+                if (loaded.find(index) != loaded.end())
+                {
+                    continue;
+                }
+
+                loaded.insert(index);
+
+                if (!has_world_mesh && has_flag(reference.usage, SectionUsage::VertexData))
                 {
                     if (!has_flag(reference.usage, SectionUsage::Bounds))
                     {
-                        load_vertex_data(drm, drm.sections[reference.index >> 3]);
+                        load_vertex_data(drm, drm.sections[index]);
                     }
                 }
+            }
+
+            if (has_world_mesh)
+            {
+                drm.scale = { 0.1, 0.1, 0.1 };
+
+                // Probably the 1st element is world mesh
+                const auto& world_mesh_section = drm.sections[1];
+                auto world_stream = world_mesh_section.stream();
+                const auto length = world_mesh_section.data.size() / sizeof(WorldVertex);
+                const auto world_vertex = read_vector<WorldVertex>(world_stream, length);
+                const auto base = drm.world_mesh.size();
+                const int16_t texture = 1946;
+                std::stringstream indices_output;
+
+                for (const auto& vertex : world_vertex)
+                {
+                    const float factor = 4096.0f;
+                    float u = vertex.u / factor;
+                    float v = vertex.v / factor;
+                    drm.world_mesh.push_back(
+                        Vertex
+                        {
+                            Vector3 { static_cast<float>(vertex.x), static_cast<float>(vertex.y), static_cast<float>(vertex.z) },
+                            Vector3 { -static_cast<float>(vertex.x), -static_cast<float>(vertex.y), -static_cast<float>(vertex.z) },
+                            Vector2 { u, v }
+                        });
+                }
+
+                load_world_mesh(drm, drm.sections[8]);
+                load_world_mesh(drm, drm.sections[11]);
             }
         }
 
@@ -194,12 +257,18 @@ namespace trview
             auto vertices = read_vector<MVertex>(stream, vertex_count);
             for (auto& vert : vertices)
             {
-                // Temporarily remove this part
+                auto uv = convert_uv(vert.uv);
+                drm.world_mesh.push_back(
+                    Vertex
+                    {
+                        Vector3 { static_cast<float>(vert.x), static_cast<float>(vert.y), static_cast<float>(vert.z) },
+                        Vector3 { static_cast<float>(vert.nx), static_cast<float>(vert.ny), static_cast<float>(vert.nz) },
+                        Vector2 { uv.x, uv.y }
+                    });
                 // vert.x += offset.x;
                 // vert.y += offset.y;
                 // vert.z += offset.z;
             }
-            drm.world_mesh.insert(drm.world_mesh.end(), vertices.begin(), vertices.end());
 
             bool more_mesh = false;
             do
@@ -216,9 +285,9 @@ namespace trview
                 {
                     drm.world_triangles.push_back(
                         {
-                            static_cast<uint16_t>(indices[i * 3] + base),
-                            static_cast<uint16_t>(indices[i * 3 + 1] + base),
-                            static_cast<uint16_t>(indices[i * 3 + 2] + base),
+                            static_cast<uint32_t>(indices[i * 3] + base),
+                            static_cast<uint32_t>(indices[i * 3 + 1] + base),
+                            static_cast<uint32_t>(indices[i * 3 + 2] + base),
                             texture_id
                         });
                 }
@@ -233,6 +302,90 @@ namespace trview
                 }
 
             } while (more_mesh);
+        }
+
+        void DrmLoader::load_world_mesh(Drm& drm, const Section& section) const
+        {
+            const int16_t texture = 1946;
+            auto stream = section.stream();
+            uint32_t number_of_headers = section.header.preamble / 32 / 8;
+            auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
+
+            const uint32_t start = stream.tellg();
+            uint32_t num = 0;
+            bool done = false;
+            while (!done)
+            {
+                uint32_t num_indices = read<uint32_t>(stream);
+                if (num_indices == 0)
+                {
+                    break;
+                }
+
+                // Rest of header, whatever it is.
+                stream.seekg(16, std::ios::cur);
+                uint16_t texture = read<uint16_t>(stream);
+
+                stream.seekg(18, std::ios::cur);
+                uint32_t end = read<uint32_t>(stream);
+
+                if (end == 0)
+                {
+                    break;
+                }
+
+                auto indices = read_vector<uint16_t>(stream, num_indices);
+                const auto tris = num_indices / 3;
+                for (uint16_t i = 0; i < tris; ++i)
+                {
+                    drm.world_triangles.push_back(
+                        Triangle
+                        {
+                            static_cast<uint32_t>(indices[i * 3]),
+                            static_cast<uint32_t>(indices[i * 3 + 1]),
+                            static_cast<uint32_t>(indices[i * 3 + 2]),
+                            texture
+                        });
+                }
+
+                stream.seekg(start + end, std::ios::beg);
+
+                uint16_t value = read<uint16_t>(stream);
+                while (value == 0)
+                {
+                    if (stream.tellg() >= section.data.size())
+                    {
+                        done = true;
+                        break;
+                    }
+                    value = read<uint16_t>(stream);
+                }
+                stream.seekg(-2, std::ios::cur);
+            }
+
+            if (section.index == 11)
+            {
+                std::unordered_set<uint16_t> texture_indices;
+                for (const auto& tri : drm.world_triangles)
+                {
+                    texture_indices.insert(tri.texture);
+                }
+
+                stream.seekg(section.data.size() - 738, std::ios::beg);
+                stream.seekg(18, std::ios::cur);
+
+                std::vector<uint16_t> textures;
+                for (int i = 0; i < texture_indices.size(); ++i)
+                {
+                    textures.push_back(read<uint16_t>(stream));
+                    stream.seekg(18, std::ios::cur);
+                }
+
+                for (uint32_t i = 0; i < drm.world_triangles.size(); ++i)
+                {
+                    drm.world_triangles[i].texture = textures[drm.world_triangles[i].texture];
+                }
+            }
         }
     }
 }

@@ -229,13 +229,12 @@ struct WorldVertex
     int16 x;
     int16 y;
     int16 z;
-    uint16 a;
-    uint16 b;
-    int16 nx;
-    int16 ny;
-    int16 nz;
-    uint16 f;
-    uint16 g;
+    int16 w;
+    uint32 colour;
+    int16 u;
+    int16 v;
+    uint16 bend;
+    uint16 bend_index;
 };
 
 struct WorldMeshData(int length)

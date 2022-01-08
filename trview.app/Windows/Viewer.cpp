@@ -10,6 +10,8 @@
 #include <external/DirectXTK/Src/DDS.h>
 #include <external/DirectXTK/Inc/DDSTextureLoader.h>
 
+#include <trview.lau/Geometry.h>
+
 namespace trview
 {
     namespace
@@ -61,14 +63,6 @@ namespace trview
             resource.As(&texture_resource);
 
             return graphics::Texture(texture_resource, resource_view);
-        }
-
-        DirectX::SimpleMath::Vector2 convert_uv(int32_t uv)
-        {
-            DirectX::SimpleMath::Vector2 result;
-            *(reinterpret_cast<uint64_t*>(&result.x)) =
-                static_cast<uint64_t>(uv >> 0x10) << 0x30 | static_cast<uint64_t>(uv << 0x10);
-            return result;
         }
     }
 
@@ -1206,11 +1200,12 @@ namespace trview
         uint32_t i = 0;
         for (auto& vertex : drm.world_mesh)
         {
-            Vector3 pos = Vector3::Transform(Vector3(vertex.x, vertex.y, vertex.z), scale);
-            Vector3 norm = Vector3(vertex.nx, vertex.ny, vertex.nz);
+            Vector3 pos = Vector3::Transform(Vector3(vertex.position.x, vertex.position.y, vertex.position.z), scale);
+            Vector3 norm = Vector3(vertex.normal.x, vertex.normal.y, vertex.normal.z);
             norm.Normalize();
-            Vector2 uv = convert_uv(vertex.uv);
-            vertices.push_back(MeshVertex{ pos, norm, uv, Colour::White });
+            vertices.push_back(MeshVertex{ pos, norm, Vector2 { vertex.uv.x, vertex.uv.y }, Colour::White });
+
+            // _route->add(pos, Vector3::Down, 0);
         }
 
         std::unordered_map<uint16_t, std::vector<uint32_t>> indices;

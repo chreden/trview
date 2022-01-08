@@ -19,6 +19,7 @@ namespace trview
             void read_file_header(Drm& drm) const;
             void generate_textures(Drm& drm) const;
             void load_vertex_data(Drm& drm, const Section& section) const;
+            void load_world_mesh(Drm& drm, const Section& section) const;
 
             std::shared_ptr<IFiles> _files;
         };

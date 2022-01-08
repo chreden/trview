@@ -7,10 +7,12 @@
     <ClInclude Include="DrmLoader.h" />
     <ClInclude Include="di.h" />
     <ClInclude Include="di.hpp" />
+    <ClInclude Include="Geometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drm.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="DrmLoader.cpp" />
+    <ClCompile Include="Geometry.cpp" />
   </ItemGroup>
 </Project>
