@@ -19,7 +19,7 @@ namespace trview
         };
 
 #pragma pack(push, 1)
-        enum class SectionType : uint32_t
+        enum class SectionType : uint8_t
         {
             Section = 0,
             Empty = 1,
@@ -34,13 +34,18 @@ namespace trview
             CollisionMesh = 10
         };
 
-        struct SectionHeader
+        struct SectionInfo
         {
-            uint32_t length;
+            int32_t length;
             SectionType type;
-            uint32_t preamble; // extra leading bits 
-            uint32_t id;
-            uint32_t separator;
+            int8_t skip : 1;
+            int8_t __free : 7;
+            uint16_t version_id;
+            uint32_t has_debug_info : 1;
+            uint32_t resource_type : 7;
+            uint32_t num_relocations : 24;
+            int32_t id;
+            uint32_t spec_mask;
         };
 
         struct MVertex
@@ -71,12 +76,20 @@ namespace trview
 
 #pragma pack(pop)
 
+        struct Relocation
+        {
+            uint16_t type : 3;
+            uint16_t section_index_or_type : 13;
+            uint16_t type_specific;
+            uint32_t offset;
+        };
+
         struct Section
         {
             uint32_t index;
-            SectionHeader header;
+            SectionInfo header;
             std::vector<uint8_t> data;
-            std::vector<std::tuple<uint32_t, uint32_t>> links;
+            std::vector<Relocation> relocations;
 
             std::istringstream stream() const
             {

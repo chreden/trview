@@ -2,6 +2,7 @@
 #include <trview.common/Strings.h>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
 #include "Geometry.h"
 #include <Windows.h>
 
@@ -93,22 +94,35 @@ namespace trview
             drm->version = read<uint32_t>(file);
 
             uint32_t num_sections = read<uint32_t>(file);
-            std::vector<SectionHeader> headers = read_vector<SectionHeader>(file, num_sections);
+            std::vector<SectionInfo> headers = read_vector<SectionInfo>(file, num_sections);
 
             uint32_t section_index = 0;
-
-            std::unordered_map<uint32_t, std::unordered_set<uint32_t>> links;
 
             for (const auto& header : headers)
             {
                 const auto section_start = file.tellg();
-                std::vector<uint8_t> section_data(header.preamble / 32 + header.length);
+                std::vector<uint8_t> section_data(header.num_relocations * sizeof(Relocation) + header.length);
                 file.read(reinterpret_cast<char*>(&section_data[0]), section_data.size());
                 drm->sections.emplace_back(Section{ section_index, header, section_data });
                 file.seekg(section_start);
                 file.seekg(section_data.size(), std::ios::cur);
                 ++section_index;
             }
+
+            // Build dependency links
+            for (auto& section : drm->sections)
+            {
+                auto stream = section.stream();
+                section.relocations = read_vector<Relocation>(stream, section.header.num_relocations);
+            }
+
+            for (const auto& section : drm->sections)
+            {
+                std::stringstream stream;
+                stream << section.index << ":" << to_utf8(section_type_to_string(section.header.type)) << "-" << section.header.id << '\n';
+                OutputDebugStringA(stream.str().c_str());
+            }
+
 
             read_file_header(*drm);
             generate_textures(*drm);
@@ -125,8 +139,7 @@ namespace trview
             const auto& header = drm.sections[0];
             auto stream = header.stream();
 
-            uint32_t number_of_headers = header.header.preamble / 32 / 8;
-            auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
+            auto references = read_vector<Relocation>(stream, header.header.num_relocations);
 
             // local int start = FTell();
 
@@ -149,17 +162,19 @@ namespace trview
                 */
             }
 
-            std::unordered_set<uint32_t> loaded;
+            std::vector<uint32_t> loaded;
             for (const auto& reference : references)
             {
-                uint32_t index = reference.index >> 3;
-                if (loaded.find(index) != loaded.end())
+                // uint32_t index = reference.index >> 3;
+                if (std::find(loaded.begin(), loaded.end(), reference.section_index_or_type) != loaded.end())
                 {
                     continue;
                 }
 
-                loaded.insert(index);
+                loaded.push_back(reference.section_index_or_type);
 
+                // Temporarily disabled while reolcations work
+                /*
                 if (!has_world_mesh && has_flag(reference.usage, SectionUsage::VertexData))
                 {
                     if (!has_flag(reference.usage, SectionUsage::Bounds))
@@ -167,38 +182,39 @@ namespace trview
                         load_vertex_data(drm, drm.sections[index]);
                     }
                 }
+                */
             }
 
             if (has_world_mesh)
             {
-                drm.scale = { 0.1, 0.1, 0.1 };
-
-                // Probably the 1st element is world mesh
-                const auto& world_mesh_section = drm.sections[1];
-                auto world_stream = world_mesh_section.stream();
-                const auto length = world_mesh_section.data.size() / sizeof(WorldVertex);
-                const auto world_vertex = read_vector<WorldVertex>(world_stream, length);
-                const auto base = drm.world_mesh.size();
-                const int16_t texture = 1946;
-                std::stringstream indices_output;
-
-                for (const auto& vertex : world_vertex)
+                // This seems to be true, mostly - the biggest generic section tends to be
+                // the vertices of the world mesh.
+                uint32_t world_mesh_index = 0;
+                for (uint32_t i = 1; i < drm.sections.size(); ++i)
                 {
-                    const float factor = 4096.0f;
-                    float u = vertex.u / factor;
-                    float v = vertex.v / factor;
-                    drm.world_mesh.push_back(
-                        Vertex
-                        {
-                            Vector3 { static_cast<float>(vertex.x), static_cast<float>(vertex.y), static_cast<float>(vertex.z) },
-                            Vector3 { -static_cast<float>(vertex.x), -static_cast<float>(vertex.y), -static_cast<float>(vertex.z) },
-                            Vector2 { u, v }
-                        });
+                    if (drm.sections[i].header.type == SectionType::Section)
+                    {
+                        world_mesh_index = i;
+                        break;
+                    }
                 }
 
+                // The mesh index seems to be the first reference in the file header (so far).pleas
+                uint32_t mesh_index = references[0].section_index_or_type;
+
+                // First header of the file header is the mesh (section 11).
+                load_world_vertices(drm, drm.sections[world_mesh_index]);
                 load_world_mesh(drm, drm.sections[8]);
                 load_world_mesh(drm, drm.sections[12]);
-                load_world_mesh(drm, drm.sections[11]);
+                load_world_mesh(drm, drm.sections[mesh_index]);
+                resolve_world_mesh_textures(drm, drm.sections[mesh_index]);
+
+                // eg18
+                // load_world_vertices(drm, drm.sections[4]);
+                // load_world_mesh(drm, drm.sections[5]);
+                // load_world_mesh(drm, drm.sections[12]);
+                // load_world_mesh(drm, drm.sections[11]);
+                // resolve_world_mesh_textures(drm, drm.sections[11]);
             }
         }
 
@@ -231,8 +247,8 @@ namespace trview
         void DrmLoader::load_vertex_data(Drm& drm, const Section& section) const
         {
             auto stream = section.stream();
-            uint32_t number_of_headers = section.header.preamble / 32 / 8;
-            auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
+            // uint32_t number_of_headers = section.header.preamble / 32 / 8;
+            auto references = read_vector<Relocation>(stream, section.header.num_relocations);
 
             auto start = stream.tellg();
 
@@ -305,12 +321,37 @@ namespace trview
             } while (more_mesh);
         }
 
+        void DrmLoader::load_world_vertices(Drm& drm, const Section& section) const
+        {
+            drm.scale = { 0.1, 0.1, 0.1 };
+
+            const auto& world_mesh_section = drm.sections[1];
+            auto world_stream = world_mesh_section.stream();
+            const auto length = world_mesh_section.data.size() / sizeof(WorldVertex);
+            const auto world_vertex = read_vector<WorldVertex>(world_stream, length);
+            const auto base = drm.world_mesh.size();
+            std::stringstream indices_output;
+
+            for (const auto& vertex : world_vertex)
+            {
+                const float factor = 4096.0f;
+                float u = vertex.u / factor;
+                float v = vertex.v / factor;
+                drm.world_mesh.push_back(
+                    Vertex
+                    {
+                        Vector3 { static_cast<float>(vertex.x), static_cast<float>(vertex.y), static_cast<float>(vertex.z) },
+                        Vector3 { -static_cast<float>(vertex.x), -static_cast<float>(vertex.y), -static_cast<float>(vertex.z) },
+                        Vector2 { u, v }
+                    });
+            }
+        }
+
         void DrmLoader::load_world_mesh(Drm& drm, const Section& section) const
         {
-            const int16_t texture = 1946;
             auto stream = section.stream();
-            uint32_t number_of_headers = section.header.preamble / 32 / 8;
-            auto references = read_vector<SectionHeaderReference>(stream, number_of_headers);
+            // uint32_t number_of_headers = section.header.preamble / 32 / 8;
+            auto references = read_vector<Relocation>(stream, section.header.num_relocations);
 
             const uint32_t start = stream.tellg();
 
@@ -335,6 +376,7 @@ namespace trview
                 uint16_t texture = read<uint16_t>(stream);
 
                 stream.seekg(18, std::ios::cur);
+                auto where = static_cast<std::size_t>(stream.tellg()) - start;
                 uint32_t end = read<uint32_t>(stream);
 
                 if (end == 0)
@@ -370,29 +412,30 @@ namespace trview
                 }
                 stream.seekg(-2, std::ios::cur);
             }
+        }
 
-            if (section.index == 11)
+        void DrmLoader::resolve_world_mesh_textures(Drm& drm, const Section& section) const
+        {
+            std::unordered_set<uint16_t> texture_indices;
+            for (const auto& tri : drm.world_triangles)
             {
-                std::unordered_set<uint16_t> texture_indices;
-                for (const auto& tri : drm.world_triangles)
-                {
-                    texture_indices.insert(tri.texture);
-                }
+                texture_indices.insert(tri.texture);
+            }
 
-                stream.seekg(section.data.size() - 738, std::ios::beg);
+            auto stream = section.stream();
+            stream.seekg(section.data.size() - 738, std::ios::beg);
+            stream.seekg(18, std::ios::cur);
+
+            std::vector<uint16_t> textures;
+            for (int i = 0; i < texture_indices.size(); ++i)
+            {
+                textures.push_back(read<uint16_t>(stream));
                 stream.seekg(18, std::ios::cur);
+            }
 
-                std::vector<uint16_t> textures;
-                for (int i = 0; i < texture_indices.size(); ++i)
-                {
-                    textures.push_back(read<uint16_t>(stream));
-                    stream.seekg(18, std::ios::cur);
-                }
-
-                for (uint32_t i = 0; i < drm.world_triangles.size(); ++i)
-                {
-                    drm.world_triangles[i].texture = textures[drm.world_triangles[i].texture];
-                }
+            for (uint32_t i = 0; i < drm.world_triangles.size(); ++i)
+            {
+                drm.world_triangles[i].texture = textures[drm.world_triangles[i].texture];
             }
         }
     }

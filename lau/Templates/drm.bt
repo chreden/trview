@@ -12,43 +12,52 @@
 //------------------------------------------------
 
 
-enum <uint32> SectionType 
+enum <ubyte> SectionType 
 {
-    Section = 0,
+    General = 0,
+    Empty = 1,
+    Animation = 2,
+    PushBufferWc = 3,
+    PushBuffer = 4,
     Texture = 5,
-    Audio = 6
+    Audio = 6,
+    DTPData = 7,
+    Script = 8,
+    ShaderLib = 9
 };
 
 
 struct Header
 {
-    uint32   length;
+    int32 length;
     SectionType type;
-    uint32   header_size; // extra leading bits 
-    uint32   id;
-    uint32   separator;
+    byte skip : 1;
+    byte __free : 7;
+    uint16 version_id;
+    uint32 has_debug_info : 1;
+    uint32 resource_type : 7;
+    uint32 num_relocations : 24;
+    int32 id;
+    uint32 spec_mask;
 };
 
 struct NewSectionHeader
 {
-    local uint section_index = ReadUInt() >> 3;
-    if (section_index == 12)
-    {
-        Printf("Found 12 at %d\n", FTell());
-    }
-    FSkip(4);
-    uint value;
+    uint16 type : 3;
+    uint16 section_index_or_type : 13;
+    uint16 type_specific;
+    uint32 offset;
 };
 
 struct SectionData (int extra, int size)
 {
-    NewSectionHeader section_header[extra / 8] <optimize=false>;
+    NewSectionHeader section_header[extra] <optimize=false>;
     byte data[size];
 };
 
 struct TextureData (int extra)
 {
-    NewSectionHeader section_header[extra / 8] <optimize=false>;
+    NewSectionHeader section_header[extra] <optimize=false>;
     FSkip(4); // PCD9
     char format[4];
     uint32 pixel_data_length;
@@ -90,9 +99,9 @@ struct Mesh(uint32 start)
     uint16 unknown[5];
     uint32 end_of_mesh;
     uint16 indices[index_count];
-    Printf("%d, %d, %d\n", start, end_of_mesh, FTell());
+    // Printf("%d, %d, %d\n", start, end_of_mesh, FTell());
     FSkip((end_of_mesh + start) - FTell());
-    Printf("%d\n", FTell());
+    // Printf("%d\n", FTell());
 };
 
 struct MeshHeader
@@ -102,7 +111,7 @@ struct MeshHeader
 
 struct VertexData (int extra, int size)
 {
-    NewSectionHeader section_header[extra / 8] <optimize=false>;
+    NewSectionHeader section_header[extra] <optimize=false>;
     local uint32 start = FTell();
 
     /*
@@ -170,9 +179,9 @@ struct FileHeader(int extra, int size)
 {
     
     
-    Printf("%d, extra: %d\n", i, extra);
+    // Printf("%d, extra: %d\n", i, extra);
     //SectionHeader header;
-    local int number_of_headers = extra / 8;
+    local int number_of_headers = extra;
     // FileHeaderHeader headers[number_of_headers];
     NewSectionHeader section_header[number_of_headers] <optimize=false>;
 
@@ -198,9 +207,6 @@ struct FileHeader(int extra, int size)
     {
         byte unknown[24];
         uint32 size_of_section;
-
-        
-
 
         byte unknown1[size_of_section - 40];
         while(true)
@@ -270,7 +276,7 @@ struct WorldMeshes(int count)
 
 struct WorldModelData(int extra, int length)
 {
-    local int number_of_headers = extra / 8;
+    local int number_of_headers = extra;
     local int total_indices = 0;
     // WorldMeshHeader headers[number_of_headers];
     NewSectionHeader section_header[number_of_headers]  <optimize=false>;
@@ -309,22 +315,22 @@ local int section_count = 0;
 
 for (i = 0; i < number_of_sections; ++i)
 {
-    Printf("%d, %d\n", i, section_headers[i].id);
+    // Printf("%d, %d\n", i, section_headers[i].id);
     switch(section_headers[i].type)
     {
-        case Section:
+        case General:
         {
             ++section_count;
             if (zero_secs == 0)
             {
-                FileHeader data(section_headers[i].header_size / 32, section_headers[i].length) <bgcolor=0x2222FF>;
+                FileHeader data(section_headers[i].num_relocations, section_headers[i].length) <bgcolor=0x2222FF>;
                 has_model = data.flags[1];
             }
             else if (zero_secs == 1)
             {
                 if (has_model)
                 {
-                    VertexData data(section_headers[i].header_size / 32, section_headers[i].length);
+                    VertexData data(section_headers[i].num_relocations, section_headers[i].length);
                 }
                 else
                 {
@@ -334,11 +340,11 @@ for (i = 0; i < number_of_sections; ++i)
             else if (ReadUInt() == 64 || ReadUInt() == 216)// || ReadUInt() == 88 || ReadUInt() == 96 || ReadUInt() == 1160)
             {
                 // WorldModelData data(section_headers[i].header_size / 32, section_headers[i].length);
-                SectionData data(section_headers[i].header_size / 32, section_headers[i].length);
+                SectionData data(section_headers[i].num_relocations, section_headers[i].length);
             }
             else
             {   
-                SectionData data(section_headers[i].header_size / 32, section_headers[i].length);
+                SectionData data(section_headers[i].num_relocations, section_headers[i].length);
             }
             ++zero_secs;
             break;
@@ -346,18 +352,18 @@ for (i = 0; i < number_of_sections; ++i)
         case Texture:
         {
             ++texture_count;
-            TextureData data(section_headers[i].header_size / 32);
+            TextureData data(section_headers[i].num_relocations);
             break;
         }
         case Audio:
         {
             ++audio_count;
-            AudioData data(section_headers[i].header_size / 32,section_headers[i].length);
+            AudioData data(section_headers[i].num_relocations, section_headers[i].length);
             break;
         }
         default:
         {
-            UnknownData data(section_headers[i].header_size / 32, section_headers[i].length);
+            UnknownData data(section_headers[i].num_relocations, section_headers[i].length);
             break;
         }
     }
