@@ -22,6 +22,7 @@ namespace trview
             void load_world_vertices(Drm& drm, const Section& section) const;
             void load_world_mesh(Drm& drm, const Section& section) const;
             void resolve_world_mesh_textures(Drm& drm, const Section& section) const;
+            void process_relocation(Drm& drm) const;
 
             std::shared_ptr<IFiles> _files;
         };

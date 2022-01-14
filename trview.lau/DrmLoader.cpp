@@ -5,6 +5,8 @@
 #include <set>
 #include "Geometry.h"
 #include <Windows.h>
+#include <algorithm>
+#include <fstream>
 
 namespace trview
 {
@@ -101,19 +103,10 @@ namespace trview
             for (const auto& header : headers)
             {
                 const auto section_start = file.tellg();
-                std::vector<uint8_t> section_data(header.num_relocations * sizeof(Relocation) + header.length);
+                std::vector<Relocation> relocations = read_vector<Relocation>(file, header.num_relocations);
+                std::vector<uint8_t> section_data(header.length);
                 file.read(reinterpret_cast<char*>(&section_data[0]), section_data.size());
-                drm->sections.emplace_back(Section{ section_index, header, section_data });
-                file.seekg(section_start);
-                file.seekg(section_data.size(), std::ios::cur);
-                ++section_index;
-            }
-
-            // Build dependency links
-            for (auto& section : drm->sections)
-            {
-                auto stream = section.stream();
-                section.relocations = read_vector<Relocation>(stream, section.header.num_relocations);
+                drm->sections.emplace_back(Section{ section_index++, header, section_data, relocations });
             }
 
             for (const auto& section : drm->sections)
@@ -123,10 +116,177 @@ namespace trview
                 OutputDebugStringA(stream.str().c_str());
             }
 
+            // Assemble the true files:
+            process_relocation(*drm);
 
             read_file_header(*drm);
             generate_textures(*drm);
             return drm;
+        }
+
+        namespace
+        {
+            struct Node
+            {
+                Node* parent{ nullptr };
+                std::vector<Node> nodes;
+                int32_t index{ 0u };
+            };
+
+            bool in_tree(Node& node, int32_t index)
+            {
+                if (node.index == index)
+                {
+                    return true;
+                }
+                
+                if (node.parent)
+                {
+                    return in_tree(*node.parent, index);
+                }
+
+                return false;
+            }
+
+            void process_graph_node(Node& node, Drm& drm, int32_t index)
+            {
+                auto& section = drm.sections[index];
+                for (const auto& r : section.relocations)
+                {
+                    if (r.section_index_or_type != index &&
+                        std::none_of(node.nodes.begin(), node.nodes.end(),
+                            [&](auto& n) { return n.index == r.section_index_or_type; }) &&
+                        !in_tree(node, r.section_index_or_type))
+                    {
+                        node.nodes.push_back({ &node, {}, r.section_index_or_type });
+                        auto& back = node.nodes.back();
+                        process_graph_node(back, drm, r.section_index_or_type);
+                    }
+                }
+            }
+
+            std::unique_ptr<Node> build_graph(Drm& drm)
+            {
+                auto root = std::make_unique<Node>();
+                process_graph_node(*root, drm, 0);
+                return root;
+            }
+        }
+
+        void DrmLoader::process_relocation(Drm& drm) const
+        {
+            // Until there are no sections left
+            // Process all sections that only have references to leaf sections
+            //      Add data from leaf sections into the sections
+            //      These sections then become leaf sections themselves
+
+            // Store the data that will be altered during the relocation process.
+            std::vector<std::vector<uint8_t>> all_section_data;
+            for (const auto& section : drm.sections)
+            {
+                all_section_data.push_back(section.data);
+            }
+
+            // Build the dependency tree.
+            auto graph = build_graph(drm);
+
+            // Find all sections that don't have any references to other sections.
+            std::unordered_set<uint32_t> leaf_sections;
+
+            // Process until there are only leaf sections left.
+            while (leaf_sections.size() != all_section_data.size())
+            {
+                for (const auto& section : drm.sections)
+                {
+                    // If this is already a leaf, then don't do anything with it - there are no
+                    // dependent sections to bring in to it.
+                    if (leaf_sections.find(section.index) == leaf_sections.end())
+                    {
+                        bool all_leaves = std::all_of(section.relocations.begin(), section.relocations.end(),
+                            [&](const Relocation& relocation)
+                            {
+                                return relocation.section_index_or_type == section.index ||
+                                    leaf_sections.find(relocation.section_index_or_type) != leaf_sections.end();
+                            });
+                        if (!all_leaves)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    auto& section_data = all_section_data[section.index];
+
+                    // This item is ready for processing.
+                    for (auto iter = section.relocations.rbegin(); iter != section.relocations.rend(); ++iter)
+                    {
+                        if (iter->section_index_or_type != section.index)
+                        {
+                            const auto& source = all_section_data[iter->section_index_or_type];
+                            std::string section_data_string(reinterpret_cast<char*>(&section_data[0]), section_data.size());
+                            std::istringstream stream(section_data_string, std::ios::binary);
+                            stream.seekg(iter->offset, std::ios::beg);
+                            uint32_t data_offset = read<uint32_t>(stream);
+                            section_data.erase(section_data.begin() + iter->offset, section_data.begin() + iter->offset + sizeof(uint32_t));
+                            section_data.insert(section_data.begin() + iter->offset, source.begin() + data_offset, source.end());
+                        }
+                    }
+                    leaf_sections.insert(section.index);
+                }
+            }
+
+
+            for (uint32_t i = 0; i < drm.sections.size(); ++i)
+            {
+                auto& data = all_section_data[i];
+                std::string filename = "C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\werasaba\\";
+                filename += "co_cheese_tin_bottom_" + std::to_string(i) + ".drm";
+                std::ofstream out;
+                out.open(filename, std::ios::out | std::ios::binary);
+                out.write(reinterpret_cast<char*>(&data[0]), data.size());
+                out.close();
+            }
+
+
+            /*
+            for (uint32_t i = 0; i < drm.sections.size(); ++i)
+            {
+                const auto& section = drm.sections[i];
+                if (section.relocations.empty() ||
+                    std::none_of(section.relocations.begin(), section.relocations.end(), [i](auto& r) { return r.section_index_or_type != i; }))
+                {
+                    leaf_sections.insert(i);
+                }
+            }
+
+            // for (uint32_t i = 0; i < drm.sections.size(); ++i)
+            {
+                const auto& section = drm.sections[0];
+                std::vector<uint8_t> data = section.data;
+                for (auto iter = section.relocations.rbegin(); iter != section.relocations.rend(); ++iter)
+                {
+                    if (iter->section_index_or_type != 0)
+                    {
+                        const auto& source = drm.sections[iter->section_index_or_type];
+                        std::string section_data(reinterpret_cast<char*>(&data[0]), data.size());
+                        std::istringstream stream(section_data, std::ios::binary);
+                        stream.seekg(iter->offset, std::ios::beg);
+                        uint32_t data_offset = read<uint32_t>(stream);
+                        data.erase(data.begin() + iter->offset, data.begin() + iter->offset + sizeof(uint32_t));
+                        data.insert(data.begin() + iter->offset, source.data.begin() + data_offset, source.data.end());
+                    }
+                }
+
+                std::string filename = "C:\\Users\\Chris\\AppData\\Local\\Temp\\Temper\\werasaba\\";
+                filename += "ma9_" + std::to_string(0) + ".drm";
+                std::ofstream out;
+                out.open(filename, std::ios::out | std::ios::binary);
+                out.write(reinterpret_cast<char*>(&data[0]), data.size());
+                out.close();
+            }*/
         }
 
         void DrmLoader::read_file_header(Drm& drm) const
@@ -138,10 +298,6 @@ namespace trview
 
             const auto& header = drm.sections[0];
             auto stream = header.stream();
-
-            auto references = read_vector<Relocation>(stream, header.header.num_relocations);
-
-            // local int start = FTell();
 
             auto flags = read_vector<uint16_t>(stream, 4);
             uint32_t id = read<uint32_t>(stream);
@@ -163,7 +319,7 @@ namespace trview
             }
 
             std::vector<uint32_t> loaded;
-            for (const auto& reference : references)
+            for (const auto& reference : header.relocations)
             {
                 // uint32_t index = reference.index >> 3;
                 if (std::find(loaded.begin(), loaded.end(), reference.section_index_or_type) != loaded.end())
@@ -200,7 +356,7 @@ namespace trview
                 }
 
                 // The mesh index seems to be the first reference in the file header (so far).pleas
-                uint32_t mesh_index = references[0].section_index_or_type;
+                uint32_t mesh_index = header.relocations[0].section_index_or_type;
 
                 // First header of the file header is the mesh (section 11).
                 load_world_vertices(drm, drm.sections[world_mesh_index]);
@@ -247,9 +403,6 @@ namespace trview
         void DrmLoader::load_vertex_data(Drm& drm, const Section& section) const
         {
             auto stream = section.stream();
-            // uint32_t number_of_headers = section.header.preamble / 32 / 8;
-            auto references = read_vector<Relocation>(stream, section.header.num_relocations);
-
             auto start = stream.tellg();
 
             read_vector<uint16_t>(stream, 8);
@@ -350,9 +503,6 @@ namespace trview
         void DrmLoader::load_world_mesh(Drm& drm, const Section& section) const
         {
             auto stream = section.stream();
-            // uint32_t number_of_headers = section.header.preamble / 32 / 8;
-            auto references = read_vector<Relocation>(stream, section.header.num_relocations);
-
             const uint32_t start = stream.tellg();
 
             if (section.index == 12)
