@@ -218,143 +218,72 @@ namespace trview
                 Seek
             };
 
-            Mode mode = Mode::Graph;
+            // Build the dependency tree.
+            auto graph = build_graph(drm);
 
-            switch (mode)
+            // Find all sections that don't have any references to other sections.
+            std::unordered_set<uint32_t> leaf_sections;
+
+            auto only_references_leaves = [&](const Node& node, const Section& section)
             {
-                case Mode::Graph:
+                if (leaf_sections.find(section.index) == leaf_sections.end())
                 {
-                    // Build the dependency tree.
-                    auto graph = build_graph(drm);
-
-                    // Find all sections that don't have any references to other sections.
-                    std::unordered_set<uint32_t> leaf_sections;
-
-                    auto only_references_leaves = [&](const Node& node, const Section& section)
-                    {
-                        if (leaf_sections.find(section.index) == leaf_sections.end())
+                    bool all_leaves = std::all_of(section.relocations.begin(), section.relocations.end(),
+                        [&](const Relocation& relocation)
                         {
-                            bool all_leaves = std::all_of(section.relocations.begin(), section.relocations.end(),
-                                [&](const Relocation& relocation)
-                                {
-                                    return relocation.section_index_or_type == section.index ||
-                                        leaf_sections.find(relocation.section_index_or_type) != leaf_sections.end() ||
-                                        in_tree(node, relocation.section_index_or_type);
-                                });
-                            return all_leaves;
-                        }
-                    };
-
-                    auto is_leaf = [&](const Section& section)
-                    {
-                        return leaf_sections.find(section.index) != leaf_sections.end();
-                    };
-
-                    std::function<void(const Node&)> relocate;
-                    relocate = [&](const Node& node)
-                    {
-                        const auto& section = drm.sections[node.index];
-                        if (only_references_leaves(node, section))
-                        {
-                            auto& section_data = all_section_data[section.index];
-
-                            // This item is ready for processing.
-                            for (auto iter = section.relocations.rbegin(); iter != section.relocations.rend(); ++iter)
-                            {
-                                if (iter->section_index_or_type != section.index && is_leaf(drm.sections[iter->section_index_or_type]))
-                                {
-                                    const auto& source = all_section_data[iter->section_index_or_type];
-                                    std::string section_data_string(reinterpret_cast<char*>(&section_data[0]), section_data.size());
-                                    std::istringstream stream(section_data_string, std::ios::binary);
-                                    stream.seekg(iter->offset, std::ios::beg);
-                                    uint32_t data_offset = read<uint32_t>(stream);
-                                    // section_data.erase(section_data.begin() + iter->offset, section_data.begin() + iter->offset + sizeof(uint32_t));
-                                    section_data.insert(section_data.begin() + iter->offset + sizeof(uint32_t), source.begin(), source.end());
-                                }
-                            }
-                            leaf_sections.insert(section.index);
-                        }
-                        else
-                        {
-                            for (const auto& child : node.nodes)
-                            {
-                                if (!is_leaf(drm.sections[child->index]))
-                                {
-                                    relocate(*child);
-                                }
-                            }
-                        }
-                    };
-
-                    while (!is_leaf(drm.sections[0]))
-                    {
-                        relocate(*graph);
-                    }
-                    break;
+                            return relocation.section_index_or_type == section.index ||
+                                leaf_sections.find(relocation.section_index_or_type) != leaf_sections.end() ||
+                                in_tree(node, relocation.section_index_or_type);
+                        });
+                    return all_leaves;
                 }
-                case Mode::ResolveAll:
+            };
+
+            auto is_leaf = [&](const Section& section)
+            {
+                return leaf_sections.find(section.index) != leaf_sections.end();
+            };
+
+            std::function<void(const Node&)> relocate;
+            relocate = [&](const Node& node)
+            {
+                const auto& section = drm.sections[node.index];
+                if (only_references_leaves(node, section))
                 {
-                    // Find all sections that don't have any references to other sections.
-                    std::unordered_set<uint32_t> leaf_sections;
+                    auto& section_data = all_section_data[section.index];
 
-                    // Process until there are only leaf sections left.
-                    while (leaf_sections.size() != all_section_data.size())
+                    // This item is ready for processing.
+                    for (auto iter = section.relocations.rbegin(); iter != section.relocations.rend(); ++iter)
                     {
-                        for (const auto& section : drm.sections)
+                        if (iter->section_index_or_type != section.index && is_leaf(drm.sections[iter->section_index_or_type]))
                         {
-                            // If this is already a leaf, then don't do anything with it - there are no
-                            // dependent sections to bring in to it.
-                            if (leaf_sections.find(section.index) == leaf_sections.end())
-                            {
-                                bool all_leaves = std::all_of(section.relocations.begin(), section.relocations.end(),
-                                    [&](const Relocation& relocation)
-                                    {
-                                        return relocation.section_index_or_type == section.index ||
-                                            leaf_sections.find(relocation.section_index_or_type) != leaf_sections.end();
-                                    });
-                                if (!all_leaves)
-                                {
-                                    continue;
-                                }
-                            }
-                            else
-                            {
-                                continue;
-                            }
-
-                            auto& section_data = all_section_data[section.index];
-
-                            // This item is ready for processing.
-                            for (auto iter = section.relocations.rbegin(); iter != section.relocations.rend(); ++iter)
-                            {
-                                if (iter->section_index_or_type != section.index)
-                                {
-                                    const auto& source = all_section_data[iter->section_index_or_type];
-                                    std::string section_data_string(reinterpret_cast<char*>(&section_data[0]), section_data.size());
-                                    std::istringstream stream(section_data_string, std::ios::binary);
-                                    stream.seekg(iter->offset, std::ios::beg);
-                                    uint32_t data_offset = read<uint32_t>(stream);
-                                    section_data.erase(section_data.begin() + iter->offset, section_data.begin() + iter->offset + sizeof(uint32_t));
-                                    section_data.insert(section_data.begin() + iter->offset, source.begin() + data_offset, source.end());
-                                }
-                            }
-                            leaf_sections.insert(section.index);
+                            const auto& source = all_section_data[iter->section_index_or_type];
+                            std::string section_data_string(reinterpret_cast<char*>(&section_data[0]), section_data.size());
+                            std::istringstream stream(section_data_string, std::ios::binary);
+                            stream.seekg(iter->offset, std::ios::beg);
+                            uint32_t data_offset = read<uint32_t>(stream);
+                            section_data.insert(section_data.begin() + iter->offset + sizeof(uint32_t), source.begin(), source.end());
                         }
                     }
-                    break;
+                    leaf_sections.insert(section.index);
                 }
-                case Mode::Seek:
+                else
                 {
-                    // Read up to the first relocation.
-                    // Move to that position and continue reading until next relocation
-                    // If EOS or next instruction, move.
-
-                    break;
+                    for (const auto& child : node.nodes)
+                    {
+                        if (!is_leaf(drm.sections[child->index]))
+                        {
+                            relocate(*child);
+                        }
+                    }
                 }
+            };
+
+            while (!is_leaf(drm.sections[0]))
+            {
+                relocate(*graph);
             }
-            
 
-            // for (uint32_t i = 0; i < drm.sections.size(); ++i)
             for (uint32_t i = 0; i < 1; ++i)
             {
                 auto& data = all_section_data[i];
