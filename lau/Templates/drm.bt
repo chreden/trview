@@ -168,8 +168,8 @@ struct FileHeader(int extra, int size)
     Relocation section_header[extra] <optimize=false>;
 
     local int start = FTell();
-    ubyte data[size];
-/*
+//    ubyte data[size];
+
     // New file header reading:
     uint16 flags[4];
     uint32 id;
@@ -203,7 +203,7 @@ struct FileHeader(int extra, int size)
             uint16 id_of_next_section;
             FSkip(2);
         }
-    }*/
+    }
 };
 
 struct WorldVertex
@@ -266,10 +266,10 @@ local int texture_count = 0;
 local int section_count = 0;
 
 for (i = 0; i < number_of_sections; ++i)
-{
+{/*
     SectionData data(section_headers[i].num_relocations, section_headers[i].length);
     continue;
-
+*/
     switch(section_headers[i].type)
     {
         case General:
@@ -278,7 +278,6 @@ for (i = 0; i < number_of_sections; ++i)
             SectionData data(section_headers[i].num_relocations, section_headers[i].length);
             break;
         }
-/*
 
             if (zero_secs == 0)
             {
@@ -307,13 +306,13 @@ for (i = 0; i < number_of_sections; ++i)
             ++zero_secs;
             break;
         }
-/*
+
         case Texture:
         {
             ++texture_count;
             TextureData data(section_headers[i].num_relocations);
             break;
-        }*/
+        }
         case Audio:
         {
             ++audio_count;
