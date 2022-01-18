@@ -27,7 +27,11 @@
 #include <trview.app/Settings/IStartupOptions.h>
 #include <trview.ui.render/DefaultFonts.h>
 
+#include <external/imgui/backends/imgui_impl_win32.h>
+
 using namespace DirectX::SimpleMath;
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace trview
 {
@@ -56,6 +60,10 @@ namespace trview
 
         LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
+            if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+            {
+                return true;
+            }
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
 

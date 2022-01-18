@@ -7,6 +7,10 @@
 
 #include <trview.common/Strings.h>
 
+#include <external/imgui/imgui.h>
+#include <external/imgui/backends/imgui_impl_win32.h>
+#include <external/imgui/backends/imgui_impl_dx11.h>
+
 namespace trview
 {
     namespace
@@ -322,6 +326,24 @@ namespace trview
         };
 
         register_lua();
+
+        // Setup Dear ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        // Setup Platform/Renderer backends
+        ImGui_ImplWin32_Init(window);
+        ImGui_ImplDX11_Init(device->device().Get(), device->context().Get());
+    }
+
+    Viewer::~Viewer()
+    {
+        ImGui_ImplDX11_Shutdown();
+        ImGui_ImplWin32_Shutdown();
+        ImGui::DestroyContext();
     }
 
     void Viewer::initialise_input()
@@ -565,6 +587,8 @@ namespace trview
             _mouse_changed = false;
         }
 
+        _ui_changed = true;
+
         if (_scene_changed || _ui_changed)
         {
             _device->begin();
@@ -590,6 +614,19 @@ namespace trview
             _ui->render();
             _ui_changed = false;
 
+            ImGui_ImplDX11_NewFrame();
+            ImGui_ImplWin32_NewFrame();
+            ImGui::NewFrame();
+
+            {
+                ImGui::Begin("Tomb Raider Legend Glitche");
+                ImGui::Text("Nice Glitch bug vid");
+                ImGui::End();
+            }
+
+            ImGui::Render();
+            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
             _main_window->present(_settings.vsync);
         }
 
@@ -598,7 +635,8 @@ namespace trview
 
     bool Viewer::should_pick() const
     {
-        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window));
+        auto& io = ImGui::GetIO();
+        return !(!_level || window_under_cursor() != _window || window_is_minimised(_window) || _ui->is_cursor_over() || cursor_outside_window(_window) || io.WantCaptureMouse || io.WantCaptureKeyboard);
     }
 
     void Viewer::render_scene()
@@ -911,7 +949,8 @@ namespace trview
 
         _token_store += _camera_input.on_pan += [&](bool vertical, float x, float y)
         {
-            if (_ui->is_cursor_over() || _camera_mode != CameraMode::Orbit)
+            auto& io = ImGui::GetIO();
+            if (_ui->is_cursor_over() || io.WantCaptureKeyboard || io.WantCaptureMouse || _camera_mode != CameraMode::Orbit)
             {
                 return;
             }
