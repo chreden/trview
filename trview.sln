@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googletest", "external\goog
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "googlemock", "external\googlemock\googlemock.vcxproj", "{6E37091E-954C-4654-9B42-5980410791F4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\imgui.vcxproj", "{6AABD08E-3361-4D84-88F0-851EE588162A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -239,6 +241,14 @@ Global
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x64.Build.0 = Release|x64
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x86.ActiveCfg = Release|Win32
 		{6E37091E-954C-4654-9B42-5980410791F4}.Release|x86.Build.0 = Release|Win32
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Debug|x64.ActiveCfg = Debug|x64
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Debug|x64.Build.0 = Debug|x64
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Debug|x86.ActiveCfg = Debug|Win32
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Debug|x86.Build.0 = Debug|Win32
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Release|x64.ActiveCfg = Release|x64
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Release|x64.Build.0 = Release|x64
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Release|x86.ActiveCfg = Release|Win32
+		{6AABD08E-3361-4D84-88F0-851EE588162A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -250,6 +260,7 @@ Global
 		{2A4F1E89-71AC-46C3-A711-1A4D67ACCDF5} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{EAFD7489-57E3-4B6D-A704-F7C5EF640434} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 		{6E37091E-954C-4654-9B42-5980410791F4} = {14424861-057E-431A-97B1-0F482C6DD4E0}
+		{6AABD08E-3361-4D84-88F0-851EE588162A} = {14424861-057E-431A-97B1-0F482C6DD4E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1BD837F-81FB-40A7-879E-E411807799F4}
