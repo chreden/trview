@@ -19,7 +19,7 @@ namespace trview
 
     void CameraControls::render()
     {
-        ImGui::Begin("Camera Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
+        ImGui::Begin("Camera Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
         const std::array<std::string, 3> mode_items { "Orbit", "Free", "Axis" };
         if (ImGui::BeginCombo("##Mode", mode_items[static_cast<uint32_t>(_mode)].c_str()))

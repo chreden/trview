@@ -27,7 +27,7 @@ namespace trview
             }
         };
 
-        if (ImGui::Begin("View Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings))
+        if (ImGui::Begin("View Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             if (ImGui::BeginTable("flags", 2))
             {
