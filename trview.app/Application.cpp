@@ -293,7 +293,7 @@ namespace trview
             {
                 if (msg.message == WM_QUIT)
                 {
-                    break;
+                    return (int)msg.wParam;
                 }
 
                 if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -581,6 +581,7 @@ namespace trview
             ImGui::CreateContext();
             ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+            io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
             // Setup Platform/Renderer backends
