@@ -22,11 +22,12 @@ namespace trview
         const ui::render::IRenderer::Source& ui_renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
         const ISettingsWindow::Source& settings_window_source,
-        const IViewOptions::Source& view_options_source,
+        std::unique_ptr<IViewOptions> view_options,
         const IContextMenu::Source& context_menu_source,
         std::unique_ptr<ICameraControls> camera_controls,
         const std::shared_ptr<ui::ILoader>& ui_source)
-        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source), _camera_controls(std::move(camera_controls))
+        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source),
+        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options))
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
 
@@ -69,7 +70,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source, *ui_source);
+        generate_tool_window(*ui_source);
 
         _go_to = std::make_unique<GoTo>(*_control.get(), *ui_source);
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -264,12 +265,11 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ui::ILoader& ui_source)
+    void ViewerUI::generate_tool_window(const ui::ILoader& ui_source)
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(ui_source.load_from_resource(IDR_UI_TOOL_WINDOW));
 
-        _view_options = view_options_source(*tool_window);
         _view_options->on_toggle_changed += on_toggle_changed;
         _view_options->on_scalar_changed += on_scalar_changed;
         _view_options->on_alternate_group += on_alternate_group;
@@ -291,6 +291,7 @@ namespace trview
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
+        _view_options->render();
         _camera_controls->render();
 
         ImGui::Render();

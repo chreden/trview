@@ -30,7 +30,7 @@ namespace trview
             const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
             const ISettingsWindow::Source& settings_window_source,
-            const IViewOptions::Source& view_options_source,
+            std::unique_ptr<IViewOptions> view_options,
             const IContextMenu::Source& context_menu_source,
             std::unique_ptr<ICameraControls> camera_controls,
             const std::shared_ptr<ui::ILoader>& ui_source);
@@ -75,7 +75,7 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ui::ILoader& ui_source);
+        void generate_tool_window(const ui::ILoader& ui_source);
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;

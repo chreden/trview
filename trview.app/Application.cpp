@@ -582,6 +582,7 @@ namespace trview
             ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
             // Setup Platform/Renderer backends

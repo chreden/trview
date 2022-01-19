@@ -1,16 +1,12 @@
 #pragma once
 
-#include <functional>
 #include <cstdint>
 #include <trview.common/Event.h>
-#include <trview.ui/Control.h>
 
 namespace trview
 {
     struct IViewOptions
     {
-        using Source = std::function<std::unique_ptr<IViewOptions>(ui::Control&)>;
-
         virtual ~IViewOptions() = 0;
         /// <summary>
         /// Event raised when an alternate group is toggled. The group number and the new state are passed as parameters.
@@ -24,6 +20,7 @@ namespace trview
         /// Event raised when the user changes a toggle.
         /// </summary>
         Event<std::string, bool> on_toggle_changed;
+        virtual void render() = 0;
         /// <summary>
         /// Set whether an alternate group is enabled. This will not raise the on_alternate_group event.
         /// </summary>
