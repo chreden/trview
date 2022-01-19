@@ -32,7 +32,7 @@ namespace trview
             const ISettingsWindow::Source& settings_window_source,
             const IViewOptions::Source& view_options_source,
             const IContextMenu::Source& context_menu_source,
-            const ICameraControls::Source& camera_controls_source,
+            std::unique_ptr<ICameraControls> camera_controls,
             const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ViewerUI() = default;
         virtual void clear_minimap_highlight() override;
@@ -75,7 +75,7 @@ namespace trview
         virtual void set_toggle(const std::string& name, bool value) override;
         virtual bool toggle(const std::string& name) const override;
     private:
-        void generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source);
+        void generate_tool_window(const IViewOptions::Source& view_options_source, const ui::ILoader& ui_source);
         void register_change_detection(ui::Control* control);
 
         TokenStore _token_store;

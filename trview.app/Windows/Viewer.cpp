@@ -1,15 +1,12 @@
 #include "Viewer.h"
 
+#include <external/imgui/imgui.h>
+
 #include <trlevel/ILevel.h>
 #include <trview.graphics/RenderTargetStore.h>
 #include <trview.graphics/ISprite.h>
 #include <trview.graphics/ViewportStore.h>
-
 #include <trview.common/Strings.h>
-
-#include <external/imgui/imgui.h>
-#include <external/imgui/backends/imgui_impl_win32.h>
-#include <external/imgui/backends/imgui_impl_dx11.h>
 
 namespace trview
 {
@@ -326,24 +323,6 @@ namespace trview
         };
 
         register_lua();
-
-        // Setup Dear ImGui context
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-        // Setup Dear ImGui style
-        ImGui::StyleColorsDark();
-        // Setup Platform/Renderer backends
-        ImGui_ImplWin32_Init(window);
-        ImGui_ImplDX11_Init(device->device().Get(), device->context().Get());
-    }
-
-    Viewer::~Viewer()
-    {
-        ImGui_ImplDX11_Shutdown();
-        ImGui_ImplWin32_Shutdown();
-        ImGui::DestroyContext();
     }
 
     void Viewer::initialise_input()
@@ -613,19 +592,6 @@ namespace trview
 
             _ui->render();
             _ui_changed = false;
-
-            ImGui_ImplDX11_NewFrame();
-            ImGui_ImplWin32_NewFrame();
-            ImGui::NewFrame();
-
-            {
-                ImGui::Begin("Tomb Raider Legend Glitche");
-                ImGui::Text("Nice Glitch bug vid");
-                ImGui::End();
-            }
-
-            ImGui::Render();
-            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
             _main_window->present(_settings.vsync);
         }

@@ -65,7 +65,7 @@ namespace trview
             const graphics::IRenderTarget::SizeSource& render_target_source,
             const graphics::IDeviceWindow::Source& device_window_source,
             std::unique_ptr<ISectorHighlight> sector_highlight);
-        virtual ~Viewer();
+        virtual ~Viewer() = default;
         virtual CameraMode camera_mode() const override;
         virtual void render() override;
         virtual void open(ILevel* level) override;

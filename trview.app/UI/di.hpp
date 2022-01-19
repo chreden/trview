@@ -24,14 +24,7 @@ namespace trview
                         return std::make_unique<SettingsWindow>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
                     };
                 }),
-            di::bind<ICameraControls::Source>.to(
-                [](const auto& injector) -> ICameraControls::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<CameraControls>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
+            di::bind<ICameraControls>.to<CameraControls>(),
             di::bind<IViewOptions::Source>.to(
                 [](const auto& injector) -> IViewOptions::Source
                 {
@@ -69,7 +62,7 @@ namespace trview
                         injector.create<ISettingsWindow::Source>(),
                         injector.create<IViewOptions::Source>(),
                         injector.create<IContextMenu::Source>(),
-                        injector.create<ICameraControls::Source>(),
+                        injector.create<std::unique_ptr<ICameraControls>>(),
                         injector.create<std::shared_ptr<ui::ILoader>>());
                 })
         );

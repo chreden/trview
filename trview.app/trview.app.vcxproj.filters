@@ -346,6 +346,9 @@
     <ClCompile Include="Settings\RandomizerSettings.cpp">
       <Filter>Settings</Filter>
     </ClCompile>
+    <ClCompile Include="UI\ControlTracker.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera\Camera.h">
@@ -892,6 +895,9 @@
     </ClInclude>
     <ClInclude Include="Settings\RandomizerSettings.h">
       <Filter>Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ControlTracker.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

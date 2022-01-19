@@ -52,6 +52,7 @@ namespace
             std::shared_ptr<IStartupOptions> startup_options{ std::make_shared<MockStartupOptions>() };
             std::shared_ptr<IDialogs> dialogs{ std::make_shared<MockDialogs>() };
             std::shared_ptr<IFiles> files{ std::make_shared<MockFiles>() };
+            std::shared_ptr<graphics::IDevice> device{ std::make_shared<graphics::mocks::MockDevice>() };
 
             std::unique_ptr<Application> build()
             {
@@ -59,7 +60,7 @@ namespace
                 return std::make_unique<Application>(window, std::move(update_checker), std::move(settings_loader), std::move(file_dropper),
                     std::move(level_loader), std::move(level_switcher), std::move(recent_files), std::move(viewer), route_source, shortcuts,
                     std::move(items_window_manager), std::move(triggers_window_manager), std::move(route_window_manager), std::move(rooms_window_manager),
-                    level_source, startup_options, dialogs, files);
+                    level_source, startup_options, dialogs, files, device);
             }
 
             test_module& with_dialogs(std::shared_ptr<IDialogs> dialogs)

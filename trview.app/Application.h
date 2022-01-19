@@ -53,7 +53,8 @@ namespace trview
             const ILevel::Source& level_source,
             std::shared_ptr<IStartupOptions> startup_options,
             std::shared_ptr<IDialogs> dialogs,
-            std::shared_ptr<IFiles> files);
+            std::shared_ptr<IFiles> files,
+            const std::shared_ptr<graphics::IDevice>& device);
         virtual ~Application();
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
@@ -117,6 +118,8 @@ namespace trview
         std::unique_ptr<IRouteWindowManager> _route_window;
         std::unique_ptr<IRoomsWindowManager> _rooms_windows;
         Timer _timer;
+        bool _imgui_setup{ false };
+        std::shared_ptr<graphics::IDevice> _device;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);

@@ -38,13 +38,13 @@ namespace
             ISettingsWindow::Source settings_window_source{ [](auto&&...) { return std::make_unique<MockSettingsWindow>(); }};
             IViewOptions::Source view_options_source{ [](auto&&...) { return std::make_unique<MockViewOptions>(); } };
             trview::IContextMenu::Source context_menu_source{ [](auto&&...) { return std::make_unique<MockContextMenu>(); } };
-            ICameraControls::Source camera_controls_source{ [](auto&&...) { return std::make_unique<MockCameraControls>(); } };
+            std::unique_ptr<ICameraControls> camera_controls{ std::make_unique<MockCameraControls>() };
 
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source, camera_controls_source,
+                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source, std::move(camera_controls),
                     std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
             }
 
@@ -66,9 +66,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_camera_controls_source(const trview::ICameraControls::Source& source)
+            test_module& with_camera_controls(std::unique_ptr<ICameraControls> controls)
             {
-                camera_controls_source = source;
+                camera_controls = std::move(controls);
                 return *this;
             }
         };
@@ -178,8 +178,7 @@ TEST(ViewerUI, OnRandomizerToolsEventRaised)
 TEST(ViewerUI, CameraControlsResetEventRaised)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
-    auto camera_controls_ptr_actual = std::move(camera_controls_ptr);
-    auto ui = register_test_module().with_camera_controls_source([&](auto&&...) { return std::move(camera_controls_ptr_actual); }).build();
+    auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
 
     bool raised = false;
     auto token = ui->on_camera_reset += [&]()
@@ -194,8 +193,7 @@ TEST(ViewerUI, CameraControlsResetEventRaised)
 TEST(ViewerUI, CameraControlsModeSelectedEventRaised)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
-    auto camera_controls_ptr_actual = std::move(camera_controls_ptr);
-    auto ui = register_test_module().with_camera_controls_source([&](auto&&...) { return std::move(camera_controls_ptr_actual); }).build();
+    auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
 
     std::optional<CameraMode> raised;
     auto token = ui->on_camera_mode += [&](auto mode)
@@ -211,8 +209,7 @@ TEST(ViewerUI, CameraControlsModeSelectedEventRaised)
 TEST(ViewerUI, CameraControlsProjectionModeSelectedEventRaised)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
-    auto camera_controls_ptr_actual = std::move(camera_controls_ptr);
-    auto ui = register_test_module().with_camera_controls_source([&](auto&&...) { return std::move(camera_controls_ptr_actual); }).build();
+    auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
 
     std::optional<ProjectionMode> raised;
     auto token = ui->on_camera_projection_mode += [&](auto mode)
@@ -228,8 +225,7 @@ TEST(ViewerUI, CameraControlsProjectionModeSelectedEventRaised)
 TEST(ViewerUI, SetCameraModeUpdatesCameraControls)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
-    auto camera_controls_ptr_actual = std::move(camera_controls_ptr);
-    auto ui = register_test_module().with_camera_controls_source([&](auto&&...) { return std::move(camera_controls_ptr_actual); }).build();
+    auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
     EXPECT_CALL(camera_controls, set_mode(CameraMode::Orbit)).Times(1);
 
     ui->set_camera_mode(CameraMode::Orbit);
@@ -238,8 +234,7 @@ TEST(ViewerUI, SetCameraModeUpdatesCameraControls)
 TEST(ViewerUI, SetCameraProjectionModeUpdatesCameraControls)
 {
     auto [camera_controls_ptr, camera_controls] = create_mock<MockCameraControls>();
-    auto camera_controls_ptr_actual = std::move(camera_controls_ptr);
-    auto ui = register_test_module().with_camera_controls_source([&](auto&&...) { return std::move(camera_controls_ptr_actual); }).build();
+    auto ui = register_test_module().with_camera_controls(std::move(camera_controls_ptr)).build();
     EXPECT_CALL(camera_controls, set_projection_mode(ProjectionMode::Orthographic)).Times(1);
 
     ui->set_camera_projection_mode(ProjectionMode::Orthographic);

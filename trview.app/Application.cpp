@@ -28,6 +28,7 @@
 #include <trview.ui.render/DefaultFonts.h>
 
 #include <external/imgui/backends/imgui_impl_win32.h>
+#include <external/imgui/backends/imgui_impl_dx11.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -128,13 +129,14 @@ namespace trview
         const ILevel::Source& level_source,
         std::shared_ptr<IStartupOptions> startup_options,
         std::shared_ptr<IDialogs> dialogs,
-        std::shared_ptr<IFiles> files)
+        std::shared_ptr<IFiles> files,
+        const std::shared_ptr<graphics::IDevice>& device)
         : MessageHandler(application_window), _instance(GetModuleHandle(nullptr)),
         _file_dropper(std::move(file_dropper)), _level_switcher(std::move(level_switcher)), _recent_files(std::move(recent_files)), _update_checker(std::move(update_checker)),
         _view_menu(window()), _settings_loader(std::move(settings_loader)), _level_loader(std::move(level_loader)), _viewer(std::move(viewer)), _route_source(route_source),
         _route(route_source()), _shortcuts(shortcuts), _items_windows(std::move(items_window_manager)),
         _triggers_windows(std::move(triggers_window_manager)), _route_window(std::move(route_window_manager)), _rooms_windows(std::move(rooms_window_manager)), _level_source(level_source),
-        _dialogs(dialogs), _files(files), _timer(default_time_source())
+        _dialogs(dialogs), _files(files), _timer(default_time_source()), _device(device)
     {
         _update_checker->check_for_updates();
         _settings = _settings_loader->load_user_settings();
@@ -160,6 +162,12 @@ namespace trview
     Application::~Application()
     {
         _settings_loader->save_user_settings(_settings);
+        if (_imgui_setup)
+        {
+            ImGui_ImplDX11_Shutdown();
+            ImGui_ImplWin32_Shutdown();
+            ImGui::DestroyContext();
+        }
     }
 
     void Application::open(const std::string& filename)
@@ -565,6 +573,22 @@ namespace trview
             Sleep(1);
             return;
         }
+
+        if (!_imgui_setup)
+        {
+            // Setup Dear ImGui context
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGuiIO& io = ImGui::GetIO();
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+            // Setup Dear ImGui style
+            ImGui::StyleColorsDark();
+            // Setup Platform/Renderer backends
+            ImGui_ImplWin32_Init(window());
+            ImGui_ImplDX11_Init(_device->device().Get(), _device->context().Get());
+            _imgui_setup = true;
+        }
+
 
         _timer.update();
         const auto elapsed = _timer.elapsed();

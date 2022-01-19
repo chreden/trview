@@ -8,6 +8,10 @@
 #include <trview.common/Windows/Shortcuts.h>
 #include "../Resources/resource.h"
 
+#include <external/imgui/imgui.h>
+#include <external/imgui/backends/imgui_impl_win32.h>
+#include <external/imgui/backends/imgui_impl_dx11.h>
+
 using namespace trview::ui;
 
 namespace trview
@@ -20,9 +24,9 @@ namespace trview
         const ISettingsWindow::Source& settings_window_source,
         const IViewOptions::Source& view_options_source,
         const IContextMenu::Source& context_menu_source,
-        const ICameraControls::Source& camera_controls_source,
+        std::unique_ptr<ICameraControls> camera_controls,
         const std::shared_ptr<ui::ILoader>& ui_source)
-        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source)
+        : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source), _camera_controls(std::move(camera_controls))
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
 
@@ -65,7 +69,7 @@ namespace trview
             }
         };
 
-        generate_tool_window(view_options_source, camera_controls_source, *ui_source);
+        generate_tool_window(view_options_source, *ui_source);
 
         _go_to = std::make_unique<GoTo>(*_control.get(), *ui_source);
         _token_store += _go_to->on_selected += [&](uint32_t index)
@@ -260,7 +264,7 @@ namespace trview
             || (_map_renderer->loaded() && _map_renderer->cursor_is_over_control());
     }
 
-    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ICameraControls::Source& camera_controls_source, const ui::ILoader& ui_source)
+    void ViewerUI::generate_tool_window(const IViewOptions::Source& view_options_source, const ui::ILoader& ui_source)
     {
         // This is the main tool window on the side of the screen.
         auto tool_window = _control->add_child(ui_source.load_from_resource(IDR_UI_TOOL_WINDOW));
@@ -273,7 +277,6 @@ namespace trview
         _room_navigator = std::make_unique<RoomNavigator>(*tool_window, ui_source);
         _room_navigator->on_room_selected += on_select_room;
 
-        _camera_controls = camera_controls_source(*tool_window);
         _camera_controls->on_reset += on_camera_reset;
         _camera_controls->on_mode_selected += on_camera_mode;
         _camera_controls->on_projection_mode_selected += on_camera_projection_mode;
@@ -283,6 +286,15 @@ namespace trview
     {
         _map_renderer->render();
         _ui_renderer->render();
+
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        _camera_controls->render();
+
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
