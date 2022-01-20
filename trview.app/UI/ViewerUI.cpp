@@ -8,10 +8,6 @@
 #include <trview.common/Windows/Shortcuts.h>
 #include "../Resources/resource.h"
 
-#include <external/imgui/imgui.h>
-#include <external/imgui/backends/imgui_impl_win32.h>
-#include <external/imgui/backends/imgui_impl_dx11.h>
-
 using namespace trview::ui;
 
 namespace trview
@@ -286,24 +282,8 @@ namespace trview
     {
         _map_renderer->render();
         _ui_renderer->render();
-
-        ImGui_ImplDX11_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-
         _view_options->render();
         _camera_controls->render();
-
-        ImGui::Render();
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-        // Update and Render additional Platform Windows
-        ImGuiIO& io = ImGui::GetIO();
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-        }
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)

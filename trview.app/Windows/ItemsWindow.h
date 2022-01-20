@@ -62,12 +62,14 @@ namespace trview
         void set_sync_item(bool value);
         void bind_controls();
         void bind_tooltip();
+        void render_host();
 
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;
         ui::Listbox* _trigger_list;
         ui::Checkbox* _track_room_checkbox;
         std::vector<Item> _all_items;
+        std::unordered_map<uint32_t, bool> _selected;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         /// Whether the item window is tracking the current room.
         bool _track_room{ false };

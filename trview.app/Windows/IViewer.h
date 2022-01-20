@@ -63,6 +63,10 @@ namespace trview
         /// Render the viewer.
         virtual void render() = 0;
 
+        virtual void render_ui() = 0;
+
+        virtual void present(bool vsync) = 0;
+
         /// Attempt to open the specified level file.
         /// @param filename The level file to open.
         virtual void open(ILevel* level) = 0;

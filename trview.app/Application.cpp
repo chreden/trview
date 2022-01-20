@@ -583,14 +583,17 @@ namespace trview
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
             // Setup Dear ImGui style
             ImGui::StyleColorsDark();
+
+            _font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 12.0f);
+
             // Setup Platform/Renderer backends
             ImGui_ImplWin32_Init(window());
             ImGui_ImplDX11_Init(_device->device().Get(), _device->context().Get());
             _imgui_setup = true;
         }
-
 
         _timer.update();
         const auto elapsed = _timer.elapsed();
@@ -600,10 +603,32 @@ namespace trview
         _route_window->update(elapsed);
 
         _viewer->render();
+
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::PushFont(_font);
+
         _items_windows->render(_settings.vsync);
         _triggers_windows->render(_settings.vsync);
         _rooms_windows->render(_settings.vsync);
         _route_window->render(_settings.vsync);
+        _viewer->render_ui();
+
+        ImGui::PopFont();
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+        // Update and Render additional Platform Windows
+        ImGuiIO& io = ImGui::GetIO();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
+        _viewer->present(_settings.vsync);
     }
 
     bool Application::should_discard_changes()

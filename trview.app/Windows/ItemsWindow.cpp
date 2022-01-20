@@ -4,6 +4,8 @@
 #include <trview.ui/Button.h>
 #include <trview.common/Strings.h>
 #include <trview.common/Windows/Clipboard.h>
+#include <external/imgui/imgui.h>
+#include <external/imgui/imgui_internal.h>
 
 using namespace trview::graphics;
 
@@ -46,6 +48,10 @@ namespace trview
     void ItemsWindow::set_items(const std::vector<Item>& items)
     {
         _all_items = items;
+        for (const auto& i : _all_items)
+        {
+            _selected[i.number()] = false;
+        }
         populate_items(items);
     }
 
@@ -268,9 +274,170 @@ namespace trview
         return _selected_item;
     }
 
+    void ItemsWindow::render_host()
+    {
+        ImGui::Begin("Items", nullptr, ImGuiWindowFlags_NoDocking);
+        ImGuiID dockspaceID = ImGui::GetID("dockspace");
+        if (!ImGui::DockBuilderGetNode(dockspaceID))
+        {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+            ImGui::DockBuilderRemoveNode(dockspaceID);
+            ImGui::DockBuilderAddNode(dockspaceID, ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_NoTabBar);
+            ImGui::DockBuilderSetNodeSize(dockspaceID, viewport->Size);
+
+            ImGuiID dock_main_id = dockspaceID;
+            ImGui::DockBuilderDockWindow("ItemsList", dock_main_id);
+            ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.2f, NULL, &dock_main_id);
+            ImGui::DockBuilderDockWindow("ItemsDetails", dock_id_right);
+
+            ImGui::DockBuilderGetNode(dock_main_id)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+            ImGui::DockBuilderGetNode(dock_id_right)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+
+            ImGui::DockBuilderFinish(dockspaceID);
+        }
+        ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
+        ImGui::End();
+    }
+
     void ItemsWindow::render(bool vsync)
     {
         CollapsiblePanel::render(vsync);
+
+        render_host();
+
+        // TODO: Unique ID.
+        if (ImGui::Begin("ItemsList", nullptr, ImGuiWindowFlags_NoTitleBar))
+        {
+            bool track_room = _track_room;
+            if (ImGui::Checkbox("Track Room##trackroom", &track_room))
+            {
+                set_track_room(track_room);
+            }
+            ImGui::SameLine();
+            bool sync_item = _sync_item;
+            if (ImGui::Checkbox("Sync Item##syncitem", &sync_item))
+            {
+                set_sync_item(sync_item);
+            }
+
+            if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            {
+                ImGui::TableSetupColumn("#");
+                ImGui::TableSetupColumn("Room");
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupColumn("Hide");
+                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableHeadersRow();
+
+                for (const auto& item : _all_items)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    // ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &_selected[item.number()], ImGuiSelectableFlags_SpanAllColumns);
+                    ImGui::Text(std::to_string(item.number()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(item.room()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(std::to_string(item.type_id()).c_str());
+                    ImGui::TableNextColumn();
+                    ImGui::Text(to_utf8(item.type()).c_str());
+                    ImGui::TableNextColumn();
+                    bool x = !item.visible();
+                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &x))
+                    {
+                        on_item_visibility(item, !x);
+                    }
+                }
+                ImGui::EndTable();
+            }
+        }
+        ImGui::End();
+
+        if (ImGui::Begin("ItemsDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
+        {
+            ImGui::Text("Item Details");
+            if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 300)))
+            {
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Value");
+                ImGui::TableNextRow();
+
+                if (_selected_item.has_value())
+                {
+                    const auto& item = _selected_item.value();
+
+                    auto add_stat = [&item](const std::string& name, const std::string& value)
+                    {
+                        ImGui::TableNextColumn();
+                        ImGui::Text(name.c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::Text(value.c_str());
+                    };
+
+                    auto position_text = [&item]()
+                    {
+                        std::stringstream stream;
+                        stream << std::fixed << std::setprecision(0) <<
+                            item.position().x * trlevel::Scale_X << ", " <<
+                            item.position().y * trlevel::Scale_Y << ", " <<
+                            item.position().z * trlevel::Scale_Z;
+                        return stream.str();
+                    };
+
+                    add_stat("Type", to_utf8(item.type()));
+                    add_stat("#", std::to_string(item.number()));
+                    add_stat("Position", position_text());
+                    add_stat("Type ID", std::to_string(item.type_id()));
+                    add_stat("Room", std::to_string(item.room()));
+                    add_stat("Clear Body", to_utf8(format_bool(item.clear_body_flag())));
+                    add_stat("Invisible", to_utf8(format_bool(item.invisible_flag())));
+                    add_stat("Flags", to_utf8(format_binary(item.activation_flags())));
+                    add_stat("OCB", to_utf8(format_bool(item.ocb())));
+                }
+
+                ImGui::EndTable();
+            }
+            if (ImGui::Button("Add to Route##addtoroute", ImVec2(-1, 30)))
+            {
+                on_add_to_route(_selected_item.value());
+            }
+            ImGui::Text("Triggered By");
+            if (ImGui::BeginTable("##triggeredby", 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            {
+                ImGui::TableSetupColumn("#");
+                ImGui::TableSetupColumn("Room");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupScrollFreeze(1, 1);
+                ImGui::TableHeadersRow();
+
+                if (_selected_item.has_value())
+                {
+                    const auto& item = _selected_item.value();
+
+                    for (auto& trigger : item.triggers())
+                    {
+                        auto trigger_ptr = trigger.lock();
+                        if (!trigger_ptr)
+                        {
+                            continue;
+                        }
+
+                        ImGui::TableNextRow();
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::to_string(trigger_ptr->number()).c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
+                        ImGui::TableNextColumn();
+                        ImGui::Text(to_utf8(trigger_type_name(trigger_ptr->type())).c_str());
+                    }
+                }
+
+                ImGui::EndTable();
+            }
+        }
+        ImGui::End();
     }
 
     void ItemsWindow::update(float delta)

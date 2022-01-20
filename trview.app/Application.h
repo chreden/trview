@@ -23,6 +23,8 @@
 #include <trview.common/Windows/IDialogs.h>
 #include <trview.common/Windows/IShortcuts.h>
 
+struct ImFont;
+
 namespace trview
 {
     struct IApplication
@@ -120,6 +122,7 @@ namespace trview
         Timer _timer;
         bool _imgui_setup{ false };
         std::shared_ptr<graphics::IDevice> _device;
+        ImFont* _font;
     };
 
     std::unique_ptr<IApplication> create_application(HINSTANCE instance, const std::wstring& command_line, int command_show);
