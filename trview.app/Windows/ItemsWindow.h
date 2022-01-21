@@ -40,6 +40,8 @@ namespace trview
         void set_track_room(bool value);
         void set_sync_item(bool value);
         bool render_host();
+        void render_items_list();
+        void render_item_details();
 
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;

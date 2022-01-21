@@ -129,14 +129,8 @@ namespace trview
         return stay_open;
     }
 
-    void ItemsWindow::render(bool vsync)
+    void ItemsWindow::render_items_list()
     {
-        if (!render_host())
-        {
-            IItemsWindow::on_window_closed();
-            return;
-        }
-
         // TODO: Unique ID.
         if (ImGui::Begin("ItemsList", nullptr, ImGuiWindowFlags_NoTitleBar))
         {
@@ -231,7 +225,10 @@ namespace trview
             }
         }
         ImGui::End();
+    }
 
+    void ItemsWindow::render_item_details()
+    {
         if (ImGui::Begin("ItemsDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
         {
             ImGui::Text("Item Details");
@@ -324,6 +321,18 @@ namespace trview
             }
         }
         ImGui::End();
+    }
+
+    void ItemsWindow::render(bool vsync)
+    {
+        if (!render_host())
+        {
+            IItemsWindow::on_window_closed();
+            return;
+        }
+
+        render_items_list();
+        render_item_details();
     }
 
     void ItemsWindow::update(float delta)
