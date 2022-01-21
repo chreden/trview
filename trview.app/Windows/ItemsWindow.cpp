@@ -358,7 +358,7 @@ namespace trview
         if (ImGui::Begin("ItemsDetails", nullptr, ImGuiWindowFlags_NoTitleBar))
         {
             ImGui::Text("Item Details");
-            if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 300)))
+            if (ImGui::BeginTable("##itemstats", 2, 0, ImVec2(-1, 150)))
             {
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Value");
