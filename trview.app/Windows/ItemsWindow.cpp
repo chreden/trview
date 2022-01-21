@@ -340,8 +340,16 @@ namespace trview
 
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
-                    // ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &_selected[item.number()], ImGuiSelectableFlags_SpanAllColumns);
-                    ImGui::Text(std::to_string(item.number()).c_str());
+                    bool selected = _selected_item.has_value() && _selected_item.value().number() == item.number();
+                    if (ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                    {
+                        _selected_item = item;
+                        load_item_details(item);
+                        if (_sync_item)
+                        {
+                            on_item_selected(item);
+                        }
+                    }
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item.room()).c_str());
                     ImGui::TableNextColumn();
