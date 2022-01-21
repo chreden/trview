@@ -386,10 +386,10 @@ namespace trview
                     ImGui::TableNextColumn();
                     ImGui::Text(to_utf8(item.type()).c_str());
                     ImGui::TableNextColumn();
-                    bool x = !item.visible();
-                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &x))
+                    bool hidden = !item.visible();
+                    if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
                     {
-                        on_item_visibility(item, !x);
+                        on_item_visibility(item, !hidden);
                     }
                 }
                 ImGui::EndTable();
