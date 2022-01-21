@@ -3,24 +3,15 @@
 
 #pragma once
 
-#include <trview.ui/Listbox.h>
-#include <trview.app/Elements/Item.h>
-#include "CollapsiblePanel.h"
-#include "IItemsWindow.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/IBubble.h>
-#include <trview.ui/ILoader.h>
-#include <trview.app/UI/Tooltip.h>
+
+#include "IItemsWindow.h"
+#include "../Elements/Item.h"
 
 namespace trview
 {
-    namespace ui
-    {
-        class Checkbox;
-    }
-
     /// Used to show and filter the items in the level.
-    class ItemsWindow final : public IItemsWindow, public CollapsiblePanel
+    class ItemsWindow final : public IItemsWindow
     {
     public:
         struct Names
@@ -34,17 +25,7 @@ namespace trview
             static const std::string expander;
         };
 
-        /// Create an items window as a child of the specified window.
-        /// @param device The graphics device
-        /// @param renderer_source The function to call to get a renderer.
-        /// @param parent The parent window.
-        explicit ItemsWindow(const graphics::IDeviceWindow::Source& device_window_source,
-            const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source,
-            const Window& parent,
-            const std::shared_ptr<IClipboard>& clipboard,
-            const IBubble::Source& bubble_source,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+        explicit ItemsWindow(const Window& window, const std::shared_ptr<IClipboard>& clipboard);
         virtual ~ItemsWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_items(const std::vector<Item>& items) override;
@@ -56,35 +37,22 @@ namespace trview
         virtual std::optional<Item> selected_item() const override;
         virtual void update(float delta) override;
     private:
-        void populate_items(const std::vector<Item>& items);
-        void load_item_details(const Item& item);
         void set_track_room(bool value);
         void set_sync_item(bool value);
-        void bind_controls();
-        void bind_tooltip();
         bool render_host();
 
-        ui::Listbox* _items_list;
-        ui::Listbox* _stats_list;
-        ui::Listbox* _trigger_list;
-        ui::Checkbox* _track_room_checkbox;
         std::vector<Item> _all_items;
-        std::unordered_map<uint32_t, bool> _selected;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
         /// Whether the item window is tracking the current room.
         bool _track_room{ false };
         /// The current room number selected for tracking.
         uint32_t _current_room{ 0u };
-        /// Whether the room tracking filter has been applied.
-        bool _filter_applied{ false };
         bool _sync_item{ true };
         std::optional<Item> _selected_item;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<IBubble> _bubble;
-        std::unique_ptr<Tooltip> _tooltip;
-
         std::unordered_map<std::wstring, std::wstring> _tips;
         std::optional<float> _tooltip_timer;
         std::weak_ptr<ITrigger> _selected_trigger;
+        Window _window;
     };
 }

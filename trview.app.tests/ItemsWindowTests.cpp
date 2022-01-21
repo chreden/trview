@@ -29,22 +29,12 @@ namespace
     {
         struct test_module
         {
-            IDeviceWindow::Source device_window_source{ [](auto&&...) { return std::make_unique<MockDeviceWindow>(); } };
-            IRenderer::Source renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); } };
-            IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
             trview::Window window{ create_test_window(L"ItemsWindowTests") };
             std::shared_ptr<IClipboard> clipboard{ std::make_shared<MockClipboard>() };
-            IBubble::Source bubble_source{ [](auto&&...) { return std::make_unique<MockBubble>(); } };
-
-            test_module& with_bubble_source(const IBubble::Source& source)
-            {
-                this->bubble_source = source;
-                return *this;
-            }
 
             std::unique_ptr<ItemsWindow> build()
             {
-                return std::make_unique<ItemsWindow>(device_window_source, renderer_source, input_source, window, clipboard, bubble_source, std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
+                return std::make_unique<ItemsWindow>(window, clipboard);
             }
         };
 

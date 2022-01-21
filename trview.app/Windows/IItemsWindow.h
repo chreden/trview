@@ -10,7 +10,7 @@ namespace trview
 {
     struct IItemsWindow
     {
-        using Source = std::function<std::shared_ptr<IItemsWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<IItemsWindow>()>;
 
         virtual ~IItemsWindow() = 0;
 
