@@ -321,7 +321,7 @@ namespace trview
                 set_sync_item(sync_item);
             }
 
-            if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
+            if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
                 ImGui::TableSetupColumn("#");
                 ImGui::TableSetupColumn("Room");
@@ -330,6 +330,35 @@ namespace trview
                 ImGui::TableSetupColumn("Hide");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
+
+                auto specs = ImGui::TableGetSortSpecs();
+                if (specs && specs->SpecsDirty)
+                {
+                    std::sort(_all_items.begin(), _all_items.end(),
+                        [&](const auto& l, const auto& r) -> int
+                        {
+                            switch (specs->Specs[0].ColumnIndex)
+                            {
+                            case 0:
+                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                    ? (l.number() < r.number()) : (l.number() > r.number());
+                            case 1:
+                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                    ? (l.room() < r.room()) : (l.room() > r.room());
+                            case 2:
+                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                    ? (l.type_id() < r.type_id()) : (l.type_id() > r.type_id());
+                            case 3:
+                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                    ? (l.type() < r.type()) : (l.type() > r.type());
+                            case 4:
+                                return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
+                                    ? (l.visible() < r.visible()) : (l.visible() > r.visible());
+                            }
+                            return 0;
+                        });
+                    specs->SpecsDirty = false;
+                }
 
                 for (const auto& item : _all_items)
                 {
