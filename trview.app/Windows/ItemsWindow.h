@@ -62,7 +62,7 @@ namespace trview
         void set_sync_item(bool value);
         void bind_controls();
         void bind_tooltip();
-        void render_host();
+        bool render_host();
 
         ui::Listbox* _items_list;
         ui::Listbox* _stats_list;

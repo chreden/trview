@@ -274,9 +274,10 @@ namespace trview
         return _selected_item;
     }
 
-    void ItemsWindow::render_host()
+    bool ItemsWindow::render_host()
     {
-        ImGui::Begin("Items", nullptr, ImGuiWindowFlags_NoDocking);
+        bool stay_open = true;
+        ImGui::Begin("Items", &stay_open);
         ImGuiID dockspaceID = ImGui::GetID("dockspace");
         if (!ImGui::DockBuilderGetNode(dockspaceID))
         {
@@ -298,13 +299,18 @@ namespace trview
         }
         ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), 0);
         ImGui::End();
+        return stay_open;
     }
 
     void ItemsWindow::render(bool vsync)
     {
         CollapsiblePanel::render(vsync);
 
-        render_host();
+        if (!render_host())
+        {
+            IItemsWindow::on_window_closed();
+            return;
+        }
 
         // TODO: Unique ID.
         if (ImGui::Begin("ItemsList", nullptr, ImGuiWindowFlags_NoTitleBar))
@@ -320,6 +326,8 @@ namespace trview
             {
                 set_sync_item(sync_item);
             }
+
+            ImGui::ShowStackToolWindow();
 
             if (ImGui::BeginTable("##itemslist", 5, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -379,6 +387,7 @@ namespace trview
                             on_item_selected(item);
                         }
                     }
+                    ImGui::SetItemAllowOverlap();
                     ImGui::TableNextColumn();
                     ImGui::Text(std::to_string(item.room()).c_str());
                     ImGui::TableNextColumn();
@@ -387,10 +396,12 @@ namespace trview
                     ImGui::Text(to_utf8(item.type()).c_str());
                     ImGui::TableNextColumn();
                     bool hidden = !item.visible();
+                    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
                     if (ImGui::Checkbox((std::string("##hide-") + std::to_string(item.number())).c_str(), &hidden))
                     {
                         on_item_visibility(item, !hidden);
                     }
+                    ImGui::PopStyleVar();
                 }
                 ImGui::EndTable();
             }
