@@ -426,7 +426,12 @@ namespace trview
 
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        ImGui::Text(std::to_string(trigger_ptr->number()).c_str());
+                        bool selected = _selected_trigger.lock() == trigger_ptr;
+                        if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        {
+                            _selected_trigger = trigger;
+                            on_trigger_selected(trigger);
+                        }
                         ImGui::TableNextColumn();
                         ImGui::Text(std::to_string(trigger_ptr->room()).c_str());
                         ImGui::TableNextColumn();

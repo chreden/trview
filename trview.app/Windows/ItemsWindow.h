@@ -85,5 +85,6 @@ namespace trview
 
         std::unordered_map<std::wstring, std::wstring> _tips;
         std::optional<float> _tooltip_timer;
+        std::weak_ptr<ITrigger> _selected_trigger;
     };
 }
