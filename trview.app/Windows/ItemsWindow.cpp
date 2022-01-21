@@ -333,6 +333,11 @@ namespace trview
 
                 for (const auto& item : _all_items)
                 {
+                    if (_track_room && item.room() != _current_room)
+                    {
+                        continue;
+                    }
+
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
                     // ImGui::Selectable((std::to_string(item.number()) + std::string("##") + std::to_string(item.number())).c_str(), &_selected[item.number()], ImGuiSelectableFlags_SpanAllColumns);
