@@ -27,6 +27,8 @@ namespace trview
             MOCK_METHOD(void, set_show_tooltip, (bool));
             MOCK_METHOD(void, set_show_ui, (bool));
             MOCK_METHOD(bool, ui_input_active, (), (const));
+            MOCK_METHOD(void, present, (bool), (override));
+            MOCK_METHOD(void, render_ui, (), (override));
         };
     }
 }

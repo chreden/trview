@@ -11,6 +11,7 @@
 // Fix window widths
 // Tooltips for certain stats
 // Scroll into view on tables
+// Sorting on triggered by
 
 using namespace trview::graphics;
 
@@ -245,7 +246,7 @@ namespace trview
                     auto add_stat = [&](const std::string& name, const std::string& value)
                     {
                         ImGui::TableNextColumn();
-                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable(name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns))
                         {
                             _clipboard->write(_window, to_utf16(value));
                         }
@@ -304,7 +305,7 @@ namespace trview
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = _selected_trigger.lock() == trigger_ptr;
-                        if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns))
+                        if (ImGui::Selectable(std::to_string(trigger_ptr->number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             _selected_trigger = trigger;
                             set_track_room(false);

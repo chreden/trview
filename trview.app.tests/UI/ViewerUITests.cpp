@@ -36,7 +36,7 @@ namespace
             IRenderer::Source ui_renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); }};
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             ISettingsWindow::Source settings_window_source{ [](auto&&...) { return std::make_unique<MockSettingsWindow>(); }};
-            IViewOptions::Source view_options_source{ [](auto&&...) { return std::make_unique<MockViewOptions>(); } };
+            std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };
             trview::IContextMenu::Source context_menu_source{ [](auto&&...) { return std::make_unique<MockContextMenu>(); } };
             std::unique_ptr<ICameraControls> camera_controls{ std::make_unique<MockCameraControls>() };
 
@@ -44,7 +44,7 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source, view_options_source, context_menu_source, std::move(camera_controls),
+                    ui_renderer_source, map_renderer_source, settings_window_source, std::move(view_options), context_menu_source, std::move(camera_controls),
                     std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
             }
 
@@ -54,9 +54,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_view_options_source(const IViewOptions::Source& source)
+            test_module& with_view_options(std::unique_ptr<IViewOptions> source)
             {
-                view_options_source = source;
+                view_options = std::move(source);
                 return *this;
             }
 
@@ -101,8 +101,7 @@ TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
 TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
 {
     auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
-    auto view_options_ptr_actual = std::move(view_options_ptr);
-    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
+    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
 
     EXPECT_CALL(view_options, set_toggle(IViewer::Options::show_bounding_boxes, true)).Times(1);
 
@@ -112,8 +111,7 @@ TEST(ViewerUI, BoundingBoxUpdatesViewOptions)
 TEST(ViewerUI, ShowBoundingBoxesEventRaised)
 {
     auto [view_options_ptr, view_options] = create_mock<MockViewOptions>();
-    auto view_options_ptr_actual = std::move(view_options_ptr);
-    auto ui = register_test_module().with_view_options_source([&](auto&&...) { return std::move(view_options_ptr_actual); }).build();
+    auto ui = register_test_module().with_view_options(std::move(view_options_ptr)).build();
 
     std::optional<std::tuple<std::string, bool>> show;
     auto token = ui->on_toggle_changed += [&](const auto& name, const auto& value)
