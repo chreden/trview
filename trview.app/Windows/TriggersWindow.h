@@ -55,6 +55,9 @@ namespace trview
         void set_sync_trigger(bool value);
         void load_trigger_details(const ITrigger& trigger);
         void apply_filters();
+        bool render_host();
+        void render_triggers_list();
+        void render_trigger_details();
 
         ui::Control* _controls;
         ui::Checkbox* _track_room_checkbox;
