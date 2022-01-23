@@ -12,6 +12,7 @@
 // TODO
 // Most things
 // Command filter
+// Fix sorting (commands sorted by trigger list)
 
 namespace trview
 {
@@ -159,10 +160,11 @@ namespace trview
                 command_set.insert(command.type());
             }
         }
-        std::vector<std::wstring> all_commands{ L"All", L"Flipmaps" };
-        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name);
-        _command_filter->set_values(all_commands);
-        _command_filter->set_selected_value(L"All");
+        std::vector<std::string> all_commands{ "All", "Flipmaps" };
+        std::transform(command_set.begin(), command_set.end(), std::back_inserter(all_commands), command_type_name_8);
+        _all_commands = all_commands;
+        //_command_filter->set_values(all_commands);
+        //_command_filter->set_selected_value(L"All");
     }
 
     void TriggersWindow::update_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers)
@@ -405,7 +407,34 @@ namespace trview
                 set_sync_trigger(sync_trigger);
             }
 
-            ImGui::ShowStackToolWindow();
+            if (ImGui::BeginCombo("##commandfilter", _all_commands[_selected_command].c_str()))
+            {
+                for (int n = 0; n < _all_commands.size(); ++n)
+                {
+                    bool is_selected = _selected_command == n;
+                    if (ImGui::Selectable(_all_commands[n].c_str(), is_selected))
+                    {
+                        _selected_commands.clear();
+                        if (_all_commands[n] == "Flipmaps")
+                        {
+                            _selected_commands.push_back(TriggerCommandType::FlipMap);
+                            _selected_commands.push_back(TriggerCommandType::FlipOff);
+                            _selected_commands.push_back(TriggerCommandType::FlipOn);
+                        }
+                        else if (_all_commands[n] != "All")
+                        {
+                            _selected_commands.push_back(command_from_name(_all_commands[n]));
+                        }
+                        _selected_command = n;
+                    }
+
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
 
             if (ImGui::BeginTable("##triggerslist", 4, ImGuiTableFlags_Sortable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingFixedFit, ImVec2(-1, -1)))
             {
@@ -446,6 +475,11 @@ namespace trview
                 {
                     const auto trigger_ptr = trigger.lock();
                     if (_track_room && trigger_ptr->room() != _current_room)
+                    {
+                        continue;
+                    }
+
+                    if (!_selected_commands.empty() && !has_any_command(*trigger_ptr, _selected_commands))
                     {
                         continue;
                     }
@@ -544,12 +578,12 @@ namespace trview
             {
                 on_add_to_route(_selected_trigger);
             }
-            ImGui::Text("Triggered By");
-            if (ImGui::BeginTable("##triggeredby", 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
+            ImGui::Text("Commands");
+            if (ImGui::BeginTable("##commands", 3, ImGuiTableFlags_ScrollY, ImVec2(-1, -1)))
             {
-                ImGui::TableSetupColumn("#");
-                ImGui::TableSetupColumn("Room");
                 ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupColumn("Index");
+                ImGui::TableSetupColumn("Entity");
                 ImGui::TableSetupScrollFreeze(1, 1);
                 ImGui::TableHeadersRow();
 
@@ -561,7 +595,7 @@ namespace trview
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
                         bool selected = false;
-                        if (ImGui::Selectable(std::to_string(command.number()).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
+                        if (ImGui::Selectable((to_utf8(command_type_name(command.type())) + "##" + std::to_string(command.number())).c_str(), &selected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnNav))
                         {
                             if (command.type() == TriggerCommandType::LookAtItem || command.type() == TriggerCommandType::Object && command.index() < _all_items.size())
                             {

@@ -80,5 +80,7 @@ namespace trview
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
         std::unique_ptr<IBubble> _bubble;
+        std::vector<std::string> _all_commands;
+        uint32_t _selected_command{ 0u };
     };
 }
