@@ -187,7 +187,7 @@ namespace trview
             on_settings(_settings);
         };
 
-        _camera_position = std::make_unique<CameraPosition>(*_control, *ui_source);
+        _camera_position = std::make_unique<CameraPosition>();
         _camera_position->on_position_changed += on_camera_position;
         _camera_position->on_rotation_changed += on_camera_rotation;
 
@@ -284,6 +284,7 @@ namespace trview
         _ui_renderer->render();
         _view_options->render();
         _camera_controls->render();
+        _camera_position->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)

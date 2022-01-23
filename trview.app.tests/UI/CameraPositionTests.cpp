@@ -8,6 +8,7 @@ using namespace trview::ui;
 using namespace DirectX::SimpleMath;
 using testing::HasSubstr;
 
+/*
 /// Tests that the position event is raised when the coordinates are changed.
 TEST(CameraPosition, PositionEventRaised)
 {
@@ -178,3 +179,4 @@ TEST(CameraPosition, CoordinatesNotUpdatedWithInvalidValues)
 
     ASSERT_FALSE(raised);
 }
+*/
