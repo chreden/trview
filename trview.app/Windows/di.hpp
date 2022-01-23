@@ -35,16 +35,11 @@ namespace trview
             di::bind<ITriggersWindow::Source>.to(
                 [](const auto& injector) -> ITriggersWindow::Source
                 {
-                    return [&](auto window)
+                    return [&]()
                     {
                         return std::make_shared<TriggersWindow>(
-                            injector.create<IDeviceWindow::Source>(),
-                            injector.create<ui::render::IRenderer::Source>(),
-                            injector.create<ui::IInput::Source>(),
-                            window,
-                            injector.create<std::shared_ptr<IClipboard>>(),
-                            injector.create<IBubble::Source>(),
-                            injector.create<std::shared_ptr<ui::ILoader>>());
+                            injector.create<Window>(),
+                            injector.create<std::shared_ptr<IClipboard>>());
                     };
                 }),
             di::bind<ITriggersWindowManager>.to<TriggersWindowManager>(),

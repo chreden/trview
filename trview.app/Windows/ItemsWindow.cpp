@@ -12,6 +12,7 @@
 // Tooltips for certain stats
 // Scroll into view on tables
 // Sorting on triggered by
+// Check sync item
 
 using namespace trview::graphics;
 

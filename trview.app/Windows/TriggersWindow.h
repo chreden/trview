@@ -3,14 +3,10 @@
 
 #pragma once
 
-#include <trview.ui/Listbox.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
 #include "ITriggersWindow.h"
-#include "CollapsiblePanel.h"
 #include <trview.common/Windows/IClipboard.h>
-#include <trview.app/UI/IBubble.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -20,7 +16,7 @@ namespace trview
         class Dropdown;
     }
 
-    class TriggersWindow final : public ITriggersWindow, public CollapsiblePanel
+    class TriggersWindow final : public ITriggersWindow
     {
     public:
         struct Names
@@ -35,9 +31,7 @@ namespace trview
             static const std::string expander;
         };
 
-        explicit TriggersWindow(const graphics::IDeviceWindow::Source& device_window_source, const ui::render::IRenderer::Source& renderer_source,
-            const ui::IInput::Source& input_source, const Window& parent, const std::shared_ptr<IClipboard>& clipboard, const IBubble::Source& bubble_source,
-            const std::shared_ptr<ui::ILoader>& ui_source);
+        explicit TriggersWindow(const Window& parent, const std::shared_ptr<IClipboard>& clipboard);
         virtual ~TriggersWindow() = default;
         virtual void render(bool vsync) override;
         virtual void set_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers) override;
@@ -49,22 +43,11 @@ namespace trview
         virtual std::weak_ptr<ITrigger> selected_trigger() const override;
         virtual void update(float delta) override;
     private:
-        void populate_triggers(const std::vector<std::weak_ptr<ITrigger>>& triggers);
-        void bind_controls();
         void set_track_room(bool value);
         void set_sync_trigger(bool value);
-        void load_trigger_details(const ITrigger& trigger);
-        void apply_filters();
         bool render_host();
         void render_triggers_list();
         void render_trigger_details();
-
-        ui::Control* _controls;
-        ui::Checkbox* _track_room_checkbox;
-        ui::Listbox*  _triggers_list;
-        ui::Listbox*  _stats_list;
-        ui::Listbox*  _command_list;
-        ui::Dropdown* _command_filter;
 
         std::vector<Item> _all_items;
         std::vector<std::weak_ptr<ITrigger>> _all_triggers;
@@ -79,8 +62,8 @@ namespace trview
         std::weak_ptr<ITrigger> _selected_trigger;
         std::vector<TriggerCommandType> _selected_commands;
         std::shared_ptr<IClipboard> _clipboard;
-        std::unique_ptr<IBubble> _bubble;
         std::vector<std::string> _all_commands;
         uint32_t _selected_command{ 0u };
+        Window _window;
     };
 }

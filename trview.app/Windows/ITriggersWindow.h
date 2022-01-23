@@ -5,13 +5,12 @@
 #include <trview.common/Event.h>
 #include <trview.app/Elements/Item.h>
 #include <trview.app/Elements/ITrigger.h>
-#include <trview.ui/Control.h>
 
 namespace trview
 {
     struct ITriggersWindow
     {
-        using Source = std::function<std::shared_ptr<ITriggersWindow>(const Window)>;
+        using Source = std::function<std::shared_ptr<ITriggersWindow>()>;
 
         virtual ~ITriggersWindow() = 0;
 
