@@ -37,14 +37,14 @@ namespace
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
             std::unique_ptr<ISettingsWindow> settings_window{ std::make_unique<MockSettingsWindow>() };
             std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };
-            trview::IContextMenu::Source context_menu_source{ [](auto&&...) { return std::make_unique<MockContextMenu>(); } };
+            std::unique_ptr<trview::IContextMenu> context_menu{ std::make_unique<MockContextMenu>() };
             std::unique_ptr<ICameraControls> camera_controls{ std::make_unique<MockCameraControls>() };
 
             std::unique_ptr<ViewerUI> build()
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), context_menu_source, std::move(camera_controls),
+                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), std::move(context_menu), std::move(camera_controls),
                     std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
             }
 
@@ -60,9 +60,9 @@ namespace
                 return *this;
             }
 
-            test_module& with_context_menu_source(const trview::IContextMenu::Source& source)
+            test_module& with_context_menu(std::unique_ptr<trview::IContextMenu> menu)
             {
-                context_menu_source = source;
+                context_menu = std::move(menu);
                 return *this;
             }
 
@@ -127,9 +127,8 @@ TEST(ViewerUI, ShowBoundingBoxesEventRaised)
 TEST(ViewerUI, SetMidWaypointEnabled)
 {
     auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
-    auto context_menu_ptr_actual = std::move(context_menu_ptr);
     EXPECT_CALL(context_menu, set_mid_waypoint_enabled).Times(1);
-    auto ui = register_test_module().with_context_menu_source([&](auto&&...) { return std::move(context_menu_ptr_actual); }).build();
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
 
     ui->set_mid_waypoint_enabled(true);
 }
@@ -137,8 +136,7 @@ TEST(ViewerUI, SetMidWaypointEnabled)
 TEST(ViewerUI, OnAddMidWaypoint)
 {
     auto [context_menu_ptr, context_menu] = create_mock<MockContextMenu>();
-    auto context_menu_ptr_actual = std::move(context_menu_ptr);
-    auto ui = register_test_module().with_context_menu_source([&](auto&&...) { return std::move(context_menu_ptr_actual); }).build();
+    auto ui = register_test_module().with_context_menu(std::move(context_menu_ptr)).build();
 
     bool raised = false;
     auto token = ui->on_add_mid_waypoint += [&]()

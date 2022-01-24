@@ -27,14 +27,7 @@ namespace trview
                         return std::make_unique<Bubble>(parent);
                     };
                 }),
-            di::bind<IContextMenu::Source>.to(
-                [](const auto& injector) -> IContextMenu::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<ContextMenu>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
+            di::bind<IContextMenu>.to<ContextMenu>(),
             di::bind<IViewerUI>.to(
                 [](const auto& injector) -> std::unique_ptr<IViewerUI>
                 {
@@ -47,7 +40,7 @@ namespace trview
                         injector.create<ui::render::IMapRenderer::Source>(),
                         injector.create<std::unique_ptr<ISettingsWindow>>(),
                         injector.create<std::unique_ptr<IViewOptions>>(),
-                        injector.create<IContextMenu::Source>(),
+                        injector.create<std::unique_ptr<IContextMenu>>(),
                         injector.create<std::unique_ptr<ICameraControls>>(),
                         injector.create<std::shared_ptr<ui::ILoader>>());
                 })

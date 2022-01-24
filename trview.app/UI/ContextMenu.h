@@ -1,8 +1,6 @@
 #pragma once
 
 #include "IContextMenu.h"
-#include <trview.ui/Button.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
@@ -19,30 +17,18 @@ namespace trview
             static const std::string remove_waypoint_button;
         };
 
-        /// <summary>
-        /// Create a new ContentMenu window.
-        /// </summary>
-        /// <param name="parent">The control to add the window to.</param>
-        /// <param name="ui_source">The UI source function.</param>
-        explicit ContextMenu(ui::Control& parent, const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ContextMenu() = default;
-        /// Get the root control.
-        /// @returns The root control.
-        const ui::Control* control() const;
-        virtual void set_position(const Point& position) override;
+        virtual void render() override;
         virtual void set_visible(bool value) override;
         virtual void set_remove_enabled(bool value) override;
         virtual void set_hide_enabled(bool value) override;
-        virtual bool visible() const override;
         virtual void set_mid_waypoint_enabled(bool value) override;
+        virtual bool visible() const override;
     private:
-        ui::Control* _menu;
-        ui::Button* _remove_button;
-        ui::Button* _hide_button;
-        ui::Button* _mid_button;
         bool _remove_enabled{ false };
         bool _hide_enabled{ false };
         bool _mid_enabled{ false };
-        TokenStore _token_store;
+        bool _can_show{ false };
+        bool _visible{ false };
     };
 }

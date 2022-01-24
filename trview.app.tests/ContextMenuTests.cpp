@@ -6,7 +6,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::tests;
 using namespace trview::ui;
-
+/*
 TEST(ContextMenu, AddWaypointRaised)
 {
     ui::Window parent(Size(800, 600), Colour::Transparent);
@@ -215,3 +215,4 @@ TEST(ContextMenu, AddMidWaypointNotRaisedWhenDisabled)
     ASSERT_FALSE(raised);
     ASSERT_TRUE(menu.visible());
 }
+*/

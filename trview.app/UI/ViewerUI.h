@@ -31,7 +31,7 @@ namespace trview
             const ui::render::IMapRenderer::Source& map_renderer_source,
             std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
-            const IContextMenu::Source& context_menu_source,
+            std::unique_ptr<IContextMenu> context_menu,
             std::unique_ptr<ICameraControls> camera_controls,
             const std::shared_ptr<ui::ILoader>& ui_source);
         virtual ~ViewerUI() = default;

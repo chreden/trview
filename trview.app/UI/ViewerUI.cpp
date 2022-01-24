@@ -19,11 +19,12 @@ namespace trview
         const ui::render::IMapRenderer::Source& map_renderer_source,
         std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
-        const IContextMenu::Source& context_menu_source,
+        std::unique_ptr<IContextMenu> context_menu,
         std::unique_ptr<ICameraControls> camera_controls,
         const std::shared_ptr<ui::ILoader>& ui_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source),
-        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options)), _settings_window(std::move(settings_window))
+        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options)), _settings_window(std::move(settings_window)),
+        _context_menu(std::move(context_menu))
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
 
@@ -98,7 +99,6 @@ namespace trview
         measure->set_visible(false);
         _measure = _control->add_child(std::move(measure));
 
-        _context_menu = context_menu_source(*_control);
         _context_menu->on_add_waypoint += on_add_waypoint;
         _context_menu->on_add_mid_waypoint += on_add_mid_waypoint;
         _context_menu->on_remove_waypoint += on_remove_waypoint;
@@ -290,6 +290,7 @@ namespace trview
         _camera_controls->render();
         _camera_position->render();
         _settings_window->render();
+        _context_menu->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
@@ -369,6 +370,7 @@ namespace trview
 
     void ViewerUI::set_pick(const PickInfo& info, const PickResult& result)
     {
+        // TODO: Context menu visible?
         _tooltip->set_visible(result.hit && _show_tooltip && !_context_menu->visible());
         if (result.hit)
         {
@@ -419,7 +421,6 @@ namespace trview
         if (value)
         {
             _tooltip->set_visible(false);
-            _context_menu->set_position(client_cursor_position(_window));
         }
     }
 

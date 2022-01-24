@@ -384,7 +384,8 @@ namespace trview
         {
             if (button == IMouse::Button::Left)
             {
-                if (!_ui->is_cursor_over())
+                auto io = ImGui::GetIO();
+                if (!(_ui->is_cursor_over() || io.WantCaptureMouse || io.WantCaptureKeyboard))
                 {
                     if (_ui->show_context_menu())
                     {
