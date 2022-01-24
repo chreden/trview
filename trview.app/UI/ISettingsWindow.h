@@ -71,6 +71,7 @@ namespace trview
         /// Event raised when the 'max recent files' setting has been changed. The new setting is passed as the parameter.
         /// </summary>
         Event<uint32_t> on_max_recent_files;
+        virtual void render() = 0;
         /// <summary>
         /// Set the new value of the vsync setting. This will not raise the on_vsync event.
         /// </summary>

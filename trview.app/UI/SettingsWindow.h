@@ -48,6 +48,7 @@ namespace trview
         /// <param name="source">The function to call to get the UI elements.</param>
         explicit SettingsWindow(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~SettingsWindow() = default;
+        virtual void render() override;
         virtual void set_vsync(bool value) override;
         virtual void set_go_to_lara(bool value) override;
         virtual void set_invert_map_controls(bool value) override;
@@ -82,5 +83,6 @@ namespace trview
         ui::Checkbox* _randomizer_tools{ nullptr };
         ui::NumericUpDown* _max_recent_files{ nullptr };
         TokenStore _token_store;
+        bool _visible{ false };
     };
 }

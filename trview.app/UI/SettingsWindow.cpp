@@ -7,6 +7,7 @@
 #include <trview.ui/Slider.h>
 #include <trview.ui/NumericUpDown.h>
 #include "../Resources/resource.h"
+#include <external/imgui/imgui.h>
 
 using namespace trview::ui;
 
@@ -94,6 +95,20 @@ namespace trview
         centre_window(parent.size());
     }
 
+    void SettingsWindow::render()
+    {
+        if (!_visible)
+        {
+            return;
+        }
+
+        if (ImGui::Begin("Settings", &_visible))
+        {
+            
+        }
+        ImGui::End();
+    }
+
     void SettingsWindow::set_vsync(bool value)
     {
         _vsync->set_state(value);
@@ -142,6 +157,7 @@ namespace trview
     void SettingsWindow::toggle_visibility()
     {
         _window->set_visible(!_window->visible());
+        _visible = !_visible;
     }
 
     void SettingsWindow::set_sensitivity(float value)

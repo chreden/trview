@@ -285,6 +285,7 @@ namespace trview
         _view_options->render();
         _camera_controls->render();
         _camera_position->render();
+        _settings_window->render();
     }
 
     void ViewerUI::set_alternate_group(uint32_t value, bool enabled)
