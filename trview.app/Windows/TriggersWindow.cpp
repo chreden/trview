@@ -206,23 +206,26 @@ namespace trview
                 auto specs = ImGui::TableGetSortSpecs();
                 if (specs && specs->SpecsDirty)
                 {
-                    std::sort(_all_items.begin(), _all_items.end(),
+                    std::sort(_all_triggers.begin(), _all_triggers.end(),
                         [&](const auto& l, const auto& r) -> int
                         {
+                            const auto l_l = l.lock();
+                            const auto r_l = r.lock();
+
                             switch (specs->Specs[0].ColumnIndex)
                             {
                             case 0:
                                 return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.number() < r.number()) : (l.number() > r.number());
+                                    ? (l_l->number() < r_l->number()) : (l_l->number() > r_l->number());
                             case 1:
                                 return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.room() < r.room()) : (l.room() > r.room());
+                                    ? (l_l->room() < r_l->room()) : (l_l->room() > r_l->room());
                             case 2:
                                 return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.type() < r.type()) : (l.type() > r.type());
+                                    ? (l_l->type() < r_l->type()) : (l_l->type() > r_l->type());
                             case 3:
                                 return specs->Specs->SortDirection == ImGuiSortDirection_Ascending
-                                    ? (l.visible() < r.visible()) : (l.visible() > r.visible());
+                                    ? (l_l->visible() < r_l->visible()) : (l_l->visible() > r_l->visible());
                             }
                             return 0;
                         });
