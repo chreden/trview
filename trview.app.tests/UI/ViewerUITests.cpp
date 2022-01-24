@@ -35,7 +35,7 @@ namespace
             IInput::Source input_source{ [](auto&&...) { return std::make_unique<MockInput>(); } };
             IRenderer::Source ui_renderer_source{ [](auto&&...) { return std::make_unique<MockRenderer>(); }};
             IMapRenderer::Source map_renderer_source{ [](auto&&...) { return std::make_unique<MockMapRenderer>(); }};
-            ISettingsWindow::Source settings_window_source{ [](auto&&...) { return std::make_unique<MockSettingsWindow>(); }};
+            std::unique_ptr<ISettingsWindow> settings_window{ std::make_unique<MockSettingsWindow>() };
             std::unique_ptr<IViewOptions> view_options{ std::make_unique<MockViewOptions>() };
             trview::IContextMenu::Source context_menu_source{ [](auto&&...) { return std::make_unique<MockContextMenu>(); } };
             std::unique_ptr<ICameraControls> camera_controls{ std::make_unique<MockCameraControls>() };
@@ -44,13 +44,13 @@ namespace
             {
                 EXPECT_CALL(*shortcuts, add_shortcut).WillRepeatedly([&](auto, auto) -> Event<>&{ return shortcut_handler; });
                 return std::make_unique<ViewerUI>(window, texture_storage, shortcuts, std::move(input_source),
-                    ui_renderer_source, map_renderer_source, settings_window_source, std::move(view_options), context_menu_source, std::move(camera_controls),
+                    ui_renderer_source, map_renderer_source, std::move(settings_window), std::move(view_options), context_menu_source, std::move(camera_controls),
                     std::make_shared<JsonLoader>(std::make_shared<MockShell>()));
             }
 
-            test_module& with_settings_window_source(const ISettingsWindow::Source& source)
+            test_module& with_settings_window(std::unique_ptr<ISettingsWindow> window)
             {
-                settings_window_source = source;
+                settings_window = std::move(window);
                 return *this;
             }
 
@@ -79,8 +79,7 @@ namespace
 TEST(ViewerUI, OnCameraDisplayDegreesEventRaised)
 {
     auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto settings_window_ptr_actual = std::move(settings_window_ptr);
-    auto ui = register_test_module().with_settings_window_source([&](auto&&...) { return std::move(settings_window_ptr_actual); }).build();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
 
     std::optional<UserSettings> settings;
     auto token = ui->on_settings += [&](const auto& value)
@@ -154,8 +153,7 @@ TEST(ViewerUI, OnAddMidWaypoint)
 TEST(ViewerUI, OnRandomizerToolsEventRaised)
 {
     auto [settings_window_ptr, settings_window] = create_mock<MockSettingsWindow>();
-    auto settings_window_ptr_actual = std::move(settings_window_ptr);
-    auto ui = register_test_module().with_settings_window_source([&](auto&&...) { return std::move(settings_window_ptr_actual); }).build();
+    auto ui = register_test_module().with_settings_window(std::move(settings_window_ptr)).build();
 
     std::optional<UserSettings> settings;
     auto token = ui->on_settings += [&](const auto& value)

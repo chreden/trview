@@ -17,13 +17,13 @@ namespace trview
         const ui::IInput::Source& input_source,
         const ui::render::IRenderer::Source& ui_renderer_source,
         const ui::render::IMapRenderer::Source& map_renderer_source,
-        const ISettingsWindow::Source& settings_window_source,
+        std::unique_ptr<ISettingsWindow> settings_window,
         std::unique_ptr<IViewOptions> view_options,
         const IContextMenu::Source& context_menu_source,
         std::unique_ptr<ICameraControls> camera_controls,
         const std::shared_ptr<ui::ILoader>& ui_source)
         : _mouse(window, std::make_unique<input::WindowTester>(window)), _window(window), _input_source(input_source),
-        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options))
+        _camera_controls(std::move(camera_controls)), _view_options(std::move(view_options)), _settings_window(std::move(settings_window))
     {
         _control = std::make_unique<ui::Window>(window.size(), Colour::Transparent);
 
@@ -110,7 +110,6 @@ namespace trview
         _level_info = std::make_unique<LevelInfo>(*_control.get(), *texture_storage, *ui_source);
         _token_store += _level_info->on_toggle_settings += [&]() { _settings_window->toggle_visibility(); };
 
-        _settings_window = settings_window_source(*_control.get());
         _token_store += _settings_window->on_vsync += [&](bool value)
         {
             _settings.vsync = value;

@@ -1,13 +1,11 @@
 #pragma once
 
 #include <trview.common/Event.h>
-#include <trview.ui/Control.h>
 
 namespace trview
 {
     struct ISettingsWindow
     {
-        using Source = std::function<std::unique_ptr<ISettingsWindow>(ui::Control&)>;
         virtual ~ISettingsWindow() = 0;
         /// <summary>
         /// Event raised when the vsync settings has been changed. The new vsync setting is passed as the parameter.

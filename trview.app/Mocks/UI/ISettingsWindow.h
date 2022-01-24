@@ -9,6 +9,7 @@ namespace trview
         struct MockSettingsWindow final : public ISettingsWindow
         {
             virtual ~MockSettingsWindow() = default;
+            MOCK_METHOD(void, render, (), (override));
             MOCK_METHOD(void, set_vsync, (bool), (override));
             MOCK_METHOD(void, set_go_to_lara, (bool), (override));
             MOCK_METHOD(void, set_invert_map_controls, (bool), (override));

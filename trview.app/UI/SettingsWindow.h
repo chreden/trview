@@ -4,19 +4,9 @@
 #pragma once
 
 #include "ISettingsWindow.h"
-#include <trview.common/TokenStore.h>
-#include <trview.ui/ILoader.h>
 
 namespace trview
 {
-    namespace ui
-    {
-        class Control;
-        class Checkbox;
-        class NumericUpDown;
-        class Slider;
-    }
-
     /// UI window for program level settings.
     class SettingsWindow final : public ISettingsWindow
     {
@@ -41,12 +31,6 @@ namespace trview
             static const std::string close;
         };
 
-        /// <summary>
-        /// Creates an instance of the SettingsWindow class. This will add UI elements to the control provided.
-        /// </summary>
-        /// <param name="parent">The control to which the instance will add elements.</param>
-        /// <param name="source">The function to call to get the UI elements.</param>
-        explicit SettingsWindow(ui::Control& parent, const std::shared_ptr<ui::ILoader>& source);
         virtual ~SettingsWindow() = default;
         virtual void render() override;
         virtual void set_vsync(bool value) override;
@@ -66,23 +50,21 @@ namespace trview
         virtual void set_max_recent_files(uint32_t value) override;
         virtual void toggle_visibility() override;
     private:
-        ui::Checkbox* _vsync{ nullptr };
-        ui::Checkbox* _go_to_lara{ nullptr };
-        ui::Checkbox* _invert_map_controls{ nullptr };
-        ui::Checkbox* _items_startup{ nullptr };
-        ui::Checkbox* _triggers_startup{ nullptr };
-        ui::Checkbox* _rooms_startup{ nullptr };
-        ui::Checkbox* _auto_orbit{ nullptr };
-        ui::Slider* _sensitivity{ nullptr };
-        ui::Slider* _movement_speed{ nullptr };
-        ui::Control* _window{ nullptr };
-        ui::Checkbox* _invert_vertical_pan{ nullptr };
-        ui::Checkbox* _acceleration{ nullptr };
-        ui::Slider* _acceleration_rate{ nullptr };
-        ui::Checkbox* _camera_display_degrees{ nullptr };
-        ui::Checkbox* _randomizer_tools{ nullptr };
-        ui::NumericUpDown* _max_recent_files{ nullptr };
-        TokenStore _token_store;
         bool _visible{ false };
+        bool _vsync{ false };
+        bool _go_to_lara{ false };
+        bool _invert_map_controls{ false };
+        bool _items_startup{ false };
+        bool _triggers_startup{ false };
+        bool _rooms_startup{ false };
+        bool _auto_orbit{ false };
+        bool _invert_vertical_panning{ false };
+        bool _camera_display_degrees{ false };
+        bool _randomizer_tools{ false };
+        bool _acceleration{ false };
+        float _sensitivity{ 1.0f };
+        float _acceleration_rate{ 1.0f };
+        float _movement_speed{ 1.0f };
+        int _max_recent_files{ 10 };
     };
 }

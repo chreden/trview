@@ -16,14 +16,7 @@ namespace trview
     {
         using namespace boost;
         return di::make_injector(
-            di::bind<ISettingsWindow::Source>.to(
-                [](const auto& injector) -> ISettingsWindow::Source
-                {
-                    return [&](ui::Control& parent)
-                    {
-                        return std::make_unique<SettingsWindow>(parent, injector.create<std::shared_ptr<ui::ILoader>>());
-                    };
-                }),
+            di::bind<ISettingsWindow>.to<SettingsWindow>(),
             di::bind<ICameraControls>.to<CameraControls>(),
             di::bind<IViewOptions>.to<ViewOptions>(),
             di::bind<IBubble::Source>.to(
@@ -52,7 +45,7 @@ namespace trview
                         injector.create<ui::IInput::Source>(),
                         injector.create<ui::render::IRenderer::Source>(),
                         injector.create<ui::render::IMapRenderer::Source>(),
-                        injector.create<ISettingsWindow::Source>(),
+                        injector.create<std::unique_ptr<ISettingsWindow>>(),
                         injector.create<std::unique_ptr<IViewOptions>>(),
                         injector.create<IContextMenu::Source>(),
                         injector.create<std::unique_ptr<ICameraControls>>(),

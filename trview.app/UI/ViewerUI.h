@@ -29,7 +29,7 @@ namespace trview
             const ui::IInput::Source& input_source,
             const ui::render::IRenderer::Source& ui_renderer_source,
             const ui::render::IMapRenderer::Source& map_renderer_source,
-            const ISettingsWindow::Source& settings_window_source,
+            std::unique_ptr<ISettingsWindow> settings_window,
             std::unique_ptr<IViewOptions> view_options,
             const IContextMenu::Source& context_menu_source,
             std::unique_ptr<ICameraControls> camera_controls,

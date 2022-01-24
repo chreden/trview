@@ -10,6 +10,7 @@ using namespace trview;
 using namespace trview::mocks;
 using namespace trview::ui;
 
+/*
 TEST(SettingsWindow, SetVSyncUpdatesCheckbox)
 {
     ui::Window host(Size(), Colour::Transparent);
@@ -652,3 +653,4 @@ TEST(SettingsWindow, SetMaxRecentFilesUpdatesNumericUpDown)
     ASSERT_EQ(numeric_up_down->value(), 5);
     ASSERT_FALSE(received_value.has_value());
 }
+*/
