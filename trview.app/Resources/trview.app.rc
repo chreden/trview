@@ -60,8 +60,6 @@ BEGIN
         MENUITEM "Route",                       ID_VIEW_ROUTE
         MENUITEM "Tools",                       ID_VIEW_TOOLS
         MENUITEM SEPARATOR
-        MENUITEM "Background &Colour...",       ID_VIEW_BACKGROUNDCOLOUR
-        MENUITEM SEPARATOR
         MENUITEM "Unhide All",                  ID_VIEW_UNHIDE_ALL
     END
     POPUP "Windows"
@@ -90,7 +88,6 @@ BEGIN
     "/",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
     "?",            IDM_ABOUT,                ASCII,  ALT, NOINVERT
     "O",            ID_ACCEL_FILE_OPEN,       ASCII,  CONTROL, NOINVERT, VIRTKEY
-    "B",            ID_VIEW_BACKGROUNDCOLOUR, ASCII,  CONTROL, NOINVERT, VIRTKEY
 END
 
 

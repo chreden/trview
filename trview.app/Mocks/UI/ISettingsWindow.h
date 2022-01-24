@@ -25,6 +25,7 @@ namespace trview
             MOCK_METHOD(void, set_camera_display_degrees, (bool), (override));
             MOCK_METHOD(void, set_randomizer_tools, (bool), (override));
             MOCK_METHOD(void, set_max_recent_files, (uint32_t), (override));
+            MOCK_METHOD(void, set_background_colour, (const Colour&), (override));
             MOCK_METHOD(void, toggle_visibility, (), (override));
         };
     }

@@ -319,11 +319,6 @@ namespace trview
         _token_store += _view_menu.on_show_selection += [&](bool show) { _viewer->set_show_selection(show); };
         _token_store += _view_menu.on_show_route += [&](bool show) { _viewer->set_show_route(show); };
         _token_store += _view_menu.on_show_tools += [&](bool show) { _viewer->set_show_tools(show); };
-        _token_store += _view_menu.on_colour_change += [&](Colour colour)
-        {
-            _settings.background_colour = static_cast<uint32_t>(colour);
-            _viewer->set_settings(_settings);
-        };
         _token_store += _view_menu.on_unhide_all += [&]()
         {
             for (const auto& item : _level->items()) { if (!item.visible()) { set_item_visibility(item, true); } }
