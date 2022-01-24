@@ -56,6 +56,10 @@ namespace trview
                         _max_recent_files = std::max(0, _max_recent_files);
                         on_max_recent_files(_max_recent_files);
                     }
+                    if (ImGui::ColorEdit3("Background Colour", _colour))
+                    {
+                        on_background_colour(Colour(1.0f, _colour[0], _colour[1], _colour[2]));
+                    }
                     ImGui::EndTabItem();
                 }
 
@@ -163,5 +167,12 @@ namespace trview
     void SettingsWindow::set_max_recent_files(uint32_t value)
     {
         _max_recent_files = value;
+    }
+
+    void SettingsWindow::set_background_colour(const Colour& colour)
+    {
+        _colour[0] = colour.r;
+        _colour[1] = colour.g;
+        _colour[2] = colour.b;
     }
 }

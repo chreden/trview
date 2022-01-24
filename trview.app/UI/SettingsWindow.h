@@ -48,6 +48,7 @@ namespace trview
         virtual void set_camera_display_degrees(bool value) override;
         virtual void set_randomizer_tools(bool value) override;
         virtual void set_max_recent_files(uint32_t value) override;
+        virtual void set_background_colour(const Colour& colour) override;
         virtual void toggle_visibility() override;
     private:
         bool _visible{ false };
@@ -66,5 +67,6 @@ namespace trview
         float _acceleration_rate{ 1.0f };
         float _movement_speed{ 1.0f };
         int _max_recent_files{ 10 };
+        float _colour[3];
     };
 }
