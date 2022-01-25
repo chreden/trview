@@ -20,13 +20,6 @@ namespace trview
     class LevelInfo
     {
     public:
-        struct Names
-        {
-            static const std::string version;
-            static const std::string name;
-            static const std::string settings;
-        };
-
         /// Creates an instance of the LevelInfo class. 
         /// @param texture_storage Texture storage instance to use.
         explicit LevelInfo(const ITextureStorage& texture_storage);
